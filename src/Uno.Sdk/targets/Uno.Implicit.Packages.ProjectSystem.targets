@@ -95,6 +95,10 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics2DSK" ProjectSystem="true" />
 	</ItemGroup>
 
+	<ItemGroup Condition="$(UnoFeatures.Contains(';skiarenderer;')) OR $(IsDesktop) == 'true'">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.SpellChecking" ProjectSystem="true" />
+	</ItemGroup>
+
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Extensions.Implicit.Packages.ProjectSystem.targets" />
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.Android.targets"
 		Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'" />

@@ -312,6 +312,9 @@
   <data name="TEXT_CONTEXT_MENU_SELECT_ALL" xml:space="preserve">
     <value>Select All</value>
   </data>
+  <data name="TEXT_CONTEXT_MENU_SPELLCHECK_SUGGESTIONS_HEADER" xml:space="preserve">
+    <value>Spelling</value>
+  </data>
   <data name="TEXT_TOGGLESWITCH_ON" xml:space="preserve">
     <value>On</value>
   </data>

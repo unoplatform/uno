@@ -65,9 +65,11 @@ namespace Microsoft.UI.Xaml.Controls
 			get => _selection;
 			set
 			{
-				_selection = value;
-
-				OnSelectionChanged();
+				if (_selection != value)
+				{
+					_selection = value;
+					OnSelectionChanged();
+				}
 			}
 		}
 
