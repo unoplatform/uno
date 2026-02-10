@@ -139,7 +139,7 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 				NativeTextSelection.SetSelectedTextRange(SuperHandle, value);
 				if (!_settingSelectionFromManaged)
 				{
-					textBoxView.Owner.TextBox?.OnSelectionChanged();
+					textBoxView.SyncSelectionToTextBox();
 				}
 			}
 		}

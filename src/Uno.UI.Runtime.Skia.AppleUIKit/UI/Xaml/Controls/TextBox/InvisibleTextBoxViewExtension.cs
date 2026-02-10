@@ -213,8 +213,14 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		}
 	}
 
-	internal void SyncSelectionToTextBox(int start, int length)
+	internal void SyncSelectionToTextBox()
 	{
+		if (_owner?.TextBox is { } textBox)
+		{
+			var start = GetSelectionStart();
+			var length = GetSelectionLength();
+			textBox.SelectInternal(start, length);
+		}
 	}
 
 	internal void ProcessNativeTextInput(string? text)
