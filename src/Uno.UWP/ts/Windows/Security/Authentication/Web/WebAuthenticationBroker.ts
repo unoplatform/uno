@@ -1,8 +1,56 @@
 ﻿namespace Windows.Security.Authentication.Web {
 	export class WebAuthenticationBroker {
 
+		private static _pendingWindow: Window | null = null;
+
 		public static getReturnUrl() {
 			return window.location.origin;
+		}
+
+		/**
+		 * Pre-opens a blank popup window synchronously.
+		 * Must be called from a user-gesture context (e.g., click handler)
+		 * to avoid browser popup blockers.
+		 */
+		public static preparePopupWindow(
+			title: string,
+			popUpWidth: number,
+			popUpHeight: number
+		): boolean {
+			// Close any existing pending window
+			if (WebAuthenticationBroker._pendingWindow && !WebAuthenticationBroker._pendingWindow.closed) {
+				WebAuthenticationBroker._pendingWindow.close();
+			}
+			WebAuthenticationBroker._pendingWindow = null;
+
+			const winLeft = window.screenLeft ? window.screenLeft : window.screenX;
+			const winTop = window.screenTop ? window.screenTop : window.screenY;
+			const width = window.innerWidth ||
+				document.documentElement.clientWidth ||
+				document.body.clientWidth;
+			const height = window.innerHeight ||
+				document.documentElement.clientHeight ||
+				document.body.clientHeight;
+			const left = ((width / 2) - (popUpWidth / 2)) + winLeft;
+			const top = ((height / 2) - (popUpHeight / 2)) + winTop;
+
+			WebAuthenticationBroker._pendingWindow = window.open(
+				"about:blank",
+				title,
+				"width=" + popUpWidth + ", height=" + popUpHeight + ", top=" + top + ", left=" + left
+			);
+
+			return WebAuthenticationBroker._pendingWindow != null;
+		}
+
+		/**
+		 * Closes any pre-opened popup window that was not used for authentication.
+		 */
+		public static closePendingPopupWindow(): void {
+			if (WebAuthenticationBroker._pendingWindow && !WebAuthenticationBroker._pendingWindow.closed) {
+				WebAuthenticationBroker._pendingWindow.close();
+			}
+			WebAuthenticationBroker._pendingWindow = null;
 		}
 
 		public static authenticateUsingIframe(
@@ -116,37 +164,50 @@
 				};
 
 				try {
-					/**
-					 * adding winLeft and winTop to account for dual monitor
-					 * using screenLeft and screenTop for IE8 and earlier
-					 */
-					const winLeft = window.screenLeft ? window.screenLeft : window.screenX;
-					const winTop = window.screenTop ? window.screenTop : window.screenY;
-					/**
-					 * window.innerWidth displays browser window"s height and width excluding toolbars
-					 * using document.documentElement.clientWidth for IE8 and earlier
-					 */
-					const width = window.innerWidth ||
-						document.documentElement.clientWidth ||
-						document.body.clientWidth;
-					const height = window.innerHeight ||
-						document.documentElement.clientHeight ||
-						document.body.clientHeight;
-					const left = ((width / 2) - (popUpWidth / 2)) + winLeft;
-					const top = ((height / 2) - (popUpHeight / 2)) + winTop;
+					// Check if a popup window was pre-opened via preparePopupWindow()
+					// to avoid browser popup blockers.
+					if (WebAuthenticationBroker._pendingWindow && !WebAuthenticationBroker._pendingWindow.closed) {
+						win = WebAuthenticationBroker._pendingWindow;
+						WebAuthenticationBroker._pendingWindow = null;
+						win.location.href = urlNavigate;
+					} else {
+						WebAuthenticationBroker._pendingWindow = null;
 
-					// open the window
-					win = window.open(urlNavigate,
-						title,
-						"width=" + popUpWidth + ", height=" + popUpHeight + ", top=" + top + ", left=" + left);
+						/**
+						 * adding winLeft and winTop to account for dual monitor
+						 * using screenLeft and screenTop for IE8 and earlier
+						 */
+						const winLeft = window.screenLeft ? window.screenLeft : window.screenX;
+						const winTop = window.screenTop ? window.screenTop : window.screenY;
+						/**
+						 * window.innerWidth displays browser window"s height and width excluding toolbars
+						 * using document.documentElement.clientWidth for IE8 and earlier
+						 */
+						const width = window.innerWidth ||
+							document.documentElement.clientWidth ||
+							document.body.clientWidth;
+						const height = window.innerHeight ||
+							document.documentElement.clientHeight ||
+							document.body.clientHeight;
+						const left = ((width / 2) - (popUpWidth / 2)) + winLeft;
+						const top = ((height / 2) - (popUpHeight / 2)) + winTop;
+
+						// open the window
+						win = window.open(urlNavigate,
+							title,
+							"width=" + popUpWidth + ", height=" + popUpHeight + ", top=" + top + ", left=" + left);
+					}
+
 					if (!win) {
-						completeWithError("Can't open window");
+						completeWithError("popup_blocked");
 						return;
 					}
 					if (win.focus) {
 						win.focus();
 					}
-					win.addEventListener("beforeunload", close);
+					// Note: beforeunload is not added when reusing a pre-opened window
+					// because navigation from about:blank would trigger it prematurely.
+					// Window closure is detected by polling in startMonitoringRedirect.
 
 					const onFinalUrlReached = (success: boolean, timedout: boolean, finalUrlOrMessage: string) => {
 						if (success) {

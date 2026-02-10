@@ -32,6 +32,18 @@ namespace Uno.AuthenticationBroker
 				options.HasFlag(WebAuthenticationOptions.SilentMode) ||
 				!string.IsNullOrEmpty(WinRTFeatureConfiguration.WebAuthenticationBroker.IFrameHtmlId);
 
+			if (!useIframe)
+			{
+				// Pre-open the popup window synchronously while still in the user-gesture
+				// context to avoid browser popup blockers. This must happen before any
+				// await to ensure the call remains in the same synchronous execution
+				// context as the original user interaction (e.g., button click).
+				NativeMethods.PreparePopupWindow(
+					WinRTFeatureConfiguration.WebAuthenticationBroker.WindowTitle ?? "Sign In",
+					WinRTFeatureConfiguration.WebAuthenticationBroker.WindowWidth,
+					WinRTFeatureConfiguration.WebAuthenticationBroker.WindowHeight);
+			}
+
 			try
 			{
 				string[] results;
@@ -65,9 +77,22 @@ namespace Uno.AuthenticationBroker
 					_ => new WebAuthenticationResult(null, 0, WebAuthenticationStatus.ErrorHttp)
 				};
 			}
-			catch (ApplicationException aex)
+			catch (Exception ex)
 			{
-				return new WebAuthenticationResult(aex.Message, 0, WebAuthenticationStatus.ErrorHttp);
+				NativeMethods.ClosePendingPopupWindow();
+
+				if (ex.Message?.Contains("popup_blocked") == true)
+				{
+					return new WebAuthenticationResult(
+						"The authentication popup was blocked by the browser. " +
+						"Ensure that AuthenticateAsync is called synchronously from a user " +
+						"interaction (e.g., button click handler) without any preceding await calls. " +
+						"You may also need to allow popups for this site in your browser settings.",
+						0,
+						WebAuthenticationStatus.ErrorHttp);
+				}
+
+				return new WebAuthenticationResult(ex.Message, 0, WebAuthenticationStatus.ErrorHttp);
 			}
 		}
 
@@ -81,6 +106,12 @@ namespace Uno.AuthenticationBroker
 
 			[JSImport("globalThis.Windows.Security.Authentication.Web.WebAuthenticationBroker.getReturnUrl")]
 			internal static partial string GetReturnUrl();
+
+			[JSImport("globalThis.Windows.Security.Authentication.Web.WebAuthenticationBroker.preparePopupWindow")]
+			internal static partial bool PreparePopupWindow(string title, int windowWidth, int windowHeight);
+
+			[JSImport("globalThis.Windows.Security.Authentication.Web.WebAuthenticationBroker.closePendingPopupWindow")]
+			internal static partial void ClosePendingPopupWindow();
 		}
 	}
 }
