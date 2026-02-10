@@ -173,7 +173,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 				var keys = match.Groups["key"].Captures;
 				var values = match.Groups["value"].Captures;
-				Assert.HasCount(keys.Count, values);
+				Assert.AreEqual(keys.Count, values.Count);
 
 				for (var i = 0; i < keys.Count; i++)
 				{
