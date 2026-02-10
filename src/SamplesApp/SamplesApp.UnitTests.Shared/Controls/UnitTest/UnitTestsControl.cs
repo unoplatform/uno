@@ -53,6 +53,7 @@ namespace Uno.UI.Samples.Tests
 
 		private const StringComparison StrComp = StringComparison.InvariantCultureIgnoreCase;
 		private const string RuntimeCurrentTestFilePathVariable = "UITEST_RUNTIME_CURRENT_TEST_FILE";
+		private string _runtimeCurrentTestFilePath;
 		private Task _runner;
 		private CancellationTokenSource _cts = new CancellationTokenSource();
 #if DEBUG
@@ -1101,7 +1102,7 @@ namespace Uno.UI.Samples.Tests
 
 			async Task UpdateRuntimeTestHeartbeatAsync(string testName)
 			{
-				var heartbeatPath = Environment.GetEnvironmentVariable(RuntimeCurrentTestFilePathVariable);
+				var heartbeatPath = _runtimeCurrentTestFilePath ??= Environment.GetEnvironmentVariable(RuntimeCurrentTestFilePathVariable);
 				if (string.IsNullOrWhiteSpace(heartbeatPath))
 				{
 					return;
@@ -1332,7 +1333,7 @@ namespace Uno.UI.Samples.Tests
 
 			if (_ciTestsGroupCountCache != -1)
 			{
-				var activeGroupCount = groupedArray.SelectMany(t => t.Tests).Count();
+				var activeGroupCount = groupedArray.Sum(group => group.Tests.Count());
 				// CI uses these counts to spot slow shards and rebalance groups.
 				Console.WriteLine($"Active test group #{_ciTestGroupCache} contains {activeGroupCount} tests");
 			}
