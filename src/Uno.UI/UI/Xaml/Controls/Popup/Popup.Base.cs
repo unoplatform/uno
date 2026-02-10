@@ -2,6 +2,7 @@
 using DirectUI;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Input;
@@ -78,7 +79,7 @@ public partial class Popup : FrameworkElement, IPopup, IBackButtonListener
 		if (newIsOpen)
 		{
 			//set up back button support if necessary
-			if (DXamlCore.Current.BackButtonSupported)
+			if (DXamlCore.Current.BackButtonSupported && ShouldDismiss(DismissalTriggerFlags.BackPress))
 			{
 				BackButtonIntegration.RegisterListener(this);
 			}
