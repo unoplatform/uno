@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 using Uno.Diagnostics.Eventing;
@@ -15,12 +17,27 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Resources;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Loader;
 
 namespace Uno.UI
 {
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class ResourceResolver
 	{
+		/// <summary>
+		/// The ambient ALC context for resource resolution. Set during App.xaml initialization
+		/// to ensure that resource dictionary lookups (including fallback paths like
+		/// <see cref="RetrieveDictionaryForSource(string, string)"/>) can find resources
+		/// registered in the correct ALC-scoped registry.
+		/// </summary>
+		[ThreadStatic]
+		private static AssemblyLoadContext _currentResolutionAlc;
+
+		/// <summary>
+		/// Gets the current ambient ALC context for resource resolution.
+		/// </summary>
+		internal static AssemblyLoadContext CurrentResolutionAlc => _currentResolutionAlc;
+
 		/// <summary>
 		/// The master system resources dictionary.
 		/// </summary>
@@ -37,6 +54,15 @@ namespace Uno.UI
 		/// This is used by hot reload (since converting the file path to a Source is impractical at runtime).
 		/// </summary>
 		private static readonly Dictionary<string, Func<ResourceDictionary>> _registeredDictionariesByFilepath = new Dictionary<string, Func<ResourceDictionary>>(StringComparer.OrdinalIgnoreCase);
+
+		/// <summary>
+		/// ALC-scoped resource dictionary registrations. Used to isolate resource dictionaries
+		/// loaded from secondary AssemblyLoadContexts from those in the default ALC.
+		/// </summary>
+		private static readonly ConditionalWeakTable<System.Runtime.Loader.AssemblyLoadContext, Dictionary<string, Func<ResourceDictionary>>>
+			_registeredDictionariesByUriByAlc = [];
+
+		private static readonly object _alcDictionariesLock = new();
 
 		private static int _assemblyRef = -1;
 
@@ -422,6 +448,23 @@ namespace Uno.UI
 		internal static bool TryTopLevelRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value)
 		{
 			value = null;
+
+			// When secondary ALCs are active, check the secondary ALC's Application.Resources first
+			if (Application.HasSecondaryApps
+				&& context is XamlParseContext parseContext
+				&& parseContext.AssemblyLoadContext is { } alc)
+			{
+				var alcApp = Application.GetForAssemblyLoadContext(alc);
+				if (alcApp is not null && alcApp != Application.Current)
+				{
+					if (alcApp.Resources.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
+					{
+						return true;
+					}
+				}
+			}
+
+			// Fall through to host app resources (also the only path when context is null or no secondary ALCs)
 			return (Application.Current?.Resources.TryGetValue(resourceKey, out value, shouldCheckSystem: false) ?? false)
 				|| TryAssemblyResourceRetrieval(resourceKey, context, out value)
 				|| TrySystemResourceRetrieval(resourceKey, out value);
@@ -566,6 +609,43 @@ namespace Uno.UI
 		}
 
 		/// <summary>
+		/// Register a dictionary for a given source with ALC awareness.
+		/// When called from a non-default AssemblyLoadContext, the registration is scoped to that ALC.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void RegisterResourceDictionaryBySource(
+			string uri,
+			XamlParseContext context,
+			Func<ResourceDictionary> dictionary,
+			string filePath,
+			System.Runtime.Loader.AssemblyLoadContext alc)
+		{
+			// Always register in the ALC-scoped registry for non-default ALCs,
+			// regardless of HasSecondaryApps. The flag may not be set yet at
+			// registration time (it's set when Application.Start runs), but
+			// registration happens earlier during GlobalStaticResources.Initialize.
+			if (alc is not null && alc != System.Runtime.Loader.AssemblyLoadContext.Default)
+			{
+				lock (_alcDictionariesLock)
+				{
+					if (!_registeredDictionariesByUriByAlc.TryGetValue(alc, out var alcDict))
+					{
+						alcDict = new Dictionary<string, Func<ResourceDictionary>>(StringComparer.OrdinalIgnoreCase);
+						_registeredDictionariesByUriByAlc.Add(alc, alcDict);
+					}
+					alcDict[uri] = dictionary;
+				}
+
+				// Note: For non-default ALCs, we don't register by filepath for hot reload
+				// as hot reload is typically used in the main application context.
+				return;
+			}
+
+			// Default ALC - use existing global registration
+			RegisterResourceDictionaryBySource(uri, context, dictionary, filePath);
+		}
+
+		/// <summary>
 		/// Retrieve the ResourceDictionary mapping to a given source. Throws an exception if none is found.
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
@@ -576,6 +656,13 @@ namespace Uno.UI
 				throw new ArgumentNullException(nameof(source));
 			}
 
+			// Only do the expensive ALC lookup if we know secondary ALCs have registered resources
+			if (Application.HasSecondaryApps)
+			{
+				var callingAlc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(Assembly.GetCallingAssembly());
+				return RetrieveDictionaryForSource(source.AbsoluteUri, currentAbsolutePath: null, callingAlc);
+			}
+
 			return RetrieveDictionaryForSource(source.AbsoluteUri, currentAbsolutePath: null);
 		}
 
@@ -583,6 +670,7 @@ namespace Uno.UI
 		/// Retrieve the ResourceDictionary mapping to a given source. Throws an exception if none is found.
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
 		public static ResourceDictionary RetrieveDictionaryForSource(string source, string currentAbsolutePath)
 		{
 			if (source == null)
@@ -596,9 +684,111 @@ namespace Uno.UI
 				// If we don't have an absolute path it must be a local resource reference
 				source = XamlFilePathHelper.LocalResourcePrefix + XamlFilePathHelper.ResolveAbsoluteSource(currentAbsolutePath, source);
 			}
+
+			// When secondary ALCs are active, check the ALC-scoped registry first.
+			// Use the ambient context if set, otherwise fall back to detecting the
+			// calling assembly's ALC (for code compiled with older source generators
+			// that don't wrap resource building with SetResolutionContext).
+			if (Application.HasSecondaryApps)
+			{
+				var alc = _currentResolutionAlc
+					?? AssemblyLoadContext.GetLoadContext(Assembly.GetCallingAssembly());
+
+				if (alc is not null && alc != AssemblyLoadContext.Default)
+				{
+					lock (_alcDictionariesLock)
+					{
+						if (_registeredDictionariesByUriByAlc.TryGetValue(alc, out var alcDict) &&
+							alcDict.TryGetValue(source, out var alcFactory))
+						{
+							return alcFactory();
+						}
+					}
+				}
+			}
+
 			if (_registeredDictionariesByUri.TryGetValue(source, out var factory))
 			{
 				return factory();
+			}
+
+			// Last-resort fallback: when the ALC context couldn't be determined
+			// (e.g., older generators without SetResolutionContext, JIT inlining
+			// causing GetCallingAssembly to return a default-ALC assembly, or
+			// indirect calls from Uno.UI framework code), search all ALC-scoped
+			// registries. This handles the common single-secondary-ALC case.
+			if (Application.HasSecondaryApps)
+			{
+				lock (_alcDictionariesLock)
+				{
+					foreach (var kvp in _registeredDictionariesByUriByAlc)
+					{
+						if (kvp.Value.TryGetValue(source, out var alcFallbackFactory))
+						{
+							return alcFallbackFactory();
+						}
+					}
+				}
+			}
+
+			throw new InvalidOperationException($"Cannot locate resource from '{source}'");
+		}
+
+		/// <summary>
+		/// Retrieve the ResourceDictionary mapping to a given source with ALC awareness.
+		/// Checks the ALC-scoped registry first for non-default ALCs, then falls back to global registry.
+		/// </summary>
+		internal static ResourceDictionary RetrieveDictionaryForSource(
+			string source,
+			string currentAbsolutePath,
+			System.Runtime.Loader.AssemblyLoadContext callingAlc)
+		{
+			if (source is null)
+			{
+				// Null is unusual but valid in this context
+				return new ResourceDictionary();
+			}
+
+			if (!XamlFilePathHelper.IsAbsolutePath(source))
+			{
+				// If we don't have an absolute path it must be a local resource reference
+				source = XamlFilePathHelper.LocalResourcePrefix + XamlFilePathHelper.ResolveAbsoluteSource(currentAbsolutePath, source);
+			}
+
+			// Try ALC-specific registry first (for non-default ALCs)
+			if (callingAlc is not null && callingAlc != AssemblyLoadContext.Default)
+			{
+				lock (_alcDictionariesLock)
+				{
+					if (_registeredDictionariesByUriByAlc.TryGetValue(callingAlc, out var alcDict) &&
+						alcDict.TryGetValue(source, out var alcFactory))
+					{
+						return alcFactory();
+					}
+				}
+			}
+
+			// Fall back to global (default ALC) registry
+			if (_registeredDictionariesByUri.TryGetValue(source, out var factory))
+			{
+				return factory();
+			}
+
+			// Last-resort fallback: when callingAlc was Default (e.g., ambient context
+			// wasn't set and caller fell back to Default) but the resource is only in
+			// an ALC-scoped registry, search all ALC registries.
+			if (Application.HasSecondaryApps)
+			{
+				lock (_alcDictionariesLock)
+				{
+					foreach (var kvp in _registeredDictionariesByUriByAlc)
+					{
+						if (kvp.Value.TryGetValue(source, out var alcFallbackFactory))
+						{
+							return alcFallbackFactory();
+						}
+					}
+				}
 			}
 
 			throw new InvalidOperationException($"Cannot locate resource from '{source}'");
@@ -661,8 +851,30 @@ namespace Uno.UI
 			=> ResourceDictionary.GetStaticResourceAliasPassthrough(resourceKey, parseContext as XamlParseContext);
 
 		internal static void UpdateSystemThemeBindings(ResourceUpdateReason updateReason) => MasterDictionary.UpdateThemeBindings(updateReason);
+
+		/// <summary>
+		/// Sets the ambient ALC context for resource resolution and returns an <see cref="IDisposable"/>
+		/// that restores the previous context when disposed.
+		/// </summary>
+		/// <param name="alc">The <see cref="AssemblyLoadContext"/> to use for resource resolution.</param>
+		/// <returns>An <see cref="IDisposable"/> that restores the previous ALC context.</returns>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static IDisposable SetResolutionContext(AssemblyLoadContext alc)
+		{
+			var previous = _currentResolutionAlc;
+			_currentResolutionAlc = alc;
+			return new ResolutionContextScope(previous);
+		}
+
+		private sealed class ResolutionContextScope : IDisposable
+		{
+			private readonly AssemblyLoadContext _previous;
+
+			public ResolutionContextScope(AssemblyLoadContext previous)
+				=> _previous = previous;
+
+			public void Dispose()
+				=> _currentResolutionAlc = _previous;
+		}
 	}
-
-
-
 }

@@ -61,6 +61,23 @@ namespace Microsoft.UI.Xaml
 		private static readonly ConditionalWeakTable<AssemblyLoadContext, Application> _applicationsByAlc = new();
 		private static readonly object _applicationsByAlcSync = new();
 		private static Application _current;
+		private static bool _hasSecondaryApps;
+
+		/// <summary>
+		/// Indicates whether the application has secondary Application instances running
+		/// in separate AssemblyLoadContexts. When true, resource resolution will use
+		/// ALC-aware lookup to ensure resources are resolved from the correct ALC.
+		/// </summary>
+		/// <remarks>
+		/// This property must be set to true by the host application before loading any secondary ALCs
+		/// to ensure ALC-aware resource registration works correctly. It is also automatically set
+		/// when secondary ALC Application instances are registered via <see cref="RegisterApplication"/>.
+		/// </remarks>
+		internal static bool HasSecondaryApps
+		{
+			get => _hasSecondaryApps;
+			set => _hasSecondaryApps = value;
+		}
 
 		private bool _initializationComplete;
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
@@ -138,6 +155,7 @@ namespace Microsoft.UI.Xaml
 				// same ALC bootstraps multiple Application instances (e.g., AlcApp runtime tests).
 				_applicationsByAlc.Remove(alc);
 				_applicationsByAlc.Add(alc, app);
+				_hasSecondaryApps = true;
 			}
 		}
 

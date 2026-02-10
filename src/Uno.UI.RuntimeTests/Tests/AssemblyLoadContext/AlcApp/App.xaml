@@ -6,7 +6,8 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
-                <ResourceDictionary Source="ms-appx:///AppResources.xaml" />
+                <ResourceDictionary Source="ms-appx:///AlcAppResources.xaml" />
+                <ResourceDictionary Source="ms-appx:///Styles/CustomColors.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

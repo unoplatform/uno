@@ -156,9 +156,8 @@ Add tests to `Uno.UI.RuntimeTests`. Key helpers:
 
 **Run tests headlessly:**
 ```bash
-dotnet build src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -f net10.0
-cd src/SamplesApp/SamplesApp.Skia.Generic/bin/Release/net10.0
-dotnet SamplesApp.Skia.Generic.dll --runtime-tests=test-results.xml
+cd src
+dotnet run --project SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -f net10.0 -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true -- --runtime-tests=test-results.xml
 ```
 
 See `.github/agents/runtime-tests-agent.md` for detailed patterns.

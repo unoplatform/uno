@@ -22,5 +22,7 @@ namespace Uno.UI.Xaml
 		// ***************************************
 
 		public string AssemblyName { get; set; }
+
+		public System.Runtime.Loader.AssemblyLoadContext AssemblyLoadContext { get; set; }
 	}
 }

@@ -98,6 +98,75 @@ public class Given_AlcContentHost
 			"TestAccentBrush should have the expected color");
 	}
 
+	/// <summary>
+	/// Validates that ResourceDictionary.Source in App.xaml correctly resolves to the ALC-specific
+	/// dictionary when loaded from a secondary AssemblyLoadContext. This tests the fix for the issue
+	/// where both primary and secondary ALCs with the same resource URI pattern (e.g.,
+	/// &lt;ResourceDictionary Source="AppResources.xaml"/&gt;) would resolve to the primary ALC's dictionary.
+	/// </summary>
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_AlcAppXaml_HasSourceDictionary_Then_ResolvesToAlcSpecificDictionary()
+	{
+		var contentHost = await StartSecondaryAlcAppAsync();
+
+		// Verify the AlcApp-specific identifier resource is accessible
+		// This resource is defined in AlcApp/AppResources.xaml which is included via
+		// <ResourceDictionary Source="ms-appx:///AppResources.xaml" /> in AlcApp/App.xaml
+		var mergedDictionary = contentHost.Resources.MergedDictionaries
+			.FirstOrDefault(dict => dict.ContainsKey("AlcAppIdentifier"));
+		Assert.IsNotNull(mergedDictionary,
+			"AlcAppIdentifier should be found in merged dictionaries loaded via Source attribute");
+
+		var identifier = mergedDictionary!["AlcAppIdentifier"] as string;
+		Assert.AreEqual("Uno.UI.RuntimeTests.AlcApp", identifier,
+			"AlcAppIdentifier should have the expected value from the AlcApp's AppResources.xaml");
+
+		// Verify the AlcApp-specific brush is accessible and has the correct color
+		Assert.IsTrue(mergedDictionary.ContainsKey("AlcAppSpecificBrush"),
+			"AlcAppSpecificBrush should be found in merged dictionaries loaded via Source attribute");
+
+		var alcBrush = mergedDictionary["AlcAppSpecificBrush"] as SolidColorBrush;
+		Assert.IsNotNull(alcBrush, "AlcAppSpecificBrush should be a SolidColorBrush");
+		Assert.AreEqual(Windows.UI.Color.FromArgb(0xFF, 0x00, 0xAA, 0x55), alcBrush!.Color,
+			"AlcAppSpecificBrush should have the color defined in AlcApp's AppResources.xaml (#FF00AA55)");
+	}
+
+	/// <summary>
+	/// Validates that a ResourceDictionary.Source referencing a file in a subdirectory
+	/// (e.g., "ms-appx:///Styles/CustomColors.xaml") correctly resolves when loaded from a
+	/// secondary AssemblyLoadContext. This tests the ambient ALC context fix where the
+	/// fallback path in RetrieveDictionaryForSource(string, string) now checks the
+	/// ALC-scoped registry via ResourceResolver.CurrentResolutionAlc.
+	/// </summary>
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_AlcAppXaml_HasSubdirectorySourceDictionary_Then_ResolvesCorrectly()
+	{
+		var contentHost = await StartSecondaryAlcAppAsync();
+
+		// Find the merged dictionary that contains the subdirectory resource identifier.
+		// This resource is defined in AlcApp/Styles/CustomColors.xaml which is included via
+		// <ResourceDictionary Source="ms-appx:///Styles/CustomColors.xaml" /> in AlcApp/App.xaml
+		var mergedDictionary = contentHost.Resources.MergedDictionaries
+			.FirstOrDefault(dict => dict.ContainsKey("SubdirResourceIdentifier"));
+		Assert.IsNotNull(mergedDictionary,
+			"SubdirResourceIdentifier should be found in merged dictionaries loaded via subdirectory Source attribute");
+
+		var identifier = mergedDictionary!["SubdirResourceIdentifier"] as string;
+		Assert.AreEqual("AlcApp.Styles.CustomColors", identifier,
+			"SubdirResourceIdentifier should have the expected value from the AlcApp's Styles/CustomColors.xaml");
+
+		// Verify the subdirectory brush is accessible and has the correct color
+		Assert.IsTrue(mergedDictionary.ContainsKey("SubdirCustomBrush"),
+			"SubdirCustomBrush should be found in merged dictionaries loaded via subdirectory Source attribute");
+
+		var subdirBrush = mergedDictionary["SubdirCustomBrush"] as SolidColorBrush;
+		Assert.IsNotNull(subdirBrush, "SubdirCustomBrush should be a SolidColorBrush");
+		Assert.AreEqual(Windows.UI.Color.FromArgb(0xFF, 0x33, 0x99, 0xFF), subdirBrush!.Color,
+			"SubdirCustomBrush should have the color defined in AlcApp's Styles/CustomColors.xaml (#FF3399FF)");
+	}
+
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
 	public async Task When_AlcWindow_Activate_Then_ActivatedEventRaised()
@@ -537,6 +606,9 @@ public class Given_AlcContentHost
 
 		var appType = alcAppAssembly.GetType("AlcTestApp.App");
 		Assert.IsNotNull(appType, "App type should be found in AlcApp assembly");
+
+		// Enable ALC-aware resource resolution before loading the secondary app
+		Application.HasSecondaryApps = true;
 
 		_contentHost = new AlcContentHost();
 		WindowHelper.ContentHostOverride = _contentHost;

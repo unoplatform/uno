@@ -112,6 +112,7 @@
 		<CompilerVisibleProperty Include="XamlGeneratorAnalyzerSuppressionsProperty" />
 		<CompilerVisibleProperty Include="UnoEnableXamlFuzzyMatching" />
 		<CompilerVisibleProperty Include="UnoXamlResourcesTrimming"/>
+		<CompilerVisibleProperty Include="UnoEnableAlcAppSupport"/>
 		<CompilerVisibleProperty Include="BaseIntermediateOutputPath"/>
 		<CompilerVisibleProperty Include="AssemblyName"/>
 

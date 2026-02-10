@@ -5,6 +5,9 @@
 		<TargetFramework>net10.0</TargetFramework>
 		<Nullable>enable</Nullable>
 
+		<!-- Enable ALC-aware code generation for secondary ALC support -->
+		<UnoEnableAlcAppSupport>true</UnoEnableAlcAppSupport>
+
 		<!-- in-solution build -->
 		<_UnoBaseReferenceBinPath Condition="exists('$(MSBuildThisFileDirectory)../../../../SamplesApp')">$(MSBuildThisFileDirectory)../../../../SamplesApp/SamplesApp.Skia.Generic/bin/$(Configuration)/$(TargetFramework)</_UnoBaseReferenceBinPath>
 
