@@ -213,6 +213,10 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		}
 	}
 
+	internal void SyncSelectionToTextBox(int start, int length)
+	{
+	}
+
 	internal void ProcessNativeTextInput(string? text)
 	{
 		if (_owner?.TextBox is { } textBox)
@@ -255,14 +259,15 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 				var textBox = _textBoxView?.Owner?.TextBox;
 				var rect = textBox?.GetAbsoluteBoundsRect();
 				var physical = rect?.LogicalToPhysicalPixels();
-
+				var width = physical?.Width ?? 10;
+				var height = physical?.Height ?? 10;
 				// Push the overlay native view out of the visible view - this way
 				// the blue typing suggestion overlay will not be shown to the user.
 				nativeView.Frame = new CoreGraphics.CGRect(
-					-2000,
-					-2000,
-					physical?.Width ?? 10,
-					physical?.Height ?? 10);
+					-1000 - width,
+					-1000 - height,
+					width,
+					height);
 			}
 		}
 	}
