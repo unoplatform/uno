@@ -53,10 +53,6 @@ namespace SkiaSharpExample
 					{
 						global::Uno.Foundation.Extensibility.ApiExtensibility.Register<Microsoft.Web.WebView2.Core.CoreWebView2>(typeof(Microsoft.Web.WebView2.Core.INativeWebViewProvider), o => new global::Uno.UI.WebView.Skia.X11.X11NativeWebViewProvider(o));
 					}
-
-#if !RUNTIME_NATIVE_AOT
-					global::Uno.Foundation.Extensibility.ApiExtensibility.Register(typeof(Microsoft.UI.Xaml.Documents.ISpellCheckingService), o => new global::Uno.WinUI.SpellChecking.SpellCheckingService(o));
-#endif
 				})
 				.UseX11(hostBuilder => hostBuilder.PreloadMediaPlayer(true))
 				.UseWin32(hostBuilder => hostBuilder.PreloadMediaPlayer(true))

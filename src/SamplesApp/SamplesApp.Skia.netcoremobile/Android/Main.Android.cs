@@ -119,7 +119,6 @@ namespace SamplesApp.Droid
 			ApiExtensibility.Register(typeof(IStoreContextExtension), o => new global::Uno.UI.GooglePlay.StoreContextExtension(o));
 			ApiExtensibility.Register(typeof(INativeHingeAngleSensor), o => new FoldableHingeAngleSensor(o));
 			ApiExtensibility.Register(typeof(IApplicationViewSpanningRects), o => new FoldableApplicationViewSpanningRects(o));
-			ApiExtensibility.Register(typeof(Microsoft.UI.Xaml.Documents.ISpellCheckingService), o => new Uno.WinUI.SpellChecking.SpellCheckingService(o));
 		}
 	}
 }
