@@ -44,7 +44,7 @@ namespace Microsoft.UI.Xaml.Media
 					}
 					else if (segment is PolyBezierSegment polyBezierSegment)
 					{
-						for (var i = 0; i < polyBezierSegment.Points.Count; i += 3)
+						for (var i = 0; i < polyBezierSegment.Points.Count - 2; i += 3)
 						{
 							path.CubicTo(
 								 (float)polyBezierSegment.Points[i].X, (float)polyBezierSegment.Points[i].Y,
@@ -60,7 +60,7 @@ namespace Microsoft.UI.Xaml.Media
 					}
 					else if (segment is PolyQuadraticBezierSegment polyQuadraticBezierSegment)
 					{
-						for (var i = 0; i < polyQuadraticBezierSegment.Points.Count; i += 2)
+						for (var i = 0; i < polyQuadraticBezierSegment.Points.Count - 1; i += 2)
 						{
 							path.QuadTo(
 								 (float)polyQuadraticBezierSegment.Points[i].X, (float)polyQuadraticBezierSegment.Points[i].Y,
