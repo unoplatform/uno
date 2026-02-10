@@ -151,6 +151,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnIsCheckedChanged(bool oldValue, bool newValue)
 		{
+			//TODO (DOTI): GetAutomationPeer is not availabe on all platforms
+#if __SKIA__
 			UpdateVisualState();
 
 			var bAutomationListener = AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged);
@@ -165,6 +167,7 @@ namespace Microsoft.UI.Xaml.Controls
 					spToggleButtonAutomationPeer.RaisePropertyChangedEvent(oldValue, newValue);
 				}
 			}
+#endif
 		}
 
 		// Create ToggleMenuFlyoutItemAutomationPeer to represent the 

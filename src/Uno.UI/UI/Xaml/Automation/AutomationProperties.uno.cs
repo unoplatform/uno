@@ -16,26 +16,26 @@ public sealed partial class AutomationProperties
 			view.AccessibilityIdentifier = (string)args.NewValue;
 		}
 #elif __ANDROID__
-			if (FrameworkElementHelper.IsUiAutomationMappingEnabled && dependencyObject is AView view)
-			{
-				view.ContentDescription = (string)args.NewValue;
-			}
+		if (FrameworkElementHelper.IsUiAutomationMappingEnabled && dependencyObject is AView view)
+		{
+			view.ContentDescription = (string)args.NewValue;
+		}
 #elif __WASM__
-			if (dependencyObject is UIElement uiElement)
+		if (dependencyObject is UIElement uiElement)
+		{
+			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
 			{
-				if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
-				{
-					uiElement.SetAttribute("xamlautomationid", (string)args.NewValue);
-				}
-
-				var role = FindHtmlRole(uiElement);
-				if (role != null)
-				{
-					uiElement.SetAttribute(
-						("aria-label", (string)args.NewValue),
-						("role", role));
-				}
+				uiElement.SetAttribute("xamlautomationid", (string)args.NewValue);
 			}
+
+			var role = FindHtmlRole(uiElement);
+			if (role != null)
+			{
+				uiElement.SetAttribute(
+					("aria-label", (string)args.NewValue),
+					("role", role));
+			}
+		}
 #endif
 	}
 

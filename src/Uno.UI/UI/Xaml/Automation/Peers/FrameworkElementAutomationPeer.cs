@@ -268,10 +268,13 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 			return simpleAccessibilityName;
 		}
 
+		// TODO (DOTI): GetAccessibilityInnerText() doesn't seem to be supported on some platforms
+#if __SKIA__
 		if ((Owner as FrameworkElement)?.GetAccessibilityInnerText() is string innerText && !string.IsNullOrEmpty(innerText))
 		{
 			return innerText;
 		}
+#endif
 
 		return base.GetNameCore();
 	}
