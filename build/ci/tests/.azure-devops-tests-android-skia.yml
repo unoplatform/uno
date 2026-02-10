@@ -135,7 +135,9 @@ jobs:
     inputs:
       testRunTitle: 'Android Skia Runtime Tests $(UITEST_RUNTIME_TEST_GROUP)'
       testResultsFormat: 'NUnit'
-      testResultsFiles: '$(build.sourcesdirectory)/build/*TestResult*.xml'
+      testResultsFiles: |
+        $(build.sourcesdirectory)/build/*TestResult*.xml
+        $(build.sourcesdirectory)/build/runtime-heartbeat-*.xml
       failTaskOnFailedTests: true
 
   - task: PublishBuildArtifacts@1

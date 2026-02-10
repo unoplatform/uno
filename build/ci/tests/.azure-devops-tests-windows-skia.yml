@@ -112,7 +112,9 @@ jobs:
     inputs:
       testRunTitle: 'Windows Skia Runtime Tests'
       testResultsFormat: 'NUnit'
-      testResultsFiles: '$(build.sourcesdirectory)/build/skia-windows-runtime-tests-results.xml'
+      testResultsFiles: |
+        $(build.sourcesdirectory)/build/skia-windows-runtime-tests-results.xml
+        $(build.sourcesdirectory)/build/runtime-heartbeat-*.xml
       failTaskOnFailedTests: true
       failTaskOnMissingResultsFile: true
 

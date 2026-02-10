@@ -151,7 +151,9 @@ jobs:
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testResultsFiles: '$(build.sourcesdirectory)/build/RuntimeTestResults*.xml'
+      testResultsFiles: |
+        $(build.sourcesdirectory)/build/RuntimeTestResults*.xml
+        $(build.sourcesdirectory)/build/runtime-heartbeat-*.xml
       testRunTitle: ${{ parameters.TestRunName }}
       testResultsFormat: 'NUnit'
       failTaskOnFailedTests: true

@@ -4,6 +4,30 @@ set -euo pipefail
 # echo commands
 set -x
 
+escape_for_xml() {
+	printf '%s' "$1" | tr '\r\n' ' ' | \
+		sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g' -e 's/"/\&quot;/g' -e "s/'/\&apos;/g"
+}
+
+write_heartbeat_xml() {
+	local output_path="$1"
+	local message="$2"
+	local escaped_message
+	escaped_message=$(escape_for_xml "$message")
+	cat > "$output_path" <<EOF
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="0" name="RuntimeHeartbeat" testcasecount="1" result="Skipped" total="1" passed="0" failed="0" skipped="1" inconclusive="0" duration="0">
+  <test-suite type="Assembly" name="RuntimeHeartbeat" result="Skipped" total="1" passed="0" failed="0" skipped="1" inconclusive="0" duration="0">
+    <test-case id="0-0" name="LastHeartbeat" result="Skipped" duration="0">
+      <reason>
+        <message>${escaped_message}</message>
+      </reason>
+    </test-case>
+  </test-suite>
+</test-run>
+EOF
+}
+
 export UITEST_IS_LOCAL=${UITEST_IS_LOCAL=false}
 export UNO_UITEST_APP_ID="${UNO_UITEST_APP_ID=uno.platform.samplesapp.skia}"
 export UNO_UITEST_ANDROIDAPK_PATH=$BUILD_SOURCESDIRECTORY/build/$SAMPLEAPP_ARTIFACT_NAME/android/$UNO_UITEST_APP_ID-Signed.apk
@@ -189,15 +213,20 @@ $ANDROID_HOME/platform-tools/adb pull $UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_PA
 
 RUNTIME_CURRENT_TEST_LOCAL="$BUILD_SOURCESDIRECTORY/build/runtime-current-test-skia-android-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME-$UITEST_RUNTIME_TEST_GROUP.txt"
 $ANDROID_HOME/platform-tools/adb pull $UITEST_RUNTIME_CURRENT_TEST_DEVICE_PATH $RUNTIME_CURRENT_TEST_LOCAL || true
+HEARTBEAT_MESSAGE="No runtime test heartbeat file found."
 if [ -f "$RUNTIME_CURRENT_TEST_LOCAL" ]; then
 	if command -v iconv >/dev/null 2>&1; then
-		echo "Last runtime test heartbeat: $(iconv -f utf-16 -t utf-8 "$RUNTIME_CURRENT_TEST_LOCAL")"
+		HEARTBEAT_MESSAGE="$(iconv -f utf-16 -t utf-8 "$RUNTIME_CURRENT_TEST_LOCAL")"
 	else
-		echo "Last runtime test heartbeat: $(cat "$RUNTIME_CURRENT_TEST_LOCAL")"
+		HEARTBEAT_MESSAGE="$(cat "$RUNTIME_CURRENT_TEST_LOCAL")"
 	fi
+	echo "Last runtime test heartbeat: $HEARTBEAT_MESSAGE"
 else
 	echo "No runtime test heartbeat file found."
 fi
+
+HEARTBEAT_XML_PATH="$BUILD_SOURCESDIRECTORY/build/runtime-heartbeat-skia-android-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME-$UITEST_RUNTIME_TEST_GROUP.xml"
+write_heartbeat_xml "$HEARTBEAT_XML_PATH" "$HEARTBEAT_MESSAGE"
 
 ## Dump the emulator's system log
 $ANDROID_HOME/platform-tools/adb shell logcat -d > $LOGS_PATH/android-device-log-$UNO_UITEST_BUCKET_ID-$UITEST_RUNTIME_TEST_GROUP-$UITEST_TEST_MODE_NAME.txt

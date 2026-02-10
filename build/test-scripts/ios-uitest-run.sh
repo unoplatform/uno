@@ -6,6 +6,30 @@ IFS=$'\n\t'
 # (the BOM only breaks the shebang at exec time, but this is a safety net).
 sed -i '' $'1s/^\xEF\xBB\xBF//' "$0"
 
+escape_for_xml() {
+	printf '%s' "$1" | tr '\r\n' ' ' | \
+		sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g' -e 's/"/\&quot;/g' -e "s/'/\&apos;/g"
+}
+
+write_heartbeat_xml() {
+	local output_path="$1"
+	local message="$2"
+	local escaped_message
+	escaped_message=$(escape_for_xml "$message")
+	cat > "$output_path" <<EOF
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="0" name="RuntimeHeartbeat" testcasecount="1" result="Skipped" total="1" passed="0" failed="0" skipped="1" inconclusive="0" duration="0">
+  <test-suite type="Assembly" name="RuntimeHeartbeat" result="Skipped" total="1" passed="0" failed="0" skipped="1" inconclusive="0" duration="0">
+    <test-case id="0-0" name="LastHeartbeat" result="Skipped" duration="0">
+      <reason>
+        <message>${escaped_message}</message>
+      </reason>
+    </test-case>
+  </test-suite>
+</test-run>
+EOF
+}
+
 if [ "$UITEST_SNAPSHOTS_ONLY" == 'true' ];
 then
 	export SCREENSHOTS_FOLDERNAME=ios-Snap
@@ -278,28 +302,35 @@ then
 		cp -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" "$UNO_ORIGINAL_TEST_RESULTS"
 		
 		RUNTIME_CURRENT_TEST_LOCAL="$BUILD_SOURCESDIRECTORY/build/runtime-current-test-ios-$UITEST_RUNTIME_TEST_GROUP.txt"
+		HEARTBEAT_MESSAGE="No runtime test heartbeat file found."
 		if [ -f "$SIMCTL_CHILD_UITEST_RUNTIME_CURRENT_TEST_FILE" ]; then
 			cp -f "$SIMCTL_CHILD_UITEST_RUNTIME_CURRENT_TEST_FILE" "$RUNTIME_CURRENT_TEST_LOCAL"
 			if command -v iconv >/dev/null 2>&1; then
-				echo "Last runtime test heartbeat: $(iconv -f utf-16 -t utf-8 "$RUNTIME_CURRENT_TEST_LOCAL")"
+				HEARTBEAT_MESSAGE="$(iconv -f utf-16 -t utf-8 "$RUNTIME_CURRENT_TEST_LOCAL")"
 			else
-				echo "Last runtime test heartbeat: $(cat "$RUNTIME_CURRENT_TEST_LOCAL")"
+				HEARTBEAT_MESSAGE="$(cat "$RUNTIME_CURRENT_TEST_LOCAL")"
 			fi
+			echo "Last runtime test heartbeat: $HEARTBEAT_MESSAGE"
 		else
 			echo "No runtime test heartbeat file found."
 		fi
 	else
 		echo "The file $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE is not available, the test run has timed out."
+		HEARTBEAT_MESSAGE="No runtime test heartbeat file found."
 		if [ -f "$SIMCTL_CHILD_UITEST_RUNTIME_CURRENT_TEST_FILE" ]; then
 			if command -v iconv >/dev/null 2>&1; then
-				echo "Last runtime test heartbeat: $(iconv -f utf-16 -t utf-8 "$SIMCTL_CHILD_UITEST_RUNTIME_CURRENT_TEST_FILE")"
+				HEARTBEAT_MESSAGE="$(iconv -f utf-16 -t utf-8 "$SIMCTL_CHILD_UITEST_RUNTIME_CURRENT_TEST_FILE")"
 			else
-				echo "Last runtime test heartbeat: $(cat "$SIMCTL_CHILD_UITEST_RUNTIME_CURRENT_TEST_FILE")"
+				HEARTBEAT_MESSAGE="$(cat "$SIMCTL_CHILD_UITEST_RUNTIME_CURRENT_TEST_FILE")"
 			fi
+			echo "Last runtime test heartbeat: $HEARTBEAT_MESSAGE"
 		else
 			echo "No runtime test heartbeat file found."
 		fi
 	fi
+
+	HEARTBEAT_XML_PATH="$BUILD_SOURCESDIRECTORY/build/runtime-heartbeat-ios-$UITEST_RUNTIME_TEST_GROUP.xml"
+	write_heartbeat_xml "$HEARTBEAT_XML_PATH" "$HEARTBEAT_MESSAGE"
 
 else
 
