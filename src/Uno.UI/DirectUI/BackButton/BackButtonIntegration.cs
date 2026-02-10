@@ -30,6 +30,8 @@ internal static class BackButtonIntegration
 			return;
 		}
 
+		bool removedDeadRefs = false;
+
 		// Notify all registered listeners of the back button press event
 		foreach (var weakListener in _listeners.ToArray())
 		{
@@ -47,7 +49,13 @@ internal static class BackButtonIntegration
 				// Remove dead references
 				_listeners.Remove(weakListener);
 				WeakReferencePool.ReturnWeakReference(_listeners, weakListener);
+				removedDeadRefs = true;
 			}
+		}
+
+		if (removedDeadRefs && _listeners.Count == 0)
+		{
+			SystemNavigationManager.Instance.SetHasInternalBackListeners(false);
 		}
 	}
 
@@ -69,8 +77,14 @@ internal static class BackButtonIntegration
 			return;
 		}
 
+		var isFirst = _listeners.Count == 0;
 		var weakListener = WeakReferencePool.RentWeakReference(_listeners, listener);
 		_listeners.Add(weakListener);
+
+		if (isFirst)
+		{
+			SystemNavigationManager.Instance.SetHasInternalBackListeners(true);
+		}
 	}
 
 	public static void UnregisterListener(IBackButtonListener listener)
@@ -85,6 +99,11 @@ internal static class BackButtonIntegration
 		{
 			_listeners.Remove(weakListener);
 			WeakReferencePool.ReturnWeakReference(_listeners, weakListener);
+
+			if (_listeners.Count == 0)
+			{
+				SystemNavigationManager.Instance.SetHasInternalBackListeners(false);
+			}
 		}
 	}
 }

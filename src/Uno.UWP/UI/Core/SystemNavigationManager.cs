@@ -15,8 +15,6 @@ namespace Windows.UI.Core
 
 		internal event EventHandler<BackRequestedEventArgs> InternalBackRequested = delegate { };
 
-		public event EventHandler<BackRequestedEventArgs> BackRequested = delegate { };
-
 		private readonly object _backRequestedLock = new object();
 		private EventHandler<BackRequestedEventArgs> _backRequested;
 
@@ -38,7 +36,7 @@ namespace Windows.UI.Core
 					_backRequested += value;
 					if (isFirstSubscriber)
 					{
-						OnBackRequestedSubscribersChanged(hasSubscribers: true);
+						OnBackHandlerStateChanged();
 					}
 				}
 			}
@@ -49,7 +47,7 @@ namespace Windows.UI.Core
 					_backRequested -= value;
 					if (_backRequested is null)
 					{
-						OnBackRequestedSubscribersChanged(hasSubscribers: false);
+						OnBackHandlerStateChanged();
 					}
 				}
 			}
@@ -69,7 +67,28 @@ namespace Windows.UI.Core
 			}
 		}
 
-		partial void OnBackRequestedSubscribersChanged(bool hasSubscribers);
+		/// <summary>
+		/// Gets whether there are any internal back button listeners
+		/// (e.g. via <see cref="DirectUI.BackButtonIntegration"/>).
+		/// </summary>
+		internal bool HasInternalBackListeners { get; private set; }
+
+		/// <summary>
+		/// Gets whether there are any back handlers, either public <see cref="BackRequested"/>
+		/// subscribers or internal listeners.
+		/// </summary>
+		internal bool HasAnyBackHandlers => HasBackRequestedSubscribers || HasInternalBackListeners;
+
+		internal void SetHasInternalBackListeners(bool hasListeners)
+		{
+			if (HasInternalBackListeners != hasListeners)
+			{
+				HasInternalBackListeners = hasListeners;
+				OnBackHandlerStateChanged();
+			}
+		}
+
+		partial void OnBackHandlerStateChanged();
 
 		private AppViewBackButtonVisibility _appViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
 
@@ -104,15 +123,14 @@ namespace Windows.UI.Core
 		{
 			var args = new BackRequestedEventArgs();
 			InternalBackRequested?.Invoke(this, args);
+
 			if (!args.Handled)
 			{
-				BackRequested?.Invoke(this, args);
+				var handlers = _backRequested;
+				handlers?.Invoke(this, args);
 			}
 
-			var handlers = _backRequested;
-			handlers?.Invoke(this, args);
-
-			return _backIsAlwaysHandled && handlers is not null ? true : args.Handled;
+			return _backIsAlwaysHandled && HasAnyBackHandlers ? true : args.Handled;
 		}
 	}
 }
