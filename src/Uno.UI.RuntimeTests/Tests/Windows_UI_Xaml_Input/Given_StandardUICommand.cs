@@ -195,8 +195,8 @@ public class Given_StandardUICommand
 
 	/// <summary>
 	/// Gets the expected modifier key based on the virtual key and platform.
-	/// On macOS, iOS, and Mac Catalyst, Command key (VirtualKeyModifiers.Windows maps to Command key on Apple platforms) is used for standard shortcuts.
-	/// On other platforms, Control key is used.
+	/// On macOS, iOS, and Mac Catalyst, uses VirtualKeyModifiers.Windows (which maps to the Command key) for standard shortcuts.
+	/// On other platforms, uses Control key.
 	/// </summary>
 	private static VirtualKeyModifiers GetExpectedModifierForKey(VirtualKey virtualKey)
 	{
