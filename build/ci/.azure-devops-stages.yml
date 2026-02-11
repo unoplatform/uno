@@ -144,8 +144,7 @@ stages:
 
 - stage: ios_tests
   displayName: Tests - iOS Native
-  # condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.RequireNativeIos'], 'true')))
-  condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.RequireNativeIos'], 'true'), eq(variables['System.PullRequest.SourceBranch'], 'refs/heads/dev/agzi/enabling-ios-macos-tests'))) # Temporary: force-enable on this draft PR for CI timing.
+  # condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.RequireNativeIos'], 'true'))) # Temporary: force-enable on this draft PR for CI timing.
   dependsOn:
     - Setup
 
