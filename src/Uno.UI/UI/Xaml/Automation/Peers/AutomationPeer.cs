@@ -357,7 +357,7 @@ public partial class AutomationPeer : DependencyObject
 	/// <returns>True if the peer has keyboard focus.</returns>
 	internal bool HasKeyboardFocusHelper()
 	{
-		return HasKeyboardFocusCore();
+		return HasKeyboardFocusImpl();
 	}
 
 	/// <summary>
