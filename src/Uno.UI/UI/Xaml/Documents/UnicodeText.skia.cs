@@ -93,12 +93,30 @@ internal readonly partial struct UnicodeText : IParsedText
 	{
 		public float width { get; set; } = width;
 		public LayoutedLine line { get; set; } = line;
+
+		public int CompareTo(LayoutedLineBrokenBidiRun other)
+		{
+			return inline.StartIndex + startInInline - (other.inline.StartIndex + other.startInInline);
+		}
+
+		public static bool operator <(LayoutedLineBrokenBidiRun left, LayoutedLineBrokenBidiRun right) =>
+			left.CompareTo(right) < 0;
+
+		public static bool operator >(LayoutedLineBrokenBidiRun left, LayoutedLineBrokenBidiRun right) =>
+			left.CompareTo(right) > 0;
+
+		public static bool operator <=(LayoutedLineBrokenBidiRun left, LayoutedLineBrokenBidiRun right) =>
+			left.CompareTo(right) <= 0;
+
+		public static bool operator >=(LayoutedLineBrokenBidiRun left, LayoutedLineBrokenBidiRun right) =>
+			left.CompareTo(right) >= 0;
 	}
 	// runs are always sorted LTR even in RTL text
 	// Each line must have at least one run except the very last line.
 	private record LayoutedLine(float lineHeight, float baselineOffset, int lineIndex, float xAlignmentOffset, float y, int startInText, int endInText, List<LayoutedLineBrokenBidiRun> runs);
 	private record Cluster(int sourceTextStart, int sourceTextEnd, LayoutedLineBrokenBidiRun layoutedRun, int glyphInRunIndexStart, int glyphInRunIndexEnd);
 
+	private static readonly Brush _blackBrush = new SolidColorBrush(Colors.Black);
 	private static readonly SKPaint _spareDrawPaint = new();
 	private static readonly SKPaint _spareSpellCheckPaint = new() { Color = SKColors.Red, Style = SKPaintStyle.Stroke, IsAntialias = true };
 
@@ -927,131 +945,97 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 	}
 
-	public void Draw(in Visual.PaintingSession session, (int index, CompositionBrush brush, float thickness)? caret,
-		(int selectionStart, int selectionEnd, CompositionBrush selectedTextBackgroundBrush, Brush selectedTextForegroundBrush)? selection)
+	public void Draw(in Visual.PaintingSession session,
+		(int index, CompositionBrush brush, float thickness)? caret,
+		IEnumerable<TextHighlighter> highlighters)
 	{
-		// if selection is out of range, this means that the parent TextBlock/TextBox updated the text and the
-		// selection but a new UnicodeText instance has not been created yet. In that case, skip rendering
-		// the selection this frame and wait to be called again after measuring.
-		(int selectionIndexStart, int selectionIndexEnd, Cluster selectionClusterStart, Cluster selectionClusterEnd, CompositionBrush background, Brush foreground)? selectionDetails = null;
-		if (selection is { } s && s.selectionStart != s.selectionEnd && s.selectionStart <= _text.Length && s.selectionEnd <= _text.Length && _text.Length > 0)
+		var wholeTextSlicer = new RangeSlicer<(Cluster selectionClusterStart, Cluster? selectionClusterEnd, CompositionBrush? background, Brush foreground)>(0, _text.Length);
+		foreach (var highlighter in highlighters)
 		{
-			selectionDetails = (s.selectionStart, s.selectionEnd, _textIndexToGlyph[s.selectionStart], _textIndexToGlyph[Math.Min(_textIndexToGlyph.Length - 1, s.selectionEnd)], s.selectedTextBackgroundBrush, s.selectedTextForegroundBrush);
+			foreach (var range in highlighter.Ranges)
+			{
+				if (range.Length != 0 && range.StartIndex < _text.Length && _text.Length > 0)
+				{
+					var selectionClusterStart = _textIndexToGlyph[range.StartIndex];
+					var selectionClusterEnd = range.StartIndex + range.Length < _text.Length ? _textIndexToGlyph[range.StartIndex + range.Length] : null;
+					wholeTextSlicer.Mark(
+						selectionClusterStart.sourceTextStart,
+						selectionClusterEnd?.sourceTextStart ?? _text.Length,
+						(selectionClusterStart,
+							selectionClusterEnd,
+							highlighter.Background?.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()),
+							highlighter.Foreground ?? _blackBrush));
+				}
+			}
 		}
 
-		int lastCorrectionIndex = 0;
+		using var textBlobBuilder = new SKTextBlobBuilder();
 
 		for (var index = 0; index < _lines.Count; index++)
 		{
+			List<(SKFont skFont, SKTextBlobBuilder blobBuilder, float x, float y, ushort[] glyphs, SKPoint[] positions, Range glyphsAndPositionsRange, Brush brush)> drawCommands = new();
+			List<(SKPath path, float strokeThickness)> spellCheckUnderlines = new();
+
 			var line = _lines[index];
 			var currentLineX = line.xAlignmentOffset;
 			foreach (var run in line.runs)
 			{
-				// Ideally, we would want to get the path of the glyphs and then draw them using CompositionBrush.Paint, but this
-				// does not work for Emojis which don't have a path and instead must be drawn directly with SKCanvas.DrawText
-				// var path = new SKPath();
-				// for (var i = 0; i < run.glyphs.Length; i++)
-				// {
-				// 	var glyph = run.glyphs[i];
-				// 	var p = run.fontDetails.SKFont.GetGlyphPath((ushort)glyph.info.Codepoint);
-				// 	p.Transform(SKMatrix.CreateTranslation(glyph.xPosInRun + glyph.position.XOffset * run.fontDetails.TextScale.textScaleX, glyph.position.YOffset * run.fontDetails.TextScale.textScaleY), p);
-				// 	path.AddPath(p);
-				// }
-				// path.Transform(SKMatrix.CreateTranslation(currentLineX, line.y + line.baselineOffset), path);
-				//
-				// session.Canvas.Save();
-				// session.Canvas.ClipPath(path, antialias: true);
-				// run.inline.Foreground.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()).Paint(session.Canvas, session.Opacity, path.Bounds);
-				// session.Canvas.Restore();
-
-				using (var textBlobBuilder = new SKTextBlobBuilder())
+				var glyphs = new ushort[run.glyphs.Length];
+				var positions = new SKPoint[run.glyphs.Length];
+				for (var i = 0; i < run.glyphs.Length; i++)
 				{
-					var glyphs = new ushort[run.glyphs.Length];
-					var positions = new SKPoint[run.glyphs.Length];
-					for (var i = 0; i < run.glyphs.Length; i++)
+					var glyph = run.glyphs[i];
+					glyphs[i] = (ushort)glyph.info.Codepoint;
+					positions[i] = new SKPoint(glyph.xPosInRun + glyph.position.GlyphPosition.XOffset * run.fontDetails.TextScale.textScaleX, line.y + glyph.position.GlyphPosition.YOffset * run.fontDetails.TextScale.textScaleY);
+				}
+
+				var runSlicer = new RangeSlicer<(CompositionBrush? background, Brush foreground)>(0, run.glyphs.Length);
+				foreach (var highlighter in wholeTextSlicer.GetSegments())
+				{
+					if (highlighter.HasValue)
 					{
-						var glyph = run.glyphs[i];
-						glyphs[i] = (ushort)glyph.info.Codepoint;
-						positions[i] = new SKPoint(glyph.xPosInRun + glyph.position.GlyphPosition.XOffset * run.fontDetails.TextScale.textScaleX, line.y + glyph.position.GlyphPosition.YOffset * run.fontDetails.TextScale.textScaleY);
+						var (selectionLeft, selectionRight) = ClusterRangeToRunGlyphRange(run, highlighter.Value.selectionClusterStart, highlighter.Value.selectionClusterEnd);
+						runSlicer.Mark(selectionLeft, selectionRight, (highlighter.Value.background, highlighter.Value.foreground));
 					}
+				}
 
-					void DrawText(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<SKPoint> positions, Visual.PaintingSession session, Brush brush)
+				foreach (var slice in runSlicer.GetSegments())
+				{
+					var leftX = positions[slice.Start].X;
+					var rightX = positions[slice.End - 1].X + GlyphWidth(run.glyphs[slice.End - 1].position, run.fontDetails);
+					var selectionRect = new SKRect(currentLineX + leftX, line.y, currentLineX + rightX, line.y + line.lineHeight);
+					var (background, foreground) = slice.HasValue ? slice.Value : (null, run.inline.Foreground);
+					background?.Paint(session.Canvas, session.Opacity, selectionRect);
+					drawCommands.Add((run.fontDetails.SKFont, textBlobBuilder, currentLineX, line.baselineOffset, glyphs, positions, new Range((int)slice.Start, (int)slice.End), foreground));
+				}
+
+				var runStartIndex = run.startInInline + run.inline.StartIndex;
+				var runEndIndex = run.endInInline + run.inline.StartIndex;
+
+				if (_corrections is not null)
+				{
+					var correctionIndex = _wordBoundaries.BinarySearch(0, _corrections.Count, runStartIndex, null);
+					if (correctionIndex < 0)
 					{
-						textBlobBuilder.AddPositionedRun(glyphs, run.fontDetails.SKFont, positions);
-						var blob1 = textBlobBuilder.Build(); // Build resets the blob builder
-						var paint = SetupPaint(brush, session.Opacity);
-						session.Canvas.DrawText(blob1, currentLineX, line.baselineOffset, paint);
-					}
-
-					if (selectionDetails is { } sd && (sd.selectionClusterStart.sourceTextStart < run.endInInline + run.inline.StartIndex && (selection!.Value.selectionEnd == _text.Length || run.startInInline + run.inline.StartIndex < sd.selectionClusterEnd.sourceTextStart)))
-					{
-						int selectionLeft;
-						int selectionRight; // the selection ends to the left of positions[selectionRight].X
-						if (run.rtl)
-						{
-							selectionLeft = sd.selectionClusterEnd.layoutedRun == run && selection!.Value.selectionEnd != _text.Length ? sd.selectionClusterEnd.glyphInRunIndexEnd : 0;
-							selectionRight = sd.selectionClusterStart.layoutedRun == run ? sd.selectionClusterStart.glyphInRunIndexStart + 1 : run.glyphs.Length;
-						}
-						else
-						{
-							selectionLeft = sd.selectionClusterStart.layoutedRun == run ? sd.selectionClusterStart.glyphInRunIndexStart : 0;
-							selectionRight = sd.selectionClusterEnd.layoutedRun == run && selection!.Value.selectionEnd != _text.Length ? sd.selectionClusterEnd.glyphInRunIndexStart : run.glyphs.Length;
-						}
-
-						var leftX = positions[selectionLeft].X;
-						var rightX = positions[selectionRight - 1].X + GlyphWidth(run.glyphs[selectionRight - 1].position, run.fontDetails);
-						var selectionRect = new SKRect(currentLineX + leftX, line.y, currentLineX + rightX, line.y + line.lineHeight);
-						sd.background.Paint(session.Canvas, session.Opacity, selectionRect);
-
-						var glyphsSpan = glyphs.AsSpan();
-						var positionsSpan = positions.AsSpan();
-						if (selectionLeft > 0)
-						{
-							DrawText(glyphsSpan[..selectionLeft], positionsSpan[..selectionLeft], session, run.inline.Foreground);
-						}
-						DrawText(glyphsSpan[selectionLeft..selectionRight], positionsSpan[selectionLeft..selectionRight], session, sd.foreground);
-						if (selectionRight < run.glyphs.Length)
-						{
-							DrawText(glyphsSpan[selectionRight..], positionsSpan[selectionRight..], session, run.inline.Foreground);
-						}
+						correctionIndex = ~correctionIndex;
 					}
 					else
 					{
-						DrawText(glyphs, positions, session, run.inline.Foreground);
+						correctionIndex++;
 					}
 
-					var runStartIndex = run.startInInline + run.inline.StartIndex;
-					var runEndIndex = run.endInInline + run.inline.StartIndex;
-
-					if (_corrections is not null)
+					while (correctionIndex < _corrections.Count && (correctionIndex == 0 ? 0 : _wordBoundaries[correctionIndex - 1]) is var wordStart && wordStart < runEndIndex)
 					{
-						while (lastCorrectionIndex < _corrections.Count && _wordBoundaries[lastCorrectionIndex] <= runStartIndex)
-						{
-							lastCorrectionIndex++;
-						}
+						var correction = _corrections[correctionIndex];
 
-						while (lastCorrectionIndex < _corrections.Count && (lastCorrectionIndex == 0 ? 0 : _wordBoundaries[lastCorrectionIndex - 1]) is var wordStart && wordStart < runEndIndex)
+						if (correction is not null)
 						{
-							var correction = _corrections[lastCorrectionIndex];
+							var correctionClusterStart = _textIndexToGlyph[Math.Max(wordStart + correction.Value.correctionStart, runStartIndex)];
+							var correctionClusterEnd = wordStart + correction.Value.correctionEnd < runEndIndex ? _textIndexToGlyph[wordStart + correction.Value.correctionEnd] : null;
+							var (correctionLeft, correctionRight) = ClusterRangeToRunGlyphRange(run, correctionClusterStart, correctionClusterEnd);
 
-							if (correction is not null)
+							if (correctionLeft < correctionRight)
 							{
-								int correctionLeft;
-								int correctionRight;
-								var correctionClusterStart = _textIndexToGlyph[Math.Max(wordStart + correction.Value.correctionStart, runStartIndex)];
-								var correctionClusterEnd = _textIndexToGlyph[Math.Min(wordStart + correction.Value.correctionEnd, runEndIndex) - 1]; // -1 because the end is exclusive for boundaries but inclusive for glyph map
-
-								if (run.rtl)
-								{
-									correctionLeft = correctionClusterEnd.layoutedRun == run ? correctionClusterEnd.glyphInRunIndexEnd : 0;
-									correctionRight = correctionClusterStart.layoutedRun == run ? correctionClusterStart.glyphInRunIndexStart + 1 : run.glyphs.Length;
-								}
-								else
-								{
-									correctionLeft = correctionClusterStart.layoutedRun == run ? correctionClusterStart.glyphInRunIndexStart : 0;
-									correctionRight = correctionClusterEnd.layoutedRun == run ? correctionClusterEnd.glyphInRunIndexEnd : run.glyphs.Length; // +1 to include the last char
-								}
-
 								var leftX = positions[correctionLeft].X;
 								var rightX = positions[correctionRight - 1].X + GlyphWidth(run.glyphs[correctionRight - 1].position, run.fontDetails);
 
@@ -1061,7 +1045,7 @@ internal readonly partial struct UnicodeText : IParsedText
 								var amplitude = 2 * scale;
 								var yOffset = 2 * scale;
 
-								using var p = new SKPath();
+								var p = new SKPath();
 								var y = line.y + line.baselineOffset + yOffset;
 								p.MoveTo(currentLineX + leftX, y);
 								for (float x = currentLineX + leftX; x + step < currentLineX + rightX; x += step)
@@ -1070,16 +1054,33 @@ internal readonly partial struct UnicodeText : IParsedText
 									p.LineTo(x + step, y);
 								}
 
-								_spareSpellCheckPaint.StrokeWidth = scale;
-								session.Canvas.DrawPath(p, _spareSpellCheckPaint);
+								spellCheckUnderlines.Add((p, scale));
 							}
-
-							lastCorrectionIndex++;
 						}
-					}
 
-					currentLineX += run.width;
+						correctionIndex++;
+					}
 				}
+
+				currentLineX += run.width;
+			}
+
+			foreach (var drawCommand in drawCommands)
+			{
+				DrawText(drawCommand.skFont,
+					drawCommand.blobBuilder,
+					drawCommand.x,
+					drawCommand.y,
+					drawCommand.glyphs.AsSpan(drawCommand.glyphsAndPositionsRange),
+					drawCommand.positions.AsSpan(drawCommand.glyphsAndPositionsRange),
+					session,
+					drawCommand.brush);
+			}
+
+			foreach (var (path, strokeThickness) in spellCheckUnderlines)
+			{
+				_spareSpellCheckPaint.StrokeWidth = strokeThickness;
+				session.Canvas.DrawPath(path, _spareSpellCheckPaint);
 			}
 		}
 
@@ -1090,6 +1091,56 @@ internal readonly partial struct UnicodeText : IParsedText
 		{
 			c.brush.Paint(session.Canvas, session.Opacity, GetCaretRectForIndex(c.index, c.thickness).ToSKRect());
 		}
+	}
+
+	private static void DrawText(SKFont skFont, SKTextBlobBuilder blobBuilder, float x, float y, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<SKPoint> positions, Visual.PaintingSession session, Brush brush)
+	{
+		// Ideally, we would want to get the path of the glyphs and then draw them using CompositionBrush.Paint, but this
+		// does not work for Emojis which don't have a path and instead must be drawn directly with SKCanvas.DrawText
+		blobBuilder.AddPositionedRun(glyphs, skFont, positions);
+		var blob1 = blobBuilder.Build(); // Build resets the blob builder
+		var paint = SetupPaint(brush, session.Opacity);
+		session.Canvas.DrawText(blob1, x, y, paint);
+	}
+
+	// The range ends to the left of positions[rangeRight].X. If the range should go to the end, rangeRight == positions.Length
+	private static (int rangeLeft, int rangeRight) ClusterRangeToRunGlyphRange(LayoutedLineBrokenBidiRun run, Cluster selectionClusterStart, Cluster? selectionClusterEnd)
+	{
+		int selectionLeft;
+		int selectionRight;
+
+		if (run.rtl)
+		{
+			selectionLeft = selectionClusterEnd?.layoutedRun == run
+				? selectionClusterEnd.glyphInRunIndexEnd
+				: selectionClusterEnd is not null && selectionClusterEnd.layoutedRun < run
+					? run.glyphs.Length
+					: 0;
+			selectionRight = selectionClusterStart.layoutedRun == run
+				? selectionClusterStart.glyphInRunIndexStart + 1
+				: selectionClusterStart.layoutedRun < run
+					? run.glyphs.Length
+					: 0;
+		}
+		else
+		{
+			selectionLeft = selectionClusterStart.layoutedRun == run
+				? selectionClusterStart.glyphInRunIndexStart
+				: selectionClusterStart.layoutedRun < run
+					? 0
+					: run.glyphs.Length;
+			selectionRight = selectionClusterEnd?.layoutedRun == run
+				? selectionClusterEnd.glyphInRunIndexStart
+				: selectionClusterEnd is not null && selectionClusterEnd.layoutedRun < run
+					? 0
+					: run.glyphs.Length;
+		}
+
+		if (selectionRight < selectionLeft)
+		{
+			selectionRight = selectionLeft;
+		}
+		return (selectionLeft, selectionRight);
 	}
 
 	private static SKPaint SetupPaint(Brush foreground, float opacity)

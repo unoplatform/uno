@@ -340,7 +340,7 @@ internal readonly struct ParsedText : IParsedText
 
 	public void Draw(in Visual.PaintingSession session,
 		(int index, CompositionBrush brush, float thickness)? caret,
-		(int selectionStart, int selectionEnd, CompositionBrush selectedTextBackgroundBrush, Brush selectedTextForegroundBrush)? selection)
+		IEnumerable<TextHighlighter> highlighters)
 	{
 		if (_renderLines.Count == 0)
 		{
@@ -489,10 +489,13 @@ internal readonly struct ParsedText : IParsedText
 				// Note that carets and text decorations never occur at the same time for now (TextBox has a caret but no
 				// decorations, TextBlock doesn't have a caret), but a RichTextBox can have both, so that should be kept in mind
 
+				// limited support for highlighters
+				var highlighter = highlighters.FirstOrDefault();
+				var selection = highlighter?.Ranges?.FirstOrDefault();
 				if (selection is not null)
 				{
-					var selectionDetails = CalculateSelection(selection.Value.selectionStart, selection.Value.selectionEnd);
-					HandleSelection(selectionDetails, lineIndex, characterCountSoFar, positionsSpan, x, justifySpaceOffset, segmentSpan, segment, fontInfo, y, line, canvas, selection.Value.selectedTextBackgroundBrush, session.Opacity);
+					var selectionDetails = CalculateSelection(selection.Value.StartIndex, selection.Value.StartIndex + selection.Value.Length);
+					HandleSelection(selectionDetails, lineIndex, characterCountSoFar, positionsSpan, x, justifySpaceOffset, segmentSpan, segment, fontInfo, y, line, canvas, highlighter!.Background.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()), session.Opacity);
 					RenderText(selectionDetails, lineIndex, characterCountSoFar, segmentSpan, fontInfo, positionsSpan, glyphsSpan, canvas, y + baselineOffsetY, paint);
 				}
 				else
