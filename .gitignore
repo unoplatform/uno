@@ -7,6 +7,9 @@
 !.github/
 !.devcontainer/
 !.specify/
+!.claude/
+.claude/*
+!.claude/commands/
 
 # operating system junk files
 thumbs.db
