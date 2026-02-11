@@ -142,6 +142,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string[] _includeXamlNamespaces;
 
 		private readonly bool _disableBindableTypeProvidersGeneration;
+		private readonly bool _enableAlcAppSupport;
 
 		/// <summary>
 		/// Information about types used in .Apply() scenarios
@@ -220,6 +221,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			bool isLazyVisualStateManagerEnabled,
 			bool enableFuzzyMatching,
 			bool disableBindableTypeProvidersGeneration,
+			bool enableAlcAppSupport,
 			GeneratorExecutionContext generatorContext,
 			bool xamlResourcesTrimming,
 			IDictionary<INamedTypeSymbol, XamlType> xamlTypeToXamlTypeBaseMap,
@@ -247,6 +249,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_xamlTypeToXamlTypeBaseMap = xamlTypeToXamlTypeBaseMap;
 			_includeXamlNamespaces = includeXamlNamespaces;
 			_disableBindableTypeProvidersGeneration = disableBindableTypeProvidersGeneration;
+			_enableAlcAppSupport = enableAlcAppSupport;
 
 			InitCaches();
 
@@ -490,62 +493,102 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			InitializeRemoteControlClient(writer);
 
-			writer.AppendLineIndented($"var __isDefaultAlc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(typeof(global::{_defaultNamespace}.GlobalStaticResources).Assembly) == global::System.Runtime.Loader.AssemblyLoadContext.Default;");
-
-			using (writer.BlockInvariant($"if (__isDefaultAlc)"))
+			if (_enableAlcAppSupport)
 			{
-				TryAnnotateWithGeneratorSource(writer);
-				GenerateApiExtensionRegistrations(writer);
+				writer.AppendLineIndented($"var __currentAlc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(typeof(global::{_defaultNamespace}.GlobalStaticResources).Assembly);");
+				writer.AppendLineIndented($"var __isDefaultAlc = __currentAlc == global::System.Runtime.Loader.AssemblyLoadContext.Default;");
 
-				GenerateResourceLoader(writer);
-				writer.AppendLine();
+				using (writer.BlockInvariant($"if (__isDefaultAlc)"))
+				{
+					GenerateDefaultAlcInitialization(writer);
+				}
+				using (writer.BlockInvariant($"else"))
+				{
+					ApplyAppGlobalResources();
+
+					if (!_isDesignTimeBuild && !_disableBindableTypeProvidersGeneration)
+					{
+						// In secondary AssemblyLoadContext (ALC), BindableMetadata.Provider is set to null to prevent
+						// sharing bindable type metadata across ALC boundaries. This avoids issues with type resolution
+						// and ensures that data binding metadata is only available in the default ALC. As a result,
+						// reflection-based data binding may not function in secondary ALCs (e.g., plugin or hot-reload scenarios).
+						writer.AppendLineIndented($"global::Uno.UI.DataBinding.BindableMetadata.Provider = null;");
+					}
+				}
+			}
+			else
+			{
+				// No ALC support - generate default initialization directly
+				GenerateDefaultAlcInitialization(writer);
+			}
+
+			if (_enableAlcAppSupport)
+			{
+				// Wrap resource building with the ambient ALC context so that any
+				// ResourceDictionary.Source setter or fallback RetrieveDictionaryForSource call
+				// during initialization can find resources in the correct ALC-scoped registry.
+				using (writer.BlockInvariant($"using (global::Uno.UI.ResourceResolver.SetResolutionContext(__currentAlc))"))
+				{
+					RegisterAndBuildResources(writer, topLevelControl, isInInitializer: false);
+					Safely(() => BuildProperties(writer, topLevelControl, isInline: false));
+				}
+			}
+			else
+			{
+				RegisterAndBuildResources(writer, topLevelControl, isInInitializer: false);
+				Safely(() => BuildProperties(writer, topLevelControl, isInline: false));
+			}
+
+			if (_enableAlcAppSupport)
+			{
+				using (writer.BlockInvariant($"if (__isDefaultAlc)"))
+				{
+					GenerateDefaultAlcPostInitialization(writer);
+				}
+			}
+			else
+			{
+				GenerateDefaultAlcPostInitialization(writer);
+			}
+
+			void GenerateDefaultAlcInitialization(IIndentedStringBuilder w)
+			{
+				TryAnnotateWithGeneratorSource(w);
+				GenerateApiExtensionRegistrations(w);
+
+				GenerateResourceLoader(w);
+				w.AppendLine();
 				ApplyLiteralProperties();
-				writer.AppendLine();
+				w.AppendLine();
 
 				ApplyAppGlobalResources();
 
 				if (!_isDesignTimeBuild && !_disableBindableTypeProvidersGeneration)
 				{
-					writer.AppendLineIndented($"global::Uno.UI.DataBinding.BindableMetadata.Provider = new global::{_defaultNamespace}.BindableMetadataProvider();");
+					w.AppendLineIndented($"global::Uno.UI.DataBinding.BindableMetadata.Provider = new global::{_defaultNamespace}.BindableMetadataProvider();");
 				}
 
 				if (_isWasm
 					// Only applicable when building for Wasm DOM support
 					&& _metadataHelper.FindTypeByFullName("Uno.UI.Runtime.WebAssembly.HtmlElementAttribute") is not null)
 				{
-					writer.AppendLineIndented($"// Workaround for https://github.com/dotnet/runtime/issues/44269");
-					writer.AppendLineIndented($"typeof(global::Uno.UI.Runtime.WebAssembly.HtmlElementAttribute).GetHashCode();");
-				}
-			}
-			using (writer.BlockInvariant($"else"))
-			{
-				ApplyAppGlobalResources();
-
-				if (!_isDesignTimeBuild && !_disableBindableTypeProvidersGeneration)
-				{
-					// In secondary AssemblyLoadContext (ALC), BindableMetadata.Provider is set to null to prevent
-					// sharing bindable type metadata across ALC boundaries. This avoids issues with type resolution
-					// and ensures that data binding metadata is only available in the default ALC. As a result,
-					// reflection-based data binding may not function in secondary ALCs (e.g., plugin or hot-reload scenarios).
-					writer.AppendLineIndented($"global::Uno.UI.DataBinding.BindableMetadata.Provider = null;");
+					w.AppendLineIndented($"// Workaround for https://github.com/dotnet/runtime/issues/44269");
+					w.AppendLineIndented($"typeof(global::Uno.UI.Runtime.WebAssembly.HtmlElementAttribute).GetHashCode();");
 				}
 			}
 
-			RegisterAndBuildResources(writer, topLevelControl, isInInitializer: false);
-			Safely(() => BuildProperties(writer, topLevelControl, isInline: false));
-
-			using (writer.BlockInvariant($"if (__isDefaultAlc)"))
+			void GenerateDefaultAlcPostInitialization(IIndentedStringBuilder w)
 			{
-				ApplyFontsOverride(writer);
+				ApplyFontsOverride(w);
 
 				if (_isUiAutomationMappingEnabled)
 				{
-					writer.AppendLineIndented("global::Uno.UI.FrameworkElementHelper.IsUiAutomationMappingEnabled = true;");
+					w.AppendLineIndented("global::Uno.UI.FrameworkElementHelper.IsUiAutomationMappingEnabled = true;");
 
 					if (_isWasm)
 					{
 						// When automation mapping is enabled, remove the element ID from the ToString so test screenshots stay the same.
-						writer.AppendLineIndented("global::Uno.UI.FeatureConfiguration.UIElement.RenderToStringWithId = false;");
+						w.AppendLineIndented("global::Uno.UI.FeatureConfiguration.UIElement.RenderToStringWithId = false;");
 					}
 				}
 

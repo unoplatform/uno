@@ -4,10 +4,18 @@
 
     <!-- Test accent brush to verify resource inheritance -->
     <SolidColorBrush x:Key="TestAccentBrush" Color="#FF6B4CE0"/>
-    
+
     <!-- Test styles for verification -->
     <Style x:Key="TestTextBlockStyle" TargetType="TextBlock">
         <Setter Property="Foreground" Value="{StaticResource TestAccentBrush}"/>
         <Setter Property="FontSize" Value="16"/>
     </Style>
+
+    <!--
+        ALC-specific resource for testing that ResourceDictionary.Source resolves to the correct
+        dictionary when loaded from a secondary AssemblyLoadContext. This resource should only be
+        accessible from the AlcApp's context, not from the primary ALC.
+    -->
+    <SolidColorBrush x:Key="AlcAppSpecificBrush" Color="#FF00AA55"/>
+    <x:String x:Key="AlcAppIdentifier">Uno.UI.RuntimeTests.AlcApp</x:String>
 </ResourceDictionary>

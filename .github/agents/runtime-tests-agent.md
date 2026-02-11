@@ -21,15 +21,10 @@ Runtime tests run on the actual target platform (WebAssembly, Skia, Android, iOS
 
 Runtime tests can be executed headlessly without the interactive UI.
 
-### Build the console app:
+### Build and run all runtime tests:
 ```bash
-dotnet build src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -f net10.0
-```
-
-### Run all runtime tests:
-```bash
-cd src/SamplesApp/SamplesApp.Skia.Generic/bin/Release/net10.0
-dotnet SamplesApp.Skia.Generic.dll --runtime-tests=test-results.xml
+cd src
+dotnet run --project SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -f net10.0 -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true -- --runtime-tests=test-results.xml
 ```
 
 Test results are output in NUnit XML format.
@@ -42,15 +37,17 @@ The `UITEST_RUNTIME_TESTS_FILTER` environment variable accepts a base64-encoded,
 
 ### Windows PowerShell:
 ```powershell
+cd src
 $filter = "Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Given_Control.When_SomeScenario"
 $env:UITEST_RUNTIME_TESTS_FILTER = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($filter))
-dotnet SamplesApp.Skia.Generic.dll --runtime-tests=test-results.xml
+dotnet run --project SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -f net10.0 -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true -- --runtime-tests=test-results.xml
 ```
 
 ### Linux/macOS:
 ```bash
+cd src
 export UITEST_RUNTIME_TESTS_FILTER=$(echo -n "Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Given_Control.When_SomeScenario" | base64)
-dotnet SamplesApp.Skia.Generic.dll --runtime-tests=test-results.xml
+dotnet run --project SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -f net10.0 -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true -- --runtime-tests=test-results.xml
 ```
 
 ### Multiple tests:
@@ -206,8 +203,7 @@ public async Task When_Something()
 
 When adding new runtime tests for desktop (Skia):
 1. Write the test following patterns above
-2. Build: `dotnet build src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -f net10.0`
-3. Run: `dotnet SamplesApp.Skia.Generic.dll --runtime-tests=test-results.xml`
-4. Verify test passes before committing
+2. Build and run: `cd src && dotnet run --project SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -f net10.0 -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true -- --runtime-tests=test-results.xml`
+3. Verify test passes before committing
 
 Skip command-line verification only for tests targeting non-desktop platforms (iOS/Android-specific features).

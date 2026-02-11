@@ -87,6 +87,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private readonly bool _disableBindableTypeProvidersGeneration;
 
+		/// <summary>
+		/// Enables support for secondary AssemblyLoadContext (ALC) scenarios.
+		/// When enabled, generates ALC-aware code for resource dictionary registration and app initialization.
+		/// </summary>
+		private readonly bool _enableAlcAppSupport;
+
 		private readonly GeneratorExecutionContext _generatorContext;
 
 		private bool IsUnoAssembly
@@ -243,6 +249,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				_disableBindableTypeProvidersGeneration = false;
 			}
 
+			if (!bool.TryParse(context.GetMSBuildPropertyValue("UnoEnableAlcAppSupport"), out _enableAlcAppSupport))
+			{
+				_enableAlcAppSupport = false;
+			}
+
 			_targetPath = Path.Combine(
 				_projectDirectory,
 				context.GetMSBuildPropertyValue("IntermediateOutputPath")
@@ -374,6 +385,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 
+			// Ensure the link is always project-relative. When DefiningProjectFullPath
+			// is set by the SDK but points to a different directory than the project
+			// (e.g., Uno.Sdk props), the fallback to Identity can produce an absolute
+			// filesystem path. Strip the project directory prefix in that case.
+			if (Path.IsPathRooted(link))
+			{
+				link = link.TrimStart(_projectDirectory).TrimStart(Path.DirectorySeparatorChar);
+			}
+
 			return link;
 		}
 
@@ -457,6 +477,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							isLazyVisualStateManagerEnabled: _isLazyVisualStateManagerEnabled,
 							enableFuzzyMatching: _enableFuzzyMatching,
 							disableBindableTypeProvidersGeneration: _disableBindableTypeProvidersGeneration,
+							enableAlcAppSupport: _enableAlcAppSupport,
 							generatorContext: _generatorContext,
 							xamlResourcesTrimming: _xamlResourcesTrimming,
 							xamlTypeToXamlTypeBaseMap: xamlTypeToXamlTypeBaseMap,
@@ -727,6 +748,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					using (writer.BlockInvariant("internal static {0} {1} {{ get; }} = new {0}()", ParseContextPropertyType, ParseContextPropertyName))
 					{
 						writer.AppendLineIndented($"AssemblyName = \"{_metadataHelper.AssemblyName}\",");
+						if (_enableAlcAppSupport)
+						{
+							writer.AppendLineIndented("AssemblyLoadContext = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(typeof(GlobalStaticResources).Assembly),");
+						}
 					}
 
 					writer.AppendLineIndented(";");
@@ -844,15 +869,32 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					writer.AppendLineIndented("// Register ResourceDictionaries using ms-resource:/// syntax, this is called for local resources");
 					using (writer.BlockInvariant("internal static void RegisterResourceDictionariesBySourceLocal()"))
 					{
+						if (_enableAlcAppSupport)
+						{
+							// Capture ALC at registration time to support secondary ALC scenarios
+							writer.AppendLineIndented("var __alc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(typeof(GlobalStaticResources).Assembly);");
+						}
+
 						foreach (var file in xamlFiles.Where(IsResourceDictionary))
 						{
 							// Make ResourceDictionary retrievable by Hot Reload
 							var filePath = _isDebug ? $"\"{file.FilePath.Replace("\\", "/")}\"" : "null";
 
-							// We leave context null because local resources should be found through Application.Resources
-							writer.AppendLineIndented($"global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{XamlFilePathHelper.LocalResourcePrefix}{map.GetSourceLink(file)}\", context: null, dictionary: () => {file.UniqueID}_ResourceDictionary, {filePath});");
-							// Local resources can also be found through the ms-appx:/// prefix
-							writer.AppendLineIndented($"global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{XamlFilePathHelper.AppXIdentifier}{map.GetSourceLink(file)}\", context: null, dictionary: () => {file.UniqueID}_ResourceDictionary);");
+							if (_enableAlcAppSupport)
+							{
+								// We leave context null because local resources should be found through Application.Resources
+								// Pass ALC to support secondary ALC scenarios
+								writer.AppendLineIndented($"global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{XamlFilePathHelper.LocalResourcePrefix}{map.GetSourceLink(file)}\", context: null, dictionary: () => {file.UniqueID}_ResourceDictionary, {filePath}, __alc);");
+								// Local resources can also be found through the ms-appx:/// prefix
+								writer.AppendLineIndented($"global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{XamlFilePathHelper.AppXIdentifier}{map.GetSourceLink(file)}\", context: null, dictionary: () => {file.UniqueID}_ResourceDictionary, null, __alc);");
+							}
+							else
+							{
+								// Standard registration without ALC support
+								writer.AppendLineIndented($"global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{XamlFilePathHelper.LocalResourcePrefix}{map.GetSourceLink(file)}\", context: null, dictionary: () => {file.UniqueID}_ResourceDictionary, {filePath});");
+								// Local resources can also be found through the ms-appx:/// prefix
+								writer.AppendLineIndented($"global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{XamlFilePathHelper.AppXIdentifier}{map.GetSourceLink(file)}\", context: null, dictionary: () => {file.UniqueID}_ResourceDictionary);");
+							}
 						}
 					}
 

@@ -69,13 +69,33 @@ namespace Microsoft.UI.Xaml
 			{
 				if (!IsParsing) // If we're parsing, the Source is being set as a 'FYI', don't try to resolve it
 				{
-					var sourceDictionary = ResourceResolver.RetrieveDictionaryForSource(value);
-
+					var sourceDictionary = RetrieveDictionaryForSourceWithAlcAwareness(value);
 					CopyFrom(sourceDictionary);
 				}
 
 				_source = value;
 			}
+		}
+
+		/// <summary>
+		/// Retrieves a dictionary for the given source, with ALC awareness when secondary ALCs have registered resources.
+		/// </summary>
+		private ResourceDictionary RetrieveDictionaryForSourceWithAlcAwareness(Uri source)
+		{
+			// Only do the expensive ALC lookup if we know secondary ALCs have registered resources
+			if (Application.HasSecondaryApps)
+			{
+				// Use the ambient resolution context if available (set during App.xaml initialization),
+				// because GetType().Assembly always returns Uno.UI which is in the default ALC.
+				var callingAlc = ResourceResolver.CurrentResolutionAlc
+					?? System.Runtime.Loader.AssemblyLoadContext.Default;
+				return ResourceResolver.RetrieveDictionaryForSource(
+					source?.OriginalString,
+					currentAbsolutePath: null,
+					callingAlc);
+			}
+
+			return ResourceResolver.RetrieveDictionaryForSource(source);
 		}
 
 		public IList<ResourceDictionary> MergedDictionaries => _mergedDictionaries;
@@ -448,7 +468,7 @@ namespace Microsoft.UI.Xaml
 			var index = _mergedDictionaries.IndexOf(merged);
 			if (index != -1)
 			{
-				_mergedDictionaries[index] = ResourceResolver.RetrieveDictionaryForSource(merged.Source);
+				_mergedDictionaries[index] = RetrieveDictionaryForSourceWithAlcAwareness(merged.Source);
 			}
 			else
 			{
