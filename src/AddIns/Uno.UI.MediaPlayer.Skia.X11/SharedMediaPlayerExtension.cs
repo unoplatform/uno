@@ -35,11 +35,8 @@ internal class SharedMediaPlayerExtension : IMediaPlayerExtension
 
 	// LibVLC initialization arguments used across the class. Keep these in one place
 	// so the options and the explanatory comment are not duplicated.
-	// Disable device discovery and network announcements to prevent permission prompts on app startup.
-	// --no-sap: Disable SAP (Session Announcement Protocol) announcements
-	// --no-zeroconf: Disable Zeroconf/Bonjour/mDNS device discovery
-	// --no-video-title-show: Don't show video title overlay
-	private static readonly string[] VlcInitArgs = new[] { "--start-paused", "--no-video-title-show", "--no-sap", "--no-zeroconf" };
+	// --start-paused: Media is loaded but not played automatically (required for proper loading behavior)
+	private static readonly string[] VlcInitArgs = new[] { "--start-paused" };
 
 	private const string MsAppXScheme = "ms-appx";
 	private static readonly ConditionalWeakTable<Windows.Media.Playback.MediaPlayer, SharedMediaPlayerExtension> _mediaPlayerToExtension = new();
