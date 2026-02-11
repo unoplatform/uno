@@ -548,7 +548,7 @@ namespace Microsoft.UI.Xaml
 			// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/components/DependencyObject/DependencyProperty.cpp (lines 249-276)
 			// WinUI calls GetDefaultTextControlContextFlyout/GetDefaultTextControlSelectionFlyout for text controls
 			if (this == UIElement.ContextFlyoutProperty &&
-				(forType == typeof(TextBlock) || forType == typeof(RichTextBlock)))
+				(typeof(TextBlock).IsAssignableFrom(forType) || typeof(RichTextBlock).IsAssignableFrom(forType)))
 			{
 				return GetDefaultTextControlContextFlyout();
 			}

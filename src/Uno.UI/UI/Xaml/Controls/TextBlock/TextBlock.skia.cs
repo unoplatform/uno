@@ -75,6 +75,17 @@ namespace Microsoft.UI.Xaml.Controls
 			EnsureContextFlyoutSubscription();
 		}
 
+		private protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+
+			if (_subscribedContextFlyout is not null)
+			{
+				_subscribedContextFlyout.Opening -= OnContextFlyoutOpening;
+				_subscribedContextFlyout = null;
+			}
+		}
+
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			var padding = Padding;

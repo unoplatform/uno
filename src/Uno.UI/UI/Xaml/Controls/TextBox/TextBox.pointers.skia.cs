@@ -81,7 +81,6 @@ public partial class TextBox
 	protected override void OnRightTapped(RightTappedRoutedEventArgs e)
 	{
 		base.OnRightTapped(e);
-		e.Handled = false;
 
 		var displayBlock = TextBoxView.DisplayBlock;
 		var position = e.GetPosition(displayBlock);
