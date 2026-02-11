@@ -237,10 +237,14 @@ namespace Microsoft.UI.Xaml.Controls
 			InitializePropertiesPartial();
 		}
 
-		protected override void OnGotFocus(RoutedEventArgs e) => StartBringIntoView(new BringIntoViewOptions
+		protected override void OnGotFocus(RoutedEventArgs e)
 		{
-			AnimationDesired = false
-		});
+			_forceFocusedVisualState = false;
+			StartBringIntoView(new BringIntoViewOptions
+			{
+				AnimationDesired = false
+			});
+		}
 
 		protected override void OnApplyTemplate()
 		{
@@ -1009,6 +1013,14 @@ namespace Microsoft.UI.Xaml.Controls
 		private void OnFocusStateChanged(FocusState oldValue, FocusState newValue, bool initial)
 		{
 			OnFocusStateChangedPartial(newValue, initial);
+
+			if (_forceFocusedVisualState && newValue == FocusState.Unfocused)
+			{
+				// Context flyout is taking focus - skip binding updates and keep
+				// _hasTextChangedThisFocusSession. Deferred until actual focus loss.
+				UpdateVisualState();
+				return;
+			}
 
 			if (!initial && newValue == FocusState.Unfocused && _hasTextChangedThisFocusSession)
 			{

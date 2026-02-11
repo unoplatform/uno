@@ -206,6 +206,7 @@ public partial class TextBox
 
 	partial void OnUnloadedPartial()
 	{
+		_forceFocusedVisualState = false;
 		_timer.Stop();
 		_selectionStartThumbfulCaret?.Hide();
 		_selectionEndThumbfulCaret?.Hide();
@@ -367,7 +368,7 @@ public partial class TextBox
 				UpdateCanPasteClipboardContent();
 				Clipboard.ContentChanged += OnClipboardContentChanged;
 			}
-			else
+			else if (!_forceFocusedVisualState)
 			{
 				TrySetCurrentlyTyping(false);
 				CaretMode = CaretDisplayMode.ThumblessCaretHidden;
@@ -456,7 +457,7 @@ public partial class TextBox
 		if (_isSkiaTextBox && TextBoxView?.DisplayBlock is { } displayBlock)
 		{
 			displayBlock.Selection = new TextBlock.Range(SelectionStart, SelectionStart + SelectionLength);
-			var isFocused = FocusState != FocusState.Unfocused || (ContextFlyout?.IsOpen ?? false);
+			var isFocused = FocusState != FocusState.Unfocused || _forceFocusedVisualState;
 			displayBlock.RenderSelection = isFocused;
 			if (CaretMode is CaretDisplayMode.ThumblessCaretShowing &&
 				SelectionLength == 0 &&
@@ -564,6 +565,56 @@ public partial class TextBox
 	{
 		// Close SelectionFlyout when ContextFlyout opens (ContextFlyout takes priority)
 		SelectionFlyout?.Hide();
+
+		// When our ContextFlyout opens in Standard mode (takes focus), force the TextBox
+		// to maintain "Focused" visual state. Mirrors WinUI's m_forceFocusedVisualState.
+		if (sender is FlyoutBase flyout && flyout.ShowMode == FlyoutShowMode.Standard)
+		{
+			_forceFocusedVisualState = true;
+
+			// Subscribe to Closed for cleanup when flyout closes and focus isn't on this TextBox
+			flyout.Closed -= OnContextFlyoutClosedForForceFocus;
+			flyout.Closed += OnContextFlyoutClosedForForceFocus;
+		}
+	}
+
+	private void OnContextFlyoutClosedForForceFocus(object sender, object e)
+	{
+		if (sender is FlyoutBase flyout)
+		{
+			flyout.Closed -= OnContextFlyoutClosedForForceFocus;
+		}
+		ForceFocusLoss();
+	}
+
+	/// <summary>
+	/// Clears _forceFocusedVisualState and performs deferred unfocus actions.
+	/// Called when the context flyout closes. Mirrors WinUI CTextBoxBase::ForceFocusLoss.
+	/// </summary>
+	private void ForceFocusLoss()
+	{
+		if (!_forceFocusedVisualState)
+		{
+			return;
+		}
+		_forceFocusedVisualState = false;
+
+		if (FocusState == FocusState.Unfocused)
+		{
+			// Perform the suppressed unfocus actions now
+			TrySetCurrentlyTyping(false);
+			CaretMode = CaretDisplayMode.ThumblessCaretHidden;
+			if (SelectionFlyout?.IsOpen == true)
+			{
+				SelectionFlyout.Hide();
+			}
+			_textBoxNotificationsSingleton?.OnUnfocused(this);
+			_timer.Stop();
+			Clipboard.ContentChanged -= OnClipboardContentChanged;
+			UpdateDisplaySelection();
+			UpdateButtonStates();
+			UpdateVisualState();
+		}
 	}
 
 	// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (lines 5349-5377)
