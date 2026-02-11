@@ -145,7 +145,7 @@ stages:
 - stage: ios_tests
   displayName: Tests - iOS Native
   # condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.RequireNativeIos'], 'true')))
-  condition: and(succeededOrFailed(), false) # Temporarily disabled: runner image propagation not done yet (https://github.com/actions/runner-images/pull/13607)
+  condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.RequireNativeIos'], 'true'), eq(variables['System.PullRequest.SourceBranch'], 'refs/heads/dev/agzi/enabling-ios-macos-tests'))) # Temporary: force-enable on this draft PR for CI timing.
   dependsOn:
     - Setup
 
@@ -189,7 +189,6 @@ stages:
 
 - stage: ios_testflight
   displayName: Publish - iOS Testflight
-  condition: and(succeededOrFailed(), false) # Temporarily disabled: runner image propagation not done yet (https://github.com/actions/runner-images/pull/13607)
   dependsOn:
     - Setup
 

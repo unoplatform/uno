@@ -6,5 +6,7 @@ steps:
       echo 'xCode Root to ${{parameters.xCodeRoot}}'
       echo '##vso[task.setvariable variable=MD_APPLE_SDK_ROOT;]'${{parameters.xCodeRoot}}
       sudo xcode-select --switch ${{parameters.xCodeRoot}}/Contents/Developer
+      sudo xcodebuild -runFirstLaunch
+      sudo xcodebuild -downloadPlatform iOS
 
     displayName: Select Xcode
