@@ -40,6 +40,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private bool _renderSelection;
 		private (int index, CompositionBrush brush)? _caretPaint;
+		private bool _forceFocusedForContextFlyout;
 
 		internal IParsedText ParsedText { get; private set; } = Microsoft.UI.Xaml.Documents.ParsedText.Empty;
 
@@ -78,6 +79,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
+
+			_forceFocusedForContextFlyout = false;
 
 			if (_subscribedContextFlyout is not null)
 			{
@@ -160,7 +163,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (OwningTextBox is null) // TextBox manages RenderSelection itself
 			{
-				RenderSelection = IsTextSelectionEnabled && (IsFocused || (ContextFlyout?.IsOpen ?? false));
+				RenderSelection = IsTextSelectionEnabled && (IsFocused || _forceFocusedForContextFlyout);
 			}
 		}
 
@@ -476,6 +479,24 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			// Close SelectionFlyout when ContextFlyout opens (ContextFlyout takes priority)
 			SelectionFlyout?.Hide();
+
+			if (sender is FlyoutBase flyout && flyout.ShowMode == FlyoutShowMode.Standard)
+			{
+				_forceFocusedForContextFlyout = true;
+				UpdateSelectionRendering();
+				flyout.Closed -= OnContextFlyoutClosedForForceFocus;
+				flyout.Closed += OnContextFlyoutClosedForForceFocus;
+			}
+		}
+
+		private void OnContextFlyoutClosedForForceFocus(object? sender, object e)
+		{
+			if (sender is FlyoutBase flyout)
+			{
+				flyout.Closed -= OnContextFlyoutClosedForForceFocus;
+			}
+			_forceFocusedForContextFlyout = false;
+			UpdateSelectionRendering();
 		}
 
 		/// <summary>
