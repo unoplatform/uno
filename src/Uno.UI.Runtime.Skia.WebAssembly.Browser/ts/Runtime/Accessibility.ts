@@ -5,9 +5,20 @@ namespace Uno.UI.Runtime.Skia {
 		private static assertiveElement: HTMLDivElement;
 		private static enableAccessibilityButton: HTMLDivElement;
 		private static semanticsRoot: HTMLDivElement;
+		private static containerElement: HTMLElement;
+		private static debugModeEnabled: boolean = false;
+
+		// Managed callbacks from C#
 		private static managedEnableAccessibility: any;
 		private static managedOnScroll: any;
-		private static containerElement: HTMLElement;
+		private static managedOnInvoke: any;
+		private static managedOnToggle: any;
+		private static managedOnRangeValueChange: any;
+		private static managedOnTextInput: any;
+		private static managedOnExpandCollapse: any;
+		private static managedOnSelection: any;
+		private static managedOnFocus: any;
+		private static managedOnBlur: any;
 
 		private static createLiveElement(kind: string) {
 			const element = document.createElement("div");
@@ -18,15 +29,29 @@ namespace Uno.UI.Runtime.Skia {
 
 		public static setup() {
 			const browserExports = WebAssemblyWindowWrapper.getAssemblyExports();
-			this.managedEnableAccessibility = browserExports.Uno.UI.Runtime.Skia.WebAssemblyAccessibility.EnableAccessibility;
-			this.managedOnScroll = browserExports.Uno.UI.Runtime.Skia.WebAssemblyAccessibility.OnScroll;
+
+			// Wire up managed callbacks from WebAssemblyAccessibility.cs
+			const accessibilityExports = browserExports.Uno.UI.Runtime.Skia.WebAssemblyAccessibility;
+			this.managedEnableAccessibility = accessibilityExports.EnableAccessibility;
+			this.managedOnScroll = accessibilityExports.OnScroll;
+			this.managedOnInvoke = accessibilityExports.OnInvoke;
+			this.managedOnToggle = accessibilityExports.OnToggle;
+			this.managedOnRangeValueChange = accessibilityExports.OnRangeValueChange;
+			this.managedOnTextInput = accessibilityExports.OnTextInput;
+			this.managedOnExpandCollapse = accessibilityExports.OnExpandCollapse;
+			this.managedOnSelection = accessibilityExports.OnSelection;
+			this.managedOnFocus = accessibilityExports.OnFocus;
+			this.managedOnBlur = accessibilityExports.OnBlur;
 
 			this.containerElement = document.getElementById("uno-body");
+
+			// Create live regions for screen reader announcements
 			this.politeElement = Accessibility.createLiveElement("polite");
 			this.assertiveElement = Accessibility.createLiveElement("assertive");
 			this.containerElement.appendChild(this.politeElement);
 			this.containerElement.appendChild(this.assertiveElement);
 
+			// Create enable accessibility button (for screen reader activation)
 			this.enableAccessibilityButton = document.createElement("div");
 			this.enableAccessibilityButton.id = "uno-enable-accessibility";
 			this.enableAccessibilityButton.setAttribute("aria-live", "polite");
@@ -36,9 +61,73 @@ namespace Uno.UI.Runtime.Skia {
 			this.enableAccessibilityButton.addEventListener("click", this.onEnableAccessibilityButtonClicked.bind(this));
 			this.containerElement.appendChild(this.enableAccessibilityButton);
 
+			// Create semantic DOM root container (hidden but accessible)
 			this.semanticsRoot = document.createElement("div");
 			this.semanticsRoot.id = "uno-semantics-root";
+			// Make semantic tree invisible but focusable for screen readers
+			this.semanticsRoot.style.filter = "opacity(0%)";
+			this.semanticsRoot.style.position = "absolute";
+			this.semanticsRoot.style.top = "0";
+			this.semanticsRoot.style.left = "0";
+			this.semanticsRoot.style.overflow = "hidden";
 			this.containerElement.appendChild(this.semanticsRoot);
+		}
+
+		/// <summary>
+		/// Enables or disables debug mode for the accessibility layer.
+		/// When enabled, semantic elements are visible with outlines.
+		/// </summary>
+		public static enableDebugMode(enabled: boolean) {
+			this.debugModeEnabled = enabled;
+
+			if (this.semanticsRoot) {
+				if (enabled) {
+					// Make semantic elements visible for debugging
+					this.semanticsRoot.style.filter = "none";
+					this.semanticsRoot.style.pointerEvents = "none"; // Don't interfere with canvas clicks
+					this.semanticsRoot.classList.add("uno-a11y-debug");
+
+					// Apply debug styles to all semantic elements
+					const elements = this.semanticsRoot.querySelectorAll("[id^='uno-semantics-']");
+					elements.forEach((el: HTMLElement) => {
+						el.style.outline = "2px solid rgba(0, 255, 0, 0.7)";
+						el.style.backgroundColor = "rgba(0, 255, 0, 0.1)";
+					});
+				} else {
+					// Hide semantic elements again
+					this.semanticsRoot.style.filter = "opacity(0%)";
+					this.semanticsRoot.style.pointerEvents = "";
+					this.semanticsRoot.classList.remove("uno-a11y-debug");
+
+					// Remove debug styles
+					const elements = this.semanticsRoot.querySelectorAll("[id^='uno-semantics-']");
+					elements.forEach((el: HTMLElement) => {
+						el.style.outline = "";
+						el.style.backgroundColor = "";
+					});
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets whether debug mode is currently enabled.
+		/// </summary>
+		public static isDebugModeEnabled(): boolean {
+			return this.debugModeEnabled;
+		}
+
+		// Callback accessors for SemanticElements.ts
+		public static getCallbacks() {
+			return {
+				onInvoke: this.managedOnInvoke,
+				onToggle: this.managedOnToggle,
+				onRangeValueChange: this.managedOnRangeValueChange,
+				onTextInput: this.managedOnTextInput,
+				onExpandCollapse: this.managedOnExpandCollapse,
+				onSelection: this.managedOnSelection,
+				onFocus: this.managedOnFocus,
+				onBlur: this.managedOnBlur
+			};
 		}
 
 		private static createSemanticElement(x: number, y: number, width: number, height: number, handle: number, isFocusable: boolean) {
@@ -197,6 +286,20 @@ namespace Uno.UI.Runtime.Skia {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
 				element.setAttribute("aria-checked", ariaChecked);
+
+				// Also update native checkbox/radio checked property if applicable
+				if (element instanceof HTMLInputElement &&
+					(element.type === 'checkbox' || element.type === 'radio')) {
+					if (ariaChecked === 'true') {
+						element.checked = true;
+						element.indeterminate = false;
+					} else if (ariaChecked === 'mixed') {
+						element.indeterminate = true;
+					} else {
+						element.checked = false;
+						element.indeterminate = false;
+					}
+				}
 			}
 		}
 
