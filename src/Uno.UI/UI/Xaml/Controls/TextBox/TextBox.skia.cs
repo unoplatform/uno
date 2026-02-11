@@ -211,6 +211,12 @@ public partial class TextBox
 		_selectionEndThumbfulCaret?.Hide();
 		CaretMode = CaretDisplayMode.ThumblessCaretHidden;
 		Clipboard.ContentChanged -= OnClipboardContentChanged;
+
+		if (_subscribedContextFlyout is not null)
+		{
+			_subscribedContextFlyout.Opening -= OnContextFlyoutOpening;
+			_subscribedContextFlyout = null;
+		}
 	}
 
 	partial void OnIsReadonlyChangedPartial()

@@ -128,8 +128,8 @@
 		<Setter Property="FontWeight"
 				Value="Normal" />
 	</not_win:Style>
-    <TextCommandBarFlyout x:Key="TextControlCommandBarContextFlyout" Placement="BottomEdgeAlignedLeft" />
-    <TextCommandBarFlyout x:Key="TextControlCommandBarSelectionFlyout" Placement="TopEdgeAlignedLeft" />
+	<TextCommandBarFlyout x:Key="TextControlCommandBarContextFlyout" Placement="BottomEdgeAlignedLeft" />
+	<TextCommandBarFlyout x:Key="TextControlCommandBarSelectionFlyout" Placement="TopEdgeAlignedLeft" />
 
 	<!-- Default style for Microsoft.UI.Xaml.Controls.Primitives.HyperlinkButton -->
 	<not_win:Style TargetType="HyperlinkButton">
@@ -236,8 +236,7 @@
 		<Setter Property="Padding"
 				Value="{ThemeResource TextControlThemePadding}" />
 		<Setter Property="ContextFlyout" Value="{StaticResource TextControlCommandBarContextFlyout}" />
-        <Setter Property="SelectionFlyout" Value="{StaticResource TextControlCommandBarSelectionFlyout}" />
-        
+		<Setter Property="SelectionFlyout" Value="{StaticResource TextControlCommandBarSelectionFlyout}" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="TextBox">
@@ -4360,7 +4359,7 @@
 		<Setter Property="Padding"
 				Value="{ThemeResource TextControlThemePadding}" />
 		<Setter Property="ContextFlyout" Value="{StaticResource TextControlCommandBarContextFlyout}" />
-        <Setter Property="SelectionFlyout" Value="{StaticResource TextControlCommandBarSelectionFlyout}" />
+		<Setter Property="SelectionFlyout" Value="{StaticResource TextControlCommandBarSelectionFlyout}" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="PasswordBox">
