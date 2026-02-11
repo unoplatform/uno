@@ -27,13 +27,18 @@ namespace Windows.UI.ViewManagement
 		{
 			// used to reset the stale instance of the insets listener
 			// when the activity&decor-view is recreated, eg: on deep-linking
-			if (_insetsListener is { })
+			var hadListener = _insetsListener is { };
+			if (hadListener)
 			{
 				_insetsListener = null;
 			}
 
 			// using background as a proxy, to trigger an insets update (InsetListener::OnApplyWindowInsets)
-			SetStatusBarBackgroundColor(_backgroundColor);
+			// only when a background color was set or when there was an existing listener to reset
+			if (_backgroundColor is { } || hadListener)
+			{
+				SetStatusBarBackgroundColor(_backgroundColor);
+			}
 		}
 
 		private void SetStatusBarForegroundType(StatusBarForegroundType? foregroundType)
