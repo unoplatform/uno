@@ -221,25 +221,25 @@ partial class AutomationPeer
 	//      Used by HasKeyboardFocusCore to provide the actual logic.
 	//
 	//------------------------------------------------------------------------
-	// private bool HasKeyboardFocusImpl()
-	// {
-	// 	if (!IsKeyboardFocusableCore())
-	// 	{
-	// 		return false;
-	// 	}
+	private bool HasKeyboardFocusImpl()
+	{
+		if (!IsKeyboardFocusableCore())
+		{
+			return false;
+		}
 
-	// 	var focusManager = GetFocusManagerNoRef();
-	// 	if (focusManager is not null)
-	// 	{
-	// 		var focusedAP = FocusManager.GetFocusedAutomationPeer();
-	// 		if (this == focusedAP)
-	// 		{
-	// 			return true;
-	// 		}
-	// 	}
+		var focusManager = GetFocusManagerNoRef();
+		if (focusManager is not null)
+		{
+			var focusedAP = FocusManager.GetFocusedAutomationPeer();
+			if (this == focusedAP)
+			{
+				return true;
+			}
+		}
 
-	// 	return false;
-	// }
+		return false;
+	}
 
 	//------------------------------------------------------------------------
 	//
