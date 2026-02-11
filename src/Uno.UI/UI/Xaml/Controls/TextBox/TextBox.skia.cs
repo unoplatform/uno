@@ -69,6 +69,8 @@ public partial class TextBox
 
 	private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(0.5) };
 
+	private MenuFlyout _proofingMenu;
+
 	internal bool IsBackwardSelection => _selection.selectionEndsAtTheStart;
 
 	internal TextBoxView TextBoxView => _textBoxView;
@@ -144,6 +146,25 @@ public partial class TextBox
 		set => SetValue(SelectionFlyoutProperty, value);
 	}
 
+	public static DependencyProperty ProofingMenuFlyoutProperty { get; } =
+		DependencyProperty.Register(
+			nameof(ProofingMenuFlyout), typeof(FlyoutBase), typeof(TextBox),
+			new FrameworkPropertyMetadata(default(FlyoutBase)));
+
+	// Ported from: TextBoxBase.cpp GetProofingMenuFlyoutNoRef (lines 5507-5520)
+	public FlyoutBase ProofingMenuFlyout
+	{
+		get
+		{
+			EnsureProofingMenu();
+			if (IsSpellCheckEnabled && (FocusState != FocusState.Unfocused || _forceFocusedVisualState))
+			{
+				UpdateProofingMenu();
+			}
+			return _proofingMenu;
+		}
+	}
+
 	private void UpdateCanUndoRedo()
 	{
 		CanUndo = _historyIndex > 0;
@@ -167,6 +188,71 @@ public partial class TextBox
 		{
 			CanPasteClipboardContent = false;
 		}
+	}
+
+	// Ported from: TextBoxBase.cpp EnsureProofingMenu (line 5470)
+	private void EnsureProofingMenu()
+	{
+		_proofingMenu ??= new MenuFlyout();
+	}
+
+	// Ported from: TextBoxBase.cpp UpdateProofingMenu (line 5536)
+	private void UpdateProofingMenu()
+	{
+		_proofingMenu.Items.Clear();
+
+		if (!_isSkiaTextBox || TextBoxView?.DisplayBlock?.ParsedText is not UnicodeText unicodeText)
+		{
+			return;
+		}
+
+		// Find correction at cursor position
+		var correction = unicodeText.GetCorrectionAtIndex(SelectionStart);
+		if (correction is null)
+		{
+			return;
+		}
+
+		var (correctionStart, correctionEnd) = correction.Value;
+
+		// Get suggestions (matches WinUI AddSpellingSuggestions, max 3 suggestions)
+		var suggestionsResult = unicodeText.GetSpellCheckSuggestions(correctionStart, correctionEnd);
+		if (suggestionsResult is not { } result || result.suggestions.Count == 0)
+		{
+			return;
+		}
+
+		var (replaceStart, replaceEnd, suggestions) = result;
+		var maxSuggestions = Math.Min(suggestions.Count, 3); // WinUI uses maxSuggestionCount = 3
+
+		for (var i = 0; i < maxSuggestions; i++)
+		{
+			var suggestion = suggestions[i];
+			var item = new MenuFlyoutItem { Text = suggestion };
+			item.Click += (_, _) => ReplaceWithSuggestion(replaceStart, replaceEnd, suggestion);
+			_proofingMenu.Items.Add(item);
+		}
+	}
+
+	// Ported from: TextBoxBase.cpp pattern for applying text replacement (similar to PasteFromClipboardPartial)
+	private void ReplaceWithSuggestion(int replaceStart, int replaceEnd, string suggestion)
+	{
+		if (IsReadOnly || !_isSkiaTextBox)
+		{
+			return;
+		}
+
+		TrySetCurrentlyTyping(false);
+
+		var oldText = Text;
+		var newText = oldText.Remove(replaceStart, replaceEnd - replaceStart).Insert(replaceStart, suggestion);
+
+		CommitAction(new ReplaceAction(oldText, newText, replaceStart + suggestion.Length));
+
+		_clearHistoryOnTextChanged = false;
+		_pendingSelection = (replaceStart + suggestion.Length, 0);
+		ProcessTextInput(newText);
+		_clearHistoryOnTextChanged = true;
 	}
 
 	private void OnClipboardContentChanged(object sender, object e)
