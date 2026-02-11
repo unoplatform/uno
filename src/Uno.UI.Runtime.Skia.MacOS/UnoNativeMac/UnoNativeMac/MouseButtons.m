@@ -52,31 +52,52 @@ static int sDepth[8] = {0};
             m |= (1 << i);
         }
     }
-    
-    // 2) Fall back to AppKit snapshot
+
+    // 2) Get AppKit snapshot
     NSInteger appKitMask = [NSEvent pressedMouseButtons];
-    
+
+    // 3) Decision logic when we have tracked buttons
     if (m != 0) {
-        // If we think buttons are down, but AppKit says NONE are down, we likely missed a MouseUp.
-        // We trust AppKit and reset our counters.
-        if (appKitMask == 0) {
+        // If AppKit agrees we have buttons pressed, trust our tracking immediately
+        if (appKitMask != 0) {
+            return m;
+        }
+
+        // AppKit says no buttons, but we think there are - check hardware state (lazy evaluation)
+        NSInteger quartzMask = 0;
+        for (int i = 0; i < 8; i++) {
+            if (CGEventSourceButtonState(kCGEventSourceStateCombinedSessionState, (CGMouseButton)i)) {
+                quartzMask |= (1 << i);
+            }
+        }
+
+        // If BOTH AppKit AND Quartz say no buttons are pressed, we likely missed MouseUp events
+        // (e.g., native element intercepted them). Reset and trust the hardware state.
+        if (quartzMask == 0) {
+#if DEBUG
+            NSLog(@"MouseButtons: Both AppKit and Quartz report no buttons pressed. Resetting counters.");
+#endif
             for (int i = 0; i < 8; i++) {
                 sDepth[i] = 0;
             }
             return 0;
         }
+
+        // Quartz shows buttons pressed - trust our tracking (handles macOS 15+ external trackpad where AppKit is wrong)
         return m;
     }
 
+    // 4) No tracked state - prefer AppKit
     if (appKitMask != 0) return appKitMask;
 
-    // 3) Quartz fallback (polls physical state; taps may already be up)
+    // 5) Final fallback: poll Quartz for hardware state (lazy evaluation)
+    NSInteger quartzMask = 0;
     for (int i = 0; i < 8; i++) {
         if (CGEventSourceButtonState(kCGEventSourceStateCombinedSessionState, (CGMouseButton)i)) {
-            m |= (1 << i);
+            quartzMask |= (1 << i);
         }
     }
-    return m;
+    return quartzMask;
 }
 
 @end
