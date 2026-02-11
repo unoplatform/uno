@@ -2142,6 +2142,44 @@
 		  <Member fullName="Uno.UI.MediaPlayer.Skia.Win32.SharedMediaPlayerExtension" reason="Does not exist in WinUI" />
 	  </Types>
 	</IgnoreSet>
+	<IgnoreSet baseVersion="6.5">
+	  <Types>
+		  <Member fullName="Microsoft.UI.Xaml.Controls.DropDownButtonAutomationPeer" reason="Moved to correct namespace Microsoft.UI.Xaml.Automation.Peers" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ExpanderAutomationPeer" reason="Moved to correct namespace Microsoft.UI.Xaml.Automation.Peers" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.NumberBoxAutomationPeer" reason="Moved to correct namespace Microsoft.UI.Xaml.Automation.Peers" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ProgressRingAutomationPeer" reason="Moved to correct namespace Microsoft.UI.Xaml.Automation.Peers" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrumAutomationPeer" reason="Moved to correct namespace Microsoft.UI.Xaml.Automation.Peers" />
+	  </Types>
+
+	  <Methods>
+		  <!-- BEGIN FrameworkElement / UIElement API alignment -->
+		  <Member fullName="Microsoft.UI.Xaml.FlowDirection Microsoft.UI.Xaml.FrameworkElement.get_FlowDirection()" reason="API alignment with WinUI" />
+		  <Member fullName="Microsoft.UI.Composition.Visual Microsoft.UI.Xaml.UIElement.GetVisualInternal()" reason="API alignment - internal method should not be public" />
+		  <!-- END FrameworkElement / UIElement API alignment -->
+
+		  <!-- BEGIN AutomationPeer API alignment -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.RaiseTextEditTextChangedEvent(Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType automationTextEditChangeType, System.Collections.Generic.IReadOnlyList`1&lt;System.String&gt; changedData)" reason="AP reorganization - API alignment" />
+		  <Member fullName="Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.GenerateRawElementProviderRuntimeId()" reason="AP reorganization - API alignment" />
+		  <Member fullName="System.Object Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.GetElementFromPointCore(Windows.Foundation.Point pointInWindowCoordinates)" reason="AP reorganization - API alignment" />
+		  <Member fullName="Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer.FindItemByProperty(Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple startAfter, Microsoft.UI.Xaml.Automation.AutomationProperty automationProperty, System.Object value)" reason="AP reorganization - API alignment" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer..ctor(Microsoft.UI.Xaml.FrameworkElement e)" reason="AP reorganization - constructor signature alignment" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer..ctor(System.Object e)" reason="AP reorganization - constructor signature alignment" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer..ctor(System.Object e)" reason="AP reorganization - constructor signature alignment" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.ListViewBaseHeaderItemAutomationPeer..ctor(System.Object owner)" reason="AP reorganization - constructor signature alignment" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer..ctor(System.Object o)" reason="AP reorganization - constructor signature alignment" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.TreeViewItemDataAutomationPeer..ctor(System.Object item, Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer parent)" reason="AP reorganization - constructor signature alignment" />
+		  <!-- END AutomationPeer API alignment -->
+
+		  <!-- BEGIN TextBlock API alignment -->
+		  <Member fullName="Microsoft.UI.Xaml.TextWrapping Microsoft.UI.Xaml.Controls.TextBlock.get_TextWrapping()" reason="API alignment with WinUI" />
+		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Controls.TextBlock.get_MaxLines()" reason="API alignment with WinUI" />
+		  <Member fullName="Microsoft.UI.Xaml.TextTrimming Microsoft.UI.Xaml.Controls.TextBlock.get_TextTrimming()" reason="API alignment with WinUI" />
+		  <Member fullName="Microsoft.UI.Xaml.TextAlignment Microsoft.UI.Xaml.Controls.TextBlock.get_TextAlignment()" reason="API alignment with WinUI" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Controls.TextBlock.get_LineHeight()" reason="API alignment with WinUI" />
+		  <Member fullName="Microsoft.UI.Xaml.LineStackingStrategy Microsoft.UI.Xaml.Controls.TextBlock.get_LineStackingStrategy()" reason="API alignment with WinUI" />
+		  <!-- END TextBlock API alignment -->
+	  </Methods>
+	</IgnoreSet>
 	<![CDATA[
 		The 'baseVersion' should be the current latest stable version published on nuget, 
 		NOT what will be published by the PR in progress.
