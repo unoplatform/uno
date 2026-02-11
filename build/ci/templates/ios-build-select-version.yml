@@ -16,13 +16,23 @@ steps:
       if [ -n "$SDK_VERSION" ]; then
         echo "iOS simulator SDK version: $SDK_VERSION"
       fi
-      if [ -n "$SDK_BUILD_VERSION" ] && xcrun simctl list runtimes | grep -q "iOS.*$SDK_BUILD_VERSION"; then
-        echo "Required iOS simulator runtime already installed."
-      elif [ -n "$SDK_VERSION" ] && xcrun simctl list runtimes | grep -q "iOS $SDK_VERSION"; then
-        echo "Required iOS simulator runtime already installed."
+      if [ -n "$SDK_BUILD_VERSION" ]; then
+        if xcrun simctl list runtimes | grep -q "iOS.*$SDK_BUILD_VERSION"; then
+          echo "Required iOS simulator runtime already installed."
+          exit 0
+        fi
+      elif [ -n "$SDK_VERSION" ]; then
+        if xcrun simctl list runtimes | grep -q "iOS $SDK_VERSION"; then
+          echo "Required iOS simulator runtime already installed."
+          exit 0
+        fi
       elif xcrun simctl list runtimes | grep -q "iOS"; then
         echo "iOS simulator runtime already installed."
-      else
+        exit 0
+      fi
+
+      # Required runtime missing, attempt download.
+      {
         echo "iOS simulator runtime missing, downloading."
         DOWNLOAD_SUCCESS=false
         for attempt in 1 2 3; do
@@ -43,13 +53,13 @@ steps:
           echo "Required iOS simulator runtime now installed."
         elif [ -n "$SDK_VERSION" ] && xcrun simctl list runtimes | grep -q "iOS $SDK_VERSION"; then
           echo "Required iOS simulator runtime now installed."
-        elif xcrun simctl list runtimes | grep -q "iOS"; then
+        elif [ -z "$SDK_BUILD_VERSION" ] && [ -z "$SDK_VERSION" ] && xcrun simctl list runtimes | grep -q "iOS"; then
           echo "iOS simulator runtime now installed."
         else
           echo "iOS simulator runtime still missing after download attempts."
           xcrun simctl list runtimes
           exit 1
         fi
-      fi
+      }
 
     displayName: Select Xcode
