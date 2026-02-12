@@ -189,7 +189,6 @@ internal readonly partial struct UnicodeText : IParsedText
 		TextTrimming textTrimming,
 		bool isSpellCheckEnabled,
 		IFontCacheUpdateListener fontListener,
-		bool forMeasure,
 		out Size calculatedSize)
 	{
 		CI.Assert(maxLines >= 0);
