@@ -993,7 +993,9 @@ namespace Uno.UI
 			/// When false, restricts DataContext propagation to FrameworkElement instances only.
 			/// </summary>
 			[EditorBrowsable(EditorBrowsableState.Never)]
-			public static bool LegacyDataContextPropagation { get; set; } = true;
+			public static bool LegacyDataContextPropagation { get; set; } = false;
+			// ^ just turning this off for now, to check runtime test results with this settings
+			// todo@xy: restore value back to true
 		}
 
 		/// <summary>
