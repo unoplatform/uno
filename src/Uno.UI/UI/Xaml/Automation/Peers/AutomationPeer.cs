@@ -511,14 +511,14 @@ public partial class AutomationPeer : DependencyObject
 	/// <param name="eventId">The event to raise.</param>
 	public void RaiseAutomationEvent(AutomationEvents eventId)
 	{
-#if __SKIA__
-		if (ListenerExists(eventId))
-		{
-			AutomationPeerListener?.NotifyAutomationEvent(this, eventId);
-		}
-#else
+		// TODO Implement when implemented in WinUI
+		// #if __SKIA__
+		// 		if (ListenerExists(eventId))
+		// 		{
+		// 			AutomationPeerListener?.NotifyAutomationEvent(this, eventId);
+		// 		}
+		// #else
 		ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseAutomationEvent(AutomationEvents eventId)", LogLevel.Warning);
-#endif
 	}
 
 	/// <summary>
@@ -530,15 +530,14 @@ public partial class AutomationPeer : DependencyObject
 	/// <param name="activityId">The activity ID.</param>
 	public void RaiseNotificationEvent(AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)
 	{
-#if __SKIA__
-		// TODO (DOTI): Validate the use of: UIAXcp::AENotification, In docs there is no notifi. only in the source code
-		if (ListenerExists(AutomationEvents.Notification))
-		{
-			AutomationPeerListener?.NotifyNotificationEvent(this, notificationKind, notificationProcessing, displayString, activityId);
-		}
-#else
+		// #if __SKIA__
+		// 		// TODO (DOTI): Validate the use of: UIAXcp::AENotification, In docs there is no notifi. only in the source code
+		// 		if (ListenerExists(AutomationEvents.Notification))
+		// 		{
+		// 			AutomationPeerListener?.NotifyNotificationEvent(this, notificationKind, notificationProcessing, displayString, activityId);
+		// 		}
+		// #else
 		ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseNotificationEvent(AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)", LogLevel.Warning);
-#endif
 	}
 
 #if !__SKIA__
