@@ -255,7 +255,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			return;
 		}
 
-		var unlayoutedLines = SplitTextIntoLines(text, _rtl, _inlines, availableSize, textWrapping, maxLines, textTrimming, lineStackingStrategy, lineHeight, fontListener);
+		var unlayoutedLines = SplitTextIntoLines(text, _rtl, _inlines, availableSize, textWrapping, maxLines, textTrimming, lineStackingStrategy, lineHeight, defaultFontDetails, fontListener);
 		var lines = LayoutLines(unlayoutedLines, textAlignment.Value, lineStackingStrategy, lineHeight, (float)availableSize.Width, defaultFontDetails);
 
 		_lines = maxLines == 0 || maxLines >= lines.Count ? lines : lines[..maxLines];
@@ -282,7 +282,8 @@ internal readonly partial struct UnicodeText : IParsedText
 	/// <returns>The runs of each run are sorted according to the visual order.</returns>
 	private static List<(List<ShapedLineBrokenBidiRun> runs, int startInText, int endInText)> SplitTextIntoLines(
 		string text, bool rtl, List<ReadonlyInlineCopy> inlines, Size availableSize, TextWrapping textWrapping,
-		int maxLines, TextTrimming textTrimming, LineStackingStrategy lineStackingStrategy, float lineHeight, IFontCacheUpdateListener fontListener)
+		int maxLines, TextTrimming textTrimming, LineStackingStrategy lineStackingStrategy, float lineHeight,
+		FontDetails defaultFontDetails, IFontCacheUpdateListener fontListener)
 	{
 		var logicallyOrderedRuns = new List<BidiRun>();
 		var logicallyOrderedLineBreakingOpportunities = new List<(int indexInInline, ReadonlyInlineCopy inline)>();
@@ -298,7 +299,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		var lineWidthForLineBreaking = textWrapping == TextWrapping.NoWrap ? float.PositiveInfinity : (float)availableSize.Width;
 		var linesWithLogicallyOrderedRuns = ApplyLineBreaking(lineWidthForLineBreaking, logicallyOrderedRuns, lineBreakingOpporunities, rtl, textWrapping);
 
-		var lastLineNeedsEllipsis = RemoveOutOfViewLines(linesWithLogicallyOrderedRuns, maxLines, lineStackingStrategy, lineHeight, availableSize);
+		var lastLineNeedsEllipsis = RemoveOutOfViewLines(linesWithLogicallyOrderedRuns, maxLines, lineStackingStrategy, lineHeight, defaultFontDetails, availableSize);
 		if (textTrimming is TextTrimming.WordEllipsis)
 		{
 			ApplyWholeWordsTextTrimming(text, linesWithLogicallyOrderedRuns, lineBreakingIndices, (float)availableSize.Width, rtl, lastLineNeedsEllipsis);
@@ -472,7 +473,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 	}
 
-	private static bool RemoveOutOfViewLines(List<List<BidiRun>> linesWithLogicallyOrderedRuns, int maxLines, LineStackingStrategy lineStackingStrategy, float lineHeight, Size availableSize)
+	private static bool RemoveOutOfViewLines(List<List<BidiRun>> linesWithLogicallyOrderedRuns, int maxLines, LineStackingStrategy lineStackingStrategy, float lineHeight, FontDetails defaultFontDetails, Size availableSize)
 	{
 		var resultingLineCount = linesWithLogicallyOrderedRuns.Count;
 		if (maxLines > 0)
@@ -482,8 +483,19 @@ internal readonly partial struct UnicodeText : IParsedText
 		var totalHeight = 0f;
 		for (var lineIndex = 0; lineIndex < resultingLineCount; lineIndex++)
 		{
-			var fontDetailsWithMaxHeight = linesWithLogicallyOrderedRuns[lineIndex].MaxBy(r => r.fontDetails.LineHeight).fontDetails;
-			var (currentLineHeight, _) = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, fontDetailsWithMaxHeight, lineIndex == 0, lineIndex == resultingLineCount - 1);
+			var line = linesWithLogicallyOrderedRuns[lineIndex];
+			float currentLineHeight;
+			if (line.Count == 0)
+			{
+				// Only the last line can be empty. All other lines either have a line break character or actual content since you can't wrap to a new line without having any content on the initial line.
+				CI.Assert(lineIndex == linesWithLogicallyOrderedRuns.Count - 1 && lineIndex != 0);
+				(currentLineHeight, _) = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, defaultFontDetails, false, true);
+			}
+			else
+			{
+				var fontDetailsWithMaxHeight = line.MaxBy(r => r.fontDetails.LineHeight).fontDetails;
+				(currentLineHeight, _) = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, fontDetailsWithMaxHeight, lineIndex == 0, lineIndex == resultingLineCount - 1);
+			}
 			totalHeight += currentLineHeight;
 			if (totalHeight > availableSize.Height && lineIndex > 0)
 			{
