@@ -164,7 +164,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly List<ReadonlyInlineCopy> _inlines;
 	private readonly List<LayoutedLine> _lines;
 	private readonly Cluster[] _textIndexToGlyph;
-	private readonly Size _desiredSize;
+	private readonly Size _calculatedSize;
 	private readonly string _text;
 	private readonly List<int> _wordBoundaries;
 	private readonly FontDetails _defaultFontDetails;
@@ -276,7 +276,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		var desiredHeight = _lines.Sum(l => l.lineHeight);
 		var desiredWidth = _lines.Max(l => l.runs.Sum(r => r.width));
-		_desiredSize = calculatedSize = new Size(desiredWidth, desiredHeight);
+		_calculatedSize = calculatedSize = new Size(desiredWidth, desiredHeight);
 	}
 
 	/// <returns>The runs of each run are sorted according to the visual order.</returns>
@@ -1429,8 +1429,8 @@ internal readonly partial struct UnicodeText : IParsedText
 			var alignmentOffset = _textAlignment switch
 			{
 				TextAlignment.Left => 0,
-				TextAlignment.Center => _desiredSize.Width / 2,
-				TextAlignment.Right => _desiredSize.Width,
+				TextAlignment.Center => _calculatedSize.Width / 2,
+				TextAlignment.Right => _calculatedSize.Width,
 				_ => throw new ArgumentOutOfRangeException()
 			};
 			return new Rect(alignmentOffset, 0, caretThickness, _defaultFontDetails.LineHeight);
@@ -1487,8 +1487,8 @@ internal readonly partial struct UnicodeText : IParsedText
 			var alignmentOffset = _textAlignment switch
 			{
 				TextAlignment.Left => 0,
-				TextAlignment.Center => _desiredSize.Width / 2,
-				TextAlignment.Right => _desiredSize.Width,
+				TextAlignment.Center => _calculatedSize.Width / 2,
+				TextAlignment.Right => _calculatedSize.Width,
 				_ => throw new ArgumentOutOfRangeException()
 			};
 			return new Rect(alignmentOffset, 0, 0, _defaultFontDetails.LineHeight);
@@ -1535,11 +1535,11 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
-		if (_desiredSize.Height < p.Y)
+		if (_calculatedSize.Height < p.Y)
 		{
 			if (extendedSelection)
 			{
-				p.Y = _desiredSize.Height;
+				p.Y = _calculatedSize.Height;
 			}
 			else
 			{
