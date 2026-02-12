@@ -396,7 +396,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				}
 				else
 				{
-					indexAtTrim = line[0].inline.StartIndex + line[0].inline.StartIndex + 1; // at least one character
+					indexAtTrim = line[0].inline.StartIndex + line[0].startInInline + 1; // at least one character
 				}
 			}
 
