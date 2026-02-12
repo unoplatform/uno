@@ -294,7 +294,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		var lineBreakingOpporunities = SplitByLineBreakingOpportunities(logicallyOrderedRuns, logicallyOrderedLineBreakingOpportunities).ToList();
-		var lineBreakingIndices = lineBreakingOpporunities.Select(t => t.endIndexInLastRun + logicallyOrderedRuns[t.endRunIndex - 1].startInInline).ToList();
+		var lineBreakingIndices = lineBreakingOpporunities.Select(t => t.endIndexInLastRun + logicallyOrderedRuns[t.endRunIndex - 1].inline.StartIndex).ToList();
 
 		var lineWidthForLineBreaking = textWrapping == TextWrapping.NoWrap ? float.PositiveInfinity : (float)availableSize.Width;
 		var linesWithLogicallyOrderedRuns = ApplyLineBreaking(lineWidthForLineBreaking, logicallyOrderedRuns, lineBreakingOpporunities, rtl, textWrapping);
