@@ -42,6 +42,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private const byte UBIDI_DEFAULT_LTR = 0xfe;
 	private const int UBIDI_LTR = 0;
 	private const int UBIDI_RTL = 1;
+	private const string HorizontalEllipsis = "\u2026";
 
 	// A readonly snapshot of an Inline that is referenced by individual text runs after splitting. It's a class
 	// and not a struct because we don't want to copy the same Inline for each run.
@@ -336,7 +337,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			for (var endRunIndex = line.Count - 1; endRunIndex >= 0; endRunIndex--)
 			{
 				var testLastRun = line[endRunIndex];
-				var testEllipses = ShapeRun("\u2026", rtl, testLastRun.fontDetails, null, false);
+				var testEllipses = ShapeRun(HorizontalEllipsis, rtl, testLastRun.fontDetails, null, false);
 				var testEllipsesWidth = RunWidth(testEllipses, testLastRun.fontDetails);
 				var testLineWidthWithoutTrailingSpaces = MeasureContiguousRunSequence(0, line, 0, 0, endRunIndex + 1, testLastRun.endInInline, rtl);
 				if (testLineWidthWithoutTrailingSpaces + testEllipsesWidth <= availableWidth)
@@ -352,7 +353,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 			if (ellipses.Length == 0)
 			{
-				ellipses = ShapeRun("\u2026", rtl, lastRun.fontDetails, null, false);
+				ellipses = ShapeRun(HorizontalEllipsis, rtl, lastRun.fontDetails, null, false);
 				ellipsesWidth = RunWidth(ellipses, lastRun.fontDetails);
 			}
 
@@ -443,7 +444,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				{
 					lineBreakingOpportunity = lineBreakingOpportunities[lineBreakingOpportunityIndex];
 					var lastRun = line[endRunIndex];
-					var ellipses = ShapeRun("\u2026", rtl, lastRun.fontDetails, null, false);
+					var ellipses = ShapeRun(HorizontalEllipsis, rtl, lastRun.fontDetails, null, false);
 					var ellipsesWidth = RunWidth(ellipses, lastRun.fontDetails);
 					var (measuringEndRunIndex, endIndexInLastRun) = (endRunIndex + 1, lineBreakingOpportunity - lastRun.inline.StartIndex);
 					var testLineWidthWithoutTrailingSpaces = MeasureContiguousRunSequence(0, line, 0, 0, measuringEndRunIndex, endIndexInLastRun, rtl);
@@ -524,7 +525,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				if (inline.IsEllipsis)
 				{
 					var ellipsisRun = line[^1];
-					var ellipsisGlyphs = ShapeRun("\u2026", ellipsisRun.rtl, ellipsisRun.fontDetails, null, false);
+					var ellipsisGlyphs = ShapeRun(HorizontalEllipsis, ellipsisRun.rtl, ellipsisRun.fontDetails, null, false);
 					var shapedEllipsisRun = new ShapedLineBrokenBidiRun(inline, ellipsisRun.startInInline, ellipsisRun.endInInline, ellipsisGlyphs, ellipsisRun.fontDetails, ellipsisRun.rtl);
 					if (rtl)
 					{
