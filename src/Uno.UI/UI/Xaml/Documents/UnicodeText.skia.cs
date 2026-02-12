@@ -405,7 +405,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			var trimmedText = text[indexAtTrim..trimEnd];
 			var ellipsesRun = ReadonlyInlineCopy.CreateEllipsis(lastRun, trimmedText, indexAtTrim);
 			line.RemoveRange(indexOfRunToTrimAt + 1, line.Count - (indexOfRunToTrimAt + 1));
-			line.Add(lastRun with { endInInline = indexAtTrim });
+			line.Add(lastRun with { endInInline = indexAtTrim - lastRun.inline.StartIndex });
 			line.Add(new BidiRun(ellipsesRun, 0, trimmedText.Length, lastRun.rtl, lastRun.fontDetails));
 		}
 	}
@@ -458,7 +458,7 @@ internal readonly partial struct UnicodeText : IParsedText
 						var trimmedText = text[indexAtTrim..trimEnd];
 						var ellipsesRun = ReadonlyInlineCopy.CreateEllipsis(lastRun, trimmedText, indexAtTrim);
 						line.RemoveRange(endRunIndex, line.Count - endRunIndex);
-						line.Add(lastRun with { endInInline = indexAtTrim });
+						line.Add(lastRun with { endInInline = indexAtTrim - lastRun.inline.StartIndex });
 						line.Add(new BidiRun(ellipsesRun, 0, trimmedText.Length, lastRun.rtl, lastRun.fontDetails));
 						foundTrimPoint = true;
 						break;
