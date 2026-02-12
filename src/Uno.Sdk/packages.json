@@ -87,7 +87,7 @@
 	},
 	{
 		"group": "settings",
-		"version": "1.8-dev.19",
+		"version": "1.8.0-dev.35",
 		"packages": [
 			"Uno.Settings.DevServer"
 		]
@@ -378,7 +378,7 @@
 	},
 	{
 		"group": "AppMcp",
-		"version": "1.2.0-dev.8",
+		"version": "11.2.0-dev.18",
 		"packages": [
 			"Uno.UI.App.Mcp"
 		]
