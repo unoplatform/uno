@@ -38,7 +38,7 @@ Fourth, Uno Platform provides [Hot Design](https://platform.uno/hot-design/) for
 
 Fifth, Uno Platform aligns with WinUI, which uses a flavor of XAML most Windows developers are familiar with. It also allows you to tap into WinUI's rich styling engine to create pixel-perfect applications.
 
-Sixth, Uno Platform provides an excellent integration with Figma through either the [Figma plugin](https://platform.uno/unofigma/) for pixel-perfect XAML export for Uno Platform apps using a deterministic approach. Or you can use your Figma designs with Uno Platform MCPs to have those designs transformed into markup by prompting your favorite agent or CLI tool.
+Sixth, Uno Platform provides excellent integration with Figma through the [Figma plugin](https://platform.uno/unofigma/) for pixel-perfect XAML export for Uno Platform apps using a deterministic approach, or you can use your Figma designs with Uno Platform MCPs to have those designs transformed into markup by prompting your favorite agent or CLI tool.
 
 Finally, by extending the reach of WinUI across all supported platforms, it also allows you to leverage the rich 1st and 3rd party ecosystem and bring rich controls everywhere like `DataGrid`, `TreeView`, `TabView`, `NavigationView`, and many others.
 
