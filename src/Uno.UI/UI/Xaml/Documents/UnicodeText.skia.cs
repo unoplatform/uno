@@ -761,22 +761,80 @@ internal readonly partial struct UnicodeText : IParsedText
 	// the rest on the next line.
 	private static (int endRunIndex, int endIndexInLastRun) SplitRunSequenceForWrapping(float lineWidth, bool rtl, List<BidiRun> logicallyOrderedRuns, int firstRunIndex, int startingIndexInFirstRun, int endRunIndex, int endIndexInLastRun)
 	{
-		for (int testEndRunIndex = endRunIndex; testEndRunIndex > firstRunIndex; testEndRunIndex--)
+		int totalLength = 0;
+		for (int i = firstRunIndex; i < endRunIndex; i++)
 		{
-			for (int testEndIndexInLastRun = testEndRunIndex == endRunIndex ? endIndexInLastRun - 1 : logicallyOrderedRuns[testEndRunIndex - 1].endInInline;
-				 testEndIndexInLastRun > (testEndRunIndex - 1 == firstRunIndex ? startingIndexInFirstRun : logicallyOrderedRuns[testEndRunIndex - 1].startInInline);
-				 testEndIndexInLastRun--)
+			int start = (i == firstRunIndex) ? startingIndexInFirstRun : logicallyOrderedRuns[i].startInInline;
+			int end = (i == endRunIndex - 1) ? endIndexInLastRun : logicallyOrderedRuns[i].endInInline;
+			totalLength += end - start;
+		}
+
+		if (totalLength == 0)
+		{
+			return (firstRunIndex + 1, startingIndexInFirstRun);
+		}
+
+		(int runIndex, int charIndex) GetGlobalCharPosition(int globalIndex)
+		{
+			int currentLength = 0;
+			for (int i = firstRunIndex; i < endRunIndex; i++)
 			{
-				if (char.IsHighSurrogate(logicallyOrderedRuns[testEndRunIndex - 1].inline.Text[testEndIndexInLastRun - 1]))
+				int start = (i == firstRunIndex) ? startingIndexInFirstRun : logicallyOrderedRuns[i].startInInline;
+				int end = (i == endRunIndex - 1) ? endIndexInLastRun : logicallyOrderedRuns[i].endInInline;
+				int runLen = end - start;
+
+				if (currentLength + runLen >= globalIndex)
 				{
+					return (i, start + (globalIndex - currentLength));
+				}
+				currentLength += runLen;
+			}
+			return (endRunIndex - 1, endIndexInLastRun);
+		}
+
+		int low = 1;
+		int high = totalLength;
+		int bestLength = 0;
+
+		while (low <= high)
+		{
+			int mid = low + (high - low) / 2;
+			int testLen = mid;
+
+			var (r, c) = GetGlobalCharPosition(testLen);
+
+			// Check if we split a surrogate pair. If so, we can't end here.
+			// The original iterative code skips this potential split point, which effectively means
+			// picking the shorter length. We do the same here.
+			if (c > 0 && char.IsHighSurrogate(logicallyOrderedRuns[r].inline.Text[c - 1]))
+			{
+				testLen--;
+				if (testLen == 0)
+				{
+					// 0 always fits
+					bestLength = Math.Max(bestLength, 0); // Should be 0
+					low = mid + 1;
 					continue;
 				}
-				var widthWithoutTrailingSpaces = MeasureContiguousRunSequence(lineWidth, logicallyOrderedRuns, firstRunIndex, startingIndexInFirstRun, testEndRunIndex, testEndIndexInLastRun, rtl);
-				if (widthWithoutTrailingSpaces <= lineWidth)
-				{
-					return (testEndRunIndex, testEndIndexInLastRun);
-				}
+				(r, c) = GetGlobalCharPosition(testLen);
 			}
+
+			var widthWithoutTrailingSpaces = MeasureContiguousRunSequence(lineWidth, logicallyOrderedRuns, firstRunIndex, startingIndexInFirstRun, r + 1, c, rtl); // r + 1 because endRunIndex is exclusive
+			if (widthWithoutTrailingSpaces <= lineWidth)
+			{
+				bestLength = testLen;
+				low = mid + 1;
+			}
+			else
+			{
+				high = mid - 1;
+			}
+		}
+
+		if (bestLength > 0)
+		{
+			var (r, c) = GetGlobalCharPosition(bestLength);
+			return (r + 1, c);
 		}
 
 		// nothing fits, default to having a single character in the first run
