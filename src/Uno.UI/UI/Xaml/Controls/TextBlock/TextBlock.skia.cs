@@ -116,6 +116,7 @@ namespace Microsoft.UI.Xaml.Controls
 						? null
 						: TextAlignment,
 				TextWrapping,
+				TextTrimming,
 				IsSpellCheckEnabled,
 				this,
 				out size);
