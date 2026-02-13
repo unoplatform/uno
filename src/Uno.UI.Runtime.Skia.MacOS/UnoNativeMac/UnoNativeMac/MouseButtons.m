@@ -12,13 +12,6 @@
 // Simple depth counters per button index (0..7). Main-thread access is fine for AppKit.
 static int sDepth[8] = {0};
 
-+ (void)reset
-{
-    for (int i = 0; i < 8; i++) {
-        sDepth[i] = 0;
-    }
-}
-
 + (void)track:(NSEvent *)e
 {
     switch (e.type) {
@@ -78,8 +71,12 @@ static int sDepth[8] = {0};
 }
 
 + (NSInteger)buttonMask:(NSEvent *)e
-{
-    [self reset];
+{    
+    // reset the mask in cases where we believe we missed a MouseUp
+    for (int i = 0; i < 8; i++) {
+        sDepth[i] = 0;
+    }
+
     [self track:e];
     return [self mask];
 }
