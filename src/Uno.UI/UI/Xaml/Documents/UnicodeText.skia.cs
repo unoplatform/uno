@@ -716,6 +716,9 @@ internal readonly partial struct UnicodeText : IParsedText
 	private static float MeasureContiguousRunSequence(float currentLineWidth, List<BidiRun> logicallyOrderedRuns, int firstRunIndex, int startingIndexInFirstRun, int endRunIndex, int endIndexInLastRun, bool rtl)
 	{
 		var backup1 = logicallyOrderedRuns[firstRunIndex];
+		if (endRunIndex - 1 < 0 || endRunIndex - 1 >= logicallyOrderedRuns.Count)
+		{
+		}
 		var backup2 = logicallyOrderedRuns[endRunIndex - 1];
 		logicallyOrderedRuns[firstRunIndex] = logicallyOrderedRuns[firstRunIndex] with { startInInline = startingIndexInFirstRun };
 		logicallyOrderedRuns[endRunIndex - 1] = logicallyOrderedRuns[endRunIndex - 1] with { endInInline = endIndexInLastRun };
@@ -761,84 +764,69 @@ internal readonly partial struct UnicodeText : IParsedText
 	// the rest on the next line.
 	private static (int endRunIndex, int endIndexInLastRun) SplitRunSequenceForWrapping(float lineWidth, bool rtl, List<BidiRun> logicallyOrderedRuns, int firstRunIndex, int startingIndexInFirstRun, int endRunIndex, int endIndexInLastRun)
 	{
-		int totalLength = 0;
-		for (int i = firstRunIndex; i < endRunIndex; i++)
-		{
-			int start = (i == firstRunIndex) ? startingIndexInFirstRun : logicallyOrderedRuns[i].startInInline;
-			int end = (i == endRunIndex - 1) ? endIndexInLastRun : logicallyOrderedRuns[i].endInInline;
-			totalLength += end - start;
-		}
+		var start = (firstRunIndex + 1, startingIndexInFirstRun + 1);
+		var end = (endRunIndex, endIndexInLastRun);
 
-		if (totalLength == 0)
+		var checkInvariant = ((int, int) test) =>
 		{
-			return (firstRunIndex + 1, startingIndexInFirstRun);
-		}
+			var widthWithoutTrailingSpaces = MeasureContiguousRunSequence(lineWidth, logicallyOrderedRuns, firstRunIndex, startingIndexInFirstRun, test.Item1, test.Item2, rtl);
+			return widthWithoutTrailingSpaces <= lineWidth;
+		};
 
-		(int runIndex, int charIndex) GetGlobalCharPosition(int globalIndex)
+		var getMidpoint = ((int, int) start, (int, int) end) =>
 		{
-			int currentLength = 0;
-			for (int i = firstRunIndex; i < endRunIndex; i++)
+			if (start.Item1 == end.Item1)
 			{
-				int start = (i == firstRunIndex) ? startingIndexInFirstRun : logicallyOrderedRuns[i].startInInline;
-				int end = (i == endRunIndex - 1) ? endIndexInLastRun : logicallyOrderedRuns[i].endInInline;
-				int runLen = end - start;
-
-				if (currentLength + runLen >= globalIndex)
+				var midIndexInLastRun = (start.Item2 + end.Item2) / 2;
+				if (char.IsHighSurrogate(logicallyOrderedRuns[start.Item1 - 1].inline.Text[midIndexInLastRun - 1]))
 				{
-					return (i, start + (globalIndex - currentLength));
+					midIndexInLastRun--;
 				}
-				currentLength += runLen;
-			}
-			return (endRunIndex - 1, endIndexInLastRun);
-		}
-
-		int low = 1;
-		int high = totalLength;
-		int bestLength = 0;
-
-		while (low <= high)
-		{
-			int mid = low + (high - low) / 2;
-			int testLen = mid;
-
-			var (r, c) = GetGlobalCharPosition(testLen);
-
-			// Check if we split a surrogate pair. If so, we can't end here.
-			// The original iterative code skips this potential split point, which effectively means
-			// picking the shorter length. We do the same here.
-			if (c > 0 && char.IsHighSurrogate(logicallyOrderedRuns[r].inline.Text[c - 1]))
-			{
-				testLen--;
-				if (testLen == 0)
-				{
-					// 0 always fits
-					bestLength = Math.Max(bestLength, 0); // Should be 0
-					low = mid + 1;
-					continue;
-				}
-				(r, c) = GetGlobalCharPosition(testLen);
-			}
-
-			var widthWithoutTrailingSpaces = MeasureContiguousRunSequence(lineWidth, logicallyOrderedRuns, firstRunIndex, startingIndexInFirstRun, r + 1, c, rtl); // r + 1 because endRunIndex is exclusive
-			if (widthWithoutTrailingSpaces <= lineWidth)
-			{
-				bestLength = testLen;
-				low = mid + 1;
+				return (start.Item1, midIndexInLastRun);
 			}
 			else
 			{
-				high = mid - 1;
+				var midRunIndex = (start.Item1 + end.Item1) / 2;
+				return (midRunIndex, logicallyOrderedRuns[midRunIndex].startInInline + 1);
 			}
-		}
+		};
 
-		if (bestLength > 0)
+		var (endRunIndexResult, endIndexInLastRunResult) = FindMaxSatisfyingInvariant(start, end, checkInvariant, getMidpoint);
+
+		if (checkInvariant((endRunIndexResult, endIndexInLastRunResult)))
 		{
-			var (r, c) = GetGlobalCharPosition(bestLength);
-			return (r + 1, c);
+			return (endRunIndexResult, endIndexInLastRunResult);
 		}
 
 		// nothing fits, default to having a single character in the first run
 		return (firstRunIndex + 1, startingIndexInFirstRun + (char.IsSurrogate(logicallyOrderedRuns[firstRunIndex].inline.Text[startingIndexInFirstRun]) ? 2 : 1));
+	}
+
+	private static T FindMaxSatisfyingInvariant<T>(
+			T start,
+			T end,
+			Func<T, bool> checkInvariant,
+			Func<T, T, T> getMidpoint)
+	{
+		while (!EqualityComparer<T>.Default.Equals(start, end))
+		{
+			var mid = getMidpoint(start, end);
+
+			if (EqualityComparer<T>.Default.Equals(mid, start))
+			{
+				return checkInvariant(end) ? end : start;
+			}
+
+			if (checkInvariant(mid))
+			{
+				start = mid;
+			}
+			else
+			{
+				end = mid;
+			}
+		}
+		return start;
 	}
 
 	private static List<List<BidiRun>> ApplyLineBreaking(float lineWidth, List<BidiRun> logicallyOrderedRuns,
