@@ -11,8 +11,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface MouseButtons : NSObject
 
-+ (void)reset;
-
 /// Tracks NSEvents received (from -[NSWindow sendEvent:] or -[NSApplication sendEvent:]).
 + (void)track:(NSEvent *)event;
 
