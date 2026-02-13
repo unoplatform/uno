@@ -24,8 +24,8 @@
 		<None Include="**\*.iOS.cs" Exclude="bin\**\*.iOS.cs;obj\**\*.iOS.cs" Condition="!$(IsIOSOrCatalyst)" />
 		<Compile Remove="**\*.iOS.cs" Condition="!$(IsIOSOrCatalyst)" />
 
-		<None Include="**\*.iOSmacOS.cs" Exclude="bin\**\*.iOSmacOS.cs;obj\**\*.iOSmacOS.cs" Condition="!$(IsMacOS) and !$(IsIOSOrCatalyst)" />
-		<Compile Remove="**\*.iOSmacOS.cs" Condition="!$(IsMacOS) and !$(IsIOSOrCatalyst)" />
+		<None Include="**\*.iOSmacOS.cs" Exclude="bin\**\*.iOSmacOS.cs;obj\**\*.iOSmacOS.cs" Condition="!$(IsIOSOrCatalyst)" />
+		<Compile Remove="**\*.iOSmacOS.cs" Condition="!$(IsIOSOrCatalyst)" />
 		
 		<None Include="**\*.tvOS.cs" Exclude="bin\**\*.tvOS.cs;obj\**\*.tvOS.cs" Condition="!$(IsTvOS)" />
 		<Compile Remove="**\*.tvOS.cs" Condition="!$(IsTvOS)" />
