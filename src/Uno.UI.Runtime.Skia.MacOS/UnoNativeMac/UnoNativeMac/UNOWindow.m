@@ -974,15 +974,15 @@ NSOperatingSystemVersion _osVersion;
             // mouse
             // FIXME: NSEvent.pressedMouseButtons is returning a wrong value in Sequoia when using an extenal trackpad
             if (_osVersion.majorVersion >= 15) {
-                int32_t mask = (uint32)[MouseButtons mask];
+                NSInteger mask = [MouseButtons mask];
 
                 // If we think buttons are down, but AppKit says NONE are down, we likely missed a MouseUp.
                 // We trust AppKit and reset our counters.
-                if(mask != 0 && ((uint32)NSEvent.pressedMouseButtons) == 0 && data.mouseButtons == mask) {
-                    mask = (uint32)[MouseButtons buttonMask:event];
+                if (mask != 0 && ((uint32)NSEvent.pressedMouseButtons) == 0 && data.mouseButtons == (uint32)mask) {
+                    mask = [MouseButtons buttonMask:event];
                 }
 
-                data.mouseButtons = mask;
+                data.mouseButtons = (uint32)mask;
 
             } else {
                 data.mouseButtons = (uint32)NSEvent.pressedMouseButtons;
