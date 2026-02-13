@@ -231,7 +231,7 @@ public
 		_lastNavigationData = destinationUrl;
 		_isNavigationCompleted = false;
 
-#if __IOS__ || __MACOS__
+#if __IOS__
 		// Inject the JavaScript interceptor for fetch/XMLHttpRequest header injection
 		// This is done after navigation completes so the DOM is available
 		InjectWebResourceInterceptor();
