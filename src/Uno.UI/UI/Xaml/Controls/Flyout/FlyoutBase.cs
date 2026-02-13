@@ -308,7 +308,17 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				nameof(ShowMode),
 				typeof(FlyoutShowMode),
 				typeof(FlyoutBase),
-				new FrameworkPropertyMetadata(FlyoutShowMode.Standard));
+				new FrameworkPropertyMetadata(FlyoutShowMode.Standard, OnShowModePropertyChanged));
+
+		private static void OnShowModePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+		{
+			// UpdateStateToShowMode normalizes Auto → Standard and writes back to ShowMode,
+			// but DependencyProperty coalescing prevents infinite recursion.
+			if (sender is FlyoutBase flyoutBase)
+			{
+				flyoutBase.UpdateStateToShowMode((FlyoutShowMode)args.NewValue);
+			}
+		}
 
 		/// <summary>
 		/// Gets a value that indicates whether the flyout should show commands

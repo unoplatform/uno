@@ -259,7 +259,14 @@ public partial class TextBox
 
 	private void OnClipboardContentChanged(object sender, object e)
 	{
-		DispatcherQueue.TryEnqueue(() => UpdateCanPasteClipboardContent());
+		if (DispatcherQueue.HasThreadAccess)
+		{
+			UpdateCanPasteClipboardContent();
+		}
+		else
+		{
+			DispatcherQueue.TryEnqueue(() => UpdateCanPasteClipboardContent());
+		}
 	}
 
 	private void TrySetCurrentlyTyping(bool newValue)
@@ -606,14 +613,13 @@ public partial class TextBox
 	private FlyoutBase _subscribedContextFlyout;
 
 	// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (lines 5292-5302)
-	// HasContextFlyout() and HasSelectionFlyout()
-	private bool HasContextFlyout() => ContextFlyout is not null;
 	private bool HasSelectionFlyout() => SelectionFlyout is not null;
 
 	partial void OnLoadedPartial()
 	{
 		// Ensure the default ContextFlyout has its Opening event subscribed.
-		// This is needed because default flyouts (via GetDefaultValue) don't trigger OnContextFlyoutChanged.
+		// Default flyouts provided via GetDefaultValue don't trigger OnContextFlyoutChanged,
+		// so we must manually subscribe here. OnUnloaded properly cleans up the subscription.
 		EnsureContextFlyoutSubscription();
 	}
 
@@ -659,6 +665,7 @@ public partial class TextBox
 		if (sender is FlyoutBase flyout && flyout.ShowMode == FlyoutShowMode.Standard)
 		{
 			_forceFocusedVisualState = true;
+			UpdateDisplaySelection();
 
 			// Subscribe to Closed for cleanup when flyout closes and focus isn't on this TextBox
 			flyout.Closed -= OnContextFlyoutClosedForForceFocus;

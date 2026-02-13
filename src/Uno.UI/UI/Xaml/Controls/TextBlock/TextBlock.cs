@@ -1023,7 +1023,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/text/common/TextSelectionManager.cpp
+			// Mirrors WinUI behavior in TextSelectionManager.cpp:
 			// Queue SelectionFlyout visibility update after pointer release (for touch/pen input)
 			that.OnPointerReleasedForSelectionFlyout(e);
 #if !__WASM__
