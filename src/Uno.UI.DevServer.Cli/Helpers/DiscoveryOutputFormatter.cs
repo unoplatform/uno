@@ -1,86 +1,116 @@
 using System.Collections.Generic;
-using System.Text;
+using Spectre.Console;
 
 namespace Uno.UI.DevServer.Cli.Helpers;
 
 internal static class DiscoveryOutputFormatter
 {
-	public static string ToPlainText(DiscoveryInfo info, bool useColor)
+	public static void WritePlainText(DiscoveryInfo info)
 	{
-		var sb = new StringBuilder();
+		var table = new Table()
+			.Border(TableBorder.Minimal)
+			.Title("[white]Discovery[/]")
+			.AddColumn(new TableColumn("[grey]Key[/]").LeftAligned())
+			.AddColumn(new TableColumn("[grey]Value[/]").LeftAligned());
 
-		AppendValue(sb, "workingDirectory", info.WorkingDirectory);
-		AppendValue(sb, "unoSdkSource", info.UnoSdkSource);
-		AppendValue(sb, "unoSdkSourcePath", info.UnoSdkSourcePath);
-		AppendValue(sb, "unoSdkPackage", info.UnoSdkPackage);
-		AppendValue(sb, "unoSdkVersion", info.UnoSdkVersion);
-		AppendValue(sb, "unoSdkPath", info.UnoSdkPath);
-		AppendValue(sb, "packagesJsonPath", info.PackagesJsonPath);
-		AppendValue(sb, "devServerPackageVersion", info.DevServerPackageVersion);
-		AppendValue(sb, "devServerPackagePath", info.DevServerPackagePath);
-		AppendValue(sb, "settingsPackageVersion", info.SettingsPackageVersion);
-		AppendValue(sb, "settingsPackagePath", info.SettingsPackagePath);
-		AppendValue(sb, "dotNetVersion", info.DotNetVersion);
-		AppendValue(sb, "dotNetTfm", info.DotNetTfm);
-		AppendValue(sb, "hostPath", info.HostPath);
-		AppendValue(sb, "settingsPath", info.SettingsPath);
+		AddRow(table, "workingDirectory", info.WorkingDirectory);
 
-		AppendList(sb, "warnings", info.Warnings, useColor ? ConsoleColor.Yellow : null);
-		AppendList(sb, "errors", info.Errors, useColor ? ConsoleColor.Red : null);
+		AddSection(table, "Uno SDK");
+		AddRow(table, "source", info.UnoSdkSource);
+		AddRow(table, "sourcePath", info.UnoSdkSourcePath);
+		AddRow(table, "package", info.UnoSdkPackage);
+		AddRow(table, "version", info.UnoSdkVersion);
+		AddRow(table, "sdkPath", info.UnoSdkPath);
+		AddRow(table, "packagesJsonPath", info.PackagesJsonPath);
 
-		return sb.ToString();
+		AddSection(table, "DevServer");
+		AddRow(table, "devServerPackageVersion", info.DevServerPackageVersion);
+		AddRow(table, "devServerPackagePath", info.DevServerPackagePath);
+		AddRow(table, "hostPath", info.HostPath);
+
+		AddSection(table, "Settings");
+		AddRow(table, "settingsPackageVersion", info.SettingsPackageVersion);
+		AddRow(table, "settingsPackagePath", info.SettingsPackagePath);
+		AddRow(table, "settingsPath", info.SettingsPath);
+
+		AddSection(table, ".NET");
+		AddRow(table, "dotNetVersion", info.DotNetVersion);
+		AddRow(table, "dotNetTfm", info.DotNetTfm);
+
+		AnsiConsole.Write(table);
+
+		WriteList("warnings", info.Warnings, "yellow");
+		WriteList("errors", info.Errors, "red");
 	}
 
-	private static void AppendValue(StringBuilder sb, string key, string? value)
+	private static void AddRow(Table table, string key, string? value)
 	{
-		sb.Append(key);
-		sb.Append(": ");
-		sb.AppendLine(string.IsNullOrWhiteSpace(value) ? "<null>" : value);
+		if (string.IsNullOrWhiteSpace(value))
+		{
+			var cell = new Markup("[yellow]<null>[/]");
+			var hint = GetMissingHint(key);
+			if (!string.IsNullOrWhiteSpace(hint))
+			{
+				table.AddRow(
+					new Markup($"[white]{Escape(key)}[/]"),
+					new Markup($"[yellow]<null>[/] [grey](missing {Escape(hint)})[/]"));
+				return;
+			}
+			table.AddRow(new Markup($"[white]{Escape(key)}[/]"), cell);
+			return;
+		}
+
+		table.AddRow(
+			new Markup($"[white]{Escape(key)}[/]"),
+			new Markup($"[grey]{Escape(value)}[/]"));
 	}
 
-	private static void AppendList(StringBuilder sb, string key, IReadOnlyList<string> items, ConsoleColor? color)
+	private static void AddSection(Table table, string title)
+	{
+		table.AddEmptyRow();
+		table.AddRow(new Markup($"[aqua]{Escape(title)}[/]"), new Markup(""));
+	}
+
+	private static void WriteList(string key, IReadOnlyList<string> items, string color)
 	{
 		if (items.Count == 0)
 		{
 			return;
 		}
 
-		AppendHeader(sb, key, color);
+		AnsiConsole.Write(new Markup($"[{color}]{Escape(key)}[/]"));
+		AnsiConsole.WriteLine(":");
 
 		foreach (var item in items)
 		{
-			sb.Append("- ");
-			sb.AppendLine(item);
+			AnsiConsole.Write(new Markup("- "));
+			AnsiConsole.WriteLine(Escape(item));
 		}
 	}
 
-	private static void AppendHeader(StringBuilder sb, string key, ConsoleColor? color)
-	{
-		if (color is null || Console.IsOutputRedirected)
-		{
-			sb.Append(key);
-			sb.AppendLine(":");
-			return;
-		}
+	private static string Escape(string value)
+		=> Markup.Escape(value);
 
-		sb.Append(GetAnsiColor(color.Value));
-		sb.Append(key);
-		sb.AppendLine(":");
-		sb.Append(AnsiReset);
-	}
-
-	private static string GetAnsiColor(ConsoleColor color)
+	private static string? GetMissingHint(string key)
 	{
-		return color switch
+		return key switch
 		{
-			ConsoleColor.Red => "\u001b[31m",
-			ConsoleColor.Yellow => "\u001b[33m",
-			ConsoleColor.Cyan => "\u001b[36m",
-			ConsoleColor.Green => "\u001b[32m",
-			ConsoleColor.Gray => "\u001b[90m",
-			_ => ""
+			"unoSdkSource" => "global.json or project source",
+			"unoSdkSourcePath" => "global.json or project file path",
+			"unoSdkPackage" => "msbuild-sdks entry in global.json",
+			"unoSdkVersion" => "msbuild-sdks entry in global.json",
+			"unoSdkPath" => "restored Uno.Sdk package in NuGet cache",
+			"packagesJsonPath" => "Uno.Sdk targets/netstandard2.0/packages.json",
+			"devServerPackageVersion" => "Uno.WinUI.DevServer entry in packages.json",
+			"devServerPackagePath" => "Uno.WinUI.DevServer package in NuGet cache",
+			"settingsPackageVersion" => "uno.settings.devserver entry in packages.json",
+			"settingsPackagePath" => "uno.settings.devserver package in NuGet cache",
+			"dotNetVersion" => "dotnet --version output",
+			"dotNetTfm" => "parsed dotnet --version",
+			"hostPath" => "Uno.WinUI.DevServer host for current dotnet TFM",
+			"settingsPath" => "uno.settings.devserver tools/manager/Uno.Settings.dll",
+			_ => null
 		};
 	}
 
-	private const string AnsiReset = "\u001b[0m";
 }

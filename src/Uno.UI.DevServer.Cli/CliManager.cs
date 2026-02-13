@@ -131,8 +131,7 @@ internal class CliManager
 		}
 		else
 		{
-			var useColor = !Console.IsOutputRedirected;
-			Console.WriteLine(DiscoveryOutputFormatter.ToPlainText(info, useColor));
+			DiscoveryOutputFormatter.WritePlainText(info);
 		}
 
 		return info.Errors.Count > 0 ? 1 : 0;
