@@ -291,7 +291,8 @@ namespace Microsoft.UI.Xaml.Controls
 			InvalidateInlineAndRequireRepaint();
 		}
 
-		void UnicodeText.IFontCacheUpdateListener.Invalidate() => InvalidateInlineAndRequireRepaint();
+		void UnicodeText.IFontCacheUpdateListener.Invalidate() => InvalidateMeasure();
+
 		void IBlock.Invalidate(bool updateText) => InvalidateInlineAndRequireRepaint();
 		string IBlock.GetText() => Text;
 
