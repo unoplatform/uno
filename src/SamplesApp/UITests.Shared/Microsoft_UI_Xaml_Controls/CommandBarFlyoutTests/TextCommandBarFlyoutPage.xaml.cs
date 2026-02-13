@@ -21,6 +21,8 @@ using TextCommandBarFlyout = Microsoft.UI.Xaml.Controls.TextCommandBarFlyout;
 
 namespace MUXControlsTestApp;
 
+// RichTextBox was disabled for now as we don't support this control yet. GitHub issue #81
+
 [Sample("CommandBarFlyout", "WinUI")]
 public sealed partial class TextCommandBarFlyoutPage : TestPage
 {
