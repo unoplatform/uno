@@ -41,7 +41,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="Extensions\CGSizeExtensions.iOSmacOS.cs" />
+		<None Include="Extensions\CGSizeExtensions.Apple.cs" />
 		<None Include="Mixins\Android\BaseActivity.Callbacks.g.cs">
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
