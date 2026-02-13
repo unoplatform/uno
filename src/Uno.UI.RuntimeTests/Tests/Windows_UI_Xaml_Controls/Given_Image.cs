@@ -245,10 +245,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
-#if __ANDROID__ || __APPLE_UIKIT__
-		[Ignore("Fails")]
-#endif
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.IOS | RuntimeTestPlatforms.Android)]
 		public async Task When_Path_Contains_Space()
 		{
 			var img = new Image { Source = "ms-appx:///Assets/image with space in path.png" };
