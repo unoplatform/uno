@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>$(NetPreviousWinAppSDK)</TargetFramework>
+		<TargetFramework>$(NetCurrentWinAppSDK)</TargetFramework>
 		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
 		<RootNamespace>SamplesApp.Windows</RootNamespace>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
@@ -15,7 +15,6 @@
 		<!-- Disabled because of https://github.com/dotnet/sdk/issues/43680#issuecomment-2401193028 -->
 		<CsWinRTAotOptimizerEnabled>false</CsWinRTAotOptimizerEnabled>
 	</PropertyGroup>
-
 	<Import Project="../../targetframework-override.props" />
 
 	<ItemGroup>
@@ -38,7 +37,7 @@
 		<PackageReference Include="Uno.Core.Extensions.Compatibility" />
 		<PackageReference Include="Uno.Core.Extensions" />
 		<PackageReference Include="IdentityModel.OidcClient" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
 		<PackageReference Include="CommunityToolkit.WinUI.Lottie" Version="8.0.0-rc" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 

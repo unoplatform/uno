@@ -94,7 +94,8 @@ stages:
 
 - stage: runtime_tests_skia_ios
   displayName: Tests - iOS Skia
-  condition: and(succeededOrFailed(), false) # Temporarily disabled: runner image propagation not done yet (https://github.com/actions/runner-images/pull/13607)
+  # TODO: Revert after verifying iOS/macOS CI health - temporarily enabled for all builds
+  condition: succeededOrFailed()
   dependsOn:
     - binaries_build_native_macos
 
@@ -146,7 +147,8 @@ stages:
 
 - stage: runtime_tests_skia_macos
   displayName: Tests - Desktop Skia macOS
-  condition: and(succeededOrFailed(), false) # Temporarily disabled: runner image propagation not done yet (https://github.com/actions/runner-images/pull/13607)
+  # TODO: Revert after verifying iOS/macOS CI health - temporarily enabled for all builds
+  condition: succeededOrFailed()
   dependsOn:
     - Setup
     - runtime_tests_skia_build

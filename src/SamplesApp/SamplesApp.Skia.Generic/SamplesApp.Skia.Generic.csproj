@@ -1,9 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
+		<TargetFrameworks>$(NetCurrent)</TargetFrameworks>
 		<RollForward>Major</RollForward>
 	</PropertyGroup>
-
 	<Import Project="../../targetframework-override-noplatform.props" />
 
 	<PropertyGroup>

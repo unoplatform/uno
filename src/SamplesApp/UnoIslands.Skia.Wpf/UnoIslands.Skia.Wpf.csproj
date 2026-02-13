@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>$(NetWpfPreviousAndCurrent)</TargetFrameworks>
+		<TargetFrameworks>$(NetCurrentWpf)</TargetFrameworks>
 
 		<!--
 		Enable implicit dotnet runtime forward rolling, as a net5
@@ -10,7 +10,6 @@
 
 		<PreBuildUnoUITasks>true</PreBuildUnoUITasks>
 	</PropertyGroup>
-
 	<Import Project="../../targetframework-override-windows.props" />
 
 	<PropertyGroup>

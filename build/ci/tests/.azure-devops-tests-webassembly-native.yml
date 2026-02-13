@@ -63,7 +63,8 @@ jobs:
   cancelTimeoutInMinutes: 0
   dependsOn:
   - Wasm_UITests_Build
-  condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['SetScope.RequireNativeWasm'], 'true')))
+  # TODO: Revert after verifying PR CI coverage - temporarily enabled for all builds
+  condition: succeededOrFailed()
 
   container: nv-bionic-wasm
 
