@@ -557,6 +557,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private void UpdateStateToShowMode(FlyoutShowMode showMode)
 		{
+			// TODO Uno: m_shouldHideIfPointerMovesAway and m_shouldOverlayPassThroughAllInput not handled yet.
+
 			if (showMode == FlyoutShowMode.Auto)
 			{
 				showMode = FlyoutShowMode.Standard;

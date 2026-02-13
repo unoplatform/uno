@@ -30,12 +30,12 @@ partial class AppBarButton
 		UpdateContent();
 	}
 
-	// TODO Uno: This might not be needed - the flyout is owned by the AppBarButton, so it should be removed along with the button itself - needs leak test validation.
-	// Avoid memory leaks by unsubscribing and re-subscribing to flyout events
 	private protected override void OnLoaded()
 	{
 		base.OnLoaded();
 
+		// TODO Uno: This might not be needed - the flyout is owned by the AppBarButton, so it should be removed along with the button itself - needs leak test validation.
+		// Avoid memory leaks by unsubscribing and re-subscribing to flyout events
 		if (Flyout is not null)
 		{
 			AttachFlyout(Flyout);
@@ -52,7 +52,7 @@ partial class AppBarButton
 	{
 		base.OnUnloaded();
 
-		// Detach event handlers
+		// Detach event handlers for flyout
 		m_flyoutOpenedHandler.Disposable = null;
 		m_flyoutClosedHandler.Disposable = null;
 
