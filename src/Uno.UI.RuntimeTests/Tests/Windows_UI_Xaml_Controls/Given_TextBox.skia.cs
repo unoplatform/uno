@@ -4907,8 +4907,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Select(0, 4); // Select "Test"
 			await WindowHelper.WaitForIdle();
 
-			var flyout = SUT.ContextFlyout as TextCommandBarFlyout;
-			Assert.IsNotNull(flyout, "ContextFlyout should be TextCommandBarFlyout");
+			Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout, "ContextFlyout should be TextCommandBarFlyout");
+			var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
 
 			flyout.ShowAt(SUT);
 			await WindowHelper.WaitForIdle();
@@ -4940,8 +4940,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Select(0, 0);
 			await WindowHelper.WaitForIdle();
 
-			var flyout = SUT.ContextFlyout as TextCommandBarFlyout;
-			Assert.IsNotNull(flyout, "ContextFlyout should be TextCommandBarFlyout");
+			Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout, "ContextFlyout should be TextCommandBarFlyout");
+			var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
 
 			flyout.ShowAt(SUT);
 			await WindowHelper.WaitForIdle();
@@ -5001,8 +5001,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
-			var flyout = SUT.ContextFlyout as TextCommandBarFlyout;
-			Assert.IsNotNull(flyout, "PasswordBox should have TextCommandBarFlyout as ContextFlyout");
+			Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout, "PasswordBox should have TextCommandBarFlyout as ContextFlyout");
+			var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
 
 			flyout.ShowAt(SUT);
 			await WindowHelper.WaitForIdle();

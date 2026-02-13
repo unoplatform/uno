@@ -72,7 +72,8 @@ namespace Microsoft.UI.Xaml.Controls
 			Visual.Comment = $"{Visual.Comment}#text";
 #endif
 			// Ensure the default ContextFlyout has its Opening event subscribed.
-			// This is needed because default flyouts (via GetDefaultValue) don't trigger OnContextFlyoutChanged.
+			// Default flyouts provided via GetDefaultValue don't trigger OnContextFlyoutChanged,
+			// so we must manually subscribe here. OnUnloaded properly cleans up the subscription.
 			EnsureContextFlyoutSubscription();
 		}
 

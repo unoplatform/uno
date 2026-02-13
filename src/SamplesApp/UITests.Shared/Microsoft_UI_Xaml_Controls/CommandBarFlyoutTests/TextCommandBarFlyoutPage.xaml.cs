@@ -21,7 +21,10 @@ using TextCommandBarFlyout = Microsoft.UI.Xaml.Controls.TextCommandBarFlyout;
 
 namespace MUXControlsTestApp;
 
-// RichTextBox was disabled for now as we don't support this control yet. GitHub issue #81
+// RichEditBox and RichTextBlock code is commented out because Uno does not yet fully
+// support these controls (tracked by GitHub issue #81).
+// Re-enable the commented-out sections below when RichEditBox and RichTextBlock gain
+// support for ContextFlyout, SelectionFlyout, and text selection operations.
 
 [Sample("CommandBarFlyout", "WinUI")]
 public sealed partial class TextCommandBarFlyoutPage : TestPage

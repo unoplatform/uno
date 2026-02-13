@@ -134,23 +134,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnLoaded();
 
-			bool needsSyncPrimary = false;
-			bool needsSyncSecondary = false;
-
 			// Re-attach event handlers that were disposed in OnUnloaded
-			if (m_tpPrimaryCommands is not null && m_primaryCommandsChangedEventHandler.Disposable is null)
-			{
-				m_tpPrimaryCommands.VectorChanged += OnPrimaryCommandsChanged;
-				m_primaryCommandsChangedEventHandler.Disposable = Disposable.Create(() => m_tpPrimaryCommands.VectorChanged -= OnPrimaryCommandsChanged);
-				needsSyncPrimary = true;
-			}
-
-			if (m_tpSecondaryCommands is not null && m_secondaryCommandsChangedEventHandler.Disposable is null)
-			{
-				m_tpSecondaryCommands.VectorChanged += OnSecondaryCommandsChanged;
-				m_secondaryCommandsChangedEventHandler.Disposable = Disposable.Create(() => m_tpSecondaryCommands.VectorChanged -= OnSecondaryCommandsChanged);
-				needsSyncSecondary = true;
-			}
+			var (needsSyncPrimary, needsSyncSecondary) = SubscribeCommandCollectionEvents();
 
 			// Sync dynamic commands with actual commands in case changes happened while handlers were detached
 			if (needsSyncPrimary && m_tpDynamicPrimaryCommands is not null)
@@ -214,6 +199,28 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		private (bool PrimarySubscribed, bool SecondarySubscribed) SubscribeCommandCollectionEvents()
+		{
+			bool primarySubscribed = false;
+			bool secondarySubscribed = false;
+
+			if (m_tpPrimaryCommands is not null && m_primaryCommandsChangedEventHandler.Disposable is null)
+			{
+				m_tpPrimaryCommands.VectorChanged += OnPrimaryCommandsChanged;
+				m_primaryCommandsChangedEventHandler.Disposable = Disposable.Create(() => m_tpPrimaryCommands.VectorChanged -= OnPrimaryCommandsChanged);
+				primarySubscribed = true;
+			}
+
+			if (m_tpSecondaryCommands is not null && m_secondaryCommandsChangedEventHandler.Disposable is null)
+			{
+				m_tpSecondaryCommands.VectorChanged += OnSecondaryCommandsChanged;
+				m_secondaryCommandsChangedEventHandler.Disposable = Disposable.Create(() => m_tpSecondaryCommands.VectorChanged -= OnSecondaryCommandsChanged);
+				secondarySubscribed = true;
+			}
+
+			return (primarySubscribed, secondarySubscribed);
+		}
+
 		protected override void PrepareState()
 		{
 			base.PrepareState();
@@ -235,11 +242,7 @@ namespace Microsoft.UI.Xaml.Controls
 			PrimaryCommands = m_tpPrimaryCommands;
 			SecondaryCommands = m_tpSecondaryCommands;
 
-			m_tpPrimaryCommands.VectorChanged += OnPrimaryCommandsChanged;
-			m_primaryCommandsChangedEventHandler.Disposable = Disposable.Create(() => m_tpPrimaryCommands.VectorChanged -= OnPrimaryCommandsChanged);
-
-			m_tpSecondaryCommands.VectorChanged += OnSecondaryCommandsChanged;
-			m_secondaryCommandsChangedEventHandler.Disposable = Disposable.Create(() => m_tpSecondaryCommands.VectorChanged -= OnSecondaryCommandsChanged);
+			SubscribeCommandCollectionEvents();
 
 			m_tpDynamicPrimaryCommands = new ObservableCollection<ICommandBarElement>();
 			//	m_tpDynamicPrimaryCommands.Init(this, notifyCollectionChanging: false);
