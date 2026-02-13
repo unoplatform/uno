@@ -10,9 +10,8 @@
 	xmlns:wasm="http://uno.ui/wasm"
 	xmlns:netstdref="http://uno.ui/netstdref"
 	xmlns:skia="http://uno.ui/skia"
-	xmlns:macos="http://uno.ui/macos"
 	xmlns:uBehaviors="using:Uno.UI.Behaviors"
-	mc:Ignorable="d ios android wasm netstdref macos skia">
+	mc:Ignorable="d ios android wasm netstdref skia">
 
 	<!-- Default style for Microsoft.UI.Xaml.Controls.ScrollViewer -->
 	<Style TargetType="ScrollViewer"
@@ -275,8 +274,7 @@
 								Value="{TemplateBinding VerticalOffset}"
 								ViewportSize="{TemplateBinding ViewportHeight}"
 								HorizontalAlignment="Right"
-								skia:Width="16"
-								macos:Width="16"/>
+								skia:Width="16"/>
 
 							<ScrollBar
 								x:Name="HorizontalScrollBar"
@@ -288,8 +286,7 @@
 								Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
 								Value="{TemplateBinding HorizontalOffset}"
 								ViewportSize="{TemplateBinding ViewportWidth}"
-								skia:Height="16"
-								macos:Height="16"/>
+								skia:Height="16"/>
 
 							<Border
 								x:Name="ScrollBarSeparator"
@@ -326,7 +323,6 @@
 		</Setter>
 	</Style>
 
-	<macos:Style TargetType="ScrollViewer" BasedOn="{StaticResource DefaultScrollViewerStyle}" />
 	<netstdref:Style TargetType="ScrollViewer" BasedOn="{StaticResource DefaultScrollViewerStyle}" />
 	<ios:Style TargetType="ScrollViewer" BasedOn="{StaticResource NativeScrollViewerStyle}" />
 	<android:Style TargetType="ScrollViewer" BasedOn="{StaticResource NativeScrollViewerStyle}" />

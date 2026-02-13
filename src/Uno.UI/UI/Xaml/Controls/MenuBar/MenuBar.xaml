@@ -3,10 +3,8 @@
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-					xmlns:macos="http://uno.ui/macos"
-					xmlns:not_macos="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:local="using:Microsoft.UI.Xaml.Controls"
-					mc:Ignorable="d macos">
+					mc:Ignorable="d">
 
 	<Style x:Key="XamlDefaultMenuBar"
 		   TargetType="local:MenuBar">
@@ -38,21 +36,7 @@
 		</Setter>
 	</Style>
 
-    <not_macos:Style TargetType="local:MenuBar"
+    <Style TargetType="local:MenuBar"
 		   BasedOn="{StaticResource XamlDefaultMenuBar}" />
-
-	<macos:Style x:Key="NativeMenuBar"
-				 TargetType="local:MenuBar">
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="local:MenuBar">
-					<NativeMenuBarPresenter />
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-	</macos:Style>
-
-    <macos:Style TargetType="local:MenuBar"
-				 BasedOn="{StaticResource NativeMenuBar}" />
 
 </ResourceDictionary>

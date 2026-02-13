@@ -19,9 +19,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [RunsOnUIThread]
 public class Given_CalendarDatePicker
 {
-#if __MACOS__
-	[Ignore("test is failling in macOS for some reason.")]
-#endif
 	[TestMethod]
 	public async Task TestCalendarPanelSize()
 	{
@@ -42,9 +39,6 @@ public class Given_CalendarDatePicker
 		flyout.Close();
 	}
 
-#if __MACOS__
-	[Ignore]
-#endif
 	[TestMethod]
 	public async Task When_Theme_Changes()
 	{

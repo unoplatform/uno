@@ -5034,7 +5034,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var tree = sut.TreeGraph();
 			Assert.IsTrue(Enumerable.Range(0, 4).All(x => sut.ContainerFromIndex(x) is { }), "All containers should be materialized.");
 
-#if !(__ANDROID__ || __IOS__ || __MACOS__)
+#if !(__ANDROID__ || __IOS__)
 			Assert.AreEqual(4, sut.ItemsPanelRoot.Children.OfType<ListViewItem>().Count(), "There should be only 4 materialized container.");
 #endif
 		}
