@@ -4973,7 +4973,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			var flyout = SUT.ContextFlyout as TextCommandBarFlyout;
-			Assert.IsNotNull(flyout, "ContextFlyout should be TextCommandBarFlyout");
+			Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout, "ContextFlyout should be TextCommandBarFlyout");
 
 			flyout.ShowAt(SUT);
 			await WindowHelper.WaitForIdle();
