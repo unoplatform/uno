@@ -19,7 +19,7 @@ function sendWebMessage(backgroundColor) {
 window.onload = function() {
     document.querySelector('#second').style.backgroundColor = 'blue';
     document.querySelector('#second').addEventListener('click', function() {
-        document.querySelector('#second').style.backgroundColor = 'green';        
+        document.querySelector('#second').style.backgroundColor = 'green';
     });
     sendWebMessage(getComputedStyle(document.querySelector("#first")).backgroundColor);
 };

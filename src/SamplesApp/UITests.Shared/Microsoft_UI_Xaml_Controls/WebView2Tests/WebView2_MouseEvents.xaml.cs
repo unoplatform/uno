@@ -33,6 +33,6 @@ public sealed partial class WebView2_MouseEvents : Page
 			"UnoNativeAssets",
 			"WebContent",
 			CoreWebView2HostResourceAccessKind.Allow);
-		Inline.CoreWebView2.Navigate("http://UnoNativeAssets/index.html");
+		Inline.CoreWebView2?.Navigate("http://UnoNativeAssets/index.html");
 	}
 }

@@ -972,7 +972,7 @@ NSOperatingSystemVersion _osVersion;
             data.pointerDeviceType = pdt;
             
             // mouse
-            // FIXME: NSEvent.pressedMouseButtons is returning a wrong value in Sequoia when using an extenal trackpad
+            // FIXME: NSEvent.pressedMouseButtons is returning a wrong value in Sequoia when using an external trackpad
             if (_osVersion.majorVersion >= 15) {
                 NSInteger mask = [MouseButtons mask];
 
