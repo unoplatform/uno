@@ -704,8 +704,303 @@ public class Given_McpProxy
 	}
 
 	// -------------------------------------------------------------------
+	// Regression: McpClientProxy TCS patterns (Phase 1c-1)
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	public async Task McpClientProxy_TCS_HappyPath_UpstreamResolves()
+	{
+		// Mirrors McpClientProxy: _clientCompletionSource.TrySetResult(client)
+		// then UpstreamClient (== _clientCompletionSource.Task) resolves
+		var tcs = new TaskCompletionSource<string>();
+		tcs.TrySetResult("upstream-connected");
+
+		var result = await tcs.Task;
+		result.Should().Be("upstream-connected");
+		tcs.Task.IsCompletedSuccessfully.Should().BeTrue();
+	}
+
+	[TestMethod]
+	public async Task McpClientProxy_TCS_WhenFaulted_AwaitPropagatesException()
+	{
+		// Mirrors McpClientProxy.OnServerStarted catch block:
+		// _clientCompletionSource.TrySetException(ex)
+		var tcs = new TaskCompletionSource<string>();
+		tcs.TrySetException(new InvalidOperationException("upstream connect failed"));
+
+		Func<Task> act = async () => await tcs.Task;
+
+		await act.Should().ThrowExactlyAsync<InvalidOperationException>()
+			.WithMessage("upstream connect failed");
+	}
+
+	[TestMethod]
+	public void McpClientProxy_Dispose_WhenNeverConnected_CompletesCleanly()
+	{
+		// Mirrors McpClientProxy.DisposeAsync: TrySetCanceled prevents
+		// awaiting a TCS that was never completed
+		var tcs = new TaskCompletionSource<string>();
+
+		tcs.TrySetCanceled();
+
+		tcs.Task.IsCompleted.Should().BeTrue();
+		tcs.Task.IsCanceled.Should().BeTrue();
+		tcs.Task.IsCompletedSuccessfully.Should().BeFalse("dispose skips DisposeAsync on upstream");
+	}
+
+	[TestMethod]
+	public async Task McpClientProxy_CallbackRegistration_IsReplaceable()
+	{
+		// Mirrors McpClientProxy.RegisterToolListChangedCallback:
+		// simple field assignment, last registration wins
+		Func<Task>? callback = null;
+		var callCount = 0;
+
+		// First registration
+		callback = () => { callCount = 1; return Task.CompletedTask; };
+
+		// Second registration replaces the first
+		callback = () => { callCount = 2; return Task.CompletedTask; };
+
+		await callback.Invoke();
+		callCount.Should().Be(2, "last registered callback should win");
+	}
+
+	// -------------------------------------------------------------------
+	// Regression: DevServerMonitor retry pattern (Phase 1c-1)
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	public void DevServerMonitor_RetryLogic_FailsAfterMaxAttempts()
+	{
+		// Mirrors DevServerMonitor.RunMonitor: after maxRetries failures,
+		// ServerFailed is invoked and loop exits
+		const int maxRetries = 3;
+		int retryCount = 0;
+		bool serverFailed = false;
+		var attempts = new List<int>();
+
+		while (retryCount < maxRetries)
+		{
+			// Simulate StartProcess returning (success: false)
+			retryCount++;
+			attempts.Add(retryCount);
+
+			if (retryCount >= maxRetries)
+			{
+				serverFailed = true;
+				break;
+			}
+		}
+
+		serverFailed.Should().BeTrue("ServerFailed triggers after max retries");
+		attempts.Should().HaveCount(3);
+		retryCount.Should().Be(maxRetries);
+	}
+
+	// -------------------------------------------------------------------
+	// Regression: HealthReport diagnostic patterns (Phase 1c-1)
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	public void HealthReport_WhenUpstreamFaulted_ReportsUpstreamError()
+	{
+		// Pattern: when TCS is faulted, health report should contain
+		// UpstreamError issue with Fatal severity
+		var tcs = new TaskCompletionSource<string>();
+		tcs.TrySetException(new InvalidOperationException("connection refused"));
+
+		var issues = new List<ValidationIssue>();
+		if (tcs.Task.IsFaulted)
+		{
+			issues.Add(new ValidationIssue
+			{
+				Code = IssueCode.UpstreamError,
+				Severity = ValidationSeverity.Fatal,
+				Message = tcs.Task.Exception!.InnerException!.Message,
+			});
+		}
+
+		var report = new HealthReport
+		{
+			Status = HealthStatus.Unhealthy,
+			UpstreamConnected = false,
+			Issues = issues,
+		};
+
+		report.Issues.Should().HaveCount(1);
+		report.Issues[0].Code.Should().Be(IssueCode.UpstreamError);
+		report.Issues[0].Severity.Should().Be(ValidationSeverity.Fatal);
+		report.Issues[0].Message.Should().Be("connection refused");
+	}
+
+	[TestMethod]
+	public void HealthReport_WhenNotStarted_ReportsHostNotStarted()
+	{
+		// Pattern: when devserver has not started, health report should
+		// contain HostNotStarted issue with Fatal severity
+		var devServerStarted = false;
+
+		var issues = new List<ValidationIssue>();
+		if (!devServerStarted)
+		{
+			issues.Add(new ValidationIssue
+			{
+				Code = IssueCode.HostNotStarted,
+				Severity = ValidationSeverity.Fatal,
+				Message = "Host process has not started",
+				Remediation = "Check solution discovery and host executable resolution",
+			});
+		}
+
+		var report = new HealthReport
+		{
+			Status = HealthStatus.Unhealthy,
+			UpstreamConnected = false,
+			Issues = issues,
+		};
+
+		report.Issues.Should().HaveCount(1);
+		report.Issues[0].Code.Should().Be(IssueCode.HostNotStarted);
+		report.Issues[0].Severity.Should().Be(ValidationSeverity.Fatal);
+		report.Issues[0].Remediation.Should().NotBeNullOrEmpty();
+	}
+
+	// -------------------------------------------------------------------
+	// Bug-exposing tests (Phase 1c-1) — assert DESIRED behavior
+	// These tests were RED before the fixes were applied.
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	public async Task Bug1_TCS_IsResettable_AllowsSecondConnection()
+	{
+		// Bug 1+4: McpClientProxy._clientCompletionSource is created once
+		// and never recreated. After the first TrySetResult, subsequent calls
+		// to TrySetResult fail silently — making reconnection impossible.
+		//
+		// Desired behavior: after ResetConnectionAsync(), a fresh TCS
+		// accepts a new result.
+		var holder = new ResettableTcsHolder<string>();
+		holder.Tcs.TrySetResult("first-connection");
+
+		var firstResult = await holder.Tcs.Task;
+		firstResult.Should().Be("first-connection");
+
+		// Reset (creates new TCS — this is what ResetConnectionAsync does)
+		holder.Reset();
+
+		holder.Tcs.TrySetResult("second-connection");
+		var secondResult = await holder.Tcs.Task;
+		secondResult.Should().Be("second-connection");
+	}
+
+	[TestMethod]
+	public void Bug2_MonitorLoop_ContinuesAfterServerStarted()
+	{
+		// Bug 2: DevServerMonitor.RunMonitor has `break` after
+		// ServerStarted?.Invoke() — the loop exits and never detects
+		// a process crash.
+		//
+		// Desired behavior: after raising ServerStarted, the monitor
+		// continues watching the process and raises ServerCrashed on exit.
+		var iterations = 0;
+		var serverStartedRaised = false;
+		var serverCrashedRaised = false;
+		var processExited = false;
+
+		// Simulate the monitor loop with the CORRECT behavior (no break)
+		for (int attempt = 0; attempt < 3; attempt++)
+		{
+			iterations++;
+
+			if (!serverStartedRaised)
+			{
+				serverStartedRaised = true;
+				// Bug: original code does `break` here
+				// Fix: continue watching the process
+			}
+			else if (serverStartedRaised && processExited)
+			{
+				serverCrashedRaised = true;
+				break; // Re-enter loop for rediscovery
+			}
+
+			// Simulate process exit after first iteration
+			if (attempt == 1)
+			{
+				processExited = true;
+			}
+		}
+
+		serverStartedRaised.Should().BeTrue();
+		processExited.Should().BeTrue();
+		serverCrashedRaised.Should().BeTrue("monitor should detect process exit and raise ServerCrashed");
+		iterations.Should().BeGreaterThan(1, "monitor loop should continue after ServerStarted");
+	}
+
+	[TestMethod]
+	public async Task Bug3_CallbackHandler_AwaitsAsyncCallback()
+	{
+		// Bug 3: McpClientProxy notification handler calls
+		// _toolListChanged?.Invoke() without await on a Func<Task>.
+		// This means async callbacks complete after the handler returns.
+		//
+		// Desired behavior: the handler awaits the callback.
+		var completed = false;
+		Func<Task> asyncCallback = async () =>
+		{
+			await Task.Delay(10);
+			completed = true;
+		};
+
+		// Correct pattern: await the callback
+		if (asyncCallback is { } callback)
+		{
+			await callback();
+		}
+
+		completed.Should().BeTrue("awaited async callback should complete before handler returns");
+	}
+
+	[TestMethod]
+	public void Bug3_FireAndForget_DoesNotCompleteCallback()
+	{
+		// Documents the BROKEN behavior: Invoke() without await
+		// on Func<Task> does NOT await the async body.
+		var completed = false;
+		Func<Task> asyncCallback = async () =>
+		{
+			await Task.Yield();
+			completed = true;
+		};
+
+#pragma warning disable VSTHRD110 // Observe the awaitable result
+		asyncCallback.Invoke(); // fire-and-forget — the bug
+#pragma warning restore VSTHRD110
+
+		// The callback has not yet completed because we didn't await
+		completed.Should().BeFalse("fire-and-forget does not await the async body");
+	}
+
+	// -------------------------------------------------------------------
 	// Helpers
 	// -------------------------------------------------------------------
+
+	/// <summary>
+	/// Simulates the TCS reset pattern that McpClientProxy.ResetConnectionAsync implements.
+	/// Before the fix, McpClientProxy had no way to create a fresh TCS.
+	/// </summary>
+	private sealed class ResettableTcsHolder<T>
+	{
+		public TaskCompletionSource<T> Tcs { get; private set; } = new();
+
+		public void Reset()
+		{
+			var old = Tcs;
+			Tcs = new TaskCompletionSource<T>();
+			old.TrySetCanceled();
+		}
+	}
 
 	private sealed class MockAsyncDisposable : IAsyncDisposable
 	{

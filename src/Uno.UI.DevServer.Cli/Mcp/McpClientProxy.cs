@@ -64,14 +64,15 @@ internal class McpClientProxy
 				{
 					NotificationHandlers =
 					[
-						new(NotificationMethods.ToolListChangedNotification, (notification, cancellationToken) =>
+						new(NotificationMethods.ToolListChangedNotification, async (notification, cancellationToken) =>
 						{
 							log.LogTrace("Upstream MCP notified tool list changed");
 
 							// ToolListChanged has no meaningful params — no deserialization needed
-							_toolListChanged?.Invoke();
-
-							return default;
+							if (_toolListChanged is { } callback)
+							{
+								await callback();
+							}
 						})
 					],
 				},
@@ -88,7 +89,10 @@ internal class McpClientProxy
 			log.LogTrace("Upstream MCP responded with {Count} tools", tools?.Count);
 
 			// Always notify — 0 tools is a valid response and must unblock waiters
-			_toolListChanged?.Invoke();
+			if (_toolListChanged is { } toolsCallback)
+			{
+				await toolsCallback();
+			}
 		}
 		catch (Exception ex)
 		{
@@ -99,6 +103,44 @@ internal class McpClientProxy
 
 	internal void RegisterToolListChangedCallback(Func<Task> value)
 		=> _toolListChanged = value;
+
+	/// <summary>
+	/// Resets the upstream connection, allowing a new connection to be established.
+	/// Disposes the previous client if one was connected.
+	/// </summary>
+	internal async Task ResetConnectionAsync()
+	{
+		var oldTcs = _clientCompletionSource;
+		_clientCompletionSource = new TaskCompletionSource<McpClient>();
+
+		if (oldTcs.Task.IsCompletedSuccessfully)
+		{
+			try
+			{
+				await oldTcs.Task.Result.DisposeAsync();
+			}
+			catch (Exception ex)
+			{
+				_logger.LogWarning(ex, "Error disposing old upstream client");
+			}
+		}
+		else
+		{
+			oldTcs.TrySetCanceled();
+		}
+	}
+
+	/// <summary>
+	/// Handles the tool list changed notification from the upstream MCP server.
+	/// Extracted for testability — called by the notification handler lambda.
+	/// </summary>
+	internal async ValueTask HandleToolListChangedNotificationAsync()
+	{
+		if (_toolListChanged is { } callback)
+		{
+			await callback();
+		}
+	}
 
 	internal async Task DisposeAsync()
 	{

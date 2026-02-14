@@ -24,6 +24,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 
 	public event Action<string>? ServerStarted;
 	public event Action? ServerFailed;
+	public event Action? ServerCrashed;
 
 	public string? UnoSdkVersion => _unoSdkVersion;
 	public long DiscoveryDurationMs => _discoveryDurationMs;
@@ -165,7 +166,16 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 						_logger.LogTrace("DevServerMonitor detected ready server at {Endpoint}; raising ServerStarted", remoteEndpoint);
 						ServerStarted?.Invoke(remoteEndpoint);
 
-						break;
+						// Wait for the process to exit before re-entering the discovery loop
+						await WaitForProcessExitAsync(ct);
+
+						_logger.LogWarning("Server process exited, initiating recovery");
+						_serverProcess = null;
+						ServerCrashed?.Invoke();
+
+						// Reset retry count — the server was running successfully
+						retryCount = 0;
+						continue;
 					}
 				}
 
@@ -330,11 +340,6 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 			}
 		};
 
-		process.Exited += (_, _) =>
-		{
-			_logger.LogWarning("Server process exited unexpectedly (PID {Pid})", process.Id);
-		};
-
 		if (!process.Start())
 		{
 			_logger.LogError("Failed to start server process");
@@ -362,6 +367,25 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 
 		// Don't wait for exit — the server is long-running
 		return (true, port);
+	}
+
+	private async Task WaitForProcessExitAsync(CancellationToken ct)
+	{
+		if (_serverProcess is not { HasExited: false } proc)
+		{
+			return;
+		}
+
+		var exitTcs = new TaskCompletionSource();
+		proc.Exited += (_, _) => exitTcs.TrySetResult();
+
+		// Process may have exited between check and event registration
+		if (proc.HasExited)
+		{
+			return;
+		}
+
+		await exitTcs.Task.WaitAsync(ct);
 	}
 
 	private void TerminateServerProcess()
