@@ -64,6 +64,9 @@
 | 43 | **`--metadata-updates` forwarding in direct launch** | Phase 1b direct Host launch with `--metadata-updates true` → `ServerHotReloadProcessor` activates metadata delta generation. |
 | 44 | **`cleanup` command non-regression** | `--command cleanup` → stale DevServer registrations removed, active ones preserved. Exit code 0. |
 | 45 | **MCP capability detection from `initialize`** | Client sends `initialize` with `capabilities.roots` → server detects roots support via `Roots != null` (not `Roots.ListChanged`). Client without `roots` capability → server falls back to `--force-roots-fallback` behavior. |
+| 46 | **`tools/list_changed` notification deserialization** | Upstream sends `tools/list_changed` → `McpClientProxy` processes it without deserialization error. Callback fires, `list_tools` refresh triggered. |
+| 47 | **`McpClientProxy` dispose without connection** | Host never starts → `McpClientProxy.DisposeAsync()` completes within 5s (does not block indefinitely). |
+| 48 | **`list_tools` timeout for waiting clients** | Client without `tools/list_changed` capability (detected from `initialize`) or `--mcp-wait-tools-list` flag → `list_tools` returns within 30s even if upstream never responds (not indefinitely). Returns cached tools or empty list. No hardcoded client name list used. |
 
 ---
 
@@ -114,10 +117,14 @@ These test the discovery system against **real package layouts** from different 
 | **Future SDK** | `devserver-addin.json` manifest present | Manifest takes priority over `.targets` |
 | **Mixed** | One package with manifest, one with `.targets` only | Each resolved by its best method |
 | **New unknown add-in** | Package with `.targets` + `UnoRemoteControlAddIns` never seen before | Discovered automatically |
+| **Third-party add-in (not in Uno SDK)** | Add-in package referenced directly by project, not listed in Uno SDK `packages.json`. Present in `project.assets.json` only. | Discovered via `project.assets.json` scan, resolved via `.targets` parsing |
+| **Third-party add-in without restore** | Same as above but `project.assets.json` missing (restore not run) | Warning "restore required for third-party add-in discovery". SDK add-ins still resolved via `packages.json`. |
 | **Package with `tools/devserver/` but no `.targets` or manifest** | Unknown add-in | Warning only, no DLL loading |
 | **`build/` fallback** | Package has `.targets` in `build/` but NOT in `buildTransitive/` | `.targets` resolved from `build/` directory (see appendix B, section 2 step 2b) |
 
-**Test fixtures**: Create synthetic NuGet package layouts (directory structures) for each scenario. Store in `src/Uno.UI.DevServer.Cli.Tests/Fixtures/`. Each fixture contains the minimum files needed: `buildTransitive/*.targets`, `tools/devserver/*.dll` (empty marker files), `devserver-addin.json` (where applicable).
+**Test fixtures**: Create synthetic NuGet package layouts (directory structures) for each scenario. Each fixture contains the minimum files needed: `buildTransitive/*.targets`, `tools/devserver/*.dll` (empty marker files), `devserver-addin.json` (where applicable).
+
+**Test project**: Unit tests can go in the existing `src/Uno.UI.RemoteControl.DevServer.Tests/` project or in a new `src/Uno.UI.DevServer.Cli.Tests/` project (implementer's choice — see spec section 11b). Integration tests should be added to the existing CI script `build/test-scripts/run-devserver-cli-tests.ps1` which already runs on Windows, Linux, and macOS.
 
 ### Cross-Platform Tests
 
@@ -156,7 +163,7 @@ Every phase captures a **non-regression baseline**:
 
 | Consumer | Launch Method | `--addins` | Expected Behavior |
 |----------|-------------|:-:|---|
-| CLI MCP mode | Direct server launch | Yes (Phase 0) | Fast path, skip MSBuild |
+| CLI MCP mode | Via controller (Phase 0); direct launch (Phase 1b) | Yes (Phase 0) | Fast path, skip MSBuild |
 | CLI `start` command | Via controller | Yes (Phase 0) | Fast path, skip MSBuild |
 | VS extension | Direct launch via `DevServerLauncher` | No (future) | MSBuild discovery (unchanged) |
 | VS Code extension | `dotnet Host.dll --httpPort ...` | No (future) | MSBuild discovery (unchanged) |
