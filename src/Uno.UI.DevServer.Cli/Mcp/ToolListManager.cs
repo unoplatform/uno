@@ -9,7 +9,7 @@ namespace Uno.UI.DevServer.Cli.Mcp;
 
 internal class ToolListManager(
 	ILogger<ToolListManager> logger,
-	McpClientProxy mcpClientProxy,
+	McpUpstreamClient mcpClientProxy,
 	DevServerMonitor devServerMonitor)
 {
 	private readonly string _toolCachePath = InitializeToolCachePath();

@@ -16,7 +16,7 @@ internal class McpProxy
 {
 	private readonly ILogger<McpProxy> _logger;
 	private readonly DevServerMonitor _devServerMonitor;
-	private readonly McpClientProxy _mcpClientProxy;
+	private readonly McpUpstreamClient _mcpClientProxy;
 	private readonly HealthService _healthService;
 	private readonly ToolListManager _toolListManager;
 	private readonly Tool _addRootsTool;
@@ -36,7 +36,7 @@ internal class McpProxy
 	// Clients that don't support the list_updated notification
 	private static readonly string[] ClientsWithoutListUpdateSupport = ["claude-code", "codex", "codex-mcp-client", "antigravity"];
 
-	public McpProxy(ILogger<McpProxy> logger, DevServerMonitor mcpServerMonitor, McpClientProxy mcpClientProxy, HealthService healthService, ToolListManager toolListManager)
+	public McpProxy(ILogger<McpProxy> logger, DevServerMonitor mcpServerMonitor, McpUpstreamClient mcpClientProxy, HealthService healthService, ToolListManager toolListManager)
 	{
 		_logger = logger;
 		_devServerMonitor = mcpServerMonitor;

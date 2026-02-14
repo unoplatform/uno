@@ -6,7 +6,7 @@ using ModelContextProtocol.Protocol;
 namespace Uno.UI.DevServer.Cli.Mcp;
 
 internal class HealthService(
-	McpClientProxy mcpClientProxy,
+	McpUpstreamClient mcpClientProxy,
 	DevServerMonitor devServerMonitor,
 	ToolListManager toolListManager)
 {

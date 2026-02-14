@@ -7,9 +7,9 @@ using ModelContextProtocol.Protocol;
 
 namespace Uno.UI.DevServer.Cli.Mcp;
 
-internal class McpClientProxy
+internal class McpUpstreamClient
 {
-	private readonly ILogger<McpClientProxy> _logger;
+	private readonly ILogger<McpUpstreamClient> _logger;
 	private readonly DevServerMonitor _monitor;
 	private Func<Task>? _toolListChanged;
 	private readonly CancellationTokenSource _disposeCts = new();
@@ -18,7 +18,7 @@ internal class McpClientProxy
 	public Task<McpClient> UpstreamClient
 		=> _clientCompletionSource.Task;
 
-	public McpClientProxy(ILogger<McpClientProxy> logger, DevServerMonitor monitor)
+	public McpUpstreamClient(ILogger<McpUpstreamClient> logger, DevServerMonitor monitor)
 	{
 		_logger = logger;
 		_monitor = monitor;

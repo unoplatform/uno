@@ -85,7 +85,7 @@ internal class Program
 		services.AddSingleton<UnoToolsLocator>();
 		services.AddSingleton<TargetsAddInResolver>();
 		services.AddSingleton<DevServerMonitor>();
-		services.AddSingleton<McpClientProxy>();
+		services.AddSingleton<McpUpstreamClient>();
 		services.AddSingleton<ToolListManager>();
 		services.AddSingleton<HealthService>();
 		services.AddSingleton<McpProxy>();
