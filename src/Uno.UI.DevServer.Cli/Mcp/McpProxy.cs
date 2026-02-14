@@ -38,7 +38,7 @@ internal class McpProxy
 	private bool IsToolCacheEnabled => _forceRootsFallback || _forceGenerateToolCache;
 
 	// Clients that don't support the list_updated notification
-	private static readonly string[] ClientsWithoutListUpdateSupport = ["claude-code", "codex", "codex-mcp-client"];
+	private static readonly string[] ClientsWithoutListUpdateSupport = ["claude-code", "codex", "codex-mcp-client", "antigravity"];
 
 	public McpProxy(ILogger<McpProxy> logger, DevServerMonitor mcpServerMonitor, McpClientProxy mcpClientProxy)
 	{

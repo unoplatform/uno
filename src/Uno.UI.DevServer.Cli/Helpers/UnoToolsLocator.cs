@@ -9,10 +9,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Uno.UI.DevServer.Cli.Helpers;
 
-internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInResolver? addInResolver = null)
+internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInResolver? addInResolver = null, DotNetVersionCache? dotNetVersionCache = null)
 {
 	private readonly ILogger<UnoToolsLocator> _logger = logger;
 	private readonly TargetsAddInResolver? _addInResolver = addInResolver;
+	private readonly DotNetVersionCache? _dotNetVersionCache = dotNetVersionCache;
 
 	public async Task<DiscoveryInfo> DiscoverAsync(string workDirectory)
 	{
@@ -106,7 +107,7 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 			}
 		}
 
-		var dotnetInfo = await TryGetDotNetVersionInfo(logErrors: false);
+		var dotnetInfo = await TryGetDotNetVersionInfo(logErrors: false, globalJsonPath: globalJsonPath);
 		dotNetVersion = dotnetInfo.rawVersion;
 		dotNetTfm = dotnetInfo.tfm;
 		if (dotNetVersion is null)
@@ -541,8 +542,23 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 		return result.tfm;
 	}
 
-	private async Task<(string? rawVersion, string? tfm)> TryGetDotNetVersionInfo(bool logErrors)
+	private async Task<(string? rawVersion, string? tfm)> TryGetDotNetVersionInfo(bool logErrors, string? globalJsonPath = null, bool force = false)
 	{
+		if (_dotNetVersionCache is not null)
+		{
+			try
+			{
+				return await _dotNetVersionCache.GetOrRefreshAsync(globalJsonPath, force);
+			}
+			catch (Exception ex)
+			{
+				if (logErrors)
+				{
+					_logger.LogWarning(ex, "DotNetVersionCache failed, falling back to direct subprocess");
+				}
+			}
+		}
+
 		try
 		{
 			var processInfo = new ProcessStartInfo
