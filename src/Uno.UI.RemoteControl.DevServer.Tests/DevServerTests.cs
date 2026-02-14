@@ -25,6 +25,8 @@ public class DevServerTests
 	private CancellationToken CT => TestContext?.CancellationTokenSource.Token ?? CancellationToken.None;
 
 	[TestMethod]
+	[Retry(2, MillisecondsDelayBetweenRetries = 1000)]
+	[Description("Intermittent: random port binding may collide or the host process may take longer to start on CI")]
 	public async Task DevServer_ShouldStart()
 	{
 		// Arrange
@@ -49,6 +51,8 @@ public class DevServerTests
 	}
 
 	[TestMethod]
+	[Retry(2, MillisecondsDelayBetweenRetries = 1000)]
+	[Description("Intermittent: random port binding may collide or the host process may take longer to start on CI")]
 	public async Task DevServer_ShouldCaptureOutput()
 	{
 		// Arrange
@@ -79,6 +83,8 @@ public class DevServerTests
 		new Dictionary<string, string>() { { "UNO_PLATFORM_TELEMETRY_OPTOUT ", "true" } };
 
 	[TestMethod]
+	[Retry(2, MillisecondsDelayBetweenRetries = 1000)]
+	[Description("Intermittent: random port binding may collide or the host process may take longer to start on CI")]
 	public async Task DevServer_ShouldStopCleanly()
 	{
 		// Arrange

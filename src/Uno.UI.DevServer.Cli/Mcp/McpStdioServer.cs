@@ -8,6 +8,10 @@ using ModelContextProtocol.Server;
 
 namespace Uno.UI.DevServer.Cli.Mcp;
 
+/// <summary>
+/// Builds the MCP stdio server Host with all protocol handlers (call_tool, list_tools,
+/// list_resources, read_resource). Lifecycle-specific behavior is injected via delegates.
+/// </summary>
 internal class McpStdioServer(
 	ILogger<McpStdioServer> logger,
 	ToolListManager toolListManager,
@@ -103,7 +107,7 @@ internal class McpStdioServer(
 				{
 					Uri = HealthService.HealthResourceUri,
 					Name = "Uno DevServer Health",
-					Description = "Real-time health status of the Uno DevServer MCP proxy, including connection state, tool count, and diagnostics.",
+					Description = "Real-time health status of the Uno DevServer MCP bridge, including connection state, tool count, and diagnostics.",
 					MimeType = "application/json",
 				};
 

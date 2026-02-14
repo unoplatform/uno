@@ -5,8 +5,12 @@ using ModelContextProtocol.Protocol;
 
 namespace Uno.UI.DevServer.Cli.Mcp;
 
+/// <summary>
+/// Produces health reports and diagnostics for the Uno DevServer MCP bridge. Exposes the uno_health tool
+/// and the uno://health resource, reporting connection state, tool count, and issues.
+/// </summary>
 internal class HealthService(
-	McpUpstreamClient mcpClientProxy,
+	McpUpstreamClient mcpUpstreamClient,
 	DevServerMonitor devServerMonitor,
 	ToolListManager toolListManager)
 {
@@ -15,7 +19,7 @@ internal class HealthService(
 	internal static readonly Tool HealthTool = new()
 	{
 		Name = "uno_health",
-		Description = "Returns the health status of the Uno DevServer MCP proxy, including connection state, tool count, and any issues detected during startup. Always available, even before the upstream host is ready.",
+		Description = "Returns the health status of the Uno DevServer MCP bridge, including connection state, tool count, and any issues detected during startup. Always available, even before the upstream host is ready.",
 		InputSchema = JsonSerializer.Deserialize<JsonElement>("""{"type":"object","properties":{}}"""),
 	};
 
@@ -35,7 +39,7 @@ internal class HealthService(
 	public HealthReport BuildHealthReport()
 	{
 		var issues = new List<ValidationIssue>();
-		var upstreamTask = mcpClientProxy.UpstreamClient;
+		var upstreamTask = mcpUpstreamClient.UpstreamClient;
 		var upstreamConnected = upstreamTask.IsCompletedSuccessfully;
 
 		if (!DevServerStarted)

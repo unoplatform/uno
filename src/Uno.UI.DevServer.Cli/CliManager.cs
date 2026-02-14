@@ -310,7 +310,7 @@ internal class CliManager
 		}
 		catch (Exception ex)
 		{
-			_logger.LogError($"MCP proxy error: {ex.Message}");
+			_logger.LogError(ex, "MCP stdio server error: {Message}", ex.Message);
 			return 1;
 		}
 	}

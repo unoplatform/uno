@@ -7,9 +7,13 @@ using ModelContextProtocol.Protocol;
 
 namespace Uno.UI.DevServer.Cli.Mcp;
 
+/// <summary>
+/// Manages the tool cache and list operations. Handles cached tool loading/persistence,
+/// upstream tool fetching with timeout, and built-in tool injection (e.g. uno_health).
+/// </summary>
 internal class ToolListManager(
 	ILogger<ToolListManager> logger,
-	McpUpstreamClient mcpClientProxy,
+	McpUpstreamClient mcpUpstreamClient,
 	DevServerMonitor devServerMonitor)
 {
 	private readonly string _toolCachePath = InitializeToolCachePath();
@@ -172,7 +176,7 @@ internal class ToolListManager(
 
 		try
 		{
-			var upstreamClient = await mcpClientProxy.UpstreamClient;
+			var upstreamClient = await mcpUpstreamClient.UpstreamClient;
 			if (upstreamClient is null)
 			{
 				return;
@@ -191,7 +195,7 @@ internal class ToolListManager(
 
 	public async Task<ListToolsResult> ListToolsWithTimeoutAsync(CancellationToken ct)
 	{
-		var upstreamTask = mcpClientProxy.UpstreamClient;
+		var upstreamTask = mcpUpstreamClient.UpstreamClient;
 
 		// If the upstream client is already available, use it directly
 		if (upstreamTask.IsCompletedSuccessfully)

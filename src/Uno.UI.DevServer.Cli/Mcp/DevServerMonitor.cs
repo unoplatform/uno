@@ -244,7 +244,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 	internal async Task<(bool success, int effectivePort)> StartProcess(string hostPath, int port, string workingDirectory, string? solution, CancellationToken ct)
 	{
 		// Check for existing DevServer instance via AmbientRegistry.
-		// This is safe for the MCP proxy because it connects via HTTP (/mcp endpoint),
+		// This is safe for the MCP stdio bridge because it connects via HTTP (/mcp endpoint),
 		// not via the IDEChannel named pipe. The Host's IDEChannel only supports a
 		// single IDE connection (maxNumberOfServerInstances: 1), so reuse is limited
 		// to MCP-alongside-IDE scenarios. Two full IDEs sharing the same Host would

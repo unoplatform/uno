@@ -37,7 +37,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<!-- Linked from Host for controller bypass (Phase 1b) -->
+		<!-- Linked from Host for controller bypass -->
 		<Compile Include="..\Uno.UI.RemoteControl.Host\AmbientRegistry.cs" Link="Mcp\AmbientRegistry.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl.Host\Helpers\CsprojUserGenerator.cs" Link="Helpers\CsprojUserGenerator.cs" />
 	</ItemGroup>

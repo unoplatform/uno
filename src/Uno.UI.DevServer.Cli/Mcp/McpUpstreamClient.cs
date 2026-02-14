@@ -7,6 +7,10 @@ using ModelContextProtocol.Protocol;
 
 namespace Uno.UI.DevServer.Cli.Mcp;
 
+/// <summary>
+/// Manages the upstream HTTP connection to the DevServer MCP host. Handles connection
+/// lifecycle, reconnection via TCS reset, and tool list change notification forwarding.
+/// </summary>
 internal class McpUpstreamClient
 {
 	private readonly ILogger<McpUpstreamClient> _logger;

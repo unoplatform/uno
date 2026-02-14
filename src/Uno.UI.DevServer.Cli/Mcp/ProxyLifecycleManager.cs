@@ -9,11 +9,15 @@ using ModelContextProtocol.Server;
 
 namespace Uno.UI.DevServer.Cli.Mcp;
 
+/// <summary>
+/// Top-level orchestrator for the MCP stdio-to-HTTP bridge lifecycle. Manages root initialization,
+/// DevServer startup, cache priming, and event wiring between the other MCP components.
+/// </summary>
 internal class ProxyLifecycleManager
 {
 	private readonly ILogger<ProxyLifecycleManager> _logger;
 	private readonly DevServerMonitor _devServerMonitor;
-	private readonly McpUpstreamClient _mcpClientProxy;
+	private readonly McpUpstreamClient _mcpUpstreamClient;
 	private readonly HealthService _healthService;
 	private readonly ToolListManager _toolListManager;
 	private readonly McpStdioServer _mcpStdioServer;
@@ -34,11 +38,11 @@ internal class ProxyLifecycleManager
 	// Clients that don't support the list_updated notification
 	private static readonly string[] ClientsWithoutListUpdateSupport = ["claude-code", "codex", "codex-mcp-client", "antigravity"];
 
-	public ProxyLifecycleManager(ILogger<ProxyLifecycleManager> logger, DevServerMonitor mcpServerMonitor, McpUpstreamClient mcpClientProxy, HealthService healthService, ToolListManager toolListManager, McpStdioServer mcpStdioServer)
+	public ProxyLifecycleManager(ILogger<ProxyLifecycleManager> logger, DevServerMonitor devServerMonitor, McpUpstreamClient mcpUpstreamClient, HealthService healthService, ToolListManager toolListManager, McpStdioServer mcpStdioServer)
 	{
 		_logger = logger;
-		_devServerMonitor = mcpServerMonitor;
-		_mcpClientProxy = mcpClientProxy;
+		_devServerMonitor = devServerMonitor;
+		_mcpUpstreamClient = mcpUpstreamClient;
 		_healthService = healthService;
 		_toolListManager = toolListManager;
 		_mcpStdioServer = mcpStdioServer;
@@ -85,7 +89,7 @@ internal class ProxyLifecycleManager
 		}
 		catch (Exception ex)
 		{
-			_logger.LogError(ex, "MCP proxy error: {Message}", ex.Message);
+			_logger.LogError(ex, "Stdio server error: {Message}", ex.Message);
 			return 1;
 		}
 	}
@@ -339,20 +343,20 @@ internal class ProxyLifecycleManager
 
 				if (result)
 				{
-					_logger.LogInformation("Tool cache primed successfully; stopping MCP proxy");
+					_logger.LogInformation("Tool cache primed successfully; stopping stdio server");
 				}
 				else
 				{
-					_logger.LogWarning("Tool cache priming failed; stopping MCP proxy");
+					_logger.LogWarning("Tool cache priming failed; stopping stdio server");
 				}
 			}
 			catch (OperationCanceledException)
 			{
-				_logger.LogInformation("Tool cache priming was canceled; stopping MCP proxy");
+				_logger.LogInformation("Tool cache priming was canceled; stopping stdio server");
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError(ex, "Tool cache priming failed with an exception; stopping MCP proxy");
+				_logger.LogError(ex, "Tool cache priming failed with an exception; stopping stdio server");
 			}
 
 			try
@@ -361,7 +365,7 @@ internal class ProxyLifecycleManager
 			}
 			catch (Exception ex)
 			{
-				_logger.LogWarning(ex, "Error while stopping MCP proxy after tool cache priming");
+				_logger.LogWarning(ex, "Error while stopping stdio server after tool cache priming");
 			}
 		}
 		catch (Exception ex)
@@ -381,7 +385,7 @@ internal class ProxyLifecycleManager
 
 		StartCachePrimingWatcher(host);
 
-		_mcpClientProxy.RegisterToolListChangedCallback(async () =>
+		_mcpUpstreamClient.RegisterToolListChangedCallback(async () =>
 		{
 			_logger.LogTrace("Upstream tool list changed");
 
@@ -399,7 +403,7 @@ internal class ProxyLifecycleManager
 
 		_devServerMonitor.ServerFailed += () =>
 		{
-			_logger.LogError("DevServer failed to start, stopping MCP proxy");
+			_logger.LogError("DevServer failed to start, stopping stdio server");
 			FailToolCachePriming();
 			_ = Task.Run(async () =>
 			{
@@ -409,7 +413,7 @@ internal class ProxyLifecycleManager
 				}
 				catch (Exception ex)
 				{
-					_logger.LogError(ex, "Error while stopping MCP proxy host after DevServer failure.");
+					_logger.LogError(ex, "Error while stopping stdio server host after DevServer failure.");
 				}
 			});
 		};
@@ -420,7 +424,7 @@ internal class ProxyLifecycleManager
 		}
 		finally
 		{
-			await _mcpClientProxy.DisposeAsync();
+			await _mcpUpstreamClient.DisposeAsync();
 			await _devServerMonitor.StopMonitoringAsync();
 		}
 
