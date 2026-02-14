@@ -14,7 +14,7 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" />
 		<PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" />
 		<PackageReference Include="StreamJsonRpc" Version="2.17.11" />
-		<PackageReference Include="ModelContextProtocol" Version="0.4.1-preview.1" />
+		<PackageReference Include="ModelContextProtocol" Version="0.8.0-preview.1" />
 		<PackageReference Include="Uno.DevTools.Telemetry" Version="1.1.1">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

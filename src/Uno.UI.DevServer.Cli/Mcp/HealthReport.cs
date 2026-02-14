@@ -11,6 +11,8 @@ internal sealed record HealthReport
 	public string? HostEndpoint { get; init; }
 	public bool UpstreamConnected { get; init; }
 	public int ToolCount { get; init; }
+	public string? UnoSdkVersion { get; init; }
+	public long DiscoveryDurationMs { get; init; }
 	public required IReadOnlyList<ValidationIssue> Issues { get; init; }
 }
 

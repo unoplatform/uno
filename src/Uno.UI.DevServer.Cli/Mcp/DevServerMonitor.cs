@@ -15,9 +15,14 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 	private string _currentDirectory = "";
 	private CancellationTokenSource? _cts;
 	private Task? _monitor;
+	private string? _unoSdkVersion;
+	private long _discoveryDurationMs;
 
 	public event Action<string>? ServerStarted;
 	public event Action? ServerFailed;
+
+	public string? UnoSdkVersion => _unoSdkVersion;
+	public long DiscoveryDurationMs => _discoveryDurationMs;
 
 	internal void StartMonitoring(string currentDirectory, int port, List<string> forwardedArgs)
 	{
@@ -63,9 +68,12 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 				if (solutionFiles.Length != 0)
 				{
 					// If we don't have a dev server host, we can't start a DevServer yet.
+					var discoveryStopwatch = System.Diagnostics.Stopwatch.StartNew();
 					var hostPath = await _services
 						.GetRequiredService<UnoToolsLocator>()
 						.ResolveHostExecutableAsync(_currentDirectory);
+					discoveryStopwatch.Stop();
+					_discoveryDurationMs = discoveryStopwatch.ElapsedMilliseconds;
 
 					if (hostPath is null)
 					{
@@ -212,6 +220,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 		{
 			var locator = _services.GetRequiredService<UnoToolsLocator>();
 			var discovery = await locator.DiscoverAsync(workingDirectory);
+			_unoSdkVersion = discovery.UnoSdkVersion;
 			if (discovery.PackagesJsonPath is not null)
 			{
 				var resolver = _services.GetRequiredService<TargetsAddInResolver>();

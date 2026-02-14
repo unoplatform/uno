@@ -29,6 +29,7 @@ internal class McpProxy
 	private string? _solutionDirectory;
 	private bool _devServerStarted;
 	private string? _currentDirectory;
+	private string? _workspaceHash;
 	private int _devServerPort;
 	private List<string> _forwardedArgs = [];
 	private string[] _roots = [];
@@ -36,6 +37,7 @@ internal class McpProxy
 	private Task? _cachePrimedWatcher;
 
 	private const string ToolCacheFileName = "tools-cache.json";
+	internal const string HealthResourceUri = "uno://health";
 
 	/// <summary>Maximum time to wait for upstream list_tools before returning cached/empty result.</summary>
 	internal const int ListToolsTimeoutMs = 30_000;
@@ -81,6 +83,7 @@ internal class McpProxy
 		_devServerPort = port;
 		_forwardedArgs = forwardedArgs;
 		_solutionDirectory = NormalizeSolutionDirectory(solutionDirectory);
+		_workspaceHash = ToolCacheFile.ComputeWorkspaceHash(_solutionDirectory);
 		InitializeToolCachePrimingTracker();
 
 		EnsureDevServerStartedFromSolutionDirectory();
@@ -245,6 +248,10 @@ internal class McpProxy
 		_logger.LogTrace("Starting DevServer monitor using solution directory {Directory}", normalized);
 		try
 		{
+			if (string.IsNullOrEmpty(_workspaceHash))
+			{
+				_workspaceHash = ToolCacheFile.ComputeWorkspaceHash(normalized);
+			}
 			_devServerMonitor.StartMonitoring(normalized, _devServerPort, _forwardedArgs);
 			_devServerStarted = true;
 			_logger.LogTrace("DevServer monitor started for {Directory} (port: {Port}, forwardedArgs: {Args})", normalized, _devServerPort, string.Join(" ", _forwardedArgs));
@@ -461,6 +468,38 @@ internal class McpProxy
 
 				var result = await ListToolsWithTimeoutAsync(ct);
 				return new() { Tools = AppendBuiltInTools(result.Tools) };
+			})
+			.WithListResourcesHandler((ctx, ct) =>
+			{
+				var resource = new Resource
+				{
+					Uri = HealthResourceUri,
+					Name = "Uno DevServer Health",
+					Description = "Real-time health status of the Uno DevServer MCP proxy, including connection state, tool count, and diagnostics.",
+					MimeType = "application/json",
+				};
+
+				return ValueTask.FromResult(new ListResourcesResult { Resources = [resource] });
+			})
+			.WithReadResourceHandler((ctx, ct) =>
+			{
+				var uri = ctx.Params?.Uri;
+				if (!string.Equals(uri, HealthResourceUri, StringComparison.OrdinalIgnoreCase))
+				{
+					throw new McpException($"Unknown resource URI: {uri}");
+				}
+
+				var report = BuildHealthReport();
+				var json = JsonSerializer.Serialize(report, McpJsonUtilities.DefaultOptions);
+
+				var contents = new TextResourceContents
+				{
+					Uri = HealthResourceUri,
+					Text = json,
+					MimeType = "application/json",
+				};
+
+				return ValueTask.FromResult(new ReadResourceResult { Contents = [contents] });
 			});
 
 		builder.Logging.AddConsole(consoleLogOptions =>
@@ -656,7 +695,9 @@ internal class McpProxy
 						json,
 						_toolCachePath,
 						_logger,
-						out var cachedTools))
+						out var cachedTools,
+						expectedWorkspaceHash: _workspaceHash,
+						expectedUnoSdkVersion: _devServerMonitor.UnoSdkVersion))
 					{
 						_toolCache = cachedTools;
 						_logger.LogTrace("Loaded {Count} cached tools from {Path}", _toolCache.Length, _toolCachePath);
@@ -817,6 +858,8 @@ internal class McpProxy
 			DevServerVersion = typeof(McpProxy).Assembly.GetName().Version?.ToString(),
 			UpstreamConnected = upstreamConnected,
 			ToolCount = toolCount,
+			UnoSdkVersion = _devServerMonitor.UnoSdkVersion,
+			DiscoveryDurationMs = _devServerMonitor.DiscoveryDurationMs,
 			Issues = issues,
 		};
 	}
@@ -851,9 +894,13 @@ internal class McpProxy
 					Directory.CreateDirectory(directory);
 				}
 
-				var entry = ToolCacheFile.CreateEntry(tools);
+				var entry = ToolCacheFile.CreateEntry(tools, _workspaceHash, _devServerMonitor.UnoSdkVersion);
 				var json = JsonSerializer.Serialize(entry, McpJsonUtilities.DefaultOptions);
-				File.WriteAllText(_toolCachePath, json);
+
+				// Atomic write: write to temp file then move
+				var tempPath = _toolCachePath + ".tmp";
+				File.WriteAllText(tempPath, json);
+				File.Move(tempPath, _toolCachePath, overwrite: true);
 
 				_toolCache = entry.Tools;
 				_toolCacheLoaded = true;
@@ -865,6 +912,21 @@ internal class McpProxy
 			catch (Exception ex)
 			{
 				_logger.LogWarning(ex, "Unable to persist tool cache to {Path}", _toolCachePath);
+
+				// Clean up temp file if it was left behind
+				try
+				{
+					var tempPath = _toolCachePath + ".tmp";
+					if (File.Exists(tempPath))
+					{
+						File.Delete(tempPath);
+					}
+				}
+				catch
+				{
+					// Best-effort cleanup
+				}
+
 				FailToolCachePriming(ex);
 			}
 		}
