@@ -27,6 +27,9 @@ internal class ProxyLifecycleManager
 	private bool _forceGenerateToolCache;
 	private string? _solutionDirectory;
 	private bool _devServerStarted;
+	private ConnectionState _connectionState = ConnectionState.Initializing;
+	private int _reconnectionAttempts;
+	private const int MaxReconnectionAttempts = 3;
 	private string? _currentDirectory;
 	private string? _workspaceHash;
 	private int _devServerPort;
@@ -48,6 +51,16 @@ internal class ProxyLifecycleManager
 		_mcpStdioServer = mcpStdioServer;
 
 		_addRootsTool = McpServerTool.Create(SetRoots, new() { Name = "uno_app_set_roots" }).ProtocolTool;
+	}
+
+	internal ConnectionState ConnectionState => _connectionState;
+
+	private void SetConnectionState(ConnectionState newState)
+	{
+		var oldState = _connectionState;
+		_connectionState = newState;
+		_healthService.ConnectionState = newState;
+		_logger.LogInformation("Connection state: {OldState} -> {NewState}", oldState, newState);
 	}
 
 	public async Task<int> RunAsync(
@@ -233,6 +246,7 @@ internal class ProxyLifecycleManager
 			_devServerMonitor.StartMonitoring(normalized, _devServerPort, _forwardedArgs);
 			_devServerStarted = true;
 			_healthService.DevServerStarted = true;
+			SetConnectionState(ConnectionState.Discovering);
 			_logger.LogTrace("DevServer monitor started for {Directory} (port: {Port}, forwardedArgs: {Args})", normalized, _devServerPort, string.Join(" ", _forwardedArgs));
 		}
 		catch (Exception ex)
@@ -385,9 +399,17 @@ internal class ProxyLifecycleManager
 
 		StartCachePrimingWatcher(host);
 
+		_devServerMonitor.ServerStarted += _ =>
+		{
+			SetConnectionState(ConnectionState.Connecting);
+		};
+
 		_mcpUpstreamClient.RegisterToolListChangedCallback(async () =>
 		{
 			_logger.LogTrace("Upstream tool list changed");
+
+			SetConnectionState(ConnectionState.Connected);
+			_reconnectionAttempts = 0;
 
 			_toolListManager.MarkShouldRefresh();
 
@@ -401,9 +423,28 @@ internal class ProxyLifecycleManager
 			);
 		});
 
+		_devServerMonitor.ServerCrashed += () =>
+		{
+			_reconnectionAttempts++;
+			if (_reconnectionAttempts > MaxReconnectionAttempts)
+			{
+				_logger.LogError("DevServer crashed {Attempts} times, entering degraded mode", _reconnectionAttempts);
+				SetConnectionState(ConnectionState.Degraded);
+			}
+			else
+			{
+				_logger.LogWarning(
+					"DevServer crashed (attempt {Attempt}/{Max}), resetting connection for reconnection",
+					_reconnectionAttempts, MaxReconnectionAttempts);
+				SetConnectionState(ConnectionState.Reconnecting);
+				_ = _mcpUpstreamClient.ResetConnectionAsync();
+			}
+		};
+
 		_devServerMonitor.ServerFailed += () =>
 		{
 			_logger.LogError("DevServer failed to start, stopping stdio server");
+			SetConnectionState(ConnectionState.Degraded);
 			FailToolCachePriming();
 			_ = Task.Run(async () =>
 			{

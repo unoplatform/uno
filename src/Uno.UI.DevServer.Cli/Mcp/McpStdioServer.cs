@@ -55,10 +55,13 @@ internal class McpStdioServer(
 
 				if (!upstreamTask.IsCompletedSuccessfully)
 				{
-					logger.LogDebug("Tool {Tool} called before upstream is ready", toolName);
+					var message = healthService.ConnectionState == ConnectionState.Reconnecting
+						? "DevServer host crashed and is reconnecting. Tools will be available again shortly. Call the uno_health tool for detailed diagnostics, or wait a few seconds and retry."
+						: "DevServer is starting up. The host process is not yet ready. Call the uno_health tool for detailed diagnostics, or wait a few seconds and retry.";
+					logger.LogDebug("Tool {Tool} called before upstream is ready (state: {State})", toolName, healthService.ConnectionState);
 					return new CallToolResult()
 					{
-						Content = [new TextContentBlock() { Text = "DevServer is starting up. The host process is not yet ready. Call the uno_health tool for detailed diagnostics, or wait a few seconds and retry." }],
+						Content = [new TextContentBlock() { Text = message }],
 						IsError = true
 					};
 				}
