@@ -13,6 +13,7 @@ internal sealed record HealthReport
 	public int ToolCount { get; init; }
 	public string? UnoSdkVersion { get; init; }
 	public long DiscoveryDurationMs { get; init; }
+	public ConnectionState? ConnectionState { get; init; }
 	public required IReadOnlyList<ValidationIssue> Issues { get; init; }
 }
 

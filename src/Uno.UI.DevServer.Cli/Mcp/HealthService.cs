@@ -26,6 +26,9 @@ internal class HealthService(
 	/// <summary>Set by ProxyLifecycleManager when the DevServer monitor has been started.</summary>
 	public bool DevServerStarted { get; set; }
 
+	/// <summary>Set by ProxyLifecycleManager on state transitions.</summary>
+	public ConnectionState ConnectionState { get; set; }
+
 	public CallToolResult BuildHealthToolResponse()
 	{
 		var report = BuildHealthReport();
@@ -50,6 +53,27 @@ internal class HealthService(
 				Severity = ValidationSeverity.Fatal,
 				Message = "The DevServer host process has not been started yet.",
 				Remediation = "Ensure the working directory contains a global.json with the Uno.Sdk, or provide roots via uno_app_set_roots.",
+			});
+		}
+
+		if (ConnectionState == ConnectionState.Reconnecting)
+		{
+			issues.Add(new ValidationIssue
+			{
+				Code = IssueCode.HostCrashed,
+				Severity = ValidationSeverity.Warning,
+				Message = "The DevServer host process crashed and is being restarted automatically.",
+				Remediation = "Wait a few seconds for the host to restart. Tools will become available again once the connection is re-established.",
+			});
+		}
+		else if (ConnectionState == ConnectionState.Degraded)
+		{
+			issues.Add(new ValidationIssue
+			{
+				Code = IssueCode.HostCrashed,
+				Severity = ValidationSeverity.Fatal,
+				Message = "The DevServer host process crashed repeatedly and could not be restarted.",
+				Remediation = "Check the DevServer logs for errors. You may need to restart the MCP proxy manually.",
 			});
 		}
 
@@ -95,6 +119,7 @@ internal class HealthService(
 			ToolCount = toolCount,
 			UnoSdkVersion = devServerMonitor.UnoSdkVersion,
 			DiscoveryDurationMs = devServerMonitor.DiscoveryDurationMs,
+			ConnectionState = ConnectionState,
 			Issues = issues,
 		};
 	}

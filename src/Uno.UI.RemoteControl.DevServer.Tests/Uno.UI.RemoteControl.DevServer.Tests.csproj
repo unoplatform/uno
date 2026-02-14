@@ -41,6 +41,7 @@
 		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\DotNetVersionCache.cs" Link="Helpers\DotNetVersionCache.cs" />
 
 		<!-- Link MCP sources for unit testing -->
+		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\ConnectionState.cs" Link="Mcp\ConnectionState.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\HealthReport.cs" Link="Mcp\HealthReport.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\McpJsonUtilities.cs" Link="Mcp\McpJsonUtilities.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\ToolCacheFile.cs" Link="Mcp\ToolCacheFile.cs" />

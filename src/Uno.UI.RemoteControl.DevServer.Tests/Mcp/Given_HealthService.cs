@@ -250,6 +250,60 @@ public class Given_HealthService
 	}
 
 	[TestMethod]
+	[Description("When ConnectionState is Reconnecting, HealthReport includes a HostCrashed warning issue")]
+	public void HealthReport_WhenReconnecting_ReportsHostCrashedWarning()
+	{
+		var report = new HealthReport
+		{
+			Status = HealthStatus.Degraded,
+			UpstreamConnected = false,
+			ConnectionState = ConnectionState.Reconnecting,
+			Issues =
+			[
+				new ValidationIssue
+				{
+					Code = IssueCode.HostCrashed,
+					Severity = ValidationSeverity.Warning,
+					Message = "The DevServer host process crashed and is being restarted automatically.",
+					Remediation = "Wait a few seconds for the host to restart.",
+				},
+			],
+		};
+
+		report.ConnectionState.Should().Be(ConnectionState.Reconnecting);
+		report.Issues.Should().HaveCount(1);
+		report.Issues[0].Code.Should().Be(IssueCode.HostCrashed);
+		report.Issues[0].Severity.Should().Be(ValidationSeverity.Warning);
+	}
+
+	[TestMethod]
+	[Description("When ConnectionState is Degraded, HealthReport includes a HostCrashed fatal issue")]
+	public void HealthReport_WhenDegradedState_ReportsHostCrashedFatal()
+	{
+		var report = new HealthReport
+		{
+			Status = HealthStatus.Unhealthy,
+			UpstreamConnected = false,
+			ConnectionState = ConnectionState.Degraded,
+			Issues =
+			[
+				new ValidationIssue
+				{
+					Code = IssueCode.HostCrashed,
+					Severity = ValidationSeverity.Fatal,
+					Message = "The DevServer host process crashed repeatedly and could not be restarted.",
+					Remediation = "Check the DevServer logs for errors.",
+				},
+			],
+		};
+
+		report.ConnectionState.Should().Be(ConnectionState.Degraded);
+		report.Issues.Should().HaveCount(1);
+		report.Issues[0].Code.Should().Be(IssueCode.HostCrashed);
+		report.Issues[0].Severity.Should().Be(ValidationSeverity.Fatal);
+	}
+
+	[TestMethod]
 	public void HealthReport_WhenNotStarted_ReportsHostNotStarted()
 	{
 		var devServerStarted = false;
