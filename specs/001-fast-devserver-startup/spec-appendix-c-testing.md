@@ -36,7 +36,7 @@
 | 15 | `dotnet --version` cache | Correct TFM even after .NET SDK update |
 | 16 | **Upstream returns 0 tools** (no license, add-in load failure, or registration error — not a valid license tier) | `list_tools` returns within 30s (not indefinitely), empty list or cached tools + health warning |
 | 17 | **Upstream connection fails** | `list_tools` returns within 30s with cached tools or error tool |
-| 18 | **Community license** | `list_tools` returns ~9 tools (not 12), cache reflects license tier |
+| 18 | **Community license** | `list_tools` returns 9 tools (not 12), cache reflects license tier |
 | 19 | **`--addins` with `--solution`** | `--addins` wins for add-in loading, `--solution` used for Hot Reload |
 | 20 | **`--addins` with missing DLL** | Warning logged, remaining add-ins still loaded |
 | 21 | **Duplicate DevServer for same solution** | CLI detects via AmbientRegistry, reuses or fails explicitly |
@@ -50,7 +50,7 @@
 | 29 | **VS extension launcher reflection compatibility** | `Uno.UI.RemoteControl.VS.EntryPoint` class (loaded via `Assembly.LoadFrom` in `DevServerLauncher.cs:301`) must have v3 constructor `(DTE2,string,AsyncPackage,string)`. VS probes v3 → v2 → v1 via `Activator.CreateInstance` (`DevServerLauncher.cs:313-331`). Test: verify constructor signatures are present. |
 | 30 | **Rider auto-restart race condition** | When MCP mode relaunches Host (hot reconnection), Rider's auto-restart (immediate on process exit) should not create a competing instance. Test: kill Host while both Rider and MCP are connected → verify AmbientRegistry prevents duplicate, only one Host survives. |
 | 31 | **Health check IPv6 loopback** | MCP mode health polling must check `[::1]` (IPv6) in addition to `localhost` and `127.0.0.1`. Test: Host bound to IPv6 only → health check succeeds. |
-| 32 | **Controller `--addins` forwarding** | Controller accepts `--addins` parameter and includes it in child server process argument list. Test: run `Host.dll --command start --addins "p1;p2" --httpPort 0 --solution s.sln` → verify child process receives `--addins "p1;p2"`. |
+| 32 | **Controller `--addins` forwarding** | Controller accepts `--addins` parameter and includes it in child server process argument list. Test: run `Host.dll --command start --addins "p1;p2" --httpPort 0 --solution s.sln` → verify child process receives `--addins "p1;p2"`. **Verification mechanism**: The Host MUST log a distinct message when `--addins` is present (e.g., `"Add-ins provided via --addins flag: {count} paths"`). The test captures stdout/stderr and asserts this log line appears. Alternative: unit test the controller's argument-building code directly, asserting the output argument list contains `--addins`. |
 | 33 | **`disco --json` includes add-in paths** | `disco --json` output contains `addIns` array with resolved add-in DLL paths, discovery method, and duration |
 | 34 | **`disco --addins-only --json`** | Returns JSON array of absolute DLL paths only. Output is parseable and paths exist on disk. |
 | 35 | **`disco --addins-only` (text)** | Returns semicolon-separated DLL paths. Output can be piped as `--addins` value. |

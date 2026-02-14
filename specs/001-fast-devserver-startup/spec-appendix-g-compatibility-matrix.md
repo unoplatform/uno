@@ -212,14 +212,14 @@ These scenarios test the interaction between different DevServer launchers runni
 
 | Tier | Tool Count | Tool Cache Content | Upgrade Mid-Session |
 |------|:----------:|-------------------|:-------------------:|
-| Community | ~9 | 9 tools cached | `tools/list_changed` sent |
-| Pro | ~11 | 11 tools cached | `tools/list_changed` sent |
-| Business | ~12 | 12 tools cached | `tools/list_changed` sent |
+| Community | 9 | 9 tools cached | `tools/list_changed` sent |
+| Pro | 11 | 11 tools cached | `tools/list_changed` sent |
+| Business | 12 | 12 tools cached | `tools/list_changed` sent |
 | Expired/None | 0 | Last-known cached | Warning in health |
 
 ### Validation
 
-- [ ] Community license → `list_tools` returns ~9 tools, cache reflects this
+- [ ] Community license → `list_tools` returns 9 tools, cache reflects this
 - [ ] Pro upgrade mid-session → `tools/list_changed` notification, updated tool list
 - [ ] No license / expired → `list_tools` returns within 30s (not infinite hang), health warning
 - [ ] Cache from Pro session used by Community session → stale tools served, refreshed when upstream responds

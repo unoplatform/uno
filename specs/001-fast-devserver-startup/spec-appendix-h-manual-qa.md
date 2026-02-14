@@ -104,8 +104,8 @@ These scenarios **cannot be reliably automated** and require human testers with 
 
 | # | Scenario | Steps | Accept Criteria |
 |---|----------|-------|-----------------|
-| H4.1 | Community startup | 1. Start MCP with Community account. 2. List tools. | ~9 tools visible. Pro/Business tools absent. |
-| H4.2 | Pro startup | 1. Start MCP with Pro account. 2. List tools. | ~11 tools visible. |
+| H4.1 | Community startup | 1. Start MCP with Community account. 2. List tools. | 9 tools visible. Pro/Business tools absent. |
+| H4.2 | Pro startup | 1. Start MCP with Pro account. 2. List tools. | 11 tools visible. |
 | H4.3 | Upgrade mid-session | 1. Start as Community. 2. Sign in with Pro account. | `tools/list_changed` sent (for clients that support it). New tools appear. |
 | H4.4 | No license / expired | 1. Start MCP with expired license. 2. List tools. | Response within 30s (not hang). Cached tools or empty list. Health shows license issue. |
 | H4.5 | Tool cache reflects tier | 1. Start as Pro, stop. 2. Start as Community. | Cache serves Pro tools initially (stale), refreshes to Community count when upstream responds. |

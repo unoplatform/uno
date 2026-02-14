@@ -25,7 +25,7 @@
 | `uno_app_get_element_datacontext` | Element data context | Pro |
 | `uno_app_get_memory_counters` | Memory diagnostics | Business |
 
-**Visible tools by tier**: Community ~9, Pro ~11, Business ~12. Exact counts may change as tools are added.
+**Visible tools by tier**: Community 9, Pro 11, Business 12 (verified against `MCPToolsObserverService`). Counts may change as tools are added.
 
 ---
 

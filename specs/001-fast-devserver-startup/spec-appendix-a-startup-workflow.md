@@ -13,8 +13,8 @@ This document provides a detailed walkthrough of the current DevServer startup w
 3. [Process Chain Analysis](#3-process-chain-analysis)
 4. [Add-in Discovery Deep Dive](#4-add-in-discovery-deep-dive)
 5. [MCP Proxy Pipeline](#5-mcp-proxy-pipeline)
-6. [Proposed Phase 1 Workflow](#6-proposed-phase-1-workflow)
-7. [Proposed Phase 2 Workflow](#7-proposed-phase-2-workflow)
+6. [Proposed Workflow: Phase 0+1b (Fast Discovery + Direct Launch)](#6-proposed-workflow-phase-01b-fast-discovery--direct-launch)
+7. [Proposed Workflow: Phase 1a+2 (Instant MCP Start + R2R)](#7-proposed-workflow-phase-1a2-instant-mcp-start--r2r)
 8. [Data Flow: packages.json to Add-in DLLs](#8-data-flow-packagesjson-to-add-in-dlls)
 
 ---
@@ -373,11 +373,13 @@ private static readonly string[] ClientsWithoutListUpdateSupport =
 
 For these clients, the first `tools/list` call **blocks** until the upstream server is ready (line 559-567). This means the full 37s startup delay is experienced synchronously by the client.
 
-This is the primary motivation for Phase 2 (serve cached tools immediately).
+This is the primary motivation for Phase 1a (serve cached tools immediately).
 
 ---
 
-## 6. Proposed Phase 1 Workflow
+## 6. Proposed Workflow: Phase 0+1b (Fast Discovery + Direct Launch)
+
+> **Maps to spec phases**: Phase 0 (convention-based `.targets` parsing, `--addins` flag) + Phase 1b (controller bypass, direct Host launch). This workflow shows the optimized path after both phases ship.
 
 ```mermaid
 sequenceDiagram
@@ -460,7 +462,7 @@ gantt
     Assembly loading         :a10, after a9, 500
     Kestrel + connect        :a11, after a10, 2000
 
-    section Phase 1 (~5s)
+    section Phase 0+1b (~5s)
     CLI cold start           :b1, 0, 1500
     SDK + addin resolution   :b2, after b1, 200
     Launch server directly   :b3, after b2, 100
@@ -468,7 +470,7 @@ gantt
     Assembly loading         :b5, after b4, 500
     Kestrel + connect        :b6, after b5, 1000
 
-    section Phase 2 (<1s)
+    section Phase 1a+2 (<1s)
     CLI cold start (R2R)     :c1, 0, 200
     STDIO MCP + cached tools :done, c2, after c1, 50
     Background: discovery    :active, c3, after c1, 200
@@ -478,7 +480,9 @@ gantt
 
 ---
 
-## 7. Proposed Phase 2 Workflow
+## 7. Proposed Workflow: Phase 1a+2 (Instant MCP Start + R2R)
+
+> **Maps to spec phases**: Phase 1a (instant MCP start, cached tools, structured errors) + Phase 2 (ReadyToRun compilation). This workflow shows the end-state where MCP tools are served from cache in < 1s.
 
 ```mermaid
 sequenceDiagram
@@ -741,4 +745,4 @@ Both layers are self-discovering — no hardcoded package names. A new add-in pa
 - Persists tool definitions to `%LocalAppData%\Uno Platform\uno.devserver\tools-cache.json`
 - Validates with SHA256 checksum and version number
 - Used by `--force-roots-fallback` and `--force-generate-tool-cache` modes
-- Phase 2 makes this cache the primary source for instant tool list responses
+- Phase 1a makes this cache the primary source for instant tool list responses
