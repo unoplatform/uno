@@ -88,6 +88,7 @@ internal class Program
 		services.AddSingleton<McpUpstreamClient>();
 		services.AddSingleton<ToolListManager>();
 		services.AddSingleton<HealthService>();
+		services.AddSingleton<McpStdioServer>();
 		services.AddSingleton<McpProxy>();
 
 		using var sp = services.BuildServiceProvider();

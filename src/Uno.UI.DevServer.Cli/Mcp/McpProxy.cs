@@ -1,12 +1,9 @@
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using ModelContextProtocol;
-using ModelContextProtocol.Client;
 using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
 
@@ -19,6 +16,7 @@ internal class McpProxy
 	private readonly McpUpstreamClient _mcpClientProxy;
 	private readonly HealthService _healthService;
 	private readonly ToolListManager _toolListManager;
+	private readonly McpStdioServer _mcpStdioServer;
 	private readonly Tool _addRootsTool;
 	private bool _waitForTools;
 	private bool _forceRootsFallback;
@@ -36,13 +34,14 @@ internal class McpProxy
 	// Clients that don't support the list_updated notification
 	private static readonly string[] ClientsWithoutListUpdateSupport = ["claude-code", "codex", "codex-mcp-client", "antigravity"];
 
-	public McpProxy(ILogger<McpProxy> logger, DevServerMonitor mcpServerMonitor, McpUpstreamClient mcpClientProxy, HealthService healthService, ToolListManager toolListManager)
+	public McpProxy(ILogger<McpProxy> logger, DevServerMonitor mcpServerMonitor, McpUpstreamClient mcpClientProxy, HealthService healthService, ToolListManager toolListManager, McpStdioServer mcpStdioServer)
 	{
 		_logger = logger;
 		_devServerMonitor = mcpServerMonitor;
 		_mcpClientProxy = mcpClientProxy;
 		_healthService = healthService;
 		_toolListManager = toolListManager;
+		_mcpStdioServer = mcpStdioServer;
 
 		_addRootsTool = McpServerTool.Create(SetRoots, new() { Name = "uno_app_set_roots" }).ProtocolTool;
 	}
@@ -373,118 +372,12 @@ internal class McpProxy
 
 	private async Task<int> StartMcpStdIoProxyAsync(CancellationToken ct)
 	{
-		var tcs = new TaskCompletionSource();
-
-		var builder = Host.CreateApplicationBuilder();
-		builder.Services
-			.AddMcpServer()
-			.WithStdioServerTransport()
-			.WithCallToolHandler(async (ctx, ct) =>
-			{
-				var toolName = ctx.Params?.Name ?? "unknown";
-
-				if (_forceRootsFallback && toolName == _addRootsTool.Name)
-				{
-					await SetRoots(ctx.Params!.Arguments?["roots"].Deserialize<string[]>() ?? []);
-					return new CallToolResult() { Content = [new TextContentBlock() { Text = "Ok" }] };
-				}
-
-				// Handle the built-in uno_health tool before upstream is ready
-				if (toolName == HealthService.HealthTool.Name)
-				{
-					return _healthService.BuildHealthToolResponse();
-				}
-
-				var upstreamTask = _mcpClientProxy.UpstreamClient;
-
-				if (!upstreamTask.IsCompletedSuccessfully)
-				{
-					_logger.LogDebug("Tool {Tool} called before upstream is ready", toolName);
-					return new CallToolResult()
-					{
-						Content = [new TextContentBlock() { Text = "DevServer is starting up. The host process is not yet ready. Call the uno_health tool for detailed diagnostics, or wait a few seconds and retry." }],
-						IsError = true
-					};
-				}
-
-				var upstreamClient = upstreamTask.Result;
-
-				_logger.LogDebug("Invoking MCP tool {Tool}", toolName);
-
-				var name = ctx.Params!.Name;
-				var args = ctx.Params.Arguments ?? new Dictionary<string, JsonElement>();
-				var adjustedArguments = args.ToDictionary(v => v.Key, v => (object?)v.Value);
-
-				var result = await upstreamClient.CallToolAsync(
-					name,
-					adjustedArguments,
-					cancellationToken: ct
-				);
-
-				return result;
-			})
-			.WithListToolsHandler(async (ctx, ct) =>
-			{
-				await EnsureRootsInitialized(ctx, tcs, ct);
-
-				if (_forceRootsFallback && _roots.Length == 0)
-				{
-					List<Tool> tools = [HealthService.HealthTool, _addRootsTool];
-					var cachedTools = _toolListManager.GetCachedTools();
-					if (cachedTools.Length > 0)
-					{
-						tools.AddRange(cachedTools);
-					}
-
-					_logger.LogTrace("Upstream client is not connected, returning {Count} tools", tools.Count);
-
-					// The devserver is not started yet, so there are no tools to report.
-					return new() { Tools = tools };
-				}
-
-				var result = await _toolListManager.ListToolsWithTimeoutAsync(ct);
-				return new() { Tools = ToolListManager.AppendBuiltInTools(result.Tools) };
-			})
-			.WithListResourcesHandler((ctx, ct) =>
-			{
-				var resource = new Resource
-				{
-					Uri = HealthService.HealthResourceUri,
-					Name = "Uno DevServer Health",
-					Description = "Real-time health status of the Uno DevServer MCP proxy, including connection state, tool count, and diagnostics.",
-					MimeType = "application/json",
-				};
-
-				return ValueTask.FromResult(new ListResourcesResult { Resources = [resource] });
-			})
-			.WithReadResourceHandler((ctx, ct) =>
-			{
-				var uri = ctx.Params?.Uri;
-				if (!string.Equals(uri, HealthService.HealthResourceUri, StringComparison.OrdinalIgnoreCase))
-				{
-					throw new McpException($"Unknown resource URI: {uri}");
-				}
-
-				var report = _healthService.BuildHealthReport();
-				var json = JsonSerializer.Serialize(report, McpJsonUtilities.DefaultOptions);
-
-				var contents = new TextResourceContents
-				{
-					Uri = HealthService.HealthResourceUri,
-					Text = json,
-					MimeType = "application/json",
-				};
-
-				return ValueTask.FromResult(new ReadResourceResult { Contents = [contents] });
-			});
-
-		builder.Logging.AddConsole(consoleLogOptions =>
-		{
-			// Configure all logs to go to stderr
-			consoleLogOptions.LogToStandardErrorThreshold = LogLevel.Trace;
-		});
-
-		var host = builder.Build();
+		var (host, tcs) = _mcpStdioServer.BuildHost(
+			EnsureRootsInitialized,
+			_addRootsTool,
+			_forceRootsFallback,
+			() => _roots,
+			async roots => await SetRoots(roots));
 
 		StartCachePrimingWatcher(host);
 
