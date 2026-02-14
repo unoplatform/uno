@@ -17,6 +17,7 @@ internal class McpProxy
 	private readonly ILogger<McpProxy> _logger;
 	private readonly DevServerMonitor _devServerMonitor;
 	private readonly McpClientProxy _mcpClientProxy;
+	private readonly HealthService _healthService;
 	private readonly Tool _addRootsTool;
 	private readonly string _toolCachePath;
 	private Tool[] _toolCache = [];
@@ -37,7 +38,6 @@ internal class McpProxy
 	private Task? _cachePrimedWatcher;
 
 	private const string ToolCacheFileName = "tools-cache.json";
-	internal const string HealthResourceUri = "uno://health";
 
 	/// <summary>Maximum time to wait for upstream list_tools before returning cached/empty result.</summary>
 	internal const int ListToolsTimeoutMs = 30_000;
@@ -48,18 +48,12 @@ internal class McpProxy
 	// Clients that don't support the list_updated notification
 	private static readonly string[] ClientsWithoutListUpdateSupport = ["claude-code", "codex", "codex-mcp-client", "antigravity"];
 
-	private static readonly Tool HealthTool = new()
-	{
-		Name = "uno_health",
-		Description = "Returns the health status of the Uno DevServer MCP proxy, including connection state, tool count, and any issues detected during startup. Always available, even before the upstream host is ready.",
-		InputSchema = JsonSerializer.Deserialize<JsonElement>("""{"type":"object","properties":{}}"""),
-	};
-
-	public McpProxy(ILogger<McpProxy> logger, DevServerMonitor mcpServerMonitor, McpClientProxy mcpClientProxy)
+	public McpProxy(ILogger<McpProxy> logger, DevServerMonitor mcpServerMonitor, McpClientProxy mcpClientProxy, HealthService healthService)
 	{
 		_logger = logger;
 		_devServerMonitor = mcpServerMonitor;
 		_mcpClientProxy = mcpClientProxy;
+		_healthService = healthService;
 
 		_addRootsTool = McpServerTool.Create(SetRoots, new() { Name = "uno_app_set_roots" }).ProtocolTool;
 		_toolCachePath = InitializeToolCachePath();
@@ -84,6 +78,7 @@ internal class McpProxy
 		_forwardedArgs = forwardedArgs;
 		_solutionDirectory = NormalizeSolutionDirectory(solutionDirectory);
 		_workspaceHash = ToolCacheFile.ComputeWorkspaceHash(_solutionDirectory);
+		_healthService.GetToolCount = () => { lock (_toolCacheLock) { return _toolCache.Length; } };
 		InitializeToolCachePrimingTracker();
 
 		EnsureDevServerStartedFromSolutionDirectory();
@@ -254,6 +249,7 @@ internal class McpProxy
 			}
 			_devServerMonitor.StartMonitoring(normalized, _devServerPort, _forwardedArgs);
 			_devServerStarted = true;
+			_healthService.DevServerStarted = true;
 			_logger.LogTrace("DevServer monitor started for {Directory} (port: {Port}, forwardedArgs: {Args})", normalized, _devServerPort, string.Join(" ", _forwardedArgs));
 		}
 		catch (Exception ex)
@@ -414,9 +410,9 @@ internal class McpProxy
 				}
 
 				// Handle the built-in uno_health tool before upstream is ready
-				if (toolName == HealthTool.Name)
+				if (toolName == HealthService.HealthTool.Name)
 				{
-					return BuildHealthToolResponse();
+					return _healthService.BuildHealthToolResponse();
 				}
 
 				var upstreamTask = _mcpClientProxy.UpstreamClient;
@@ -453,7 +449,7 @@ internal class McpProxy
 
 				if (_forceRootsFallback && _roots.Length == 0)
 				{
-					List<Tool> tools = [HealthTool, _addRootsTool];
+					List<Tool> tools = [HealthService.HealthTool, _addRootsTool];
 					var cachedTools = GetCachedTools();
 					if (cachedTools.Length > 0)
 					{
@@ -473,7 +469,7 @@ internal class McpProxy
 			{
 				var resource = new Resource
 				{
-					Uri = HealthResourceUri,
+					Uri = HealthService.HealthResourceUri,
 					Name = "Uno DevServer Health",
 					Description = "Real-time health status of the Uno DevServer MCP proxy, including connection state, tool count, and diagnostics.",
 					MimeType = "application/json",
@@ -484,17 +480,17 @@ internal class McpProxy
 			.WithReadResourceHandler((ctx, ct) =>
 			{
 				var uri = ctx.Params?.Uri;
-				if (!string.Equals(uri, HealthResourceUri, StringComparison.OrdinalIgnoreCase))
+				if (!string.Equals(uri, HealthService.HealthResourceUri, StringComparison.OrdinalIgnoreCase))
 				{
 					throw new McpException($"Unknown resource URI: {uri}");
 				}
 
-				var report = BuildHealthReport();
+				var report = _healthService.BuildHealthReport();
 				var json = JsonSerializer.Serialize(report, McpJsonUtilities.DefaultOptions);
 
 				var contents = new TextResourceContents
 				{
-					Uri = HealthResourceUri,
+					Uri = HealthService.HealthResourceUri,
 					Text = json,
 					MimeType = "application/json",
 				};
@@ -778,91 +774,15 @@ internal class McpProxy
 	private static IList<Tool> AppendBuiltInTools(IList<Tool> tools)
 	{
 		// Avoid duplicates if the tool already appears (e.g. from cache)
-		if (tools.Any(t => t.Name == HealthTool.Name))
+		if (tools.Any(t => t.Name == HealthService.HealthTool.Name))
 		{
 			return tools;
 		}
 
 		// Prepend so the health tool is always visible
-		var result = new List<Tool>(tools.Count + 1) { HealthTool };
+		var result = new List<Tool>(tools.Count + 1) { HealthService.HealthTool };
 		result.AddRange(tools);
 		return result;
-	}
-
-	private CallToolResult BuildHealthToolResponse()
-	{
-		var report = BuildHealthReport();
-		var json = JsonSerializer.Serialize(report, McpJsonUtilities.DefaultOptions);
-		return new CallToolResult()
-		{
-			Content = [new TextContentBlock() { Text = json }],
-		};
-	}
-
-	private HealthReport BuildHealthReport()
-	{
-		var issues = new List<ValidationIssue>();
-		var upstreamTask = _mcpClientProxy.UpstreamClient;
-		var upstreamConnected = upstreamTask.IsCompletedSuccessfully;
-
-		if (!_devServerStarted)
-		{
-			issues.Add(new ValidationIssue
-			{
-				Code = IssueCode.HostNotStarted,
-				Severity = ValidationSeverity.Fatal,
-				Message = "The DevServer host process has not been started yet.",
-				Remediation = "Ensure the working directory contains a global.json with the Uno.Sdk, or provide roots via uno_app_set_roots.",
-			});
-		}
-
-		if (upstreamTask.IsFaulted)
-		{
-			var errorMessage = upstreamTask.Exception?.InnerException?.Message ?? "Unknown error";
-			issues.Add(new ValidationIssue
-			{
-				Code = IssueCode.UpstreamError,
-				Severity = ValidationSeverity.Fatal,
-				Message = $"Failed to connect to upstream MCP server: {errorMessage}",
-				Remediation = "Check that the DevServer host process started correctly and is listening on the expected port.",
-			});
-		}
-		else if (_devServerStarted && !upstreamConnected)
-		{
-			issues.Add(new ValidationIssue
-			{
-				Code = IssueCode.HostUnreachable,
-				Severity = ValidationSeverity.Warning,
-				Message = "The DevServer host process is started but the upstream MCP connection is not yet established.",
-				Remediation = "The host may still be initializing. Wait a few seconds and retry.",
-			});
-		}
-
-		var toolCount = 0;
-		if (upstreamConnected)
-		{
-			lock (_toolCacheLock)
-			{
-				toolCount = _toolCache.Length;
-			}
-		}
-
-		var status = issues.Any(i => i.Severity == ValidationSeverity.Fatal)
-			? HealthStatus.Unhealthy
-			: issues.Count > 0
-				? HealthStatus.Degraded
-				: HealthStatus.Healthy;
-
-		return new HealthReport
-		{
-			Status = status,
-			DevServerVersion = typeof(McpProxy).Assembly.GetName().Version?.ToString(),
-			UpstreamConnected = upstreamConnected,
-			ToolCount = toolCount,
-			UnoSdkVersion = _devServerMonitor.UnoSdkVersion,
-			DiscoveryDurationMs = _devServerMonitor.DiscoveryDurationMs,
-			Issues = issues,
-		};
 	}
 
 	private void PersistToolCacheIfNeeded(Tool[] tools)

@@ -85,8 +85,9 @@ internal class Program
 		services.AddSingleton<UnoToolsLocator>();
 		services.AddSingleton<TargetsAddInResolver>();
 		services.AddSingleton<DevServerMonitor>();
-		services.AddSingleton<McpProxy>();
 		services.AddSingleton<McpClientProxy>();
+		services.AddSingleton<HealthService>();
+		services.AddSingleton<McpProxy>();
 
 		using var sp = services.BuildServiceProvider();
 		var manager = sp.GetRequiredService<CliManager>();
