@@ -9,9 +9,10 @@ using Microsoft.Extensions.Logging;
 
 namespace Uno.UI.DevServer.Cli.Helpers;
 
-internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger)
+internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInResolver? addInResolver = null)
 {
 	private readonly ILogger<UnoToolsLocator> _logger = logger;
+	private readonly TargetsAddInResolver? _addInResolver = addInResolver;
 
 	public async Task<DiscoveryInfo> DiscoverAsync(string workDirectory)
 	{
@@ -144,6 +145,26 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger)
 			}
 		}
 
+		// Convention-based add-in discovery
+		var resolvedAddIns = new List<ResolvedAddIn>();
+		string? addInsDiscoveryMethod = null;
+		long addInsDiscoveryDurationMs = 0;
+
+		if (_addInResolver is not null && packagesJsonPath is not null)
+		{
+			var addInStopwatch = Stopwatch.StartNew();
+			try
+			{
+				resolvedAddIns = _addInResolver.ResolveAddIns(packagesJsonPath);
+				addInsDiscoveryMethod = "targets";
+			}
+			catch (Exception ex)
+			{
+				warnings.Add($"Convention-based add-in discovery failed: {ex.Message}");
+			}
+			addInsDiscoveryDurationMs = addInStopwatch.ElapsedMilliseconds;
+		}
+
 		return new DiscoveryInfo
 		{
 			WorkingDirectory = workDirectory,
@@ -162,6 +183,9 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger)
 			DotNetTfm = dotNetTfm,
 			HostPath = hostPath,
 			SettingsPath = settingsPath,
+			AddIns = resolvedAddIns,
+			AddInsDiscoveryMethod = addInsDiscoveryMethod,
+			AddInsDiscoveryDurationMs = addInsDiscoveryDurationMs,
 			Warnings = warnings,
 			Errors = errors
 		};
@@ -341,14 +365,14 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger)
 		}
 	}
 
+	internal static IReadOnlyList<string> GetNuGetCachePaths()
+		=> NuGetCacheHelper.GetNuGetCachePaths();
+
 	private async Task<string?> EnsureNugetPackage(string packageId, string version, bool tryInstall = true)
 	{
-		var possiblePaths = new[]
-		{
-			Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".nuget", "packages", packageId.ToLowerInvariant(), version),
-			Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "NuGet", "packages", packageId.ToLowerInvariant(), version),
-			Path.Combine(Environment.GetEnvironmentVariable("NUGET_PACKAGES") ?? "", packageId.ToLowerInvariant(), version)
-		};
+		var possiblePaths = GetNuGetCachePaths()
+			.Select(p => Path.Combine(p, packageId.ToLowerInvariant(), version))
+			.ToArray();
 
 		foreach (var path in possiblePaths)
 		{

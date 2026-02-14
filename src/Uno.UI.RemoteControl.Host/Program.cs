@@ -61,6 +61,10 @@ namespace Uno.UI.RemoteControl.Host
 					throw new ArgumentException($"The provided solution path '{solution}' does not exists");
 				}
 
+				// Read --addins: pre-resolved add-in DLL paths (semicolon-separated).
+				// When present, MSBuild-based discovery is skipped entirely.
+				var addins = globalConfiguration.GetOptionalString("addins");
+
 				// Controller mode
 				if (!string.IsNullOrWhiteSpace(command))
 				{
@@ -68,7 +72,7 @@ namespace Uno.UI.RemoteControl.Host
 					switch (verb)
 					{
 						case "start":
-							await StartCommandAsync(httpPort, parentPID, solution, workingDir, timeoutMs);
+							await StartCommandAsync(httpPort, parentPID, solution, workingDir, timeoutMs, addins);
 							return;
 						case "stop":
 							await StopCommandAsync();
@@ -175,7 +179,13 @@ namespace Uno.UI.RemoteControl.Host
 				// Apply Startup.ConfigureServices for compatibility with existing Startup class
 				new Startup(builder.Configuration).ConfigureServices(builder.Services);
 
-				if (solution is not null)
+				if (addins is not null)
+				{
+					// Pre-resolved add-in paths from CLI (convention-based discovery).
+					// Skip MSBuild-based discovery entirely.
+					builder.ConfigureAddInsFromPaths(addins, telemetry);
+				}
+				else if (solution is not null)
 				{
 					// For backward compatibility, we allow to not have a solution file specified.
 					builder.ConfigureAddIns(solution, telemetry);

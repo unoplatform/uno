@@ -207,6 +207,26 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 			"--ppid", Environment.ProcessId.ToString(System.Globalization.CultureInfo.InvariantCulture)
 		};
 
+		// Resolve add-ins via convention-based discovery
+		try
+		{
+			var locator = _services.GetRequiredService<UnoToolsLocator>();
+			var discovery = await locator.DiscoverAsync(workingDirectory);
+			if (discovery.PackagesJsonPath is not null)
+			{
+				var resolver = _services.GetRequiredService<TargetsAddInResolver>();
+				var addIns = resolver.ResolveAddIns(discovery.PackagesJsonPath);
+				var addInsValue = string.Join(";", addIns.Select(a => a.EntryPointDll).Distinct(StringComparer.OrdinalIgnoreCase));
+				args.Add("--addins");
+				args.Add(addInsValue);
+				_logger.LogDebug("Resolved {Count} add-in(s) for controller process", addIns.Count);
+			}
+		}
+		catch (Exception ex)
+		{
+			_logger.LogWarning(ex, "Convention-based add-in discovery failed, controller will use MSBuild fallback");
+		}
+
 		args.AddRange(_forwardedArgs);
 
 		var startInfo = DevServerProcessHelper.CreateDotnetProcessStartInfo(hostPath, args, workingDirectory, redirectOutput: true, redirectInput: true);

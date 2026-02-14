@@ -83,6 +83,21 @@ internal sealed class DiscoveryInfo
 	public string? SettingsPath { get; init; }
 
 	/// <summary>
+	/// Gets the resolved add-ins discovered via convention-based parsing.
+	/// </summary>
+	public IReadOnlyList<ResolvedAddIn> AddIns { get; init; } = [];
+
+	/// <summary>
+	/// Gets the method used to discover add-ins (e.g. "targets").
+	/// </summary>
+	public string? AddInsDiscoveryMethod { get; init; }
+
+	/// <summary>
+	/// Gets the duration of add-in discovery in milliseconds.
+	/// </summary>
+	public long AddInsDiscoveryDurationMs { get; init; }
+
+	/// <summary>
 	/// Gets warnings encountered during discovery.
 	/// </summary>
 	public IReadOnlyList<string> Warnings { get; init; } = [];

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 using Spectre.Console;
 
 namespace Uno.UI.DevServer.Cli.Helpers;
@@ -18,6 +19,7 @@ internal static class DiscoveryOutputFormatter
 		AddSection(table, "Uno SDK");
 		AddRow(table, "source", info.UnoSdkSource);
 		AddRow(table, "sourcePath", info.UnoSdkSourcePath);
+		AddRow(table, "globalJsonPath", info.GlobalJsonPath);
 		AddRow(table, "package", info.UnoSdkPackage);
 		AddRow(table, "version", info.UnoSdkVersion);
 		AddRow(table, "sdkPath", info.UnoSdkPath);
@@ -36,6 +38,23 @@ internal static class DiscoveryOutputFormatter
 		AddSection(table, ".NET");
 		AddRow(table, "dotNetVersion", info.DotNetVersion);
 		AddRow(table, "dotNetTfm", info.DotNetTfm);
+
+		AddSection(table, "Add-Ins");
+		AddRow(table, "discoveryMethod", info.AddInsDiscoveryMethod);
+		AddRow(table, "discoveryDurationMs", info.AddInsDiscoveryDurationMs.ToString(CultureInfo.InvariantCulture));
+		if (info.AddIns.Count > 0)
+		{
+			foreach (var addIn in info.AddIns)
+			{
+				table.AddRow(
+					new Markup($"  [white]{Escape(addIn.PackageName)}[/]"),
+					new Markup($"[grey]{Escape(addIn.EntryPointDll)}[/]"));
+			}
+		}
+		else
+		{
+			AddRow(table, "addIns", null);
+		}
 
 		AnsiConsole.Write(table);
 
@@ -97,6 +116,7 @@ internal static class DiscoveryOutputFormatter
 		{
 			"unoSdkSource" => "global.json or project source",
 			"unoSdkSourcePath" => "global.json or project file path",
+			"globalJsonPath" => "global.json in working directory or parents",
 			"unoSdkPackage" => "msbuild-sdks entry in global.json",
 			"unoSdkVersion" => "msbuild-sdks entry in global.json",
 			"unoSdkPath" => "restored Uno.Sdk package in NuGet cache",
@@ -109,6 +129,8 @@ internal static class DiscoveryOutputFormatter
 			"dotNetTfm" => "parsed dotnet --version",
 			"hostPath" => "Uno.WinUI.DevServer host for current dotnet TFM",
 			"settingsPath" => "uno.settings.devserver tools/manager/Uno.Settings.dll",
+			"discoveryMethod" => "convention-based targets parsing",
+			"addIns" => "resolved add-in DLLs from .targets files",
 			_ => null
 		};
 	}

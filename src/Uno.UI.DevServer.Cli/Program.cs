@@ -25,6 +25,7 @@ internal class Program
 			Console.WriteLine();
 			Console.WriteLine("Disco options:");
 			WriteOption("--json", "Emit JSON output");
+			WriteOption("--addins-only", "Output only resolved add-in paths (semicolon-separated, or JSON array with --json)");
 			Console.WriteLine();
 			Console.WriteLine("MCP options:");
 			WriteOption("--mcp-app", "Start in App MCP STDIO mode");
@@ -81,6 +82,7 @@ internal class Program
 		});
 		services.AddSingleton<CliManager>();
 		services.AddSingleton<UnoToolsLocator>();
+		services.AddSingleton<TargetsAddInResolver>();
 		services.AddSingleton<DevServerMonitor>();
 		services.AddSingleton<McpProxy>();
 		services.AddSingleton<McpClientProxy>();

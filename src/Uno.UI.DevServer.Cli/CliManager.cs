@@ -14,6 +14,7 @@ internal class CliManager
 {
 	private readonly IServiceProvider _services;
 	private readonly UnoToolsLocator _unoToolsLocator;
+	private readonly TargetsAddInResolver _addInResolver;
 	private readonly ILogger<CliManager> _logger;
 	private static readonly JsonSerializerOptions _discoJsonOptions = new()
 	{
@@ -21,10 +22,11 @@ internal class CliManager
 		PropertyNamingPolicy = JsonNamingPolicy.CamelCase
 	};
 
-	public CliManager(IServiceProvider services, UnoToolsLocator unoToolsLocator)
+	public CliManager(IServiceProvider services, UnoToolsLocator unoToolsLocator, TargetsAddInResolver addInResolver)
 	{
 		_services = services;
 		_unoToolsLocator = unoToolsLocator;
+		_addInResolver = addInResolver;
 		_logger = _services.GetRequiredService<ILogger<CliManager>>();
 	}
 
@@ -56,10 +58,17 @@ internal class CliManager
 				string.Equals(originalArgs[0], "disco", StringComparison.OrdinalIgnoreCase);
 			var discoJson = isDisco &&
 				originalArgs.Any(a => string.Equals(a, "--json", StringComparison.OrdinalIgnoreCase));
+			var discoAddInsOnly = isDisco &&
+				originalArgs.Any(a => string.Equals(a, "--addins-only", StringComparison.OrdinalIgnoreCase));
 
-			if (!isDisco || !discoJson)
+			if (!isDisco || (!discoJson && !discoAddInsOnly))
 			{
 				ShowBanner();
+			}
+
+			if (isDisco && discoAddInsOnly)
+			{
+				return await RunDiscoAddInsOnlyAsync(workingDirectory, outputJson: discoJson);
 			}
 
 			if (isDisco && discoJson)
@@ -85,12 +94,22 @@ internal class CliManager
 				return 1; // errors already logged
 			}
 
+			// Resolve add-ins via convention-based discovery for the start command
+			string? resolvedAddIns = null;
+			var isStart = originalArgs.Length == 0 ||
+				string.Equals(originalArgs[0], "start", StringComparison.OrdinalIgnoreCase);
+
+			if (isStart)
+			{
+				resolvedAddIns = ResolveAddInsForCommand(workingDirectory);
+			}
+
 			var requiresHostOutputPassthrough = originalArgs.Length > 0 && (
 				string.Equals(originalArgs[0], "list", StringComparison.OrdinalIgnoreCase) ||
 				string.Equals(originalArgs[0], "cleanup", StringComparison.OrdinalIgnoreCase)
 			);
 
-			var startInfo = BuildHostArgs(hostPath, originalArgs, workingDirectory, redirectOutput: true);
+			var startInfo = BuildHostArgs(hostPath, originalArgs, workingDirectory, redirectOutput: true, addins: resolvedAddIns);
 
 			var result = await DevServerProcessHelper.RunConsoleProcessAsync(startInfo, _logger, forwardOutputToConsole: requiresHostOutputPassthrough);
 			return result.ExitCode;
@@ -117,6 +136,61 @@ internal class CliManager
 		else
 		{
 			_logger.LogInformation("Uno Platform DevServer CLI - Dev Version");
+		}
+	}
+
+	private async Task<int> RunDiscoAddInsOnlyAsync(string workingDirectory, bool outputJson)
+	{
+		var addInsValue = ResolveAddInsForCommand(workingDirectory);
+		if (addInsValue is null)
+		{
+			if (outputJson)
+			{
+				Console.WriteLine("[]");
+			}
+			return 1;
+		}
+
+		var paths = addInsValue.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+		if (outputJson)
+		{
+			var json = JsonSerializer.Serialize(paths, _discoJsonOptions);
+			Console.WriteLine(json);
+		}
+		else
+		{
+			Console.WriteLine(addInsValue);
+		}
+
+		return 0;
+	}
+
+	private string? ResolveAddInsForCommand(string workingDirectory)
+	{
+		try
+		{
+			var discovery = _unoToolsLocator.DiscoverAsync(workingDirectory).GetAwaiter().GetResult();
+			if (discovery.PackagesJsonPath is null)
+			{
+				_logger.LogDebug("No packages.json found, skipping convention-based add-in discovery");
+				return null;
+			}
+
+			var addIns = _addInResolver.ResolveAddIns(discovery.PackagesJsonPath);
+			if (addIns.Count == 0)
+			{
+				_logger.LogDebug("No add-ins resolved via convention-based discovery");
+				return "";
+			}
+
+			var paths = string.Join(";", addIns.Select(a => a.EntryPointDll).Distinct(StringComparer.OrdinalIgnoreCase));
+			_logger.LogDebug("Resolved {Count} add-in(s) via convention-based discovery", addIns.Count);
+			return paths;
+		}
+		catch (Exception ex)
+		{
+			_logger.LogWarning(ex, "Convention-based add-in discovery failed, MSBuild fallback will be used");
+			return null;
 		}
 	}
 
@@ -282,7 +356,7 @@ internal class CliManager
 		return (true, filteredArgs.ToArray(), normalizedSolutionDirectory);
 	}
 
-	private ProcessStartInfo BuildHostArgs(string hostPath, string[] originalArgs, string workingDirectory, bool redirectOutput = true)
+	private ProcessStartInfo BuildHostArgs(string hostPath, string[] originalArgs, string workingDirectory, bool redirectOutput = true, string? addins = null)
 	{
 		var args = new List<string> { "--command" };
 		if (originalArgs.Length > 0)
@@ -296,6 +370,12 @@ internal class CliManager
 		else
 		{
 			args.Add("start");
+		}
+
+		if (addins is not null)
+		{
+			args.Add("--addins");
+			args.Add(addins);
 		}
 
 		return DevServerProcessHelper.CreateDotnetProcessStartInfo(hostPath, args, workingDirectory, redirectOutput);
