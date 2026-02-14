@@ -86,6 +86,7 @@ internal class Program
 		services.AddSingleton<TargetsAddInResolver>();
 		services.AddSingleton<DevServerMonitor>();
 		services.AddSingleton<McpClientProxy>();
+		services.AddSingleton<ToolListManager>();
 		services.AddSingleton<HealthService>();
 		services.AddSingleton<McpProxy>();
 

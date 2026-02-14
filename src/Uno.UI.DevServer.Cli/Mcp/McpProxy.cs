@@ -18,12 +18,8 @@ internal class McpProxy
 	private readonly DevServerMonitor _devServerMonitor;
 	private readonly McpClientProxy _mcpClientProxy;
 	private readonly HealthService _healthService;
+	private readonly ToolListManager _toolListManager;
 	private readonly Tool _addRootsTool;
-	private readonly string _toolCachePath;
-	private Tool[] _toolCache = [];
-	private bool _toolCacheLoaded;
-	private bool _shouldRefreshToolCache = true;
-	private readonly object _toolCacheLock = new();
 	private bool _waitForTools;
 	private bool _forceRootsFallback;
 	private bool _forceGenerateToolCache;
@@ -37,26 +33,18 @@ internal class McpProxy
 	private TaskCompletionSource<bool>? _toolCachePrimedTcs;
 	private Task? _cachePrimedWatcher;
 
-	private const string ToolCacheFileName = "tools-cache.json";
-
-	/// <summary>Maximum time to wait for upstream list_tools before returning cached/empty result.</summary>
-	internal const int ListToolsTimeoutMs = 30_000;
-
-	private bool IsToolCacheEnabled => _isMcpAppMode || _forceRootsFallback || _forceGenerateToolCache;
-	private bool _isMcpAppMode;
-
 	// Clients that don't support the list_updated notification
 	private static readonly string[] ClientsWithoutListUpdateSupport = ["claude-code", "codex", "codex-mcp-client", "antigravity"];
 
-	public McpProxy(ILogger<McpProxy> logger, DevServerMonitor mcpServerMonitor, McpClientProxy mcpClientProxy, HealthService healthService)
+	public McpProxy(ILogger<McpProxy> logger, DevServerMonitor mcpServerMonitor, McpClientProxy mcpClientProxy, HealthService healthService, ToolListManager toolListManager)
 	{
 		_logger = logger;
 		_devServerMonitor = mcpServerMonitor;
 		_mcpClientProxy = mcpClientProxy;
 		_healthService = healthService;
+		_toolListManager = toolListManager;
 
 		_addRootsTool = McpServerTool.Create(SetRoots, new() { Name = "uno_app_set_roots" }).ProtocolTool;
-		_toolCachePath = InitializeToolCachePath();
 	}
 
 	public async Task<int> RunAsync(
@@ -69,7 +57,6 @@ internal class McpProxy
 		string? solutionDirectory,
 		CancellationToken ct)
 	{
-		_isMcpAppMode = true;
 		_waitForTools = waitForTools;
 		_forceRootsFallback = forceRootsFallback;
 		_forceGenerateToolCache = forceGenerateToolCache;
@@ -78,7 +65,10 @@ internal class McpProxy
 		_forwardedArgs = forwardedArgs;
 		_solutionDirectory = NormalizeSolutionDirectory(solutionDirectory);
 		_workspaceHash = ToolCacheFile.ComputeWorkspaceHash(_solutionDirectory);
-		_healthService.GetToolCount = () => { lock (_toolCacheLock) { return _toolCache.Length; } };
+		_toolListManager.WorkspaceHash = _workspaceHash;
+		_toolListManager.IsToolCacheEnabled = true;
+		_toolListManager.OnToolCachePersisted = () => _toolCachePrimedTcs?.TrySetResult(true);
+		_toolListManager.OnToolCachePersistFailed = ex => FailToolCachePriming(ex);
 		InitializeToolCachePrimingTracker();
 
 		EnsureDevServerStartedFromSolutionDirectory();
@@ -109,17 +99,6 @@ internal class McpProxy
 		_roots = normalizedRoots;
 
 		await ProcessRoots();
-	}
-
-	private static string InitializeToolCachePath()
-	{
-		var basePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-		if (string.IsNullOrWhiteSpace(basePath))
-		{
-			basePath = Path.GetTempPath();
-		}
-
-		return Path.Combine(basePath, "Uno Platform", "uno.devserver", ToolCacheFileName);
 	}
 
 	private async Task ProcessRoots()
@@ -246,6 +225,7 @@ internal class McpProxy
 			if (string.IsNullOrEmpty(_workspaceHash))
 			{
 				_workspaceHash = ToolCacheFile.ComputeWorkspaceHash(normalized);
+				_toolListManager.WorkspaceHash = _workspaceHash;
 			}
 			_devServerMonitor.StartMonitoring(normalized, _devServerPort, _forwardedArgs);
 			_devServerStarted = true;
@@ -450,7 +430,7 @@ internal class McpProxy
 				if (_forceRootsFallback && _roots.Length == 0)
 				{
 					List<Tool> tools = [HealthService.HealthTool, _addRootsTool];
-					var cachedTools = GetCachedTools();
+					var cachedTools = _toolListManager.GetCachedTools();
 					if (cachedTools.Length > 0)
 					{
 						tools.AddRange(cachedTools);
@@ -462,8 +442,8 @@ internal class McpProxy
 					return new() { Tools = tools };
 				}
 
-				var result = await ListToolsWithTimeoutAsync(ct);
-				return new() { Tools = AppendBuiltInTools(result.Tools) };
+				var result = await _toolListManager.ListToolsWithTimeoutAsync(ct);
+				return new() { Tools = ToolListManager.AppendBuiltInTools(result.Tools) };
 			})
 			.WithListResourcesHandler((ctx, ct) =>
 			{
@@ -512,12 +492,9 @@ internal class McpProxy
 		{
 			_logger.LogTrace("Upstream tool list changed");
 
-			lock (_toolCacheLock)
-			{
-				_shouldRefreshToolCache = true;
-			}
+			_toolListManager.MarkShouldRefresh();
 
-			await RefreshCachedToolsFromUpstreamAsync();
+			await _toolListManager.RefreshCachedToolsFromUpstreamAsync();
 
 			tcs.TrySetResult();
 
@@ -607,7 +584,7 @@ internal class McpProxy
 			_logger.LogTrace("Client without list_updated support detected, waiting for upstream server to start");
 
 			using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
-			timeoutCts.CancelAfter(ListToolsTimeoutMs);
+			timeoutCts.CancelAfter(ToolListManager.ListToolsTimeoutMs);
 
 			try
 			{
@@ -615,7 +592,7 @@ internal class McpProxy
 			}
 			catch (OperationCanceledException) when (!ct.IsCancellationRequested)
 			{
-				_logger.LogWarning("Timed out waiting for upstream tools after {Timeout}ms", ListToolsTimeoutMs);
+				_logger.LogWarning("Timed out waiting for upstream tools after {Timeout}ms", ToolListManager.ListToolsTimeoutMs);
 			}
 		}
 	}
@@ -638,218 +615,6 @@ internal class McpProxy
 		{
 			_logger.LogDebug(ex, "Unable to normalize fallback root '{Directory}'", directory);
 			return directory;
-		}
-	}
-
-	private async Task RefreshCachedToolsFromUpstreamAsync()
-	{
-		if (!IsToolCacheEnabled)
-		{
-			return;
-		}
-
-		try
-		{
-			var upstreamClient = await _mcpClientProxy.UpstreamClient;
-			if (upstreamClient is null)
-			{
-				return;
-			}
-
-			var list = await upstreamClient.ListToolsAsync();
-			Tool[] protocolTools = [.. list.Select(t => t.ProtocolTool)];
-
-			PersistToolCacheIfNeeded(protocolTools);
-		}
-		catch (Exception ex)
-		{
-			_logger.LogWarning(ex, "Unable to refresh cached tools from upstream");
-		}
-	}
-
-	private Tool[] GetCachedTools()
-	{
-		lock (_toolCacheLock)
-		{
-			if (_toolCacheLoaded)
-			{
-				return _toolCache;
-			}
-
-			_toolCacheLoaded = true;
-
-			if (!IsToolCacheEnabled)
-			{
-				return _toolCache;
-			}
-
-			try
-			{
-				if (File.Exists(_toolCachePath))
-				{
-					var json = File.ReadAllText(_toolCachePath);
-					if (ToolCacheFile.TryRead(
-						json,
-						_toolCachePath,
-						_logger,
-						out var cachedTools,
-						expectedWorkspaceHash: _workspaceHash,
-						expectedUnoSdkVersion: _devServerMonitor.UnoSdkVersion))
-					{
-						_toolCache = cachedTools;
-						_logger.LogTrace("Loaded {Count} cached tools from {Path}", _toolCache.Length, _toolCachePath);
-					}
-					else
-					{
-						_logger.LogWarning("Tool cache validation failed, ignoring data from {Path}", _toolCachePath);
-						_toolCache = [];
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				_logger.LogWarning(ex, "Unable to load tool cache from {Path}", _toolCachePath);
-				_toolCache = [];
-			}
-
-			return _toolCache;
-		}
-	}
-
-	private async Task<ListToolsResult> ListToolsWithTimeoutAsync(CancellationToken ct)
-	{
-		var upstreamTask = _mcpClientProxy.UpstreamClient;
-
-		// If the upstream client is already available, use it directly
-		if (upstreamTask.IsCompletedSuccessfully)
-		{
-			return await FetchToolsFromUpstreamAsync(upstreamTask.Result, ct);
-		}
-
-		// If we have cached tools, return them immediately without waiting
-		var cachedTools = GetCachedTools();
-		if (cachedTools.Length > 0)
-		{
-			_logger.LogDebug("Returning {Count} cached tools while upstream connects", cachedTools.Length);
-			return new() { Tools = cachedTools };
-		}
-
-		// No cache available — wait for upstream with a bounded timeout
-		_logger.LogTrace("No cached tools available, waiting for upstream with {Timeout}ms timeout", ListToolsTimeoutMs);
-
-		try
-		{
-			using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
-			timeoutCts.CancelAfter(ListToolsTimeoutMs);
-
-			var client = await upstreamTask.WaitAsync(timeoutCts.Token);
-			return await FetchToolsFromUpstreamAsync(client, ct);
-		}
-		catch (OperationCanceledException) when (!ct.IsCancellationRequested)
-		{
-			_logger.LogWarning("Timed out waiting for upstream MCP after {Timeout}ms, returning empty tool list", ListToolsTimeoutMs);
-			return new() { Tools = [] };
-		}
-		catch (Exception ex) when (ex is not OperationCanceledException)
-		{
-			_logger.LogWarning(ex, "Error waiting for upstream MCP, returning empty tool list");
-			return new() { Tools = [] };
-		}
-	}
-
-	private async Task<ListToolsResult> FetchToolsFromUpstreamAsync(McpClient upstreamClient, CancellationToken ct)
-	{
-		_logger.LogTrace("Client requested tools list update");
-
-		var list = await upstreamClient.ListToolsAsync(cancellationToken: ct);
-		Tool[] protocolTools = [.. list.Select(t => t.ProtocolTool)];
-
-		_logger.LogDebug("Reporting {Count} tools", protocolTools.Length);
-
-		PersistToolCacheIfNeeded(protocolTools);
-
-		return new() { Tools = protocolTools };
-	}
-
-	private static IList<Tool> AppendBuiltInTools(IList<Tool> tools)
-	{
-		// Avoid duplicates if the tool already appears (e.g. from cache)
-		if (tools.Any(t => t.Name == HealthService.HealthTool.Name))
-		{
-			return tools;
-		}
-
-		// Prepend so the health tool is always visible
-		var result = new List<Tool>(tools.Count + 1) { HealthService.HealthTool };
-		result.AddRange(tools);
-		return result;
-	}
-
-	private void PersistToolCacheIfNeeded(Tool[] tools)
-	{
-		if (!IsToolCacheEnabled || tools.Length == 0)
-		{
-			return;
-		}
-
-		lock (_toolCacheLock)
-		{
-			if (!_shouldRefreshToolCache)
-			{
-				return;
-			}
-
-			if (!ToolCacheFile.TryValidateCachedTools(
-				tools,
-				out var validationError))
-			{
-				_logger.LogWarning("Refusing to persist tool cache: {Reason}", validationError ?? "Unknown validation error");
-				return;
-			}
-
-			var directory = Path.GetDirectoryName(_toolCachePath);
-			try
-			{
-				if (!string.IsNullOrEmpty(directory))
-				{
-					Directory.CreateDirectory(directory);
-				}
-
-				var entry = ToolCacheFile.CreateEntry(tools, _workspaceHash, _devServerMonitor.UnoSdkVersion);
-				var json = JsonSerializer.Serialize(entry, McpJsonUtilities.DefaultOptions);
-
-				// Atomic write: write to temp file then move
-				var tempPath = _toolCachePath + ".tmp";
-				File.WriteAllText(tempPath, json);
-				File.Move(tempPath, _toolCachePath, overwrite: true);
-
-				_toolCache = entry.Tools;
-				_toolCacheLoaded = true;
-				_shouldRefreshToolCache = false;
-
-				_logger.LogTrace("Cached {Count} tools at {Path}", tools.Length, _toolCachePath);
-				_toolCachePrimedTcs?.TrySetResult(true);
-			}
-			catch (Exception ex)
-			{
-				_logger.LogWarning(ex, "Unable to persist tool cache to {Path}", _toolCachePath);
-
-				// Clean up temp file if it was left behind
-				try
-				{
-					var tempPath = _toolCachePath + ".tmp";
-					if (File.Exists(tempPath))
-					{
-						File.Delete(tempPath);
-					}
-				}
-				catch
-				{
-					// Best-effort cleanup
-				}
-
-				FailToolCachePriming(ex);
-			}
 		}
 	}
 

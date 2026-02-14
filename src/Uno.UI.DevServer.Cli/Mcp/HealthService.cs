@@ -7,7 +7,8 @@ namespace Uno.UI.DevServer.Cli.Mcp;
 
 internal class HealthService(
 	McpClientProxy mcpClientProxy,
-	DevServerMonitor devServerMonitor)
+	DevServerMonitor devServerMonitor,
+	ToolListManager toolListManager)
 {
 	internal const string HealthResourceUri = "uno://health";
 
@@ -20,9 +21,6 @@ internal class HealthService(
 
 	/// <summary>Set by ProxyLifecycleManager when the DevServer monitor has been started.</summary>
 	public bool DevServerStarted { get; set; }
-
-	/// <summary>Provides the current cached tool count. Temporary — replaced by ToolListManager in a later commit.</summary>
-	public Func<int> GetToolCount { get; set; } = () => 0;
 
 	public CallToolResult BuildHealthToolResponse()
 	{
@@ -76,7 +74,7 @@ internal class HealthService(
 		var toolCount = 0;
 		if (upstreamConnected)
 		{
-			toolCount = GetToolCount();
+			toolCount = toolListManager.CachedToolCount;
 		}
 
 		var status = issues.Any(i => i.Severity == ValidationSeverity.Fatal)
