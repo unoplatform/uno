@@ -1,6 +1,6 @@
 # MCP Protocol & Architecture Improvements
 
-> **Parent**: [Main Spec](spec.md) — Sections 8b, 8c
+> **Parent**: [Main Spec](spec.md) — Section 8b
 > **Related**: [Startup Workflow](spec-appendix-a-startup-workflow.md)
 
 ---

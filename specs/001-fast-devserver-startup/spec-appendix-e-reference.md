@@ -4,9 +4,11 @@
 
 ---
 
-## E.1 MCP Tools (from uno.app-mcp)
+## E.1 MCP Tools (reference from uno.app-mcp)
 
 > **Note**: The tool count visible to the AI model depends on the user's license tier. `MCPToolsObserverService` filters tools via `[LicenseFeatures]` attributes. The tool cache (`tools-cache.json`) reflects the license tier active at cache time.
+>
+> **Known discrepancy**: The public docs (`doc/articles/features/using-the-uno-mcps.md`) do not list all tools (e.g., `uno_app_start` is missing, Business tier not documented). The table below reflects the **actual server code** (`uno.app-mcp`), not the docs. See also `uno.app-mcp/README.md` alongside this spec for upstream action items.
 
 | Tool Name | Description | Min License |
 |-----------|-------------|:----------:|
@@ -57,9 +59,13 @@ Per-IDE discovery      CLI-centralized                 CLI-centralized
 
 ---
 
-## E.4 IDE Extension Analysis
+## E.4 IDE Extension Behavior (Backward Compatibility Context)
 
-Analysis of how each IDE extension currently discovers and launches the DevServer, and how they benefit from the `--addins` flag.
+Analysis of how each IDE extension currently discovers and launches the DevServer. This documents the **constraints** that this spec's changes must respect.
+
+> **Adoption paths** for IDE extensions are documented in their respective subdirectories:
+> `uno.studio/`, `uno.rider/`, `uno.vscode/` (alongside this spec). Those files are
+> intended to be moved to their respective repos when adoption work begins.
 
 ### Visual Studio (`uno.studio`)
 
@@ -71,8 +77,6 @@ Analysis of how each IDE extension currently discovers and launches the DevServe
 5. Uses `EntryPoint` API v3/RPC for IDE channel communication
 6. **No AmbientRegistry duplicate check** — VS manages its own instance lifecycle
 
-**Impact of `--addins`**: VS can resolve add-in paths via the same fast discovery logic, then pass `--addins` to the Host. This would save 10-30s on every project load. Adoption path: VS calls `disco --addins-only --json` and feeds result to `--addins`.
-
 ### Rider (`uno.rider`)
 
 **Current flow** (`DevServerService.cs:138`, `HostFolderPathResolver.cs`):
@@ -83,8 +87,6 @@ Analysis of how each IDE extension currently discovers and launches the DevServe
 5. Auto-restart on host process exit
 6. **No AmbientRegistry duplicate check**
 
-**Impact of `--addins`**: Rider already has a fast host resolution path. Adding `--addins` support is straightforward — the `.targets` parsing logic can be exposed via `disco --addins-only --json` and Rider can pass the result. Rider's auto-restart mechanism aligns well with the hot reconnection design.
-
 ### VS Code (`uno.vscode`)
 
 **Current flow** (`extension.ts:603,607`):
@@ -94,22 +96,10 @@ Analysis of how each IDE extension currently discovers and launches the DevServe
 4. External-host debug mode via `.uno.vscode.remote-control` marker file
 5. **No AmbientRegistry duplicate check**
 
-**Impact of `--addins`**: VS Code currently has no fast path at all — it always pays the MSBuild cost for host resolution AND add-in discovery. This extension benefits the most from `disco --json` which can replace the entire MSBuild call. The extension can call `dnx uno.devserver disco --json` to get host path AND add-in paths in < 200ms.
-
-### Common Pattern
+### Common Pattern (backward compatibility constraint)
 
 **All three IDE extensions launch the Host directly** — none use `--command start` (the controller path). The controller is only used by CLI `start`. This means:
 - AmbientRegistry duplicate protection **does not exist** for IDE-launched instances
 - Each IDE manages its own DevServer lifecycle independently
 - **Multiple instances for the same solution** are possible today (IDE + CLI, or IDE + MCP)
-
-### Adoption Summary
-
-| IDE | Current Host Discovery | Current Add-In Discovery | Fast Path Available | Adoption Effort |
-|-----|----------------------|------------------------|:-------------------:|:---:|
-| VS | Package inspection | MSBuild (in Host) | Needs `disco` | Medium |
-| Rider | Package inspection + MSBuild fallback | MSBuild (in Host) | Needs `disco` | Low |
-| VS Code | MSBuild only | MSBuild (in Host) | Needs `disco` | Low |
-| CLI | `UnoToolsLocator` | MSBuild (in Host) | Phase 0 | Done |
-
-**Key insight**: All three IDE extensions can benefit from a single CLI command (`disco --addins-only --json`) that returns pre-resolved add-in paths. This is exposed in Phase 0 of the implementation and can be adopted incrementally by each IDE team.
+- The `--addins` flag MUST be opt-in: absence = MSBuild discovery unchanged

@@ -13,11 +13,13 @@ How each launcher interacts with the Host, and what changes when `--addins` is i
 
 | Launcher | Launches Host Via | Uses `--command start` | Passes `--addins` | AmbientRegistry Check | `.csproj.user` Write | Status |
 |----------|-------------------|:----------------------:|:------------------:|:---------------------:|:--------------------:|--------|
-| CLI `start` | Controller → Server | Yes | **Phase 0** | Yes (controller) | Yes (controller) | Changing |
-| CLI MCP (`--mcp-app`) | Direct (Phase 1b) | No | **Phase 0** | **Must add** (1g-bis) | Yes (Host handles) | Changing |
-| VS (`uno.studio`) | `DevServerLauncher` → Direct | No | No (future) | **None today** | Yes (Host handles) | Unchanged |
-| Rider (`uno.rider`) | `DevServerService` → Direct | No | No (future) | **None today** | Yes (Host handles) | Unchanged |
-| VS Code (`uno.vscode`) | `extension.ts` → Direct | No | No (future) | **None today** | Yes (Host handles) | Unchanged |
+| CLI `start` | Controller → Server | Yes | **Phase 0** | Yes (controller) | Yes (controller: `Program.Command.cs:101`) | Changing |
+| CLI MCP (`--mcp-app`) | Direct (Phase 1b) | No | **Phase 0** | **Must add** (1g-bis) | **Must re-implement** CLI-side (Host server-mode does NOT write it) | Changing |
+| VS (`uno.studio`) | `DevServerLauncher` → Direct | No | No (future) | **None today** | Yes (VS extension: `DevServerLauncher.cs:187`) | Unchanged |
+| Rider (`uno.rider`) | `DevServerService` → Direct | No | No (future) | **None today** | Yes (Rider extension: `DevServerService.cs:79`) | Unchanged |
+| VS Code (`uno.vscode`) | `extension.ts` → Direct | No | No (future) | **None today** | Yes (VS Code extension: `unoDebugConfigurationProvider.ts:226`) | Unchanged |
+
+> **Note**: The Host server-mode process (`Program.cs`) does **NOT** write `.csproj.user`. It only registers in AmbientRegistry (`Program.cs:221`). Each launcher is responsible for writing `.csproj.user` independently: the controller does it for CLI `start`, and each IDE extension does it for their own launch path.
 
 ### Risks
 
@@ -25,7 +27,7 @@ How each launcher interacts with the Host, and what changes when `--addins` is i
 |------|----------|--------|------------|
 | IDE + MCP simultaneous | User has VS open, starts MCP agent | Two DevServers, port conflict, wrong Hot Reload target | CLI checks AmbientRegistry, connects to existing instance (1g-bis) |
 | IDE + CLI `start` | User has Rider open, runs `uno.devserver start` | Controller blocks (duplicate detected) | Current behavior, correct |
-| MCP + IDE sequential | MCP starts DevServer, user then opens IDE | IDE launches its own Host, ignores existing | IDE has no awareness of CLI-launched instances. Long-term fix: IDE delegates to CLI (section 14) |
+| MCP + IDE sequential | MCP starts DevServer, user then opens IDE | IDE launches its own Host, ignores existing | IDE has no awareness of CLI-launched instances. Long-term: IDE adopts AmbientRegistry (see `uno.studio/`, `uno.rider/`, `uno.vscode/` alongside this spec) |
 | Old IDE + new Host | User has old VS extension, updated Uno SDK with new Host | Host must accept launch without `--addins` | `--addins` is additive; absence = MSBuild discovery |
 
 ### Validation
@@ -34,6 +36,9 @@ How each launcher interacts with the Host, and what changes when `--addins` is i
 - [ ] Host launched **with** `--addins` → MSBuild discovery skipped, provided paths used
 - [ ] Host launched **with** `--addins ""` (empty) → no add-ins loaded, no discovery
 - [ ] Host launched with both `--addins` and `--solution` → `--addins` for add-ins, `--solution` for Hot Reload
+- [ ] Controller launched with `--addins` → forwards `--addins` to child server process (Phase 0 requirement)
+- [ ] AmbientRegistry: controller pre-checks before starting (existing behavior preserved)
+- [ ] AmbientRegistry: server-mode Host only registers, does NOT pre-check (known limitation)
 
 ---
 
@@ -92,6 +97,7 @@ How different SDK versions affect add-in discovery.
 | Backslash in resolved paths | `.targets` file contains `\` on Windows | Path broken on macOS/Linux | Normalize all paths via `Path.Combine()` |
 | Long path on Windows | Deep NuGet cache + long package name | `PathTooLongException` | Use `\\?\` prefix or ensure long path support |
 | Custom NuGet cache | `$NUGET_PACKAGES` set to non-default location | Packages not found | Check env var in resolution chain |
+| Empty `$NUGET_PACKAGES` | `NUGET_PACKAGES=""` (set but empty) | `Path.Combine("", id, ver)` produces relative path; `Directory.Exists()` checks CWD → false match possible | Guard: skip env var path when `string.IsNullOrWhiteSpace()`. Current code (`UnoToolsLocator.cs:350`) uses `?? ""` which doesn't guard against empty-but-set. |
 
 ### Validation
 
@@ -99,6 +105,7 @@ How different SDK versions affect add-in discovery.
 - [ ] macOS — case-insensitive lookup works
 - [ ] Linux — case-insensitive lookup works on ext4 (case-sensitive)
 - [ ] Custom `$NUGET_PACKAGES` → respected on all platforms
+- [ ] `$NUGET_PACKAGES=""` (empty string) → env var path skipped, not treated as relative
 - [ ] AmbientRegistry file written/read correctly on all platforms
 
 ---
@@ -136,7 +143,7 @@ How different SDK versions affect add-in discovery.
 
 | Client | Ref. Version | `roots` | `tools/list_changed` | `resources` | `resources/subscribe` | Transport | Workaround Needed |
 |--------|:------------:|:-:|:-:|:-:|:-:|:-:|---|
-| Antigravity | ~1.15 | Yes | No | No | No | stdio | `--mcp-wait-tools-list` |
+| Antigravity | ~1.15 | No (*) | No | No | No | stdio | `--force-roots-fallback` + `--mcp-wait-tools-list` |
 | Claude Code | ~2.1 | Yes | No | No | No | stdio | `--mcp-wait-tools-list` |
 | Claude Desktop | ~1.1 | No | No | No | No | stdio | `--force-roots-fallback` + `--mcp-wait-tools-list` |
 | Cursor | ~2.4 | Yes | Yes | Yes | No | stdio | None |
@@ -148,7 +155,7 @@ How different SDK versions affect add-in discovery.
 **Key observations**:
 - **`resources/subscribe` is unsupported across ALL clients** — the `uno://health` resource subscription feature (section 1d) will not work for any current client. Polling or `tools/list_changed` are the only notification mechanisms.
 - **`tools/list_changed` is supported by only 3 clients** (Cursor, VS Code Copilot, Windsurf). All others need `--mcp-wait-tools-list` to block the initial `list_tools` until upstream responds.
-- **`roots` is supported by 5 of 8 clients**. The 3 without (Claude Desktop, Codex CLI, Windsurf) need `--force-roots-fallback`.
+- **`roots` is supported by 4 of 8 clients** (Claude Code, Cursor, VS Code Copilot, Junie). The 4 without (Claude Desktop, Codex CLI, Windsurf, Antigravity) need `--force-roots-fallback`. (*) Antigravity declares `roots` capability in the protocol but does not actually provide workspace roots per Uno's own docs (`doc/articles/get-started-ai-google-antigravity.md:52`). Treat as unsupported until verified.
 - **Capability detection from `initialize` is the only reliable approach** — hardcoding client names is fragile and already stale.
 
 ### Risks
@@ -161,6 +168,7 @@ How different SDK versions affect add-in discovery.
 | No client supports `resources/subscribe` | Health push notifications never received | Clients must poll or rely on `tools/list_changed` | Design for pull-based health (tool call), not push-based (subscription) |
 | Hardcoded client list becomes stale | New client not in `ClientsWithoutListUpdateSupport` | Wrong behavior for new client | Replace with capability detection from `initialize` request |
 | Junie stdio-only | Server uses HTTP transport | Junie can't connect | Ensure stdio transport always available |
+| Flag recommendations diverge from docs | Spec recommends flags not in user docs (`doc/articles/get-started-ai-*.md`) | User confusion, inconsistent guidance | **Deliverable**: Update user-facing docs to match spec recommendations when implementation ships. Until then, spec flags are the source of truth for *implementation*; docs are source of truth for *current behavior*. |
 
 ### Validation
 
@@ -169,6 +177,9 @@ How different SDK versions affect add-in discovery.
 - [ ] Client with `tools/list_changed` → sees updated tool list after host connects
 - [ ] Client without `tools/list_changed` + `--mcp-wait-tools-list` → initial response waits for upstream
 - [ ] Client without `resources` → `uno_health` tool returns same data as `uno://health`
+- [ ] Capability detection: `Roots != null` detects roots support (not `Roots.ListChanged`)
+- [ ] Capability detection: client with `Roots` but without `Roots.ListChanged` → roots supported, list-changed unsupported (two separate checks)
+- [ ] No hardcoded client name list used for capability decisions (replace `ClientsWithoutListUpdateSupport`)
 
 ---
 
@@ -179,7 +190,7 @@ These scenarios test the interaction between different DevServer launchers runni
 | # | Scenario | Current Behavior | Expected Behavior (Post-Spec) |
 |---|----------|-----------------|-------------------------------|
 | 1 | IDE running, MCP starts | MCP launches new Host → **two instances, conflict** | MCP detects existing instance via AmbientRegistry, connects to it |
-| 2 | MCP running, IDE starts | IDE launches new Host → **two instances** | No change (IDE not modified). Long-term: IDE delegates to CLI |
+| 2 | MCP running, IDE starts | IDE launches new Host → **two instances** | No change (IDE not modified). Long-term: IDE adopts AmbientRegistry |
 | 3 | CLI `start` running, MCP starts | MCP detects via AmbientRegistry → connects or warns | MCP connects to existing instance |
 | 4 | MCP running, CLI `start` | Controller detects via AmbientRegistry → blocks | Existing behavior, correct |
 | 5 | Two IDEs on same solution | Two instances, no protection | No change (out of scope, IDE responsibility) |

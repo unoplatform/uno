@@ -171,7 +171,10 @@ For each package in packages.json:
 
 **After all packages processed**:
 - If zero add-ins resolved and SDK version suggests add-ins should exist → trigger MSBuild fallback
-- If **fewer add-ins resolved than expected** (e.g., 1 of 2 known add-ins for current SDK) → log diagnostic warning via `uno://health`, but do NOT automatically fall back to MSBuild (partial success is better than 10-30s delay). The warning includes the unresolved package names so the user/agent can investigate.
+- If **fewer add-ins resolved than expected** → behavior depends on launch mode:
+  - **MCP mode**: If no add-in provides an MCP endpoint (detected by checking if any resolved add-in has a `tools/devserver/` entry point that registers MCP tools), this is a **functional failure** — MCP tools won't be available. Trigger MSBuild fallback and log a warning. Detection is convention-based (presence of MCP registration in the loaded assembly), not by checking a hardcoded package name.
+  - **Non-MCP modes**: Log diagnostic warning via `uno://health`. Do NOT automatically fall back to MSBuild (partial success is better than 10-30s delay). The warning includes the unresolved package names.
+  - **In all cases**: No hardcoded package name lists. The "expected" add-in capability is determined by the launch mode's requirements (MCP mode needs an MCP provider assembly; other modes may not), not by matching against known package IDs like `uno.ui.app.mcp`.
 - MSBuild fallback can also be forced via `--force-msbuild-discovery`
 
 **Migration path for add-in authors**:

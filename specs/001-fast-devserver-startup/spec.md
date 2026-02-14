@@ -71,6 +71,7 @@ Today, IDE extensions and CLI launch DevServer instances independently with no a
 | [Appendix E: Reference](spec-appendix-e-reference.md) | MCP tools list, IDE extension analysis, convergence analysis |
 | [Appendix F: Discovery Roadmap](spec-appendix-f-discovery-roadmap.md) | Broader discovery roadmap (absorbed from DevServerDiscovery.md) |
 | [Appendix G: Compatibility Matrix](spec-appendix-g-compatibility-matrix.md) | Exhaustive backward/forward compatibility validation matrix |
+| [Appendix H: Manual QA](spec-appendix-h-manual-qa.md) | Scenarios requiring human testing (IDE compat, multi-instance, MCP clients, perf) |
 
 ---
 
@@ -104,7 +105,7 @@ In MCP mode specifically (`dnx uno.devserver --mcp-app`), this is compounded by 
 | **B3** | CLI cold start (no R2R/AOT) | **1.5s** | `dotnet tool` packaging doesn't use ReadyToRun |
 | **B4** | `dotnet --version` subprocess | **0.5-1s** | Called on every startup, result is stable |
 | **B5** | Health check polling | **1-30s** | HTTP polling at 1s intervals until server ready |
-| **B6** | `.csproj.user` generation | **0.2s** | Not needed in MCP mode |
+| **B6** | `.csproj.user` generation | **0.2s** | Controller overhead; in Phase 1b (controller bypass), must be re-implemented CLI-side — see section 1h |
 
 ### Critical Insight: Add-in Paths Are Deterministic
 
@@ -159,7 +160,7 @@ Both use the same registration pattern:
 | **FR5** | Host process crash triggers automatic reconnection without MCP client restart | Must |
 | **FR6** | Works with Uno SDK 5.x, 6.5, and current versions | Must |
 | **FR7** | IDE integrations (VS, Rider, VS Code) remain functional | Must |
-| **FR8** | Non-MCP commands (`start`, `stop`, `list`, `disco`, `login`) are unaffected | Must |
+| **FR8** | Non-MCP commands (`start`, `stop`, `list`, `login`) are unaffected. `disco` is enhanced (new fields, new `--addins-only` flag) but existing output is backward-compatible. | Must |
 | **FR9** | All existing CLI flags remain functional | Must |
 | **FR10** | License validation does not block CLI-side MCP startup. Upstream `list_tools` may still await license resolution within the Host (see section 5.3). | Should |
 | **FR11** | `list_tools` MUST return within a bounded time (max 30s) even when upstream returns 0 tools or is unreachable. Must never block indefinitely. | Must |
@@ -182,7 +183,7 @@ Both use the same registration pattern:
 3. **All existing CLI flags must remain functional**: `--force-roots-fallback`, `--force-generate-tool-cache`, `--solution-dir`, `--mcp-wait-tools-list`, `--port`, `--log-level`, `--file-log`.
 4. **MCP protocol constraints**: Most MCP clients do not support `tools/list_changed` (only 3 of 8 do). Several don't support `roots` (Claude Desktop, Codex CLI, Windsurf). No client supports `resources/subscribe`. The `--force-roots-fallback` + `--mcp-wait-tools-list` workarounds must continue working. See [Appendix G](spec-appendix-g-compatibility-matrix.md) section 5 for the full matrix.
 5. **License validation must not block startup**: The `MCPToolsObserverService` in `Uno.UI.App.Mcp.Server` already handles license-based tool filtering asynchronously. We must not introduce new blocking license checks.
-6. **Code conventions**: New code MUST follow the project `.editorconfig`: tabs for indentation, braces always, file-scoped namespaces. New types default to `internal` unless they are part of a public API contract. Follow existing patterns (`*Extensions.cs` for extension methods, DI via `IServiceCollection`, no service locator).
+6. **Code conventions**: New code should follow the project `.editorconfig` and **match the style of surrounding code** in each file. Prefer `internal` for new types unless they are part of a public API contract. Follow existing patterns in the target project (`*Extensions.cs` for extension methods, DI via `IServiceCollection`). Note: the existing codebase uses both block-scoped and file-scoped namespaces; `.editorconfig` expresses a preference, not a hard rule. Do not reformat existing files to match a different style.
 
 ---
 
@@ -216,7 +217,10 @@ Both use the same registration pattern:
 
 6. **Filesystem case sensitivity**: Package name lookup in NuGet cache MUST be case-insensitive on all platforms (NuGet stores packages in lowercase, but directory listing may vary on case-sensitive filesystems).
 
-7. **MCP client capability detection**: Never assume a client supports `roots`, `tools/list_changed`, or `resources`. Detect capabilities from the client's `initialize` request. The `ClientsWithoutListUpdateSupport` hardcoded list MUST be replaced with capability-based detection.
+7. **MCP client capability detection**: Never assume a client supports `roots`, `tools/list_changed`, or `resources`. Detect capabilities from the client's `initialize` request. The `ClientsWithoutListUpdateSupport` hardcoded list MUST be replaced with capability-based detection. **Detection criteria** (the current code at `McpProxy.cs:525` checks `Roots.ListChanged` which is wrong — that tests list-changed support, not roots support itself):
+   - `roots` supported: `ClientCapabilities.Roots != null`
+   - `tools/list_changed` supported: `ClientCapabilities.Tools?.ListChanged == true` (if exposed by protocol) — otherwise fall back to sending the notification and letting the client ignore it
+   - `resources` supported: client calls `resources/read` or `resources/list` (no capability bit; infer from usage)
 
 8. **Add-in forward compatibility**: New add-in packages that follow the convention (`.targets` + `UnoRemoteControlAddIns`) MUST be discovered automatically without code changes. No hardcoded package name lists.
 
@@ -406,7 +410,7 @@ For packages that want explicit control over add-in registration (e.g., multiple
 
 **Location in NuGet package**: `{packageRoot}/devserver-addin.json` (at package root, alongside `buildTransitive/`, `tools/`, etc.)
 
-See section 7.6 for the full discovery priority chain with manifest support.
+See [Appendix B](spec-appendix-b-addin-discovery.md) section 6 for the full discovery priority chain with manifest support.
 
 #### MSBuild Legacy Fallback
 
@@ -583,7 +587,11 @@ The Host's MCP tool list is **filtered by license tier**:
 - If upstream returns **0 tools** (no license, no MCP add-in), the TCS is **never completed** → infinite hang
 
 **Required fix**:
-1. The TCS MUST have a **bounded timeout** (max 30s, matching `WaitForServerReadyAsync`)
+1. The TCS MUST have a **bounded timeout** controlled by a named constant:
+   ```csharp
+   /// <summary>Maximum time to wait for upstream list_tools before returning cached/empty result.</summary>
+   internal const int ListToolsTimeoutMs = 30_000; // 30s — adjustable, must match WaitForServerReadyAsync
+   ```
 2. On timeout, return **cached tools** (if available) or **empty list with error tool**
 3. When upstream returns 0 tools, **still complete the TCS** (0 is a valid answer)
 4. On upstream connection failure, complete TCS with error state
@@ -591,7 +599,7 @@ The Host's MCP tool list is **filtered by license tier**:
 ```
 list_tools handler (for blocking clients):
   1. If cached tools available → return cached tools immediately
-  2. Start background: await upstream ready (with 30s timeout)
+  2. Start background: await upstream ready (with ListToolsTimeoutMs timeout)
   3. If upstream responds with tools → return them, update cache
   4. If upstream responds with 0 tools → return empty list (or error tool), complete TCS
   5. If timeout → return cached tools (if any) + health warning, complete TCS
@@ -618,11 +626,33 @@ The current cache is a single global file (`McpProxy.cs:110`) with non-atomic wr
 - **Uno SDK version**: Different SDK versions expose different tools
 - **License tier**: Community/Pro/Business see different tool counts
 
-Proposed: Include metadata in the cache file (workspace hash, SDK version, timestamp). On cache read, validate metadata matches current context. On mismatch, treat as cache miss (serve stale tools while refreshing in background). Writes must be atomic (write to temp file, then rename).
+Proposed: Include metadata in the cache file (workspace hash, SDK version, timestamp). On cache read, validate metadata matches current context. On mismatch, treat as cache miss (serve stale tools while refreshing in background).
+
+**Atomic cache writes** (applies to `tools-cache.json`, `dotnet-version-cache.json`, and any other disk caches):
+- Write to a temporary file in the same directory (e.g., `tools-cache.json.tmp`)
+- Rename (move) the temp file to the target path — `File.Move(temp, target, overwrite: true)`
+- This prevents partial reads if the process crashes mid-write
+- **NOT** NTFS transactions (`TxF`) — `TxF` is deprecated by Microsoft and not cross-platform
+- On Linux/macOS, `rename()` is atomic within the same filesystem. On Windows, `MoveFileEx` with `MOVEFILE_REPLACE_EXISTING` is not strictly atomic but is the best available approach and prevents partial reads
 
 #### 1f. Hot Reconnection
 
-**Scope note**: This requires a significant refactoring of the current single-shot architecture. The current `DevServerMonitor` exits after "server ready" (`DevServerMonitor.cs:135`, `break`) and `McpClientProxy` has a single-shot `TaskCompletionSource` (`McpClientProxy.cs:20`). The reconnection design requires a proper **state machine**, not a patch on the existing code.
+**Scope note**: This requires a significant refactoring of the current single-shot architecture. The reconnection design requires a proper **state machine**, not a patch on the existing code.
+
+**Prerequisite bugs to fix** (without these fixes, hot reconnection is impossible):
+
+| Bug | Location | Problem | Fix Required |
+|-----|----------|---------|-------------|
+| **One-shot TCS** | `McpClientProxy.cs:20` | `_clientCompletionSource` is a `TaskCompletionSource<McpClient>` created once, never recreated. A second `ConnectOrDieAsync` call silently fails (`TrySetResult` returns false). All code awaiting `UpstreamClient` gets the old (disposed) client. | Replace with dispose + recreate pattern: new TCS per connection attempt. |
+| **Monitor exits after first success** | `DevServerMonitor.cs:135` | After `ServerStarted?.Invoke()`, the `while` loop does `break` — monitor thread exits completely. No continuous process watch. If Host crashes, nobody detects it. | `DevServerMonitor` must become a persistent process watcher: after `ServerStarted`, continue monitoring the Host process (poll `Process.HasExited` or hook `Process.Exited` event). |
+| **Wrong notification type** | `McpClientProxy.cs:74` | `ToolListChangedNotification` is deserialized as `ResourceUpdatedNotificationParams` (wrong type). The deserialized value is unused (dead code), but if the types have incompatible schemas, `JsonSerializer.Deserialize` throws `JsonException`, preventing `_toolListChanged?.Invoke()` from firing. | Fix the type to match the notification, or remove the unused deserialization. |
+| **Fire-and-forget connection** | `McpClientProxy.cs:35` | `OnServerStarted` wraps `ConnectOrDieAsync` in `Task.Run` with no awaiter. If connection fails, the exception is logged but the TCS never completes — anything awaiting `UpstreamClient` hangs forever. | Add retry logic with bounded attempts, or complete TCS with error state on failure. |
+
+**Regression risk for monitor fix**: The `break` at line 135 is intentional in the current design — after the controller-launched Host is ready, the monitor's job is done (the controller manages the process). Changing to persistent monitoring must ensure:
+- No double-start if the Host process is still running
+- `ServerStarted` fires exactly once per successful Host launch, even across restarts
+- Cancellation token is respected during watch loops
+- Test: monitor detects Host crash → fires event → DevServerMonitor relaunches → `ServerStarted` fires again → `McpClientProxy` reconnects with new TCS
 
 **State machine for MCP proxy lifecycle**:
 
@@ -652,10 +682,11 @@ Transitions:
 ```
 
 **Key changes from current design**:
-- `DevServerMonitor` becomes a persistent process watcher, not a one-shot detector
-- `McpClientProxy` supports dispose + recreate pattern (new TCS per connection attempt)
+- `DevServerMonitor` becomes a persistent process watcher, not a one-shot detector. Must hook `Process.Exited` or poll `HasExited` to detect Host crash.
+- `McpClientProxy` supports dispose + recreate pattern (new TCS per connection attempt). The old `McpClient` must be disposed before creating a new one.
 - Tools-changed TCS is reset on each reconnection cycle
 - Upstream `McpClient` is disposable and recreatable
+- The notification deserialization bug (`McpClientProxy.cs:74`) must be fixed before reconnection logic is added
 
 #### 1g. Skip Controller Process
 
@@ -666,10 +697,29 @@ In MCP mode, the 3-process chain becomes a 2-process chain:
 
 > **Correction**: IDE extensions (VS, Rider, VS Code) **already** launch the Host directly — they do not use `--command start`. VS loads an intermediate assembly via `DevServerLauncher`, Rider and VS Code call `dotnet Host.dll --httpPort ...` directly. The controller path (`Program.Command`) is used only by the CLI `start` command. Therefore, bypassing the controller for MCP is consistent with what IDEs already do.
 
-The controller currently provides (for CLI `start` only):
-- **AmbientRegistry duplicate check** (`Program.Command.cs:37-49`): Prevents multiple DevServers for the same solution. IDEs do NOT have this check — they rely on their own port management.
-- **Port conflict detection**: Checks if requested port is in use.
-- `.csproj.user` port persistence: Writes the DevServer port so the app knows where to connect for Hot Reload. **Required even in MCP mode** if an IDE might connect later (see section 1h).
+> **Critical: Controller does NOT forward `--addins`**. In Phase 0, MCP mode and CLI `start` still use the controller path. The controller's `StartCommandAsync` (`Program.Command.cs:18`) accepts only typed parameters (`httpPort`, `parentPID`, `solution`, `workingDir`, `timeoutMs`) and builds child process arguments explicitly (`Program.Command.cs:82-99`) — only `--httpPort`, `--ppid`, and `--solution` are passed to the child server. **Unknown arguments like `--addins` are silently discarded.**
+>
+> **Phase 0 therefore requires one of**:
+> 1. **Modify the controller** to accept and forward `--addins` (add parameter to `StartCommandAsync`, add to child process argument list) — smallest change, keeps existing architecture
+> 2. **Bypass the controller** earlier (move controller bypass from Phase 1b to Phase 0 for MCP mode) — larger change, more risk
+>
+> **Recommended**: Option 1 for Phase 0 (minimal, backward-compatible). The controller modification is a ~10-line change. Option 2 remains the Phase 1b plan.
+
+The controller currently provides **all** of the following responsibilities (for CLI `start` only). These must be reimplemented CLI-side when bypassing the controller in Phase 1b:
+
+| Responsibility | Controller Location | Notes |
+|---|---|---|
+| **AmbientRegistry duplicate check** | `Program.Command.cs:37-49` | Prevents multiple DevServers for same solution. IDEs do NOT have this. |
+| **Port conflict detection** | `Program.Command.cs:50-58` | Checks if requested port is already in use. |
+| **Port allocation** | `Program.Command.cs:60-64` | `EnsureTcpPort()` allocates a free TCP port when `httpPort == 0`. |
+| **Solution discovery** | `Program.Command.cs:27-31` | Scans for `.sln`/`.slnx` files if no `--solution` provided. |
+| **`.csproj.user` generation** | `Program.Command.cs:101` | Writes DevServer port to all project `.csproj.user` files. |
+| **Child process spawn** | `Program.Command.cs:67-112` | Handles `.dll` vs `.exe` detection, argument construction, output redirect. |
+| **Health polling (TCP loopback)** | `Program.Command.cs:323-347` | TCP check to `IPAddress.Loopback` (127.0.0.1 only). Does **NOT** check IPv6 `[::1]`. Note: `DevServerMonitor` has a separate, more thorough HTTP health check that polls `localhost`, `127.0.0.1`, AND `[::1]` (`DevServerMonitor.cs:151-156`). |
+| **Timeout with process cleanup** | `Program.Command.cs:130-145` | Kills child process and drains output on timeout (`--timeoutMs`, default 30s). |
+| **Output capture** | `Program.Command.cs:163-196` | Captures child stdout/stderr for diagnostic display. |
+
+**Note**: `DevServerMonitor` already handles port allocation (reimplements `EnsureTcpPort`). Health polling is also partially reimplemented. The remaining gaps are: solution discovery, `.csproj.user`, timeout handling, and output capture.
 
 **CLI-side duplicate protection** (required before controller bypass):
 ```
@@ -693,9 +743,10 @@ New flag on Host: `--addins {dll1;dll2;...}` to bypass `AddIns.Discover()`.
 | Scenario | Result |
 |----------|--------|
 | IDE running + MCP agent starts | Two DevServer instances, port conflict or wrong Hot Reload target |
-| IDE running + CLI `start` | Controller checks AmbientRegistry → detects duplicate → blocks |
+| IDE running + CLI `start` | Controller checks AmbientRegistry → detects duplicate → returns exit 0 |
 | MCP running + IDE starts | IDE launches its own Host, ignoring the MCP-launched one |
 | Two IDEs on same solution | Two instances, no protection |
+| **CLI `start` via `DevServerMonitor` + existing instance** | **Port mismatch race**: Monitor allocates port A, controller finds existing on port B, returns success. Monitor health-checks port A (nothing there) → `ServerFailed`. The existing instance's actual port is in the controller's stdout but never parsed by the monitor. |
 
 **Required solution**: The CLI (for both `start` and MCP modes) MUST:
 
@@ -706,13 +757,26 @@ New flag on Host: `--addins {dll1;dll2;...}` to bypass `AddIns.Discover()`.
 3. **Register in AmbientRegistry** after launching a new Host
 4. **Unregister on shutdown** (or let the stale-process cleanup handle it)
 
-**`.csproj.user` generation**: Even in MCP mode, the Host writes the port to `.csproj.user` so the running app knows where to connect for Hot Reload. **This MUST NOT be skipped** — if a user opens an IDE after the MCP session started, the IDE and the app need to know the DevServer port. The Host already handles this; the CLI just needs to not suppress it.
+**`.csproj.user` generation**: This is **controller-only** (`Program.Command.cs:101` calls `CsprojUserGenerator.SetCsprojUserPort()`). The Host server-mode process does NOT write `.csproj.user` — it only registers in AmbientRegistry (`Program.cs:221`).
+
+IDE extensions handle `.csproj.user` independently:
+- **Rider**: `DevServerService.cs:79` via its own `CsprojUserGenerator`
+- **VS Code**: `unoDebugConfigurationProvider.ts:226`
+- **VS**: `DevServerLauncher.cs:187`
+
+**Impact for Phase 1b** (controller bypass): When MCP mode launches the Host directly, `.csproj.user` generation is lost. This MUST be re-implemented either:
+1. **CLI-side** (recommended): CLI calls `CsprojUserGenerator` before launching Host
+2. **Host-side**: Add `.csproj.user` generation to the server-mode startup path
+
+Without this, the running app won't know the DevServer port for Hot Reload.
+
+> **Note — encoding is NOT an issue**: `CsprojUserGenerator` uses `XDocument.Save()` (`CsprojUserGenerator.cs:137`) which defaults to **UTF-8** in modern .NET. The previous UTF-16 concern was based on stale information and is no longer applicable.
 
 #### 1h. Skip Unnecessary Work in MCP Mode
 
-| Operation | Current | MCP Mode |
+| Operation | Current | MCP Mode (Phase 1b) |
 |-----------|---------|----------|
-| `.csproj.user` generation | Always | **Keep** (required for IDE interop) |
+| `.csproj.user` generation | Controller only (`Program.Command.cs:101`). IDE extensions write their own independently (Rider: `DevServerService.cs:79`, VS Code: `unoDebugConfigurationProvider.ts:226`, VS: `DevServerLauncher.cs:187`). Host server-mode does NOT write it. | **Must re-implement** CLI-side (call `CsprojUserGenerator` before launching Host). Required for app ↔ DevServer port sync. |
 | AmbientRegistry check | Controller only | CLI handles it (see 1g-bis) |
 | AmbientRegistry registration | Host `Program.cs:221` | Keep (already in Host) |
 | `dotnet --version` | Every startup | Cache to `%LOCALAPPDATA%/Uno Platform/uno.devserver/dotnet-version-cache.json` |
@@ -802,9 +866,12 @@ New behavior:
 | File | Change Summary | Phase |
 |------|---------------|:-----:|
 | `src/Uno.UI.RemoteControl.Host/Program.cs` | Accept `--addins` flag, skip `AddIns.Discover()` when provided | 0 |
+| `src/Uno.UI.RemoteControl.Host/Program.Command.cs` | Add `--addins` parameter to `StartCommandAsync`, forward to child process argument list | 0 |
 | `src/Uno.UI.RemoteControl.Host/Extensibility/AddInsExtensions.cs` | Support pre-resolved add-in paths via new overload | 0 |
 | `src/Uno.UI.DevServer.Cli/Helpers/UnoToolsLocator.cs` | Wire in `TargetsAddInResolver`, dotnet version disk caching | 0 |
-| `src/Uno.UI.DevServer.Cli/CliManager.cs` | Pass resolved add-in paths when launching Host for `start` command | 0 |
+| `src/Uno.UI.DevServer.Cli/CliManager.cs` | Pass resolved add-in paths when launching Host for `start` command; add `--addins-only` flag to `disco` command | 0 |
+| `src/Uno.UI.DevServer.Cli/Helpers/DiscoveryInfo.cs` | Add `AddIns`, `AddInsDiscoveryMethod`, `AddInsDiscoveryDurationMs` fields; add `ResolvedAddIn` record | 0 |
+| `src/Uno.UI.DevServer.Cli/Helpers/DiscoveryOutputFormatter.cs` | Display `globalJsonPath` in plain text; display add-in paths; support `--addins-only` output | 0 |
 | `src/Uno.UI.DevServer.Cli/Mcp/McpProxy.cs` | Immediate MCP start, background discovery, health resource, structured errors | 1a |
 | `src/Uno.UI.DevServer.Cli/Mcp/DevServerMonitor.cs` | Direct server launch (skip controller), hot restart, add-in path passing | 1b |
 | `src/Uno.UI.DevServer.Cli/Mcp/McpClientProxy.cs` | Reconnection support (new upstream URL), dispose + recreate pattern | 1c |
@@ -820,6 +887,7 @@ New behavior:
 | `src/Uno.UI.DevServer.Cli/Models/ValidationIssue.cs` | AI-friendly error model | 1a |
 | `src/Uno.UI.DevServer.Cli/Models/HealthReport.cs` | Health resource payload | 1a |
 | `src/Uno.UI.DevServer.Cli/Services/HealthService.cs` | Composite health check | 1a |
+| `src/Uno.UI.DevServer.Cli/Services/HealthChecker.cs` | Reusable IPv4+IPv6 health polling (extract from `DevServerMonitor`) | 1b |
 
 ---
 
@@ -893,19 +961,107 @@ IDE extensions currently launch the Host directly and rely on MSBuild discovery.
 
 ---
 
+## 8a. `disco` Command Enhancement (Phase 0)
+
+The `disco` command is the CLI's public interface for discovery information. It must serve as the **single source of truth** for external systems (scripts, IDE extensions, CI pipelines) that need discovery data.
+
+### Current State
+
+`disco --json` already outputs a `DiscoveryInfo` JSON object with 16 fields including:
+- `globalJsonPath`, `unoSdkPackage`, `unoSdkVersion`, `unoSdkPath` — global.json data
+- `packagesJsonPath` — SDK packages manifest
+- `devServerPackageVersion`, `devServerPackagePath`, `hostPath` — Host resolution
+- `settingsPackageVersion`, `settingsPackagePath`, `settingsPath` — Settings add-in
+- `dotNetVersion`, `dotNetTfm` — .NET version info
+- `warnings`, `errors` — diagnostics
+
+The plain text format (`disco` without `--json`) displays all fields except `globalJsonPath` (omitted from the Spectre table).
+
+### Phase 0 Additions
+
+Add resolved add-in paths to `DiscoveryInfo`:
+
+```csharp
+// New fields in DiscoveryInfo
+public IReadOnlyList<ResolvedAddIn> AddIns { get; init; } = [];
+public string? AddInsDiscoveryMethod { get; init; }  // "targets", "manifest", "msbuild", "cached"
+public long AddInsDiscoveryDurationMs { get; init; }
+
+public sealed record ResolvedAddIn
+{
+    public required string PackageName { get; init; }      // e.g., "uno.ui.app.mcp"
+    public required string PackageVersion { get; init; }   // e.g., "6.5.100"
+    public required string EntryPointDll { get; init; }    // absolute path to DLL
+    public required string DiscoverySource { get; init; }  // "targets", "manifest", "msbuild"
+}
+```
+
+**New output flags**:
+
+| Flag | Description | Output |
+|------|-------------|--------|
+| `disco --json` | Full discovery info including add-ins (enhanced) | JSON `DiscoveryInfo` with `addIns` array |
+| `disco --addins-only --json` | Only resolved add-in DLL paths | JSON array of absolute DLL paths (for `--addins` flag) |
+| `disco --addins-only` | Only resolved add-in DLL paths (text) | Semicolon-separated paths (pipe-friendly) |
+
+**`--addins-only` flag output** (designed for piping to `--addins`):
+```bash
+# JSON: array of paths
+dnx uno.devserver disco --addins-only --json
+# Output: ["/path/to/Uno.UI.App.Mcp.Server.dll", "/path/to/Uno.Settings.DevServer.dll"]
+
+# Text: semicolon-separated (for direct use as --addins value)
+dnx uno.devserver disco --addins-only
+# Output: /path/to/Uno.UI.App.Mcp.Server.dll;/path/to/Uno.Settings.DevServer.dll
+```
+
+**Use cases for external consumers**:
+- **IDE extensions**: `disco --addins-only --json` → parse → pass as `--addins` to Host
+- **CI scripts**: `disco --json` → validate environment, detect missing packages
+- **Diagnostic tools**: `disco --json` → full environment report for support tickets
+- **global.json info**: `disco --json` exposes `unoSdkPackage` and `unoSdkVersion` — external tools can determine which SDK is active and its exact version without parsing global.json themselves
+
+### Plain Text Fix
+
+Add `globalJsonPath` to the plain text table in the "Uno SDK" section of `DiscoveryOutputFormatter.WritePlainText()`. This is a minor fix — the data is already in `DiscoveryInfo`, just not displayed.
+
+---
+
 ## 8b. MCP Protocol & Architecture Improvements
 
 > **Full detail**: [mcp-improvements.md](spec-appendix-d-mcp-improvements.md)
 
-**Protocol gaps**: The CLI MCP server declares no capabilities, no tool annotations, no structured logging. 3 known bugs to fix (type mismatch in `McpClientProxy.cs:74`, hardcoded client names in `McpProxy.cs:41`, missing `ServerInfo`).
+**Protocol gaps**: The CLI MCP server declares no capabilities, no tool annotations, no structured logging.
 
-**Architecture**: `McpProxy.cs` is 700+ lines (SRP violation), no interfaces (DIP), service locator anti-pattern. Recommended split into 5 focused services (`McpStdioServer`, `McpUpstreamClient`, `ToolListManager`, `HealthService`, `ProxyLifecycleManager`). This refactoring is a **prerequisite** for the state machine (Phase 1c).
+**Confirmed bugs** (validated by code review):
+
+| Bug | Location | Severity | Description |
+|-----|----------|----------|-------------|
+| **Wrong notification type** | `McpClientProxy.cs:74` | Medium | `ToolListChangedNotification` deserialized as `ResourceUpdatedNotificationParams` (wrong type). Value is unused (dead code), but `JsonSerializer.Deserialize` may throw `JsonException` if schemas are incompatible, preventing `_toolListChanged?.Invoke()` from firing. Fix: use correct type or remove dead deserialization. |
+| **Hardcoded client names** | `McpProxy.cs:41` | Medium | `ClientsWithoutListUpdateSupport` is a hardcoded set of client names. Already stale (missing Junie, Windsurf). Must be replaced with capability detection from `initialize` request. |
+| **Missing `ServerInfo`** | `McpProxy.cs` | Low | MCP server does not declare `ServerInfo` (name, version) in `initialize` response. |
+| **One-shot TCS** | `McpClientProxy.cs:20` | **High** | `_clientCompletionSource` created once, never recreated. Blocks hot reconnection entirely. See section 1f for details. |
+| **Fire-and-forget connection** | `McpClientProxy.cs:35` | **High** | `OnServerStarted` wraps `ConnectOrDieAsync` in `Task.Run` with no awaiter. If connection fails, TCS never completes → indefinite hang. |
+| **Monitor exits after first success** | `DevServerMonitor.cs:135` | **High** | `while` loop does `break` after `ServerStarted?.Invoke()` — no crash detection. See section 1f. |
+
+**Architecture**: `McpProxy.cs` is 700+ lines (SRP violation), no interfaces for `DevServerMonitor`/`McpClientProxy` (DIP). Service locator anti-pattern exists in `DevServerMonitor.cs:67` (`_services.GetRequiredService<UnoToolsLocator>()` instead of constructor injection). Note: `McpProxy` itself correctly receives `DevServerMonitor` and `McpClientProxy` via constructor injection (`McpProxy.cs:43`), but the overall lack of interfaces prevents testing. Recommended split into 5 focused services with explicit DI:
+
+| Service | Responsibility | DI Dependencies |
+|---------|---------------|-----------------|
+| `McpStdioServer` | STDIO transport, handler registration | `IToolListManager`, `IHealthService` |
+| `McpUpstreamClient` | HTTP connection to Host `/mcp`, reconnection | `IDevServerMonitor` |
+| `ToolListManager` | Cache, timeout, TCS lifecycle, `tools/list_changed` | `IUpstreamClient` |
+| `HealthService` | Report aggregation, issue collection | `IDiscoveryService`, `IDevServerMonitor` |
+| `ProxyLifecycleManager` | State machine (8 states), orchestration | All above |
+
+This refactoring is a **prerequisite** for the state machine (Phase 1c). All services must use **explicit constructor injection** — no `new` in business logic, no service locator patterns.
 
 ---
 
 ## 9. Verification Plan
 
-> **Full detail**: [testing.md](spec-appendix-c-testing.md) — 28 test scenarios, unit/integration/compatibility test strategy, cross-platform tests, performance measurement methodology.
+> **Full detail**: [Appendix C](spec-appendix-c-testing.md) — 45 automated test scenarios, unit/integration/compatibility test strategy, cross-platform tests, performance measurement methodology.
+> **Manual QA**: [Appendix H](spec-appendix-h-manual-qa.md) — 25+ scenarios requiring human testers (IDE extension compat, multi-instance, MCP client behavior, license transitions, crash recovery, real-world performance).
 
 **Performance targets**:
 
@@ -915,7 +1071,7 @@ IDE extensions currently launch the Host directly and rely on MSBuild discovery.
 | Time to functional tools | 15-40s | < 5s (warm cache) | < 3s |
 | CLI cold start | ~1.5s | ~1.5s | ~200ms |
 
-**Testing is a first-class deliverable.** Each phase MUST ship with its tests before being considered complete. Tests cover: unit (7 components), compatibility (7 SDK version scenarios), cross-platform (Windows/macOS/Linux), integration (7 end-to-end scenarios), and non-regression baselines.
+**Testing is a first-class deliverable.** Each phase MUST ship with its tests before being considered complete. Tests cover: unit (12 components), compatibility (8 SDK version scenarios), cross-platform (Windows/macOS/Linux), integration (8 end-to-end scenarios), and non-regression baselines.
 
 ---
 
@@ -933,38 +1089,66 @@ IDE extensions currently launch the Host directly and rely on MSBuild discovery.
 | Framework version resolution is too simplistic | Wrong host TFM selected, startup fails | **Medium-High** | See section 13 — TFM is on critical path, not optional |
 | Multiple DevServer instances for same solution | Port conflicts, conflicting Hot Reload, code gen connecting to wrong instance | **High (existing bug)** | IDE extensions already lack duplicate protection. CLI MCP mode adds another source. Must implement instance management via AmbientRegistry (see 1g-bis). |
 | `list_tools` blocks indefinitely (0 tools or no upstream) | MCP client hangs forever | **High (current bug)** | Bounded timeout (30s) + cached tools fallback (see 1e / FR11) |
+| Upstream `MCPToolsObserverService` TCS has no timeout | If license check throws or hangs, upstream `list_tools` blocks forever (`MCPToolsObserverService.cs:192`, TCS at `:37`) | **High (upstream bug)** | CLI-side 30s timeout mitigates for MCP mode. Upstream fix recommended — see `uno.app-mcp/README.md` alongside this spec. |
 | `.targets` diagnostic finds `tools/devserver/` but entry point unknown | Silently degraded state | Medium | Warning in health resource; do NOT load DLLs blindly |
 | Upstream `list_tools` blocks on license resolution | Slower than expected "functional tools" time | Medium | FR10 acknowledges this; CLI-side cache serves tools while upstream resolves |
+| **Controller bypass reimplementation scope** (Phase 1b) | Missing controller responsibilities break MCP mode | **Medium-High** | Controller has 9 responsibilities (see 1g table). Each must be reimplemented or explicitly delegated. High test coverage required — each responsibility needs a dedicated test. |
+| **VS extension launcher reflection fragility** | VS extension (`uno.studio`) uses reflection to load `Uno.UI.RemoteControl.VS.dll` and probe **two type names**: `Uno.UI.DevServer.VS.EntryPoint` then `Uno.UI.RemoteControl.VS.EntryPoint` (`DevServerLauncher.cs:302-303`), with v3/v2/v1 constructor probing (`DevServerLauncher.cs:313-326`). Changes to either type name or any constructor signature break the VS extension. | Medium | Lock both type names and all three constructor signatures (v1/v2/v3) with regression tests. See `uno.studio/README.md` alongside this spec for full signature details. |
+| **Rider auto-restart race condition** | Rider extension auto-restarts Host immediately on process exit. If CLI MCP mode kills and relaunches Host, Rider may race to restart its own copy → two instances. | **Medium** | AmbientRegistry pre-check exists **only in the controller path** (`Program.Command.cs:37-49`), NOT in the server-mode startup (`Program.cs` only registers at line 221, no pre-check). Rider launches Host directly (no controller). **Mitigation requires adding AmbientRegistry pre-check to the server-mode path** OR ensuring Rider uses the controller path. Test: MCP restarts Host while Rider is connected → verify only one instance survives. |
+| **Controller does NOT forward `--addins` to child process** | `StartCommandAsync` (`Program.Command.cs:18`) accepts only typed parameters. Child process args are built explicitly (`Program.Command.cs:82-99`): only `--httpPort`, `--ppid`, `--solution`. Unknown args like `--addins` are silently discarded. | **High (blocking for Phase 0)** | Phase 0 must modify the controller to accept and forward `--addins`. See section 1g for the two options. |
+| **Multi-instance port mismatch** | `DevServerMonitor` allocates port A (`DevServerMonitor.cs:83-85`), launches controller with port A. Controller finds existing instance on port B via AmbientRegistry, returns exit code 0 (success). Monitor health-checks port A (no server listening) → health check fails → `ServerFailed` fires. The existing instance's port is in the controller's stdout but **never parsed by the monitor**. | **Medium-High** | Monitor must either: (1) parse controller stdout for existing instance port, or (2) check AmbientRegistry itself before launching controller. Phase 1b (controller bypass) eliminates this by checking AmbientRegistry CLI-side. |
+| **User docs reference wrong notification name** | `doc/articles/dev-server.md:44` mentions `tool_list_changed` but the MCP protocol notification is `notifications/tools/list_changed` (sent via `NotificationMethods.ToolListChangedNotification` at `McpProxy.cs:483`). Agents reading the docs may misinterpret the capability name. | **Low** | **Deliverable**: Update `doc/articles/dev-server.md` to use the correct MCP protocol name `tools/list_changed` when implementation ships. |
+| **`$NUGET_PACKAGES` set to empty string** | If `NUGET_PACKAGES=""` (set but empty), `Path.Combine("", packageId, version)` produces a **relative path** (`UnoToolsLocator.cs:350`). `Directory.Exists()` then checks relative to CWD, which could match an unrelated directory. | **Medium** | Guard against empty/whitespace values: skip the env var path when `string.IsNullOrWhiteSpace(envVar)`. Add test case. |
+| **Controller bypass drops `--metadata-updates` flag** | Phase 1b bypasses the controller and launches Host directly. The `--metadata-updates` flag (used by VS Code for Roslyn-based hot reload, see section 15) must be forwarded. The controller currently forwards nothing beyond typed params, so direct launch must explicitly pass through all Host-relevant flags. | **Medium** | Phase 1b implementation must collect and forward all recognized Host flags (see section 15 table). Test: launch Host directly with `--metadata-updates true` → verify `ServerHotReloadProcessor` activates. |
 
 ---
 
 ## 11. Implementation Phases
 
-### Phase 0: Convention-Based Add-In Discovery (benefits all modes)
+### Phase 0: Convention-Based Add-In Discovery
 - Implement `.targets` parsing logic (`TargetsAddInResolver`)
 - Implement directory presence diagnostic (NOT blind DLL loading)
-- Implement `--addins` flag on Host with full contract (section 8)
-- Wire into CLI `start` and MCP modes
+- Implement `--addins` flag on Host server-mode with full contract (section 8)
+- **Modify controller** to accept and forward `--addins` to child server process (add parameter to `StartCommandAsync`, add to argument list in `Program.Command.cs:82-99`)
+- Wire into CLI `start` command (passes `--addins` to controller → Host)
+- Enhance `disco` command: add resolved add-in paths to output, add `--addins-only` flag (section 8a)
+- Fix `DiscoveryOutputFormatter`: display `globalJsonPath` in plain text format
 - `DotNetVersionCache`: cache `dotnet --version` to disk (on critical path, see section 13)
 - Add tests: known add-ins discovered, unknown packages skipped, missing packages warned, blind DLL scan prevented
+- Add regression test: `EntryPoint` type names (`Uno.UI.DevServer.VS.EntryPoint` + `Uno.UI.RemoteControl.VS.EntryPoint`) and v1/v2/v3 constructor signatures (lock reflection targets)
 - Capture performance baselines BEFORE changes (see measurement methodology)
-- **This phase saves 10-30s for CLI modes** (MCP + `start`). IDE extensions benefit only when they adopt `--addins` (their timeline, not ours). The `--addins` flag and `TargetsAddInResolver` are the enablers — immediate gain is CLI-only.
+
+**Gain per mode in Phase 0**:
+| Mode | Current Path | Phase 0 Path | Gain |
+|------|-------------|-------------|------|
+| CLI `start` | Controller → Host → MSBuild (10-30s) | Controller → Host `--addins` (skip MSBuild) | **10-30s saved** |
+| MCP (`--mcp-app`) | Monitor → Controller → Host → MSBuild | Monitor → Controller → Host `--addins` | **10-30s saved** (still goes through controller) |
+| IDE extensions | Direct → Host → MSBuild | Unchanged (no `--addins` yet) | None |
+
+> **Note**: MCP mode in Phase 0 still uses the controller path via `DevServerMonitor` (`DevServerMonitor.cs:205`). The controller bypass (direct launch) is Phase 1b. Phase 0's gain for MCP comes from `--addins` skipping MSBuild inside the Host, not from eliminating the controller.
 
 ### Phase 1a: Immediate MCP Start (MCP-only)
 - Restructure `McpProxy` to start STDIO server immediately
 - Return cached tools on first `list_tools`
 - Structured error responses for premature tool calls
 - **Fix `list_tools` indefinite blocking** (FR11): bounded timeout, handle 0-tool case
-- Health resource (`uno://health`)
+- Health resource (`uno://health`) + `uno_health` tool
 
 ### Phase 1b: Background Discovery + Direct Server Launch (MCP-only)
 - Background discovery chain using Phase 0's fast resolution
-- Skip controller process in MCP mode
-- **Re-implement AmbientRegistry duplicate check CLI-side** (required before controller bypass)
+- Skip controller process in MCP mode (direct Host launch)
+- **Re-implement CLI-side**: AmbientRegistry check (1g-bis) + `.csproj.user` generation (currently controller-only, see `Program.Command.cs:101`)
 - Pass add-in paths via `--addins`
 
 ### Phase 1c: Hot Reconnection (MCP-only)
-- **Full state machine refactoring** (see 1f): Initializing → Discovering → Launching → Connecting → Connected → Reconnecting → Degraded
+
+**Prerequisite bug fixes** (must be completed BEFORE state machine work — see section 1f for details):
+1. Fix one-shot TCS in `McpClientProxy.cs:20` → dispose + recreate pattern
+2. Fix monitor `break` in `DevServerMonitor.cs:135` → persistent process watcher
+3. Fix wrong notification type in `McpClientProxy.cs:74` → correct type or remove dead code
+4. Fix fire-and-forget connection in `McpClientProxy.cs:35` → bounded retry + error completion
+
+**State machine refactoring** (see 1f): Initializing → Discovering → Launching → Connecting → Connected → Reconnecting → Degraded
 - `DevServerMonitor` becomes persistent process watcher (not one-shot detector)
 - `McpClientProxy` supports dispose + recreate pattern (resettable TCS)
 - `tools/list_changed` notification on reconnect
@@ -988,10 +1172,16 @@ IDE extensions currently launch the Host directly and rely on MSBuild discovery.
 1. ~~**`dotnet tool` vs self-contained**~~: **Resolved.** .NET 10 introduces RID-specific `dotnet tool` packaging, allowing self-contained tools with R2R/SingleFile while remaining distributable via `dotnet tool install`. The CLI can target .NET 10 with `<PublishSelfContained>true</PublishSelfContained>` + `<PublishReadyToRun>true</PublishReadyToRun>` as a dotnet tool. No packaging change required — this is natively supported.
 2. ~~**AmbientRegistry in MCP mode**~~: **Resolved — required.** The AmbientRegistry prevents duplicate DevServer instances. The duplicate check exists only in the controller path (`Program.Command.cs:37-58`), which is used only by CLI `start`. IDE extensions already bypass the controller (they launch Host directly) and have no duplicate protection today. MCP mode will also launch Host directly. **The CLI MUST register in AmbientRegistry AND check for existing instances** before launching. This is part of the broader instance management problem (see section 1g-bis).
 3. ~~**Health resource protocol**~~: **Resolved.** Expose as **both** `uno://health` resource AND `uno_health` tool. See section 1d for rationale.
-4. ~~**`devserver-addin.json` manifest format**~~: **Resolved.** Format defined in section 7.6. Manifest takes priority over `.targets` if present; `.targets` is the fallback.
+4. ~~**`devserver-addin.json` manifest format**~~: **Resolved.** Format defined in [Appendix B](spec-appendix-b-addin-discovery.md) section 6. Manifest takes priority over `.targets` if present; `.targets` is the fallback.
 5. **Add-in author documentation**: Location confirmed: `src/Uno.UI.RemoteControl.Host/DEVSERVER-ADDINS.md` (maintainer docs live in source, not on public docs site).
 6. ~~**`uno.hotdesign` processor pattern**~~: **Resolved — out of scope.** HotDesign is a **processor**, not an add-in. It is loaded on-demand from the client through the websocket, using `[assembly: ServerProcessorAttribute]`. It does not use the `buildTransitive/*.targets` + `UnoRemoteControlAddIns` convention and is entirely unaffected by the add-in discovery system. No action needed.
-7. ~~**Convergence with `DevServerDiscovery.md`**~~: **Resolved.** `DevServerDiscovery.md` is absorbed into this spec directory as a companion document. The trajectory is formalized: `.targets` parsing (Phase 0) → `devserver-addin.json` manifest (Phase 1) → deprecate MSBuild discovery. See section 7.6 and Appendix D.
+7. ~~**Convergence with `DevServerDiscovery.md`**~~: **Resolved.** `DevServerDiscovery.md` is absorbed into this spec directory as a companion document. The trajectory is formalized: `.targets` parsing (Phase 0) → `devserver-addin.json` manifest (Phase 1) → deprecate MSBuild discovery. See [Appendix B](spec-appendix-b-addin-discovery.md) section 6 and Appendix D.
+
+8. **Public docs/spec alignment** (deliverable with implementation):
+   - `doc/articles/features/using-the-uno-mcps.md:59` does not list `uno_app_start` or Business-tier tools — must be updated to match actual server code
+   - `doc/articles/dev-server.md:44` uses `tool_list_changed` — should be `tools/list_changed` (MCP protocol notation)
+   - `doc/articles/get-started-ai-google-antigravity.md:44` does not recommend `--mcp-wait-tools-list` despite Antigravity lacking `tools/list_changed` support; also Antigravity is absent from the `ClientsWithoutListUpdateSupport` hardcoded list (`McpProxy.cs:41`)
+   - These are **documentation defects independent of this spec** but should be fixed as a companion deliverable when this spec ships.
 
 ---
 
@@ -1090,18 +1280,208 @@ RemoteControl.Host (server mode only)
 
 ### Migration Path for IDE Extensions
 
-1. **Now**: IDE extensions work unchanged. CLI gains fast discovery.
-2. **Next**: IDE extensions call `disco --addins-only --json` for fast add-in resolution, pass result via `--addins`
-3. **Later**: IDE extensions delegate full Host lifecycle to CLI (`uno.devserver start --managed`)
-4. **Eventually**: IDE extensions become thin clients that connect to a CLI-managed DevServer
+Adoption paths for each IDE extension are documented in their respective subdirectories alongside this spec (`uno.studio/`, `uno.rider/`, `uno.vscode/`). These files are intended to be moved to their respective repos when adoption work begins. IDE adoption is at each team's pace — this spec does not dictate their timeline.
 
-This is an incremental migration — each step is independently valuable and backward-compatible.
+---
+
+## 15. Global.json Parsing and SDK Identity
+
+### 15.1 Duplication Risk
+
+The global.json parsing logic is currently duplicated in two locations:
+
+| Location | File | SDK Handling | Data Extracted |
+|----------|------|-------------|----------------|
+| **CLI** | `UnoToolsLocator.cs:267-307` | Both `Uno.Sdk` and `Uno.Sdk.Private` | Tuple: (path, sdkPackage, sdkVersion) |
+| **VS extension** | `GlobalJsonObserver.cs:162-207` | Both `Uno.Sdk` and `Uno.Sdk.Private` | Version string only |
+
+Both implementations walk directories upward to find `global.json`, parse `msbuild-sdks`, and handle both SDK variants. The VS extension's implementation is out of scope (deployed, cannot change), but the CLI implementation MUST be the **canonical** implementation for all new code.
+
+**Rule**: All new discovery code (Phase 0's `TargetsAddInResolver`, `DotNetVersionCache`, etc.) MUST call `UnoToolsLocator.ParseGlobalJsonForUnoSdk()` — no additional global.json parsing implementations.
+
+### 15.2 Uno.Sdk vs Uno.Sdk.Private — Version Identity
+
+**Architecture**:
+
+- **`Uno.Sdk.Private`** is the SDK package built from this repository (`Uno.Sdk.csproj`, `PackageId=Uno.Sdk.Private`). Version is generated by Nerdbank.GitVersioning (NBGV) from `version.json`.
+- **`Uno.Sdk`** (without `.Private`) is the public SDK package. It is **not built from this repository** — it has its own versioning and release cycle.
+- Both packages share the same `packages.json` structure and serve the same purpose (MSBuild SDK for Uno projects). They are functionally equivalent but versioned independently.
+
+**Critical version identity rule**: Both packages can have **stable, production versions** and their version numbers **can overlap**:
+
+```
+# These are TWO DIFFERENT packages at TWO DIFFERENT NuGet cache paths:
+~/.nuget/packages/uno.sdk/6.0.0/           ← Uno.Sdk @ 6.0.0
+~/.nuget/packages/uno.sdk.private/6.0.0/   ← Uno.Sdk.Private @ 6.0.0
+```
+
+A `global.json` references exactly one of them:
+```json
+// Option A: public SDK
+{ "msbuild-sdks": { "Uno.Sdk": "6.0.0" } }
+
+// Option B: private SDK (development/internal)
+{ "msbuild-sdks": { "Uno.Sdk.Private": "6.0.0" } }
+```
+
+**The version string alone is NOT sufficient to identify the package.** The package name + version together form the identity. Any code that resolves NuGet cache paths MUST use both.
+
+**Build-time version substitution**: The source `packages.json` uses placeholder tokens (`DefaultUnoVersion`, `DefaultUnoSdkVersion`) that are replaced during NuGet package build via `ReplaceFileText` (`Uno.Sdk.csproj:71-107`). Published NuGet packages always contain concrete version strings. Discovery code never encounters these placeholders.
+
+**Lookup priority in `UnoToolsLocator.ParseGlobalJsonForUnoSdk()`** (`UnoToolsLocator.cs:287-298`):
+1. Check for `Uno.Sdk` first (public package)
+2. Fall back to `Uno.Sdk.Private` (internal package)
+3. Return tuple: `(globalJsonPath, sdkPackageName, sdkVersion)`
+
+**Rules**:
+1. **Never hardcode a package name.** Always use the package name returned by `ParseGlobalJsonForUnoSdk()`. The code at `UnoToolsLocator.cs:287-298` already handles this correctly.
+2. **Never assume version format.** Both packages can have stable (`6.0.0`) or prerelease (`6.0.0-dev.146`) versions. Do not use the version string to infer which package it is.
+3. **Package name + version = cache path.** The NuGet cache directory is `{cache}/{packageName.ToLower()}/{version}/`. A version `6.0.0` under `Uno.Sdk` is a **completely different directory** than `6.0.0` under `Uno.Sdk.Private`. Never mix them.
+4. Phase 0's add-in resolution must propagate the correct SDK package name throughout the entire discovery chain — from `global.json` through `packages.json` through NuGet cache lookup through add-in path resolution.
+
+### 15.3 `packages.json` Version Handling
+
+The `packages.json` `versionOverride` field allows TFM-specific version overrides:
+
+```json
+{
+  "group": "WasmBootstrap",
+  "version": "9.0.23",
+  "packages": ["Uno.Wasm.Bootstrap", "Uno.Wasm.Bootstrap.DevServer"],
+  "versionOverride": { "net10.0": "10.0.15" }
+}
+```
+
+**Current state**: `UnoToolsLocator.GetUnoPackageVersionFromManifest()` (line 467-512) does NOT handle `versionOverride` — it always returns the base `version` field.
+
+**Impact on Phase 0**: The two DevServer add-in packages (`uno.ui.app.mcp` and `uno.settings.devserver`) do NOT have `versionOverride` entries today. `Uno.Wasm.Bootstrap.DevServer` has one but is NOT a DevServer add-in (it's a different kind of dev server). Therefore, the current parsing is correct for Phase 0.
+
+**Forward compatibility**: If a future add-in package uses `versionOverride`, the fast path would resolve the wrong version. **Mitigation**: When the resolved version's NuGet cache directory does not exist, check `versionOverride` entries for the current TFM before falling back to MSBuild. Log a warning if `versionOverride` is detected and the override version differs from the base version.
+
+### 15.4 Known Host Flags (Compatibility Reference)
+
+The Host (`RemoteControl.Host`) accepts these command-line flags via `ConfigurationBuilder.AddCommandLine()` (`Program.cs:42-56`):
+
+| Flag | Type | Used By | Purpose |
+|------|------|---------|---------|
+| `--command` (or `-c`) | string | CLI `start`/`stop`/`list`/`cleanup` | Controller mode verb |
+| `--httpPort` | int | All launchers | Kestrel listen port |
+| `--ppid` | int | All launchers | Parent process monitoring |
+| `--solution` | string | All launchers | Solution file path for discovery |
+| `--workingDir` | string | CLI | Working directory |
+| `--timeoutMs` | int | CLI controller | Startup timeout (default 30000) |
+| `--ideChannel` | string | IDE extensions | Named pipe GUID for IDE ↔ Host communication |
+| `--metadata-updates` | bool | VS Code extension | Enables Roslyn-based hot reload with metadata delta generation. When `true`, the `ServerHotReloadProcessor` watches project files for changes and generates compilation deltas. The app can also enable this via the `ConfigureServer.EnableMetadataUpdates` message. |
+| `--addins` | string | **NEW (Phase 0)** | Semicolon-separated add-in DLL paths |
+
+> **Note on `--metadata-updates`**: This flag is critical for VS Code's hot reload functionality. The Host parses it via `IConfiguration["metadata-updates"]` in `ServerHotReloadProcessor.MetadataUpdate.cs:47`. When bypassing the controller in Phase 1b, this flag (and any other unknown flags) must be forwarded to the Host process. The `ConfigurationBuilder.AddCommandLine()` approach accepts arbitrary flags, so new flags don't require parsing changes.
+
+---
+
+## 16. NuGet Package Availability (Graceful Degradation)
+
+The CLI tool is installed via `dotnet tool`, but the Uno SDK and add-in packages may not be in the NuGet cache (user hasn't run `dotnet restore`, network unavailable, custom `$NUGET_PACKAGES` path misconfigured).
+
+### Current Error Handling
+
+`UnoToolsLocator.DiscoverAsync()` accumulates errors without fail-fast:
+
+| Missing Package | Severity | Current Message | Current Remediation |
+|----------------|----------|----------------|-------------------|
+| Uno SDK | Error | "Uno SDK package not found in NuGet cache" | None |
+| `packages.json` | Error | "packages.json not found at {path}" | None |
+| DevServer Host | Error | "Uno.WinUI.DevServer not found in NuGet cache" | None |
+| Settings add-in | Warning | "uno.settings.devserver version not found" | None |
+| `dotnet` CLI | Error | "Unable to determine dotnet --version" | None |
+
+**Gaps identified**:
+1. **Directory-level checks only**: `EnsureNugetPackage()` checks if the package directory exists, but NOT if the DLL files within it exist. A partial NuGet restore (metadata present, binaries missing) passes discovery but fails at Host assembly load time.
+2. **No remediation hints**: Error messages don't suggest `dotnet restore` or list which cache locations were checked.
+3. **No checked-paths reporting**: When a package isn't found, the user doesn't know which locations were searched (`~/.nuget/packages/`, `$NUGET_PACKAGES`, common data).
+
+### Phase 0 Requirements
+
+The fast-path `.targets` parsing must handle missing packages at **DLL-level**, not just directory-level:
+
+```
+For each resolved add-in path:
+  1. Verify the DLL file exists on disk (not just the package directory)
+  2. If missing → structured warning with:
+     - Package name and version
+     - Expected DLL path
+     - Checked NuGet cache locations (all of them)
+     - Remediation: "Run 'dotnet restore' to download missing packages"
+  3. Add to health report as AddInBinaryNotFound issue
+```
+
+**Validation chain** (from coarsest to finest):
+
+| Level | Check | Error If Missing |
+|-------|-------|-----------------|
+| 1 | NuGet cache directory exists | `SdkNotInCache` — "Run `dotnet restore`" |
+| 2 | Package directory exists in cache | `AddInPackageNotCached` — "Run `dotnet restore`" |
+| 3 | `buildTransitive/*.targets` file exists | Skip package (not an add-in) |
+| 4 | `UnoRemoteControlAddIns` item found | Skip package (not an add-in) |
+| 5 | **DLL file exists on disk** | `AddInBinaryNotFound` — "Package may be partially restored. Run `dotnet restore --force`" |
+
+**`disco --json` must report checked locations** in a new field:
+
+```csharp
+public IReadOnlyList<string> NuGetCacheLocations { get; init; } = [];
+// e.g., ["C:\\Users\\user\\.nuget\\packages", "C:\\ProgramData\\NuGet\\packages"]
+```
+
+This helps CI scripts and support engineers diagnose cache-related issues.
+
+---
+
+## 17. IPv6 Health Check Support
+
+### Requirement
+
+Health polling in MCP mode (Phase 1b) MUST check all three loopback addresses:
+- `http://localhost:{port}/mcp`
+- `http://127.0.0.1:{port}/mcp`
+- `http://[::1]:{port}/mcp`
+
+This is **not optional** — some environments have IPv4 disabled:
+- Docker containers with IPv6-only networking
+- WSL2 with specific network configurations
+- Corporate networks with IPv6 migration
+
+### Current State
+
+| Component | Check Type | IPv4 | IPv6 | Addresses |
+|-----------|-----------|:----:|:----:|-----------|
+| **Controller** (`Program.Command.cs:323`) | TCP socket | Yes | **No** | `IPAddress.Loopback` (127.0.0.1 only) |
+| **DevServerMonitor** (`DevServerMonitor.cs:151`) | HTTP GET | Yes | **Yes** | `localhost`, `127.0.0.1`, `[::1]` |
+
+### Design
+
+Phase 1b bypasses the controller and uses direct server launch. The health polling logic must use the `DevServerMonitor` approach (already correct), not the controller's limited approach.
+
+**Implementation**: Extract `DevServerMonitor.WaitForServerReadyAsync()` into a reusable `HealthChecker` service that polls all three endpoints in parallel with configurable timeout. This service is used by:
+1. `DevServerMonitor` (existing, for MCP mode)
+2. Phase 1b direct launch path
+3. `uno_health` tool (for on-demand checks)
+
+```csharp
+internal sealed class HealthChecker(ILogger<HealthChecker> logger)
+{
+    private static readonly string[] LoopbackEndpoints = ["localhost", "127.0.0.1", "[::1]"];
+
+    public async Task<bool> WaitForReadyAsync(int port, string path, TimeSpan timeout, CancellationToken ct)
+    {
+        // Poll all 3 endpoints in parallel, return true on first success
+    }
+}
+```
 
 ---
 
 ## Appendices
 
-See the Document Map at the top of this file for links to all appendices (A through F).
+See the Document Map at the top of this file for links to all appendices (A through H).
 
 [Appendix E: Reference](spec-appendix-e-reference.md) contains:
 - **E.1**: MCP tools by license tier (Community ~9, Pro ~11, Business ~12)
