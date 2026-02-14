@@ -9,9 +9,9 @@ using ModelContextProtocol.Server;
 
 namespace Uno.UI.DevServer.Cli.Mcp;
 
-internal class McpProxy
+internal class ProxyLifecycleManager
 {
-	private readonly ILogger<McpProxy> _logger;
+	private readonly ILogger<ProxyLifecycleManager> _logger;
 	private readonly DevServerMonitor _devServerMonitor;
 	private readonly McpUpstreamClient _mcpClientProxy;
 	private readonly HealthService _healthService;
@@ -34,7 +34,7 @@ internal class McpProxy
 	// Clients that don't support the list_updated notification
 	private static readonly string[] ClientsWithoutListUpdateSupport = ["claude-code", "codex", "codex-mcp-client", "antigravity"];
 
-	public McpProxy(ILogger<McpProxy> logger, DevServerMonitor mcpServerMonitor, McpUpstreamClient mcpClientProxy, HealthService healthService, ToolListManager toolListManager, McpStdioServer mcpStdioServer)
+	public ProxyLifecycleManager(ILogger<ProxyLifecycleManager> logger, DevServerMonitor mcpServerMonitor, McpUpstreamClient mcpClientProxy, HealthService healthService, ToolListManager toolListManager, McpStdioServer mcpStdioServer)
 	{
 		_logger = logger;
 		_devServerMonitor = mcpServerMonitor;

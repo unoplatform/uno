@@ -298,7 +298,7 @@ internal class CliManager
 			var normalizedSolutionDirectory = solutionDirectory ?? (forceGenerateToolCache ? workingDirectory : null);
 
 			var waitForTools = mcpWaitToolsList;
-			return await _services.GetRequiredService<McpProxy>().RunAsync(
+			return await _services.GetRequiredService<ProxyLifecycleManager>().RunAsync(
 				workingDirectory,
 				requestedPort,
 				forwardedArgs,

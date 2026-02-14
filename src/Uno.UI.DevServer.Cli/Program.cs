@@ -89,7 +89,7 @@ internal class Program
 		services.AddSingleton<ToolListManager>();
 		services.AddSingleton<HealthService>();
 		services.AddSingleton<McpStdioServer>();
-		services.AddSingleton<McpProxy>();
+		services.AddSingleton<ProxyLifecycleManager>();
 
 		using var sp = services.BuildServiceProvider();
 		var manager = sp.GetRequiredService<CliManager>();
