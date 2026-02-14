@@ -555,6 +555,7 @@ internal class McpProxy
 		finally
 		{
 			await _mcpClientProxy.DisposeAsync();
+			await _devServerMonitor.StopMonitoringAsync();
 		}
 
 		return 0;

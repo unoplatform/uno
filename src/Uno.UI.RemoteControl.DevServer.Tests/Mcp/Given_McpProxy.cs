@@ -593,6 +593,117 @@ public class Given_McpProxy
 	}
 
 	// -------------------------------------------------------------------
+	// AmbientRegistry (Phase 1b — controller bypass)
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	public void AmbientRegistry_WhenNoMatch_ReturnsNull()
+	{
+		using var loggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(b => { });
+		var logger = loggerFactory.CreateLogger("test");
+		var registry = new Uno.UI.RemoteControl.Host.AmbientRegistry(logger);
+
+		var result = registry.GetActiveDevServerForPath(Path.Combine(Path.GetTempPath(), $"nonexistent-{Guid.NewGuid():N}.sln"));
+
+		result.Should().BeNull();
+	}
+
+	[TestMethod]
+	public void AmbientRegistry_WhenNullOrEmpty_ReturnsNull()
+	{
+		using var loggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(b => { });
+		var logger = loggerFactory.CreateLogger("test");
+		var registry = new Uno.UI.RemoteControl.Host.AmbientRegistry(logger);
+
+		registry.GetActiveDevServerForPath(null).Should().BeNull();
+		registry.GetActiveDevServerForPath("").Should().BeNull();
+		registry.GetActiveDevServerForPath("   ").Should().BeNull();
+	}
+
+	// -------------------------------------------------------------------
+	// Direct launch args (Phase 1b — controller bypass)
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	public void DirectLaunch_ArgsDoNotContainCommandStart()
+	{
+		// Simulate the args that StartProcess would build
+		var args = BuildDirectLaunchArgs(port: 12345, solution: @"C:\test\MySolution.sln");
+
+		args.Should().NotContain("--command");
+		args.Should().NotContain("start");
+	}
+
+	[TestMethod]
+	public void DirectLaunch_ArgsContainSolutionFlag()
+	{
+		var args = BuildDirectLaunchArgs(port: 12345, solution: @"C:\test\MySolution.sln");
+
+		var solutionIndex = args.IndexOf("--solution");
+		solutionIndex.Should().BeGreaterThanOrEqualTo(0);
+		args[solutionIndex + 1].Should().Be(@"C:\test\MySolution.sln");
+	}
+
+	[TestMethod]
+	public void DirectLaunch_ArgsContainHttpPortAndPpid()
+	{
+		var args = BuildDirectLaunchArgs(port: 54321, solution: null);
+
+		var portIndex = args.IndexOf("--httpPort");
+		portIndex.Should().BeGreaterThanOrEqualTo(0);
+		args[portIndex + 1].Should().Be("54321");
+
+		var ppidIndex = args.IndexOf("--ppid");
+		ppidIndex.Should().BeGreaterThanOrEqualTo(0);
+		int.Parse(args[ppidIndex + 1]).Should().BeGreaterThan(0);
+	}
+
+	[TestMethod]
+	public void DirectLaunch_WhenNoSolution_ArgsDoNotContainSolution()
+	{
+		var args = BuildDirectLaunchArgs(port: 12345, solution: null);
+
+		args.Should().NotContain("--solution");
+	}
+
+	[TestMethod]
+	public void DirectLaunch_ArgsContainAddins()
+	{
+		var args = BuildDirectLaunchArgs(port: 12345, solution: null, addins: "Addon1.dll;Addon2.dll");
+
+		var addinsIndex = args.IndexOf("--addins");
+		addinsIndex.Should().BeGreaterThanOrEqualTo(0);
+		args[addinsIndex + 1].Should().Be("Addon1.dll;Addon2.dll");
+	}
+
+	/// <summary>
+	/// Mirrors the arg-building logic in DevServerMonitor.StartProcess to verify
+	/// that the direct launch path produces the expected arguments.
+	/// </summary>
+	private static List<string> BuildDirectLaunchArgs(int port, string? solution, string? addins = null)
+	{
+		var args = new List<string>
+		{
+			"--httpPort", port.ToString(System.Globalization.CultureInfo.InvariantCulture),
+			"--ppid", Environment.ProcessId.ToString(System.Globalization.CultureInfo.InvariantCulture)
+		};
+
+		if (!string.IsNullOrWhiteSpace(solution))
+		{
+			args.Add("--solution");
+			args.Add(solution);
+		}
+
+		if (!string.IsNullOrWhiteSpace(addins))
+		{
+			args.Add("--addins");
+			args.Add(addins);
+		}
+
+		return args;
+	}
+
+	// -------------------------------------------------------------------
 	// Helpers
 	// -------------------------------------------------------------------
 

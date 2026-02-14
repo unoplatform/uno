@@ -29,12 +29,19 @@
 		<PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
+		<PackageReference Include="Microsoft.VisualStudio.SolutionPersistence" Version="1.0.52" />
 		<PackageReference Include="ModelContextProtocol" Version="0.8.0-preview.1" />
 		<PackageReference Include="ModelContextProtocol.AspNetCore" Version="0.8.0-preview.1" />
 		<PackageReference Include="Serilog.Extensions.Logging.File" Version="3.0.0" />
 		<PackageReference Include="Spectre.Console" Version="0.49.1" />
 	</ItemGroup>
-	
+
+	<ItemGroup>
+		<!-- Linked from Host for controller bypass (Phase 1b) -->
+		<Compile Include="..\Uno.UI.RemoteControl.Host\AmbientRegistry.cs" Link="Mcp\AmbientRegistry.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl.Host\Helpers\CsprojUserGenerator.cs" Link="Helpers\CsprojUserGenerator.cs" />
+	</ItemGroup>
+
 	<ItemGroup>
 	  <Folder Include="Services\" />
 	</ItemGroup>
