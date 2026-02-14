@@ -930,6 +930,158 @@ function Test-CodexIntegration {
     }
 }
 
+function Test-DiscoJsonOutput {
+    param([string]$SlnDir)
+
+    Write-Log "Validating disco --json output"
+
+    $output = Invoke-DevserverCli -Arguments @('disco', '--json', '--solution-dir', $SlnDir) 2>&1
+    if ($LASTEXITCODE -ne 0) { throw "disco --json exited with code $LASTEXITCODE" }
+
+    $json = ($output | Out-String) | ConvertFrom-Json -ErrorAction Stop
+
+    # Backward compat: existing fields must still be present
+    $requiredFields = @('globalJsonPath', 'unoSdkPackage')
+    foreach ($field in $requiredFields) {
+        if (-not $json.PSObject.Properties[$field]) {
+            throw "disco --json missing required field: $field"
+        }
+    }
+
+    # New field: addIns array
+    if (-not $json.PSObject.Properties['addIns']) {
+        throw "disco --json missing new 'addIns' field"
+    }
+
+    if ($json.addIns.Count -eq 0) {
+        Write-Log "WARNING: disco --json returned 0 add-ins (may be expected if no Uno project)"
+    }
+
+    foreach ($addIn in $json.addIns) {
+        if (-not $addIn.entryPointDll -or -not (Test-Path $addIn.entryPointDll)) {
+            throw "disco --json add-in entryPointDll does not exist: $($addIn.entryPointDll)"
+        }
+        if (-not $addIn.discoverySource) {
+            throw "disco --json add-in missing discoverySource field"
+        }
+        Write-Log " Add-in: $($addIn.entryPointDll) (source: $($addIn.discoverySource))"
+    }
+
+    Write-Log "disco --json output validated successfully"
+}
+
+function Test-DiscoAddInsOnly {
+    param([string]$SlnDir)
+
+    Write-Log "Validating disco --addins-only output"
+
+    # Text mode: semicolon-separated paths
+    $textOutput = (Invoke-DevserverCli -Arguments @('disco', '--addins-only', '--solution-dir', $SlnDir) 2>&1 | Out-String).Trim()
+    if ($LASTEXITCODE -ne 0) { throw "disco --addins-only exited with code $LASTEXITCODE" }
+
+    # Verify parseable as semicolon-separated paths
+    $paths = $textOutput -split ';' | Where-Object { $_ -ne '' }
+    foreach ($p in $paths) {
+        if (-not (Test-Path $p)) { throw "disco --addins-only path not found: $p" }
+    }
+
+    # JSON mode: JSON array of paths
+    $jsonOutput = (Invoke-DevserverCli -Arguments @('disco', '--addins-only', '--json', '--solution-dir', $SlnDir) 2>&1 | Out-String).Trim()
+    if ($LASTEXITCODE -ne 0) { throw "disco --addins-only --json exited with code $LASTEXITCODE" }
+
+    $jsonPaths = $jsonOutput | ConvertFrom-Json -ErrorAction Stop
+    if ($jsonPaths.Count -ne $paths.Count) {
+        throw "disco --addins-only text ($($paths.Count)) and JSON ($($jsonPaths.Count)) path counts differ"
+    }
+
+    Write-Log "disco --addins-only validated: $($paths.Count) paths"
+}
+
+function Test-CleanupCommand {
+    param([string]$SlnDir)
+
+    Write-Log "Validating cleanup command"
+
+    Invoke-DevserverCli -Arguments @('cleanup', '-l', 'trace')
+    if ($LASTEXITCODE -ne 0) {
+        throw "cleanup command exited with code $LASTEXITCODE"
+    }
+
+    Write-Log "cleanup command completed successfully (exit code 0)"
+}
+
+function Test-HostAddInsFlag {
+    param([string]$SlnDir)
+
+    Write-Log "Validating Host --addins flag"
+
+    # Step 1: Get add-in paths from disco
+    $addInsOutput = (Invoke-DevserverCli -Arguments @('disco', '--addins-only', '--solution-dir', $SlnDir) 2>&1 | Out-String).Trim()
+    if ([string]::IsNullOrWhiteSpace($addInsOutput)) {
+        Write-Log "No add-ins discovered — skipping --addins flag test"
+        return
+    }
+
+    # Step 2: Resolve Host DLL path from Uno SDK
+    $discoJson = (Invoke-DevserverCli -Arguments @('disco', '--json', '--solution-dir', $SlnDir) 2>&1 | Out-String) | ConvertFrom-Json
+    $hostDll = $discoJson.hostPath
+    if (-not $hostDll -or -not (Test-Path $hostDll)) {
+        Write-Log "Host DLL not found at '$hostDll' — skipping --addins flag test"
+        return
+    }
+
+    # Step 3: Launch Host with --addins, verify it starts (port 0 = auto-assign)
+    $stderrFile = [System.IO.Path]::GetTempFileName()
+    $hostProcess = Start-Process -FilePath "dotnet" -ArgumentList @(
+        $hostDll, '--httpPort', '0', '--addins', $addInsOutput
+    ) -PassThru -NoNewWindow -RedirectStandardError $stderrFile
+
+    Start-Sleep -Seconds 5
+
+    if ($hostProcess.HasExited -and $hostProcess.ExitCode -ne 0) {
+        $stderrContent = Get-Content $stderrFile -Raw -ErrorAction SilentlyContinue
+        Remove-Item $stderrFile -ErrorAction SilentlyContinue
+        throw "Host with --addins exited with error code $($hostProcess.ExitCode)`nSTDERR:`n$stderrContent"
+    }
+
+    if (-not $hostProcess.HasExited) {
+        Stop-Process -Id $hostProcess.Id -Force -ErrorAction SilentlyContinue
+    }
+
+    Remove-Item $stderrFile -ErrorAction SilentlyContinue
+
+    Write-Log "Host --addins flag accepted successfully"
+}
+
+function Test-PackageContent {
+    param([string]$PackagesDir)  # CI artifact directory containing .nupkg files
+
+    Write-Log "Validating package contents"
+
+    # Find Uno.WinUI.DevServer nupkg
+    $devServerPkg = Get-ChildItem -Path $PackagesDir -Filter "Uno.WinUI.DevServer.*.nupkg" | Select-Object -First 1
+    if (-not $devServerPkg) {
+        Write-Log "Uno.WinUI.DevServer .nupkg not found in $PackagesDir — skipping package content test"
+        return
+    }
+
+    $extractDir = Join-Path ([System.IO.Path]::GetTempPath()) "devserver-pkg-verify"
+    if (Test-Path $extractDir) { Remove-Item $extractDir -Recurse -Force }
+    Expand-Archive -Path $devServerPkg.FullName -DestinationPath $extractDir
+
+    # Verify both TFM Host binaries are present
+    foreach ($tfm in @('net9.0', 'net10.0')) {
+        $hostDll = Join-Path $extractDir "tools/rc/host/$tfm/Uno.UI.RemoteControl.Host.dll"
+        if (-not (Test-Path $hostDll)) {
+            throw "Package missing Host binary for $tfm at tools/rc/host/$tfm/"
+        }
+        Write-Log " Host binary present: tools/rc/host/$tfm/ ($(((Get-Item $hostDll).Length / 1KB).ToString('N0')) KB)"
+    }
+
+    Remove-Item $extractDir -Recurse -Force -ErrorAction SilentlyContinue
+    Write-Log "Package content validated successfully"
+}
+
 $finalExitCode = 1
 $devserverCleanupDirectory = $null
 
@@ -968,6 +1120,14 @@ try {
     $defaultPort = 5042
     $maxAttempts = 30
 
+    # --- Phase 0 discovery tests ---
+    Test-DiscoJsonOutput -SlnDir $slnDir
+    Test-DiscoAddInsOnly -SlnDir $slnDir
+    Test-CleanupCommand -SlnDir $slnDir
+    Test-HostAddInsFlag -SlnDir $slnDir
+    if ($env:PACKAGES_DIR) { Test-PackageContent -PackagesDir $env:PACKAGES_DIR }
+
+    # --- Existing integration tests ---
     $primaryPort = Test-DevserverStartStop -SlnDir $slnDir -CsprojDir $csprojDir -CsprojPath $csprojPath -DefaultPort $defaultPort -MaxAttempts $maxAttempts
     $solutionDirTestPort = Test-DevserverSolutionDirSupport -SlnDir $slnDir -DefaultPort $defaultPort -BaselinePort $primaryPort -MaxAttempts $maxAttempts
     Test-McpModeWithoutSolutionDir -SlnDir $slnDir -DefaultPort $defaultPort -PrimaryPort $primaryPort -SolutionDirPort $solutionDirTestPort -MaxAttempts $maxAttempts
