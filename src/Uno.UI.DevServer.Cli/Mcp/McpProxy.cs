@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ModelContextProtocol;
+using ModelContextProtocol.Client;
 using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
 
@@ -35,10 +36,22 @@ internal class McpProxy
 	private Task? _cachePrimedWatcher;
 
 	private const string ToolCacheFileName = "tools-cache.json";
-	private bool IsToolCacheEnabled => _forceRootsFallback || _forceGenerateToolCache;
+
+	/// <summary>Maximum time to wait for upstream list_tools before returning cached/empty result.</summary>
+	internal const int ListToolsTimeoutMs = 30_000;
+
+	private bool IsToolCacheEnabled => _isMcpAppMode || _forceRootsFallback || _forceGenerateToolCache;
+	private bool _isMcpAppMode;
 
 	// Clients that don't support the list_updated notification
 	private static readonly string[] ClientsWithoutListUpdateSupport = ["claude-code", "codex", "codex-mcp-client", "antigravity"];
+
+	private static readonly Tool HealthTool = new()
+	{
+		Name = "uno_health",
+		Description = "Returns the health status of the Uno DevServer MCP proxy, including connection state, tool count, and any issues detected during startup. Always available, even before the upstream host is ready.",
+		InputSchema = JsonSerializer.Deserialize<JsonElement>("""{"type":"object","properties":{}}"""),
+	};
 
 	public McpProxy(ILogger<McpProxy> logger, DevServerMonitor mcpServerMonitor, McpClientProxy mcpClientProxy)
 	{
@@ -60,6 +73,7 @@ internal class McpProxy
 		string? solutionDirectory,
 		CancellationToken ct)
 	{
+		_isMcpAppMode = true;
 		_waitForTools = waitForTools;
 		_forceRootsFallback = forceRootsFallback;
 		_forceGenerateToolCache = forceGenerateToolCache;
@@ -384,20 +398,35 @@ internal class McpProxy
 			.WithStdioServerTransport()
 			.WithCallToolHandler(async (ctx, ct) =>
 			{
-				if (_forceRootsFallback && ctx.Params?.Name == _addRootsTool.Name)
+				var toolName = ctx.Params?.Name ?? "unknown";
+
+				if (_forceRootsFallback && toolName == _addRootsTool.Name)
 				{
-					await SetRoots(ctx.Params.Arguments?["roots"].Deserialize<string[]>() ?? []);
+					await SetRoots(ctx.Params!.Arguments?["roots"].Deserialize<string[]>() ?? []);
 					return new CallToolResult() { Content = [new TextContentBlock() { Text = "Ok" }] };
 				}
 
-				var upstreamClient = await _mcpClientProxy.UpstreamClient;
-
-				if (upstreamClient is null)
+				// Handle the built-in uno_health tool before upstream is ready
+				if (toolName == HealthTool.Name)
 				{
-					throw new InvalidOperationException($"The tool {ctx.Params!.Name} is unknown");
+					return BuildHealthToolResponse();
 				}
 
-				_logger.LogDebug("Invoking MCP tool {Tool}", ctx.Params!.Name);
+				var upstreamTask = _mcpClientProxy.UpstreamClient;
+
+				if (!upstreamTask.IsCompletedSuccessfully)
+				{
+					_logger.LogDebug("Tool {Tool} called before upstream is ready", toolName);
+					return new CallToolResult()
+					{
+						Content = [new TextContentBlock() { Text = "DevServer is starting up. The host process is not yet ready. Call the uno_health tool for detailed diagnostics, or wait a few seconds and retry." }],
+						IsError = true
+					};
+				}
+
+				var upstreamClient = upstreamTask.Result;
+
+				_logger.LogDebug("Invoking MCP tool {Tool}", toolName);
 
 				var name = ctx.Params!.Name;
 				var args = ctx.Params.Arguments ?? new Dictionary<string, JsonElement>();
@@ -417,7 +446,7 @@ internal class McpProxy
 
 				if (_forceRootsFallback && _roots.Length == 0)
 				{
-					List<Tool> tools = [_addRootsTool];
+					List<Tool> tools = [HealthTool, _addRootsTool];
 					var cachedTools = GetCachedTools();
 					if (cachedTools.Length > 0)
 					{
@@ -430,30 +459,8 @@ internal class McpProxy
 					return new() { Tools = tools };
 				}
 
-				var upstreamClient = await _mcpClientProxy.UpstreamClient;
-
-				if (upstreamClient is null)
-				{
-					_logger.LogTrace("Upstream client is not connected, returning 0 tools");
-
-					return new() { Tools = [] };
-				}
-
-				_logger.LogTrace("Got upstream client");
-
-				_logger.LogTrace("Client requested tools list update");
-
-				var list = await upstreamClient!.ListToolsAsync(cancellationToken: ct);
-				Tool[] protocolTools = [.. list.Select(t => t.ProtocolTool)];
-
-				_logger.LogDebug("Reporting {Count} tools", protocolTools.Length);
-
-				PersistToolCacheIfNeeded(protocolTools);
-
-				return new()
-				{
-					Tools = protocolTools
-				};
+				var result = await ListToolsWithTimeoutAsync(ct);
+				return new() { Tools = AppendBuiltInTools(result.Tools) };
 			});
 
 		builder.Logging.AddConsole(consoleLogOptions =>
@@ -563,7 +570,17 @@ internal class McpProxy
 		{
 			_logger.LogTrace("Client without list_updated support detected, waiting for upstream server to start");
 
-			await tcs.Task;
+			using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+			timeoutCts.CancelAfter(ListToolsTimeoutMs);
+
+			try
+			{
+				await tcs.Task.WaitAsync(timeoutCts.Token);
+			}
+			catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+			{
+				_logger.LogWarning("Timed out waiting for upstream tools after {Timeout}ms", ListToolsTimeoutMs);
+			}
 		}
 	}
 
@@ -659,6 +676,149 @@ internal class McpProxy
 
 			return _toolCache;
 		}
+	}
+
+	private async Task<ListToolsResult> ListToolsWithTimeoutAsync(CancellationToken ct)
+	{
+		var upstreamTask = _mcpClientProxy.UpstreamClient;
+
+		// If the upstream client is already available, use it directly
+		if (upstreamTask.IsCompletedSuccessfully)
+		{
+			return await FetchToolsFromUpstreamAsync(upstreamTask.Result, ct);
+		}
+
+		// If we have cached tools, return them immediately without waiting
+		var cachedTools = GetCachedTools();
+		if (cachedTools.Length > 0)
+		{
+			_logger.LogDebug("Returning {Count} cached tools while upstream connects", cachedTools.Length);
+			return new() { Tools = cachedTools };
+		}
+
+		// No cache available — wait for upstream with a bounded timeout
+		_logger.LogTrace("No cached tools available, waiting for upstream with {Timeout}ms timeout", ListToolsTimeoutMs);
+
+		try
+		{
+			using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+			timeoutCts.CancelAfter(ListToolsTimeoutMs);
+
+			var client = await upstreamTask.WaitAsync(timeoutCts.Token);
+			return await FetchToolsFromUpstreamAsync(client, ct);
+		}
+		catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+		{
+			_logger.LogWarning("Timed out waiting for upstream MCP after {Timeout}ms, returning empty tool list", ListToolsTimeoutMs);
+			return new() { Tools = [] };
+		}
+		catch (Exception ex) when (ex is not OperationCanceledException)
+		{
+			_logger.LogWarning(ex, "Error waiting for upstream MCP, returning empty tool list");
+			return new() { Tools = [] };
+		}
+	}
+
+	private async Task<ListToolsResult> FetchToolsFromUpstreamAsync(McpClient upstreamClient, CancellationToken ct)
+	{
+		_logger.LogTrace("Client requested tools list update");
+
+		var list = await upstreamClient.ListToolsAsync(cancellationToken: ct);
+		Tool[] protocolTools = [.. list.Select(t => t.ProtocolTool)];
+
+		_logger.LogDebug("Reporting {Count} tools", protocolTools.Length);
+
+		PersistToolCacheIfNeeded(protocolTools);
+
+		return new() { Tools = protocolTools };
+	}
+
+	private static IList<Tool> AppendBuiltInTools(IList<Tool> tools)
+	{
+		// Avoid duplicates if the tool already appears (e.g. from cache)
+		if (tools.Any(t => t.Name == HealthTool.Name))
+		{
+			return tools;
+		}
+
+		// Prepend so the health tool is always visible
+		var result = new List<Tool>(tools.Count + 1) { HealthTool };
+		result.AddRange(tools);
+		return result;
+	}
+
+	private CallToolResult BuildHealthToolResponse()
+	{
+		var report = BuildHealthReport();
+		var json = JsonSerializer.Serialize(report, McpJsonUtilities.DefaultOptions);
+		return new CallToolResult()
+		{
+			Content = [new TextContentBlock() { Text = json }],
+		};
+	}
+
+	private HealthReport BuildHealthReport()
+	{
+		var issues = new List<ValidationIssue>();
+		var upstreamTask = _mcpClientProxy.UpstreamClient;
+		var upstreamConnected = upstreamTask.IsCompletedSuccessfully;
+
+		if (!_devServerStarted)
+		{
+			issues.Add(new ValidationIssue
+			{
+				Code = IssueCode.HostNotStarted,
+				Severity = ValidationSeverity.Fatal,
+				Message = "The DevServer host process has not been started yet.",
+				Remediation = "Ensure the working directory contains a global.json with the Uno.Sdk, or provide roots via uno_app_set_roots.",
+			});
+		}
+
+		if (upstreamTask.IsFaulted)
+		{
+			var errorMessage = upstreamTask.Exception?.InnerException?.Message ?? "Unknown error";
+			issues.Add(new ValidationIssue
+			{
+				Code = IssueCode.UpstreamError,
+				Severity = ValidationSeverity.Fatal,
+				Message = $"Failed to connect to upstream MCP server: {errorMessage}",
+				Remediation = "Check that the DevServer host process started correctly and is listening on the expected port.",
+			});
+		}
+		else if (_devServerStarted && !upstreamConnected)
+		{
+			issues.Add(new ValidationIssue
+			{
+				Code = IssueCode.HostUnreachable,
+				Severity = ValidationSeverity.Warning,
+				Message = "The DevServer host process is started but the upstream MCP connection is not yet established.",
+				Remediation = "The host may still be initializing. Wait a few seconds and retry.",
+			});
+		}
+
+		var toolCount = 0;
+		if (upstreamConnected)
+		{
+			lock (_toolCacheLock)
+			{
+				toolCount = _toolCache.Length;
+			}
+		}
+
+		var status = issues.Any(i => i.Severity == ValidationSeverity.Fatal)
+			? HealthStatus.Unhealthy
+			: issues.Count > 0
+				? HealthStatus.Degraded
+				: HealthStatus.Healthy;
+
+		return new HealthReport
+		{
+			Status = status,
+			DevServerVersion = typeof(McpProxy).Assembly.GetName().Version?.ToString(),
+			UpstreamConnected = upstreamConnected,
+			ToolCount = toolCount,
+			Issues = issues,
+		};
 	}
 
 	private void PersistToolCacheIfNeeded(Tool[] tools)

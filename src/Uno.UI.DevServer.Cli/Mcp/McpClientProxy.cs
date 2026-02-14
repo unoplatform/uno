@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using ModelContextProtocol;
@@ -41,6 +37,7 @@ internal class McpClientProxy
 			catch (Exception ex)
 			{
 				_logger.LogError(ex, "Failed to connect to upstream MCP server at {Url}", url);
+				_clientCompletionSource.TrySetException(ex);
 			}
 		}, _disposeCts.Token);
 	}
@@ -71,8 +68,7 @@ internal class McpClientProxy
 						{
 							log.LogTrace("Upstream MCP notified tool list changed");
 
-							var notificationParams = JsonSerializer.Deserialize<ResourceUpdatedNotificationParams>(notification.Params, McpJsonUtilities.DefaultOptions);
-
+							// ToolListChanged has no meaningful params — no deserialization needed
 							_toolListChanged?.Invoke();
 
 							return default;
@@ -91,11 +87,8 @@ internal class McpClientProxy
 
 			log.LogTrace("Upstream MCP responded with {Count} tools", tools?.Count);
 
-			if (tools?.Count > 0)
-			{
-				// We already have a list, raise now.
-				_toolListChanged?.Invoke();
-			}
+			// Always notify — 0 tools is a valid response and must unblock waiters
+			_toolListChanged?.Invoke();
 		}
 		catch (Exception ex)
 		{
@@ -110,11 +103,20 @@ internal class McpClientProxy
 	internal async Task DisposeAsync()
 	{
 		_disposeCts.Cancel();
+		_clientCompletionSource.TrySetCanceled();
 
-		if (UpstreamClient is not null)
+		try
 		{
-			_logger.LogInformation("Disconnecting from upstream MCP");
-			await (await UpstreamClient).DisposeAsync();
+			var clientTask = _clientCompletionSource.Task;
+			if (clientTask.IsCompletedSuccessfully)
+			{
+				_logger.LogInformation("Disconnecting from upstream MCP");
+				await clientTask.Result.DisposeAsync();
+			}
+		}
+		catch (Exception ex) when (ex is OperationCanceledException or ObjectDisposedException)
+		{
+			// Expected during shutdown
 		}
 	}
 }
