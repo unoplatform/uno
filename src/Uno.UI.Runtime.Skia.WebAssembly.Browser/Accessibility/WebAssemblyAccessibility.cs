@@ -43,6 +43,12 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 
 	public bool IsAccessibilityEnabled { get; private set; }
 
+	// Subsystem managers (initialized during accessibility activation)
+	private LiveRegionManager? _liveRegionManager;
+	private FocusSynchronizer? _focusSynchronizer;
+	internal ModalFocusScope? ActiveModalScope { get; set; }
+	private readonly List<VirtualizedSemanticRegion> _virtualizedRegions = new();
+
 	// Debounce timer infrastructure for DOM updates (FR-012: 100ms debounce)
 	private const int DebounceDelayMs = 100;
 	private Timer? _debounceTimer;
@@ -165,6 +171,11 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 	{
 		if (IsAccessibilityEnabled)
 		{
+			// Detect virtualized containers for accessibility tracking
+			TryRegisterVirtualizedContainer(child);
+			// Detect ContentDialog for focus trapping
+			TryRegisterModalDialog(child);
+
 			if (AddSemanticElement(parent.Visual.Handle, child, index))
 			{
 				foreach (var childChild in child._children)
@@ -179,7 +190,161 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 	{
 		if (IsAccessibilityEnabled)
 		{
+			TryUnregisterVirtualizedContainer(child);
 			RemoveSemanticElement(parent.Visual.Handle, child.Visual.Handle);
+		}
+	}
+
+	private void TryRegisterVirtualizedContainer(UIElement element)
+	{
+		if (element is ItemsRepeater repeater)
+		{
+			var region = new VirtualizedSemanticRegion(
+				repeater.Visual.Handle,
+				"listbox",
+				repeater.GetOrCreateAutomationPeer()?.GetName(),
+				false);
+			_virtualizedRegions.Add(region);
+
+			repeater.ElementPrepared += (s, e) =>
+			{
+				var itemElement = e.Element;
+				var itemIndex = e.Index;
+				var peer = itemElement.GetOrCreateAutomationPeer();
+				var label = peer?.GetName() ?? string.Empty;
+				var totalCount = repeater.ItemsSourceView?.Count ?? 0;
+				var offset = GetVisualOffset(itemElement.Visual);
+				region.OnItemRealized(
+					itemElement.Visual.Handle,
+					itemIndex,
+					totalCount,
+					offset.X, offset.Y,
+					itemElement.Visual.Size.X, itemElement.Visual.Size.Y,
+					"option", label);
+			};
+
+			repeater.ElementClearing += (s, e) =>
+			{
+				var itemElement = e.Element;
+				var info = ItemsRepeater.GetVirtualizationInfo(itemElement);
+				if (info is not null)
+				{
+					region.OnItemUnrealized(itemElement.Visual.Handle, info.Index);
+				}
+			};
+		}
+		else if (element is ListViewBase listView)
+		{
+			var isGrid = element is GridView;
+			var region = new VirtualizedSemanticRegion(
+				listView.Visual.Handle,
+				isGrid ? "grid" : "listbox",
+				listView.GetOrCreateAutomationPeer()?.GetName(),
+				listView.SelectionMode == ListViewSelectionMode.Multiple ||
+				listView.SelectionMode == ListViewSelectionMode.Extended);
+			_virtualizedRegions.Add(region);
+
+			// ListViewBase uses ContainerContentChanging for virtualization lifecycle
+			listView.ContainerContentChanging += (s, e) =>
+			{
+				if (!e.InRecycleQueue)
+				{
+					var itemElement = e.ItemContainer;
+					if (itemElement is not null)
+					{
+						var peer = itemElement.GetOrCreateAutomationPeer();
+						var label = peer?.GetName() ?? string.Empty;
+						var totalCount = listView.Items?.Count ?? 0;
+						var offset = GetVisualOffset(itemElement.Visual);
+						region.OnItemRealized(
+							itemElement.Visual.Handle,
+							e.ItemIndex,
+							totalCount,
+							offset.X, offset.Y,
+							itemElement.Visual.Size.X, itemElement.Visual.Size.Y,
+							isGrid ? "row" : "option", label);
+					}
+				}
+				else
+				{
+					var itemElement = e.ItemContainer;
+					if (itemElement is not null)
+					{
+						region.OnItemUnrealized(itemElement.Visual.Handle, e.ItemIndex);
+					}
+				}
+			};
+		}
+	}
+
+	private void TryUnregisterVirtualizedContainer(UIElement element)
+	{
+		if (element is ItemsRepeater or ListViewBase)
+		{
+			var handle = element.Visual.Handle;
+			for (int i = _virtualizedRegions.Count - 1; i >= 0; i--)
+			{
+				if (_virtualizedRegions[i].ContainerHandle == handle)
+				{
+					_virtualizedRegions[i].Dispose();
+					_virtualizedRegions.RemoveAt(i);
+					break;
+				}
+			}
+		}
+	}
+
+	private void TryRegisterModalDialog(UIElement element)
+	{
+		if (element is ContentDialog dialog)
+		{
+			dialog.Opened += (s, e) =>
+			{
+				if (!IsAccessibilityEnabled)
+				{
+					return;
+				}
+
+				// Save trigger element (currently focused element before dialog opens)
+				var triggerHandle = _focusSynchronizer?.CurrentFocusedHandle ?? IntPtr.Zero;
+
+				// Enumerate focusable children within the dialog
+				var focusableChildren = new List<IntPtr>();
+				EnumerateFocusableChildren(dialog, focusableChildren);
+
+				// Create and activate the modal focus scope
+				var scope = new ModalFocusScope(dialog.Visual.Handle, triggerHandle, focusableChildren);
+				scope.Activate(ActiveModalScope);
+				ActiveModalScope = scope;
+			};
+
+			dialog.Closed += (s, e) =>
+			{
+				if (!IsAccessibilityEnabled || ActiveModalScope is null)
+				{
+					return;
+				}
+
+				if (ActiveModalScope.ModalHandle == dialog.Visual.Handle)
+				{
+					var parentScope = ActiveModalScope.ParentScope;
+					ActiveModalScope.Deactivate();
+					ActiveModalScope = parentScope;
+				}
+			};
+		}
+	}
+
+	private static void EnumerateFocusableChildren(UIElement parent, List<IntPtr> focusableHandles)
+	{
+		foreach (var child in parent.GetChildren())
+		{
+			if (child is Control control && control.IsFocusable && control.IsEnabled && control.Visibility == Visibility.Visible)
+			{
+				focusableHandles.Add(child.Visual.Handle);
+			}
+
+			EnumerateFocusableChildren(child, focusableHandles);
 		}
 	}
 
@@ -227,6 +392,11 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 		@this.IsAccessibilityEnabled = true;
 		@this.CreateAOM(rootElement);
 		Control.OnIsFocusableChangedCallback = @this.UpdateIsFocusable;
+
+		// Initialize subsystems
+		@this._liveRegionManager = new LiveRegionManager();
+		@this._focusSynchronizer = new FocusSynchronizer();
+		@this._focusSynchronizer.Initialize();
 	}
 
 	[JSExport]
@@ -401,16 +571,20 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 	[JSExport]
 	public static void OnFocus(IntPtr handle)
 	{
-		var @this = Instance;
-		if (@this.Log().IsEnabled(LogLevel.Trace))
+		var instance = Instance;
+		if (instance.Log().IsEnabled(LogLevel.Trace))
 		{
-			@this.Log().Trace($"OnFocus called for handle: {handle}");
+			instance.Log().Trace($"OnFocus called for handle: {handle}");
 		}
 
-		// Sync focus from semantic element to Uno element
+		// Route through FocusSynchronizer if available (handles IsSyncing guard)
 		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
 		{
-			if (owner is Control control && control.IsFocusable)
+			if (instance._focusSynchronizer is { } synchronizer)
+			{
+				synchronizer.OnBrowserFocus(handle, owner);
+			}
+			else if (owner is Control control && control.IsFocusable)
 			{
 				control.Focus(FocusState.Keyboard);
 			}
@@ -665,6 +839,26 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 			TryGetPeerOwner(peer, out element) && element is ScrollViewer { Presenter: { } presenter } sv)
 		{
 			NativeMethods.UpdateNativeScrollOffsets(presenter.Visual.Handle, sv.HorizontalOffset, sv.VerticalOffset);
+		}
+	}
+
+	public void OnAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
+	{
+		if (!IsAccessibilityEnabled)
+		{
+			return;
+		}
+
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			this.Log().Trace($"OnAutomationEvent: eventId={eventId}, peer={peer.GetType().Name}");
+		}
+
+		switch (eventId)
+		{
+			case AutomationEvents.LiveRegionChanged:
+				_liveRegionManager?.HandleLiveRegionChanged(peer);
+				break;
 		}
 	}
 

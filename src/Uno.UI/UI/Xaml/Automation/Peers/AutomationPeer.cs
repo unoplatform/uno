@@ -268,11 +268,24 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		{
 		}
 
-		[global::Uno.NotImplemented]
+#if __SKIA__
+		public void RaiseAutomationEvent(global::Microsoft.UI.Xaml.Automation.Peers.AutomationEvents eventId)
+		{
+			// Mirrors WinUI pattern: CAutomationPeer::RaiseAutomationEvent checks ListenerExists
+			// then delegates to CCoreServices::UIARaiseAutomationEvent → CUIAWindow::UIARaiseAutomationEvent
+			var listener = AutomationPeerListener;
+			if (listener is not null && listener.ListenerExistsHelper(eventId))
+			{
+				listener.OnAutomationEvent(this, eventId);
+			}
+		}
+#else
+		[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public void RaiseAutomationEvent(global::Microsoft.UI.Xaml.Automation.Peers.AutomationEvents eventId)
 		{
 			ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseAutomationEvent(AutomationEvents eventId)", LogLevel.Warning);
 		}
+#endif
 
 		[global::Uno.NotImplemented]
 		public void RaiseNotificationEvent(global::Microsoft.UI.Xaml.Automation.Peers.AutomationNotificationKind notificationKind, global::Microsoft.UI.Xaml.Automation.Peers.AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)
