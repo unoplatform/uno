@@ -189,6 +189,10 @@ namespace Uno.UI.Runtime.Skia {
 		private static onEnableAccessibilityButtonClicked(evt: MouseEvent) {
 			this.containerElement.removeChild(this.enableAccessibilityButton);
 			this.managedEnableAccessibility();
+
+			// Initialize subsystem TypeScript modules
+			LiveRegion.initialize();
+
 			this.announceAssertive("Accessibility enabled successfully.");
 		}
 
@@ -196,6 +200,43 @@ namespace Uno.UI.Runtime.Skia {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
 				element.focus();
+			}
+		}
+
+		/**
+		 * Blurs a semantic element.
+		 */
+		public static blurSemanticElement(handle: number) {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				element.blur();
+			}
+		}
+
+		/**
+		 * Updates roving tabindex: sets tabindex="0" on the active element
+		 * and tabindex="-1" on all siblings within the same parent.
+		 * If groupHandle is 0, operates on the previous/current focus pair.
+		 */
+		public static updateRovingTabindex(groupHandle: number, activeHandle: number) {
+			const activeElement = Accessibility.getSemanticElementByHandle(activeHandle);
+			if (!activeElement) {
+				return;
+			}
+
+			// Set the active element to tabindex 0
+			activeElement.tabIndex = 0;
+
+			// Set all siblings to tabindex -1
+			const parent = activeElement.parentElement;
+			if (parent) {
+				const siblings = parent.children;
+				for (let i = 0; i < siblings.length; i++) {
+					const sibling = siblings[i] as HTMLElement;
+					if (sibling !== activeElement && sibling.tabIndex === 0) {
+						sibling.tabIndex = -1;
+					}
+				}
 			}
 		}
 
@@ -327,6 +368,56 @@ namespace Uno.UI.Runtime.Skia {
 				element.style.width = `${width}px`;
 				element.style.height = `${height}px`;
 			}
+		}
+
+		private static debugOverlayElement: HTMLDivElement | null = null;
+
+		/**
+		 * Updates the debug overlay panel with performance metrics and subsystem state.
+		 * Called from C# AccessibilityDebugger when debug mode is enabled.
+		 */
+		public static updateDebugOverlay(avgFrameOverheadMs: number, totalFrames: number, modalState: string) {
+			if (!this.debugModeEnabled) {
+				if (this.debugOverlayElement) {
+					this.debugOverlayElement.remove();
+					this.debugOverlayElement = null;
+				}
+				return;
+			}
+
+			if (!this.debugOverlayElement) {
+				this.debugOverlayElement = document.createElement("div");
+				this.debugOverlayElement.id = "uno-a11y-debug-overlay";
+				this.debugOverlayElement.style.cssText =
+					"position:fixed;top:10px;right:10px;background:rgba(0,0,0,0.85);color:#0f0;" +
+					"font:12px monospace;padding:10px;border-radius:4px;z-index:99999;" +
+					"pointer-events:none;max-width:350px;";
+				document.body.appendChild(this.debugOverlayElement);
+			}
+
+			// Count semantic elements
+			const semanticCount = this.semanticsRoot
+				? this.semanticsRoot.querySelectorAll("[id^='uno-semantics-']").length
+				: 0;
+
+			// Count virtualized containers
+			const virtualizedContainers = this.semanticsRoot
+				? this.semanticsRoot.querySelectorAll("[role='listbox'], [role='grid']").length
+				: 0;
+
+			// Get active element info
+			const activeEl = document.activeElement as HTMLElement;
+			const focusInfo = activeEl && activeEl.id?.startsWith("uno-semantics-")
+				? activeEl.id.replace("uno-semantics-", "")
+				: "none";
+
+			this.debugOverlayElement.innerHTML =
+				`<b>A11y Debug</b><br>` +
+				`Elements: ${semanticCount}<br>` +
+				`Avg frame: ${avgFrameOverheadMs.toFixed(2)}ms (${totalFrames} frames)<br>` +
+				`Virtualized containers: ${virtualizedContainers}<br>` +
+				`Focus: ${focusInfo}<br>` +
+				`Modal: ${modalState}`;
 		}
 	}
 }

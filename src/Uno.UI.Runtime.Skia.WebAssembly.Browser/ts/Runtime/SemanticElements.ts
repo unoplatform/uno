@@ -563,5 +563,196 @@ namespace Uno.UI.Runtime.Skia {
 				element.setAttribute('aria-disabled', String(disabled));
 			}
 		}
+
+		/**
+		 * Creates a link (anchor) semantic element and appends it to the semantics root.
+		 * Called from C# via JSImport.
+		 */
+		public static createLinkElement(
+			handle: number,
+			x: number,
+			y: number,
+			width: number,
+			height: number,
+			label: string | null
+		): void {
+			const element = document.createElement('a');
+			this.applyCommonStyles(element, x, y, width, height, handle);
+
+			element.tabIndex = 0;
+			element.style.pointerEvents = 'all';
+			element.setAttribute('role', 'link');
+
+			if (label) {
+				element.setAttribute('aria-label', label);
+			}
+
+			const callbacks = this.getCallbacks();
+
+			element.addEventListener('click', (e) => {
+				e.preventDefault();
+				if (callbacks.onInvoke) {
+					callbacks.onInvoke(handle);
+				}
+			});
+
+			element.addEventListener('keydown', (e) => {
+				if (e.key === 'Enter') {
+					e.preventDefault();
+					if (callbacks.onInvoke) {
+						callbacks.onInvoke(handle);
+					}
+				}
+			});
+
+			const root = this.getSemanticsRoot();
+			if (root) {
+				root.appendChild(element);
+			}
+		}
+
+		// ===== Virtualized Container Functions =====
+
+		/**
+		 * Queue for batching virtualized item DOM mutations via requestAnimationFrame.
+		 */
+		private static virtualizedMutationQueue: (() => void)[] = [];
+		private static virtualizedRafId: number = 0;
+
+		/**
+		 * Schedules a virtualized mutation to be flushed in the next animation frame.
+		 */
+		private static scheduleVirtualizedMutation(mutation: () => void): void {
+			SemanticElements.virtualizedMutationQueue.push(mutation);
+			if (SemanticElements.virtualizedRafId === 0) {
+				SemanticElements.virtualizedRafId = requestAnimationFrame(() => {
+					SemanticElements.flushVirtualizedMutations();
+				});
+			}
+		}
+
+		/**
+		 * Flushes all queued virtualized mutations.
+		 */
+		private static flushVirtualizedMutations(): void {
+			const queue = SemanticElements.virtualizedMutationQueue;
+			SemanticElements.virtualizedMutationQueue = [];
+			SemanticElements.virtualizedRafId = 0;
+			for (const mutation of queue) {
+				mutation();
+			}
+		}
+
+		/**
+		 * Registers a virtualized container (creates listbox/grid element).
+		 */
+		public static registerVirtualizedContainer(
+			containerHandle: number,
+			role: string,
+			label: string,
+			multiselectable: boolean
+		): void {
+			const root = SemanticElements.getSemanticsRoot();
+			if (!root) {
+				return;
+			}
+
+			const element = document.createElement('div');
+			element.id = `uno-semantics-${containerHandle}`;
+			element.setAttribute('role', role);
+			element.style.position = 'absolute';
+
+			if (label) {
+				element.setAttribute('aria-label', label);
+			}
+			if (multiselectable) {
+				element.setAttribute('aria-multiselectable', 'true');
+			}
+
+			root.appendChild(element);
+		}
+
+		/**
+		 * Adds a semantic element for a realized virtualized item.
+		 * Batched via requestAnimationFrame.
+		 */
+		public static addVirtualizedItem(
+			containerHandle: number,
+			itemHandle: number,
+			index: number,
+			totalCount: number,
+			x: number,
+			y: number,
+			width: number,
+			height: number,
+			role: string,
+			label: string
+		): void {
+			SemanticElements.scheduleVirtualizedMutation(() => {
+				const container = document.getElementById(`uno-semantics-${containerHandle}`);
+				if (!container) {
+					return;
+				}
+
+				const element = document.createElement('div');
+				SemanticElements.applyCommonStyles(element, x, y, width, height, itemHandle);
+				element.setAttribute('role', role);
+				// aria-posinset is 1-based, index is 0-based
+				element.setAttribute('aria-posinset', String(index + 1));
+				element.setAttribute('aria-setsize', String(totalCount));
+				element.tabIndex = -1;
+				element.style.pointerEvents = 'all';
+
+				if (label) {
+					element.setAttribute('aria-label', label);
+				}
+
+				const callbacks = SemanticElements.getCallbacks();
+				element.addEventListener('click', () => {
+					if (callbacks.onSelection) {
+						callbacks.onSelection(itemHandle);
+					}
+				});
+
+				container.appendChild(element);
+			});
+		}
+
+		/**
+		 * Removes a semantic element for an unrealized virtualized item.
+		 * Batched via requestAnimationFrame.
+		 */
+		public static removeVirtualizedItem(itemHandle: number): void {
+			SemanticElements.scheduleVirtualizedMutation(() => {
+				const element = document.getElementById(`uno-semantics-${itemHandle}`);
+				if (element && element.parentElement) {
+					element.parentElement.removeChild(element);
+				}
+			});
+		}
+
+		/**
+		 * Updates the total item count on all realized items in a container.
+		 */
+		public static updateVirtualizedItemCount(containerHandle: number, totalCount: number): void {
+			const container = document.getElementById(`uno-semantics-${containerHandle}`);
+			if (!container) {
+				return;
+			}
+			const items = container.querySelectorAll('[aria-posinset]');
+			items.forEach((el: HTMLElement) => {
+				el.setAttribute('aria-setsize', String(totalCount));
+			});
+		}
+
+		/**
+		 * Unregisters a virtualized container and removes all its semantic elements.
+		 */
+		public static unregisterVirtualizedContainer(containerHandle: number): void {
+			const element = document.getElementById(`uno-semantics-${containerHandle}`);
+			if (element && element.parentElement) {
+				element.parentElement.removeChild(element);
+			}
+		}
 	}
 }

@@ -12,7 +12,7 @@ namespace Uno.UI.Runtime.Skia;
 /// Factory for creating semantic DOM elements based on automation peer type and patterns.
 /// Dispatches to type-specific element creation via NativeMethods.
 /// </summary>
-internal static class SemanticElementFactory
+internal static partial class SemanticElementFactory
 {
 	/// <summary>
 	/// Creates a semantic element for the given automation peer.
@@ -36,7 +36,7 @@ internal static class SemanticElementFactory
 		var attributes = AriaMapper.GetAriaAttributes(peer);
 		var capabilities = AriaMapper.GetPatternCapabilities(peer);
 
-		return elementType switch
+		var created = elementType switch
 		{
 			SemanticElementType.Button => CreateButtonElement(peer, handle, x, y, width, height, attributes),
 			SemanticElementType.Checkbox => CreateCheckboxElement(peer, handle, x, y, width, height, attributes, false),
@@ -51,6 +51,16 @@ internal static class SemanticElementFactory
 			SemanticElementType.Link => CreateLinkElement(peer, handle, x, y, width, height, attributes),
 			_ => CreateGenericElement(peer, handle, x, y, width, height, attributes)
 		};
+
+		// Ensure aria-label is applied for all control types (FR-030, WCAG 4.1.2)
+		// Button/Checkbox/Radio already pass label during creation; apply for others
+		if (created && !string.IsNullOrEmpty(attributes.Label) &&
+			elementType is not (SemanticElementType.Button or SemanticElementType.Checkbox or SemanticElementType.RadioButton))
+		{
+			NativeMethods.UpdateAriaLabel(handle, attributes.Label);
+		}
+
+		return created;
 	}
 
 	/// <summary>
@@ -305,7 +315,13 @@ internal static class SemanticElementFactory
 		float height,
 		AriaAttributes attributes)
 	{
-		// Stub - will create anchor element
+		NativeMethods.CreateLinkElement(
+			handle,
+			x,
+			y,
+			width,
+			height,
+			attributes.Label);
 		return true;
 	}
 
@@ -351,5 +367,11 @@ internal static class SemanticElementFactory
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createListItemElement")]
 		internal static partial void CreateListItemElement(IntPtr handle, float x, float y, float width, float height, bool selected, int positionInSet, int sizeOfSet);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createLinkElement")]
+		internal static partial void CreateLinkElement(IntPtr handle, float x, float y, float width, float height, string? label);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaLabel")]
+		internal static partial void UpdateAriaLabel(IntPtr handle, string label);
 	}
 }
