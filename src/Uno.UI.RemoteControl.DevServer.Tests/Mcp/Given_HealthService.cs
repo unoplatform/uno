@@ -277,6 +277,35 @@ public class Given_HealthService
 	}
 
 	[TestMethod]
+	[Description("Reconnecting state serializes with both ConnectionState and HostCrashed issue in the JSON")]
+	public void HealthReport_WhenReconnecting_RoundtripsFullReport()
+	{
+		var report = new HealthReport
+		{
+			Status = HealthStatus.Degraded,
+			UpstreamConnected = false,
+			ConnectionState = ConnectionState.Reconnecting,
+			Issues =
+			[
+				new ValidationIssue
+				{
+					Code = IssueCode.HostCrashed,
+					Severity = ValidationSeverity.Warning,
+					Message = "Host crashed, reconnecting",
+				},
+			],
+		};
+
+		var json = JsonSerializer.Serialize(report, McpJsonUtilities.DefaultOptions);
+		json.Should().Contain("\"Reconnecting\"");
+		json.Should().Contain("\"HostCrashed\"");
+
+		var deserialized = JsonSerializer.Deserialize<HealthReport>(json, McpJsonUtilities.DefaultOptions);
+		deserialized!.ConnectionState.Should().Be(ConnectionState.Reconnecting);
+		deserialized.Issues[0].Code.Should().Be(IssueCode.HostCrashed);
+	}
+
+	[TestMethod]
 	[Description("When ConnectionState is Degraded, HealthReport includes a HostCrashed fatal issue")]
 	public void HealthReport_WhenDegradedState_ReportsHostCrashedFatal()
 	{

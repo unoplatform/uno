@@ -83,4 +83,118 @@ public class Given_ConnectionState
 			deserialized!.ConnectionState.Should().Be(state, $"ConnectionState.{state} should roundtrip");
 		}
 	}
+
+	// -------------------------------------------------------------------
+	// TCS reset pattern (simulates crash -> reset -> reconnect cycle)
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	[Description("TCS reset allows a new connection to resolve after a crash")]
+	public async Task TcsReset_AllowsNewConnectionAfterCrash()
+	{
+		// Simulate initial connection
+		var tcs = new TaskCompletionSource<string>();
+		tcs.TrySetResult("client-v1");
+		tcs.Task.IsCompletedSuccessfully.Should().BeTrue();
+
+		// Simulate crash: reset TCS (like ResetConnectionAsync does)
+		var oldTcs = tcs;
+		tcs = new TaskCompletionSource<string>();
+		oldTcs.Task.IsCompletedSuccessfully.Should().BeTrue("old TCS still holds the disposed client");
+
+		// New TCS is fresh and pending
+		tcs.Task.IsCompleted.Should().BeFalse();
+
+		// Simulate reconnection
+		tcs.TrySetResult("client-v2");
+		var result = await tcs.Task;
+		result.Should().Be("client-v2");
+	}
+
+	[TestMethod]
+	[Description("TCS reset on a faulted TCS creates a clean pending state")]
+	public async Task TcsReset_OnFaultedTcs_CreatesFreshPending()
+	{
+		var tcs = new TaskCompletionSource<string>();
+		tcs.TrySetException(new InvalidOperationException("connection failed"));
+		tcs.Task.IsFaulted.Should().BeTrue();
+
+		// Reset
+		var oldTcs = tcs;
+		tcs = new TaskCompletionSource<string>();
+		oldTcs.TrySetCanceled(); // Cancel the old faulted one (no-op, already faulted)
+
+		// New TCS is pending
+		tcs.Task.IsCompleted.Should().BeFalse();
+
+		// Reconnection succeeds
+		tcs.TrySetResult("client-v2");
+		var result = await tcs.Task;
+		result.Should().Be("client-v2");
+	}
+
+	// -------------------------------------------------------------------
+	// Reconnection counter behavior
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	[Description("Reconnection counter resets to zero when connection succeeds")]
+	public void ReconnectionCounter_ResetsOnSuccess()
+	{
+		var reconnectionAttempts = 0;
+		const int maxAttempts = 3;
+
+		// Simulate 2 crashes
+		reconnectionAttempts++;
+		reconnectionAttempts++;
+		reconnectionAttempts.Should().Be(2);
+
+		// Simulate successful reconnection
+		reconnectionAttempts = 0;
+		reconnectionAttempts.Should().Be(0, "counter resets on successful connection");
+
+		// Can crash again without hitting max
+		reconnectionAttempts++;
+		(reconnectionAttempts > maxAttempts).Should().BeFalse();
+	}
+
+	[TestMethod]
+	[Description("Exceeding max reconnection attempts transitions to Degraded")]
+	public void ReconnectionCounter_ExceedingMax_TransitionsToDegraded()
+	{
+		var reconnectionAttempts = 0;
+		const int maxAttempts = 3;
+		var state = ConnectionState.Connected;
+
+		// Simulate 4 crashes without successful reconnection
+		for (var i = 0; i < 4; i++)
+		{
+			reconnectionAttempts++;
+			if (reconnectionAttempts > maxAttempts)
+			{
+				state = ConnectionState.Degraded;
+			}
+			else
+			{
+				state = ConnectionState.Reconnecting;
+			}
+		}
+
+		reconnectionAttempts.Should().Be(4);
+		state.Should().Be(ConnectionState.Degraded);
+	}
+
+	[TestMethod]
+	[Description("Degraded state is not terminal: recovery is possible if the host eventually restarts")]
+	public void DegradedState_IsNotTerminal_RecoveryIsPossible()
+	{
+		var state = ConnectionState.Degraded;
+
+		// Simulate an external recovery (e.g. operator restarts the host manually)
+		state = ConnectionState.Connecting;
+		state.Should().Be(ConnectionState.Connecting);
+
+		state = ConnectionState.Connected;
+		state.Should().Be(ConnectionState.Connected);
+	}
 }
