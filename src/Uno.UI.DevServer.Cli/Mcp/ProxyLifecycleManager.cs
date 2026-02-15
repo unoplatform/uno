@@ -27,6 +27,43 @@ internal class ProxyLifecycleManager
 	private bool _forceGenerateToolCache;
 	private string? _solutionDirectory;
 	private bool _devServerStarted;
+
+	// ┌──────────────────────────────────────────────────────────────────┐
+	// │              Observational Connection State Machine              │
+	// │                                                                  │
+	// │  Initializing                                                    │
+	// │       │                                                          │
+	// │       │ StartDevServerMonitor()                                  │
+	// │       v                                                          │
+	// │  Discovering ───[SDK/host resolved]───> Launching                │
+	// │       │                                      │                   │
+	// │       │ [resolution failed]                  │ [process ready]   │
+	// │       v                                      v                   │
+	// │  Degraded <──[max retries]──           Connecting                │
+	// │       ^                        │             │                   │
+	// │       │                        │             │ [toolListChanged] │
+	// │       │                        │             v                   │
+	// │       │                        └──────  Connected                │
+	// │       │                                      │                   │
+	// │       │                                      │ [ServerCrashed]   │
+	// │       │                                      v                   │
+	// │       └──[max reconnections]──         Reconnecting              │
+	// │                                           │                      │
+	// │                                           │ [retry]              │
+	// │                                           v                      │
+	// │                                       Discovering (cycle)        │
+	// │                                                                  │
+	// │  Any state ──[clean shutdown]──> Shutdown                        │
+	// └──────────────────────────────────────────────────────────────────┘
+	//
+	// This state machine does NOT drive behavior — it observes the state
+	// resulting from DevServerMonitor events and McpUpstreamClient callbacks.
+	// Consumers: HealthService (diagnostics), McpStdioServer (error messages).
+	//
+	// Two separate counters:
+	//   - DevServerMonitor: retry counter for initial startup failures
+	//   - _reconnectionAttempts: crash→restart cycles (reset on Connected)
+
 	private ConnectionState _connectionState = ConnectionState.Initializing;
 	private int _reconnectionAttempts;
 	private const int MaxReconnectionAttempts = 3;
