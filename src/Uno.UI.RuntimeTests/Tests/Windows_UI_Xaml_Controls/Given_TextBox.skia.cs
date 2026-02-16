@@ -4891,42 +4891,106 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsInstanceOfType(SUT.ContextFlyout, typeof(TextCommandBarFlyout), "ContextFlyout should be TextCommandBarFlyout");
 		}
 
-		[TestMethod]
-		public async Task When_TextBox_HasSelection_CutCopy_Available()
-		{
-			using var _ = new TextBoxFeatureConfigDisposable();
 
-			var SUT = new TextBox { Text = "Test content", Width = 200 };
+		[TestMethod]
+		public async Task When_TextBox_SelectionFlyout_IsTextCommandBarFlyout()
+		{
+			var SUT = new TextBox();
 
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForLoaded(SUT);
 
-			SUT.Focus(FocusState.Programmatic);
-			await WindowHelper.WaitForIdle();
-
-			SUT.Select(0, 4); // Select "Test"
-			await WindowHelper.WaitForIdle();
-
-			Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout, "ContextFlyout should be TextCommandBarFlyout");
-			var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
-
-			flyout.ShowAt(SUT);
-			await WindowHelper.WaitForIdle();
-
-			var allCommands = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands).ToList();
-			var hasCut = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.X && ka.Modifiers.HasFlag(VirtualKeyModifiers.Control)));
-			var hasCopy = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.C && ka.Modifiers.HasFlag(VirtualKeyModifiers.Control)));
-
-			Assert.IsTrue(hasCut, "Cut button should be available when text is selected");
-			Assert.IsTrue(hasCopy, "Copy button should be available when text is selected");
-
-			flyout.Hide();
+			Assert.IsNotNull(SUT.SelectionFlyout, "TextBox should have a default SelectionFlyout");
+			Assert.IsInstanceOfType(SUT.SelectionFlyout, typeof(TextCommandBarFlyout), "SelectionFlyout should be TextCommandBarFlyout");
 		}
 
 		[TestMethod]
-		public async Task When_TextBox_NoSelection_CutCopy_NotAvailable()
+		public async Task When_TextBox_HasSelection_Commands_Available()
+		{
+			try
+			{
+				using var _ = new TextBoxFeatureConfigDisposable();
+				CopyPlaceholderTextToClipboard();
+
+				var SUT = new TextBox { Text = "Test content", Width = 200 };
+
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+
+				SUT.Select(0, 4); // Select "Test"
+
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout, "ContextFlyout should be TextCommandBarFlyout");
+				var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
+
+				flyout.ShowAt(SUT);
+				await WindowHelper.WaitForIdle();
+
+				var (hasSelectAll, hasCut, hasCopy, hasPaste) = GetAvailableCommands(flyout);
+
+				Assert.IsTrue(hasCut, "Cut button should be available when text is selected");
+				Assert.IsTrue(hasCopy, "Copy button should be available when text is selected");
+				Assert.IsTrue(hasSelectAll, "Select All button should be available when text is selected");
+				Assert.IsTrue(hasPaste, "Paste should be available");
+
+				flyout.Hide();
+			}
+			finally
+			{
+				ClearClipboard();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_TextBox_NoSelection_Commands_Available()
+		{
+			try
+			{
+				using var _ = new TextBoxFeatureConfigDisposable();
+				CopyPlaceholderTextToClipboard();
+
+				var SUT = new TextBox { Text = "Test content", Width = 200 };
+
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+
+				// No selection
+				SUT.Select(0, 0);
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout, "ContextFlyout should be TextCommandBarFlyout");
+				var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
+
+				flyout.ShowAt(SUT);
+				await WindowHelper.WaitForIdle();
+
+				var (hasSelectAll, hasCut, hasCopy, hasPaste) = GetAvailableCommands(flyout);
+
+				Assert.IsFalse(hasCut, "Cut button should be available when text is selected");
+				Assert.IsFalse(hasCopy, "Copy button should be available when text is selected");
+				Assert.IsTrue(hasSelectAll, "Select All button should be available when not all text is selected");
+				Assert.IsTrue(hasPaste, "Paste should be available");
+
+				flyout.Hide();
+			}
+			finally
+			{
+				ClearClipboard();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_TextBox_Clipboard_Empty()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
+			ClearClipboard();
 
 			var SUT = new TextBox { Text = "Test content", Width = 200 };
 
@@ -4946,12 +5010,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			flyout.ShowAt(SUT);
 			await WindowHelper.WaitForIdle();
 
-			var allCommands = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands).ToList();
-			var hasCut = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.X && ka.Modifiers.HasFlag(VirtualKeyModifiers.Control)));
-			var hasCopy = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.C && ka.Modifiers.HasFlag(VirtualKeyModifiers.Control)));
+			var (hasSelectAll, hasCut, hasCopy, hasPaste) = GetAvailableCommands(flyout);
 
-			Assert.IsFalse(hasCut, "Cut button should NOT be available when no text is selected");
-			Assert.IsFalse(hasCopy, "Copy button should NOT be available when no text is selected");
+			Assert.IsFalse(hasPaste, "Paste should not be available if clipboard is empty");
 
 			flyout.Hide();
 		}
@@ -4959,63 +5020,119 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_TextBox_IsReadOnly_CutPaste_NotAvailable()
 		{
-			using var _ = new TextBoxFeatureConfigDisposable();
+			try
+			{
+				using var _ = new TextBoxFeatureConfigDisposable();
+				CopyPlaceholderTextToClipboard();
 
-			var SUT = new TextBox { Text = "Test", IsReadOnly = true, Width = 200 };
+				var SUT = new TextBox { Text = "Test Me", IsReadOnly = true, Width = 200 };
 
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
 
-			SUT.Focus(FocusState.Programmatic);
-			await WindowHelper.WaitForIdle();
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
 
-			SUT.SelectAll();
-			await WindowHelper.WaitForIdle();
+				SUT.Select(0, 4);
+				await WindowHelper.WaitForIdle();
 
-			var flyout = SUT.ContextFlyout as TextCommandBarFlyout;
-			Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout, "ContextFlyout should be TextCommandBarFlyout");
+				var flyout = SUT.ContextFlyout as TextCommandBarFlyout;
+				Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout, "ContextFlyout should be TextCommandBarFlyout");
 
-			flyout.ShowAt(SUT);
-			await WindowHelper.WaitForIdle();
+				flyout.ShowAt(SUT);
+				await WindowHelper.WaitForIdle();
 
-			var allCommands = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands).ToList();
-			var hasCut = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.X && ka.Modifiers.HasFlag(VirtualKeyModifiers.Control)));
-			var hasCopy = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.C && ka.Modifiers.HasFlag(VirtualKeyModifiers.Control)));
-			var hasPaste = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.V && ka.Modifiers.HasFlag(VirtualKeyModifiers.Control)));
+				var (hasSelectAll, hasCut, hasCopy, hasPaste) = GetAvailableCommands(flyout);
 
-			Assert.IsFalse(hasCut, "Cut should NOT be available for ReadOnly TextBox");
-			Assert.IsFalse(hasPaste, "Paste should NOT be available for ReadOnly TextBox");
-			Assert.IsTrue(hasCopy, "Copy should be available for ReadOnly TextBox with selection");
+				Assert.IsFalse(hasCut, "Cut should NOT be available for ReadOnly TextBox");
+				Assert.IsFalse(hasPaste, "Paste should NOT be available for ReadOnly TextBox");
+				Assert.IsTrue(hasCopy, "Copy should be available for ReadOnly TextBox with selection");
+				Assert.IsTrue(hasSelectAll, "Select All should be available for ReadOnly TextBox");
 
-			flyout.Hide();
+				flyout.Hide();
+			}
+			finally
+			{
+				ClearClipboard();
+			}
 		}
 
 		[TestMethod]
-		public async Task When_PasswordBox_ContextFlyout_NoCutCopy()
+		public async Task When_TextBox_Full_Text_Selected_Commands_Available()
 		{
-			var SUT = new PasswordBox { Password = "secret", Width = 200 };
+			try
+			{
+				using var _ = new TextBoxFeatureConfigDisposable();
+				CopyPlaceholderTextToClipboard();
 
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
+				var SUT = new TextBox { Text = "Test content", Width = 200 };
 
-			SUT.Focus(FocusState.Programmatic);
-			await WindowHelper.WaitForIdle();
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
 
-			Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout, "PasswordBox should have TextCommandBarFlyout as ContextFlyout");
-			var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
 
-			flyout.ShowAt(SUT);
-			await WindowHelper.WaitForIdle();
+				SUT.SelectAll();
+				await WindowHelper.WaitForIdle();
 
-			var allCommands = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands).ToList();
-			var hasCut = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.X && ka.Modifiers.HasFlag(VirtualKeyModifiers.Control)));
-			var hasCopy = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.C && ka.Modifiers.HasFlag(VirtualKeyModifiers.Control)));
+				Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout, "ContextFlyout should be TextCommandBarFlyout");
+				var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
 
-			Assert.IsFalse(hasCut, "Cut should NOT be available for PasswordBox (security)");
-			Assert.IsFalse(hasCopy, "Copy should NOT be available for PasswordBox (security)");
+				flyout.ShowAt(SUT);
+				await WindowHelper.WaitForIdle();
 
-			flyout.Hide();
+				var (hasSelectAll, hasCut, hasCopy, hasPaste) = GetAvailableCommands(flyout);
+
+				Assert.IsTrue(hasCut, "Cut button should be available when text is selected");
+				Assert.IsTrue(hasCopy, "Copy button should be available when text is selected");
+				Assert.IsTrue(hasSelectAll, "Select All button should be available when text is selected");
+				Assert.IsTrue(hasPaste, "Should be available when clipboard has content");
+
+				flyout.Hide();
+			}
+			finally
+			{
+				ClearClipboard();
+			}
 		}
+
+#if HAS_UNO // SelectAll is not available for PasswordBox on WinUI.
+		[TestMethod]
+		public async Task When_PasswordBox_ContextFlyout_Commands_Available()
+		{
+			try
+			{
+				var SUT = new PasswordBox { Password = "secret pass", Width = 200 };
+				CopyPlaceholderTextToClipboard();
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				SUT.Focus(FocusState.Programmatic);
+				SUT.Select(0, 4);
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout, "PasswordBox should have TextCommandBarFlyout as ContextFlyout");
+				var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
+
+				flyout.ShowAt(SUT);
+				await WindowHelper.WaitForIdle();
+
+				var (hasSelectAll, hasCut, hasCopy, hasPaste) = GetAvailableCommands(flyout);
+
+				Assert.IsFalse(hasCut, "Cut should NOT be available for PasswordBox (security)");
+				Assert.IsFalse(hasCopy, "Copy should NOT be available for PasswordBox (security)");
+				Assert.IsTrue(hasPaste, "Paste should be available for PasswordBox");
+				Assert.IsTrue(hasSelectAll, "Select All should be available for PasswordBox");
+
+				flyout.Hide();
+			}
+			finally
+			{
+				ClearClipboard();
+			}
+		}
+#endif
 
 		[TestMethod]
 		public async Task When_CanPasteClipboardContent_WithText()
@@ -5085,18 +5202,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_TextBox_SelectionFlyout_IsSet()
-		{
-			var SUT = new TextBox();
-
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
-
-			Assert.IsNotNull(SUT.SelectionFlyout, "TextBox should have a default SelectionFlyout");
-			Assert.IsInstanceOfType(SUT.SelectionFlyout, typeof(TextCommandBarFlyout), "SelectionFlyout should be TextCommandBarFlyout");
-		}
-
-		[TestMethod]
 		public async Task When_TextBox_SelectionFlyout_Hides_OnFocusLoss()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -5130,6 +5235,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsFalse(flyout.IsOpen, "SelectionFlyout should be closed after focus loss");
+		}
+
+		private void CopyPlaceholderTextToClipboard()
+		{
+			var dataPackage = new DataPackage();
+			dataPackage.SetText("CLIPBOARD CONTENT");
+			Clipboard.SetContent(dataPackage);
+		}
+
+		private void ClearClipboard()
+		{
+			Clipboard.Clear();
+		}
+
+		private (bool hasSelectAll, bool hasCut, bool hasCopy, bool hasPaste) GetAvailableCommands(TextCommandBarFlyout flyout)
+		{
+			var allCommands = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands).ToList();
+			var hasCut = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.X && ka.Modifiers.HasFlag(VirtualKeyModifiers.Control)));
+			var hasCopy = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.C && ka.Modifiers.HasFlag(VirtualKeyModifiers.Control)));
+			var hasPaste = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.V && ka.Modifiers.HasFlag(VirtualKeyModifiers.Control)));
+			var hasSelectAll = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.A && ka.Modifiers.HasFlag(VirtualKeyModifiers.Control)));
+
+			return (hasSelectAll, hasCut, hasCopy, hasPaste);
 		}
 
 		private class TextBoxFeatureConfigDisposable : IDisposable
