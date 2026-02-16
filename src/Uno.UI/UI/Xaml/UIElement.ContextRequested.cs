@@ -8,6 +8,7 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
+using System;
 
 namespace Microsoft.UI.Xaml;
 
@@ -158,17 +159,28 @@ partial class UIElement
 		return true;
 	}
 
-	private static bool IsTextSelectionEnabled(DependencyObject element)
+	private static bool IsTextSelectionEnabled(DependencyObject textControl)
 	{
-		return element switch
+		if (textControl is TextBlock textBlock)
 		{
-			// PasswordBox must be checked before TextBox in case of inheritance
-			PasswordBox => false, // PasswordBox doesn't support text selection
-			TextBox => true, // TextBox always has selection
-			RichEditBox => true, // RichEditBox always has selection
-			TextBlock tb => tb.IsTextSelectionEnabled,
-			RichTextBlock rtb => rtb.IsTextSelectionEnabled,
-			_ => false
-		};
+			return textBlock.IsTextSelectionEnabled;
+		}
+		else if (textControl is RichTextBlock richTextBlock)
+		{
+			return richTextBlock.IsTextSelectionEnabled;
+		}
+		else if (textControl is RichTextBlockOverflow richTextBlockOverflow)
+		{
+			throw new NotSupportedException("RichTextBlockOverflow not supported yet");
+			// return richTextBlockOverflow.GetMaster().IsSelectionEnabled();
+		}
+		else if (textControl is RichEditBox or TextBox or PasswordBox)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 }
