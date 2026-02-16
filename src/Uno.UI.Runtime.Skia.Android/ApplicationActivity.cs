@@ -70,11 +70,6 @@ namespace Microsoft.UI.Xaml
 			_inputPane.Showing += OnInputPaneVisibilityChanged;
 			_inputPane.Hiding += OnInputPaneVisibilityChanged;
 			Uno.UI.Extensions.PermissionsHelper.Initialize();
-
-			// Note: Deep-linking will cause a new instance of this Activity and its DecorView to be created.
-			// This means any event handlers or listeners attached to these objects in previous instances will not be present.
-			// Therefore, it is important to rewire or update any event/listener on these two here to ensure correct behavior.
-			StatusBar.GetForCurrentView().ResetListener();
 		}
 
 		internal void EnsureContentView()
@@ -96,6 +91,11 @@ namespace Microsoft.UI.Xaml
 			// https://stackoverflow.com/questions/10593022/monodroid-error-when-calling-constructor-of-custom-view-twodscrollview#10603714
 			RaiseConfigurationChanges();
 			SimpleOrientationSensor.GetDefault()!.OrientationChanged += OnSensorOrientationChanged;
+
+			// Note: Deep-linking will cause a new instance of this Activity and its DecorView to be created.
+			// This means any event handlers or listeners attached to these objects in previous instances will not be present.
+			// Therefore, it is important to rewire or update any event/listener on these two here to ensure correct behavior.
+			StatusBar.GetForCurrentView().ResetListener();
 		}
 
 		private void OnSensorOrientationChanged(SimpleOrientationSensor sender, SimpleOrientationSensorOrientationChangedEventArgs args)
