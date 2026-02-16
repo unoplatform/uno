@@ -25,6 +25,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 	public event Action<string>? ServerStarted;
 	public event Action? ServerFailed;
 	public event Action? ServerCrashed;
+	public event Action? ServerLaunching;
 
 	public string? UnoSdkVersion => _unoSdkVersion;
 	public long DiscoveryDurationMs => _discoveryDurationMs;
@@ -153,6 +154,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 						retryCount = 0;
 
 						_logger.LogInformation("DevServer started on port {Port}", effectivePort);
+						ServerLaunching?.Invoke();
 
 						var remoteEndpoint = $"http://localhost:{effectivePort}/mcp";
 						_logger.LogInformation("Starting MCP stdio proxy to {Endpoint}", remoteEndpoint);

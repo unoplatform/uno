@@ -436,6 +436,11 @@ internal class ProxyLifecycleManager
 
 		StartCachePrimingWatcher(host);
 
+		_devServerMonitor.ServerLaunching += () =>
+		{
+			SetConnectionState(ConnectionState.Launching);
+		};
+
 		_devServerMonitor.ServerStarted += _ =>
 		{
 			SetConnectionState(ConnectionState.Connecting);
@@ -502,6 +507,7 @@ internal class ProxyLifecycleManager
 		}
 		finally
 		{
+			SetConnectionState(ConnectionState.Shutdown);
 			await _mcpUpstreamClient.DisposeAsync();
 			await _devServerMonitor.StopMonitoringAsync();
 		}
