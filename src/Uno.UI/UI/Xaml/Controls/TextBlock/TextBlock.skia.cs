@@ -71,10 +71,6 @@ namespace Microsoft.UI.Xaml.Controls
 #if DEBUG
 			Visual.Comment = $"{Visual.Comment}#text";
 #endif
-			// Ensure the default ContextFlyout has its Opening event subscribed.
-			// Default flyouts provided via GetDefaultValue don't trigger OnContextFlyoutChanged,
-			// so we must manually subscribe here. OnUnloaded properly cleans up the subscription.
-			EnsureContextFlyoutSubscription();
 		}
 
 		private protected override void OnUnloaded()
@@ -82,12 +78,6 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnUnloaded();
 
 			_forceFocusedForContextFlyout = false;
-
-			if (_subscribedContextFlyout is not null)
-			{
-				_subscribedContextFlyout.Opening -= OnContextFlyoutOpening;
-				_subscribedContextFlyout = null;
-			}
 		}
 
 		protected override Size MeasureOverride(Size availableSize)
@@ -440,65 +430,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private Point _lastPointerPosition;
 		private bool _isSelectionFlyoutUpdateQueued;
 
-		// Track the flyout we've subscribed to for Opening event (to avoid double-subscription)
-		private FlyoutBase? _subscribedContextFlyout;
-
 		private bool HasSelectionFlyout() => SelectionFlyout is not null;
-
-		private void EnsureContextFlyoutSubscription()
-		{
-			var currentFlyout = ContextFlyout;
-			if (currentFlyout is not null && _subscribedContextFlyout != currentFlyout)
-			{
-				if (_subscribedContextFlyout is not null)
-				{
-					_subscribedContextFlyout.Opening -= OnContextFlyoutOpening;
-				}
-				currentFlyout.Opening += OnContextFlyoutOpening;
-				_subscribedContextFlyout = currentFlyout;
-			}
-		}
-
-		// Handle ContextFlyout/SelectionFlyout coordination - ContextFlyout takes priority
-		private protected override void OnContextFlyoutChanged(FlyoutBase oldValue, FlyoutBase newValue)
-		{
-			base.OnContextFlyoutChanged(oldValue, newValue);
-
-			if (oldValue is not null && oldValue == _subscribedContextFlyout)
-			{
-				oldValue.Opening -= OnContextFlyoutOpening;
-				_subscribedContextFlyout = null;
-			}
-			if (newValue is not null)
-			{
-				newValue.Opening += OnContextFlyoutOpening;
-				_subscribedContextFlyout = newValue;
-			}
-		}
-
-		private void OnContextFlyoutOpening(object? sender, object e)
-		{
-			// Close SelectionFlyout when ContextFlyout opens (ContextFlyout takes priority)
-			SelectionFlyout?.Hide();
-
-			if (sender is FlyoutBase flyout && flyout.ShowMode == FlyoutShowMode.Standard)
-			{
-				_forceFocusedForContextFlyout = true;
-				UpdateSelectionRendering();
-				flyout.Closed -= OnContextFlyoutClosedForForceFocus;
-				flyout.Closed += OnContextFlyoutClosedForForceFocus;
-			}
-		}
-
-		private void OnContextFlyoutClosedForForceFocus(object? sender, object e)
-		{
-			if (sender is FlyoutBase flyout)
-			{
-				flyout.Closed -= OnContextFlyoutClosedForForceFocus;
-			}
-			_forceFocusedForContextFlyout = false;
-			UpdateSelectionRendering();
-		}
 
 		/// <summary>
 		/// Called from OnPointerReleased to queue SelectionFlyout visibility update for non-mouse input.
