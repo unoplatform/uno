@@ -5,7 +5,6 @@ using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Xaml.Core;
-using Windows.Media.Protection.PlayReady;
 using Windows.System;
 using Windows.UI;
 
