@@ -259,7 +259,9 @@ public partial class ToolTipService
 
 			// If the source of a programmatic focus was UIA, we should show the tooltip:
 			bool shouldShowToolTip = (focusState == FocusState.Keyboard) ||
-									 (focusState == FocusState.Programmatic && sender is not null && contentRoot.InputManager.GetWasUIAFocusSetSinceLastInput());
+									 (focusState == FocusState.Programmatic
+										&& sender is not null
+										&& contentRoot?.InputManager?.GetWasUIAFocusSetSinceLastInput() == true);
 
 			if (shouldShowToolTip)
 			{
