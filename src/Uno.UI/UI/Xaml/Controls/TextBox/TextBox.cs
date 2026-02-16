@@ -29,6 +29,7 @@ using DirectUI;
 using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 using Uno.UI.Xaml.Controls;
+using System.Linq;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -1433,16 +1434,19 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var content = Clipboard.GetContent();
 				string clipboardText;
-				try
+				if (content.AvailableFormats.Contains(StandardDataFormats.Text))
 				{
-					clipboardText = await content.GetTextAsync();
-					PasteFromClipboard(clipboardText);
-				}
-				catch (InvalidOperationException e)
-				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
+					try
 					{
-						this.Log().Debug("TextBox.PasteFromClipboard failed during DataPackageView.GetTextAsync: " + e);
+						clipboardText = await content.GetTextAsync();
+						PasteFromClipboard(clipboardText);
+					}
+					catch (InvalidOperationException e)
+					{
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().Debug("TextBox.PasteFromClipboard failed during DataPackageView.GetTextAsync: " + e);
+						}
 					}
 				}
 			});
