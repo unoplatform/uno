@@ -197,7 +197,7 @@ partial class TextCommandBarFlyout
 
 		FlyoutBase proofingFlyout = null;
 
-		if (Target is TextBox textBoxTarget)
+		if (Target is TextBox textBoxTarget and not PasswordBox) // Uno specific: PasswordBox derives from TextBox in Uno.
 		{
 			proofingFlyout = textBoxTarget.ProofingMenuFlyout;
 		}
@@ -344,7 +344,7 @@ partial class TextCommandBarFlyout
 		TextControlButtons buttonsToAdd = TextControlButtons.None;
 		var target = Target;
 
-		if (target is TextBox textBoxTarget)
+		if (target is TextBox textBoxTarget and not PasswordBox) // TextBox is a PasswordBox in Uno Platform
 		{
 			buttonsToAdd = GetTextBoxButtonsToAdd(textBoxTarget);
 		}
