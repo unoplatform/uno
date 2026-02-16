@@ -1070,7 +1070,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RequiresFullWindow]
 #if RUNTIME_NATIVE_AOT
-        [Ignore("TODO: figure out why this fails, how to fix")]
+		[Ignore("TODO: figure out why this fails, how to fix")]
 #endif  // RUNTIME_NATIVE_AOT
 		public async Task When_Popup_Above_With_Header_Should_Overlap_Header()
 		{
