@@ -30,6 +30,7 @@ using Windows.ApplicationModel.DataTransfer;
 using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority;
 using Microsoft.UI.Xaml.Media.Media3D;
 using System.Numerics;
+using Uno.Disposables;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -43,6 +44,7 @@ public partial class TextBox
 	private CaretWithStemAndThumb _selectionEndThumbfulCaret;
 	private TextBoxView _textBoxView;
 	private static ITextBoxNotificationsProviderSingleton _textBoxNotificationsSingleton;
+	private SerialDisposable _clipboardChangeSubscription = new SerialDisposable();
 
 	private SelectionDetails _selection;
 	private float _caretXOffset; // this is not necessarily the visual offset of the caret, but where the caret is logically supposed to be when moving up and down with the keyboard, even if the caret is temporarily elsewhere
@@ -304,19 +306,10 @@ public partial class TextBox
 		_selectionStartThumbfulCaret?.Hide();
 		_selectionEndThumbfulCaret?.Hide();
 		CaretMode = CaretDisplayMode.ThumblessCaretHidden;
-		Clipboard.ContentChanged -= OnClipboardContentChanged;
-
-		if (_subscribedContextFlyout is not null)
-		{
-			_subscribedContextFlyout.Opening -= OnContextFlyoutOpening;
-			_subscribedContextFlyout = null;
-		}
+		_clipboardChangeSubscription.Disposable = null;
 	}
 
-	partial void OnIsReadonlyChangedPartial()
-	{
-		UpdateCanPasteClipboardContent();
-	}
+	partial void OnIsReadonlyChangedPartial() => UpdateCanPasteClipboardContent();
 
 	partial void OnForegroundColorChangedPartial(Brush newValue) => TextBoxView?.OnForegroundChanged(newValue);
 
@@ -450,6 +443,7 @@ public partial class TextBox
 
 	partial void OnFocusStateChangedPartial(FocusState focusState, bool initial)
 	{
+		_clipboardChangeSubscription.Disposable = null;
 		TextBoxView?.OnFocusStateChanged(focusState);
 
 		if (_isSkiaTextBox)
@@ -460,6 +454,7 @@ public partial class TextBox
 				_textBoxNotificationsSingleton?.OnFocused(this);
 				UpdateCanPasteClipboardContent();
 				Clipboard.ContentChanged += OnClipboardContentChanged;
+				_clipboardChangeSubscription.Disposable = Disposable.Create(() => Clipboard.ContentChanged -= OnClipboardContentChanged);
 			}
 			else if (!_forceFocusedVisualState)
 			{
@@ -474,7 +469,6 @@ public partial class TextBox
 					_textBoxNotificationsSingleton?.OnUnfocused(this);
 				}
 				_timer.Stop();
-				Clipboard.ContentChanged -= OnClipboardContentChanged;
 			}
 			UpdateDisplaySelection();
 		}
@@ -607,108 +601,8 @@ public partial class TextBox
 	private Point _lastPointerPosition;
 	private bool _isSelectionFlyoutUpdateQueued;
 
-	// Track the flyout we've subscribed to for Opening event (to avoid double-subscription)
-	private FlyoutBase _subscribedContextFlyout;
-
 	// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (lines 5292-5302)
 	private bool HasSelectionFlyout() => SelectionFlyout is not null;
-
-	partial void OnLoadedPartial()
-	{
-		// Ensure the default ContextFlyout has its Opening event subscribed.
-		// Default flyouts provided via GetDefaultValue don't trigger OnContextFlyoutChanged,
-		// so we must manually subscribe here. OnUnloaded properly cleans up the subscription.
-		EnsureContextFlyoutSubscription();
-	}
-
-	private void EnsureContextFlyoutSubscription()
-	{
-		var currentFlyout = ContextFlyout;
-		if (currentFlyout is not null && _subscribedContextFlyout != currentFlyout)
-		{
-			if (_subscribedContextFlyout is not null)
-			{
-				_subscribedContextFlyout.Opening -= OnContextFlyoutOpening;
-			}
-			currentFlyout.Opening += OnContextFlyoutOpening;
-			_subscribedContextFlyout = currentFlyout;
-		}
-	}
-
-	// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/dxaml/lib/TextBoxBase_Partial.cpp
-	// Handle ContextFlyout/SelectionFlyout coordination - ContextFlyout takes priority
-	private protected override void OnContextFlyoutChanged(FlyoutBase oldValue, FlyoutBase newValue)
-	{
-		base.OnContextFlyoutChanged(oldValue, newValue);
-
-		if (oldValue is not null && oldValue == _subscribedContextFlyout)
-		{
-			oldValue.Opening -= OnContextFlyoutOpening;
-			_subscribedContextFlyout = null;
-		}
-		if (newValue is not null)
-		{
-			newValue.Opening += OnContextFlyoutOpening;
-			_subscribedContextFlyout = newValue;
-		}
-	}
-
-	private void OnContextFlyoutOpening(object sender, object e)
-	{
-		// Close SelectionFlyout when ContextFlyout opens (ContextFlyout takes priority)
-		SelectionFlyout?.Hide();
-
-		// When our ContextFlyout opens in Standard mode (takes focus), force the TextBox
-		// to maintain "Focused" visual state. Mirrors WinUI's m_forceFocusedVisualState.
-		if (sender is FlyoutBase flyout && flyout.ShowMode == FlyoutShowMode.Standard)
-		{
-			_forceFocusedVisualState = true;
-			UpdateDisplaySelection();
-
-			// Subscribe to Closed for cleanup when flyout closes and focus isn't on this TextBox
-			flyout.Closed -= OnContextFlyoutClosedForForceFocus;
-			flyout.Closed += OnContextFlyoutClosedForForceFocus;
-		}
-	}
-
-	private void OnContextFlyoutClosedForForceFocus(object sender, object e)
-	{
-		if (sender is FlyoutBase flyout)
-		{
-			flyout.Closed -= OnContextFlyoutClosedForForceFocus;
-		}
-		ForceFocusLoss();
-	}
-
-	/// <summary>
-	/// Clears _forceFocusedVisualState and performs deferred unfocus actions.
-	/// Called when the context flyout closes. Mirrors WinUI CTextBoxBase::ForceFocusLoss.
-	/// </summary>
-	private void ForceFocusLoss()
-	{
-		if (!_forceFocusedVisualState)
-		{
-			return;
-		}
-		_forceFocusedVisualState = false;
-
-		if (FocusState == FocusState.Unfocused)
-		{
-			// Perform the suppressed unfocus actions now
-			TrySetCurrentlyTyping(false);
-			CaretMode = CaretDisplayMode.ThumblessCaretHidden;
-			if (SelectionFlyout?.IsOpen == true)
-			{
-				SelectionFlyout.Hide();
-			}
-			_textBoxNotificationsSingleton?.OnUnfocused(this);
-			_timer.Stop();
-			Clipboard.ContentChanged -= OnClipboardContentChanged;
-			UpdateDisplaySelection();
-			UpdateButtonStates();
-			UpdateVisualState();
-		}
-	}
 
 	// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (lines 5349-5377)
 	// QueueUpdateSelectionFlyoutVisibility - queues async visibility update
