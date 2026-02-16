@@ -3440,16 +3440,12 @@ _Check_return_ HRESULT CommandBar::NotifyDeferredElementStateChanged(
 				|| change == CollectionChange.ItemChanged)
 			{
 				// Check bounds since m_tpDynamicSecondaryCommands may not be in sync with m_tpSecondaryCommands
-				if (changeIndex < (m_tpDynamicSecondaryCommands?.Count ?? 0))
-				{
-					SetOverflowStyleAndInputModeOnSecondaryCommand(changeIndex, false);
-				}
+				SetOverflowStyleAndInputModeOnSecondaryCommand(changeIndex, false);
 			}
 			else if (change == CollectionChange.Reset)
 			{
-				// Use m_tpDynamicSecondaryCommands count since that's what SetOverflowStyleAndInputModeOnSecondaryCommand accesses.
-				// These collections may have different sizes, especially during initialization.
-				int itemCount = m_tpDynamicSecondaryCommands?.Count ?? 0;
+				int itemCount = 0;
+				itemCount = m_tpSecondaryCommands?.Count ?? 0;
 				for (int i = 0; i < itemCount; ++i)
 				{
 					SetOverflowStyleAndInputModeOnSecondaryCommand(i, false);
