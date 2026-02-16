@@ -38,7 +38,7 @@ internal class McpStdioServer(
 				options.ServerInfo = new Implementation
 				{
 					Name = "uno-devserver",
-					Version = typeof(McpStdioServer).Assembly.GetName().Version?.ToString() ?? "0.0.0",
+					Version = GetAssemblyVersion(),
 				};
 			})
 			.WithStdioServerTransport()
@@ -153,5 +153,22 @@ internal class McpStdioServer(
 		var host = builder.Build();
 
 		return (host, tcs);
+	}
+
+	internal static string GetAssemblyVersion()
+	{
+		var attr = typeof(McpStdioServer).Assembly
+			.GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false)
+			.OfType<System.Reflection.AssemblyInformationalVersionAttribute>()
+			.FirstOrDefault();
+
+		if (attr is not null)
+		{
+			// Strip the commit hash after '+' (e.g. "5.5.100-dev.1+abc123" → "5.5.100-dev.1")
+			var parts = attr.InformationalVersion.Split('+', StringSplitOptions.RemoveEmptyEntries);
+			return parts[0];
+		}
+
+		return typeof(McpStdioServer).Assembly.GetName().Version?.ToString() ?? "0.0.0";
 	}
 }

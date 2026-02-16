@@ -114,7 +114,7 @@ internal class HealthService(
 		return new HealthReport
 		{
 			Status = status,
-			DevServerVersion = typeof(HealthService).Assembly.GetName().Version?.ToString(),
+			DevServerVersion = McpStdioServer.GetAssemblyVersion(),
 			UpstreamConnected = upstreamConnected,
 			ToolCount = toolCount,
 			UnoSdkVersion = devServerMonitor.UnoSdkVersion,
