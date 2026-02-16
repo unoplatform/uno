@@ -77,7 +77,7 @@ stages:
 
 - stage: packages_tests
   displayName: Tests - Templates
-  # condition: and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.TemplateTestsRequired'], 'true'))) # Temporary: force-enable on this draft PR for CI timing.
+  condition: and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.TemplateTestsRequired'], 'true')))
   dependsOn:
     - Setup
     - binaries_build_winui
@@ -144,7 +144,7 @@ stages:
 
 - stage: ios_tests
   displayName: Tests - iOS Native
-  # condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.RequireNativeIos'], 'true'))) # Temporary: force-enable on this draft PR for CI timing.
+  condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.RequireNativeIos'], 'true')))
   dependsOn:
     - Setup
 
