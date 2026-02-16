@@ -33,7 +33,14 @@ internal class McpStdioServer(
 
 		var builder = Host.CreateApplicationBuilder();
 		builder.Services
-			.AddMcpServer()
+			.AddMcpServer(options =>
+			{
+				options.ServerInfo = new Implementation
+				{
+					Name = "uno-devserver",
+					Version = typeof(McpStdioServer).Assembly.GetName().Version?.ToString() ?? "0.0.0",
+				};
+			})
 			.WithStdioServerTransport()
 			.WithCallToolHandler(async (ctx, ct) =>
 			{
