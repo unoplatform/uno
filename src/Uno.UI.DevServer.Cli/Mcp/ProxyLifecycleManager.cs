@@ -75,9 +75,6 @@ internal class ProxyLifecycleManager
 	private TaskCompletionSource<bool>? _toolCachePrimedTcs;
 	private Task? _cachePrimedWatcher;
 
-	// Clients that don't support the list_updated notification
-	private static readonly string[] ClientsWithoutListUpdateSupport = ["claude-code", "codex", "codex-mcp-client", "antigravity"];
-
 	public ProxyLifecycleManager(ILogger<ProxyLifecycleManager> logger, DevServerMonitor devServerMonitor, McpUpstreamClient mcpUpstreamClient, HealthService healthService, ToolListManager toolListManager, McpStdioServer mcpStdioServer)
 	{
 		_logger = logger;
@@ -554,15 +551,16 @@ internal class ProxyLifecycleManager
 			await ProcessRoots();
 		}
 
-		// Claude Code and Codex do not support the list_updated notification.
-		// To avoid tool invocation failures, we wait for the tools to be available
-		// after the dev server has started.
+		// When there are no cached tools, wait for the upstream server to start
+		// so the first list_tools response includes real tools. Clients that support
+		// tools/list_changed will get updates later; those that don't still get tools
+		// on the first call thanks to this wait.
 		if ((!_forceRootsFallback || !clientSupportsRoots) &&
 			(_waitForTools
-			|| ClientsWithoutListUpdateSupport.Contains(ctx.Server.ClientInfo?.Name))
+			|| !_toolListManager.HasCachedTools)
 		)
 		{
-			_logger.LogTrace("Client without list_updated support detected, waiting for upstream server to start");
+			_logger.LogTrace("No cached tools available, waiting for upstream server to start");
 
 			using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
 			timeoutCts.CancelAfter(ToolListManager.ListToolsTimeoutMs);

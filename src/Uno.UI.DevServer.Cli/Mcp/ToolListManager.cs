@@ -36,6 +36,8 @@ internal class ToolListManager(
 		get { lock (_toolCacheLock) { return _toolCache.Length; } }
 	}
 
+	public bool HasCachedTools => GetCachedTools().Length > 0;
+
 	/// <summary>Called after the tool cache is successfully persisted.</summary>
 	public Action? OnToolCachePersisted { get; set; }
 
