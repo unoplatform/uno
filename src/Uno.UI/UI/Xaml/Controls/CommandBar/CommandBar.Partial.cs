@@ -1541,8 +1541,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (element is { })
 				{
-					element.SetParent(this);
-
 					PropagateDefaultLabelPositionToElement(element);
 					SetOverflowStyleAndInputModeOnSecondaryCommand((int)changeIndex, true);
 					PropagateDefaultLabelPositionToElement(element);
@@ -1558,8 +1556,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 					if (element is { })
 					{
-						element.SetParent(null);
-
 						SetOverflowStyleAndInputModeOnSecondaryCommand(i, true);
 						PropagateDefaultLabelPositionToElement(element);
 					}
