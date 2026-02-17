@@ -304,6 +304,9 @@ internal readonly partial struct UnicodeText
 			static extern void uno_ubidi_setPara(IntPtr pBiDi, IntPtr text, int length, byte paraLevel, IntPtr embeddingLevels, out int errorCode);
 
 			[DllImport("unoicu")]
+			static extern void uno_ubidi_setLine(IntPtr pBiDi, int start, int limit, IntPtr pLine, out int errorCode);
+
+			[DllImport("unoicu")]
 			static extern void uno_ubidi_getLogicalRun(IntPtr pBiDi, int logicalPosition, out int logicalLimit, out byte level);
 
 			[DllImport("unoicu")]
@@ -311,6 +314,15 @@ internal readonly partial struct UnicodeText
 
 			[DllImport("unoicu")]
 			static extern int uno_ubidi_getVisualRun(IntPtr pBiDi, int runIndex, out int logicalStart, out int length);
+
+			[DllImport("unoicu")]
+			static extern IntPtr uno_ubidi_getLevels(IntPtr pBiDi, out int errorCode);
+
+			[DllImport("unoicu")]
+			static extern byte uno_ubidi_getParaLevel(IntPtr pBiDi);
+
+			[DllImport("unoicu")]
+			static extern void uno_ubidi_getLogicalMap(IntPtr pBiDi, IntPtr indexMap, out int errorCode);
 
 			[DllImport("unoicu")]
 			static extern IntPtr uno_ubrk_open(int type, IntPtr locale, IntPtr text, int textLength, out int status);
@@ -323,6 +335,9 @@ internal readonly partial struct UnicodeText
 
 			[DllImport("unoicu")]
 			static extern int uno_ubrk_next(IntPtr bi);
+
+			[DllImport("unoicu")]
+			static extern int uno_uscript_getScript(int codepoint, out int errorCode);
 
 			[DllImport("unoicu")]
 			static extern void uno_u_getVersion(out UVersionInfo versionInfo);
@@ -349,6 +364,9 @@ internal readonly partial struct UnicodeText
 			static extern void ubidi_setPara_77(IntPtr pBiDi, IntPtr text, int length, byte paraLevel, IntPtr embeddingLevels, out int errorCode);
 
 			[DllImport("__Internal")]
+			static extern void ubidi_setLine_77(IntPtr pBiDi, int start, int limit, IntPtr pLine, out int errorCode);
+
+			[DllImport("__Internal")]
 			static extern void ubidi_getLogicalRun_77(IntPtr pBiDi, int logicalPosition, out int logicalLimit, out byte level);
 
 			[DllImport("__Internal")]
@@ -356,6 +374,15 @@ internal readonly partial struct UnicodeText
 
 			[DllImport("__Internal")]
 			static extern int ubidi_getVisualRun_77(IntPtr pBiDi, int runIndex, out int logicalStart, out int length);
+
+			[DllImport("__Internal")]
+			static extern IntPtr ubidi_getLevels_77(IntPtr pBiDi, out int errorCode);
+
+			[DllImport("__Internal")]
+			static extern byte ubidi_getParaLevel_77(IntPtr pBiDi);
+
+			[DllImport("__Internal")]
+			static extern void ubidi_getLogicalMap_77(IntPtr pBiDi, IntPtr indexMap, out int errorCode);
 
 			[DllImport("__Internal")]
 			static extern IntPtr ubrk_open_77(int type, IntPtr locale, IntPtr text, int textLength, out int status);
@@ -368,6 +395,9 @@ internal readonly partial struct UnicodeText
 
 			[DllImport("__Internal")]
 			static extern int ubrk_next_77(IntPtr bi);
+
+			[DllImport("__Internal")]
+			static extern int uscript_getScript_77(int codepoint, out int errorCode);
 
 			[DllImport("__Internal")]
 			static extern void u_getVersion_77(out UVersionInfo versionInfo);
