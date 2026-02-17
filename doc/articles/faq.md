@@ -34,7 +34,7 @@ Second, Uno Platform can target additional platforms like Linux and the Web.
 
 Third, Uno Platform provides two MCPs (Model Context Protocols) that enable AI agents to seamlessly access your live application's runtime state and visual tree. These MCPs work across any development environment – Visual Studio, VS Code, Claude Code, GitHub Copilot CLI, OpenAI Codex or Google Antigravity.
 
-Fourth, Uno Platform provides [Hot Design](https://platform.uno/hot-design/) for visually designing your Uno Platform apps, as well as AI-powered Hot Design Agent to quickly scaffold your apps from prompts. 
+Fourth, Uno Platform provides [Hot Design](https://platform.uno/hot-design/) for visually designing your Uno Platform apps, as well as AI-powered Hot Design Agent to quickly scaffold your apps from prompts.
 
 Fifth, Uno Platform aligns with WinUI, which uses a flavor of XAML most Windows developers are familiar with. It also allows you to tap into WinUI's rich styling engine to create pixel-perfect applications.
 
@@ -99,7 +99,7 @@ If you have an existing VB.NET application that you would like to port/modernize
 To be exact, add "Class Library" VB project (not "Class Library (.Net Framework)", and not "Class Library (Universal Windows)"). Use ".NET Standard 2.0" as Target Framework.
 To use this library in Uno heads for all platforms, add a reference to this library (the simplest way is to right-click on "References" nodes inside these heads).
 You can also use the same Class Library in your original VB project. The same Class Library can also be used in any other .NET Standard compatible projects.
-Additionally, if you’d like to move any of your VB.NET code to C#, you may be able to use automated tools such as https://converter.telerik.com
+Additionally, if you’d like to move any of your VB.NET code to C#, you may be able to use automated tools such as <https://converter.telerik.com>.
 
 The best course of action is to do a POC and our team is happy to assist you in validating Uno Platform’s fit. Please [contact us](https://platform.uno/contact) with any queries.
 
