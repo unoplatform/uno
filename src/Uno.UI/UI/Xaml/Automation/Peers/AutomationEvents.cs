@@ -156,4 +156,10 @@ public enum AutomationEvents
 	/// This event is also used for Auto-suggest accessibility.
 	/// </summary>
 	LayoutInvalidated = 29,
+
+	//TODO (DOTI): Add it when added to WinUI officially. it is in the winui source as experimental, but not in the docs
+	/// <summary>
+	/// The event that is raised for general notifications (e.g. RaiseNotificationEvent).
+	/// </summary>
+	// Notification = 30,
 }
