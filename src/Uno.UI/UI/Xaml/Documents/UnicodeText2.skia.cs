@@ -320,8 +320,6 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 		}
 
 		var lines = new List<Line>();
-		var endingNewLine = false;
-
 		{ // line breaking
 			float lineWidth = 0;
 			float lineWidthWithoutTrailingSpaces = 0;
@@ -400,7 +398,14 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 						if (oldValues.maxHeightFontDetailsInChunkUnderTest is null)
 						{
 							currentClusterBreak = currentClusterBreak.Next!;
-							continue;
+							if (currentClusterBreak is null)
+							{
+								break;
+							}
+							else
+							{
+								continue;
+							}
 						}
 						lineOpportunityBreakIndex--;
 						break;
@@ -452,17 +457,10 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 							currentLineClusterLast = null;
 						}
 
-						if (linebreakOpportunity == _text.Length)
+						if (linebreakOpportunity == _text.Length && currentLineEnd != -1)
 						{
-							if (currentLineEnd == -1)
-							{
-								endingNewLine = true;
-							}
-							else
-							{
-								var (h, b) = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, maxHeightFontDetailsInCurrentLine ?? defaultFontDetails, lines.Count == 0, true);
-								lines.Add(new Line(lines.Count == 0 ? 0 : lines[^1].end, currentLineEnd, lines.Count == 0 ? clusterBreaks.First! : lines[^1].clusterLast.Next!, currentLineClusterLast!, lineWidth, lineWidthWithoutTrailingSpaces, h, b));
-							}
+							var (h, b) = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, maxHeightFontDetailsInCurrentLine ?? defaultFontDetails, lines.Count == 0, true);
+							lines.Add(new Line(lines.Count == 0 ? 0 : lines[^1].end, currentLineEnd, lines.Count == 0 ? clusterBreaks.First! : lines[^1].clusterLast.Next!, currentLineClusterLast!, lineWidth, lineWidthWithoutTrailingSpaces, h, b));
 						}
 
 						currentClusterBreak = currentClusterBreak.Next!;
@@ -474,13 +472,20 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 			}
 		}
 
+		var textEndsInLineBreak = IsLineBreak(_text, _text.Length);
 		float totalHeight = 0;
 		int nextTrimPointLookupStart = 0;
 		for (var lineIndex = 0; lineIndex < lines.Count; lineIndex++)
 		{
 			var line = lines[lineIndex];
 			totalHeight += line.lineHeight;
-			var isEarlyLastLine = (maxLines > 0 && maxLines < lines.Count && lineIndex == maxLines - 1) || (lineIndex < lines.Count - 1 && lines[lineIndex + 1].lineHeight + totalHeight > availableSize.Height);
+			var nextLineHeight = lineIndex < lines.Count - 1
+				? lines[lineIndex + 1].lineHeight
+				: textEndsInLineBreak
+					? GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, defaultFontDetails, false, true).lineHeight
+					: 0;
+			var actualLineCount = lines.Count + (textEndsInLineBreak ? 1 : 0);
+			var isEarlyLastLine = (maxLines > 0 && maxLines < actualLineCount && lineIndex == maxLines - 1) || (lineIndex < actualLineCount - 1 && nextLineHeight + totalHeight > availableSize.Height);
 
 			var lineWidth = line.width;
 			LinkedListNode<Cluster> lastClusterIncludedInLine = line.clusterLast;
@@ -576,6 +581,9 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 				break;
 			}
 		}
+
+		_endingNewLineLineHeight = lines[^1].end == _text.Length && textEndsInLineBreak ? GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, defaultFontDetails, false, true).lineHeight : null;
+		totalHeight += _endingNewLineLineHeight ?? 0;
 
 		float maxLineWidthWithoutTrailingSpaces = 0;
 		_indexToCluster = new List<(int start, int end, LinkedListNode<Cluster> cluster)>(clusterBreaks.Count);
@@ -698,7 +706,6 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 		}
 
 		_lines = lines;
-		_endingNewLineLineHeight = endingNewLine ? GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, defaultFontDetails, false, true).lineHeight : null;
 		_defaultFontDetails = defaultFontDetails;
 		_textAlignment = textAlignment!.Value;
 		_wordBoundaries = GetWords(_text);
@@ -920,7 +927,7 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 						? new SKRect(cluster.Value.width + alignmentOffset + unalignedX - caretThickness, y, cluster.Value.width + alignmentOffset + unalignedX, y + line.lineHeight)
 						: new SKRect(alignmentOffset + unalignedX, y, alignmentOffset + unalignedX + caretThickness, y + line.lineHeight);
 				}
-				else if (caretIndex >= cluster.Value.start && clusterIndex == _clustersInLogicalOrder.Count - 1)
+				else if (_endingNewLineLineHeight is null && caretIndex >= cluster.Value.start && clusterIndex == _clustersInLogicalOrder.Count - 1)
 				{
 					caretRect = cluster.Value.rtl
 						? new SKRect(alignmentOffset + unalignedX - caretThickness, y, alignmentOffset + unalignedX, y + line.lineHeight)
@@ -947,12 +954,13 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 			session.Canvas.DrawPath(path, _spareSpellCheckPaint);
 		}
 
-		if (_text.Length == 0 && caret?.index == 0)
+		if (caretRect is null && caret?.index == _text.Length) // ending new line or empty text
 		{
 			var alignmentOffset = GetAlignmentOffsetForLine(null);
+			var top = _text.Length == 0 ? 0 : _xyTable[^1].prefixSummedHeight;
 			caretRect = _rtl
-				? new SKRect(alignmentOffset - caret.Value.thickness, 0, alignmentOffset, _defaultFontDetails.LineHeight)
-				: new SKRect(alignmentOffset, 0, alignmentOffset + caret.Value.thickness, _defaultFontDetails.LineHeight);
+				? new SKRect(alignmentOffset - caret.Value.thickness, top, alignmentOffset, top + _defaultFontDetails.LineHeight)
+				: new SKRect(alignmentOffset, top, alignmentOffset + caret.Value.thickness, top + _defaultFontDetails.LineHeight);
 		}
 
 		if (caretRect is not null)
