@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using System;
+using Uno.UI.Text;
 
 namespace Microsoft.UI.Xaml;
 
@@ -68,7 +69,7 @@ partial class UIElement
 		var gotPoint = args.TryGetPosition(uiElement, out var point);
 
 		// Check for text controls
-		var isTextControl = IsTextControl(sender);
+		var isTextControl = TextCore.IsTextControl(sender);
 		var isTextEditControl =
 			sender is TextBox ||
 			sender is RichEditBox ||
@@ -101,7 +102,7 @@ partial class UIElement
 				// If we are using the default text control ContextFlyout and TextSelection is not enabled, don't show the flyout
 				if (IsUsingDefaultContextFlyout(sender))
 				{
-					if (!IsTextSelectionEnabled(sender))
+					if (!TextCore.IsTextSelectionEnabled(sender))
 					{
 						return;
 					}
@@ -128,7 +129,7 @@ partial class UIElement
 			{
 				if (IsUsingDefaultContextFlyout(sender))
 				{
-					if (!IsTextSelectionEnabled(sender))
+					if (!TextCore.IsTextSelectionEnabled(sender))
 					{
 						return;
 					}
@@ -141,15 +142,6 @@ partial class UIElement
 		args.Handled = true;
 	}
 
-	private static bool IsTextControl(DependencyObject element)
-	{
-		return element is TextBox ||
-			   element is RichEditBox ||
-			   element is PasswordBox ||
-			   element is TextBlock ||
-			   element is RichTextBlock;
-	}
-
 	private static bool IsUsingDefaultContextFlyout(DependencyObject element)
 	{
 		if (element is UIElement uiElement)
@@ -157,30 +149,5 @@ partial class UIElement
 			return uiElement.ReadLocalValue(ContextFlyoutProperty) == DependencyProperty.UnsetValue;
 		}
 		return true;
-	}
-
-	private static bool IsTextSelectionEnabled(DependencyObject textControl)
-	{
-		if (textControl is TextBlock textBlock)
-		{
-			return textBlock.IsTextSelectionEnabled;
-		}
-		else if (textControl is RichTextBlock richTextBlock)
-		{
-			return richTextBlock.IsTextSelectionEnabled;
-		}
-		else if (textControl is RichTextBlockOverflow richTextBlockOverflow)
-		{
-			throw new NotSupportedException("RichTextBlockOverflow not supported yet");
-			// return richTextBlockOverflow.GetMaster().IsSelectionEnabled();
-		}
-		else if (textControl is RichEditBox or TextBox or PasswordBox)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
 	}
 }
