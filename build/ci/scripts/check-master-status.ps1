@@ -1,7 +1,8 @@
 param(
 	[string]$Project,
 	[string]$DefinitionId,
-	[string]$GitHubRepo = "unoplatform/uno"
+	[string]$GitHubRepo = "unoplatform/uno",
+	[switch]$ForceFailure
 )
 
 $url = "$($env:SYSTEM_COLLECTIONURI)$Project/_apis/build/builds?definitions=$DefinitionId&branchName=refs/heads/master&statusFilter=completed&queryOrder=finishTimeDescending&api-version=6.0"
@@ -32,9 +33,13 @@ try {
 	}
 
 	$latestBuild = $builds[0]
-	if (Test-BuildSucceeded $latestBuild) {
+	if (-not $ForceFailure -and (Test-BuildSucceeded $latestBuild)) {
 		Write-Host "Latest master build $($latestBuild.buildNumber) succeeded."
 		exit 0
+	}
+
+	if ($ForceFailure) {
+		Write-Host "ForceFailure is set. Simulating a master failure scenario."
 	}
 
 	Write-Host "Latest master build $($latestBuild.buildNumber) failed."
@@ -54,7 +59,7 @@ try {
 
 	Write-Host "Last successful build was $($lastSuccess.buildNumber) at $lastSuccessTime ($([Math]::Round($diff.TotalHours, 2)) hours ago)."
 
-	if ($diff.TotalHours -gt 24) {
+	if ($ForceFailure -or $diff.TotalHours -gt 24) {
 		Write-Host "Master has been failing for more than 24 hours. Last success was at $lastSuccessTime."
 
 		# Find the first failing build after the last successful one
