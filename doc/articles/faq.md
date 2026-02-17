@@ -34,7 +34,7 @@ Second, Uno Platform can target additional platforms like Linux and the Web.
 
 Third, Uno Platform provides two MCPs (Model Context Protocols) that enable AI agents to seamlessly access your live application's runtime state and visual tree. These MCPs work across any development environment – Visual Studio, VS Code, Claude Code, GitHub Copilot CLI, OpenAI Codex or Google Antigravity.
 
-Fourth, Uno Platform provides [Hot Design](https://platform.uno/hot-design/) for visually designing your Uno Platform apps, as well as AI-powered Hot Design Agent to quickly scaffold yourd apps from prompts. 
+Fourth, Uno Platform provides [Hot Design](https://platform.uno/hot-design/) for visually designing your Uno Platform apps, as well as AI-powered Hot Design Agent to quickly scaffold your apps from prompts. 
 
 Fifth, Uno Platform aligns with WinUI, which uses a flavor of XAML most Windows developers are familiar with. It also allows you to tap into WinUI's rich styling engine to create pixel-perfect applications.
 
@@ -54,7 +54,7 @@ Uno Platform and Blazor both make use of .NET's WebAssembly support to run nativ
 
 In addition, Uno Platform provides two MCPs (Model Context Protocols) that enable AI agents to seamlessly access your live application's runtime state and visual tree. These MCPs work across any development environment – Visual Studio, VS Code, Claude Code, GitHub Copilot CLI, OpenAI Codex or Google Antigravity.
 
-Lastly, Uno Platform provides [Hot Design](https://platform.uno/hot-design/) for visually designing your Uno Platform apps, as well as AI-powered Hot Design Agent to quickly scaffold yourd apps from prompts.
+Lastly, Uno Platform provides [Hot Design](https://platform.uno/hot-design/) for visually designing your Uno Platform apps, as well as AI-powered Hot Design Agent to quickly scaffold your apps from prompts.
 
 ### How is Uno Platform different from Flutter?
 
