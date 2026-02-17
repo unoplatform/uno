@@ -173,12 +173,23 @@ internal readonly partial struct UnicodeText
 			return (T)value;
 		}
 
-		public static unsafe DisposableStruct<IntPtr> CreateBiDiAndSetPara(string text, int start, int end, byte paraLevel, out IntPtr bidi)
+		public static unsafe DisposableStruct<IntPtr> CreateBiDiAndSetPara(string text, int start, int end, byte paraLevel, out IntPtr bidi, byte[]? embeddingLevels = null)
 		{
 			bidi = GetMethod<ubidi_open>()();
 			fixed (char* textPtr = &text.GetPinnableReference())
 			{
-				GetMethod<ubidi_setPara>()(bidi, (IntPtr)(textPtr + start), end - start, paraLevel, IntPtr.Zero, out var setParaErrorCode);
+				int setParaErrorCode;
+				if (embeddingLevels is not null)
+				{
+					fixed (byte* embeddingLevelsPtr = embeddingLevels)
+					{
+						GetMethod<ubidi_setPara>()(bidi, (IntPtr)(textPtr + start), end - start, paraLevel, (IntPtr)embeddingLevelsPtr, out setParaErrorCode);
+					}
+				}
+				else
+				{
+					GetMethod<ubidi_setPara>()(bidi, (IntPtr)(textPtr + start), end - start, paraLevel, IntPtr.Zero, out setParaErrorCode);
+				}
 				if (setParaErrorCode > 0)
 				{
 					throw new InvalidOperationException($"{nameof(ubidi_setPara)} failed with error code {setParaErrorCode}");
@@ -191,7 +202,8 @@ internal readonly partial struct UnicodeText
 		{
 			if (status > 0)
 			{
-				throw new InvalidOperationException($"{typeof(T).Name} failed with error code {status.ToString("X", CultureInfo.InvariantCulture)}");
+				var errorString = Marshal.PtrToStringUTF8(GetMethod<u_errorName>()(status));
+				throw new InvalidOperationException($"{typeof(T).Name} failed with error code {errorString}");
 			}
 			else if (status < 0)
 			{
@@ -211,7 +223,19 @@ internal readonly partial struct UnicodeText
 		public delegate void ubidi_setPara(IntPtr pBiDi, IntPtr text, int length, byte paraLevel, IntPtr embeddingLevels, out int errorCode);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void ubidi_setLine(IntPtr pBiDi, int start, int limit, IntPtr pLine, out int errorCode);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void ubidi_getLogicalRun(IntPtr pBiDi, int logicalPosition, out int logicalLimit, out byte level);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate IntPtr ubidi_getLevels(IntPtr pBiDi, out int errorCode);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate byte ubidi_getParaLevel(IntPtr pBiDi);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void ubidi_getLogicalMap(IntPtr pBiDi, IntPtr indexMap, out int errorCode);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate int ubidi_countRuns(IntPtr pBiDI, out int errorCode);
@@ -230,6 +254,9 @@ internal readonly partial struct UnicodeText
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate int ubrk_next(IntPtr bi);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate int uscript_getScript(int codepoint, out int errorCode);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate void u_getVersion(out UVersionInfo versionInfo);
