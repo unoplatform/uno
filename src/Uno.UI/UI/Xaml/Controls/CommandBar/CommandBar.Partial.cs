@@ -3379,7 +3379,6 @@ _Check_return_ HRESULT CommandBar::NotifyDeferredElementStateChanged(
 			if (change == CollectionChange.ItemRemoved
 				|| change == CollectionChange.ItemChanged)
 			{
-				// Check bounds since m_tpDynamicSecondaryCommands may not be in sync with m_tpSecondaryCommands
 				SetOverflowStyleAndInputModeOnSecondaryCommand(changeIndex, false);
 			}
 			else if (change == CollectionChange.Reset)
