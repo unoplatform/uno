@@ -11,7 +11,9 @@ namespace Microsoft.UI.Xaml.Media;
 /// </summary>
 public partial class PlaneProjection : Projection
 {
-	// Perspective depth constant from WinUI PlaneProjection.h (|ZOffset| = 999)
+	// Perspective depth constant matching WinUI's PlaneProjection.h (|ZOffset| = 999).
+	// This value controls how pronounced the 3D perspective effect is. Larger values
+	// produce a subtler effect. Do not change — it must match the WinUI behavior.
 	private const float PerspectiveDepth = 999.0f;
 
 	/// <summary>
@@ -381,7 +383,9 @@ public partial class PlaneProjection : Projection
 		result = result * perspective;
 		result = result * Matrix4x4.CreateTranslation(halfWidth, halfHeight, 0);
 
-		// Update the ProjectionMatrix property
+		// Update the public ProjectionMatrix property so consumers can read
+		// the last computed matrix. This side effect is intentional — the property
+		// exposes the result of the most recent projection computation.
 		ProjectionMatrix = Matrix3D.FromMatrix4x4(result);
 
 		return result;
@@ -390,6 +394,11 @@ public partial class PlaneProjection : Projection
 	/// <summary>
 	/// Checks if the projection is effectively 2D aligned (no 3D effect).
 	/// </summary>
+	/// <remarks>
+	/// CenterOfRotation values are intentionally not checked here. When all rotations
+	/// and offsets are zero, the translate-to-center and translate-back steps cancel
+	/// out, so CenterOfRotation has no effect on the final matrix.
+	/// </remarks>
 	private bool Is2DAligned()
 	{
 		return RotationX == 0 &&

@@ -185,16 +185,15 @@ public class Given_PlaneProjection
 	}
 
 	[TestMethod]
-	public void When_No_Rotation_Matrix_Is_Close_To_Identity()
+	public void When_No_Rotation_Matrix_Is_Identity()
 	{
 		var projection = new PlaneProjection();
 
-		// With no rotation and default values, the projection should be close to identity
-		// (perspective projection still applies some transformation)
+		// With all defaults (no rotation, no offsets), Is2DAligned() returns true
+		// and the projection matrix is identity (no 3D effect applied).
 		var matrix = projection.GetProjectionMatrix(new Windows.Foundation.Size(100, 100));
 
-		// The matrix won't be exactly identity due to perspective, but should be close
-		Assert.IsNotNull(matrix);
+		Assert.IsTrue(matrix.IsIdentity);
 	}
 
 	[TestMethod]
