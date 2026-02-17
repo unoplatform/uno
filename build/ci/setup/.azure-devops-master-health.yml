@@ -27,5 +27,7 @@ stages:
         arguments: >
           -Project "$(System.TeamProject)"
           -DefinitionId "$(System.DefinitionId)"
+          -GitHubRepo "unoplatform/uno"
       env:
         SYSTEM_COLLECTIONURI: $(System.CollectionUri)
+        GH_TOKEN: $(GitHubToken)
