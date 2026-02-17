@@ -51,7 +51,7 @@ public sealed partial class Geolocator
 			{
 				if (NativeDispatcher.Main.HasThreadAccess)
 				{
-					_locationManager.DistanceFilter = value;
+					_locationManager.DistanceFilter = _movementThreshold;
 				}
 				else
 				{
@@ -59,7 +59,7 @@ public sealed partial class Geolocator
 					{
 						if (_locationManager != null)
 						{
-							_locationManager.DistanceFilter = value;
+							_locationManager.DistanceFilter = _movementThreshold;
 						}
 					}, NativeDispatcherPriority.Normal);
 				}
