@@ -6,7 +6,7 @@
     xmlns:uno="using:Uno.UI.Xaml.Controls"
 	xmlns:android="http://uno.ui/android"
 	xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"	
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="android">
 
 	<Style TargetType="local:RefreshContainer" BasedOn="{StaticResource DefaultRefreshContainerStyle}" />
@@ -19,11 +19,9 @@
 			<Setter.Value>
 			<ControlTemplate TargetType="local:RefreshContainer">
 				<Grid x:Name="Root" Background="{TemplateBinding Background}">
-					<!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl #6452 -->
 					<ContentPresenter x:Name="ContentPresenter"
 								Content="{TemplateBinding Content}"
 								ContentTemplate="{TemplateBinding ContentTemplate}"
-								ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 								Background="Transparent"/>
 					<Grid x:Name="RefreshVisualizerPresenter"/>
 				</Grid>
@@ -42,11 +40,9 @@
 					<Grid x:Name="Root">
 						<uno:NativeRefreshControl x:Name="NativeRefreshControl">
 							<uno:NativeRefreshControl.Content>
-								<!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl #6452 -->
 								<ContentPresenter x:Name="ContentPresenter"
 									Content="{TemplateBinding Content}"
 									ContentTemplate="{TemplateBinding ContentTemplate}"
-									ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 									Background="Transparent"/>
 							</uno:NativeRefreshControl.Content>
 						</uno:NativeRefreshControl>

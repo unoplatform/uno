@@ -80,7 +80,6 @@
 								Content="{TemplateBinding Content}"
 								ContentTransitions="{TemplateBinding ContentTransitions}"
 								ContentTemplate="{TemplateBinding ContentTemplate}"
-								ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 								HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 								VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
 								Margin="4,0,0,0" />

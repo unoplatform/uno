@@ -189,7 +189,7 @@ namespace Microsoft.UI.Xaml
 					// END Uno-specific
 
 					//SetIsUpdatingBindings(true);
-					var child = ((IFrameworkTemplateInternal)template).LoadContent(this);
+					var child = template.LoadContent(this);
 
 					// BEGIN Uno-specific
 					if (this is Control control)
