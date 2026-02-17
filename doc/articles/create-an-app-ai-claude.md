@@ -14,7 +14,6 @@ uid: Uno.GettingStarted.CreateAnApp.AI.Claude
     ```
 
 1. Change your current directory to be in the folder containing the new project (e.g., `cd MyNewApp`)
-<<<<<<< HEAD
 1. Run the following command, which will launch the Uno Studio app:
 
     ```bash

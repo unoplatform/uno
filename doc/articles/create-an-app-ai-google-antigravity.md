@@ -13,7 +13,6 @@ uid: Uno.GettingStarted.CreateAnApp.AI.GoogleAntigravity
     ```
 
 1. Open the project you just created inside Google Antigravity (for example, `MyApp`).
-<<<<<<< HEAD
 1. Open a terminal in the project folder and run the following command, which will launch the Uno Studio app:
 
     ```bash
