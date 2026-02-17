@@ -202,7 +202,8 @@ internal readonly partial struct UnicodeTextNew
 		{
 			if (status > 0)
 			{
-				throw new InvalidOperationException($"{typeof(T).Name} failed with error code {status.ToString("X", CultureInfo.InvariantCulture)}");
+				var errorString = Marshal.PtrToStringUTF8(GetMethod<u_errorName>()(status));
+				throw new InvalidOperationException($"{typeof(T).Name} failed with error code {errorString}");
 			}
 			else if (status < 0)
 			{

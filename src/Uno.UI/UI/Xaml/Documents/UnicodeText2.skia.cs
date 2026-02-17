@@ -211,7 +211,6 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 			_bidiBreaks = [];
 			return;
 		}
-
 		_hyperlinkRanges = new List<(int start, int length, Hyperlink hyperlink)>();
 
 		_bidiBreaks = new List<(int end, FlowDirection direction)>();
@@ -326,20 +325,20 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 			int currentLineEnd = -1;
 			LinkedListNode<Cluster>? currentLineClusterLast = null;
 			FontDetails? maxHeightFontDetailsInCurrentLine = null;
+			// a "chunk" is a contiguous sequence of clusters with no line breaking opportunities that is being tested as a potential addition to the current line.
 			float chunkUnderTestWidth = 0;
 			float chunkUnderTestTrailingSpaceWidth = 0;
 			bool chunkUnderTestContainsOnlyWhitespace = true;
 			FontDetails? maxHeightFontDetailsInChunkUnderTest = null;
-			LinkedListNode<Cluster> currentClusterBreak = clusterBreaks.First!;
+			LinkedListNode<Cluster>? currentClusterBreak = clusterBreaks.First!;
 			for (var lineOpportunityBreakIndex = 0; lineOpportunityBreakIndex < lineOpportunityBreaks.Count; lineOpportunityBreakIndex++)
 			{
-				var linebreakOpportunity = lineOpportunityBreaks[lineOpportunityBreakIndex];
-				while (currentClusterBreak!.Value.end <= linebreakOpportunity)
+				while (currentClusterBreak?.Value.end <= lineOpportunityBreaks[lineOpportunityBreakIndex])
 				{
 					var oldValues = (chunkUnderTestWidth, chunkUnderTestTrailingSpaceWidth, maxHeightFontDetailsInChunkUnderTest, chunkUnderTestContainsOnlyWhitespace);
 
 					var clusterWidth = currentClusterBreak.Value.containsTab
-						? ((int)(lineWidth + chunkUnderTestWidth / TabStopWidth) + 1) * TabStopWidth - (lineWidth + chunkUnderTestWidth)
+						? ((int)((lineWidth + chunkUnderTestWidth) / TabStopWidth) + 1) * TabStopWidth - (lineWidth + chunkUnderTestWidth)
 						: currentClusterBreak.Value.width;
 
 					chunkUnderTestWidth += clusterWidth;
@@ -366,13 +365,18 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 						FontDetails fontDetails;
 						int end;
 						LinkedListNode<Cluster> clusterLast;
-						if (oldValues.maxHeightFontDetailsInChunkUnderTest is null) // this cluster in the only cluster in the line
+						if (oldValues.maxHeightFontDetailsInChunkUnderTest is null) // this cluster is the only cluster in the line
 						{
 							width = chunkUnderTestWidth;
 							widthWithoutTrailingSpaces = chunkUnderTestWidth - chunkUnderTestTrailingSpaceWidth;
 							fontDetails = maxHeightFontDetailsInChunkUnderTest;
 							end = currentClusterBreak.Value.end;
 							clusterLast = currentClusterBreak;
+							if (currentClusterBreak.Value.containsTab)
+							{
+								// commit the final computed width of this tab stop
+								currentClusterBreak.Value = currentClusterBreak.Value with { width = clusterWidth };
+							}
 						}
 						else
 						{
@@ -398,14 +402,7 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 						if (oldValues.maxHeightFontDetailsInChunkUnderTest is null)
 						{
 							currentClusterBreak = currentClusterBreak.Next!;
-							if (currentClusterBreak is null)
-							{
-								break;
-							}
-							else
-							{
-								continue;
-							}
+							continue;
 						}
 						lineOpportunityBreakIndex--;
 						break;
@@ -413,7 +410,8 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 
 					// cannot break line mid cluster, so only consider this a line break opportunity if the cluster ends with a line break opportunity
 					// A mandatory line break cannot occur mid cluster
-					if (currentClusterBreak.Value.end == linebreakOpportunity)
+					// WinUI can always break after tabs, even in scenarios where ICU doesn't consider it a line break opportunity, so we follow suit
+					if (currentClusterBreak.Value.end == lineOpportunityBreaks[lineOpportunityBreakIndex] || currentClusterBreak.Value.containsTab)
 					{
 						if (lineWidth + chunkUnderTestWidth - chunkUnderTestTrailingSpaceWidth > availableSize.Width)
 						{
@@ -426,10 +424,17 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 								maxHeightFontDetailsInCurrentLine = null;
 								currentLineEnd = -1;
 								currentLineClusterLast = null;
+								if (currentClusterBreak.Value.containsTab) // each "chunk" contains at most one tab, and always at the end
+								{
+									// recalculate the width of the tab
+									chunkUnderTestWidth -= clusterWidth;
+									clusterWidth = ((int)(chunkUnderTestWidth / TabStopWidth) + 1) * TabStopWidth - chunkUnderTestWidth;
+									chunkUnderTestWidth += clusterWidth;
+								}
 							}
 						}
 
-						currentLineEnd = linebreakOpportunity;
+						currentLineEnd = currentClusterBreak.Value.end;
 						currentLineClusterLast = currentClusterBreak;
 						lineWidth += chunkUnderTestWidth;
 						if (!chunkUnderTestContainsOnlyWhitespace)
@@ -446,7 +451,13 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 						chunkUnderTestContainsOnlyWhitespace = true;
 						maxHeightFontDetailsInChunkUnderTest = null;
 
-						if (IsLineBreak(_text, linebreakOpportunity))
+						if (currentClusterBreak.Value.containsTab) // each "chunk" contains at most one tab, and always at the end
+						{
+							// commit the final computed width of this tab stop
+							currentClusterBreak.Value = currentClusterBreak.Value with { width = clusterWidth };
+						}
+
+						if (IsLineBreak(_text, currentClusterBreak.Value.end))
 						{
 							var (h, b) = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, maxHeightFontDetailsInCurrentLine, lines.Count == 0, false);
 							lines.Add(new Line(lines.Count == 0 ? 0 : lines[^1].end, currentLineEnd, lines.Count == 0 ? clusterBreaks.First! : lines[^1].clusterLast.Next!, currentLineClusterLast, lineWidth, lineWidthWithoutTrailingSpaces, h, b));
@@ -457,17 +468,14 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 							currentLineClusterLast = null;
 						}
 
-						if (linebreakOpportunity == _text.Length && currentLineEnd != -1)
+						if (currentClusterBreak.Value.end == _text.Length && currentLineEnd != -1)
 						{
 							var (h, b) = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, maxHeightFontDetailsInCurrentLine ?? defaultFontDetails, lines.Count == 0, true);
 							lines.Add(new Line(lines.Count == 0 ? 0 : lines[^1].end, currentLineEnd, lines.Count == 0 ? clusterBreaks.First! : lines[^1].clusterLast.Next!, currentLineClusterLast!, lineWidth, lineWidthWithoutTrailingSpaces, h, b));
 						}
-
-						currentClusterBreak = currentClusterBreak.Next!;
-						break;
 					}
 
-					currentClusterBreak = currentClusterBreak.Next!;
+					currentClusterBreak = currentClusterBreak.Next;
 				}
 			}
 		}
@@ -860,28 +868,31 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 			var positionAcc = new SKPoint(unalignedX + alignmentOffset, y + line.baselineOffset);
 			var fontDetails = cluster.Value.fontDetails;
 
-			var color = BrushToColor(highlighter.Value.foreground is { } h ? h : _runBreaks[runBreakIndex].foreground, session.Opacity);
-			if (!_colorToFontToGlyphs.TryGetValue(color, out var fontToGlyphs))
+			if (!cluster.Value.containsTab)
 			{
-				_colorToFontToGlyphs[color] = fontToGlyphs = new Dictionary<SKFont, (List<ushort> glyphs, List<SKPoint> positions)>();
-			}
-			if (!fontToGlyphs.TryGetValue(fontDetails.SKFont, out var glyphsAndPositions))
-			{
-				fontToGlyphs[fontDetails.SKFont] = glyphsAndPositions = (new List<ushort>(), new List<SKPoint>());
-			}
-			var glyphs = glyphsAndPositions.glyphs;
-			var positions = glyphsAndPositions.positions;
-
-			for (var glyphNode = cluster.Value.glyphStart; ; glyphNode = glyphNode.Next!)
-			{
-				var glyph = glyphNode.Value;
-				glyphs.Add((ushort)glyph.Codepoint);
-				positions.Add(new SKPoint(positionAcc.X + AdvanceToPixels(glyph.GlyphPosition.XOffset, fontDetails),
-					positionAcc.Y + AdvanceToPixels(glyph.GlyphPosition.YOffset, fontDetails)));
-				positionAcc.X += AdvanceToPixels(glyph.GlyphPosition.XAdvance, fontDetails);
-				if (cluster.Value.glyphLast == glyphNode)
+				var color = BrushToColor(highlighter.Value.foreground is { } h ? h : _runBreaks[runBreakIndex].foreground, session.Opacity);
+				if (!_colorToFontToGlyphs.TryGetValue(color, out var fontToGlyphs))
 				{
-					break;
+					_colorToFontToGlyphs[color] = fontToGlyphs = new Dictionary<SKFont, (List<ushort> glyphs, List<SKPoint> positions)>();
+				}
+				if (!fontToGlyphs.TryGetValue(fontDetails.SKFont, out var glyphsAndPositions))
+				{
+					fontToGlyphs[fontDetails.SKFont] = glyphsAndPositions = (new List<ushort>(), new List<SKPoint>());
+				}
+				var glyphs = glyphsAndPositions.glyphs;
+				var positions = glyphsAndPositions.positions;
+
+				for (var glyphNode = cluster.Value.glyphStart; ; glyphNode = glyphNode.Next!)
+				{
+					var glyph = glyphNode.Value;
+					glyphs.Add((ushort)glyph.Codepoint);
+					positions.Add(new SKPoint(positionAcc.X + AdvanceToPixels(glyph.GlyphPosition.XOffset, fontDetails),
+						positionAcc.Y + AdvanceToPixels(glyph.GlyphPosition.YOffset, fontDetails)));
+					positionAcc.X += AdvanceToPixels(glyph.GlyphPosition.XAdvance, fontDetails);
+					if (cluster.Value.glyphLast == glyphNode)
+					{
+						break;
+					}
 				}
 			}
 
@@ -1087,7 +1098,21 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 
 		if (p.Y >= _xyTable[^1].prefixSummedHeight + (_endingNewLineLineHeight ?? 0))
 		{
-			return extendedSelection ? _text.Length - (ignoreEndingNewLine ? TrailingCRLFInLine(_endingNewLineLineHeight is null ? _lines[^1] : null) : 0) : -1;
+			if (!extendedSelection)
+			{
+				return -1;
+			}
+			if (_rtl && p.X > GetAlignmentOffsetForLine(_lines[^1]) + _lines[^1].width || !_rtl && p.X < GetAlignmentOffsetForLine(_lines[^1]))
+			{
+				// corner case: bottom left (or bottom right if rtl) of the box, we can either go to the beginning or the end.
+				// we match winui and go to the beginning.
+
+				return 0;
+			}
+			else
+			{
+				return _text.Length - (ignoreEndingNewLine ? TrailingCRLFInLine(_endingNewLineLineHeight is null ? _lines[^1] : null) : 0);
+			}
 		}
 
 		if (p.Y >= _xyTable[^1].prefixSummedHeight)
@@ -1108,7 +1133,7 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 		var line = _xyTable[lineIndex].line;
 		var alignmentOffset = GetAlignmentOffsetForLine(line);
 
-		if (p.X < 0)
+		if (p.X < alignmentOffset)
 		{
 			return extendedSelection
 				? (_rtl ? line.end - (ignoreEndingNewLine ? TrailingCRLFInLine(line) : 0) : line.start)
