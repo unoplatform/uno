@@ -40,7 +40,7 @@
 			"Uno.Wasm.Bootstrap.Server"
 		],
 		"versionOverride": {
-			"net10.0": "10.0.15"
+			"net10.0": "10.0.34"
 		}
 	},
 	{
@@ -81,7 +81,7 @@
 	},
 	{
 		"group": "sdkextras",
-		"version": "6.1.1",
+		"version": "6.3.1",
 		"packages": [
 			"Uno.Sdk.Extras"
 		]
@@ -95,7 +95,7 @@
 	},
 	{
 		"group": "hotdesign",
-		"version": "1.17.415",
+		"version": "1.18.66",
 		"packages": [
 			"Uno.UI.HotDesign"
 		]
@@ -129,34 +129,34 @@
 	},
 	{
 		"group": "WinAppSdkBuildTools",
-		"version": "10.0.26100.7175",
+		"version": "10.0.26100.7463",
 		"packages": [
 			"Microsoft.Windows.SDK.BuildTools"
 		]
 	},
 	{
 		"group": "MicrosoftLoggingConsole",
-		"version": "9.0.11",
+		"version": "9.0.12",
 		"packages": [
 			"Microsoft.Extensions.Logging.Console"
 		],
 		"versionOverride": {
-			"net10.0": "10.0.0"
+			"net10.0": "10.0.2"
 		}
 	},
 	{
 		"group": "WindowsCompatibility",
-		"version": "9.0.11",
+		"version": "9.0.12",
 		"packages": [
 			"Microsoft.Windows.Compatibility"
 		],
 		"versionOverride": {
-			"net10.0": "10.0.0"
+			"net10.0": "10.0.2"
 		}
 	},
 	{
 		"group": "MsalClient",
-		"version": "4.78.0",
+		"version": "4.81.0",
 		"packages": [
 			"Microsoft.Identity.Client",
 			"Microsoft.Identity.Client.Extensions.Msal"
@@ -300,12 +300,12 @@
 			"Microsoft.Maui.Graphics"
 		],
 		"versionOverride": {
-			"net10.0": "10.0.0"
+			"net10.0": "10.0.30"
 		}
 	},
 	{
 		"group": "CSharpMarkup",
-		"version": "6.4.22",
+		"version": "6.5.10",
 		"packages": [
 			"Uno.WinUI.Markup",
 			"Uno.Extensions.Markup.Generators"
@@ -313,7 +313,7 @@
 	},
 	{
 		"group": "Extensions",
-		"version": "7.0.17",
+		"version": "7.1.1",
 		"packages": [
 			"Uno.Extensions.Authentication.WinUI",
 			"Uno.Extensions.Authentication.MSAL.WinUI",
@@ -343,7 +343,7 @@
 	},
 	{
 		"group": "Toolkit",
-		"version": "8.3.2",
+		"version": "8.4.2",
 		"packages": [
 			"Uno.Toolkit.WinUI",
 			"Uno.Toolkit.WinUI.Cupertino",
@@ -355,7 +355,7 @@
 	},
 	{
 		"group": "Themes",
-		"version": "6.0.2",
+		"version": "6.1.1",
 		"packages": [
 			"Uno.Material.WinUI",
 			"Uno.Material.WinUI.Markup",
@@ -365,14 +365,14 @@
 	},
 	{
 		"group": "VlcNativeWindowsAssets",
-		"version": "3.0.21",
+		"version": "3.0.23",
 		"packages": [
 			"VideoLAN.LibVLC.Windows"
 		]
 	},
 	{
 		"group": "MicrosoftWebView2",
-		"version": "1.0.3595.46",
+		"version": "1.0.3719.77",
 		"packages": [
 			"Microsoft.Web.WebView2"
 		]
