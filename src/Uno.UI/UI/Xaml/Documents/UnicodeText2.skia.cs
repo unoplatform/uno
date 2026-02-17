@@ -25,8 +25,6 @@ using FontWeights = Microsoft.UI.Text.FontWeights;
 namespace Microsoft.UI.Xaml.Documents;
 
 // TODO tab stop handling with trimming etc
-// TODO double check computations related to binary search
-// TODO spellchecking rendering
 internal readonly partial struct UnicodeTextNew : IParsedText
 {
 	// Measured by hand from WinUI. Oddly enough, it doesn't depend on the font size.
@@ -93,6 +91,8 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 	});
 
 	private static readonly Brush _blackBrush = new SolidColorBrush(Colors.Black);
+	private static readonly SKPaint _spareDrawPaint = new() { IsStroke = false, IsAntialias = true };
+	private static readonly SKPaint _spareSpellCheckPaint = new() { Color = SKColors.Red, Style = SKPaintStyle.Stroke, IsAntialias = true };
 	private static readonly Dictionary<int, HashSet<IFontCacheUpdateListener>> _codepointToListeners = new();
 	private static readonly Dictionary<string, HashSet<IFontCacheUpdateListener>> _fontFamilyToListeners = new();
 	private readonly string _text;
@@ -110,7 +110,6 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 	private readonly List<(int end, FlowDirection direction)> _bidiBreaks;
 	private readonly List<(int end, Brush? foreground)> _runBreaks;
 	private readonly List<(int correctionStart, int correctionEnd)?>? _corrections;
-	private readonly SKPaint _spareDrawPaint = new() { IsStroke = false, IsAntialias = true };
 	private readonly Size _availableSize;
 
 	internal unsafe UnicodeTextNew(
@@ -504,6 +503,16 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 					var trimPoint = enumerator.Current;
 					hasMore = enumerator.MoveNext();
 
+					// don't add ellipsis after white space, include the whitespace in the trimmed-out portion instead
+					while (trimPoint.Value is { containsOnlyWhitespace: true, containsTab: false } && trimPoint.Value.start > line.start)
+					{
+						trimPoint = trimPoint.Previous!;
+						if (enumerator.Current == trimPoint)
+						{
+							hasMore = enumerator.MoveNext();
+						}
+					}
+
 					while (lastClusterIncludedInLine != trimPoint)
 					{
 						lineWidth -= lastClusterIncludedInLine.Value.width;
@@ -805,12 +814,13 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 			}
 		}
 
-		Dictionary<SKColor, SKTextBlobBuilder> _colorToBlobBuilder = new();
+		Dictionary<SKColor, Dictionary<SKFont, (List<ushort> glyphs, List<SKPoint> positions)>> _colorToFontToGlyphs = new();
+		List<(SKPath path, float strokeThickness)> spellCheckUnderlines = new();
 
 		SKRect? caretRect = default;
 
-		var bidiBreakIndex = 0;
 		var runBreakIndex = 0;
+		var wordBoundariesIndex = 0;
 		var highlighterSlices = highlighterSlicer.GetSegments();
 		var highlighterIndex = 0;
 		for (var clusterIndex = 0; clusterIndex < _clustersInLogicalOrder.Count; clusterIndex++)
@@ -823,14 +833,14 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 
 			var highlighter = highlighterSlices[highlighterIndex];
 
-			while (_bidiBreaks[bidiBreakIndex].end <= cluster.Value.start)
-			{
-				bidiBreakIndex++;
-			}
-
 			while (_runBreaks[runBreakIndex].end <= cluster.Value.start)
 			{
 				runBreakIndex++;
+			}
+
+			while (_wordBoundaries[wordBoundariesIndex] <= cluster.Value.start)
+			{
+				wordBoundariesIndex++;
 			}
 
 			var lineIndex = cluster.Value.lineIndex;
@@ -840,10 +850,21 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 				? 0
 				: _xyTable[lineIndex].prefixSummedWidths[cluster.Value.indexInLine - 1].sumUntilAfterCluster;
 			var alignmentOffset = GetAlignmentOffsetForLine(line);
-			var glyphs = new List<ushort>();
-			var positions = new List<SKPoint>();
 			var positionAcc = new SKPoint(unalignedX + alignmentOffset, y + line.baselineOffset);
 			var fontDetails = cluster.Value.fontDetails;
+
+			var color = BrushToColor(highlighter.Value.foreground is { } h ? h : _runBreaks[runBreakIndex].foreground, session.Opacity);
+			if (!_colorToFontToGlyphs.TryGetValue(color, out var fontToGlyphs))
+			{
+				_colorToFontToGlyphs[color] = fontToGlyphs = new Dictionary<SKFont, (List<ushort> glyphs, List<SKPoint> positions)>();
+			}
+			if (!fontToGlyphs.TryGetValue(fontDetails.SKFont, out var glyphsAndPositions))
+			{
+				fontToGlyphs[fontDetails.SKFont] = glyphsAndPositions = (new List<ushort>(), new List<SKPoint>());
+			}
+			var glyphs = glyphsAndPositions.glyphs;
+			var positions = glyphsAndPositions.positions;
+
 			for (var glyphNode = cluster.Value.glyphStart; ; glyphNode = glyphNode.Next!)
 			{
 				var glyph = glyphNode.Value;
@@ -857,20 +878,39 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 				}
 			}
 
-			// This would be more efficient with SKCanvas::DrawGlyphs, but it isn't exposed in SkiaSharp
-			var color = BrushToColor(highlighter.Value.foreground is { } h ? h : _runBreaks[runBreakIndex].foreground,
-				session.Opacity);
-			if (!_colorToBlobBuilder.TryGetValue(color, out var blobBuilder))
-			{
-				var textBlobBuilder = new SKTextBlobBuilder();
-				blobBuilder = _colorToBlobBuilder[color] = textBlobBuilder;
-			}
+			var backgroundRect = new SKRect(unalignedX + alignmentOffset, y, unalignedX + alignmentOffset + cluster.Value.width, y + line.lineHeight);
+			highlighter.Value.background?.Paint(session.Canvas, session.Opacity, backgroundRect);
 
-			blobBuilder.AddPositionedRun(CollectionsMarshal.AsSpan(glyphs), fontDetails.SKFont,
-				CollectionsMarshal.AsSpan(positions));
-			highlighter.Value.background?.Paint(session.Canvas, session.Opacity,
-				new SKRect(unalignedX + alignmentOffset, y, unalignedX + alignmentOffset + cluster.Value.width,
-					y + line.lineHeight));
+			if (_corrections?[wordBoundariesIndex] is { } correction)
+			{
+				var correctionIndexBase = wordBoundariesIndex == 0 ? 0 : _wordBoundaries[wordBoundariesIndex - 1];
+				if (correctionIndexBase + correction.correctionStart <= cluster.Value.start && correctionIndexBase + correction.correctionEnd >= cluster.Value.end)
+				{
+					var fontSize = fontDetails.SKFontSize;
+					var scale = fontSize / 12.0f;
+					var step = 4 * scale;
+					var amplitude = 2 * scale;
+					var yOffset = 2 * scale;
+
+					var p = new SKPath();
+					var underlineY = y + line.baselineOffset + yOffset;
+					var underlineLeftX = unalignedX + alignmentOffset;
+					var underlineRightX = underlineLeftX + cluster.Value.width;
+					p.MoveTo(underlineLeftX, underlineY);
+					var x = underlineLeftX;
+					var up = true;
+					while (x + step < underlineRightX)
+					{
+						x += step;
+						var yWave = underlineY + (up ? -amplitude : amplitude);
+						p.LineTo(x, yWave);
+						up = !up;
+					}
+					p.LineTo(underlineRightX, underlineY);
+
+					spellCheckUnderlines.Add((p, scale));
+				}
+			}
 
 			if (caret is var (caretIndex, _, caretThickness))
 			{
@@ -889,11 +929,22 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 			}
 		}
 
-		foreach (var entry in _colorToBlobBuilder)
+		// This would probably be more efficient with SKCanvas::DrawGlyphs, but it isn't exposed in SkiaSharp
+		using var textBlobBuilder = new SKTextBlobBuilder();
+		foreach (var (color, fontToGlyphs) in _colorToFontToGlyphs)
 		{
-			using var textBlob = entry.Value.Build();
-			_spareDrawPaint.Color = entry.Key;
-			session.Canvas.DrawText(textBlob, 0, 0, _spareDrawPaint);
+			_spareDrawPaint.Color = color;
+			foreach (var (font, (glyphs, positions)) in fontToGlyphs)
+			{
+				textBlobBuilder.AddPositionedRun(CollectionsMarshal.AsSpan(glyphs), font, CollectionsMarshal.AsSpan(positions));
+				session.Canvas.DrawText(textBlobBuilder.Build(), 0, 0, _spareDrawPaint); // SKTextBlobBuilder::Build resets the builder
+			}
+		}
+
+		foreach (var (path, strokeThickness) in spellCheckUnderlines)
+		{
+			_spareSpellCheckPaint.StrokeWidth = strokeThickness;
+			session.Canvas.DrawPath(path, _spareSpellCheckPaint);
 		}
 
 		if (_text.Length == 0 && caret?.index == 0)
