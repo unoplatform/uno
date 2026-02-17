@@ -130,61 +130,23 @@ namespace Microsoft.UI.Xaml.Controls
 			DefaultStyleKey = typeof(CommandBar);
 		}
 
-		private protected override void OnLoaded()
-		{
-			base.OnLoaded();
-
-			// Re-attach event handlers that were disposed in OnUnloaded
-			var (needsSyncPrimary, needsSyncSecondary) = SubscribeCommandCollectionEvents();
-
-			// Sync dynamic commands with actual commands in case changes happened while handlers were detached
-			if (needsSyncPrimary && m_tpDynamicPrimaryCommands is not null)
-			{
-				m_tpDynamicPrimaryCommands.Clear();
-				if (m_tpPrimaryCommands is not null)
-				{
-					foreach (var item in m_tpPrimaryCommands)
-					{
-						m_tpDynamicPrimaryCommands.Add(item);
-					}
-				}
-			}
-
-			if (needsSyncSecondary && m_tpDynamicSecondaryCommands is not null)
-			{
-				m_tpDynamicSecondaryCommands.Clear();
-				if (m_tpSecondaryCommands is not null)
-				{
-					SetOverflowStyleParams();
-					for (int i = 0; i < m_tpSecondaryCommands.Count; i++)
-					{
-						var item = m_tpSecondaryCommands[i];
-						m_tpDynamicSecondaryCommands.Add(item);
-						SetOverflowStyleAndInputModeOnSecondaryCommand(i, true);
-						PropagateDefaultLabelPositionToElement(item);
-					}
-				}
-				InvalidateMeasure();
-				UpdateVisualState();
-				UpdateTemplateSettings();
-			}
-		}
-
 		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 
-			m_unloadedEventHandler.Disposable = null;
-			m_primaryCommandsChangedEventHandler.Disposable = null;
-			m_secondaryCommandsChangedEventHandler.Disposable = null;
-			m_secondaryItemsControlLoadedEventHandler.Disposable = null;
-			m_contentRootSizeChangedEventHandler.Disposable = null;
-			m_overflowContentSizeChangedEventHandler.Disposable = null;
-			m_overflowPopupClosedEventHandler.Disposable = null;
-			m_overflowPresenterItemsPresenterKeyDownEventHandler.Disposable = null;
+			//m_unloadedEventHandler.Disposable = null;
+			//// These collections are owned by this command bar and hence their lifetime matches it as well.
+			//// No need to detach event handlers from them since they will be collected together with the command bar.
+			//// m_primaryCommandsChangedEventHandler.Disposable = null;
+			//// m_secondaryCommandsChangedEventHandler.Disposable = null;
+			//m_secondaryItemsControlLoadedEventHandler.Disposable = null;
+			//m_contentRootSizeChangedEventHandler.Disposable = null;
+			//m_overflowContentSizeChangedEventHandler.Disposable = null;
+			//m_overflowPopupClosedEventHandler.Disposable = null;
+			//m_overflowPresenterItemsPresenterKeyDownEventHandler.Disposable = null;
 
-			m_accessKeyInvokedEventHandler.Disposable = null;
-			m_overflowPopupOpenedEventHandler.Disposable = null;
+			//m_accessKeyInvokedEventHandler.Disposable = null;
+			//m_overflowPopupOpenedEventHandler.Disposable = null;
 
 			// Make sure our popup is closed.
 			if (m_tpOverflowPopup is { })
