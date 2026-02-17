@@ -179,10 +179,10 @@ public partial struct Matrix3D : IFormattable, IEquatable<Matrix3D>
 		return string.Format(provider,
 			"{1}{0}{2}{0}{3}{0}{4}{0}{5}{0}{6}{0}{7}{0}{8}{0}{9}{0}{10}{0}{11}{0}{12}{0}{13}{0}{14}{0}{15}{0}{16}",
 			separator,
-			M11, M12, M13, M14,
-			M21, M22, M23, M24,
-			M31, M32, M33, M34,
-			OffsetX, OffsetY, OffsetZ, M44);
+			M11.ToString(format, provider), M12.ToString(format, provider), M13.ToString(format, provider), M14.ToString(format, provider),
+			M21.ToString(format, provider), M22.ToString(format, provider), M23.ToString(format, provider), M24.ToString(format, provider),
+			M31.ToString(format, provider), M32.ToString(format, provider), M33.ToString(format, provider), M34.ToString(format, provider),
+			OffsetX.ToString(format, provider), OffsetY.ToString(format, provider), OffsetZ.ToString(format, provider), M44.ToString(format, provider));
 	}
 
 	/// <summary>
