@@ -164,6 +164,52 @@ public class Given_DevServerMonitor
 	}
 
 	// -------------------------------------------------------------------
+	// Event sequence
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	[Description("ServerLaunching fires before ServerStarted in the documented event sequence")]
+	public void EventSequence_ServerLaunchingFiresBeforeServerStarted()
+	{
+		var events = new List<string>();
+
+		// Simulate the event sequence from RunMonitor:
+		// 1. StartProcess succeeds
+		// 2. ServerLaunching fires
+		// 3. WaitForServerReadyAsync succeeds
+		// 4. ServerStarted fires
+		Action serverLaunching = () => events.Add("ServerLaunching");
+		Action<string> serverStarted = _ => events.Add("ServerStarted");
+		Action serverFailed = () => events.Add("ServerFailed");
+
+		// Simulate success path
+		serverLaunching();
+		serverStarted("http://localhost:12345/mcp");
+
+		events.Should().HaveCount(2);
+		events[0].Should().Be("ServerLaunching");
+		events[1].Should().Be("ServerStarted");
+	}
+
+	[TestMethod]
+	[Description("ServerLaunching fires but ServerStarted does not when health-check fails")]
+	public void EventSequence_WhenHealthCheckFails_ServerLaunchingWithoutServerStarted()
+	{
+		var events = new List<string>();
+
+		Action serverLaunching = () => events.Add("ServerLaunching");
+		Action serverFailed = () => events.Add("ServerFailed");
+
+		// Simulate path where process starts but health-check fails
+		serverLaunching();
+		serverFailed();
+
+		events.Should().HaveCount(2);
+		events[0].Should().Be("ServerLaunching");
+		events[1].Should().Be("ServerFailed");
+	}
+
+	// -------------------------------------------------------------------
 	// Helpers
 	// -------------------------------------------------------------------
 

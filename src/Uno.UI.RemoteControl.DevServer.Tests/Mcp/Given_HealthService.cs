@@ -333,6 +333,54 @@ public class Given_HealthService
 	}
 
 	[TestMethod]
+	[Description("HealthReport with ConnectionState.Launching roundtrips correctly")]
+	public void HealthReport_WithLaunchingState_Roundtrip()
+	{
+		var report = new HealthReport
+		{
+			Status = HealthStatus.Degraded,
+			UpstreamConnected = false,
+			ConnectionState = ConnectionState.Launching,
+			Issues =
+			[
+				new ValidationIssue
+				{
+					Code = IssueCode.HostUnreachable,
+					Severity = ValidationSeverity.Warning,
+					Message = "Host is launching, waiting for health-check",
+				},
+			],
+		};
+
+		var json = JsonSerializer.Serialize(report, McpJsonUtilities.DefaultOptions);
+		json.Should().Contain("\"Launching\"");
+
+		var deserialized = JsonSerializer.Deserialize<HealthReport>(json, McpJsonUtilities.DefaultOptions);
+		deserialized!.ConnectionState.Should().Be(ConnectionState.Launching);
+		deserialized.Issues.Should().HaveCount(1);
+		deserialized.Issues[0].Code.Should().Be(IssueCode.HostUnreachable);
+	}
+
+	[TestMethod]
+	[Description("HealthReport with ConnectionState.Shutdown roundtrips correctly")]
+	public void HealthReport_WithShutdownState_Roundtrip()
+	{
+		var report = new HealthReport
+		{
+			Status = HealthStatus.Healthy,
+			UpstreamConnected = false,
+			ConnectionState = ConnectionState.Shutdown,
+			Issues = [],
+		};
+
+		var json = JsonSerializer.Serialize(report, McpJsonUtilities.DefaultOptions);
+		json.Should().Contain("\"Shutdown\"");
+
+		var deserialized = JsonSerializer.Deserialize<HealthReport>(json, McpJsonUtilities.DefaultOptions);
+		deserialized!.ConnectionState.Should().Be(ConnectionState.Shutdown);
+	}
+
+	[TestMethod]
 	public void HealthReport_WhenNotStarted_ReportsHostNotStarted()
 	{
 		var devServerStarted = false;
