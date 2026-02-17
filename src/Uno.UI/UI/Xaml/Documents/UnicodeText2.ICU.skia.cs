@@ -228,6 +228,12 @@ internal readonly partial struct UnicodeTextNew
 		public delegate void ubidi_getLogicalRun(IntPtr pBiDi, int logicalPosition, out int logicalLimit, out byte level);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate IntPtr ubidi_getLevels(IntPtr pBiDi, out int errorCode);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate byte ubidi_getParaLevel(IntPtr pBiDi);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void ubidi_getLogicalMap(IntPtr pBiDi, IntPtr indexMap, out int errorCode);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]

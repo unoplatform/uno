@@ -31,6 +31,8 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 {
 	// Measured by hand from WinUI. Oddly enough, it doesn't depend on the font size.
 	private const float TabStopWidth = 48;
+	private const byte UBIDI_DEFAULT_LTR = 0xfe;
+	private const byte UBIDI_DEFAULT_RTL = 0xff;
 	private const int UBIDI_LTR = 0;
 	private const int UBIDI_RTL = 1;
 	private const string HorizontalEllipsis = "\u2026";
@@ -107,6 +109,7 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 	private readonly LinkedList<Glyph> _glyphs;
 	private readonly List<(int end, FlowDirection direction)> _bidiBreaks;
 	private readonly List<(int end, Brush? foreground)> _runBreaks;
+	private readonly List<(int correctionStart, int correctionEnd)?>? _corrections;
 	private readonly SKPaint _spareDrawPaint = new() { IsStroke = false, IsAntialias = true };
 	private readonly Size _availableSize;
 
@@ -229,12 +232,14 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 				_hyperlinkRanges.Add((start, start + count, hyperLink));
 			}
 		}
-		using var _ = ICU.CreateBiDiAndSetPara(_text, 0, _text.Length, (byte)(flowDirection is FlowDirection.RightToLeft ? 1 : 0), out var bidi, embeddingLevels);
+
+		using var _ = ICU.CreateBiDiAndSetPara(_text, 0, _text.Length, flowDirection is FlowDirection.RightToLeft ? UBIDI_DEFAULT_RTL : UBIDI_DEFAULT_LTR, out var bidi, embeddingLevels);
 		var runCount = ICU.GetMethod<ICU.ubidi_countRuns>()(bidi, out var countRunsErrorCode);
 		ICU.CheckErrorCode<ICU.ubidi_countRuns>(countRunsErrorCode);
-		for (var runIndex = 0; runIndex < runCount; runIndex++)
+		_rtl = ICU.GetMethod<ICU.ubidi_getParaLevel>()(bidi) is UBIDI_RTL;
+		for (var bidiRunIndex = 0; bidiRunIndex < runCount; bidiRunIndex++)
 		{
-			var level = ICU.GetMethod<ICU.ubidi_getVisualRun>()(bidi, runIndex, out var logicalStart, out var length);
+			var level = ICU.GetMethod<ICU.ubidi_getVisualRun>()(bidi, bidiRunIndex, out var logicalStart, out var length);
 			CI.Assert(level is UBIDI_LTR or UBIDI_RTL);
 			_bidiBreaks.Add((logicalStart + length, level is UBIDI_RTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight));
 
@@ -315,7 +320,6 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 			}
 		}
 
-		float maxLineWidthWithoutTrailingSpaces = 0;
 		var lines = new List<Line>();
 		var endingNewLine = false;
 
@@ -338,13 +342,13 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 					var oldValues = (chunkUnderTestWidth, chunkUnderTestTrailingSpaceWidth, maxHeightFontDetailsInChunkUnderTest, chunkUnderTestContainsOnlyWhitespace);
 
 					var clusterWidth = currentClusterBreak.Value.containsTab
-						? ((int)(chunkUnderTestWidth / TabStopWidth) + 1) * TabStopWidth - chunkUnderTestWidth
+						? ((int)(lineWidth + chunkUnderTestWidth / TabStopWidth) + 1) * TabStopWidth - (lineWidth + chunkUnderTestWidth)
 						: currentClusterBreak.Value.width;
 
 					chunkUnderTestWidth += clusterWidth;
 					if (currentClusterBreak.Value is { containsOnlyWhitespace: true, containsTab: false })
 					{
-						chunkUnderTestTrailingSpaceWidth += chunkUnderTestWidth;
+						chunkUnderTestTrailingSpaceWidth += clusterWidth;
 					}
 					else
 					{
@@ -376,7 +380,7 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 						else
 						{
 							width = oldValues.chunkUnderTestWidth;
-							widthWithoutTrailingSpaces = oldValues.chunkUnderTestTrailingSpaceWidth;
+							widthWithoutTrailingSpaces = oldValues.chunkUnderTestWidth - oldValues.chunkUnderTestTrailingSpaceWidth;
 							fontDetails = oldValues.maxHeightFontDetailsInChunkUnderTest!;
 							end = currentClusterBreak.Value.start;
 							clusterLast = currentClusterBreak.Previous!;
@@ -384,7 +388,6 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 
 						var (h, b) = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, fontDetails, lines.Count == 0, false);
 						lines.Add(new Line(lines.Count == 0 ? 0 : lines[^1].end, end, lines.Count == 0 ? clusterBreaks.First! : lines[^1].clusterLast.Next!, clusterLast, width, widthWithoutTrailingSpaces, h, b));
-						maxLineWidthWithoutTrailingSpaces = Math.Max(maxLineWidthWithoutTrailingSpaces, widthWithoutTrailingSpaces);
 						lineWidth = 0;
 						lineWidthWithoutTrailingSpaces = 0;
 						currentLineEnd = -1;
@@ -414,7 +417,6 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 							{
 								var (h, b) = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, maxHeightFontDetailsInCurrentLine!, lines.Count == 0, false);
 								lines.Add(new Line(lines.Count == 0 ? 0 : lines[^1].end, currentLineEnd, lines.Count == 0 ? clusterBreaks.First! : lines[^1].clusterLast.Next!, currentLineClusterLast!, lineWidth, lineWidthWithoutTrailingSpaces, h, b));
-								maxLineWidthWithoutTrailingSpaces = Math.Max(maxLineWidthWithoutTrailingSpaces, lineWidthWithoutTrailingSpaces);
 								lineWidth = 0;
 								lineWidthWithoutTrailingSpaces = 0;
 								maxHeightFontDetailsInCurrentLine = null;
@@ -437,12 +439,13 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 
 						chunkUnderTestWidth = 0;
 						chunkUnderTestTrailingSpaceWidth = 0;
+						chunkUnderTestContainsOnlyWhitespace = true;
+						maxHeightFontDetailsInChunkUnderTest = null;
 
 						if (IsLineBreak(_text, linebreakOpportunity))
 						{
 							var (h, b) = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, maxHeightFontDetailsInCurrentLine, lines.Count == 0, false);
 							lines.Add(new Line(lines.Count == 0 ? 0 : lines[^1].end, currentLineEnd, lines.Count == 0 ? clusterBreaks.First! : lines[^1].clusterLast.Next!, currentLineClusterLast, lineWidth, lineWidthWithoutTrailingSpaces, h, b));
-							maxLineWidthWithoutTrailingSpaces = Math.Max(maxLineWidthWithoutTrailingSpaces, lineWidthWithoutTrailingSpaces);
 							lineWidth = 0;
 							lineWidthWithoutTrailingSpaces = 0;
 							maxHeightFontDetailsInCurrentLine = null;
@@ -460,10 +463,10 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 							{
 								var (h, b) = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, maxHeightFontDetailsInCurrentLine ?? defaultFontDetails, lines.Count == 0, true);
 								lines.Add(new Line(lines.Count == 0 ? 0 : lines[^1].end, currentLineEnd, lines.Count == 0 ? clusterBreaks.First! : lines[^1].clusterLast.Next!, currentLineClusterLast!, lineWidth, lineWidthWithoutTrailingSpaces, h, b));
-								maxLineWidthWithoutTrailingSpaces = Math.Max(maxLineWidthWithoutTrailingSpaces, lineWidthWithoutTrailingSpaces);
 							}
 						}
 
+						currentClusterBreak = currentClusterBreak.Next!;
 						break;
 					}
 
@@ -548,12 +551,11 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 							ellipsisWidth,
 							false,
 							false,
-							false,
+							_rtl,
 							-1,
 							-1);
 						var ellipsisNode = trimPoint.List!.AddAfter(trimPoint, ellipsisCluster);
-						lines[lineIndex] = line with { clusterLast = ellipsisNode, width = lineWidth + ellipsisWidth, hasEllipsis = true, end = ellipsisCluster.end };
-						maxLineWidthWithoutTrailingSpaces = Math.Max(maxLineWidthWithoutTrailingSpaces, lineWidth + ellipsisWidth);
+						lines[lineIndex] = line = line with { clusterLast = ellipsisNode, widthWithoutTrailingSpaces = lineWidth + ellipsisWidth, width = lineWidth + ellipsisWidth, hasEllipsis = true, end = ellipsisCluster.end };
 						break;
 					}
 				}
@@ -566,10 +568,12 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 			}
 		}
 
+		float maxLineWidthWithoutTrailingSpaces = 0;
 		_indexToCluster = new List<(int start, int end, LinkedListNode<Cluster> cluster)>(clusterBreaks.Count);
 		for (var lineIndex = 0; lineIndex < lines.Count; lineIndex++)
 		{
 			var line = lines[lineIndex];
+			maxLineWidthWithoutTrailingSpaces = Math.Max(maxLineWidthWithoutTrailingSpaces, line.widthWithoutTrailingSpaces);
 			for (var node = line.clusterStart; ; node = node.Next!)
 			{
 				node.Value = node.Value with { lineIndex = lineIndex };
@@ -610,12 +614,17 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 				ICU.CheckErrorCode<ICU.ubidi_getLogicalMap>(getLogicalMapErrorCode);
 			}
 
+			var levels = ICU.GetMethod<ICU.ubidi_getLevels>()(lineBidi, out var getLevelsErrorCode);
+			ICU.CheckErrorCode<ICU.ubidi_getLevels>(getLevelsErrorCode);
+			var levelsSpan = new Span<byte>(levels.ToPointer(), limit - line.start);
+
 			var clusterBeforeBegin = line.clusterStart.Previous;
 
 			var nodes = new List<LinkedListNode<Cluster>>();
 			for (var (clusterNode, end) = (line.clusterStart, (ellipsisCluster ?? line.clusterLast.Next)); clusterNode != end;)
 			{
-				var next = clusterNode!.Next;
+				clusterNode!.Value = clusterNode.Value with { rtl = levelsSpan[clusterNode.Value.start - line.start] % 2 == 1 };
+				var next = clusterNode.Next;
 				nodes.Add(clusterNode);
 				clusterBreaks.Remove(clusterNode);
 				clusterNode = next;
@@ -659,7 +668,7 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 					newFirstNode = ellipsisCluster;
 				}
 			}
-			lines[lineIndex] = line with { clusterStart = newFirstNode, clusterLast = newLastNode };
+			lines[lineIndex] = line = line with { clusterStart = newFirstNode, clusterLast = newLastNode };
 		}
 
 		_xyTable = new List<(float prefixSummedHeight, List<(float sumUntilAfterCluster, Cluster cluster)> prefixSummedWidths, Line line)>(lines.Count);
@@ -682,9 +691,9 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 		_lines = lines;
 		_endingNewLineLineHeight = endingNewLine ? GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, defaultFontDetails, false, true).lineHeight : null;
 		_defaultFontDetails = defaultFontDetails;
-		_rtl = flowDirection is FlowDirection.RightToLeft;
 		_textAlignment = textAlignment!.Value;
 		_wordBoundaries = GetWords(_text);
+		_corrections = isSpellCheckEnabled ? _spellCheckingService.Value?.SpellCheck(_wordBoundaries, _text) : null;
 		calculatedSize = new Size(maxLineWidthWithoutTrailingSpaces, totalHeight);
 		_availableSize = availableSize;
 	}
@@ -798,16 +807,20 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 
 		Dictionary<SKColor, SKTextBlobBuilder> _colorToBlobBuilder = new();
 
+		SKRect? caretRect = default;
+
 		var bidiBreakIndex = 0;
 		var runBreakIndex = 0;
 		var highlighterSlices = highlighterSlicer.GetSegments();
 		var highlighterIndex = 0;
-		foreach (var cluster in _clustersInLogicalOrder)
+		for (var clusterIndex = 0; clusterIndex < _clustersInLogicalOrder.Count; clusterIndex++)
 		{
+			var cluster = _clustersInLogicalOrder[clusterIndex];
 			while (highlighterSlices[highlighterIndex].End <= cluster.Value.start)
 			{
 				highlighterIndex++;
 			}
+
 			var highlighter = highlighterSlices[highlighterIndex];
 
 			while (_bidiBreaks[bidiBreakIndex].end <= cluster.Value.start)
@@ -823,7 +836,9 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 			var lineIndex = cluster.Value.lineIndex;
 			var line = _lines[lineIndex];
 			var y = _xyTable[lineIndex].prefixSummedHeight - line.lineHeight;
-			var unalignedX = cluster.Value.indexInLine == 0 ? 0 : _xyTable[lineIndex].prefixSummedWidths[cluster.Value.indexInLine - 1].sumUntilAfterCluster;
+			var unalignedX = cluster.Value.indexInLine == 0
+				? 0
+				: _xyTable[lineIndex].prefixSummedWidths[cluster.Value.indexInLine - 1].sumUntilAfterCluster;
 			var alignmentOffset = GetAlignmentOffsetForLine(line);
 			var glyphs = new List<ushort>();
 			var positions = new List<SKPoint>();
@@ -833,7 +848,8 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 			{
 				var glyph = glyphNode.Value;
 				glyphs.Add((ushort)glyph.Codepoint);
-				positions.Add(new SKPoint(positionAcc.X + AdvanceToPixels(glyph.GlyphPosition.XOffset, fontDetails), positionAcc.Y + AdvanceToPixels(glyph.GlyphPosition.YOffset, fontDetails)));
+				positions.Add(new SKPoint(positionAcc.X + AdvanceToPixels(glyph.GlyphPosition.XOffset, fontDetails),
+					positionAcc.Y + AdvanceToPixels(glyph.GlyphPosition.YOffset, fontDetails)));
 				positionAcc.X += AdvanceToPixels(glyph.GlyphPosition.XAdvance, fontDetails);
 				if (cluster.Value.glyphLast == glyphNode)
 				{
@@ -842,15 +858,35 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 			}
 
 			// This would be more efficient with SKCanvas::DrawGlyphs, but it isn't exposed in SkiaSharp
-			var color = BrushToColor(highlighter.Value.foreground is { } h ? h : _runBreaks[runBreakIndex].foreground, session.Opacity);
+			var color = BrushToColor(highlighter.Value.foreground is { } h ? h : _runBreaks[runBreakIndex].foreground,
+				session.Opacity);
 			if (!_colorToBlobBuilder.TryGetValue(color, out var blobBuilder))
 			{
 				var textBlobBuilder = new SKTextBlobBuilder();
 				blobBuilder = _colorToBlobBuilder[color] = textBlobBuilder;
 			}
 
-			blobBuilder.AddPositionedRun(CollectionsMarshal.AsSpan(glyphs), fontDetails.SKFont, CollectionsMarshal.AsSpan(positions));
-			highlighter.Value.background?.Paint(session.Canvas, session.Opacity, new SKRect(unalignedX + alignmentOffset, y, unalignedX + alignmentOffset + cluster.Value.width, y + line.lineHeight));
+			blobBuilder.AddPositionedRun(CollectionsMarshal.AsSpan(glyphs), fontDetails.SKFont,
+				CollectionsMarshal.AsSpan(positions));
+			highlighter.Value.background?.Paint(session.Canvas, session.Opacity,
+				new SKRect(unalignedX + alignmentOffset, y, unalignedX + alignmentOffset + cluster.Value.width,
+					y + line.lineHeight));
+
+			if (caret is var (caretIndex, _, caretThickness))
+			{
+				if (caretIndex >= cluster.Value.start && caretIndex < cluster.Value.end)
+				{
+					caretRect = cluster.Value.rtl
+						? new SKRect(cluster.Value.width + alignmentOffset + unalignedX - caretThickness, y, cluster.Value.width + alignmentOffset + unalignedX, y + line.lineHeight)
+						: new SKRect(alignmentOffset + unalignedX, y, alignmentOffset + unalignedX + caretThickness, y + line.lineHeight);
+				}
+				else if (caretIndex >= cluster.Value.start && clusterIndex == _clustersInLogicalOrder.Count - 1)
+				{
+					caretRect = cluster.Value.rtl
+						? new SKRect(alignmentOffset + unalignedX - caretThickness, y, alignmentOffset + unalignedX, y + line.lineHeight)
+						: new SKRect(cluster.Value.width + alignmentOffset + unalignedX, y, cluster.Value.width + alignmentOffset + unalignedX + caretThickness, y + line.lineHeight);
+				}
+			}
 		}
 
 		foreach (var entry in _colorToBlobBuilder)
@@ -858,6 +894,19 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 			using var textBlob = entry.Value.Build();
 			_spareDrawPaint.Color = entry.Key;
 			session.Canvas.DrawText(textBlob, 0, 0, _spareDrawPaint);
+		}
+
+		if (_text.Length == 0 && caret?.index == 0)
+		{
+			var alignmentOffset = GetAlignmentOffsetForLine(null);
+			caretRect = _rtl
+				? new SKRect(alignmentOffset - caret.Value.thickness, 0, alignmentOffset, _defaultFontDetails.LineHeight)
+				: new SKRect(alignmentOffset, 0, alignmentOffset + caret.Value.thickness, _defaultFontDetails.LineHeight);
+		}
+
+		if (caretRect is not null)
+		{
+			caret!.Value.brush.Paint(session.Canvas, session.Opacity, caretRect.Value);
 		}
 	}
 
@@ -929,14 +978,14 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 
 		if (index == 0)
 		{
-			double alignmentOffset = string.IsNullOrEmpty(_text) ? GetAlignmentOffset(0) : GetAlignmentOffsetForLine(_lines[0]);
+			double alignmentOffset = string.IsNullOrEmpty(_text) ? GetAlignmentOffsetForLine(null) : GetAlignmentOffsetForLine(_lines[0]);
 			return new Rect(alignmentOffset, 0, 0, _defaultFontDetails.LineHeight);
 		}
 
 		if (index == _text.Length)
 		{
 			var (alignmentOffset, lineWidth, height, y) = _endingNewLineLineHeight is { } endingNewLineLineHeight
-				? (GetAlignmentOffset(0), 0, endingNewLineLineHeight, _xyTable[^1].prefixSummedHeight)
+				? (GetAlignmentOffsetForLine(null), 0, endingNewLineLineHeight, _xyTable[^1].prefixSummedHeight)
 				: (GetAlignmentOffsetForLine(_lines[^1]), _lines[^1].width, _lines[^1].lineHeight, _xyTable[^1].prefixSummedHeight - _lines[^1].lineHeight);
 			return _rtl ?
 				new Rect(alignmentOffset, y, 0, height) :
@@ -1026,7 +1075,13 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 		}
 
 		var cluster = prefixSummedWidths[clusterIndex].cluster;
-		return cluster.start - (ignoreEndingNewLine && cluster == line.clusterLast.Value ? TrailingCRLFInLine(line) : 0);
+		var right = prefixSummedWidths[clusterIndex].sumUntilAfterCluster;
+		var left = right - cluster.width;
+		var closerToLeftEdge = p.X - GetAlignmentOffsetForLine(line) - left < right - (p.X - GetAlignmentOffsetForLine(line));
+		var index = cluster.rtl
+			? closerToLeftEdge ? cluster.end : cluster.start
+			: closerToLeftEdge ? cluster.start : cluster.end;
+		return index - (ignoreEndingNewLine && line.end == index ? TrailingCRLFInLine(line) : 0);
 	}
 
 	public Hyperlink? GetHyperlinkAt(Point point)
@@ -1166,19 +1221,39 @@ internal readonly partial struct UnicodeTextNew : IParsedText
 		{
 			return 0;
 		}
-		return line is null ? TrailingCRLFCount(_text, _text.Length) : TrailingCRLFCount(_text, _lines[^1].end);
+		return line is null ? TrailingCRLFCount(_text, _text.Length) : TrailingCRLFCount(_text, line.Value.end);
 	}
 
-	private float GetAlignmentOffsetForLine(Line line) => GetAlignmentOffset(line.widthWithoutTrailingSpaces);
-	private float GetAlignmentOffset(float lineWidth)
+	private float GetAlignmentOffsetForLine(Line? line)
 	{
+		var (lineWidth, lineWidthWithoutTrailingSpaces) = line is null ? (0, 0) : (line.Value.width, line.Value.widthWithoutTrailingSpaces);
 		var totalWidth = (float)_availableSize.Width;
-		return _textAlignment switch
+
+		float alignmentOffset;
+		// Trailing whitespace at the end of a line is assigned the paragraph embedding level
+		// So the trailing space is always on the left if RTL and always on the right if LTR
+		if (_rtl)
 		{
-			TextAlignment.Center when lineWidth <= totalWidth => (totalWidth - lineWidth) / 2,
-			TextAlignment.Right when lineWidth <= totalWidth => totalWidth - lineWidth,
-			_ => 0
-		};
+			alignmentOffset = _textAlignment switch
+			{
+				TextAlignment.Center when lineWidthWithoutTrailingSpaces <= totalWidth => (totalWidth - lineWidthWithoutTrailingSpaces) / 2,
+				TextAlignment.Right when lineWidthWithoutTrailingSpaces <= totalWidth => totalWidth - lineWidth,
+				_ => 0
+			};
+			alignmentOffset = Math.Min(alignmentOffset, totalWidth - lineWidth);
+		}
+		else
+		{
+			alignmentOffset = _textAlignment switch
+			{
+				TextAlignment.Center when lineWidthWithoutTrailingSpaces <= totalWidth => (totalWidth - lineWidthWithoutTrailingSpaces) / 2,
+				TextAlignment.Right when lineWidthWithoutTrailingSpaces <= totalWidth => totalWidth - lineWidthWithoutTrailingSpaces,
+				_ => 0
+			};
+			alignmentOffset = Math.Max(alignmentOffset, 0);
+		}
+
+		return alignmentOffset;
 	}
 
 	private static FontDetails? GetFallbackFont(int codepoint, float fontSize, FontWeight fontWeight, FontStretch fontStretch, FontStyle fontStyle, IFontCacheUpdateListener fontListener)
