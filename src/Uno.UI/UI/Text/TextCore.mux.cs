@@ -14,7 +14,7 @@ internal static class TextCore
 	internal static bool IsTextControl(DependencyObject element) =>
 		element is TextBlock ||
 		element is RichTextBlock ||
-		element is RichTextBlockOverflow
+		element is RichTextBlockOverflow ||
 		element is RichEditBox ||
 		element is TextBox ||
 		element is PasswordBox;
