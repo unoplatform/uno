@@ -3,8 +3,8 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
-#if false || false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if false || false || false || false || false || false || false
+	[global::Uno.NotImplemented]
 #endif
 	public partial class ListViewItemPresenter : global::Microsoft.UI.Xaml.Controls.ContentPresenter
 	{
@@ -1306,13 +1306,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 		}
 #endif
-#if false || false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ListViewItemPresenter() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter", "ListViewItemPresenter.ListViewItemPresenter()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter.ListViewItemPresenter()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter.ListViewItemPresenter()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter.CheckBoxBorderBrushProperty.get

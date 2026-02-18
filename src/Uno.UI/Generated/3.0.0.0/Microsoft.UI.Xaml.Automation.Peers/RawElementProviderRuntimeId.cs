@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial struct RawElementProviderRuntimeId
@@ -22,11 +22,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.Equals(Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.Equals(object)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.GetHashCode()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public uint Part1;
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public uint Part2;
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.Part1
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.Part2
 	}
 }

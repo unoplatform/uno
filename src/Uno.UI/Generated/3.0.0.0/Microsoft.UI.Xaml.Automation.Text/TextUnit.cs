@@ -3,17 +3,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Text
 {
-#if false
+#if false || false || false || false || false || false || false
 	public enum TextUnit
 	{
-
-		Character = 0,
-		Format = 1,
-		Word = 2,
-		Line = 3,
-		Paragraph = 4,
-		Page = 5,
-		Document = 6,
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.Text.TextUnit.Character
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.Text.TextUnit.Format
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.Text.TextUnit.Word
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.Text.TextUnit.Line
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.Text.TextUnit.Paragraph
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.Text.TextUnit.Page
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.Text.TextUnit.Document
 	}
 #endif
 }

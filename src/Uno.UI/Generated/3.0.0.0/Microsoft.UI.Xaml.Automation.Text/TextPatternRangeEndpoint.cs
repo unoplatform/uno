@@ -3,11 +3,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Text
 {
-#if false
+#if false || false || false || false || false || false || false
 	public enum TextPatternRangeEndpoint
 	{
-		Start = 0,
-		End = 1,
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.Text.TextPatternRangeEndpoint.Start
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.Text.TextPatternRangeEndpoint.End
 	}
 #endif
 }

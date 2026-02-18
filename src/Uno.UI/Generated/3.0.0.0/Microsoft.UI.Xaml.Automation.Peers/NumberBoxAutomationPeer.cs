@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class NumberBoxAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.AutomationPeer
+	public partial class NumberBoxAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.NumberBoxAutomationPeer.NumberBoxAutomationPeer(Microsoft.UI.Xaml.Controls.NumberBox)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.NumberBoxAutomationPeer.NumberBoxAutomationPeer(Microsoft.UI.Xaml.Controls.NumberBox)

@@ -239,16 +239,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Text
 		// Skipping already declared property TextAlignment
 		// Skipping already declared property TextDecorations
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Documents.TextHighlighter> TextHighlighters
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<TextHighlighter> TextBlock.TextHighlighters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CTextHighlighter%3E%20TextBlock.TextHighlighters");
-			}
-		}
-#endif
+		// Skipping already declared property TextHighlighters
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.TextLineBounds TextLineBounds

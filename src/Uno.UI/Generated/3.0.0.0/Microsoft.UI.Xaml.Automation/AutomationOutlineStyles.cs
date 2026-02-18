@@ -3,24 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation
 {
-#if false
+#if false || false || false || false || false || false || false
 	public enum AutomationOutlineStyles
 	{
-#if false
-		None = 0,
-#endif
-#if false
-		Outline = 1,
-#endif
-#if false
-		Shadow = 2,
-#endif
-#if false
-		Engraved = 3,
-#endif
-#if false
-		Embossed = 4,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationOutlineStyles.None
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationOutlineStyles.Outline
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationOutlineStyles.Shadow
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationOutlineStyles.Engraved
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationOutlineStyles.Embossed
 	}
 #endif
 }
