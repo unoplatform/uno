@@ -31,27 +31,27 @@ namespace Microsoft.UI.Xaml.Media
 		internal SKPath GetTransformedFilledSKPath()
 		{
 			var path = GetFilledSKPath();
-			if (path is null)
-			{
-				return null;
-			}
-
 			return ApplyTransformToPath(path);
 		}
 
 		private SKPath ApplyTransformToPath(SKPath path)
 		{
+			if (path is null)
+			{
+				return null;
+			}
+
 			if (Transform is { MatrixCore: var matrix } && !matrix.IsIdentity)
 			{
 				var skMatrix = matrix.ToSKMatrix();
-				var transformed = new SKPath(path);
-				transformed.Transform(skMatrix);
+				var transformed = new SKPath();
+				path.Transform(skMatrix, transformed);
 				return transformed;
 			}
 
 			return path;
 		}
 
-		internal virtual SkiaGeometrySource2D GetGeometrySource2D() => new SkiaGeometrySource2D(new SKPath(GetTransformedSKPath()));
+		internal virtual SkiaGeometrySource2D GetGeometrySource2D() => new SkiaGeometrySource2D(GetTransformedSKPath());
 	}
 }
