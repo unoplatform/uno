@@ -311,6 +311,46 @@ public class Given_McpUpstreamClient
 	}
 
 	// -------------------------------------------------------------------
+	// Exception path must fault the captured TCS, not the current one
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	[Description("When a connect fails after Reset, the exception must not pollute the new TCS")]
+	public void ExceptionAfterReset_MustNotPolluteFreshTcs()
+	{
+		var holder = new AtomicTcsHolder<string>();
+
+		// Simulate: ConnectOrDie captures a snapshot
+		var captured = holder.Capture();
+
+		// Simulate: concurrent Reset swaps in a fresh TCS and cancels the old one
+		holder.Reset();
+		captured.Task.IsCanceled.Should().BeTrue("Reset cancels the old TCS");
+
+		// Simulate: the old connect fails — TrySetException returns false (already canceled)
+		var faulted = captured.TrySetException(new InvalidOperationException("connect failed"));
+		faulted.Should().BeFalse("TCS was already in a terminal state");
+
+		// The critical invariant: the NEW TCS must remain untouched
+		holder.CurrentTask.IsCompleted.Should().BeFalse("the fresh TCS must not be affected by a stale exception");
+	}
+
+	[TestMethod]
+	[Description("TrySetResult after Reset returns false (TCS was canceled); callback should be skipped")]
+	public void TrySetResultAfterReset_ReturnsFalse_CallbackShouldBeSkipped()
+	{
+		var holder = new AtomicTcsHolder<string>();
+		var captured = holder.Capture();
+
+		holder.Reset(); // cancels old TCS
+
+		var setSucceeded = captured.TrySetResult("stale-connection");
+
+		setSucceeded.Should().BeFalse("Reset already canceled this TCS");
+		// The pattern: only invoke callback if TrySetResult returns true
+	}
+
+	// -------------------------------------------------------------------
 	// Helpers
 	// -------------------------------------------------------------------
 

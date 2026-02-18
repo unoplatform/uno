@@ -33,6 +33,10 @@ internal class McpUpstreamClient
 
 	private void OnServerStarted(string url)
 	{
+		// Capture the TCS snapshot before launching the async connect so that
+		// if ResetConnectionAsync swaps in a new TCS, the error goes to the
+		// correct (old) generation, not the fresh one.
+		var snapshotTcs = Volatile.Read(ref _clientCompletionSource);
 		_ = Task.Run(async () =>
 		{
 			try
@@ -42,7 +46,7 @@ internal class McpUpstreamClient
 			catch (Exception ex)
 			{
 				_logger.LogError(ex, "Failed to connect to upstream MCP server at {Url}", url);
-				Volatile.Read(ref _clientCompletionSource).TrySetException(ex);
+				snapshotTcs.TrySetException(ex);
 			}
 		}, _disposeCts.Token);
 	}
@@ -91,7 +95,14 @@ internal class McpUpstreamClient
 			var client = await McpClient.CreateAsync(clientTransport, options, cancellationToken: ct);
 			log.LogInformation("Connected to upstream: {Name} {Version}", client.ServerInfo.Name, client.ServerInfo.Version);
 
-			localTcs.TrySetResult(client);
+			if (!localTcs.TrySetResult(client))
+			{
+				// A concurrent ResetConnectionAsync already canceled this TCS.
+				// This connection is stale — dispose it and bail out.
+				log.LogWarning("Upstream connection completed but TCS was already canceled (stale connect after reset); disposing client");
+				await client.DisposeAsync();
+				return;
+			}
 
 			var tools = await client.ListToolsAsync(cancellationToken: ct);
 

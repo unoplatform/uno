@@ -154,4 +154,72 @@ public class MonitorDecisionsTests
 		guard.TryStart().Should().BeFalse();
 		guard.IsStarted.Should().BeTrue();
 	}
+
+	[TestMethod]
+	[Description("After Reset, the guard allows a new startup attempt")]
+	public void StartOnceGuard_AfterReset_AllowsNewStart()
+	{
+		var guard = new MonitorDecisions.StartOnceGuard();
+		guard.TryStart().Should().BeTrue();
+		guard.IsStarted.Should().BeTrue();
+
+		guard.Reset();
+
+		guard.IsStarted.Should().BeFalse("Reset should clear the started flag");
+		guard.TryStart().Should().BeTrue("a new TryStart should succeed after Reset");
+	}
+
+	[TestMethod]
+	[Description("Concurrent Reset + TryStart cycles remain thread-safe")]
+	public void StartOnceGuard_ConcurrentResetAndTryStart_IsThreadSafe()
+	{
+		var guard = new MonitorDecisions.StartOnceGuard();
+
+		// Run many cycles of TryStart/Reset concurrently — must never throw or deadlock
+		Parallel.For(0, 100, _ =>
+		{
+			guard.TryStart();
+			guard.Reset();
+		});
+
+		// After all cycles, Reset was the last possible operation — guard should be usable
+		guard.Reset(); // ensure clean state
+		guard.TryStart().Should().BeTrue("guard should be reusable after concurrent cycles");
+	}
+
+	// -------------------------------------------------------------------
+	// ShouldShortCircuitReadiness — early exit when process dies during startup
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	[Description("When process has exited, readiness probe should short-circuit immediately")]
+	public void ShouldShortCircuitReadiness_WhenProcessExited_ReturnsTrue()
+	{
+		using var process = Process.Start(new ProcessStartInfo
+		{
+			FileName = "cmd.exe",
+			Arguments = "/c exit 0",
+			CreateNoWindow = true,
+			UseShellExecute = false
+		})!;
+		process.WaitForExit();
+
+		MonitorDecisions.ShouldShortCircuitReadiness(process).Should().BeTrue();
+	}
+
+	[TestMethod]
+	[Description("When process is still running, readiness probe should continue polling")]
+	public void ShouldShortCircuitReadiness_WhenProcessRunning_ReturnsFalse()
+	{
+		using var process = Process.GetCurrentProcess();
+
+		MonitorDecisions.ShouldShortCircuitReadiness(process).Should().BeFalse();
+	}
+
+	[TestMethod]
+	[Description("When process is null (AmbientRegistry reuse), readiness probe should continue polling")]
+	public void ShouldShortCircuitReadiness_WhenProcessNull_ReturnsFalse()
+	{
+		MonitorDecisions.ShouldShortCircuitReadiness(null).Should().BeFalse();
+	}
 }

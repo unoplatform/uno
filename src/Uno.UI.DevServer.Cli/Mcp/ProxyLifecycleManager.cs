@@ -267,6 +267,7 @@ internal class ProxyLifecycleManager
 		if (string.IsNullOrWhiteSpace(normalized))
 		{
 			_logger.LogWarning("Unable to start DevServer monitor because the solution directory '{Directory}' is invalid", directory);
+			_devServerStartGuard.Reset();
 			FailToolCachePriming();
 			return;
 		}
@@ -287,6 +288,7 @@ internal class ProxyLifecycleManager
 		catch (Exception ex)
 		{
 			_logger.LogWarning(ex, "Unable to start DevServer monitor for solution directory '{Directory}'", normalized);
+			_devServerStartGuard.Reset();
 			FailToolCachePriming(ex);
 		}
 	}

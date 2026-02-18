@@ -59,6 +59,14 @@ internal static class MonitorDecisions
 	}
 
 	/// <summary>
+	/// Returns <c>true</c> when the server process has already exited, allowing
+	/// <see cref="DevServerMonitor"/> to short-circuit the readiness probe loop
+	/// instead of waiting the full timeout (~30 s).
+	/// </summary>
+	internal static bool ShouldShortCircuitReadiness(Process? serverProcess)
+		=> serverProcess is { HasExited: true };
+
+	/// <summary>
 	/// Determines whether the MCP client supports roots. Checks for the presence of
 	/// the Roots capability object (not just ListChanged), so clients like Junie that
 	/// declare Roots support without ListChanged are correctly detected.
@@ -69,7 +77,8 @@ internal static class MonitorDecisions
 	/// <summary>
 	/// Thread-safe guard ensuring that a start operation occurs exactly once,
 	/// even under concurrent calls from <c>EnsureDevServerStartedFromSolutionDirectory</c>
-	/// and <c>ProcessRoots</c>.
+	/// and <c>ProcessRoots</c>. Supports <see cref="Reset"/> so that a failed
+	/// startup (invalid directory, exception) allows a subsequent retry.
 	/// </summary>
 	internal sealed class StartOnceGuard
 	{
@@ -78,5 +87,10 @@ internal static class MonitorDecisions
 		public bool TryStart() => Interlocked.CompareExchange(ref _started, 1, 0) == 0;
 
 		public bool IsStarted => Volatile.Read(ref _started) == 1;
+
+		/// <summary>
+		/// Resets the guard to allow a new startup attempt after a failure.
+		/// </summary>
+		public void Reset() => Volatile.Write(ref _started, 0);
 	}
 }

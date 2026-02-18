@@ -245,6 +245,13 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 
 		for (int i = 0; i < maxAttempts; i++)
 		{
+			// Short-circuit: if the process already died, no point polling further
+			if (MonitorDecisions.ShouldShortCircuitReadiness(_serverProcess))
+			{
+				_logger.LogDebug("Server process has exited during readiness probe (attempt {Attempt}/{Max}); short-circuiting", i + 1, maxAttempts);
+				return false;
+			}
+
 			// Test all endpoints simultaneously
 			var tasks = endpoints.Select(async endpoint =>
 			{
