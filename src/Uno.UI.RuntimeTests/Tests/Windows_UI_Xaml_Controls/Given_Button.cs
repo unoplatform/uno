@@ -465,5 +465,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		public class NoopCommand() : DelegateCommand(null, null) { }
+
+		[TestMethod]
+		public async Task When_AccentButtonStyle_Has_Same_Height_As_Default()
+		{
+			var defaultButton = new Button { Content = "Default" };
+			var accentButton = (Button)XamlReader.Load("""
+				<Button xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						Content="Accent"
+						Style="{StaticResource AccentButtonStyle}" />
+				""");
+
+			var panel = new StackPanel
+			{
+				Children =
+				{
+					defaultButton,
+					accentButton,
+				}
+			};
+
+			await UITestHelper.Load(panel);
+
+			Assert.AreEqual(defaultButton.Padding, accentButton.Padding, "Padding should match between default and AccentButtonStyle buttons");
+			Assert.AreEqual(defaultButton.ActualHeight, accentButton.ActualHeight, "ActualHeight should match between default and AccentButtonStyle buttons");
+		}
 	}
 }
