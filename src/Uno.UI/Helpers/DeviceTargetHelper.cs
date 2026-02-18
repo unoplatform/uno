@@ -5,6 +5,11 @@ namespace Uno.UI.Helpers;
 
 internal static class DeviceTargetHelper
 {
+	private static readonly Lazy<bool> _usesAppleKeyboardLayout = new(() =>
+		OperatingSystem.IsMacOS() || OperatingSystem.IsIOS() || OperatingSystem.IsMacCatalyst() ||
+		(OperatingSystem.IsBrowser() &&
+			Uno.Foundation.WebAssemblyImports.EvalBool("/Mac|iPhone|iPad|iPod/.test(navigator?.platform ?? '')")));
+
 	internal static bool IsNonDesktop() =>
 		OperatingSystem.IsBrowser() ||
 		IsMobile();
@@ -28,17 +33,13 @@ internal static class DeviceTargetHelper
 	/// This covers native Apple platforms (macOS, iOS, Mac Catalyst) and WebAssembly
 	/// running in a browser on Apple devices (macOS, iPad, iPhone).
 	/// </summary>
-	internal static bool UsesAppleKeyboardLayout() =>
-		OperatingSystem.IsMacOS() || OperatingSystem.IsIOS() || OperatingSystem.IsMacCatalyst()
-		|| (OperatingSystem.IsBrowser()
-			&& Uno.Foundation.WebAssemblyImports.EvalBool(
-				"/Mac|iPhone|iPad|iPod/.test(navigator?.platform ?? '')"));
+	internal static bool UsesAppleKeyboardLayout => _usesAppleKeyboardLayout.Value;
 
 	/// <summary>
 	/// Gets the platform-appropriate modifier key for standard commands (Cut, Copy, Paste, etc.).
 	/// Returns VirtualKeyModifiers.Windows (Command key) on Apple keyboards,
 	/// VirtualKeyModifiers.Control on all others.
 	/// </summary>
-	internal static VirtualKeyModifiers PlatformCommandModifier { get; } =
-		UsesAppleKeyboardLayout() ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
+	internal static VirtualKeyModifiers PlatformCommandModifier =>
+		UsesAppleKeyboardLayout ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
 }
