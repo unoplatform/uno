@@ -12,6 +12,7 @@
 
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerHintGeneratorTask_v0" TaskFactory="TaskHostFactory" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerDefinitionMergerTask_v0" TaskFactory="TaskHostFactory" />
+	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.BindableTypeLinkerGeneratorTask_v0" TaskFactory="TaskHostFactory" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.EmbeddedResourceInjector.EmbeddedResourceInjectorTask_v0" TaskFactory="TaskHostFactory" />
 
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.ResourcesGenerationTask_v0" />
@@ -443,6 +444,35 @@
 		<ItemGroup>
 			<Compile Include="@(_HotReloadInfoTaskGeneratedFiles)" />
 		</ItemGroup>
+	</Target>
+
+	<!--
+	  Generate linker descriptor for [Bindable] types to preserve public properties in Native AOT
+	  -->
+	<Target Name="_UnoGenerateBindableTypeLinkerDescriptor"
+			Condition="'$(IsUnoHead)'=='true' and '$(PublishAot)'=='true'"
+			AfterTargets="CoreCompile"
+			BeforeTargets="PrepareForILLink">
+
+		<ItemGroup>
+			<!-- Filter ReferenceCopyLocalPaths as it may contain pdbs as well -->
+			<_BindableTypeLinkerReferencePaths Include="@(ReferencePath)" Condition="'%(Extension)' == '.dll'" />
+		</ItemGroup>
+
+		<PropertyGroup>
+			<_BindableTypeLinkerDescriptorFile>$(IntermediateOutputPath)Uno.Bindable.Descriptor.xml</_BindableTypeLinkerDescriptorFile>
+		</PropertyGroup>
+
+		<BindableTypeLinkerGeneratorTask_v0
+			AssemblyPath="@(IntermediateAssembly)"
+			OutputDescriptorPath="$(_BindableTypeLinkerDescriptorFile)"
+			ReferencePath="@(_BindableTypeLinkerReferencePaths)" />
+
+		<ItemGroup>
+			<TrimmerRootDescriptor Include="$(_BindableTypeLinkerDescriptorFile)" Condition="Exists('$(_BindableTypeLinkerDescriptorFile)')" />
+			<FileWrites Include="$(_BindableTypeLinkerDescriptorFile)" Condition="Exists('$(_BindableTypeLinkerDescriptorFile)')" />
+		</ItemGroup>
+
 	</Target>
 
 </Project>
