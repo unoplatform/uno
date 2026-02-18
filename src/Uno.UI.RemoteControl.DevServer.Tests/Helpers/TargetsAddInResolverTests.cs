@@ -66,7 +66,7 @@ public class TargetsAddInResolverTests
 		var resolver = new TargetsAddInResolver(_logger);
 
 		// Act
-		var results = resolver.ResolveAddIns(packagesJsonPath, [nugetCache]);
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
 
 		// Assert
 		results.Should().HaveCount(1);
@@ -100,7 +100,7 @@ public class TargetsAddInResolverTests
 		var resolver = new TargetsAddInResolver(_logger);
 
 		// Act
-		var results = resolver.ResolveAddIns(packagesJsonPath, [nugetCache]);
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
 
 		// Assert
 		results.Should().HaveCount(1);
@@ -131,7 +131,7 @@ public class TargetsAddInResolverTests
 		var resolver = new TargetsAddInResolver(_logger);
 
 		// Act
-		var results = resolver.ResolveAddIns(packagesJsonPath, [nugetCache]);
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
 
 		// Assert
 		results.Should().HaveCount(1);
@@ -162,7 +162,7 @@ public class TargetsAddInResolverTests
 		var resolver = new TargetsAddInResolver(_logger);
 
 		// Act
-		var results = resolver.ResolveAddIns(packagesJsonPath, [nugetCache]);
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
 
 		// Assert
 		results.Should().BeEmpty();
@@ -190,7 +190,7 @@ public class TargetsAddInResolverTests
 		var resolver = new TargetsAddInResolver(_logger);
 
 		// Act
-		var results = resolver.ResolveAddIns(packagesJsonPath, [nugetCache]);
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
 
 		// Assert
 		results.Should().HaveCount(1);
@@ -218,7 +218,7 @@ public class TargetsAddInResolverTests
 		var resolver = new TargetsAddInResolver(_logger);
 
 		// Act
-		var results = resolver.ResolveAddIns(packagesJsonPath, [nugetCache]);
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
 
 		// Assert
 		results.Should().BeEmpty();
@@ -245,7 +245,7 @@ public class TargetsAddInResolverTests
 		var resolver = new TargetsAddInResolver(_logger);
 
 		// Act
-		var results = resolver.ResolveAddIns(packagesJsonPath, [nugetCache]);
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
 
 		// Assert
 		results.Should().BeEmpty();
@@ -266,7 +266,7 @@ public class TargetsAddInResolverTests
 		var resolver = new TargetsAddInResolver(_logger);
 
 		// Act
-		var results = resolver.ResolveAddIns(packagesJsonPath, [nugetCache]);
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
 
 		// Assert
 		results.Should().BeEmpty();
@@ -305,7 +305,7 @@ public class TargetsAddInResolverTests
 		var resolver = new TargetsAddInResolver(_logger);
 
 		// Act
-		var results = resolver.ResolveAddIns(packagesJsonPath, [nugetCache]);
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
 
 		// Assert
 		results.Should().HaveCount(2);
@@ -322,7 +322,7 @@ public class TargetsAddInResolverTests
 		var resolver = new TargetsAddInResolver(_logger);
 
 		// Act
-		var results = resolver.ResolveAddIns(packagesJsonPath, [nugetCache]);
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
 
 		// Assert
 		results.Should().BeEmpty();
@@ -342,7 +342,7 @@ public class TargetsAddInResolverTests
 		var resolver = new TargetsAddInResolver(_logger);
 
 		// Act
-		var results = resolver.ResolveAddIns(packagesJsonPath, [nugetCache]);
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
 
 		// Assert
 		results.Should().BeEmpty();
@@ -379,7 +379,7 @@ public class TargetsAddInResolverTests
 		var resolver = new TargetsAddInResolver(_logger);
 
 		// Act
-		var results = resolver.ResolveAddIns(packagesJsonPath, [nugetCache]);
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
 
 		// Assert
 		results.Should().HaveCount(1);
@@ -411,7 +411,7 @@ public class TargetsAddInResolverTests
 		var resolver = new TargetsAddInResolver(_logger);
 
 		// Act
-		var results = resolver.ResolveAddIns(packagesJsonPath, [nugetCache]);
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
 
 		// Assert
 		results.Should().HaveCount(1);
@@ -428,7 +428,7 @@ public class TargetsAddInResolverTests
 		var resolver = new TargetsAddInResolver(_logger);
 
 		// Act
-		var results = resolver.ResolveAddIns(packagesJsonPath, [_tempDir]);
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [_tempDir]);
 
 		// Assert
 		results.Should().BeEmpty();
@@ -444,7 +444,7 @@ public class TargetsAddInResolverTests
 		var resolver = new TargetsAddInResolver(_logger);
 
 		// Act
-		var results = resolver.ResolveAddIns(packagesJsonPath, [_tempDir]);
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [_tempDir]);
 
 		// Assert
 		results.Should().BeEmpty();
@@ -475,7 +475,7 @@ public class TargetsAddInResolverTests
 		var resolver = new TargetsAddInResolver(_logger);
 
 		// Act
-		var results = resolver.ResolveAddIns(packagesJsonPath, [nugetCache]);
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
 
 		// Assert
 		results.Should().HaveCount(1);
@@ -518,7 +518,7 @@ public class TargetsAddInResolverTests
 		var resolver = new TargetsAddInResolver(_logger);
 
 		// Act
-		var results = resolver.ResolveAddIns(packagesJsonPath, [cache1, cache2]);
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [cache1, cache2]);
 
 		// Assert
 		results.Should().HaveCount(1);
@@ -546,7 +546,7 @@ public class TargetsAddInResolverTests
 		var resolver = new TargetsAddInResolver(_logger);
 
 		// Act
-		var results = resolver.ResolveAddIns(packagesJsonPath, [nugetCache]);
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
 
 		// Assert
 		results.Should().HaveCount(1);
@@ -597,7 +597,7 @@ public class TargetsAddInResolverTests
 		var resolver = new TargetsAddInResolver(_logger, manifestResolver);
 
 		// Act
-		var results = resolver.ResolveAddIns(packagesJsonPath, [nugetCache]);
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
 
 		// Assert - manifest DLL should win
 		results.Should().HaveCount(1);
@@ -640,12 +640,176 @@ public class TargetsAddInResolverTests
 		var resolver = new TargetsAddInResolver(_logger, manifestResolver);
 
 		// Act
-		var results = resolver.ResolveAddIns(packagesJsonPath, [nugetCache]);
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
 
 		// Assert - .targets DLL should be used since manifest fell through
 		results.Should().HaveCount(1);
 		results[0].EntryPointDll.Should().Be(targetsDll);
 		results[0].DiscoverySource.Should().Be("targets");
+	}
+
+	// -------------------------------------------------------------------
+	// project.assets.json merge tests
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	public void ResolveAddIns_ProjectAssets_ThirdPartyPackage_Resolved()
+	{
+		// Arrange - Package only in project.assets.json, not in packages.json
+		var (packagesJsonPath, nugetCache) = CreatePackagesJson(
+			("Uno.Sdk.Package", "1.0.0"));
+
+		// Create an empty SDK package (no add-in)
+		var sdkPackageDir = Path.Combine(nugetCache, "uno.sdk.package", "1.0.0");
+		Directory.CreateDirectory(sdkPackageDir);
+
+		// Create third-party add-in package in cache
+		var dllPath = CreatePackageWithTargets(
+			nugetCache, "thirdparty.addin", "2.0.0",
+			"""
+			<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(MSBuildThisFileDirectory)../tools/devserver/ThirdParty.dll" />
+				</ItemGroup>
+			</Project>
+			""",
+			dllRelativePath: "tools/devserver/ThirdParty.dll");
+
+		// Create project.assets.json listing the third-party package
+		var assetsPath = CreateProjectAssetsJson(
+			Path.Combine(_tempDir, "project"),
+			("ThirdParty.AddIn", "2.0.0"));
+
+		var resolver = new TargetsAddInResolver(_logger);
+
+		// Act
+		var results = resolver.ResolveAddIns(packagesJsonPath, [assetsPath], [nugetCache]);
+
+		// Assert
+		results.Should().Contain(r => r.PackageName == "ThirdParty.AddIn");
+		results.Should().Contain(r => r.EntryPointDll == dllPath);
+	}
+
+	[TestMethod]
+	public void ResolveAddIns_ProjectAssets_VersionConflict_PrefersProjectAssets()
+	{
+		// Arrange - Same package in both sources with different versions
+		var (packagesJsonPath, nugetCache) = CreatePackagesJson(
+			("Uno.Test.Pkg", "1.0.0"));
+
+		// Create v1 in cache (from packages.json)
+		CreatePackageWithTargets(
+			nugetCache, "uno.test.pkg", "1.0.0",
+			"""
+			<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(MSBuildThisFileDirectory)../tools/devserver/Test.dll" />
+				</ItemGroup>
+			</Project>
+			""",
+			dllRelativePath: "tools/devserver/Test.dll");
+
+		// Create v2 in cache (from project.assets.json - should win)
+		var dllV2 = CreatePackageWithTargets(
+			nugetCache, "uno.test.pkg", "2.0.0",
+			"""
+			<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(MSBuildThisFileDirectory)../tools/devserver/Test.dll" />
+				</ItemGroup>
+			</Project>
+			""",
+			dllRelativePath: "tools/devserver/Test.dll");
+
+		// project.assets.json says v2
+		var assetsPath = CreateProjectAssetsJson(
+			Path.Combine(_tempDir, "project"),
+			("Uno.Test.Pkg", "2.0.0"));
+
+		var resolver = new TargetsAddInResolver(_logger);
+
+		// Act
+		var results = resolver.ResolveAddIns(packagesJsonPath, [assetsPath], [nugetCache]);
+
+		// Assert - should use v2 from project.assets.json
+		results.Should().HaveCount(1);
+		results[0].PackageVersion.Should().Be("2.0.0");
+		results[0].EntryPointDll.Should().Be(dllV2);
+	}
+
+	[TestMethod]
+	public void ResolveAddIns_NoProjectAssets_FallsBackToPackagesJson()
+	{
+		// Arrange
+		var (packagesJsonPath, nugetCache) = CreatePackagesJson(
+			("Uno.Test.Fallback", "1.0.0"));
+
+		var dllPath = CreatePackageWithTargets(
+			nugetCache, "uno.test.fallback", "1.0.0",
+			"""
+			<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(MSBuildThisFileDirectory)../tools/devserver/Fallback.dll" />
+				</ItemGroup>
+			</Project>
+			""",
+			dllRelativePath: "tools/devserver/Fallback.dll");
+
+		var resolver = new TargetsAddInResolver(_logger);
+
+		// Act - null projectAssetsPaths
+		var results = resolver.ResolveAddIns(packagesJsonPath, null, [nugetCache]);
+
+		// Assert - works the same as before
+		results.Should().HaveCount(1);
+		results[0].EntryPointDll.Should().Be(dllPath);
+	}
+
+	[TestMethod]
+	public void ResolveAddIns_MultipleProjectAssets_MergesAll()
+	{
+		// Arrange
+		var (packagesJsonPath, nugetCache) = CreatePackagesJson();
+
+		// Create two third-party add-in packages
+		var dllA = CreatePackageWithTargets(
+			nugetCache, "thirdparty.a", "1.0.0",
+			"""
+			<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(MSBuildThisFileDirectory)../tools/devserver/A.dll" />
+				</ItemGroup>
+			</Project>
+			""",
+			dllRelativePath: "tools/devserver/A.dll");
+
+		var dllB = CreatePackageWithTargets(
+			nugetCache, "thirdparty.b", "2.0.0",
+			"""
+			<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(MSBuildThisFileDirectory)../tools/devserver/B.dll" />
+				</ItemGroup>
+			</Project>
+			""",
+			dllRelativePath: "tools/devserver/B.dll");
+
+		// Two separate project.assets.json files
+		var assets1 = CreateProjectAssetsJson(
+			Path.Combine(_tempDir, "project1"),
+			("ThirdParty.A", "1.0.0"));
+		var assets2 = CreateProjectAssetsJson(
+			Path.Combine(_tempDir, "project2"),
+			("ThirdParty.B", "2.0.0"));
+
+		var resolver = new TargetsAddInResolver(_logger);
+
+		// Act
+		var results = resolver.ResolveAddIns(packagesJsonPath, [assets1, assets2], [nugetCache]);
+
+		// Assert
+		results.Should().HaveCount(2);
+		results.Select(r => r.PackageName).Should().BeEquivalentTo(["ThirdParty.A", "ThirdParty.B"]);
 	}
 
 	#region Test Helpers
@@ -699,6 +863,33 @@ public class TargetsAddInResolverTests
 		}
 
 		return "";
+	}
+
+	private string CreateProjectAssetsJson(
+		string directory,
+		params (string name, string version)[] packages)
+	{
+		Directory.CreateDirectory(directory);
+
+		var libraries = new Dictionary<string, object>();
+		foreach (var (name, version) in packages)
+		{
+			libraries[$"{name}/{version}"] = new
+			{
+				type = "package",
+				path = $"{name.ToLowerInvariant()}/{version}"
+			};
+		}
+
+		var json = System.Text.Json.JsonSerializer.Serialize(new
+		{
+			version = 3,
+			libraries
+		});
+
+		var assetsPath = Path.Combine(directory, "project.assets.json");
+		File.WriteAllText(assetsPath, json);
+		return assetsPath;
 	}
 
 	#endregion

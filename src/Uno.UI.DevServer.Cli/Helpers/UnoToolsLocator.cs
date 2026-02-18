@@ -157,7 +157,8 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 			var addInStopwatch = Stopwatch.StartNew();
 			try
 			{
-				resolvedAddIns = _addInResolver.ResolveAddIns(packagesJsonPath);
+				var projectAssetsFiles = ProjectAssetsParser.FindProjectAssetsFiles(workDirectory, _logger);
+				resolvedAddIns = _addInResolver.ResolveAddIns(packagesJsonPath, projectAssetsFiles);
 				addInsDiscoveryMethod = resolvedAddIns.Count > 0
 					? string.Join("+", resolvedAddIns.Select(a => a.DiscoverySource).Distinct())
 					: null;

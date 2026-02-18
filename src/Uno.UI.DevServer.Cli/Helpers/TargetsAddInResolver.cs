@@ -24,20 +24,21 @@ internal partial class TargetsAddInResolver(ILogger<TargetsAddInResolver> logger
 	[GeneratedRegex(@"'([^']*)'\s*!=\s*'([^']*)'")]
 	private static partial Regex InequalityConditionRegex();
 
-	// TODO: Third-party add-ins only appear in project.assets.json, not currently scanned.
-	// See spec-appendix-b-addin-discovery.md section 1.b for the merge algorithm.
-	public List<ResolvedAddIn> ResolveAddIns(string packagesJsonPath, IReadOnlyList<string>? nugetCachePaths = null)
+	public List<ResolvedAddIn> ResolveAddIns(
+		string packagesJsonPath,
+		IReadOnlyList<string>? projectAssetsPaths = null,
+		IReadOnlyList<string>? nugetCachePaths = null)
 	{
 		var results = new List<ResolvedAddIn>();
 
 		List<(string packageName, string version)> packages;
 		try
 		{
-			packages = ParsePackagesJson(packagesJsonPath);
+			packages = BuildMergedPackageList(packagesJsonPath, projectAssetsPaths);
 		}
 		catch (Exception ex)
 		{
-			_logger.LogWarning(ex, "Failed to parse packages.json at {Path}", packagesJsonPath);
+			_logger.LogWarning(ex, "Failed to build merged package list from {Path}", packagesJsonPath);
 			return results;
 		}
 
@@ -104,6 +105,41 @@ internal partial class TargetsAddInResolver(ILogger<TargetsAddInResolver> logger
 		}
 
 		return results;
+	}
+
+	private List<(string packageName, string version)> BuildMergedPackageList(
+		string packagesJsonPath,
+		IReadOnlyList<string>? projectAssetsPaths)
+	{
+		// Start with packages.json (Uno SDK packages)
+		var merged = new Dictionary<string, (string packageName, string version)>(StringComparer.OrdinalIgnoreCase);
+
+		var packagesJsonPackages = ParsePackagesJson(packagesJsonPath);
+		foreach (var (name, version) in packagesJsonPackages)
+		{
+			merged[name] = (name, version);
+		}
+
+		// Merge project.assets.json packages (all NuGet-restored packages)
+		if (projectAssetsPaths is null || projectAssetsPaths.Count == 0)
+		{
+			_logger.LogDebug("No project.assets.json paths provided, using packages.json only");
+		}
+		else
+		{
+			foreach (var assetsPath in projectAssetsPaths)
+			{
+				var assetsPackages = ProjectAssetsParser.ParseLibraries(assetsPath, _logger);
+				foreach (var (name, version) in assetsPackages)
+				{
+					// project.assets.json wins on version conflicts (reflects actual NuGet resolution)
+					merged[name] = (name, version);
+				}
+			}
+		}
+
+		_logger.LogDebug("Merged package list: {Count} packages", merged.Count);
+		return merged.Values.ToList();
 	}
 
 	private List<(string packageName, string version)> ParsePackagesJson(string packagesJsonPath)

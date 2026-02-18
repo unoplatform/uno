@@ -38,6 +38,7 @@
 		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\TargetsAddInResolver.cs" Link="Helpers\TargetsAddInResolver.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\ResolvedAddIn.cs" Link="Helpers\ResolvedAddIn.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\NuGetCacheHelper.cs" Link="Helpers\NuGetCacheHelper.cs" />
+		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\ProjectAssetsParser.cs" Link="Helpers\ProjectAssetsParser.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\DiscoveryInfo.cs" Link="Helpers\DiscoveryInfo.cs" />
 
 		<!-- Link DotNetVersionCache source for unit testing -->
