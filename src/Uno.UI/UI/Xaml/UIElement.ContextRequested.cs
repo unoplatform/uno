@@ -9,6 +9,9 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using System;
+#if __SKIA__
+using Microsoft.UI.Xaml.Internal;
+#endif
 using Uno.UI.Text;
 
 namespace Microsoft.UI.Xaml;
@@ -111,16 +114,33 @@ partial class UIElement
 
 			if (gotPoint)
 			{
-				var showOptions = new FlyoutShowOptions
+#if __SKIA__
+				if (isTextControl || isTextEditControl)
 				{
-					Position = point,
-					ShowMode = FlyoutShowMode.Standard
-				};
-				flyout.ShowAt(frameworkElement, showOptions);
+					TextControlFlyoutHelper.ShowAt(flyout, frameworkElement, point, FlyoutShowMode.Standard);
+				}
+				else
+#endif
+				{
+					flyout.ShowAt(frameworkElement, new FlyoutShowOptions
+					{
+						Position = point,
+						ShowMode = FlyoutShowMode.Standard
+					});
+				}
 			}
 			else
 			{
-				flyout.ShowAt(frameworkElement);
+#if __SKIA__
+				if (isTextControl || isTextEditControl)
+				{
+					TextControlFlyoutHelper.ShowAt(flyout, frameworkElement, default, FlyoutShowMode.Standard);
+				}
+				else
+#endif
+				{
+					flyout.ShowAt(frameworkElement);
+				}
 			}
 		}
 		else
@@ -136,7 +156,16 @@ partial class UIElement
 				}
 			}
 
-			flyout.ShowAt(frameworkElement);
+#if __SKIA__
+			if (isTextControl || isTextEditControl)
+			{
+				TextControlFlyoutHelper.ShowAt(flyout, frameworkElement, default, FlyoutShowMode.Standard);
+			}
+			else
+#endif
+			{
+				flyout.ShowAt(frameworkElement);
+			}
 		}
 
 		args.Handled = true;
