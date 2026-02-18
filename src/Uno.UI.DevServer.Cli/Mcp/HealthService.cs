@@ -99,6 +99,8 @@ internal class HealthService(
 			});
 		}
 
+		issues.AddRange(DiscoveryIssueMapper.MapDiscoveryIssues(devServerMonitor.LastDiscoveryInfo));
+
 		var toolCount = 0;
 		if (upstreamConnected)
 		{
