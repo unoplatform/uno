@@ -9,6 +9,7 @@ using Microsoft.UI.Composition;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Internal;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
@@ -456,7 +457,14 @@ public partial class TextBox
 				Clipboard.ContentChanged += OnClipboardContentChanged;
 				_clipboardChangeSubscription.Disposable = Disposable.Create(() => Clipboard.ContentChanged -= OnClipboardContentChanged);
 			}
-			else if (!_forceFocusedVisualState)
+			else
+			{
+				// Ported from: TextBoxBase.cpp UpdateFocusState (lines 4996-5008)
+				// Check if focus is moving to a text control flyout before deciding to unfocus.
+				_forceFocusedVisualState = ShouldForceFocusedVisualState();
+			}
+
+			if (focusState == FocusState.Unfocused && !_forceFocusedVisualState)
 			{
 				TrySetCurrentlyTyping(false);
 				CaretMode = CaretDisplayMode.ThumblessCaretHidden;
@@ -472,6 +480,22 @@ public partial class TextBox
 			}
 			UpdateDisplaySelection();
 		}
+	}
+
+	// Ported from: TextBoxBase.cpp ShouldForceFocusedVisualState (lines 5286-5290)
+	private bool ShouldForceFocusedVisualState()
+	{
+		return TextControlFlyoutHelper.IsGettingFocus(SelectionFlyout, this)
+			|| TextControlFlyoutHelper.IsGettingFocus(ContextFlyout, this);
+	}
+
+	// Ported from: TextBoxBase.cpp ForceFocusLoss (lines 5551-5560)
+	internal void ForceFocusLoss()
+	{
+		_forceFocusedVisualState = false;
+		// Trigger the unfocus behavior that was deferred
+		OnFocusStateChangedPartial(FocusState.Unfocused, initial: false);
+		UpdateVisualState();
 	}
 
 #if false // Removing temporarily. We'll need to add it back.
@@ -627,7 +651,7 @@ public partial class TextBox
 		_isSelectionFlyoutUpdateQueued = false;
 
 		// Line 5383: Only shows SelectionFlyout if ContextFlyout is NOT open
-		if (!HasSelectionFlyout() || (ContextFlyout?.IsOpen ?? false))
+		if (!HasSelectionFlyout() || TextControlFlyoutHelper.IsOpen(ContextFlyout))
 		{
 			return;
 		}
@@ -684,11 +708,10 @@ public partial class TextBox
 				position = new Point(position.X, transformedTop.Y);
 			}
 
-			SelectionFlyout?.ShowAt(this, new FlyoutShowOptions
+			if (SelectionFlyout is { } selectionFlyout)
 			{
-				Position = position,
-				ShowMode = showMode
-			});
+				TextControlFlyoutHelper.ShowAt(selectionFlyout, this, position, showMode);
+			}
 		}
 		else
 		{

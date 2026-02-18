@@ -19,6 +19,7 @@ using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Media;
 using Uno.UI.Xaml.Core.Scaling;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Internal;
 using Microsoft.UI.Input;
 
 #nullable enable
@@ -57,8 +58,16 @@ namespace Microsoft.UI.Xaml.Controls
 			DoubleTapped += static (s, e) => ((TextBlock)s).OnDoubleTapped(e);
 			KeyDown += static (s, e) => ((TextBlock)s).OnKeyDown(e);
 
-			GotFocus += (_, _) => UpdateSelectionRendering();
-			LostFocus += (_, _) => UpdateSelectionRendering();
+			GotFocus += (_, _) =>
+			{
+				_forceFocusedForContextFlyout = false;
+				UpdateSelectionRendering();
+			};
+			LostFocus += (_, _) =>
+			{
+				_forceFocusedForContextFlyout = ShouldForceFocusedVisualState();
+				UpdateSelectionRendering();
+			};
 		}
 
 		internal TextBox? OwningTextBox { private get; init; }
@@ -156,6 +165,20 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				RenderSelection = IsTextSelectionEnabled && (IsFocused || _forceFocusedForContextFlyout);
 			}
+		}
+
+		// Ported from: TextSelectionManager.cpp ShouldForceFocusedVisualState (lines 3422-3428)
+		private bool ShouldForceFocusedVisualState()
+		{
+			return TextControlFlyoutHelper.IsGettingFocus(SelectionFlyout, this)
+				|| TextControlFlyoutHelper.IsGettingFocus(ContextFlyout, this);
+		}
+
+		// Ported from: TextSelectionManager.cpp ForceFocusLoss (lines 3430-3444)
+		internal void ForceFocusLoss()
+		{
+			_forceFocusedForContextFlyout = false;
+			UpdateSelectionRendering();
 		}
 
 		protected override Size ArrangeOverride(Size finalSize)
@@ -462,7 +485,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// Reset the queued flag
 			_isSelectionFlyoutUpdateQueued = false;
 
-			if (!HasSelectionFlyout() || (ContextFlyout?.IsOpen ?? false))
+			if (!HasSelectionFlyout() || TextControlFlyoutHelper.IsOpen(ContextFlyout))
 			{
 				return;
 			}
@@ -504,11 +527,10 @@ namespace Microsoft.UI.Xaml.Controls
 				// Adjust for padding
 				position = new Point(position.X, selectionTop + Padding.Top);
 
-				SelectionFlyout?.ShowAt(this, new FlyoutShowOptions
+				if (SelectionFlyout is { } selectionFlyout)
 				{
-					Position = position,
-					ShowMode = showMode
-				});
+					TextControlFlyoutHelper.ShowAt(selectionFlyout, this, position, showMode);
+				}
 			}
 			else
 			{
