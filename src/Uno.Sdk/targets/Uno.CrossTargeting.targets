@@ -33,8 +33,8 @@
 		<None Include="**\*.UIKit.cs" Exclude="bin\**\*.UIKit.cs;obj\**\*.UIKit.cs" Condition="!$(IsAppleUIKit)" />
 		<Compile Remove="**\*.UIKit.cs" Condition="!$(IsAppleUIKit)" />
 		
-		<None Include="**\*.Apple.cs" Exclude="bin\**\*.apple.cs;obj\**\*.Apple.cs" Condition="!$(IsMacOS) and !$(IsAppleUIKit)" />
-		<Compile Remove="**\*.Apple.cs" Condition="!$(IsMacOS) and !$(IsAppleUIKit)" />
+		<None Include="**\*.Apple.cs" Exclude="bin\**\*.apple.cs;obj\**\*.Apple.cs" Condition="!$(IsAppleUIKit)" />
+		<Compile Remove="**\*.Apple.cs" Condition="!$(IsAppleUIKit)" />
 
 		<None Include="**\*.Android.cs" Exclude="bin\**\*.Android.cs;obj\**\*.Android.cs" Condition="!$(IsAndroid)" />
 		<Compile Remove="**\*.Android.cs" Condition="!$(IsAndroid)" />
