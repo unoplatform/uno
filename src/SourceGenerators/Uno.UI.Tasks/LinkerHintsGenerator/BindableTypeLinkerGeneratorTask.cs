@@ -191,50 +191,68 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				// Iterate over all public properties
 				foreach (var property in bindableType.Properties.Where(p => p.GetMethod?.IsPublic == true))
 				{
-					var propertyType = property.PropertyType;
-
-					// Resolve the type
-					TypeDefinition? resolvedType = null;
-					try
-					{
-						resolvedType = propertyType.Resolve();
-					}
-					catch (Exception ex)
-					{
-						Log.LogMessage(MessageImportance.Low, $"Failed to resolve type {propertyType.FullName}: {ex.Message}");
-						continue;
-					}
-
-					if (resolvedType == null)
-					{
-						continue;
-					}
-
-					// Skip if type already has Bindable attribute
-					if (HasBindableAttribute(resolvedType))
-					{
-						Log.LogMessage(MessageImportance.Low, $"Skipping {resolvedType.FullName} - already has Bindable attribute");
-						continue;
-					}
-
-					// Skip if type has no properties
-					if (!resolvedType.Properties.Any())
-					{
-						Log.LogMessage(MessageImportance.Low, $"Skipping {resolvedType.FullName} - has no properties");
-						continue;
-					}
-
-					// Add to referenced types
-					if (!referencedTypes.ContainsKey(resolvedType.FullName))
-					{
-						referencedTypes[resolvedType.FullName] = resolvedType;
-						Log.LogMessage(DefaultLogMessageLevel, $"BindableTypeLinkerGenerator: Adding referenced type {resolvedType.FullName}");
-					}
+					ProcessPropertyType(property.PropertyType, referencedTypes);
 				}
 			}
 
 			Log.LogMessage(DefaultLogMessageLevel, $"BindableTypeLinkerGenerator: Found {referencedTypes.Count} referenced types to preserve");
 			return referencedTypes;
+		}
+
+		private void ProcessPropertyType(TypeReference propertyType, Dictionary<string, TypeDefinition> referencedTypes)
+		{
+			// Resolve the type
+			TypeDefinition? resolvedType = null;
+			try
+			{
+				resolvedType = propertyType.Resolve();
+			}
+			catch (Exception ex)
+			{
+				Log.LogMessage(MessageImportance.Low, $"Failed to resolve type {propertyType.FullName}: {ex.Message}");
+				return;
+			}
+
+			if (resolvedType == null)
+			{
+				return;
+			}
+
+			// Process the main type
+			AddTypeIfNeeded(resolvedType, referencedTypes);
+
+			// Process generic arguments (e.g., List<Entity> should also process Entity)
+			if (propertyType is GenericInstanceType genericType)
+			{
+				foreach (var genericArg in genericType.GenericArguments)
+				{
+					ProcessPropertyType(genericArg, referencedTypes);
+				}
+			}
+		}
+
+		private void AddTypeIfNeeded(TypeDefinition resolvedType, Dictionary<string, TypeDefinition> referencedTypes)
+		{
+			// Skip if type already has Bindable attribute
+			if (HasBindableAttribute(resolvedType))
+			{
+				Log.LogMessage(MessageImportance.Low, $"Skipping {resolvedType.FullName} - already has Bindable attribute");
+				return;
+			}
+
+			// Skip if type has no properties
+			if (!resolvedType.Properties.Any())
+			{
+				Log.LogMessage(MessageImportance.Low, $"Skipping {resolvedType.FullName} - has no properties");
+				return;
+			}
+
+			// Add to referenced types
+			if (!referencedTypes.ContainsKey(resolvedType.FullName))
+			{
+				referencedTypes[resolvedType.FullName] = resolvedType;
+				Log.LogMessage(DefaultLogMessageLevel, $"BindableTypeLinkerGenerator: Adding referenced type {resolvedType.FullName}");
+			}
 		}
 
 		private void GenerateLinkerDescriptor(Dictionary<string, TypeDefinition> referencedTypes)
