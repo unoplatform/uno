@@ -4496,6 +4496,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					? ", new [] {" + string.Join(", ", formattedPaths) + "}"
 					: "";
 
+				string? sourceTypeExpression = null;
+
 				string buildBindBack()
 				{
 					if (modeMember == "TwoWay")
@@ -4516,6 +4518,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							if (contextFunction.Properties.Length == 1)
 							{
 								var targetPropertyType = GetXBindPropertyPathType(contextFunction.Properties[0], dataTypeSymbol, bindNode).GetFullyQualifiedTypeIncludingGlobal();
+								sourceTypeExpression = targetPropertyType;
 								var contextFunctionLValue = XBindExpressionParser.Rewrite("___tctx", rawFunction, dataTypeSymbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: false, _xBindCounter, FindType, targetPropertyType);
 								if (contextFunctionLValue.MethodDeclaration is not null)
 								{
@@ -4539,7 +4542,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				return $".BindingApply(___b => /*defaultBindMode{GetDefaultBindMode()}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is {GetType(dataType).GetFullyQualifiedTypeIncludingGlobal()} ___tctx ? ({contextFunction.Expression}) : (false, default), {buildBindBack()} {pathsArray}))";
+				var bindBackResult = buildBindBack();
+				var sourceTypeArg = sourceTypeExpression != null ? $", typeof({sourceTypeExpression})" : "";
+
+				return $".BindingApply(___b => /*defaultBindMode{GetDefaultBindMode()}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is {GetType(dataType).GetFullyQualifiedTypeIncludingGlobal()} ___tctx ? ({contextFunction.Expression}) : (false, default), {bindBackResult}{sourceTypeArg}{pathsArray}))";
 			}
 			else
 			{
@@ -4556,6 +4562,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					RegisterXBindTryGetDeclaration(rewrittenRValue.MethodDeclaration);
 				}
+
+				string? sourceTypeExpression = null;
 
 				string buildBindBack()
 				{
@@ -4577,6 +4585,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							if (rewrittenRValue.Properties.Length == 1)
 							{
 								var targetPropertyType = GetXBindPropertyPathType(rewrittenRValue.Properties[0], rootType: null, bindNode).GetFullyQualifiedTypeIncludingGlobal();
+								sourceTypeExpression = targetPropertyType;
 
 								if (string.IsNullOrEmpty(rawFunction))
 								{
@@ -4629,7 +4638,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					? ", new [] {" + string.Join(", ", formattedPaths) + "}"
 					: "";
 
-				return $".BindingApply({sourceInstance}, (___b, ___t) =>  /*defaultBindMode{GetDefaultBindMode()} {rawFunction}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => {bindFunction}, {buildBindBack()} {pathsArray}))";
+				var bindBackResult = buildBindBack();
+				var sourceTypeArg = sourceTypeExpression != null ? $", typeof({sourceTypeExpression})" : "";
+
+				return $".BindingApply({sourceInstance}, (___b, ___t) =>  /*defaultBindMode{GetDefaultBindMode()} {rawFunction}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => {bindFunction}, {bindBackResult}{sourceTypeArg}{pathsArray}))";
 			}
 		}
 
