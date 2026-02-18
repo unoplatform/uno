@@ -734,27 +734,27 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 	}
 
-	private static (IEnumerable<LinkedListNode<Cluster>> possibleTrimPoints, int nextLookupStart) EnumeratePossibleWordTrimmingBreaks(Line line, List<int> lineBreakOpportunities, int lineBreakOpportunitieslookupStart)
+	private static (IEnumerable<LinkedListNode<Cluster>> possibleTrimPoints, int nextLookupStart) EnumeratePossibleWordTrimmingBreaks(Line line, List<int> lineBreakOpportunities, int lineBreakOpportunitiesLookupStart)
 	{
 		var possibleTrimPoints = new Stack<LinkedListNode<Cluster>>();
-		var currectCluster = line.clusterStart;
-		for (var currentlineBreakOpportunity = lineBreakOpportunities[lineBreakOpportunitieslookupStart];
-			 lineBreakOpportunitieslookupStart < lineBreakOpportunities.Count && currentlineBreakOpportunity <= line.end;
-			 lineBreakOpportunitieslookupStart++)
+		var currentCluster = line.clusterStart;
+		for (var currentlineBreakOpportunity = lineBreakOpportunities[lineBreakOpportunitiesLookupStart];
+			 lineBreakOpportunitiesLookupStart < lineBreakOpportunities.Count && currentlineBreakOpportunity <= line.end;
+			 lineBreakOpportunitiesLookupStart++)
 		{
-			currentlineBreakOpportunity = lineBreakOpportunities[lineBreakOpportunitieslookupStart];
-			while (currectCluster.Value.end < currentlineBreakOpportunity)
+			currentlineBreakOpportunity = lineBreakOpportunities[lineBreakOpportunitiesLookupStart];
+			while (currentCluster.Value.end < currentlineBreakOpportunity)
 			{
-				currectCluster = currectCluster.Next!;
+				currentCluster = currentCluster.Next!;
 			}
 
-			if (currectCluster.Value.end == currentlineBreakOpportunity)
+			if (currentCluster.Value.end == currentlineBreakOpportunity)
 			{
-				possibleTrimPoints.Push(currectCluster);
+				possibleTrimPoints.Push(currentCluster);
 			}
 		}
 
-		return (possibleTrimPoints, lineBreakOpportunitieslookupStart);
+		return (possibleTrimPoints, lineBreakOpportunitiesLookupStart);
 	}
 
 	private static List<(int start, int end, FontDetails fontDetails, FlowDirection direction)> EnumerateShapingRuns(
