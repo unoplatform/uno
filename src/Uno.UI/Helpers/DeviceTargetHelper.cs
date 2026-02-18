@@ -6,7 +6,7 @@ namespace Uno.UI.Helpers;
 internal static class DeviceTargetHelper
 {
 	private static readonly Lazy<bool> _usesAppleKeyboardLayout = new(() =>
-		OperatingSystem.IsMacOS() || OperatingSystem.IsIOS() || OperatingSystem.IsMacCatalyst() ||
+		OperatingSystem.IsMacOS() || OperatingSystem.IsIOS() || OperatingSystem.IsMacCatalyst() || OperatingSystem.IsTvOS() ||
 		(OperatingSystem.IsBrowser() &&
 			Uno.Foundation.WebAssemblyImports.EvalBool("/Mac|iPhone|iPad|iPod/.test(navigator?.platform ?? '')")));
 
