@@ -108,8 +108,6 @@ namespace Uno.UWPSyncGenerator
 			"Windows.UI.Xaml",
 			"Windows.UI.Composition",
 			"Windows.UI.Dispatching",
-			"Microsoft.UI.Xaml",
-			"Microsoft.Web",
 			"Microsoft.Foundation",
 			"Microsoft.UI.Xaml",
 			"Microsoft.UI.Composition",
