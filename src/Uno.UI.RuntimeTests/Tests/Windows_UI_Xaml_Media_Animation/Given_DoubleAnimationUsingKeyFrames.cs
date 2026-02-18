@@ -83,11 +83,18 @@ public class Given_DoubleAnimationUsingKeyFrames
 		Assert.AreEqual(1.0, border.Opacity, "Initial opacity should be 1.0");
 
 		// Trigger visual state with keyframe animations that use StaticResource values
-		VisualStateManager.GoToState(control, "Animated", useTransitions: true);
+		Assert.IsTrue(
+			VisualStateManager.GoToState(control, "Animated", useTransitions: true),
+			"Failed to transition to 'Animated' visual state.");
 
-		// Wait for the animations to apply
+		// Wait for the animations to apply by observing the expected final values
 		await WindowHelper.WaitForIdle();
-		await Task.Delay(500);
+		await WindowHelper.WaitFor(() => Math.Abs(border.Opacity - 0.5) < 0.01);
+		await WindowHelper.WaitFor(() =>
+		{
+			var currentBrush = border.Background as SolidColorBrush;
+			return currentBrush is not null && currentBrush.Color == Colors.Green;
+		});
 
 		// Verify the DoubleAnimationUsingKeyFrames applied the StaticResource value (0.5)
 		Assert.AreEqual(0.5, border.Opacity, 0.01, "Opacity should be animated to 0.5 from StaticResource");
