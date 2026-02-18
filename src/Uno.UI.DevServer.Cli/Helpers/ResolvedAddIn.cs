@@ -1,6 +1,6 @@
 namespace Uno.UI.DevServer.Cli.Helpers;
 
-internal sealed record ResolvedAddIn
+public sealed record ResolvedAddIn
 {
 	public required string PackageName { get; init; }
 	public required string PackageVersion { get; init; }

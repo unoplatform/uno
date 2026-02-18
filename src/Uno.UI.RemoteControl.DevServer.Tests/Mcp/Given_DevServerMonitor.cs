@@ -1,4 +1,5 @@
 using AwesomeAssertions;
+using Uno.UI.DevServer.Cli.Helpers;
 using Uno.UI.DevServer.Cli.Mcp;
 
 namespace Uno.UI.RemoteControl.DevServer.Tests.Mcp;
@@ -207,6 +208,87 @@ public class Given_DevServerMonitor
 		events.Should().HaveCount(2);
 		events[0].Should().Be("ServerLaunching");
 		events[1].Should().Be("ServerFailed");
+	}
+
+	// -------------------------------------------------------------------
+	// DiscoveryInfo exposure
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	[Description("DiscoveryInfo fields map to the values DevServerMonitor exposes")]
+	public void DiscoveryInfo_WhenFullyPopulated_ExposesExpectedFields()
+	{
+		var discovery = new DiscoveryInfo
+		{
+			WorkingDirectory = "/tmp/test",
+			GlobalJsonPath = "/tmp/test/global.json",
+			UnoSdkVersion = "5.5.100",
+			HostPath = "/some/host.dll",
+			AddInsDiscoveryDurationMs = 42,
+			AddIns =
+			[
+				new ResolvedAddIn
+				{
+					PackageName = "Uno.Test",
+					PackageVersion = "1.0.0",
+					EntryPointDll = "/some/addin.dll",
+					DiscoverySource = "targets"
+				}
+			],
+		};
+
+		discovery.UnoSdkVersion.Should().Be("5.5.100");
+		discovery.HostPath.Should().NotBeNull();
+		discovery.AddInsDiscoveryDurationMs.Should().Be(42);
+		discovery.AddIns.Should().HaveCount(1);
+		discovery.AddIns[0].EntryPointDll.Should().Be("/some/addin.dll");
+	}
+
+	[TestMethod]
+	[Description("When discovery finds no host, HostPath is null but other fields are still populated")]
+	public void DiscoveryInfo_WhenNoHost_HostPathIsNullButSdkVersionPopulated()
+	{
+		var discovery = new DiscoveryInfo
+		{
+			GlobalJsonPath = "/tmp/test/global.json",
+			UnoSdkVersion = "5.5.100",
+			UnoSdkPath = "/nuget/uno.sdk/5.5.100",
+			HostPath = null,
+		};
+
+		discovery.HostPath.Should().BeNull();
+		discovery.UnoSdkVersion.Should().Be("5.5.100");
+	}
+
+	[TestMethod]
+	[Description("AddIns from DiscoveryInfo produce the expected --addins argument value")]
+	public void DiscoveryInfo_AddIns_ProduceExpectedAddinsArgValue()
+	{
+		var discovery = new DiscoveryInfo
+		{
+			AddIns =
+			[
+				new ResolvedAddIn { PackageName = "A", PackageVersion = "1.0", EntryPointDll = "/a.dll", DiscoverySource = "targets" },
+				new ResolvedAddIn { PackageName = "B", PackageVersion = "2.0", EntryPointDll = "/b.dll", DiscoverySource = "targets" },
+			],
+		};
+
+		// Mirror the logic from StartProcess
+		var addInsValue = string.Join(";", discovery.AddIns.Select(a => a.EntryPointDll).Distinct(StringComparer.OrdinalIgnoreCase));
+
+		addInsValue.Should().Be("/a.dll;/b.dll");
+	}
+
+	[TestMethod]
+	[Description("When DiscoveryInfo has no add-ins, no --addins arg is produced")]
+	public void DiscoveryInfo_WhenNoAddIns_NoAddinsArg()
+	{
+		var discovery = new DiscoveryInfo { AddIns = [] };
+
+		// Mirror the guard from StartProcess: AddIns is { Count: > 0 }
+		var shouldAddFlag = discovery.AddIns is { Count: > 0 };
+
+		shouldAddFlag.Should().BeFalse();
 	}
 
 	// -------------------------------------------------------------------

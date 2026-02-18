@@ -1,6 +1,6 @@
 namespace Uno.UI.DevServer.Cli.Helpers;
 
-internal sealed class DiscoveryInfo
+public sealed class DiscoveryInfo
 {
 	/// <summary>
 	/// Gets the working directory used for discovery.

@@ -20,6 +20,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 	private Task? _monitor;
 	private string? _unoSdkVersion;
 	private long _discoveryDurationMs;
+	private DiscoveryInfo? _lastDiscoveryInfo;
 	private Process? _serverProcess;
 
 	public event Action<string>? ServerStarted;
@@ -29,6 +30,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 
 	public string? UnoSdkVersion => _unoSdkVersion;
 	public long DiscoveryDurationMs => _discoveryDurationMs;
+	public DiscoveryInfo? LastDiscoveryInfo => _lastDiscoveryInfo;
 
 	internal void StartMonitoring(string currentDirectory, int port, List<string> forwardedArgs)
 	{
@@ -91,13 +93,15 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 
 				if (solutionFiles.Length != 0)
 				{
-					// If we don't have a dev server host, we can't start a DevServer yet.
+					// Run full discovery to get DiscoveryInfo (used by health reports)
 					var discoveryStopwatch = System.Diagnostics.Stopwatch.StartNew();
-					var hostPath = await _services
-						.GetRequiredService<UnoToolsLocator>()
-						.ResolveHostExecutableAsync(_currentDirectory);
+					var locator = _services.GetRequiredService<UnoToolsLocator>();
+					var discovery = await locator.DiscoverAsync(_currentDirectory);
 					discoveryStopwatch.Stop();
+					_lastDiscoveryInfo = discovery;
+					_unoSdkVersion = discovery.UnoSdkVersion;
 					_discoveryDurationMs = discoveryStopwatch.ElapsedMilliseconds;
+					var hostPath = discovery.HostPath;
 
 					if (hostPath is null)
 					{
@@ -293,16 +297,11 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 			args.Add(solution);
 		}
 
-		// Resolve add-ins via convention-based discovery
+		// Use add-ins from the discovery info (already resolved in RunMonitor)
 		try
 		{
-			var locator = _services.GetRequiredService<UnoToolsLocator>();
-			var discovery = await locator.DiscoverAsync(workingDirectory);
-			_unoSdkVersion = discovery.UnoSdkVersion;
-			if (discovery.PackagesJsonPath is not null)
+			if (_lastDiscoveryInfo?.AddIns is { Count: > 0 } addIns)
 			{
-				var resolver = _services.GetRequiredService<TargetsAddInResolver>();
-				var addIns = resolver.ResolveAddIns(discovery.PackagesJsonPath);
 				var addInsValue = string.Join(";", addIns.Select(a => a.EntryPointDll).Distinct(StringComparer.OrdinalIgnoreCase));
 				args.Add("--addins");
 				args.Add(addInsValue);
@@ -311,7 +310,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 		}
 		catch (Exception ex)
 		{
-			_logger.LogWarning(ex, "Convention-based add-in discovery failed, server will use MSBuild fallback");
+			_logger.LogWarning(ex, "Add-in resolution failed, server will use MSBuild fallback");
 		}
 
 		args.AddRange(_forwardedArgs);
