@@ -134,17 +134,19 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnUnloaded();
 
-			m_unloadedEventHandler.Disposable = null;
-			m_primaryCommandsChangedEventHandler.Disposable = null;
-			m_secondaryCommandsChangedEventHandler.Disposable = null;
-			m_secondaryItemsControlLoadedEventHandler.Disposable = null;
-			m_contentRootSizeChangedEventHandler.Disposable = null;
-			m_overflowContentSizeChangedEventHandler.Disposable = null;
-			m_overflowPopupClosedEventHandler.Disposable = null;
-			m_overflowPresenterItemsPresenterKeyDownEventHandler.Disposable = null;
+			//m_unloadedEventHandler.Disposable = null;
+			//// These collections are owned by this command bar and hence their lifetime matches it as well.
+			//// No need to detach event handlers from them since they will be collected together with the command bar.
+			//// m_primaryCommandsChangedEventHandler.Disposable = null;
+			//// m_secondaryCommandsChangedEventHandler.Disposable = null;
+			//m_secondaryItemsControlLoadedEventHandler.Disposable = null;
+			//m_contentRootSizeChangedEventHandler.Disposable = null;
+			//m_overflowContentSizeChangedEventHandler.Disposable = null;
+			//m_overflowPopupClosedEventHandler.Disposable = null;
+			//m_overflowPresenterItemsPresenterKeyDownEventHandler.Disposable = null;
 
-			m_accessKeyInvokedEventHandler.Disposable = null;
-			m_overflowPopupOpenedEventHandler.Disposable = null;
+			//m_accessKeyInvokedEventHandler.Disposable = null;
+			//m_overflowPopupOpenedEventHandler.Disposable = null;
 
 			// Make sure our popup is closed.
 			if (m_tpOverflowPopup is { })
@@ -1483,8 +1485,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (element is { })
 				{
-					element.SetParent(this);
-
 					PropagateDefaultLabelPositionToElement(element);
 					SetOverflowStyleAndInputModeOnSecondaryCommand((int)changeIndex, true);
 					PropagateDefaultLabelPositionToElement(element);
@@ -1500,8 +1500,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 					if (element is { })
 					{
-						element.SetParent(null);
-
 						SetOverflowStyleAndInputModeOnSecondaryCommand(i, true);
 						PropagateDefaultLabelPositionToElement(element);
 					}

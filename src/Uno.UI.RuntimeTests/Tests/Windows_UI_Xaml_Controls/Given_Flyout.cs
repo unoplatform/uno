@@ -1995,6 +1995,70 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			BottomFlush,
 			BeyondBottom
 		}
+
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Shared_ContextFlyout_Opened_In_Second_Window()
+		{
+			if (!Uno.UI.Xaml.Controls.NativeWindowFactory.SupportsMultipleWindows)
+			{
+				Assert.Inconclusive("This test can only run in an environment with multiwindow support");
+			}
+
+			// Use a single shared flyout instance (simulates the singleton
+			// TextControlCommandBarContextFlyout resource in Generic.xaml).
+			var sharedFlyout = new Flyout
+			{
+				Content = new TextBlock { Text = "Shared" }
+			};
+
+			// --- Window 1: open and close the flyout ---
+			var button1 = new Button { Content = "W1" };
+			button1.ContextFlyout = sharedFlyout;
+			TestServices.WindowHelper.WindowContent = button1;
+			await TestServices.WindowHelper.WaitForLoaded(button1);
+
+			try
+			{
+				sharedFlyout.ShowAt(button1);
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.IsTrue(sharedFlyout.IsOpen, "Flyout should be open in window 1");
+			}
+			finally
+			{
+				sharedFlyout.Hide();
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+
+			// --- Window 2: open the same flyout on a different target ---
+			var window2 = new Window();
+			try
+			{
+				var button2 = new Button { Content = "W2" };
+				button2.ContextFlyout = sharedFlyout;
+				window2.Content = button2;
+
+				bool activated = false;
+				window2.Activated += (s, e) => activated = true;
+				window2.Activate();
+				await TestServices.WindowHelper.WaitFor(() => activated);
+				await TestServices.WindowHelper.WaitForLoaded(button2);
+
+				// This must not throw InvalidOperationException("Cannot change XamlRoot for existing element")
+				sharedFlyout.ShowAt(button2);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(sharedFlyout.IsOpen, "Flyout should be open in window 2");
+			}
+			finally
+			{
+				sharedFlyout.Hide();
+				window2.Close();
+			}
+		}
+#endif
 	}
 
 	public partial class MyMenuFlyout : MenuFlyout

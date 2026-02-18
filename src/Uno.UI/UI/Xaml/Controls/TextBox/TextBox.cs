@@ -29,6 +29,7 @@ using DirectUI;
 using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 using Uno.UI.Xaml.Controls;
+using System.Linq;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -137,9 +138,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void InitializePartial();
 
+		partial void OnLoadedPartial();
+
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
+
+			OnLoadedPartial();
 
 #if __ANDROID__
 			SetupTextBoxView();
@@ -233,10 +238,14 @@ namespace Microsoft.UI.Xaml.Controls
 			InitializePropertiesPartial();
 		}
 
-		protected override void OnGotFocus(RoutedEventArgs e) => StartBringIntoView(new BringIntoViewOptions
+		protected override void OnGotFocus(RoutedEventArgs e)
 		{
-			AnimationDesired = false
-		});
+			_forceFocusedVisualState = false;
+			StartBringIntoView(new BringIntoViewOptions
+			{
+				AnimationDesired = false
+			});
+		}
 
 		protected override void OnApplyTemplate()
 		{
@@ -1006,6 +1015,14 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			OnFocusStateChangedPartial(newValue, initial);
 
+			if (_forceFocusedVisualState && newValue == FocusState.Unfocused)
+			{
+				// Context flyout is taking focus - skip binding updates and keep
+				// _hasTextChangedThisFocusSession. Deferred until actual focus loss.
+				UpdateVisualState();
+				return;
+			}
+
 			if (!initial && newValue == FocusState.Unfocused && _hasTextChangedThisFocusSession)
 			{
 				if (!_wasTemplateRecycled &&
@@ -1417,16 +1434,19 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var content = Clipboard.GetContent();
 				string clipboardText;
-				try
+				if (content.AvailableFormats.Contains(StandardDataFormats.Text))
 				{
-					clipboardText = await content.GetTextAsync();
-					PasteFromClipboard(clipboardText);
-				}
-				catch (InvalidOperationException e)
-				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
+					try
 					{
-						this.Log().Debug("TextBox.PasteFromClipboard failed during DataPackageView.GetTextAsync: " + e);
+						clipboardText = await content.GetTextAsync();
+						PasteFromClipboard(clipboardText);
+					}
+					catch (InvalidOperationException e)
+					{
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().Debug("TextBox.PasteFromClipboard failed during DataPackageView.GetTextAsync: " + e);
+						}
 					}
 				}
 			});

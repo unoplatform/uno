@@ -282,7 +282,12 @@ namespace Microsoft.UI.Xaml
 						Controls.Primitives.FlyoutBase fb => fb.GetPresenter()?.FindName(name) as IFrameworkElement
 					};
 
-				if (e is UIElement uiElement && uiElement.ContextFlyout is Controls.Primitives.FlyoutBase contextFlyout)
+				if (e is UIElement uiElement &&
+					uiElement.ContextFlyout is Controls.Primitives.FlyoutBase contextFlyout &&
+					// Skip TextCommandBarFlyout to avoid infinite recursion: its presenter tree
+					// contains TextBlock/TextBox which also have TextCommandBarFlyout as default
+					// ContextFlyout/SelectionFlyout, causing FindName to recurse indefinitely.
+					(contextFlyout is not TextCommandBarFlyout || uiElement.GetCurrentHighestValuePrecedence(UIElement.ContextFlyoutProperty) != DependencyPropertyValuePrecedences.DefaultValue))
 				{
 					return FindInFlyout(name, contextFlyout);
 				}
