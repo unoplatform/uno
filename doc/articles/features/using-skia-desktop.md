@@ -138,6 +138,7 @@ To build an app with this feature enabled:
 When building with Native AOT, Uno Platform automatically preserves public properties of types referenced by `[Bindable]` types to ensure data binding works correctly at runtime. This happens automatically when `PublishAot=true` is set.
 
 The build system:
+
 1. Finds all types marked with `Microsoft.UI.Xaml.Data.BindableAttribute` or `Uno.Extensions.Reactive.Bindings.BindableAttribute`
 2. Discovers types referenced by public properties of those bindable types
 3. Generates an ILLink descriptor file to preserve the public properties (getters/setters) of discovered types
