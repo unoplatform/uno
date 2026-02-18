@@ -3,66 +3,28 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation
 {
-#if false
+#if false || false || false || false || false || false || false
 	public enum AutomationTextDecorationLineStyle
 	{
-#if false
-		None = 0,
-#endif
-#if false
-		Single = 1,
-#endif
-#if false
-		WordsOnly = 2,
-#endif
-#if false
-		Double = 3,
-#endif
-#if false
-		Dot = 4,
-#endif
-#if false
-		Dash = 5,
-#endif
-#if false
-		DashDot = 6,
-#endif
-#if false
-		DashDotDot = 7,
-#endif
-#if false
-		Wavy = 8,
-#endif
-#if false
-		ThickSingle = 9,
-#endif
-#if false
-		DoubleWavy = 10,
-#endif
-#if false
-		ThickWavy = 11,
-#endif
-#if false
-		LongDash = 12,
-#endif
-#if false
-		ThickDash = 13,
-#endif
-#if false
-		ThickDashDot = 14,
-#endif
-#if false
-		ThickDashDotDot = 15,
-#endif
-#if false
-		ThickDot = 16,
-#endif
-#if false
-		ThickLongDash = 17,
-#endif
-#if false
-		Other = 18,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.None
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.Single
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.WordsOnly
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.Double
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.Dot
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.Dash
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.DashDot
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.DashDotDot
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.Wavy
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.ThickSingle
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.DoubleWavy
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.ThickWavy
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.LongDash
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.ThickDash
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.ThickDashDot
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.ThickDashDotDot
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.ThickDot
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.ThickLongDash
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.Other
 	}
 #endif
 }

@@ -20,20 +20,8 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer.ItemsControlAutomationPeer(WinRT.DerivedComposed)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer.WinRT.IWinRTObject.NativeObject.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer CreateItemAutomationPeer(object item)
-		{
-			throw new global::System.NotImplementedException("The member ItemAutomationPeer ItemsControlAutomationPeer.CreateItemAutomationPeer(object item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ItemAutomationPeer%20ItemsControlAutomationPeer.CreateItemAutomationPeer%28object%20item%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		protected virtual global::Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer OnCreateItemAutomationPeer(object item)
-		{
-			throw new global::System.NotImplementedException("The member ItemAutomationPeer ItemsControlAutomationPeer.OnCreateItemAutomationPeer(object item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ItemAutomationPeer%20ItemsControlAutomationPeer.OnCreateItemAutomationPeer%28object%20item%29");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer.CreateItemAutomationPeer(object)
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer.OnCreateItemAutomationPeer(object)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer.Microsoft.UI.Xaml.Automation.Peers.IItemsControlAutomationPeerOverrides.OnCreateItemAutomationPeer(object)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

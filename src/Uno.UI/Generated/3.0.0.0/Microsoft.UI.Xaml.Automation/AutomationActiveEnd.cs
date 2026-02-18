@@ -3,18 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation
 {
-#if false
+#if false || false || false || false || false || false || false
 	public enum AutomationActiveEnd
 	{
-#if false
-		None = 0,
-#endif
-#if false
-		Start = 1,
-#endif
-#if false
-		End = 2,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationActiveEnd.None
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationActiveEnd.Start
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationActiveEnd.End
 	}
 #endif
 }

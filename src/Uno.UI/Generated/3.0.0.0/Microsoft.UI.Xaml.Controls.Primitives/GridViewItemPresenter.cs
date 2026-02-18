@@ -3,8 +3,8 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
-#if false || false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if false || false || false || false || false || false || false
+	[global::Uno.NotImplemented]
 #endif
 	public partial class GridViewItemPresenter : global::Microsoft.UI.Xaml.Controls.ContentPresenter
 	{
@@ -492,13 +492,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 		}
 #endif
-#if false || false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public GridViewItemPresenter() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.GridViewItemPresenter", "GridViewItemPresenter.GridViewItemPresenter()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemPresenter.GridViewItemPresenter()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemPresenter.GridViewItemPresenter()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemPresenter.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemPresenter.CheckBrushProperty.get
