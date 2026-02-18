@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Private.Infrastructure;
@@ -195,25 +196,22 @@ public class Given_StandardUICommand
 
 	/// <summary>
 	/// Gets the expected modifier key based on the virtual key and platform.
-	/// On macOS, iOS, and Mac Catalyst, uses VirtualKeyModifiers.Windows (which maps to the Command key) for standard shortcuts.
+	/// On Apple platforms (macOS, iOS, Mac Catalyst) and WASM on Apple devices,
+	/// uses VirtualKeyModifiers.Windows (which maps to the Command key).
 	/// On other platforms, uses Control key.
 	/// </summary>
 	private static VirtualKeyModifiers GetExpectedModifierForKey(VirtualKey virtualKey)
 	{
 		// Commands that use platform-specific command modifier
-		var commandKeys = new[] { VirtualKey.X, VirtualKey.C, VirtualKey.V, VirtualKey.A, 
+		var commandKeys = new[] { VirtualKey.X, VirtualKey.C, VirtualKey.V, VirtualKey.A,
 			VirtualKey.S, VirtualKey.O, VirtualKey.W, VirtualKey.Z, VirtualKey.Y };
-		
+
 		if (!commandKeys.Contains(virtualKey))
 		{
 			return VirtualKeyModifiers.None;
 		}
 
-#if __IOS__ || __MACCATALYST__ || __MACOS__
-		return VirtualKeyModifiers.Windows; // VirtualKeyModifiers.Windows maps to Command key on Apple platforms
-#else
-		return VirtualKeyModifiers.Control;
-#endif
+		return Uno.UI.Helpers.DeviceTargetHelper.PlatformCommandModifier;
 	}
 
 	[TestMethod]

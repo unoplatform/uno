@@ -12,22 +12,8 @@ namespace Microsoft.UI.Xaml.Input;
 
 partial class StandardUICommand : IDependencyObjectInternal
 {
-	/// <summary>
-	/// Gets the appropriate modifier key for standard commands based on the platform.
-	/// On macOS, iOS, and Mac Catalyst, uses VirtualKeyModifiers.Windows (which maps to the Command key on Apple platforms).
-	/// On other platforms, uses Control key.
-	/// </summary>
-	private static VirtualKeyModifiers PlatformCommandModifier
-	{
-		get
-		{
-#if __IOS__ || __MACCATALYST__ || __MACOS__
-			return VirtualKeyModifiers.Windows; // VirtualKeyModifiers.Windows maps to Command key on Apple platforms
-#else
-			return VirtualKeyModifiers.Control;
-#endif
-		}
-	}
+	private static VirtualKeyModifiers PlatformCommandModifier =>
+		Uno.UI.Helpers.DeviceTargetHelper.PlatformCommandModifier;
 
 	private void PrepareState()
 	{

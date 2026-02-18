@@ -78,10 +78,7 @@ public partial class TextBox
 
 	static TextBox()
 	{
-		_platformCtrlKey =
-			OperatingSystem.IsMacOS() || (OperatingSystem.IsBrowser() && WebAssemblyImports.EvalBool("navigator?.platform.toUpperCase().includes('MAC') ?? false"))
-			? VirtualKeyModifiers.Windows
-			: VirtualKeyModifiers.Control;
+		_platformCtrlKey = Uno.UI.Helpers.DeviceTargetHelper.PlatformCommandModifier;
 	}
 
 	internal CaretDisplayMode CaretMode
