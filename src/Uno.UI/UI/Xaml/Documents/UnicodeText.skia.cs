@@ -1077,7 +1077,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			var indexInLine = cluster.Value.indexInLine;
 
 			var alignmentOffset = GetAlignmentOffsetForLine(line);
-			var y = lineIndex == 0 ? 0 : _xyTable[lineIndex].prefixSummedHeight - _xyTable[lineIndex - 1].prefixSummedHeight;
+			var y = lineIndex == 0 ? 0 : _xyTable[lineIndex].prefixSummedHeight - line.lineHeight;
 			var unalignedX = indexInLine == 0 ? (_rtl ? line.width : 0) : _xyTable[lineIndex].prefixSummedWidths[indexInLine - 1].sumUntilAfterCluster;
 			return new Rect(alignmentOffset + unalignedX, y, cluster.Value.width, line.lineHeight);
 		}
