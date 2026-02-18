@@ -7,6 +7,7 @@ namespace Uno.UI.DevServer.Cli.Mcp;
 /// for inclusion in health reports. Uses nullability of discovery fields (not string matching on
 /// warning/error text) to determine which issues to report.
 /// </summary>
+/// <seealso href="../health-diagnostics.md"/>
 internal static class DiscoveryIssueMapper
 {
 	public static List<ValidationIssue> MapDiscoveryIssues(DiscoveryInfo? discovery)

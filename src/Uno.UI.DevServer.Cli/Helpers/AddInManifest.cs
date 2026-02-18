@@ -6,6 +6,7 @@ namespace Uno.UI.DevServer.Cli.Helpers;
 /// Represents the deserialized content of a <c>devserver-addin.json</c> manifest file.
 /// Unknown properties are ignored for forward compatibility.
 /// </summary>
+/// <seealso href="../addin-discovery.md"/>
 internal sealed class AddInManifest
 {
 	[JsonPropertyName("version")]
@@ -15,6 +16,7 @@ internal sealed class AddInManifest
 	public List<AddInManifestEntry>? Addins { get; set; }
 }
 
+/// <seealso href="../addin-discovery.md"/>
 internal sealed class AddInManifestEntry
 {
 	[JsonPropertyName("entryPoint")]

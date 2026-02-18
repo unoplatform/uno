@@ -9,6 +9,7 @@ namespace Uno.UI.DevServer.Cli.Mcp;
 /// Produces health reports and diagnostics for the Uno DevServer MCP bridge. Exposes the uno_health tool
 /// and the uno://health resource, reporting connection state, tool count, and issues.
 /// </summary>
+/// <seealso href="../health-diagnostics.md"/>
 internal class HealthService(
 	McpUpstreamClient mcpUpstreamClient,
 	DevServerMonitor devServerMonitor,

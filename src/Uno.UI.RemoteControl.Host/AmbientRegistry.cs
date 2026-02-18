@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Uno.UI.RemoteControl.Host;
 
+/// <seealso href="ambient-registry.md"/>
 public class AmbientRegistry(ILogger logger)
 {
 	private static readonly string RegistryDirectory = Path.Combine(

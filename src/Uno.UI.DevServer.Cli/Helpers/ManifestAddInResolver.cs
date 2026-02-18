@@ -15,6 +15,7 @@ namespace Uno.UI.DevServer.Cli.Helpers;
 ///   <item>Populated result — success</item>
 /// </list>
 /// </remarks>
+/// <seealso href="../addin-discovery.md"/>
 internal class ManifestAddInResolver(ILogger<ManifestAddInResolver> logger, string? hostVersion = null)
 {
 	private static readonly JsonSerializerOptions _jsonOptions = new()

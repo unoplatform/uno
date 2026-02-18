@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Uno.UI.DevServer.Cli.Mcp;
 
+/// <seealso href="../health-diagnostics.md"/>
 internal sealed record HealthReport
 {
 	public required HealthStatus Status { get; init; }

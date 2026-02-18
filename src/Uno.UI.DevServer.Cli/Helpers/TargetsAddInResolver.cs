@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Uno.UI.DevServer.Cli.Helpers;
 
+/// <seealso href="../addin-discovery.md"/>
 internal partial class TargetsAddInResolver(ILogger<TargetsAddInResolver> logger, ManifestAddInResolver? manifestResolver = null)
 {
 	private readonly ILogger<TargetsAddInResolver> _logger = logger;
