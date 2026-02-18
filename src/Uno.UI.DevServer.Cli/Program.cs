@@ -83,7 +83,10 @@ internal class Program
 		services.AddSingleton<CliManager>();
 		services.AddSingleton<DotNetVersionCache>();
 		services.AddSingleton<UnoToolsLocator>();
-		services.AddSingleton<ManifestAddInResolver>();
+		services.AddSingleton(sp =>
+		new ManifestAddInResolver(
+			sp.GetRequiredService<ILogger<ManifestAddInResolver>>(),
+			McpStdioServer.GetAssemblyVersion()));
 		services.AddSingleton<TargetsAddInResolver>();
 		services.AddSingleton<DevServerMonitor>();
 		services.AddSingleton<McpUpstreamClient>();

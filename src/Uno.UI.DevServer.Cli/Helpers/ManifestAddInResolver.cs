@@ -94,8 +94,17 @@ internal class ManifestAddInResolver(ILogger<ManifestAddInResolver> logger, stri
 				continue;
 			}
 
-			if (entry.MinHostVersion is not null && _hostVersion is not null)
+			if (entry.MinHostVersion is not null)
 			{
+				if (_hostVersion is null)
+				{
+					// hostVersion unknown — err on the side of caution and skip gated add-ins
+					_logger.LogWarning(
+						"devserver-addin.json in {Package}: entry {EntryPoint} requires host >= {MinVersion} but host version is unknown, skipping",
+						packageName, entry.EntryPoint, entry.MinHostVersion);
+					continue;
+				}
+
 				if (Version.TryParse(entry.MinHostVersion.Split('-')[0], out var minVersion) && _hostVersion < minVersion)
 				{
 					_logger.LogWarning(

@@ -48,9 +48,12 @@ The CLI can also run in **MCP mode** (`--mcp-app`), acting as a Model Context Pr
 | `CliManager.cs` | CLI command router (start, stop, list, disco, login, MCP) |
 | `UnoToolsLocator.cs` | SDK and package discovery from global.json and NuGet cache |
 | `TargetsAddInResolver.cs` | Fast add-in discovery by parsing `.targets` XML files |
+| `ManifestAddInResolver.cs` | Manifest-first add-in discovery from `devserver-addin.json` |
 | `DotNetVersionCache.cs` | Caches `dotnet --version` result on disk |
-| `McpProxy.cs` | MCP STDIO server, tool list management, tool caching |
-| `McpClientProxy.cs` | HTTP client to upstream DevServer MCP endpoint |
+| `McpStdioServer.cs` | MCP STDIO server entry point |
+| `ProxyLifecycleManager.cs` | MCP proxy lifecycle orchestration |
+| `McpUpstreamClient.cs` | HTTP client to upstream DevServer MCP endpoint |
+| `ToolListManager.cs` | Tool list management and caching |
 | `DevServerMonitor.cs` | DevServer process health monitoring |
 | `RemoteControlServer.cs` | Host: WebSocket server, processor management |
 | `AddIns.cs` | Host: add-in discovery and assembly loading |
@@ -125,17 +128,22 @@ The PowerShell script `build/test-scripts/run-devserver-cli-tests.ps1` provides 
 
 ## 6. Add-in Discovery
 
+### Manifest-First Path (`devserver-addin.json`)
+
+`ManifestAddInResolver` looks for a `devserver-addin.json` manifest in each NuGet package root. When present, it resolves add-in entry points directly from the manifest, supporting `minHostVersion` gating to filter incompatible add-ins.
+
 ### Fast Path (`.targets` parsing, ~200ms)
 
-`TargetsAddInResolver` parses `packages.json` from the Uno SDK and `buildTransitive/*.targets` files from NuGet packages to extract `<UnoRemoteControlAddIns>` items without invoking MSBuild.
+`TargetsAddInResolver` parses `packages.json` from the Uno SDK and `buildTransitive/*.targets` files from NuGet packages to extract `<UnoRemoteControlAddIns>` items without invoking MSBuild. Used as fallback when no manifest is found.
 
 ### MSBuild Fallback (10-30s)
 
-When the fast path fails, the Host falls back to `dotnet build` evaluation. The `--addins` flag on the Host bypasses this when paths are pre-resolved by the CLI.
+When both fast paths fail, the Host falls back to `dotnet build` evaluation. The `--addins` flag on the Host bypasses this when paths are pre-resolved by the CLI.
 
 ### Key Files
 
-- `TargetsAddInResolver.cs` – Fast path implementation
+- `ManifestAddInResolver.cs` – Manifest-first discovery
+- `TargetsAddInResolver.cs` – `.targets` parsing fallback
 - `AddIns.cs` (Host) – Assembly loading and MSBuild fallback
 
 ---
@@ -154,7 +162,7 @@ To test with a local build, use `UnoNugetOverrideVersion` or set `-DevServerCliD
 
 ## 8. MCP Proxy
 
-The MCP proxy (`McpProxy.cs`) runs in STDIO mode and bridges AI agents to the DevServer Host.
+The MCP proxy (`McpStdioServer.cs` / `ProxyLifecycleManager.cs`) runs in STDIO mode and bridges AI agents to the DevServer Host.
 
 ### Key Behavior
 
@@ -167,8 +175,10 @@ The MCP proxy (`McpProxy.cs`) runs in STDIO mode and bridges AI agents to the De
 
 | File | Role |
 |------|------|
-| `McpProxy.cs` | MCP server, tool list management |
-| `McpClientProxy.cs` | HTTP proxy to Host MCP endpoint |
+| `McpStdioServer.cs` | MCP STDIO server entry point |
+| `ProxyLifecycleManager.cs` | MCP proxy lifecycle orchestration |
+| `McpUpstreamClient.cs` | HTTP proxy to Host MCP endpoint |
+| `ToolListManager.cs` | Tool list management and caching |
 | `DevServerMonitor.cs` | Process startup monitoring |
 | `ToolCacheFile.cs` | Persistent tool cache serialization |
 
@@ -196,7 +206,7 @@ The MCP proxy (`McpProxy.cs`) runs in STDIO mode and bridges AI agents to the De
 
 ### Modifying MCP Proxy
 
-1. Edit `McpProxy.cs` for tool list or protocol changes
+1. Edit `McpStdioServer.cs` / `ProxyLifecycleManager.cs` / `ToolListManager.cs` for tool list or protocol changes
 2. Test with `--mcp-app` flag and an MCP client (Claude Code, etc.)
 3. Check `--mcp-wait-tools-list` behavior for clients without `tools/list_changed`
 

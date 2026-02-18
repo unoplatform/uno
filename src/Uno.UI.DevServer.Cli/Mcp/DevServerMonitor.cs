@@ -165,6 +165,24 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 
 						if (!await WaitForServerReadyAsync(effectivePort, ct))
 						{
+							var failAction = MonitorDecisions.DetermineReadinessFailureAction(_serverProcess);
+							if (failAction == MonitorDecisions.ReadinessFailureAction.RetryStart)
+							{
+								_logger.LogWarning("Server process exited during startup, will retry");
+								_serverProcess = null;
+								retryCount++;
+
+								if (retryCount >= maxRetries)
+								{
+									_logger.LogError("DevServer failed to start after {MaxRetries} attempts", maxRetries);
+									ServerFailed?.Invoke();
+									break;
+								}
+
+								await Task.Delay(TimeSpan.FromSeconds(5), ct);
+								continue;
+							}
+
 							ServerFailed?.Invoke();
 							return;
 						}
@@ -172,16 +190,23 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 						_logger.LogTrace("DevServerMonitor detected ready server at {Endpoint}; raising ServerStarted", remoteEndpoint);
 						ServerStarted?.Invoke(remoteEndpoint);
 
-						// Wait for the process to exit before re-entering the discovery loop
-						await WaitForProcessExitAsync(ct);
+						var postAction = MonitorDecisions.DeterminePostStartupAction(_serverProcess);
+						if (postAction == MonitorDecisions.PostStartupAction.MonitorOwnProcess)
+						{
+							await WaitForProcessExitAsync(ct);
 
-						_logger.LogWarning("Server process exited, initiating recovery");
-						_serverProcess = null;
-						ServerCrashed?.Invoke();
+							_logger.LogWarning("Server process exited, initiating recovery");
+							_serverProcess = null;
+							ServerCrashed?.Invoke();
 
-						// Reset retry count — the server was running successfully
-						retryCount = 0;
-						continue;
+							retryCount = 0;
+							continue;
+						}
+						else
+						{
+							_logger.LogInformation("Attached to existing DevServer, not monitoring process lifecycle");
+							await Task.Delay(Timeout.Infinite, ct);
+						}
 					}
 				}
 
@@ -413,4 +438,5 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 		tcp.Stop();
 		return port;
 	}
+
 }

@@ -190,6 +190,31 @@ public class ManifestAddInResolverTests
 	}
 
 	[TestMethod]
+	[Description("P2 regression: when hostVersion is null (default DI), add-ins with minHostVersion should still be filtered")]
+	public void WhenHostVersionNull_IncompatibleAddInShouldStillBeFiltered()
+	{
+		CreateDll("tools/devserver/Foo.dll");
+		WriteManifest("""
+		{
+			"version": 1,
+			"addins": [
+				{ "entryPoint": "tools/devserver/Foo.dll", "minHostVersion": "99.0.0" }
+			]
+		}
+		""");
+
+		// Bug P2: when DI registers ManifestAddInResolver without hostVersion,
+		// the minHostVersion check is bypassed entirely.
+		// Safe default: null hostVersion should mean "unknown/oldest" → filter gated add-ins.
+		var resolver = new ManifestAddInResolver(_logger); // no hostVersion
+
+		var result = resolver.TryResolveFromManifest(_tempDir, "Uno.Test", "1.0.0");
+
+		result.Should().NotBeNull();
+		result!.AddIns.Should().BeEmpty("add-in with minHostVersion should be filtered even when hostVersion is unknown");
+	}
+
+	[TestMethod]
 	[Description("No minHostVersion in manifest entry → no version gate, add-in resolves")]
 	public void WhenMinHostVersionOmitted_Resolves()
 	{
