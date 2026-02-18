@@ -223,7 +223,7 @@ namespace Microsoft.UI.Xaml.Data
 		/// <summary>
 		/// Stores the target type for the ConvertBack operation in x:Bind expressions (i.e., the type of the source property in the binding), used as the targetType parameter in IValueConverter.ConvertBack.
 		/// </summary>
-		internal Type? XBindSourceType { get; private set; }
+		internal Type XBindSourceType { get; private set; }
 
 		// Each of these values could be null and the Binding could still be an x:Bind, but they can't all be null
 		internal bool IsXBind => XBindSelector is not null || XBindPropertyPaths is not null || CompiledSource is not null || XBindBack is not null;
@@ -236,7 +236,7 @@ namespace Microsoft.UI.Xaml.Data
 			XBindBack = xBindBack;
 		}
 
-		internal void SetBindingXBindProvider(object compiledSource, Func<object, (bool, object)> xBindSelector, Action<object, object> xBindBack, Type? sourceType, string[] propertyPaths = null)
+		internal void SetBindingXBindProvider(object compiledSource, Func<object, (bool, object)> xBindSelector, Action<object, object> xBindBack, Type sourceType, string[] propertyPaths = null)
 		{
 			SetBindingXBindProvider(compiledSource, xBindSelector, xBindBack, propertyPaths);
 			XBindSourceType = sourceType;
