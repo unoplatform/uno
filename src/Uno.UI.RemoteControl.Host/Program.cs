@@ -63,7 +63,7 @@ namespace Uno.UI.RemoteControl.Host
 
 				// Read --addins: pre-resolved add-in DLL paths (semicolon-separated).
 				// When present, MSBuild-based discovery is skipped entirely.
-				var addins = globalConfiguration.GetOptionalString("addins");
+				var addins = globalConfiguration.GetAddinsValue("addins");
 
 				// Controller mode
 				if (!string.IsNullOrWhiteSpace(command))

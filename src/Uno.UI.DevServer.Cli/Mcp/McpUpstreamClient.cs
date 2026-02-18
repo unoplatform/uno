@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using ModelContextProtocol;
@@ -11,6 +11,7 @@ namespace Uno.UI.DevServer.Cli.Mcp;
 /// Manages the upstream HTTP connection to the DevServer MCP host. Handles connection
 /// lifecycle, reconnection via TCS reset, and tool list change notification forwarding.
 /// </summary>
+/// <seealso href="../../../specs/001-fast-devserver-startup/spec-appendix-d-mcp-improvements.md"/>
 internal class McpUpstreamClient
 {
 	private readonly ILogger<McpUpstreamClient> _logger;
@@ -20,7 +21,7 @@ internal class McpUpstreamClient
 	private TaskCompletionSource<McpClient> _clientCompletionSource = new();
 
 	public Task<McpClient> UpstreamClient
-		=> _clientCompletionSource.Task;
+		=> Volatile.Read(ref _clientCompletionSource).Task;
 
 	public McpUpstreamClient(ILogger<McpUpstreamClient> logger, DevServerMonitor monitor)
 	{
@@ -41,13 +42,17 @@ internal class McpUpstreamClient
 			catch (Exception ex)
 			{
 				_logger.LogError(ex, "Failed to connect to upstream MCP server at {Url}", url);
-				_clientCompletionSource.TrySetException(ex);
+				Volatile.Read(ref _clientCompletionSource).TrySetException(ex);
 			}
 		}, _disposeCts.Token);
 	}
 
 	async Task ConnectOrDieAsync(string url, Microsoft.Extensions.Logging.ILogger log, CancellationToken ct)
 	{
+		// Capture a local snapshot of the TCS so that a concurrent ResetConnectionAsync
+		// cannot swap it out between our read and write.
+		var localTcs = Volatile.Read(ref _clientCompletionSource);
+
 		try
 		{
 			var clientTransport = new HttpClientTransport(new()
@@ -86,7 +91,7 @@ internal class McpUpstreamClient
 			var client = await McpClient.CreateAsync(clientTransport, options, cancellationToken: ct);
 			log.LogInformation("Connected to upstream: {Name} {Version}", client.ServerInfo.Name, client.ServerInfo.Version);
 
-			_clientCompletionSource.TrySetResult(client);
+			localTcs.TrySetResult(client);
 
 			var tools = await client.ListToolsAsync(cancellationToken: ct);
 
@@ -114,8 +119,7 @@ internal class McpUpstreamClient
 	/// </summary>
 	internal async Task ResetConnectionAsync()
 	{
-		var oldTcs = _clientCompletionSource;
-		_clientCompletionSource = new TaskCompletionSource<McpClient>();
+		var oldTcs = Interlocked.Exchange(ref _clientCompletionSource, new TaskCompletionSource<McpClient>());
 
 		if (oldTcs.Task.IsCompletedSuccessfully)
 		{
@@ -149,11 +153,13 @@ internal class McpUpstreamClient
 	internal async Task DisposeAsync()
 	{
 		_disposeCts.Cancel();
-		_clientCompletionSource.TrySetCanceled();
+
+		var tcs = Volatile.Read(ref _clientCompletionSource);
+		tcs.TrySetCanceled();
 
 		try
 		{
-			var clientTask = _clientCompletionSource.Task;
+			var clientTask = tcs.Task;
 			if (clientTask.IsCompletedSuccessfully)
 			{
 				_logger.LogInformation("Disconnecting from upstream MCP");

@@ -23,6 +23,10 @@ The Host only supports **a single IDEChannel connection** (named pipe) at a time
 | IDE + MCP CLI on same solution | Yes | MCP uses HTTP (`/mcp`), not the named pipe |
 | IDE-A + IDE-B on same solution | No | Both need the IDEChannel pipe |
 
+### Liveness Monitoring
+
+When the CLI reuses an existing Host via AmbientRegistry (`_serverProcess` is null), `DevServerMonitor` uses HTTP health polling instead of process exit monitoring. The `/mcp` endpoint is polled every 10 seconds; after 3 consecutive failures the monitor fires `ServerCrashed` and initiates recovery.
+
 ### Why this is safe for MCP
 
 The MCP proxy connects exclusively via the HTTP `/mcp` endpoint. It does not use the IDEChannel named pipe. The communication paths are independent:

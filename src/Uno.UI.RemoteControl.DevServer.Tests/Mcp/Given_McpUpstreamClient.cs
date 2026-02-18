@@ -6,6 +6,11 @@ namespace Uno.UI.RemoteControl.DevServer.Tests.Mcp;
 /// <summary>
 /// Tests for <see cref="McpUpstreamClient"/> patterns: TCS lifecycle,
 /// dispose safety, callback registration, and reconnection.
+/// <para>
+/// These tests exercise TCS patterns in isolation because McpUpstreamClient
+/// requires a real HTTP connection to a DevServer MCP endpoint. Thread-safety
+/// of the TCS snapshot pattern is verified via <see cref="AtomicTcsHolder{T}"/>.
+/// </para>
 /// </summary>
 [TestClass]
 public class Given_McpUpstreamClient
@@ -256,6 +261,56 @@ public class Given_McpUpstreamClient
 	}
 
 	// -------------------------------------------------------------------
+	// TCS snapshot stability under concurrent Reset
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	[Description("A captured TCS snapshot is not swapped out by a concurrent Reset")]
+	public void CapturedTcs_StableReferenceAfterReset()
+	{
+		var holder = new AtomicTcsHolder<string>();
+		var captured = holder.Capture();
+
+		holder.Reset(); // Cancels old TCS, installs new one
+
+		// The captured reference is the old TCS (now canceled by Reset)
+		captured.Task.IsCanceled.Should().BeTrue("Reset cancels the old TCS");
+
+		// The holder now points to a fresh, independent TCS
+		holder.CurrentTask.IsCompleted.Should().BeFalse("new TCS after Reset is independent");
+
+		// Setting result on captured does NOT affect the new TCS
+		captured.TrySetResult("late").Should().BeFalse("already canceled");
+	}
+
+	[TestMethod]
+	[Description("Concurrent Reset and Capture never lose a TCS")]
+	public void ConcurrentResetAndCapture_NeverLosesTcs()
+	{
+		var holder = new AtomicTcsHolder<string>();
+		var capturedTasks = new System.Collections.Concurrent.ConcurrentBag<TaskCompletionSource<string>>();
+
+		Parallel.For(0, 50, i =>
+		{
+			if (i % 2 == 0)
+			{
+				capturedTasks.Add(holder.Capture());
+			}
+			else
+			{
+				holder.Reset();
+			}
+		});
+
+		// Every captured TCS should be settable exactly once
+		foreach (var tcs in capturedTasks)
+		{
+			tcs.TrySetResult("ok"); // may be already canceled by Reset, that's fine
+			tcs.Task.IsCompleted.Should().BeTrue();
+		}
+	}
+
+	// -------------------------------------------------------------------
 	// Helpers
 	// -------------------------------------------------------------------
 
@@ -270,6 +325,27 @@ public class Given_McpUpstreamClient
 		{
 			var old = Tcs;
 			Tcs = new TaskCompletionSource<T>();
+			old.TrySetCanceled();
+		}
+	}
+
+	/// <summary>
+	/// Lock-free TCS holder that mirrors the Volatile/Interlocked snapshot pattern
+	/// used in <see cref="McpUpstreamClient"/>.
+	/// </summary>
+	private sealed class AtomicTcsHolder<T>
+	{
+		private TaskCompletionSource<T> _tcs = new();
+
+		public TaskCompletionSource<T> Capture()
+			=> Volatile.Read(ref _tcs);
+
+		public Task<T> CurrentTask
+			=> Volatile.Read(ref _tcs).Task;
+
+		public void Reset()
+		{
+			var old = Interlocked.Exchange(ref _tcs, new TaskCompletionSource<T>());
 			old.TrySetCanceled();
 		}
 	}

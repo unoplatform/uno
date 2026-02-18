@@ -24,6 +24,8 @@ internal partial class TargetsAddInResolver(ILogger<TargetsAddInResolver> logger
 	[GeneratedRegex(@"'([^']*)'\s*!=\s*'([^']*)'")]
 	private static partial Regex InequalityConditionRegex();
 
+	// TODO: Third-party add-ins only appear in project.assets.json, not currently scanned.
+	// See spec-appendix-b-addin-discovery.md section 1.b for the merge algorithm.
 	public List<ResolvedAddIn> ResolveAddIns(string packagesJsonPath, IReadOnlyList<string>? nugetCachePaths = null)
 	{
 		var results = new List<ResolvedAddIn>();

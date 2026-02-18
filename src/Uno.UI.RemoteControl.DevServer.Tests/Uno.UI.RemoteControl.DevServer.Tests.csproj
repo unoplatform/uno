@@ -51,6 +51,9 @@
 		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\McpJsonUtilities.cs" Link="Mcp\McpJsonUtilities.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\ToolCacheFile.cs" Link="Mcp\ToolCacheFile.cs" />
 
+		<!-- Link ConfigurationExtensions for add-in value parsing tests -->
+		<Compile Include="..\Uno.UI.RemoteControl.Host\Helpers\ConfigurationExtensions.cs" Link="Helpers\ConfigurationExtensions.cs" />
+
 		<!-- Link AmbientRegistry and CsprojUserGenerator for controller bypass testing -->
 		<Compile Include="..\Uno.UI.RemoteControl.Host\AmbientRegistry.cs" Link="Mcp\AmbientRegistry.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl.Host\Helpers\CsprojUserGenerator.cs" Link="Helpers\CsprojUserGenerator.cs" />

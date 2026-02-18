@@ -54,7 +54,8 @@ The CLI can also run in **MCP mode** (`--mcp-app`), acting as a Model Context Pr
 | `ProxyLifecycleManager.cs` | MCP proxy lifecycle orchestration |
 | `McpUpstreamClient.cs` | HTTP client to upstream DevServer MCP endpoint |
 | `ToolListManager.cs` | Tool list management and caching |
-| `DevServerMonitor.cs` | DevServer process health monitoring |
+| `DevServerMonitor.cs` | DevServer process health monitoring and crash recovery |
+| `MonitorDecisions.cs` | Pure decision logic extracted from DevServerMonitor for testability |
 | `RemoteControlServer.cs` | Host: WebSocket server, processor management |
 | `AddIns.cs` | Host: add-in discovery and assembly loading |
 
@@ -179,7 +180,8 @@ The MCP proxy (`McpStdioServer.cs` / `ProxyLifecycleManager.cs`) runs in STDIO m
 | `ProxyLifecycleManager.cs` | MCP proxy lifecycle orchestration |
 | `McpUpstreamClient.cs` | HTTP proxy to Host MCP endpoint |
 | `ToolListManager.cs` | Tool list management and caching |
-| `DevServerMonitor.cs` | Process startup monitoring |
+| `DevServerMonitor.cs` | Process health monitoring and crash recovery |
+| `MonitorDecisions.cs` | Pure decision logic (post-startup action, roots detection, start guard) |
 | `ToolCacheFile.cs` | Persistent tool cache serialization |
 
 ---

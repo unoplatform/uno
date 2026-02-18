@@ -7,6 +7,11 @@ namespace Uno.UI.RemoteControl.DevServer.Tests.Mcp;
 /// <summary>
 /// Tests for <see cref="DevServerMonitor"/> patterns: ambient registry lookup,
 /// direct launch arg building, and retry logic.
+/// <para>
+/// These tests simulate DevServerMonitor patterns rather than instantiating
+/// the real class because it requires a .sln on disk and a real Uno SDK
+/// host binary. Pure decision logic is tested via <see cref="MonitorDecisionsTests"/>.
+/// </para>
 /// </summary>
 [TestClass]
 public class Given_DevServerMonitor

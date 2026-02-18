@@ -48,6 +48,10 @@ CLI start --> DevServerMonitor.StartProcess()
                     --> Not found? Launch new Host process
 ```
 
+## Health Polling for Reused Instances
+
+When the CLI reuses an existing DevServer (i.e., `_serverProcess` is null), `DevServerMonitor` polls the Host's `/mcp` endpoint periodically (`MonitorDecisions.HealthPollIntervalMs`, 10 seconds). If the Host stops responding for 3 consecutive polls, the monitor fires `ServerCrashed` and initiates recovery — identical to the owned-process crash path.
+
 ## Known Limitation
 
 Reuse is limited to **MCP-alongside-IDE** scenarios. The Host's `IDEChannel` only supports a single IDE connection (`maxNumberOfServerInstances: 1`), so two full IDEs cannot share the same Host -- they would conflict on Hot Reload notifications and launch tracking.

@@ -13,6 +13,8 @@ namespace Uno.UI.DevServer.Cli.Mcp;
 /// Top-level orchestrator for the MCP stdio-to-HTTP bridge lifecycle. Manages root initialization,
 /// DevServer startup, cache priming, and event wiring between the other MCP components.
 /// </summary>
+/// <seealso cref="MonitorDecisions"/>
+/// <seealso href="../../../specs/001-fast-devserver-startup/spec-appendix-d-mcp-improvements.md"/>
 internal class ProxyLifecycleManager
 {
 	private readonly ILogger<ProxyLifecycleManager> _logger;
@@ -26,7 +28,7 @@ internal class ProxyLifecycleManager
 	private bool _forceRootsFallback;
 	private bool _forceGenerateToolCache;
 	private string? _solutionDirectory;
-	private bool _devServerStarted;
+	private readonly MonitorDecisions.StartOnceGuard _devServerStartGuard = new();
 
 	// ┌──────────────────────────────────────────────────────────────────┐
 	// │              Observational Connection State Machine              │
@@ -155,7 +157,7 @@ internal class ProxyLifecycleManager
 	{
 		_logger.LogTrace("Processing MCP Client Roots: {Roots}", string.Join(", ", _roots));
 
-		if (_devServerStarted)
+		if (_devServerStartGuard.IsStarted)
 		{
 			_logger.LogTrace("DevServer monitor already running; skipping additional root processing");
 			return;
@@ -255,7 +257,7 @@ internal class ProxyLifecycleManager
 
 	private void StartDevServerMonitor(string? directory)
 	{
-		if (_devServerStarted)
+		if (!_devServerStartGuard.TryStart())
 		{
 			_logger.LogTrace("StartDevServerMonitor called but monitor already running");
 			return;
@@ -278,7 +280,6 @@ internal class ProxyLifecycleManager
 				_toolListManager.WorkspaceHash = _workspaceHash;
 			}
 			_devServerMonitor.StartMonitoring(normalized, _devServerPort, _forwardedArgs);
-			_devServerStarted = true;
 			_healthService.DevServerStarted = true;
 			SetConnectionState(ConnectionState.Discovering);
 			_logger.LogTrace("DevServer monitor started for {Directory} (port: {Port}, forwardedArgs: {Args})", normalized, _devServerPort, string.Join(" ", _forwardedArgs));
@@ -520,7 +521,9 @@ internal class ProxyLifecycleManager
 			return;
 		}
 
-		var clientSupportsRoots = !_forceRootsFallback && (ctx.Server.ClientCapabilities?.Roots?.ListChanged ?? false);
+		var clientSupportsRoots = MonitorDecisions.DetermineClientSupportsRoots(
+			_forceRootsFallback,
+			rootsCapabilityPresent: ctx.Server.ClientCapabilities?.Roots is not null);
 
 		if (!_forceRootsFallback)
 		{

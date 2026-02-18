@@ -9,6 +9,9 @@ using Uno.UI.RemoteControl.Host.Helpers;
 
 namespace Uno.UI.DevServer.Cli.Mcp;
 
+/// <seealso cref="MonitorDecisions"/>
+/// <seealso href="../health-diagnostics.md"/>
+/// <seealso href="../../Uno.UI.RemoteControl.Host/ambient-registry.md"/>
 public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonitor> logger)
 {
 	private readonly IServiceProvider _services = services;
@@ -169,7 +172,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 							if (failAction == MonitorDecisions.ReadinessFailureAction.RetryStart)
 							{
 								_logger.LogWarning("Server process exited during startup, will retry");
-								_serverProcess = null;
+								_serverProcess = MonitorDecisions.DisposeAndClearProcess(_serverProcess);
 								retryCount++;
 
 								if (retryCount >= maxRetries)
@@ -196,16 +199,23 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 							await WaitForProcessExitAsync(ct);
 
 							_logger.LogWarning("Server process exited, initiating recovery");
-							_serverProcess = null;
+							_serverProcess = MonitorDecisions.DisposeAndClearProcess(_serverProcess);
 							ServerCrashed?.Invoke();
 
 							retryCount = 0;
 							continue;
 						}
-						else
+						else // PostStartupAction.PollHealth
 						{
-							_logger.LogInformation("Attached to existing DevServer, not monitoring process lifecycle");
-							await Task.Delay(Timeout.Infinite, ct);
+							_logger.LogInformation("Attached to existing DevServer, monitoring via HTTP health polling");
+							if (!await PollHealthUntilFailureAsync(effectivePort, ct))
+							{
+								_logger.LogWarning("Attached DevServer stopped responding, initiating recovery");
+								_serverProcess = MonitorDecisions.DisposeAndClearProcess(_serverProcess);
+								ServerCrashed?.Invoke();
+								retryCount = 0;
+								continue;
+							}
 						}
 					}
 				}
@@ -270,6 +280,71 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 
 		_logger.LogError("DevServer did not become ready within timeout period on any of: {Endpoints}", string.Join(", ", endpoints));
 		return false;
+	}
+
+	/// <summary>
+	/// Periodically polls the DevServer health endpoint. Returns <c>false</c> when
+	/// the server stops responding (consecutive failures exceed threshold), indicating
+	/// the attached DevServer has died and recovery should begin.
+	/// Returns <c>true</c> only on cancellation (clean shutdown).
+	/// </summary>
+	private async Task<bool> PollHealthUntilFailureAsync(int port, CancellationToken ct)
+	{
+		const int maxConsecutiveFailures = 3;
+		var consecutiveFailures = 0;
+
+		var endpoints = new[]
+		{
+			$"http://localhost:{port}/mcp",
+			$"http://127.0.0.1:{port}/mcp",
+			$"http://[::1]:{port}/mcp"
+		};
+
+		using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(5) };
+
+		while (!ct.IsCancellationRequested)
+		{
+			try
+			{
+				await Task.Delay(MonitorDecisions.HealthPollIntervalMs, ct);
+			}
+			catch (OperationCanceledException)
+			{
+				return true; // clean shutdown
+			}
+
+			var anySuccess = false;
+			foreach (var endpoint in endpoints)
+			{
+				try
+				{
+					var response = await httpClient.GetAsync(endpoint, ct);
+					anySuccess = true;
+					break;
+				}
+				catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
+				{
+					// This endpoint failed, try next
+				}
+			}
+
+			if (anySuccess)
+			{
+				consecutiveFailures = 0;
+			}
+			else
+			{
+				consecutiveFailures++;
+				_logger.LogDebug("Health poll failed ({Failures}/{Max})", consecutiveFailures, maxConsecutiveFailures);
+
+				if (consecutiveFailures >= maxConsecutiveFailures)
+				{
+					return false; // server is dead
+				}
+			}
+		}
+
+		return true; // canceled — clean shutdown
 	}
 
 	internal async Task<(bool success, int effectivePort)> StartProcess(string hostPath, int port, string workingDirectory, string? solution, CancellationToken ct)
