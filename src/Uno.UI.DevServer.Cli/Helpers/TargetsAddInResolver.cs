@@ -6,9 +6,10 @@ using Microsoft.Extensions.Logging;
 
 namespace Uno.UI.DevServer.Cli.Helpers;
 
-internal partial class TargetsAddInResolver(ILogger<TargetsAddInResolver> logger)
+internal partial class TargetsAddInResolver(ILogger<TargetsAddInResolver> logger, ManifestAddInResolver? manifestResolver = null)
 {
 	private readonly ILogger<TargetsAddInResolver> _logger = logger;
+	private readonly ManifestAddInResolver? _manifestResolver = manifestResolver;
 
 	[GeneratedRegex(@"\$\(([^)]+)\)")]
 	private static partial Regex PropertyRefRegex();
@@ -47,9 +48,29 @@ internal partial class TargetsAddInResolver(ILogger<TargetsAddInResolver> logger
 				continue;
 			}
 
+			// Priority 1: manifest-first discovery (devserver-addin.json)
+			if (_manifestResolver is not null)
+			{
+				var manifestResult = _manifestResolver.TryResolveFromManifest(packageDir, packageName, version);
+				if (manifestResult is not null)
+				{
+					results.AddRange(manifestResult.AddIns);
+					continue; // skip .targets for this package
+				}
+			}
+
+			// Priority 2: convention-based .targets parsing
 			var targetsFiles = FindTargetsFiles(packageDir);
 			if (targetsFiles.Count == 0)
 			{
+				// Diagnostic: check for tools/devserver/ without add-in registration
+				var devServerToolsDir = Path.Combine(packageDir, "tools", "devserver");
+				if (Directory.Exists(devServerToolsDir))
+				{
+					_logger.LogWarning(
+						"Package {Package} has a tools/devserver/ directory but no UnoRemoteControlAddIns item was found in its .targets files",
+						packageName);
+				}
 				continue;
 			}
 

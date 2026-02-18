@@ -157,7 +157,9 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 			try
 			{
 				resolvedAddIns = _addInResolver.ResolveAddIns(packagesJsonPath);
-				addInsDiscoveryMethod = "targets";
+				addInsDiscoveryMethod = resolvedAddIns.Count > 0
+					? string.Join("+", resolvedAddIns.Select(a => a.DiscoverySource).Distinct())
+					: null;
 			}
 			catch (Exception ex)
 			{

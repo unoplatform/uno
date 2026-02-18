@@ -552,6 +552,102 @@ public class TargetsAddInResolverTests
 		results.Should().HaveCount(1);
 	}
 
+	// -------------------------------------------------------------------
+	// Manifest-first integration
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	[Description("When both manifest and .targets exist, manifest wins and .targets is skipped for that package")]
+	public void ResolveAddIns_WhenManifestPresent_TakesPriorityOverTargets()
+	{
+		var (packagesJsonPath, nugetCache) = CreatePackagesJson(
+			("Uno.Test.Both", "1.0.0"));
+
+		// Create both a .targets file and a manifest
+		CreatePackageWithTargets(
+			nugetCache, "uno.test.both", "1.0.0",
+			"""
+			<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(MSBuildThisFileDirectory)../tools/devserver/FromTargets.dll" />
+				</ItemGroup>
+			</Project>
+			""",
+			dllRelativePath: "tools/devserver/FromTargets.dll");
+
+		// Also create the manifest DLL and manifest file
+		var packageDir = Path.Combine(nugetCache, "uno.test.both", "1.0.0");
+		var manifestDllDir = Path.Combine(packageDir, "tools", "devserver");
+		Directory.CreateDirectory(manifestDllDir);
+		var manifestDll = Path.Combine(manifestDllDir, "FromManifest.dll");
+		File.WriteAllBytes(manifestDll, [0]);
+
+		File.WriteAllText(Path.Combine(packageDir, "devserver-addin.json"), """
+		{
+			"version": 1,
+			"addins": [
+				{ "entryPoint": "tools/devserver/FromManifest.dll" }
+			]
+		}
+		""");
+
+		var manifestLogger = LoggerFactory.Create(b => b.AddConsole().SetMinimumLevel(LogLevel.Trace))
+			.CreateLogger<ManifestAddInResolver>();
+		var manifestResolver = new ManifestAddInResolver(manifestLogger);
+		var resolver = new TargetsAddInResolver(_logger, manifestResolver);
+
+		// Act
+		var results = resolver.ResolveAddIns(packagesJsonPath, [nugetCache]);
+
+		// Assert - manifest DLL should win
+		results.Should().HaveCount(1);
+		results[0].EntryPointDll.Should().Contain("FromManifest.dll");
+		results[0].DiscoverySource.Should().Be("manifest");
+	}
+
+	[TestMethod]
+	[Description("When manifest has version > 1, it falls through and .targets takes over")]
+	public void ResolveAddIns_WhenManifestFutureVersion_FallsThroughToTargets()
+	{
+		var (packagesJsonPath, nugetCache) = CreatePackagesJson(
+			("Uno.Test.FutureManifest", "1.0.0"));
+
+		var targetsDll = CreatePackageWithTargets(
+			nugetCache, "uno.test.futuremanifest", "1.0.0",
+			"""
+			<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(MSBuildThisFileDirectory)../tools/devserver/FromTargets.dll" />
+				</ItemGroup>
+			</Project>
+			""",
+			dllRelativePath: "tools/devserver/FromTargets.dll");
+
+		// Write a v42 manifest → should fall through
+		var packageDir = Path.Combine(nugetCache, "uno.test.futuremanifest", "1.0.0");
+		File.WriteAllText(Path.Combine(packageDir, "devserver-addin.json"), """
+		{
+			"version": 42,
+			"addins": [
+				{ "entryPoint": "tools/devserver/FromManifest.dll" }
+			]
+		}
+		""");
+
+		var manifestLogger = LoggerFactory.Create(b => b.AddConsole().SetMinimumLevel(LogLevel.Trace))
+			.CreateLogger<ManifestAddInResolver>();
+		var manifestResolver = new ManifestAddInResolver(manifestLogger);
+		var resolver = new TargetsAddInResolver(_logger, manifestResolver);
+
+		// Act
+		var results = resolver.ResolveAddIns(packagesJsonPath, [nugetCache]);
+
+		// Assert - .targets DLL should be used since manifest fell through
+		results.Should().HaveCount(1);
+		results[0].EntryPointDll.Should().Be(targetsDll);
+		results[0].DiscoverySource.Should().Be("targets");
+	}
+
 	#region Test Helpers
 
 	private (string packagesJsonPath, string nugetCache) CreatePackagesJson(

@@ -83,6 +83,7 @@ internal class Program
 		services.AddSingleton<CliManager>();
 		services.AddSingleton<DotNetVersionCache>();
 		services.AddSingleton<UnoToolsLocator>();
+		services.AddSingleton<ManifestAddInResolver>();
 		services.AddSingleton<TargetsAddInResolver>();
 		services.AddSingleton<DevServerMonitor>();
 		services.AddSingleton<McpUpstreamClient>();
