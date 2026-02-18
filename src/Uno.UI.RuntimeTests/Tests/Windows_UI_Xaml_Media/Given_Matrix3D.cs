@@ -215,7 +215,7 @@ public class Given_Matrix3D
 	public void When_Invert_Singular_Throws()
 	{
 		var singular = new Matrix3D();
-		Assert.ThrowsException<InvalidOperationException>(() => singular.Invert());
+		Assert.ThrowsExactly<InvalidOperationException>(() => singular.Invert());
 	}
 
 	[TestMethod]
