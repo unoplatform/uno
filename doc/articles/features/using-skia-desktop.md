@@ -144,6 +144,7 @@ The build system:
 3. Generates an ILLink descriptor file to preserve the public properties (getters/setters) of discovered types
 
 For example, if you have:
+
 ```csharp
 [Bindable]
 public class MainViewModel
