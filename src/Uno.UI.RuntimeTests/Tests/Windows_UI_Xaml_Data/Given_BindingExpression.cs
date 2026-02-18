@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Combinatorial.MSTest;
 using Microsoft.UI.Xaml.Controls;
@@ -629,5 +630,27 @@ public class Given_BindingExpression
 		{
 			Assert.Fail($"Invalid expectation: [{sut.Name}]{sut.Text}");
 		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_XBind_TwoWay_Enum_Converter_ConvertBack_Receives_Correct_TargetType()
+	{
+		var root = new When_XBind_TwoWay_Enum_Converter();
+		TestServices.WindowHelper.WindowContent = root;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Verify initial forward conversion: enum -> string
+		Assert.AreEqual("Hello", root.tbEnum.Text, "Forward conversion should produce enum name string");
+
+		// Modify the TextBox to trigger ConvertBack
+		root.tbEnum.Text = "World";
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Assert: converter received typeof(XBindTestEnum), not null
+		Assert.AreEqual(typeof(XBindTestEnum), root.Converter.LastConvertBackTargetType,
+			"ConvertBack should receive the enum type as targetType via XBindSourceType");
+		Assert.AreEqual(XBindTestEnum.World, root.EnumValue,
+			"Backward conversion should correctly parse the string to the enum value");
 	}
 }

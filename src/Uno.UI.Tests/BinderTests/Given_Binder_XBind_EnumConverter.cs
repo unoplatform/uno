@@ -79,12 +79,12 @@ namespace Uno.UI.Tests.BinderTests
 			// Forward conversion should still work
 			Assert.AreEqual("Hello", SUT.MyProperty);
 
-			// Backward conversion - targetType should fall back to binding path type (which might be null for x:Bind)
+			// Backward conversion - targetType should fall back to _bindingPath.ValueType which is null for x:Bind
 			SUT.MyProperty = "World";
 
-			// Without sourceType, it falls back to _bindingPath.ValueType which might be null for x:Bind
-			// This demonstrates the original issue
-			Assert.AreEqual(TestEnum.World, enumSource.Value, "Should still work due to fallback in our test converter");
+			// Without sourceType, ConvertBack receives null as targetType (the original bug)
+			Assert.IsNull(myTestConverter.LastConvertBackTargetType,
+				"Without source type info, ConvertBack should receive null targetType (the original bug)");
 		}
 
 		public class EnumSource
@@ -120,15 +120,10 @@ namespace Uno.UI.Tests.BinderTests
 					return Enum.Parse(targetType, s);
 				}
 
-				// If targetType is null, we need to handle this case
-				if (value is string str && targetType == null)
-				{
-					// This is the problematic case - we don't know what enum type to parse to
-					// For the test, we'll assume TestEnum, but in real scenarios this would fail
-					return Enum.Parse(typeof(TestEnum), str);
-				}
-
-				throw new NotImplementedException();
+				// When targetType is null (the bug this fix addresses), a real converter
+				// can't determine the correct enum type. Return the raw string value so
+				// the XamlBindingHelper.ConvertValue in the setter can still handle it.
+				return value;
 			}
 		}
 

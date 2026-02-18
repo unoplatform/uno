@@ -236,7 +236,7 @@ namespace Microsoft.UI.Xaml.Data
 			XBindBack = xBindBack;
 		}
 
-		internal void SetBindingXBindProvider(object compiledSource, Func<object, (bool, object)> xBindSelector, Action<object, object> xBindBack, Type sourceType, string[] propertyPaths = null)
+		internal void SetBindingXBindProvider(object compiledSource, Func<object, (bool, object)> xBindSelector, Action<object, object> xBindBack, Type? sourceType, string[] propertyPaths = null)
 		{
 			SetBindingXBindProvider(compiledSource, xBindSelector, xBindBack, propertyPaths);
 			XBindSourceType = sourceType;
