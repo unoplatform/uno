@@ -208,6 +208,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			if (!EnableDependentAnimation && this.GetIsDependantAnimation())
 			{ // Don't start the animator its a dependent animation
+				State = TimelineState.Stopped;
+				OnCompleted();
 				return;
 			}
 
