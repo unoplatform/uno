@@ -19,7 +19,7 @@
 		<RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UNO_UWP_BUILD)'!='true'">
+	<PropertyGroup>
 		<DefineConstants>$(DefineConstants);WINUI</DefineConstants>
 	</PropertyGroup>
 
@@ -28,7 +28,7 @@
 		<Compile Include="..\Uno.UI\Extensions\DependencyObjectExtensions.cs" Link="Uno.UI\Extensions\DependencyObjectExtensions.cs" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(UNO_UWP_BUILD)'!='true'">
+	<ItemGroup>
 		<Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.Collections\EnumerableExtensions.cs" Link="Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.Collections\EnumerableExtensions.cs" />
 		<Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.Compatibility\Threading\AsyncLock.cs" Link="Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.Compatibility\Threading\AsyncLock.cs" />
 
