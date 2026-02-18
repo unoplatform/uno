@@ -12,7 +12,7 @@
 		<local:XBindEnumToStringConverter x:Key="EnumConverter" />
 	</Page.Resources>
 	<StackPanel>
-		<TextBox x:Name="tbEnum"
+		<TextBox x:Name="tbEnum" x:FieldModifier="public"
 			Text="{x:Bind EnumValue, Mode=TwoWay, Converter={StaticResource EnumConverter}}" />
 	</StackPanel>
 </Page>
