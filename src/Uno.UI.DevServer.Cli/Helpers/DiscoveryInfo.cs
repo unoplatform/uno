@@ -98,6 +98,11 @@ public sealed class DiscoveryInfo
 	public long AddInsDiscoveryDurationMs { get; init; }
 
 	/// <summary>
+	/// Gets whether convention-based add-in discovery failed with an exception.
+	/// </summary>
+	public bool AddInDiscoveryFailed { get; init; }
+
+	/// <summary>
 	/// Gets warnings encountered during discovery.
 	/// </summary>
 	public IReadOnlyList<string> Warnings { get; init; } = [];

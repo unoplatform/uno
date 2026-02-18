@@ -98,6 +98,29 @@ internal static class DiscoveryIssueMapper
 			});
 		}
 
+		// Add-in specific issues
+		if (discovery.SettingsPackageVersion is not null && discovery.SettingsPackagePath is null)
+		{
+			issues.Add(new ValidationIssue
+			{
+				Code = IssueCode.AddInPackageNotCached,
+				Severity = ValidationSeverity.Warning,
+				Message = $"Add-in package uno.settings.devserver {discovery.SettingsPackageVersion} not found in NuGet cache.",
+				Remediation = "Run 'dotnet restore' to download the package.",
+			});
+		}
+
+		if (discovery.AddInDiscoveryFailed)
+		{
+			issues.Add(new ValidationIssue
+			{
+				Code = IssueCode.AddInDiscoveryFallback,
+				Severity = ValidationSeverity.Warning,
+				Message = "Convention-based add-in discovery failed. The server will use MSBuild fallback.",
+				Remediation = "Check that NuGet packages are properly restored.",
+			});
+		}
+
 		return issues;
 	}
 }

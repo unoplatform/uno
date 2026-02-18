@@ -187,4 +187,103 @@ public class Given_DiscoveryIssueMapper
 		issues.Should().Contain(i => i.Code == IssueCode.PackagesJsonNotFound);
 		issues.Should().Contain(i => i.Code == IssueCode.DotNetNotFound);
 	}
+
+	// -------------------------------------------------------------------
+	// Add-in degradation scenarios
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	[Description("Settings package listed in packages.json but not in NuGet cache → AddInPackageNotCached")]
+	public void WhenSettingsPackageNotCached_ReportsAddInPackageNotCached()
+	{
+		var discovery = new DiscoveryInfo
+		{
+			GlobalJsonPath = "/tmp/global.json",
+			UnoSdkPackage = "Uno.Sdk",
+			UnoSdkVersion = "5.5.100",
+			UnoSdkPath = "/nuget/uno.sdk/5.5.100",
+			PackagesJsonPath = "/nuget/uno.sdk/5.5.100/targets/netstandard2.0/packages.json",
+			DevServerPackageVersion = "5.5.100",
+			DevServerPackagePath = "/nuget/uno.winui.devserver/5.5.100",
+			DotNetVersion = "10.0.100",
+			DotNetTfm = "net10.0",
+			HostPath = "/nuget/uno.winui.devserver/5.5.100/tools/rc/host/net10.0/Host.dll",
+			SettingsPackageVersion = "1.2.3",
+			SettingsPackagePath = null,
+		};
+
+		var issues = DiscoveryIssueMapper.MapDiscoveryIssues(discovery);
+
+		issues.Should().Contain(i => i.Code == IssueCode.AddInPackageNotCached);
+		issues.First(i => i.Code == IssueCode.AddInPackageNotCached).Severity.Should().Be(ValidationSeverity.Warning);
+	}
+
+	[TestMethod]
+	[Description("Convention-based add-in discovery threw an exception → AddInDiscoveryFallback")]
+	public void WhenDiscoveryFailed_ReportsAddInDiscoveryFallback()
+	{
+		var discovery = new DiscoveryInfo
+		{
+			GlobalJsonPath = "/tmp/global.json",
+			UnoSdkPackage = "Uno.Sdk",
+			UnoSdkVersion = "5.5.100",
+			UnoSdkPath = "/nuget/uno.sdk/5.5.100",
+			PackagesJsonPath = "/nuget/uno.sdk/5.5.100/targets/netstandard2.0/packages.json",
+			DevServerPackageVersion = "5.5.100",
+			DevServerPackagePath = "/nuget/uno.winui.devserver/5.5.100",
+			DotNetVersion = "10.0.100",
+			DotNetTfm = "net10.0",
+			HostPath = "/nuget/uno.winui.devserver/5.5.100/tools/rc/host/net10.0/Host.dll",
+			AddInDiscoveryFailed = true,
+		};
+
+		var issues = DiscoveryIssueMapper.MapDiscoveryIssues(discovery);
+
+		issues.Should().Contain(i => i.Code == IssueCode.AddInDiscoveryFallback);
+		issues.First(i => i.Code == IssueCode.AddInDiscoveryFallback).Severity.Should().Be(ValidationSeverity.Warning);
+	}
+
+	[TestMethod]
+	[Description("No global.json at all → exactly one GlobalJsonNotFound issue, no cascading errors")]
+	public void FullDegradedScenario_NoGlobalJson_ReportsExactlyGlobalJsonNotFound()
+	{
+		var discovery = new DiscoveryInfo
+		{
+			GlobalJsonPath = null,
+			AddInDiscoveryFailed = true, // should be ignored since global.json short-circuits
+		};
+
+		var issues = DiscoveryIssueMapper.MapDiscoveryIssues(discovery);
+
+		issues.Should().HaveCount(1);
+		issues[0].Code.Should().Be(IssueCode.GlobalJsonNotFound);
+	}
+
+	[TestMethod]
+	[Description("Missing NuGet cache entries produce multiple issues without crashing")]
+	public void FullDegradedScenario_MissingNuGetCache_ReportsMultipleIssues()
+	{
+		var discovery = new DiscoveryInfo
+		{
+			GlobalJsonPath = "/tmp/global.json",
+			UnoSdkPackage = "Uno.Sdk",
+			UnoSdkVersion = "5.5.100",
+			UnoSdkPath = "/nuget/uno.sdk/5.5.100",
+			PackagesJsonPath = "/nuget/uno.sdk/5.5.100/targets/netstandard2.0/packages.json",
+			DevServerPackageVersion = "5.5.100",
+			DevServerPackagePath = null, // Fatal
+			DotNetVersion = "10.0.100",
+			DotNetTfm = "net10.0",
+			SettingsPackageVersion = "1.2.3",
+			SettingsPackagePath = null, // Warning
+			AddInDiscoveryFailed = true, // Warning
+		};
+
+		var issues = DiscoveryIssueMapper.MapDiscoveryIssues(discovery);
+
+		issues.Should().HaveCount(3);
+		issues.Should().Contain(i => i.Code == IssueCode.DevServerPackageNotCached);
+		issues.Should().Contain(i => i.Code == IssueCode.AddInPackageNotCached);
+		issues.Should().Contain(i => i.Code == IssueCode.AddInDiscoveryFallback);
+	}
 }

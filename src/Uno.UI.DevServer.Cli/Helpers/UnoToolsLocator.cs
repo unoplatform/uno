@@ -150,6 +150,7 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 		var resolvedAddIns = new List<ResolvedAddIn>();
 		string? addInsDiscoveryMethod = null;
 		long addInsDiscoveryDurationMs = 0;
+		bool addInDiscoveryFailed = false;
 
 		if (_addInResolver is not null && packagesJsonPath is not null)
 		{
@@ -163,6 +164,7 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 			}
 			catch (Exception ex)
 			{
+				addInDiscoveryFailed = true;
 				warnings.Add($"Convention-based add-in discovery failed: {ex.Message}");
 			}
 			addInsDiscoveryDurationMs = addInStopwatch.ElapsedMilliseconds;
@@ -189,6 +191,7 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 			AddIns = resolvedAddIns,
 			AddInsDiscoveryMethod = addInsDiscoveryMethod,
 			AddInsDiscoveryDurationMs = addInsDiscoveryDurationMs,
+			AddInDiscoveryFailed = addInDiscoveryFailed,
 			Warnings = warnings,
 			Errors = errors
 		};
