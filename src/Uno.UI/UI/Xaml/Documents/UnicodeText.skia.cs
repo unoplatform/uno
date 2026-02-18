@@ -103,12 +103,12 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly List<Line> _lines;
 	private readonly float? _endingNewLineLineHeight;
 	private readonly bool _rtl;
-	private readonly List<(int start, int length, Hyperlink hyperlink)> _hyperlinkRanges;
+	private readonly List<(int start, int end, Hyperlink hyperlink)> _hyperlinkRanges;
 	private readonly List<int> _wordBoundaries;
 	private readonly List<LinkedListNode<Cluster>> _clustersInLogicalOrder;
 	private readonly LinkedList<Glyph> _glyphs;
 	private readonly List<(int end, FlowDirection direction)> _bidiBreaks;
-	private readonly List<(int end, Brush? foreground)> _runBreaks;
+	private readonly List<(int end, Brush? foreground, FlowDirection direction)> _runBreaks;
 	private readonly List<(int correctionStart, int correctionEnd)?>? _corrections;
 	private readonly Size _availableSize;
 
@@ -130,7 +130,8 @@ internal readonly partial struct UnicodeText : IParsedText
 		CI.Assert(maxLines >= 0);
 
 		var stringBuilder = new StringBuilder();
-		_runBreaks = new List<(int end, Brush? foreground)>();
+		_hyperlinkRanges = new List<(int start, int end, Hyperlink hyperlink)>();
+		_runBreaks = new List<(int end, Brush? foreground, FlowDirection direction)>();
 		var scriptBreaks = new List<int>();
 		var fontBreaks = new List<(int end, FontDetails fontDetails)>();
 		var lineOpportunityBreaks = new List<int>();
@@ -187,8 +188,13 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 
 			scriptBreaks.Add(inlineStart + inlineText.Length);
-			_runBreaks.Add((inlineStart + inlineText.Length, inline.Foreground));
+			_runBreaks.Add((inlineStart + inlineText.Length, inline.Foreground, (inline as Run)?.FlowDirection ?? flowDirection));
 			fontBreaks.Add((inlineStart + inlineText.Length, currentFontDetails));
+
+			if (TryGetHyperLink(inline) is { } hyperLink)
+			{
+				_hyperlinkRanges.Add((inlineStart, inlineStart + inlineText.Length, hyperLink));
+			}
 		}
 
 		_text = stringBuilder.ToString();
@@ -205,30 +211,23 @@ internal readonly partial struct UnicodeText : IParsedText
 			_availableSize = availableSize;
 			_xyTable = [];
 			_indexToCluster = [];
-			_hyperlinkRanges = [];
 			_clustersInLogicalOrder = [];
 			_glyphs = [];
 			_bidiBreaks = [];
 			return;
 		}
-		_hyperlinkRanges = new List<(int start, int length, Hyperlink hyperlink)>();
 
 		_bidiBreaks = new List<(int end, FlowDirection direction)>();
 		var embeddingLevels = ArrayPool<byte>.Shared.Rent(_text.Length);
 		using var embeddingLevelsDisposable = new DisposableStruct<byte[]>(static embeddingLevels => ArrayPool<byte>.Shared.Return(embeddingLevels), embeddingLevels);
-		for (int i = 0; i < inlines.Length; i++)
+		for (int i = 0; i < _runBreaks.Count; i++)
 		{
 			var (start, count) = i == 0 ? (0, _runBreaks[0].end) : (_runBreaks[i - 1].end, _runBreaks[i].end - _runBreaks[i - 1].end);
-			var direction = (inlines[i] as Run)?.FlowDirection ?? flowDirection;
+			var direction = _runBreaks[i].direction;
 			var level = flowDirection is FlowDirection.LeftToRight
 				? (direction is FlowDirection.LeftToRight ? 0 : 1)
 				: (direction is FlowDirection.RightToLeft ? 1 : 2); // 2 and not 0 because embedding must increase nesting level when switching direction inside RTL paragraph
 			Array.Fill(embeddingLevels, (byte)level, start, count);
-
-			if (TryGetHyperLink(inlines[i]) is { } hyperLink)
-			{
-				_hyperlinkRanges.Add((start, start + count, hyperLink));
-			}
 		}
 
 		using var _ = ICU.CreateBiDiAndSetPara(_text, 0, _text.Length, flowDirection is FlowDirection.RightToLeft ? UBIDI_DEFAULT_RTL : UBIDI_DEFAULT_LTR, out var bidi, embeddingLevels);
@@ -759,7 +758,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	}
 
 	private static List<(int start, int end, FontDetails fontDetails, FlowDirection direction)> EnumerateShapingRuns(
-		List<(int end, Brush? foreground)> runBreaks,
+		List<(int end, Brush? foreground, FlowDirection direction)> runBreaks,
 		List<int> scriptBreaks,
 		List<(int end, FlowDirection direction)> bidiBreaks,
 		List<(int end, FontDetails fontDetails)> fontBreaks)
@@ -1196,7 +1195,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		var range = _hyperlinkRanges[rangeIndex];
-		return index >= range.start && index < range.length ? range.hyperlink : null;
+		return index >= range.start && index < range.end ? range.hyperlink : null;
 	}
 
 	/// <param name="right">when on a word boundary, decides whether to return the left or the right word</param>
