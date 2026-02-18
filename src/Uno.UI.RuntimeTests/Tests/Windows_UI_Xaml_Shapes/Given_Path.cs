@@ -170,7 +170,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 		}
 
 		[TestMethod]
-		[GitHubWorkItem("https://github.com/nicenicer/uno/issues/3238")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3238")]
+#if !__SKIA__ && !WINAPPSDK
+		[Ignore("Geometry.Transform is only implemented on Skia and WinUI.")]
+#endif
 		public async Task When_Geometry_Transform_Translates_Rendering()
 		{
 			var path = new Path
@@ -198,7 +201,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 		}
 
 		[TestMethod]
-		[GitHubWorkItem("https://github.com/nicenicer/uno/issues/3238")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3238")]
+#if !__SKIA__ && !WINAPPSDK
+		[Ignore("Geometry.Transform is only implemented on Skia and WinUI.")]
+#endif
 		public async Task When_Geometry_Transform_Changed_At_Runtime()
 		{
 			var translate = new TranslateTransform { X = 0, Y = 0 };
@@ -235,7 +241,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 		}
 
 		[TestMethod]
-		[GitHubWorkItem("https://github.com/nicenicer/uno/issues/3238")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3238")]
+#if !__SKIA__ && !WINAPPSDK
+		[Ignore("Geometry.Transform is only implemented on Skia and WinUI.")]
+#endif
 		public async Task When_GeometryGroup_Children_Have_Transforms()
 		{
 			var path = new Path
