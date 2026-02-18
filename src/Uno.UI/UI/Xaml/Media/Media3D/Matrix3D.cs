@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D;
 /// <summary>
 /// Represents a 4 × 4 matrix that is used for transformations in a three-dimensional (3-D) space.
 /// </summary>
-public partial struct Matrix3D : IFormattable, IEquatable<Matrix3D>
+public partial struct Matrix3D : IFormattable
 {
 	public double M11;
 	public double M12;
