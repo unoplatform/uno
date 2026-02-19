@@ -173,12 +173,23 @@ internal readonly partial struct UnicodeText
 			return (T)value;
 		}
 
-		public static unsafe DisposableStruct<IntPtr> CreateBiDiAndSetPara(string text, int start, int end, byte paraLevel, out IntPtr bidi)
+		public static unsafe DisposableStruct<IntPtr> CreateBiDiAndSetPara(string text, int start, int end, byte paraLevel, out IntPtr bidi, byte[]? embeddingLevels = null)
 		{
 			bidi = GetMethod<ubidi_open>()();
 			fixed (char* textPtr = &text.GetPinnableReference())
 			{
-				GetMethod<ubidi_setPara>()(bidi, (IntPtr)(textPtr + start), end - start, paraLevel, IntPtr.Zero, out var setParaErrorCode);
+				int setParaErrorCode;
+				if (embeddingLevels is not null)
+				{
+					fixed (byte* embeddingLevelsPtr = embeddingLevels)
+					{
+						GetMethod<ubidi_setPara>()(bidi, (IntPtr)(textPtr + start), end - start, paraLevel, (IntPtr)embeddingLevelsPtr, out setParaErrorCode);
+					}
+				}
+				else
+				{
+					GetMethod<ubidi_setPara>()(bidi, (IntPtr)(textPtr + start), end - start, paraLevel, IntPtr.Zero, out setParaErrorCode);
+				}
 				if (setParaErrorCode > 0)
 				{
 					throw new InvalidOperationException($"{nameof(ubidi_setPara)} failed with error code {setParaErrorCode}");
@@ -191,7 +202,8 @@ internal readonly partial struct UnicodeText
 		{
 			if (status > 0)
 			{
-				throw new InvalidOperationException($"{typeof(T).Name} failed with error code {status.ToString("X", CultureInfo.InvariantCulture)}");
+				var errorString = Marshal.PtrToStringUTF8(GetMethod<u_errorName>()(status));
+				throw new InvalidOperationException($"{typeof(T).Name} failed with error code {errorString}");
 			}
 			else if (status < 0)
 			{
@@ -211,7 +223,19 @@ internal readonly partial struct UnicodeText
 		public delegate void ubidi_setPara(IntPtr pBiDi, IntPtr text, int length, byte paraLevel, IntPtr embeddingLevels, out int errorCode);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void ubidi_setLine(IntPtr pBiDi, int start, int limit, IntPtr pLine, out int errorCode);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void ubidi_getLogicalRun(IntPtr pBiDi, int logicalPosition, out int logicalLimit, out byte level);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate IntPtr ubidi_getLevels(IntPtr pBiDi, out int errorCode);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate byte ubidi_getParaLevel(IntPtr pBiDi);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void ubidi_getLogicalMap(IntPtr pBiDi, IntPtr indexMap, out int errorCode);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate int ubidi_countRuns(IntPtr pBiDI, out int errorCode);
@@ -230,6 +254,9 @@ internal readonly partial struct UnicodeText
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate int ubrk_next(IntPtr bi);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate int uscript_getScript(int codepoint, out int errorCode);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate void u_getVersion(out UVersionInfo versionInfo);
@@ -277,6 +304,9 @@ internal readonly partial struct UnicodeText
 			static extern void uno_ubidi_setPara(IntPtr pBiDi, IntPtr text, int length, byte paraLevel, IntPtr embeddingLevels, out int errorCode);
 
 			[DllImport("unoicu")]
+			static extern void uno_ubidi_setLine(IntPtr pBiDi, int start, int limit, IntPtr pLine, out int errorCode);
+
+			[DllImport("unoicu")]
 			static extern void uno_ubidi_getLogicalRun(IntPtr pBiDi, int logicalPosition, out int logicalLimit, out byte level);
 
 			[DllImport("unoicu")]
@@ -284,6 +314,15 @@ internal readonly partial struct UnicodeText
 
 			[DllImport("unoicu")]
 			static extern int uno_ubidi_getVisualRun(IntPtr pBiDi, int runIndex, out int logicalStart, out int length);
+
+			[DllImport("unoicu")]
+			static extern IntPtr uno_ubidi_getLevels(IntPtr pBiDi, out int errorCode);
+
+			[DllImport("unoicu")]
+			static extern byte uno_ubidi_getParaLevel(IntPtr pBiDi);
+
+			[DllImport("unoicu")]
+			static extern void uno_ubidi_getLogicalMap(IntPtr pBiDi, IntPtr indexMap, out int errorCode);
 
 			[DllImport("unoicu")]
 			static extern IntPtr uno_ubrk_open(int type, IntPtr locale, IntPtr text, int textLength, out int status);
@@ -296,6 +335,9 @@ internal readonly partial struct UnicodeText
 
 			[DllImport("unoicu")]
 			static extern int uno_ubrk_next(IntPtr bi);
+
+			[DllImport("unoicu")]
+			static extern int uno_uscript_getScript(int codepoint, out int errorCode);
 
 			[DllImport("unoicu")]
 			static extern void uno_u_getVersion(out UVersionInfo versionInfo);
@@ -322,6 +364,9 @@ internal readonly partial struct UnicodeText
 			static extern void ubidi_setPara_77(IntPtr pBiDi, IntPtr text, int length, byte paraLevel, IntPtr embeddingLevels, out int errorCode);
 
 			[DllImport("__Internal")]
+			static extern void ubidi_setLine_77(IntPtr pBiDi, int start, int limit, IntPtr pLine, out int errorCode);
+
+			[DllImport("__Internal")]
 			static extern void ubidi_getLogicalRun_77(IntPtr pBiDi, int logicalPosition, out int logicalLimit, out byte level);
 
 			[DllImport("__Internal")]
@@ -329,6 +374,15 @@ internal readonly partial struct UnicodeText
 
 			[DllImport("__Internal")]
 			static extern int ubidi_getVisualRun_77(IntPtr pBiDi, int runIndex, out int logicalStart, out int length);
+
+			[DllImport("__Internal")]
+			static extern IntPtr ubidi_getLevels_77(IntPtr pBiDi, out int errorCode);
+
+			[DllImport("__Internal")]
+			static extern byte ubidi_getParaLevel_77(IntPtr pBiDi);
+
+			[DllImport("__Internal")]
+			static extern void ubidi_getLogicalMap_77(IntPtr pBiDi, IntPtr indexMap, out int errorCode);
 
 			[DllImport("__Internal")]
 			static extern IntPtr ubrk_open_77(int type, IntPtr locale, IntPtr text, int textLength, out int status);
@@ -341,6 +395,9 @@ internal readonly partial struct UnicodeText
 
 			[DllImport("__Internal")]
 			static extern int ubrk_next_77(IntPtr bi);
+
+			[DllImport("__Internal")]
+			static extern int uscript_getScript_77(int codepoint, out int errorCode);
 
 			[DllImport("__Internal")]
 			static extern void u_getVersion_77(out UVersionInfo versionInfo);
