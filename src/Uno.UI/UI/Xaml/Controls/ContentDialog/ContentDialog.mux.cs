@@ -149,8 +149,10 @@ partial class ContentDialog
 	}
 #endif
 
-	private void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 	{
+		base.OnPropertyChanged2(args);
+
 		// We only react to property changes if ContentDialog is currently visible
 		if (m_tpCurrentAsyncOperation == null ||
 			!m_hasPreparedContent ||
@@ -1015,39 +1017,34 @@ partial class ContentDialog
 	{
 		var key = args.Key;
 
-		switch (key)
+		if (key == VirtualKey.Escape)
 		{
-			case VirtualKey.Escape:
-			{
-				var originalKey = args.OriginalKey;
+			var originalKey = args.OriginalKey;
 
-				if ((!isKeyDown && originalKey == VirtualKey.GamepadB) ||
-					(isKeyDown && originalKey == VirtualKey.Escape))
+			if ((!isKeyDown && originalKey == VirtualKey.GamepadB) ||
+				(isKeyDown && originalKey == VirtualKey.Escape))
+			{
+				ExecuteCloseAction();
+				args.Handled = true;
+			}
+		}
+		else if (key == VirtualKey.Enter)
+		{
+			if (isKeyDown)
+			{
+				var defaultButton = GetDefaultButtonHelper();
+
+				if (defaultButton is ButtonBase buttonBase && buttonBase.IsEnabled)
 				{
-					ExecuteCloseAction();
+					// TODO Uno: ProgrammaticClick is internal on ButtonBase
+					// buttonBase.ProgrammaticClick();
+					var peer = Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer.FromElement(buttonBase);
+					if (peer is Microsoft.UI.Xaml.Automation.Peers.ButtonAutomationPeer buttonPeer)
+					{
+						buttonPeer.Invoke();
+					}
 					args.Handled = true;
 				}
-				break;
-			}
-			case VirtualKey.Enter:
-			{
-				if (isKeyDown)
-				{
-					var defaultButton = GetDefaultButtonHelper();
-
-					if (defaultButton is ButtonBase buttonBase && buttonBase.IsEnabled)
-					{
-						// TODO Uno: ProgrammaticClick is internal on ButtonBase
-						// buttonBase.ProgrammaticClick();
-						var peer = Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer.FromElement(buttonBase);
-						if (peer is Microsoft.UI.Xaml.Automation.Peers.ButtonAutomationPeer buttonPeer)
-						{
-							buttonPeer.Invoke();
-						}
-						args.Handled = true;
-					}
-				}
-				break;
 			}
 		}
 	}
@@ -1423,34 +1420,47 @@ partial class ContentDialog
 
 		if (button != null)
 		{
-			// TODO Uno: XamlUICommand integration (CommandingHelpers)
-			// When the command implements IXamlUICommand, binding to Label, KeyboardAccelerators,
-			// AccessKey, and Description should be done here.
-			// Original C++:
-			// if (oldCommand)
-			// {
-			//     auto oldCommandAsUICommand = oldCommand.AsOrNull<IXamlUICommand>();
-			//     if (oldCommandAsUICommand)
-			//     {
-			//         CommandingHelpers::ClearBindingIfSet(oldCommandAsUICommand, this, textPropertyIndex);
-			//         CommandingHelpers::ClearBindingIfSet(oldCommandAsUICommand, button, KnownPropertyIndex::UIElement_KeyboardAccelerators);
-			//         CommandingHelpers::ClearBindingIfSet(oldCommandAsUICommand, button, KnownPropertyIndex::UIElement_AccessKey);
-			//         CommandingHelpers::ClearBindingIfSet(oldCommandAsUICommand, button, KnownPropertyIndex::AutomationProperties_HelpText);
-			//         CommandingHelpers::ClearBindingIfSet(oldCommandAsUICommand, button, KnownPropertyIndex::ToolTipService_ToolTip);
-			//     }
-			// }
-			//
-			// if (newCommand)
-			// {
-			//     auto newCommandAsUICommand = newCommand.AsOrNull<IXamlUICommand>();
-			//     if (newCommandAsUICommand)
-			//     {
-			//         CommandingHelpers::BindToLabelPropertyIfUnset(newCommandAsUICommand, this, textPropertyIndex);
-			//         CommandingHelpers::BindToKeyboardAcceleratorsIfUnset(newCommandAsUICommand, button);
-			//         CommandingHelpers::BindToAccessKeyIfUnset(newCommandAsUICommand, button);
-			//         CommandingHelpers::BindToDescriptionPropertiesIfUnset(newCommandAsUICommand, button);
-			//     }
-			// }
+			DependencyProperty textProperty = buttonType switch
+			{
+				ContentDialogButton.Primary => PrimaryButtonTextProperty,
+				ContentDialogButton.Secondary => SecondaryButtonTextProperty,
+				ContentDialogButton.Close => CloseButtonTextProperty,
+				_ => null,
+			};
+
+			ICommand newCommand = buttonType switch
+			{
+				ContentDialogButton.Primary => PrimaryButtonCommand,
+				ContentDialogButton.Secondary => SecondaryButtonCommand,
+				ContentDialogButton.Close => CloseButtonCommand,
+				_ => null,
+			};
+
+			if (oldCommand != null)
+			{
+				if (textProperty != null)
+				{
+					CommandingHelpers.ClearBindingIfSet(oldCommand, this, textProperty);
+				}
+				CommandingHelpers.ClearBindingIfSet(oldCommand, button, UIElement.KeyboardAcceleratorsProperty);
+				CommandingHelpers.ClearBindingIfSet(oldCommand, button, UIElement.AccessKeyProperty);
+				CommandingHelpers.ClearBindingIfSet(oldCommand, button, Automation.AutomationProperties.HelpTextProperty);
+				CommandingHelpers.ClearBindingIfSet(oldCommand, button, ToolTipService.ToolTipProperty);
+			}
+
+			if (newCommand != null)
+			{
+				if (textProperty != null)
+				{
+					CommandingHelpers.BindToLabelPropertyIfUnset(newCommand, this, textProperty);
+				}
+				if (newCommand is Input.XamlUICommand uiCommand)
+				{
+					CommandingHelpers.BindToKeyboardAcceleratorsIfUnset(uiCommand, button);
+					CommandingHelpers.BindToAccessKeyIfUnset(uiCommand, button);
+					CommandingHelpers.BindToDescriptionPropertiesIfUnset(uiCommand, button);
+				}
+			}
 		}
 	}
 
