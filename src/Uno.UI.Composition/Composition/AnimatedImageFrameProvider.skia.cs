@@ -19,7 +19,7 @@ internal sealed class AnimatedImageFrameProvider : IFrameProvider
 	private readonly WeakReference<Action> _onFrameChanged;
 
 	private int _currentFrame;
-	private bool _disposed;
+	private int _disposed;
 
 	// Note: The Timer will keep holding onto the AnimatedImageFrameProvider until stopped (it's a static root).
 	// But we only stop the timer when we dispose AnimatedImageFrameProvider from SkiaCompositionSurface finalizer.
@@ -118,9 +118,8 @@ internal sealed class AnimatedImageFrameProvider : IFrameProvider
 
 	public void Dispose()
 	{
-		if (!_disposed)
+		if (Interlocked.Exchange(ref _disposed, 1) == 0)
 		{
-			_disposed = true;
 			_timer?.Dispose();
 
 			for (int i = 0; i < _images.Length; i++)

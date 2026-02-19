@@ -862,16 +862,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var screenshot1 = await UITestHelper.ScreenShot(image);
 			var pixel1 = screenshot1.GetPixel(screenshot1.Width / 2, screenshot1.Height / 2);
 
-			// Wait long enough for animation to advance (frames are 200ms each).
-			await Task.Delay(400);
+			// Poll until the center pixel changes (animation has frames every 200ms).
+			// Use a polling loop instead of a fixed delay to avoid flakiness on slow CI.
+			var changed = false;
+			var sw = Stopwatch.StartNew();
+			while (sw.Elapsed < TimeSpan.FromSeconds(5))
+			{
+				await Task.Delay(100);
+				var screenshot2 = await UITestHelper.ScreenShot(image);
+				var pixel2 = screenshot2.GetPixel(screenshot2.Width / 2, screenshot2.Height / 2);
+				if (pixel2 != pixel1)
+				{
+					changed = true;
+					break;
+				}
+			}
 
-			// Take second screenshot - at least one should differ because the animation cycles.
-			var screenshot2 = await UITestHelper.ScreenShot(image);
-			var pixel2 = screenshot2.GetPixel(screenshot2.Width / 2, screenshot2.Height / 2);
-
-			// The animated WebP has red, green, blue, yellow, cyan, magenta frames.
-			// After enough delay, the center pixel should have changed color at least once.
-			Assert.AreNotEqual(pixel1, pixel2, "Animated WebP should show different frames over time");
+			Assert.IsTrue(changed, "Animated WebP should show different frames over time");
 		}
 #endif
 	}

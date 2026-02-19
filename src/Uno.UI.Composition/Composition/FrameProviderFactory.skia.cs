@@ -37,7 +37,7 @@ internal static class FrameProviderFactory
 
 		var images = GC.AllocateUninitializedArray<SKImage>(frameInfos.Length);
 		var durations = new int[frameInfos.Length];
-		var totalDuration = 0;
+		long totalDuration = 0;
 
 		for (int i = 0; i < frameInfos.Length; i++)
 		{
