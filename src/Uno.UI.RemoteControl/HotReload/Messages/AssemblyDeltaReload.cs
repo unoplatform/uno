@@ -33,13 +33,13 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 		string IMessage.Name => Name;
 
 		[MemberNotNullWhen(true, nameof(UpdatedTypes), nameof(MetadataDelta), nameof(ILDelta), nameof(PdbDelta), nameof(ModuleId))]
-		public bool IsValid()
+		public bool IsValid(bool runningInsideVSCodeExtension)
 		{
 			return FilePaths is { IsEmpty: false }
 				&& UpdatedTypes is not null
-				&& MetadataDelta is not null
-				&& ILDelta is not null
-				&& PdbDelta is not null
+				&& (MetadataDelta is not null || runningInsideVSCodeExtension)
+				&& (ILDelta is not null || runningInsideVSCodeExtension)
+				&& (PdbDelta is not null || runningInsideVSCodeExtension)
 				&& ModuleId is not null;
 		}
 	}
