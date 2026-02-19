@@ -20,6 +20,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 		[AutoRetry]
 		[ActivePlatforms(Platform.Android)] // Flaky on iOS #9080
 		[Timeout(TestTimeout)]
+		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
 		public void When_Rectangle()
 			=> ValidateShape("Rectangle");
 
@@ -27,6 +28,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 		[AutoRetry]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		[Timeout(TestTimeout)]
+		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
 		public void When_Ellipse()
 			=> ValidateShape("Ellipse");
 
@@ -34,6 +36,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 		[AutoRetry]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		[Timeout(TestTimeout)]
+		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
 		public void When_Line()
 			=> ValidateShape("Line");
 
@@ -41,6 +44,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 		[AutoRetry]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		[Timeout(TestTimeout)]
+		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
 		public void When_Polyline()
 			=> ValidateShape("Polyline");
 
@@ -48,6 +52,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 		[AutoRetry]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		[Timeout(TestTimeout)]
+		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
 		public void When_Polygon()
 		{
 			// For Polygon, the junction between the begin and the end of the path is not as smooth as WinUI (on iOS),
@@ -762,6 +767,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 
 		[Test]
 		[AutoRetry]
+		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
 		public void Validate_Offscreen_Shapes()
 		{
 			Run("UITests.Windows_UI_Xaml_Shapes.Offscreen_Shapes");
