@@ -188,7 +188,7 @@
 	-->
 	<Target Name="_UnoAddAssetsFilesToCopyLocal"
 			DependsOnTargets="$(_UnoAddAssetsFilesToCopyLocalDependsOn)"
-			Condition="'$(IsUnoHead)'!='true' and '$(AndroidApplication)'!='true' and '$(ProjectTypeGuids)'==''"
+			Condition="'$(IsUnoHead)'!='true' and '$(AndroidApplication)'!='true' and '$(ProjectTypeGuids)'=='' and '$(OutputType)'!='Exe' and '$(OutputType)'!='WinExe'"
 			BeforeTargets="GetCopyToOutputDirectoryItems">
 
 		<ItemGroup>
@@ -197,7 +197,8 @@
 		</ItemGroup>
 
 		<ItemGroup Condition="'@(_UnoBootstrapServerReference)'==''">
-			<_AllChildProjectItemsWithTargetPath Include="@(ContentFilesProjectOutputGroupOutput)">
+			<_AllChildProjectItemsWithTargetPath Include="@(ContentFilesProjectOutputGroupOutput)"
+											   Condition="'%(ContentFilesProjectOutputGroupOutput.NuGetPackageId)' == '' or $([System.String]::Copy('%(ContentFilesProjectOutputGroupOutput.NuGetPackageId)').StartsWith('Uno.'))">
 				<!-- Update link metadata only if available, prefer TargetPath otherwise -->
 				<Link Condition="'%(ContentFilesProjectOutputGroupOutput.Link)' != ''">$(UnoPriInitialPath)$(_UnoDirectorySeparator)%(ContentFilesProjectOutputGroupOutput.Link)</Link>
 				<TargetPath Condition="'$(UnoPriInitialPath)' != ''">$(UnoPriInitialPath)$(_UnoDirectorySeparator)%(ContentFilesProjectOutputGroupOutput.TargetPath)</TargetPath>
@@ -224,7 +225,7 @@
 	-->
 	<Target Name="_UnoAddAssetsFilesToPublishDirectory"
 			DependsOnTargets="$(_UnoAddAssetsFilesToPublishDirectoryDependsOn)"
-			Condition="'$(IsUnoHead)'!='true' and '$(AndroidApplication)'!='true' and '$(ProjectTypeGuids)'==''"
+			Condition="'$(IsUnoHead)'!='true' and '$(AndroidApplication)'!='true' and '$(ProjectTypeGuids)'=='' and '$(OutputType)'!='Exe' and '$(OutputType)'!='WinExe'"
 			BeforeTargets="GetCopyToPublishDirectoryItems">
 
 		<ItemGroup>
@@ -233,7 +234,8 @@
 		</ItemGroup>
 
 		<ItemGroup Condition="'@(_UnoBootstrapServerReference)'==''">
-			<_AllChildProjectPublishItemsWithTargetPath Include="@(ContentWithTargetPath)">
+			<_AllChildProjectPublishItemsWithTargetPath Include="@(ContentWithTargetPath)"
+														Condition="'%(ContentWithTargetPath.NuGetPackageId)' == '' or $([System.String]::Copy('%(ContentWithTargetPath.NuGetPackageId)').StartsWith('Uno.'))">
 				<!-- Update link metadata only if available, prefer TargetPath otherwise -->
 				<Link Condition="'%(ContentWithTargetPath.Link)' != ''">$(UnoPriInitialPath)$(_UnoDirectorySeparator)%(ContentWithTargetPath.Link)</Link>
 				<TargetPath Condition="'$(UnoPriInitialPath)' != ''">$(UnoPriInitialPath)$(_UnoDirectorySeparator)%(ContentWithTargetPath.TargetPath)</TargetPath>
