@@ -22,9 +22,28 @@ namespace Microsoft.UI.Xaml.Shapes
 				typeof(Path),
 				new FrameworkPropertyMetadata(
 					defaultValue: null,
-					options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext | FrameworkPropertyMetadataOptions.LogicalChild | FrameworkPropertyMetadataOptions.AffectsMeasure
+					options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext | FrameworkPropertyMetadataOptions.LogicalChild | FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: (s, e) => ((Path)s).OnDataChanged(e)
 				)
 			);
+
+		private void OnDataChanged(DependencyPropertyChangedEventArgs e)
+		{
+			if (e.OldValue is Geometry oldGeometry)
+			{
+				oldGeometry.GeometryChanged -= OnDataGeometryChanged;
+			}
+
+			if (e.NewValue is Geometry newGeometry)
+			{
+				newGeometry.GeometryChanged += OnDataGeometryChanged;
+			}
+		}
+
+		private void OnDataGeometryChanged()
+		{
+			InvalidateMeasure();
+		}
 
 		#endregion
 

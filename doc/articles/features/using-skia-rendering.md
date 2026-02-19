@@ -96,11 +96,11 @@ The reason for this limitation is caused by the fact that Native renderers expos
 
 Here are the different scenarios:
 
-- Given a library that uses `net9.0-ios` or `net9.0-android`, which does not have the `SkiaRenderer` set as an `UnoFeature`, but uses platform conditional code with `#if` blocks:
+- Given a library that uses `net10.0-ios` or `net10.0-android`, which does not have the `SkiaRenderer` set as an `UnoFeature`, but uses platform conditional code with `#if` blocks:
 
-  - This package is only usable by both native and Skia apps if it also provides a `net9.0` TFM. In this case, for a native app, nothing changes.
-  - For a `SkiaRenderer` enabled app, the `net9.0` variant of the library will be used and will not offer iOS/Android specific conditional code, but any code that uses Uno Platform provided APIs will work properly.
+  - This package is only usable by both native and Skia apps if it also provides a `net10.0` TFM. In this case, for a native app, nothing changes.
+  - For a `SkiaRenderer` enabled app, the `net10.0` variant of the library will be used and will not offer iOS/Android specific conditional code, but any code that uses Uno Platform provided APIs will work properly.
 
-- Given a library that uses `net9.0-ios` or `net9.0-android`, which does have the `SkiaRenderer` set as an `UnoFeature`, but uses platform conditional code with `#if` blocks:
+- Given a library that uses `net10.0-ios` or `net10.0-android`, which does have the `SkiaRenderer` set as an `UnoFeature`, but uses platform conditional code with `#if` blocks:
 
   - This package is only usable by Skia-enabled apps.

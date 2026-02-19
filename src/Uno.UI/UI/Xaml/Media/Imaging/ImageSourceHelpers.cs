@@ -129,13 +129,23 @@ internal static partial class ImageSourceHelpers
 		try
 		{
 			using var stream = await AppDataUriEvaluator.ToStream(uri, ct);
-			// add more animation formats here if needed
-			return await ReadFromStreamAsCompositionSurface(stream, ct, !uri.AbsolutePath.EndsWith(".gif", StringComparison.InvariantCultureIgnoreCase));
+			return await ReadFromStreamAsCompositionSurface(stream, ct, !IsAnimatableImageFormat(uri));
 		}
 		catch (Exception e)
 		{
 			return ImageData.FromError(e);
 		}
+	}
+
+	/// <summary>
+	/// Returns true for image formats that may contain animation and must bypass the
+	/// browser Canvas API (which only returns the first frame) in favor of SKCodec.
+	/// </summary>
+	private static bool IsAnimatableImageFormat(Uri uri)
+	{
+		var path = uri.AbsolutePath;
+		return path.EndsWith(".gif", StringComparison.OrdinalIgnoreCase)
+			|| path.EndsWith(".webp", StringComparison.OrdinalIgnoreCase);
 	}
 #endif
 }
