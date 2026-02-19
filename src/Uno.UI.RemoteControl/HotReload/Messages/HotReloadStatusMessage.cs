@@ -14,7 +14,7 @@ namespace Newtonsoft.Json
 
 namespace Uno.UI.RemoteControl.HotReload.Messages
 {
-	internal partial record HotReloadStatusMessage(
+	public partial record HotReloadStatusMessage(
 		[property: JsonProperty] HotReloadState State,
 		[property: JsonProperty] IImmutableList<HotReloadServerOperationData> Operations,
 		[property: JsonProperty] string? ServerError = null)

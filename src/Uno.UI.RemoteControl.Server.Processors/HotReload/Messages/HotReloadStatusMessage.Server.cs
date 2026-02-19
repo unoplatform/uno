@@ -2,7 +2,7 @@
 
 namespace Uno.UI.RemoteControl.HotReload.Messages;
 
-internal partial record HotReloadStatusMessage
+public partial record HotReloadStatusMessage
 {
 	public HotReloadStatusMessage(Uno.HotReload.Tracking.HotReloadStatusInfo status)
 		: this(

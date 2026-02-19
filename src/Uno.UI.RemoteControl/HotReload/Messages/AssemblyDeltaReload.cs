@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Uno.UI.RemoteControl.HotReload.Messages
 {
-	internal class AssemblyDeltaReload : IMessage
+	public class AssemblyDeltaReload : IMessage
 	{
 		public const string Name = nameof(AssemblyDeltaReload);
 
