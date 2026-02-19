@@ -103,7 +103,7 @@ Heavy usage of `#if` conditionals in shared code makes it hard to read and compr
 Starting from Uno Platform 5.2, in project or class libraries using the `Uno.Sdk`, a set of implicit file name conventions can be used to target specific platforms:
 
 * `*.wasm.cs` is built for `net9.0-browserwasm` and for Skia with the WebAssembly runtime identifier
-* `*.browserwasm.cs` is built only for `net9.0-browserwasm` (not for Skia with the WebAssembly runtime identifier)
+* `*.browserwasm.cs` is equivalent to `*.wasm.cs` — built for `net9.0-browserwasm` and for Skia with the WebAssembly runtime identifier
 * `*.desktop.cs` is built only for `net9.0-desktop`
 * `*.iOS.cs` is built only for `net9.0-ios` and `net9.0-maccatalyst`
 * `*.tvOS.cs` is built only for `net9.0-tvos`
