@@ -506,8 +506,8 @@ public partial class TextBox
 				}
 				return;
 			case VirtualKey.Up:
-				// on macOS start of document is `Command` and `Up`
-				if (ctrl && OperatingSystem.IsMacOS())
+				// on Apple platforms start of document is `Command` and `Up`
+				if (ctrl && DeviceTargetHelper.UsesAppleKeyboardLayout)
 				{
 					KeyDownHome(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 				}
@@ -517,8 +517,8 @@ public partial class TextBox
 				}
 				break;
 			case VirtualKey.Down:
-				// on macOS end of document is `Command` and `Down`
-				if (ctrl && OperatingSystem.IsMacOS())
+				// on Apple platforms end of document is `Command` and `Down`
+				if (ctrl && DeviceTargetHelper.UsesAppleKeyboardLayout)
 				{
 					KeyDownEnd(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 				}
@@ -615,8 +615,8 @@ public partial class TextBox
 		switch (args.Key)
 		{
 			case VirtualKey.Up:
-				// on macOS start of document is `Command` and `Up`
-				if (ctrl && OperatingSystem.IsMacOS())
+				// on Apple platforms start of document is `Command` and `Up`
+				if (ctrl && DeviceTargetHelper.UsesAppleKeyboardLayout)
 				{
 					KeyDownHome(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 				}
@@ -626,8 +626,8 @@ public partial class TextBox
 				}
 				break;
 			case VirtualKey.Down:
-				// on macOS end of document is `Command` and `Down`
-				if (ctrl && OperatingSystem.IsMacOS())
+				// on Apple platforms end of document is `Command` and `Down`
+				if (ctrl && DeviceTargetHelper.UsesAppleKeyboardLayout)
 				{
 					KeyDownEnd(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 				}
@@ -721,8 +721,8 @@ public partial class TextBox
 
 	private void KeyDownBack(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
-		// on macOS it is `option` + `delete` (same location as backspace on PC keyboards) that removes the previous word
-		if (OperatingSystem.IsMacOS())
+		// on Apple platforms it is `option` + `delete` (same location as backspace on PC keyboards) that removes the previous word
+		if (DeviceTargetHelper.UsesAppleKeyboardLayout)
 		{
 			ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
 		}
@@ -872,10 +872,10 @@ public partial class TextBox
 
 	private void KeyDownRightArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
-		// on macOS it is:
+		// on Apple platforms it is:
 		// * `option` + `right` that moves to the next word
 		// * `shift` + `option` + `right` that select the next word
-		if (OperatingSystem.IsMacOS())
+		if (DeviceTargetHelper.UsesAppleKeyboardLayout)
 		{
 			ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
 		}
@@ -1005,8 +1005,8 @@ public partial class TextBox
 
 	private void KeyDownDelete(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
-		// on macOS it is `option` + `delete>` that removes the next word
-		if (OperatingSystem.IsMacOS())
+		// on Apple platforms it is `option` + `delete>` that removes the next word
+		if (DeviceTargetHelper.UsesAppleKeyboardLayout)
 		{
 			ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
 		}
