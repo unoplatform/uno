@@ -239,6 +239,7 @@ $projects =
     @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net9.0-android"), @("macOS", "NetCore")),
     @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net9.0-maccatalyst"), @("macOS", "NetCore")),
     @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net9.0-desktop"), @("macOS", "NetCore")),
+    @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net9.0", "-p:PlaywrightPlatform=none"), @("OnlyMacOS", "NetCore", "PlaywrightApphostCollision")),
 
     ## Note for contributors
     ##
@@ -269,6 +270,7 @@ for($i = 0; $i -lt $projects.Length; $i++)
     $usePublish = $buildOptions -contains "Publish"
     $cleanNugetCache = $buildOptions -contains "CleanNugetTemp"
     $NoBuildClean = $buildOptions -contains "NoBuildClean"
+    $validatePlaywrightApphostCollision = $buildOptions -contains "PlaywrightApphostCollision"
 
     if ($TestGroup -ne $projectTestGroup)
     {
@@ -301,6 +303,12 @@ for($i = 0; $i -lt $projects.Length; $i++)
 
     if ($buildWithNetCore)
     {
+        if ($validatePlaywrightApphostCollision)
+        {
+            dotnet add "$projectPath" package Microsoft.Playwright --version 1.58.0
+            Assert-ExitCodeIsZero
+        }
+
         if(!$usePublish)
         {
             Write-Host "NetCore Building Debug $projectPath with $projectOptions"
@@ -324,7 +332,32 @@ for($i = 0; $i -lt $projects.Length; $i++)
             & $runCommand $runOptions
             Assert-ExitCodeIsZero
         }
- 
+
+        if ($validatePlaywrightApphostCollision)
+        {
+            $projectDirectory = Split-Path -Path $projectPath -Parent
+            $projectName = [System.IO.Path]::GetFileNameWithoutExtension($projectPath)
+            $outputDirectory = Join-Path $projectDirectory "bin/Release/net9.0"
+            $appHostPath = Join-Path $outputDirectory $projectName
+            $playwrightScriptPath = Join-Path $outputDirectory "playwright.ps1"
+            $prefixedPlaywrightScriptPath = Join-Path (Join-Path $outputDirectory $projectName) "playwright.ps1"
+
+            if (!(Test-Path $appHostPath -PathType Leaf))
+            {
+                throw "Apphost missing or invalid at $appHostPath"
+            }
+
+            if (!(Test-Path $playwrightScriptPath -PathType Leaf))
+            {
+                throw "Missing Playwright content at $playwrightScriptPath"
+            }
+
+            if (Test-Path $prefixedPlaywrightScriptPath -PathType Leaf)
+            {
+                throw "Unexpected prefixed Playwright content at $prefixedPlaywrightScriptPath"
+            }
+        }
+  
         if(!$NoBuildClean)
         {
             # Cleaning may also remove generated nuget files, even if
