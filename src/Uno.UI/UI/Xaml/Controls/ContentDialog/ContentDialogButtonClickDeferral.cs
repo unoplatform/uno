@@ -1,16 +1,13 @@
-﻿using System;
+﻿using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ContentDialogButtonClickDeferral
 	{
-		private readonly Action _deferralAction;
+		private readonly DeferralCompletedHandler _handler;
 
-		internal ContentDialogButtonClickDeferral(Action deferralAction)
-		{
-			_deferralAction = deferralAction;
-		}
+		internal ContentDialogButtonClickDeferral(DeferralCompletedHandler handler) => _handler = handler;
 
-		public void Complete() => _deferralAction?.Invoke();
+		public void Complete() => _handler?.Invoke();
 	}
 }

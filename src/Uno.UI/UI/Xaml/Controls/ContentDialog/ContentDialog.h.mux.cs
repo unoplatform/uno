@@ -1,6 +1,7 @@
 // MUX Reference ContentDialog_Partial.h, tag winui3/release/1.6-stable
 
 using System;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -52,7 +53,9 @@ partial class ContentDialog
 	/* Tracked references */
 	private IAsyncOperation<ContentDialogResult> m_tpCurrentAsyncOperation;
 	private Popup m_tpPopup;
+#pragma warning disable CS0649 // Field is never assigned to
 	private Popup m_tpSmokeLayerPopup;
+#pragma warning restore CS0649
 	private FrameworkElement m_tpSmokeLayer;
 	private VisualStateGroup m_tpDialogShowingStates;
 
