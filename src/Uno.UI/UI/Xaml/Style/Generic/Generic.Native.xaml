@@ -18,11 +18,10 @@
 					xmlns:mapsPresenter="using:Microsoft.UI.Xaml.Controls.Maps"
 					xmlns:wasm="http://uno.ui/wasm"
 					xmlns:skia="http://uno.ui/skia"
-					xmlns:macos="http://uno.ui/macos"
 					xmlns:IS_UNIT_TESTS="http://uno.ui/IS_UNIT_TESTS"
 					xmlns:not_wasm="http://uno.ui/not_wasm"
 					xmlns:toolkit="using:Uno.UI.Toolkit"
-					mc:Ignorable="d not_win ios android skia wasm not_wasm IS_UNIT_TESTS macos">
+					mc:Ignorable="d not_win ios android skia wasm not_wasm IS_UNIT_TESTS">
 
 	<!-- Default native Button styles -->
 	<android:Style x:Key="NativeDefaultButton"
@@ -127,11 +126,6 @@
 		TargetType="CheckBox"
 				BasedOn="{StaticResource XamlDefaultCheckBox}" />
 
-	<macos:Style
-		x:Key="NativeDefaultCheckBox"
-		TargetType="CheckBox"
-				BasedOn="{StaticResource XamlDefaultCheckBox}" />
-
 	<IS_UNIT_TESTS:Style x:Key="NativeDefaultCheckBox"
 				TargetType="CheckBox"
 				BasedOn="{StaticResource XamlDefaultCheckBox}" />
@@ -191,11 +185,6 @@
 		TargetType="ToggleSwitch"
 		BasedOn="{StaticResource XamlDefaultToggleSwitch}" />
 
-	<macos:Style
-		x:Key="NativeDefaultToggleSwitch"
-		TargetType="ToggleSwitch"
-		BasedOn="{StaticResource XamlDefaultToggleSwitch}" />
-
 	<not_win:Style
 		TargetType="ToggleSwitch"
 		not_win:IsNativeStyle="True"
@@ -236,11 +225,6 @@
 		BasedOn="{StaticResource XamlDefaultSlider}" />
 
 	<skia:Style
-		x:Key="NativeDefaultSlider"
-		TargetType="Slider"
-		BasedOn="{StaticResource XamlDefaultSlider}" />
-
-	<macos:Style
 		x:Key="NativeDefaultSlider"
 		TargetType="Slider"
 		BasedOn="{StaticResource XamlDefaultSlider}" />
@@ -294,10 +278,6 @@
 		TargetType="ProgressBar" />
 
 	<skia:Style
-		x:Key="NativeDefaultProgressBar"
-		TargetType="ProgressBar" />
-
-	<macos:Style
 		x:Key="NativeDefaultProgressBar"
 		TargetType="ProgressBar" />
 
@@ -450,11 +430,6 @@
 		TargetType="CommandBar"
 		BasedOn="{StaticResource XamlDefaultCommandBar}" />
 
-	<macos:Style
-		x:Key="NativeDefaultCommandBar"
-		TargetType="CommandBar"
-		BasedOn="{StaticResource XamlCommandBar}" />
-
 	<not_win:Style
 		TargetType="CommandBar"
 		not_win:IsNativeStyle="True"
@@ -482,11 +457,6 @@
 		BasedOn="{StaticResource XamlAppBarButton}" />
 
 	<skia:Style
-		x:Key="NativeDefaultAppBarButton"
-		TargetType="AppBarButton"
-		BasedOn="{StaticResource XamlAppBarButton}" />
-
-	<macos:Style
 		x:Key="NativeDefaultAppBarButton"
 		TargetType="AppBarButton"
 		BasedOn="{StaticResource XamlAppBarButton}" />
@@ -527,11 +497,6 @@
 		TargetType="Frame"
 				BasedOn="{StaticResource XamlDefaultFrame}" />
 	<skia:Style
-		x:Key="NativeDefaultFrame"
-		TargetType="Frame"
-				BasedOn="{StaticResource XamlDefaultFrame}" />
-
-	<macos:Style
 		x:Key="NativeDefaultFrame"
 		TargetType="Frame"
 				BasedOn="{StaticResource XamlDefaultFrame}" />

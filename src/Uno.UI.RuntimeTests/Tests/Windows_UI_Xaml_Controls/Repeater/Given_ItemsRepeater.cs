@@ -526,9 +526,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_NumberBox_In_Repeater_Then_CanFocus_And_Edit()
 		{
 			var sut = SUT.Create(

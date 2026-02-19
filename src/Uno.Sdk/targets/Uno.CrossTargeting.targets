@@ -24,8 +24,8 @@
 		<None Include="**\*.iOS.cs" Exclude="bin\**\*.iOS.cs;obj\**\*.iOS.cs" Condition="!$(IsIOSOrCatalyst)" />
 		<Compile Remove="**\*.iOS.cs" Condition="!$(IsIOSOrCatalyst)" />
 
-		<None Include="**\*.iOSmacOS.cs" Exclude="bin\**\*.iOSmacOS.cs;obj\**\*.iOSmacOS.cs" Condition="!$(IsMacOS) and !$(IsIOSOrCatalyst)" />
-		<Compile Remove="**\*.iOSmacOS.cs" Condition="!$(IsMacOS) and !$(IsIOSOrCatalyst)" />
+		<None Include="**\*.iOSmacOS.cs" Exclude="bin\**\*.iOSmacOS.cs;obj\**\*.iOSmacOS.cs" Condition="!$(IsIOSOrCatalyst)" />
+		<Compile Remove="**\*.iOSmacOS.cs" Condition="!$(IsIOSOrCatalyst)" />
 		
 		<None Include="**\*.tvOS.cs" Exclude="bin\**\*.tvOS.cs;obj\**\*.tvOS.cs" Condition="!$(IsTvOS)" />
 		<Compile Remove="**\*.tvOS.cs" Condition="!$(IsTvOS)" />
@@ -33,8 +33,8 @@
 		<None Include="**\*.UIKit.cs" Exclude="bin\**\*.UIKit.cs;obj\**\*.UIKit.cs" Condition="!$(IsAppleUIKit)" />
 		<Compile Remove="**\*.UIKit.cs" Condition="!$(IsAppleUIKit)" />
 		
-		<None Include="**\*.Apple.cs" Exclude="bin\**\*.apple.cs;obj\**\*.Apple.cs" Condition="!$(IsMacOS) and !$(IsAppleUIKit)" />
-		<Compile Remove="**\*.Apple.cs" Condition="!$(IsMacOS) and !$(IsAppleUIKit)" />
+		<None Include="**\*.Apple.cs" Exclude="bin\**\*.apple.cs;obj\**\*.Apple.cs" Condition="!$(IsAppleUIKit)" />
+		<Compile Remove="**\*.Apple.cs" Condition="!$(IsAppleUIKit)" />
 
 		<None Include="**\*.Android.cs" Exclude="bin\**\*.Android.cs;obj\**\*.Android.cs" Condition="!$(IsAndroid)" />
 		<Compile Remove="**\*.Android.cs" Condition="!$(IsAndroid)" />

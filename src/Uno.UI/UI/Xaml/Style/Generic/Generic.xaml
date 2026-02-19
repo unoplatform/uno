@@ -13,7 +13,6 @@
 					xmlns:netstdref="http://uno.ui/netstdref"
 					xmlns:not_netstdref="http://uno.ui/not_netstdref"
 					xmlns:skia="http://uno.ui/skia"
-					xmlns:macos="http://uno.ui/macos"
 					xmlns:native_ios="using:UIKit"
 					xmlns:native_android="using:Android.Widget"
 					xmlns:itemswrapgridpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypePresent(Microsoft.UI.Xaml.Controls.ItemsWrapGrid)"
@@ -21,7 +20,7 @@
 					xmlns:uwpOnly="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Microsoft.UI.Xaml.FrameworkElement)"
 					xmlns:uBehaviors="using:Uno.UI.Behaviors"
 					xmlns:mux="using:Microsoft.UI.Xaml.Controls"
-					mc:Ignorable="d not_win ios android not_wasm wasm netstdref not_netstdref macos skia">
+					mc:Ignorable="d not_win ios android not_wasm wasm netstdref not_netstdref skia">
 
 	<!-- TODO: ItemsControl should inject ItemsPresenter directly if no template is found. (Change this once template is materialized on Measure) -->
 	<not_win:Style TargetType="ItemsControl">
@@ -53,19 +52,6 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</netstdref:Setter>
-		<macos:Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="ContentControl">
-					<ContentPresenter Content="{TemplateBinding Content}"
-									  ContentTemplate="{TemplateBinding ContentTemplate}"
-									  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
-									  Margin="{TemplateBinding Padding}"
-									  ContentTransitions="{TemplateBinding ContentTransitions}"
-									  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-									  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-				</ControlTemplate>
-			</Setter.Value>
-		</macos:Setter>
 	</Style>
 
 	<!-- FRAMEWORK STYLES -->
@@ -4368,9 +4354,6 @@
 				Value="Hidden" />
 		<Setter Property="Padding"
 				Value="{ThemeResource TextControlThemePadding}" />
-		<!-- macOS PasswordBox implemeentation will not display the RevealButton -->
-		<macos:Setter Property="IsPasswordRevealButtonEnabled"
-					  Value="False" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="PasswordBox">

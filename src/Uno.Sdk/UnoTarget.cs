@@ -12,7 +12,6 @@ internal static class UnoTarget
 	public const string iOS = "ios";
 	public const string tvOS = "tvos";
 	public const string MacCatalyst = "maccatalyst";
-	public const string MacOS = "macos";
 	public const string SkiaDesktop = "desktop";
 
 	// Legacy
