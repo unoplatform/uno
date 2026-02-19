@@ -40,16 +40,16 @@
 				 TextWrapping="Wrap"
 				 PlaceholderText="Type here - Enter should insert newline..." />
 
-		<TextBlock Text="Pass Criteria:" FontWeight="SemiBold" Foreground="Green" Margin="0,16,0,0" />
-		<TextBlock TextWrapping="Wrap" Foreground="Green">
+		<TextBlock Text="Pass Criteria:" FontWeight="SemiBold" Margin="0,16,0,0" />
+		<TextBlock TextWrapping="Wrap">
 			✓ Ctrl+F, Ctrl+G, Ctrl+B, etc. do NOT insert any characters (no squares/rectangles)
 		</TextBlock>
-		<TextBlock TextWrapping="Wrap" Foreground="Green">
+		<TextBlock TextWrapping="Wrap">
 			✓ Ctrl+V pastes normally
 		</TextBlock>
 
-		<TextBlock Text="Fail Criteria:" FontWeight="SemiBold" Foreground="Red" Margin="0,12,0,0" />
-		<TextBlock TextWrapping="Wrap" Foreground="Red">
+		<TextBlock Text="Fail Criteria:" FontWeight="SemiBold" Margin="0,12,0,0" />
+		<TextBlock TextWrapping="Wrap">
 			✗ Pressing Ctrl+letter inserts visible squares/rectangles (invalid characters)
 		</TextBlock>
 	</StackPanel>
