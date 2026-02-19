@@ -418,7 +418,7 @@ namespace SamplesApp
 
 			if (SampleControl.Presentation.SampleChooserViewModel.Instance is { } vm && vm.CurrentSelectedSample is null)
 			{
-				vm.SetSelectedSample(CancellationToken.None, "Playground", "Playground");
+				vm.OpenPlayground();
 			}
 		}
 
