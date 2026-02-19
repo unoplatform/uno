@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Xml;
+using System.Xml.Linq;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Mono.Cecil;
@@ -269,55 +269,38 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 		private void GenerateLinkerDescriptor(Dictionary<TypeDefinition, HashSet<string>> referencedTypes)
 		{
-			var doc = new XmlDocument();
-
-			var xmlDeclaration = doc.CreateXmlDeclaration("1.0", "UTF-8", null);
-			doc.InsertBefore(xmlDeclaration, doc.DocumentElement);
-
-			var linkerNode = doc.CreateElement("linker");
-			doc.AppendChild(linkerNode);
-
 			// Group types by assembly
 			var typesByAssembly = referencedTypes
 				.GroupBy(kvp => kvp.Key.Module.Assembly.Name.Name)
 				.OrderBy(g => g.Key);
 
+			var linkerElement = new XElement("linker");
+
 			foreach (var assemblyGroup in typesByAssembly)
 			{
-				var assemblyNode = doc.CreateElement("assembly");
-				var fullnameAttr = doc.CreateAttribute("fullname");
-				fullnameAttr.Value = assemblyGroup.Key;
-				assemblyNode.Attributes.Append(fullnameAttr);
+				var assemblyElement = new XElement("assembly",
+					new XAttribute("fullname", assemblyGroup.Key));
 
 				foreach (var typeEntry in assemblyGroup.OrderBy(t => t.Key.FullName))
 				{
 					var type = typeEntry.Key;
 					var properties = typeEntry.Value;
 
-					var typeNode = doc.CreateElement("type");
-
-					var typeFullnameAttr = doc.CreateAttribute("fullname");
-					typeFullnameAttr.Value = type.FullName;
-					typeNode.Attributes.Append(typeFullnameAttr);
-
-					var requiredAttr = doc.CreateAttribute("required");
-					requiredAttr.Value = "false";
-					typeNode.Attributes.Append(requiredAttr);
+					var typeElement = new XElement("type",
+						new XAttribute("fullname", type.FullName),
+						new XAttribute("required", "false"));
 
 					// Add property elements for each public property
 					foreach (var propName in properties.OrderBy(p => p))
 					{
-						var propertyNode = doc.CreateElement("property");
-						var nameAttr = doc.CreateAttribute("name");
-						nameAttr.Value = propName;
-						propertyNode.Attributes.Append(nameAttr);
-						typeNode.AppendChild(propertyNode);
+						typeElement.Add(new XElement("property",
+							new XAttribute("name", propName)));
 					}
 
-					assemblyNode.AppendChild(typeNode);
+					assemblyElement.Add(typeElement);
 				}
 
-				linkerNode.AppendChild(assemblyNode);
+				linkerElement.Add(assemblyElement);
 			}
 
 			// Ensure output directory exists
@@ -326,6 +309,10 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			{
 				Directory.CreateDirectory(outputDir);
 			}
+
+			var doc = new XDocument(
+				new XDeclaration("1.0", "UTF-8", null),
+				linkerElement);
 
 			doc.Save(OutputDescriptorPath);
 			Log.LogMessage(MessageImportance.High, $"BindableTypeLinkerGenerator: Saved descriptor to {OutputDescriptorPath}");
