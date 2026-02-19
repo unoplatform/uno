@@ -977,9 +977,23 @@ NSOperatingSystemVersion _osVersion;
                 NSInteger mask = [MouseButtons mask];
 
                 // If we think buttons are down, but AppKit says NONE are down, we likely missed a MouseUp.
-                // We trust AppKit and reset our counters.
+                // We trust AppKit and reset our counters, but only when handling a mouse button event.
                 if (mask != 0 && ((uint32)NSEvent.pressedMouseButtons) == 0) {
-                    mask = [MouseButtons buttonMask:event];
+                    NSEventType type = event.type;
+                    BOOL isMouseButtonEvent =
+                        type == NSEventTypeLeftMouseDown    ||
+                        type == NSEventTypeLeftMouseUp      ||
+                        type == NSEventTypeRightMouseDown   ||
+                        type == NSEventTypeRightMouseUp     ||
+                        type == NSEventTypeOtherMouseDown   ||
+                        type == NSEventTypeOtherMouseUp     ||
+                        type == NSEventTypeLeftMouseDragged ||
+                        type == NSEventTypeRightMouseDragged||
+                        type == NSEventTypeOtherMouseDragged;
+
+                    if (isMouseButtonEvent) {
+                        mask = [MouseButtons buttonMask:event];
+                    }
                 }
 
                 data.mouseButtons = (uint32)mask;
