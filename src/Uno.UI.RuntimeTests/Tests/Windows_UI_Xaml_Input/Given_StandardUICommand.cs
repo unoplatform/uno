@@ -211,7 +211,11 @@ public class Given_StandardUICommand
 			return VirtualKeyModifiers.None;
 		}
 
+#if HAS_UNO_WINUI
 		return Uno.UI.Helpers.DeviceTargetHelper.PlatformCommandModifier;
+#else
+		return VirtualKeyModifiers.Control;
+#endif
 	}
 
 	[TestMethod]
