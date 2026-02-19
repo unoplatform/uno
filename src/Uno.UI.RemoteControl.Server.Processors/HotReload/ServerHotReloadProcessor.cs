@@ -30,7 +30,8 @@ using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messaging.HotReload;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.Server.Telemetry;
-using Uno.UI.Tasks.HotReloadInfo;
+using Uno.HotReload.Info;
+using Uno.HotReload.IO;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using static Uno.HotReload.Utils.RoslynExtensions;
 
@@ -45,12 +46,14 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		private readonly IRemoteControlServer _remoteControlServer;
 		private readonly ITelemetry _telemetry;
 		private readonly HotReloadTracker _tracker;
+		private FileUpdater _fileUpdater;
 
 		public ServerHotReloadProcessor(IRemoteControlServer remoteControlServer, ITelemetry<ServerHotReloadProcessor> telemetry)
 		{
 			_remoteControlServer = remoteControlServer;
 			_telemetry = telemetry;
 			_tracker = new(async (status, ct) => await _remoteControlServer.SendFrame(new HotReloadStatusMessage(status)), ct => RequestHotReloadToIde(), _reporter);
+			_fileUpdater = CreateFileUpdater(isRunningInsideVisualStudio: false, hotReloadInfoPath: null);
 		}
 
 		public string Scope => WellKnownScopes.HotReload;
@@ -69,6 +72,29 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			_isRunningInsideVisualStudio = config.MSBuildProperties.TryGetValue("BuildingInsideVisualStudio", out var isVsRaw)
 				&& isVsRaw.Equals("true", StringComparison.OrdinalIgnoreCase);
+
+			_fileUpdater = CreateFileUpdater(_isRunningInsideVisualStudio, config.HotReloadInfoPath);
+		}
+
+		private FileUpdater CreateFileUpdater(bool isRunningInsideVisualStudio, string? hotReloadInfoPath)
+		{
+			var onDisk = new OnDiskFileEditor(_reporter);
+			IFileEditor editor = isRunningInsideVisualStudio
+				? new IDEFileEditor(
+					async (filePath, newText, saveToDisk) =>
+					{
+						var result = await SendAndWaitForResult(new UpdateFileIdeMessage(GetNextIdeCorrelationId(), filePath, newText, saveToDisk));
+						return (result.IsSuccess, result.Error);
+					},
+					onDisk)
+				: onDisk;
+
+			return new FileUpdater(
+				editor,
+				_solutionWatchersGate,
+				_tracker,
+				new HotReloadInfoFile(hotReloadInfoPath, _reporter),
+				async () => { await RequestHotReloadToIde(); });
 		}
 
 		public async Task ProcessFrame(Frame frame)
@@ -287,237 +313,26 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		// LEGACY: As the Update file message might have been duplicated in other projects (e.g. runtime tests engine), we make sure to stay backward compatible.
 		private async Task ProcessUpdateFile(UpdateSingleFileRequest singleRequest)
 		{
-			var multiRequest = new UpdateFileRequest
-			{
-				RequestId = singleRequest.RequestId,
-				ForceSaveOnDisk = singleRequest.ForceSaveOnDisk,
-				IsForceHotReloadDisabled = singleRequest.IsForceHotReloadDisabled,
-				ForceHotReloadDelay = singleRequest.ForceHotReloadDelay,
-				ForceHotReloadAttempts = singleRequest.ForceHotReloadAttempts,
-				Edits = [new(singleRequest.FilePath, singleRequest.OldText, singleRequest.NewText, singleRequest.IsCreateDeleteAllowed)],
-			};
-			var multiResponse = await DoProcessUpdateFileRequest(multiRequest);
-			var singleResult = multiResponse.Results.SingleOrDefault();
+			var response = await _fileUpdater.UpdateAsync(singleRequest, _ct.Token);
+			var singleResult = response.Results.SingleOrDefault();
 			var singleResponse = new UpdateSingleFileResponse(
 				singleRequest.RequestId,
 				singleRequest.FilePath,
 				singleResult?.Result ?? FileUpdateResult.Failed,
-				multiResponse.GlobalError ?? singleResult?.Error,
-				multiResponse.HotReloadCorrelationId);
+				response.GlobalError ?? singleResult?.Error,
+				response.HotReloadCorrelationId);
 
 			await _remoteControlServer.SendFrame(singleResponse);
 		}
 
 		private async Task ProcessUpdateFile(UpdateFileRequest request)
-			=> await _remoteControlServer.SendFrame(await DoProcessUpdateFileRequest(request));
-
-		private async Task<UpdateFileResponse> DoProcessUpdateFileRequest(UpdateFileRequest request)
 		{
-			if (request.Edits.IsDefaultOrEmpty)
-			{
-				return new UpdateFileResponse(request.RequestId, "No edit to process", []);
-			}
-			else if (request.Edits.DistinctBy(edit => Path.GetFullPath(edit.FilePath), PathComparer.Comparer).Count() != request.Edits.Length)
-			{
-				return new UpdateFileResponse(request.RequestId, "Detected multiple updates on the same file", []);
-			}
-
-			var hotReload = await _tracker.StartHotReload([.. request.Edits.Select(edit => Path.GetFullPath(edit.FilePath))]);
-			var results = ImmutableArray<FileEditResult>.Empty;
-			try
-			{
-				using var _ = _solutionWatchersGate.Acquire(); // Makes sure to batch all file changes in a single solution update
-
-				results = [.. await Task.WhenAll(request.Edits.Select(edit => DoEditFile(edit, request.ForceSaveOnDisk, request.RequestId)))];
-
-				// Update the hot-reload info to the application will be able to determine the request has been applied
-				await WriteHotReloadInfo(request, hotReload);
-
-				// Forcefully request a hot-reload after the file edits have been applied (only if at least one edit succeed).
-				if (request.IsForceHotReloadDisabled is false && results.Any(result => (int)result.Result < 300))
-				{
-					if ((request.ForceHotReloadDelay ?? HotReloadOperation.DefaultAutoRetryIfNoChangesDelay) is { TotalMilliseconds: > 0 } delay)
-					{
-						await Task.Delay(delay);
-					}
-
-					hotReload.EnableAutoRetryIfNoChanges(request.ForceHotReloadAttempts, request.ForceHotReloadDelay);
-
-					// Even if IDE does not support hot-reload manual requests, we still invoke this to report the HR processingFiles state as soon as possible.
-					await RequestHotReloadToIde();
-				}
-
-				return new UpdateFileResponse(request.RequestId, null, results, hotReload.Id);
-			}
-			catch (Exception ex)
-			{
-				await hotReload.Complete(HotReloadOperationResult.InternalError, ex);
-				return new UpdateFileResponse(request.RequestId, ex.Message, results, hotReload.Id);
-			}
-		}
-
-		private async Task<FileEditResult> DoEditFile(FileEdit edit, bool? forceSaveOnDisk, string reqIdForLogging)
-		{
-			try
-			{
-				var (result, error) = edit switch
-				{
-					{ FilePath: null or { Length: 0 } } => (FileUpdateResult.BadRequest, "Invalid request (file path is empty)"),
-					{ OldText: not null, NewText: not null } when _isRunningInsideVisualStudio => await DoRemoteUpdateInIde(edit.NewText),
-					{ OldText: not null, NewText: not null } => await DoUpdateOnDisk(edit.OldText, edit.NewText),
-					{ OldText: null, NewText: not null } when _isRunningInsideVisualStudio => await DoRemoteUpdateInIde(edit.NewText),
-					{ OldText: null, NewText: not null } => await DoWriteToDisk(edit.NewText),
-					{ NewText: null, IsCreateDeleteAllowed: true } => await DoDeleteFromDisk(),
-					_ => (FileUpdateResult.BadRequest, "Invalid request")
-				};
-				return new(edit.FilePath!, result, error);
-			}
-			catch (Exception ex)
-			{
-				return new(edit.FilePath, FileUpdateResult.Failed, ex.Message);
-			}
-
-			async ValueTask<(FileUpdateResult, string?)> DoRemoteUpdateInIde(string newText)
-			{
-				var saveToDisk = forceSaveOnDisk ?? true; // Temporary set to true until this issue is fixed: https://github.com/unoplatform/uno.hotdesign/issues/3454
-
-				// Right now, when running on VS, we're delegating the file update to the code that is running inside VS.
-				// we're not doing this for other file operations because they are not/less required for hot-reload. We may need to revisit this eventually.
-				var ideMsg = new UpdateFileIdeMessage(GetNextIdeCorrelationId(), edit.FilePath, newText, saveToDisk);
-				var result = await SendAndWaitForResult(ideMsg);
-
-				return result.IsSuccess
-					? (FileUpdateResult.Success, null)
-					: (FileUpdateResult.Failed, result.Error);
-			}
-
-			async Task<(FileUpdateResult, string?)> DoUpdateOnDisk(string oldText, string newText)
-			{
-				if (!File.Exists(edit.FilePath))
-				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
-					{
-						this.Log().LogDebug($"[{reqIdForLogging}] Requested file '{edit.FilePath}' does not exists.");
-					}
-
-					return (FileUpdateResult.FileNotFound, $"Requested file '{edit.FilePath}' does not exists.");
-				}
-
-				var originalContent = await File.ReadAllTextAsync(edit.FilePath);
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					this.Log().LogTrace($"[{reqIdForLogging}] Original content of '{edit.FilePath}': {originalContent}.");
-				}
-
-				var updatedContent = originalContent.Replace(oldText, newText);
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					this.Log().LogTrace($"[{reqIdForLogging}] Updated content of '{edit.FilePath}': {updatedContent}.");
-				}
-
-				if (updatedContent == originalContent)
-				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
-					{
-						this.Log().LogDebug($"[{reqIdForLogging}] No changes detected in {edit.FilePath}.");
-					}
-
-					return (FileUpdateResult.NoChanges, null);
-				}
-
-				var effectiveUpdate = WaitForFileUpdated(edit.FilePath, reqIdForLogging);
-				await File.WriteAllTextAsync(edit.FilePath, updatedContent);
-				await effectiveUpdate;
-
-				return (FileUpdateResult.Success, null);
-			}
-
-			async ValueTask<(FileUpdateResult, string?)> DoWriteToDisk(string newText)
-			{
-				if (!edit.IsCreateDeleteAllowed && !File.Exists(edit.FilePath))
-				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
-					{
-						this.Log().LogDebug($"[{reqIdForLogging}] Requested file '{edit.FilePath}' does not exists.");
-					}
-
-					return (FileUpdateResult.FileNotFound, $"Requested file '{edit.FilePath}' does not exists.");
-				}
-
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					this.Log().LogTrace($"[{reqIdForLogging}] Write content of '{edit.FilePath}': {newText}.");
-				}
-
-				var effectiveUpdate = WaitForFileUpdated(edit.FilePath, reqIdForLogging);
-				await File.WriteAllTextAsync(edit.FilePath, newText);
-				await effectiveUpdate;
-
-				return (FileUpdateResult.Success, null);
-			}
-
-			async ValueTask<(FileUpdateResult, string?)> DoDeleteFromDisk()
-			{
-				if (!File.Exists(edit.FilePath))
-				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
-					{
-						this.Log().LogDebug($"[{reqIdForLogging}] Requested file '{edit.FilePath}' does not exists.");
-					}
-
-					return (FileUpdateResult.FileNotFound, $"Requested file '{edit.FilePath}' does not exists.");
-				}
-
-				var effectiveUpdate = WaitForFileUpdated(edit.FilePath, reqIdForLogging);
-				File.Delete(edit.FilePath);
-				await effectiveUpdate;
-
-				return (FileUpdateResult.Success, null);
-			}
-		}
-
-		private async ValueTask WaitForFileUpdated(string filePath, string? editTagForLogging)
-		{
-			var file = new FileInfo(filePath);
-			var dir = file.Directory;
-			while (dir is { Exists: false })
-			{
-				dir = dir.Parent;
-			}
-
-			if (dir is null)
-			{
-				return;
-			}
-
-			var tcs = new TaskCompletionSource();
-			using var watcher = new FileSystemWatcher(dir.FullName);
-			watcher.Changed += (snd, e) =>
-			{
-				if (e.FullPath.Equals(file.FullName, StringComparison.OrdinalIgnoreCase))
-				{
-					tcs.TrySetResult();
-				}
-			};
-			watcher.EnableRaisingEvents = true;
-
-			if (await Task.WhenAny(tcs.Task, Task.Delay(TimeSpan.FromSeconds(5))) != tcs.Task
-				&& this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().LogDebug($"File update event not received for '{filePath}', continuing anyway [{editTagForLogging}].");
-			}
-		}
-
-		private async ValueTask WriteHotReloadInfo(IUpdateFileRequest request, HotReloadOperation hotReload)
-		{
-			if (_config?.HotReloadInfoPath is not { Length: > 0 } path)
-			{
-				return;
-			}
-
-			var effectiveUpdate = WaitForFileUpdated(path, request.RequestId);
-			await File.WriteAllTextAsync(path, HotReloadInfoHelper.GenerateInfo(hotReload.Id, request.RequestId));
-			await effectiveUpdate;
+			var response = await _fileUpdater.UpdateAsync(request, _ct.Token);
+			await _remoteControlServer.SendFrame(new UpdateFileResponse(
+				response.RequestId,
+				response.GlobalError,
+				response.Results,
+				response.HotReloadCorrelationId));
 		}
 
 		private async ValueTask<bool> RequestHotReloadToIde()

@@ -4,6 +4,7 @@
 		<TargetFrameworks>$(NetPrevious);$(NetCurrent)</TargetFrameworks>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<Nullable>enable</Nullable>
+		<DefineConstants>$(DefineConstants);UNO_HOTRELOAD</DefineConstants>
 
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<AnalysisMode>Recommended</AnalysisMode>
@@ -16,6 +17,10 @@
 
 	<ItemGroup>
 		<Compile Include="..\Uno.UI.RemoteControl\HotReload\HotReloadInfoHelper.cs" Link="HotReloadInfoHelper.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl\HotReload\Messages\IUpdateFileRequest.cs" Link="IO\IUpdateFileRequest.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl\HotReload\Messages\FileEdit.cs" Link="IO\FileEdit.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl\HotReload\Messages\FileEditResult.cs" Link="IO\FileEditResult.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl\HotReload\Messages\FileUpdateResult.cs" Link="IO\FileUpdateResult.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
