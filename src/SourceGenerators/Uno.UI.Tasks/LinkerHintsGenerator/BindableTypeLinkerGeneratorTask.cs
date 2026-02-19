@@ -182,9 +182,9 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				attr.AttributeType.FullName == "Uno.Extensions.Reactive.Bindings.BindableAttribute");
 		}
 
-		private Dictionary<string, TypeDefinition> FindReferencedTypes(List<TypeDefinition> bindableTypes)
+		private Dictionary<TypeDefinition, HashSet<string>> FindReferencedTypes(List<TypeDefinition> bindableTypes)
 		{
-			var referencedTypes = new Dictionary<string, TypeDefinition>();
+			var referencedTypes = new Dictionary<TypeDefinition, HashSet<string>>();
 
 			foreach (var bindableType in bindableTypes)
 			{
@@ -199,7 +199,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			return referencedTypes;
 		}
 
-		private void ProcessPropertyType(TypeReference propertyType, Dictionary<string, TypeDefinition> referencedTypes)
+		private void ProcessPropertyType(TypeReference propertyType, Dictionary<TypeDefinition, HashSet<string>> referencedTypes)
 		{
 			// Resolve the type
 			TypeDefinition? resolvedType = null;
@@ -231,7 +231,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			}
 		}
 
-		private void AddTypeIfNeeded(TypeDefinition resolvedType, Dictionary<string, TypeDefinition> referencedTypes)
+		private void AddTypeIfNeeded(TypeDefinition resolvedType, Dictionary<TypeDefinition, HashSet<string>> referencedTypes)
 		{
 			// Skip if type already has Bindable attribute
 			if (HasBindableAttribute(resolvedType))
@@ -240,22 +240,34 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				return;
 			}
 
-			// Skip if type has no properties
-			if (!resolvedType.Properties.Any())
+			// Get all public properties with getters
+			var publicProperties = resolvedType.Properties
+				.Where(p => p.GetMethod?.IsPublic == true)
+				.Select(p => p.Name)
+				.ToList();
+
+			// Skip if type has no public properties
+			if (!publicProperties.Any())
 			{
-				Log.LogMessage(MessageImportance.Low, $"Skipping {resolvedType.FullName} - has no properties");
+				Log.LogMessage(MessageImportance.Low, $"Skipping {resolvedType.FullName} - has no public properties");
 				return;
 			}
 
-			// Add to referenced types
-			if (!referencedTypes.ContainsKey(resolvedType.FullName))
+			// Add or update the type with its properties
+			if (!referencedTypes.ContainsKey(resolvedType))
 			{
-				referencedTypes[resolvedType.FullName] = resolvedType;
+				referencedTypes[resolvedType] = new HashSet<string>();
 				Log.LogMessage(DefaultLogMessageLevel, $"BindableTypeLinkerGenerator: Adding referenced type {resolvedType.FullName}");
+			}
+
+			// Add all public properties to the set
+			foreach (var propName in publicProperties)
+			{
+				referencedTypes[resolvedType].Add(propName);
 			}
 		}
 
-		private void GenerateLinkerDescriptor(Dictionary<string, TypeDefinition> referencedTypes)
+		private void GenerateLinkerDescriptor(Dictionary<TypeDefinition, HashSet<string>> referencedTypes)
 		{
 			var doc = new XmlDocument();
 
@@ -266,8 +278,8 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			doc.AppendChild(linkerNode);
 
 			// Group types by assembly
-			var typesByAssembly = referencedTypes.Values
-				.GroupBy(t => t.Module.Assembly.Name.Name)
+			var typesByAssembly = referencedTypes
+				.GroupBy(kvp => kvp.Key.Module.Assembly.Name.Name)
 				.OrderBy(g => g.Key);
 
 			foreach (var assemblyGroup in typesByAssembly)
@@ -277,21 +289,30 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				fullnameAttr.Value = assemblyGroup.Key;
 				assemblyNode.Attributes.Append(fullnameAttr);
 
-				foreach (var type in assemblyGroup.OrderBy(t => t.FullName))
+				foreach (var typeEntry in assemblyGroup.OrderBy(t => t.Key.FullName))
 				{
+					var type = typeEntry.Key;
+					var properties = typeEntry.Value;
+
 					var typeNode = doc.CreateElement("type");
 
 					var typeFullnameAttr = doc.CreateAttribute("fullname");
 					typeFullnameAttr.Value = type.FullName;
 					typeNode.Attributes.Append(typeFullnameAttr);
 
-					var preserveAttr = doc.CreateAttribute("preserve");
-					preserveAttr.Value = "methods";
-					typeNode.Attributes.Append(preserveAttr);
-
 					var requiredAttr = doc.CreateAttribute("required");
 					requiredAttr.Value = "false";
 					typeNode.Attributes.Append(requiredAttr);
+
+					// Add property elements for each public property
+					foreach (var propName in properties.OrderBy(p => p))
+					{
+						var propertyNode = doc.CreateElement("property");
+						var nameAttr = doc.CreateAttribute("name");
+						nameAttr.Value = propName;
+						propertyNode.Attributes.Append(nameAttr);
+						typeNode.AppendChild(propertyNode);
+					}
 
 					assemblyNode.AppendChild(typeNode);
 				}
