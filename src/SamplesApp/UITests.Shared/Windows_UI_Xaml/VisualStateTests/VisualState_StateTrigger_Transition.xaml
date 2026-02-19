@@ -1,0 +1,74 @@
+<Page
+	x:Class="UITests.Shared.Windows_UI_Xaml.VisualStateTests.VisualState_StateTrigger_Transition"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d">
+
+	<Grid>
+		<VisualStateManager.VisualStateGroups>
+			<VisualStateGroup x:Name="WidthStates"
+				CurrentStateChanging="OnCurrentStateChanging"
+				CurrentStateChanged="OnCurrentStateChanged">
+				<VisualStateGroup.Transitions>
+					<VisualTransition From="WideState" To="NarrowState">
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="TestBorder"
+								Storyboard.TargetProperty="Opacity"
+								To="0.3"
+								Duration="0:0:1" />
+						</Storyboard>
+					</VisualTransition>
+					<VisualTransition From="NarrowState" To="WideState">
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="TestBorder"
+								Storyboard.TargetProperty="Opacity"
+								To="1"
+								Duration="0:0:1" />
+						</Storyboard>
+					</VisualTransition>
+				</VisualStateGroup.Transitions>
+				<VisualState x:Name="NarrowState">
+					<VisualState.StateTriggers>
+						<AdaptiveTrigger MinWindowWidth="0" />
+					</VisualState.StateTriggers>
+					<VisualState.Setters>
+						<Setter Target="TestBorder.Opacity" Value="0.3" />
+						<Setter Target="StatusText.Text" Value="NarrowState" />
+					</VisualState.Setters>
+				</VisualState>
+				<VisualState x:Name="WideState">
+					<VisualState.StateTriggers>
+						<AdaptiveTrigger MinWindowWidth="800" />
+					</VisualState.StateTriggers>
+					<VisualState.Setters>
+						<Setter Target="TestBorder.Opacity" Value="1" />
+						<Setter Target="StatusText.Text" Value="WideState" />
+					</VisualState.Setters>
+				</VisualState>
+			</VisualStateGroup>
+		</VisualStateManager.VisualStateGroups>
+
+		<StackPanel Margin="20">
+			<TextBlock Text="StateTrigger + VisualTransition Test" FontSize="18" Margin="0,0,0,12" />
+			<TextBlock Text="Resize window past 800px to trigger state changes. Transitions should animate smoothly over 1 second." TextWrapping="Wrap" Margin="0,0,0,12" />
+
+			<Border x:Name="TestBorder"
+				Background="CornflowerBlue"
+				Width="200" Height="100"
+				CornerRadius="8"
+				Margin="0,0,0,12" />
+
+			<TextBlock Text="Current state:" Margin="0,0,0,4" />
+			<TextBlock x:Name="StatusText" FontWeight="Bold" Margin="0,0,0,12" />
+
+			<TextBlock Text="Event log:" Margin="0,0,0,4" />
+			<ScrollViewer MaxHeight="300" BorderBrush="Gray" BorderThickness="1" Padding="8">
+				<TextBlock x:Name="EventLog" TextWrapping="Wrap" />
+			</ScrollViewer>
+		</StackPanel>
+	</Grid>
+</Page>
