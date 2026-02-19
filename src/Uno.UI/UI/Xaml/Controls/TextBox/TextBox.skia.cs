@@ -17,6 +17,7 @@ using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.UI;
 using Uno.UI.Dispatching;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Xaml.Media;

@@ -30,8 +30,8 @@ internal static class DeviceTargetHelper
 
 	/// <summary>
 	/// Returns true when the keyboard layout follows Apple conventions (using Command key).
-	/// This covers native Apple platforms (macOS, iOS, Mac Catalyst) and WebAssembly
-	/// running in a browser on Apple devices (macOS, iPad, iPhone).
+	/// This covers native Apple platforms (macOS, iOS, Mac Catalyst, tvOS) and WebAssembly
+	/// running in a browser on Apple devices (macOS, iPhone, iPad, iPod).
 	/// </summary>
 	internal static bool UsesAppleKeyboardLayout => _usesAppleKeyboardLayout.Value;
 
