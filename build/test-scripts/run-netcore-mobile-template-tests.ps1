@@ -239,7 +239,8 @@ $projects =
     @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net9.0-android"), @("macOS", "NetCore")),
     @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net9.0-maccatalyst"), @("macOS", "NetCore")),
     @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net9.0-desktop"), @("macOS", "NetCore")),
-    @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net9.0", "-p:PlaywrightPlatform=none"), @("OnlyMacOS", "NetCore", "PlaywrightApphostCollision")),
+    # Playwright apphost collision regression
+    @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net9.0", "-p:PlaywrightPlatform=none"), @("macOS", "NetCore", "PlaywrightApphostCollision")),
 
     ## Note for contributors
     ##
