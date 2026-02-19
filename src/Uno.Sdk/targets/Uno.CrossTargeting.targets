@@ -12,8 +12,8 @@
 		<None Include="**\*.wasm.cs" Exclude="bin\**\*.wasm.cs;obj\**\*.wasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly' AND '$(IsBrowserWasm)'!='true'" />
 		<Compile Remove="**\*.wasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly' AND '$(IsBrowserWasm)'!='true'" />
 
-		<None Include="**\*.browserwasm.cs" Exclude="bin\**\*.browserwasm.cs;obj\**\*.browserwasm.cs" Condition="'$(IsBrowserWasm)'!='true'" />
-		<Compile Remove="**\*.browserwasm.cs" Condition="'$(IsBrowserWasm)'!='true'" />
+		<None Include="**\*.browserwasm.cs" Exclude="bin\**\*.browserwasm.cs;obj\**\*.browserwasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly' AND '$(IsBrowserWasm)'!='true'" />
+		<Compile Remove="**\*.browserwasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly' AND '$(IsBrowserWasm)'!='true'" />
 
 		<None Include="**\*.skia.cs" Exclude="bin\**\*.skia.cs;obj\**\*.skia.cs" Condition="'$(UnoRuntimeIdentifier)'!='Skia'" />
 		<Compile Remove="**\*.skia.cs" Condition="'$(UnoRuntimeIdentifier)'!='Skia'" />
