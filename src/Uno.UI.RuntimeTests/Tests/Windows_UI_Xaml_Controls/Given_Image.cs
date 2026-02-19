@@ -801,5 +801,78 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
 			=> UITestHelper.ScreenShot(SUT);
+
+#if __SKIA__
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_StaticWebP_Loads()
+		{
+			var image = new Image
+			{
+				Width = 100,
+				Height = 100,
+				Source = new BitmapImage(new Uri("ms-appx:///Assets/Formats/uno-overalls.webp")),
+			};
+
+			var imageOpened = false;
+			image.ImageOpened += (_, _) => imageOpened = true;
+			image.ImageFailed += (_, e) => Assert.Fail($"ImageFailed: {e.ErrorMessage}");
+
+			await UITestHelper.Load(image);
+			await WindowHelper.WaitFor(() => imageOpened, message: "Static WebP should fire ImageOpened");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_AnimatedWebP_Loads()
+		{
+			var image = new Image
+			{
+				Width = 100,
+				Height = 100,
+				Source = new BitmapImage(new Uri("ms-appx:///Assets/Formats/animated.webp")),
+			};
+
+			var imageOpened = false;
+			image.ImageOpened += (_, _) => imageOpened = true;
+			image.ImageFailed += (_, e) => Assert.Fail($"ImageFailed: {e.ErrorMessage}");
+
+			await UITestHelper.Load(image);
+			await WindowHelper.WaitFor(() => imageOpened, message: "Animated WebP should fire ImageOpened");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_AnimatedWebP_Changes_Frames()
+		{
+			var image = new Image
+			{
+				Width = 100,
+				Height = 100,
+				Source = new BitmapImage(new Uri("ms-appx:///Assets/Formats/animated.webp")),
+			};
+
+			var imageOpened = false;
+			image.ImageOpened += (_, _) => imageOpened = true;
+
+			await UITestHelper.Load(image);
+			await WindowHelper.WaitFor(() => imageOpened, message: "Animated WebP should fire ImageOpened");
+
+			// Take first screenshot.
+			var screenshot1 = await UITestHelper.ScreenShot(image);
+			var pixel1 = screenshot1.GetPixel(screenshot1.Width / 2, screenshot1.Height / 2);
+
+			// Wait long enough for animation to advance (frames are 200ms each).
+			await Task.Delay(400);
+
+			// Take second screenshot - at least one should differ because the animation cycles.
+			var screenshot2 = await UITestHelper.ScreenShot(image);
+			var pixel2 = screenshot2.GetPixel(screenshot2.Width / 2, screenshot2.Height / 2);
+
+			// The animated WebP has red, green, blue, yellow, cyan, magenta frames.
+			// After enough delay, the center pixel should have changed color at least once.
+			Assert.AreNotEqual(pixel1, pixel2, "Animated WebP should show different frames over time");
+		}
+#endif
 	}
 }
