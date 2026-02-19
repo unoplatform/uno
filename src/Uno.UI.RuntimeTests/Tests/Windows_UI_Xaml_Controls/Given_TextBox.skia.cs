@@ -14,6 +14,7 @@ using MUXControlsTestApp.Utilities;
 using SamplesApp.UITests;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Toolkit.DevTools.Input;
 using Uno.UI.Xaml.Core;
@@ -38,8 +39,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	/// </summary>
 	public partial class Given_TextBox
 	{
-		// most macOS keyboard shortcuts uses Command (mapped as Window) and not Control (Ctrl)
-		private readonly VirtualKeyModifiers _platformCtrlKey = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
+		// Apple platforms (macOS, iOS, Mac Catalyst, tvOS) use Command key for standard shortcuts
+		private readonly VirtualKeyModifiers _platformCtrlKey = DeviceTargetHelper.PlatformCommandModifier;
 
 		[TestMethod]
 		public async Task When_Basic_Input()
@@ -369,10 +370,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(0, ((ScrollViewer)SUT.ContentElement).VerticalOffset);
 
-			// on macOS moving to the end of the document is done with `Command` + `Down`
-			var macOS = OperatingSystem.IsMacOS();
-			var key = macOS ? VirtualKey.Down : VirtualKey.End;
-			var mod = macOS ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
+			// on Apple platforms moving to the end of the document is done with `Command` + `Down`
+			var isAppleKeyboard = DeviceTargetHelper.UsesAppleKeyboardLayout;
+			var key = isAppleKeyboard ? VirtualKey.Down : VirtualKey.End;
+			var mod = isAppleKeyboard ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, mod));
 			await WindowHelper.WaitForIdle();
 
@@ -463,14 +464,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
-			var key = OperatingSystem.IsMacOS() ? VirtualKey.Down : VirtualKey.End;
+			var key = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKey.Down : VirtualKey.End;
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, _platformCtrlKey));
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(SUT.Text.Length, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
-			key = OperatingSystem.IsMacOS() ? VirtualKey.Up : VirtualKey.Home;
+			key = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKey.Up : VirtualKey.Home;
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, _platformCtrlKey));
 			await WindowHelper.WaitForIdle();
 
