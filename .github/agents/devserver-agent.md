@@ -170,7 +170,7 @@ The MCP proxy (`McpStdioServer.cs` / `ProxyLifecycleManager.cs`) runs in STDIO m
 - Returns cached tool definitions instantly while Host launches in background
 - Tool cache persisted to `%LOCALAPPDATA%/Uno Platform/uno.devserver/tools-cache.json`
 - Sends `tools/list_changed` notification when tools become available
-- Detects clients that don't support `tools/list_changed` (see `ClientsWithoutListUpdateSupport`)
+- Detects client capabilities (roots support) via `ClientCapabilities.Roots` to adapt behavior
 
 ### Key Files
 
