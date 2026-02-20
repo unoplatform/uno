@@ -14,7 +14,6 @@ internal class CliManager
 {
 	private readonly IServiceProvider _services;
 	private readonly UnoToolsLocator _unoToolsLocator;
-	private readonly TargetsAddInResolver _addInResolver;
 	private readonly ILogger<CliManager> _logger;
 	private static readonly JsonSerializerOptions _discoJsonOptions = new()
 	{
@@ -22,11 +21,10 @@ internal class CliManager
 		PropertyNamingPolicy = JsonNamingPolicy.CamelCase
 	};
 
-	public CliManager(IServiceProvider services, UnoToolsLocator unoToolsLocator, TargetsAddInResolver addInResolver)
+	public CliManager(IServiceProvider services, UnoToolsLocator unoToolsLocator)
 	{
 		_services = services;
 		_unoToolsLocator = unoToolsLocator;
-		_addInResolver = addInResolver;
 		_logger = _services.GetRequiredService<ILogger<CliManager>>();
 	}
 
@@ -183,7 +181,13 @@ internal class CliManager
 				return null; // discovery not possible — let MSBuild evaluate
 			}
 
-			var addIns = _addInResolver.ResolveAddIns(discovery.PackagesJsonPath);
+			if (discovery.AddInDiscoveryFailed)
+			{
+				_logger.LogDebug("Add-in discovery failed during DiscoverAsync, falling back to MSBuild");
+				return null;
+			}
+
+			var addIns = discovery.AddIns;
 			if (addIns.Count == 0)
 			{
 				_logger.LogDebug("No add-ins resolved via convention-based discovery");
