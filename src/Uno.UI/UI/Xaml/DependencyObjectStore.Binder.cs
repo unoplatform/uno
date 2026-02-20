@@ -67,14 +67,17 @@ namespace Microsoft.UI.Xaml
 
 		private bool IsCandidateChild([NotNullWhen(true)] object? child)
 		{
-			if (child is IDependencyObjectStoreProvider)
+			if (FeatureConfiguration.DependencyProperty.LegacyDataContextPropagation)
 			{
-				return true;
+				if (child is IDependencyObjectStoreProvider) return true;
+			}
+			else
+			{
+				if (child is FrameworkElement) return true;
 			}
 
 			// The property value may be an enumerable of providers
-			var isValidEnumerable = child is not string;
-			return isValidEnumerable && child is IEnumerable;
+			return (child is not string && child is IEnumerable);
 		}
 
 		private void ApplyChildrenBindable(object? inheritedValue)
@@ -111,30 +114,36 @@ namespace Microsoft.UI.Xaml
 					continue;
 				}
 
+				static void InnerApply(object? instance, object? value)
+				{
+					if (!FeatureConfiguration.DependencyProperty.LegacyDataContextPropagation)
+					{
+						instance = instance as FrameworkElement;
+					}
+
+					if (instance is IDependencyObjectStoreProvider provider)
+					{
+						provider.Store.SetInheritedDataContext(value);
+					}
+				}
+
 				if (childAsStoreProvider != null)
 				{
-					childAsStoreProvider.Store.SetInheritedDataContext(inheritedValue);
+					InnerApply(childAsStoreProvider, inheritedValue);
 				}
 				else if (child is IList list)
 				{
 					// Special case for IList where the child may not be enumerable
-
 					for (int childIndex = 0; childIndex < list.Count; childIndex++)
 					{
-						if (list[childIndex] is IDependencyObjectStoreProvider provider2)
-						{
-							provider2.Store.SetInheritedDataContext(inheritedValue);
-						}
+						InnerApply(list[childIndex], inheritedValue);
 					}
 				}
 				else if (child is IEnumerable enumerable)
 				{
 					foreach (var item in enumerable)
 					{
-						if (item is IDependencyObjectStoreProvider provider2)
-						{
-							provider2.Store.SetInheritedDataContext(inheritedValue);
-						}
+						InnerApply(item, inheritedValue);
 					}
 				}
 				else

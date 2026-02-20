@@ -62,6 +62,9 @@ namespace Microsoft.UI.Xaml
 
 		private static readonly IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 
+		private static readonly Type FrameworkElementType = typeof(FrameworkElement);
+		private static readonly Type IEnumerableOfFrameworkElementType = typeof(IEnumerable<FrameworkElement>);
+
 		private bool _isDisposed;
 
 		private readonly DependencyPropertyDetailsCollection _properties;
@@ -598,7 +601,9 @@ namespace Microsoft.UI.Xaml
 		{
 			if (property.IsUnoType
 				&& propertyDetails.HasValueInherits
-				&& !propertyDetails.HasValueDoesNotInherit)
+				&& !propertyDetails.HasValueDoesNotInherit
+				&& ShouldPropertyInheritDataContext(property)
+			)
 			{
 				// This block is used to synchronize the DataContext property of DependencyProperty values marked as
 				// being able to inherit the DataContext.
@@ -1198,13 +1203,15 @@ namespace Microsoft.UI.Xaml
 		{
 			var (localProperty, propertyDetails) = GetLocalPropertyDetails(parentProperty);
 
-			if (localProperty != null)
+			bool _isNotDataContext;
+			if (localProperty != null &&
+				// only when we have a dc-property, then check if it is eligible for inheritance
+				((_isNotDataContext = localProperty != _dataContextProperty) || ShouldPropertyInheritDataContext(localProperty))
+			)
 			{
 				// If the property is available on the current DependencyObject, update it.
 				// This will allow for it to be reset to is previous lower precedence.
-				if (localProperty != _dataContextProperty &&
-					(_updatedProperties is null || !_updatedProperties.Contains(localProperty))
-				)
+				if (_isNotDataContext)
 				{
 					(_updatedProperties ??= new HashSet<DependencyProperty>(DependencyPropertyComparer.Default)).Add(localProperty);
 				}
@@ -1377,6 +1384,21 @@ namespace Microsoft.UI.Xaml
 			}
 
 			return (null, null);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static bool ShouldPropertyInheritDataContext(DependencyProperty property)
+		{
+			if (FeatureConfiguration.DependencyProperty.LegacyDataContextPropagation)
+			{
+				return true;
+			}
+			else
+			{
+				return
+					property.Type.IsAssignableTo(FrameworkElementType) ||
+					property.Type.IsAssignableTo(IEnumerableOfFrameworkElementType);
+			}
 		}
 
 		/// <summary>
