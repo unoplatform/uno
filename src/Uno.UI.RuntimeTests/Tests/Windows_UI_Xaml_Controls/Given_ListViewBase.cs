@@ -42,6 +42,7 @@ using static Private.Infrastructure.TestServices;
 using static Uno.UI.Extensions.ViewExtensions;
 using MUXControlsTestApp.Utilities;
 
+#if !WINAPPSDK
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 #if __APPLE_UIKIT__
@@ -5472,3 +5473,4 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 	}
 }
+#endif

@@ -22,6 +22,7 @@ using Uno.UI;
 #endif
 using static Private.Infrastructure.TestServices;
 
+#if !WINAPPSDK
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	public partial class Given_ListViewBase
@@ -632,3 +633,4 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 	}
 }
+#endif

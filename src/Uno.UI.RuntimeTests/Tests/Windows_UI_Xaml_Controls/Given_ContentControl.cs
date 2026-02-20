@@ -99,6 +99,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitFor(() => tb.Text == "Steve");
 		}
 
+#if !WINAPPSDK
 		[TestMethod]
 		public async Task When_ContentTemplateSelector_And_Default_Style()
 		{
@@ -141,6 +142,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var _ = StyleHelper.UseUwpStyles();
 			await When_ContentTemplateSelector_And_Default_Style();
 		}
+#endif
 
 		[TestMethod]
 		public async Task When_Template_Applied_On_Loading_DataContext_Propagation()

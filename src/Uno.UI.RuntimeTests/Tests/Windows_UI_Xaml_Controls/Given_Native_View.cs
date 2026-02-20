@@ -20,6 +20,7 @@ using Uno.UI.Extensions;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public class Given_Native_View
 	{
 		[TestMethod]
