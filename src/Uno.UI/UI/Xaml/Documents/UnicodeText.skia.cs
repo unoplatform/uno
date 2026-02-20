@@ -151,12 +151,39 @@ internal readonly partial struct UnicodeText : IParsedText
 
 			var currentFontDetails = inline.FontInfo;
 			int currentScript = 0;
-			for (var i = 0; i < inlineText.Length; i += char.IsSurrogate(inlineText, i) ? 2 : 1)
+			var i = 0;
+			while (i < inlineText.Length)
 			{
 				FontDetails newFontDetails;
-				var codepoint = char.ConvertToUtf32(inlineText, i);
+				int codepoint;
+				int codepointLength;
+				// Keep shaping robust for malformed input: treat unpaired surrogate code units
+				// as U+FFFD so script/font lookup never operates on invalid UTF-16 sequences.
+				if (char.IsHighSurrogate(inlineText[i]))
+				{
+					if (i + 1 < inlineText.Length && char.IsLowSurrogate(inlineText[i + 1]))
+					{
+						codepoint = char.ConvertToUtf32(inlineText, i);
+						codepointLength = 2;
+					}
+					else
+					{
+						codepoint = '\uFFFD';
+						codepointLength = 1;
+					}
+				}
+				else if (char.IsLowSurrogate(inlineText[i]))
+				{
+					codepoint = '\uFFFD';
+					codepointLength = 1;
+				}
+				else
+				{
+					codepoint = inlineText[i];
+					codepointLength = 1;
+				}
 
-				var newScript = ICU.GetMethod<ICU.uscript_getScript>()(char.ConvertToUtf32(inlineText, i), out var errorCode);
+				var newScript = ICU.GetMethod<ICU.uscript_getScript>()(codepoint, out var errorCode);
 				ICU.CheckErrorCode<ICU.uscript_getScript>(errorCode);
 
 				if (newScript != currentScript)
@@ -185,6 +212,8 @@ internal readonly partial struct UnicodeText : IParsedText
 					}
 					currentFontDetails = newFontDetails;
 				}
+
+				i += codepointLength;
 			}
 
 			scriptBreaks.Add(inlineStart + inlineText.Length);
@@ -197,7 +226,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
-		_text = stringBuilder.ToString();
+		_text = SanitizeText(stringBuilder.ToString());
 		if (_text.Length == 0)
 		{
 			_lines = [];
@@ -230,7 +259,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			Array.Fill(embeddingLevels, (byte)level, start, count);
 		}
 
-		using var _ = ICU.CreateBiDiAndSetPara(_text, 0, _text.Length, flowDirection is FlowDirection.RightToLeft ? UBIDI_DEFAULT_RTL : UBIDI_DEFAULT_LTR, out var bidi, embeddingLevels);
+		using var _ = CreateBiDiOrFallback(_text, flowDirection, embeddingLevels, out var bidi);
 		var runCount = ICU.GetMethod<ICU.ubidi_countRuns>()(bidi, out var countRunsErrorCode);
 		ICU.CheckErrorCode<ICU.ubidi_countRuns>(countRunsErrorCode);
 		_rtl = ICU.GetMethod<ICU.ubidi_getParaLevel>()(bidi) is UBIDI_RTL;
@@ -812,7 +841,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		(int index, CompositionBrush brush, float thickness)? caret, // null to skip drawing a caret
 		IEnumerable<TextHighlighter> highlighters)
 	{
-		var highlighterSlicer = new RangeSlicer<(CompositionBrush? background, Brush foreground)>(0, _text.Length);
+		var highlighterSlicer = new RangeSlicer<(CompositionBrush? background, Brush? foreground)>(0, _text.Length);
 		foreach (var highlighter in highlighters)
 		{
 			foreach (var range in highlighter.Ranges)
@@ -823,7 +852,7 @@ internal readonly partial struct UnicodeText : IParsedText
 						Math.Min(range.StartIndex, _text.Length),
 						Math.Min(range.StartIndex + range.Length, _text.Length),
 						(highlighter.Background?.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()),
-							highlighter.Foreground ?? _blackBrush));
+							highlighter.Foreground));
 				}
 			}
 		}
@@ -837,39 +866,63 @@ internal readonly partial struct UnicodeText : IParsedText
 		var wordBoundariesIndex = 0;
 		var highlighterSlices = highlighterSlicer.GetSegments();
 		var highlighterIndex = 0;
+		var fallbackHighlight = (background: (CompositionBrush?)null, foreground: (Brush?)null);
 		for (var clusterIndex = 0; clusterIndex < _clustersInLogicalOrder.Count; clusterIndex++)
 		{
 			var cluster = _clustersInLogicalOrder[clusterIndex];
-			while (highlighterSlices[highlighterIndex].End <= cluster.Value.start)
+			RangeSlicer<(CompositionBrush? background, Brush? foreground)>.Segment? highlighter = null;
+			if (highlighterSlices.Count > 0)
 			{
-				highlighterIndex++;
+				while (highlighterIndex + 1 < highlighterSlices.Count && highlighterSlices[highlighterIndex].End <= cluster.Value.start)
+				{
+					highlighterIndex++;
+				}
+
+				highlighter = highlighterSlices[highlighterIndex];
 			}
 
-			var highlighter = highlighterSlices[highlighterIndex];
-
-			while (_runBreaks[runBreakIndex].end <= cluster.Value.start)
+			if (_runBreaks.Count > 0)
 			{
-				runBreakIndex++;
+				while (runBreakIndex + 1 < _runBreaks.Count && _runBreaks[runBreakIndex].end <= cluster.Value.start)
+				{
+					runBreakIndex++;
+				}
 			}
 
-			while (_wordBoundaries[wordBoundariesIndex] <= cluster.Value.start)
+			if (_wordBoundaries.Count > 0)
 			{
-				wordBoundariesIndex++;
+				while (wordBoundariesIndex + 1 < _wordBoundaries.Count && _wordBoundaries[wordBoundariesIndex] <= cluster.Value.start)
+				{
+					wordBoundariesIndex++;
+				}
 			}
 
 			var lineIndex = cluster.Value.lineIndex;
+			if ((uint)lineIndex >= (uint)_lines.Count || (uint)lineIndex >= (uint)_xyTable.Count)
+			{
+				continue;
+			}
+
+			var lineMetrics = _xyTable[lineIndex];
+			if (cluster.Value.indexInLine > 0 && cluster.Value.indexInLine - 1 >= lineMetrics.prefixSummedWidths.Count)
+			{
+				continue;
+			}
+
 			var line = _lines[lineIndex];
-			var y = _xyTable[lineIndex].prefixSummedHeight - line.lineHeight;
+			var y = lineMetrics.prefixSummedHeight - line.lineHeight;
 			var unalignedX = cluster.Value.indexInLine == 0
 				? 0
-				: _xyTable[lineIndex].prefixSummedWidths[cluster.Value.indexInLine - 1].sumUntilAfterCluster;
+				: lineMetrics.prefixSummedWidths[cluster.Value.indexInLine - 1].sumUntilAfterCluster;
 			var alignmentOffset = GetAlignmentOffsetForLine(line);
 			var positionAcc = new SKPoint(unalignedX + alignmentOffset, y + line.baselineOffset);
 			var fontDetails = cluster.Value.fontDetails;
 
 			if (!cluster.Value.containsTab)
 			{
-				var color = BrushToColor(highlighter.Value.foreground is { } h ? h : _runBreaks[runBreakIndex].foreground, session.Opacity);
+				var runForeground = _runBreaks.Count > 0 ? _runBreaks[runBreakIndex].foreground : _blackBrush;
+				var highlightValue = highlighter?.Value ?? fallbackHighlight;
+				var color = BrushToColor(highlightValue.foreground ?? runForeground ?? _blackBrush, session.Opacity);
 				if (!_colorToFontToGlyphs.TryGetValue(color, out var fontToGlyphs))
 				{
 					_colorToFontToGlyphs[color] = fontToGlyphs = new Dictionary<SKFont, (List<ushort> glyphs, List<SKPoint> positions)>();
@@ -896,9 +949,9 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 
 			var backgroundRect = new SKRect(unalignedX + alignmentOffset, y, unalignedX + alignmentOffset + cluster.Value.width, y + line.lineHeight);
-			highlighter.Value.background?.Paint(session.Canvas, session.Opacity, backgroundRect);
+			(highlighter?.Value ?? fallbackHighlight).background?.Paint(session.Canvas, session.Opacity, backgroundRect);
 
-			if (_corrections?[wordBoundariesIndex] is { } correction)
+			if (_corrections is { } corrections && _wordBoundaries.Count > 0 && wordBoundariesIndex < corrections.Count && corrections[wordBoundariesIndex] is { } correction)
 			{
 				var correctionIndexBase = wordBoundariesIndex == 0 ? 0 : _wordBoundaries[wordBoundariesIndex - 1];
 				if (correctionIndexBase + correction.correctionStart <= cluster.Value.start && correctionIndexBase + correction.correctionEnd >= cluster.Value.end)
@@ -1275,10 +1328,90 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	public bool IsBaseDirectionRightToLeft => _rtl;
 
+	private static string SanitizeText(string text)
+	{
+		// Normalize malformed UTF-16 once before line-breaking/shaping so downstream
+		// index-based logic can keep operating on a valid, stable string.
+		var hasInvalid = false;
+		var scanIndex = 0;
+		while (scanIndex < text.Length)
+		{
+			var c = text[scanIndex];
+			if (char.IsHighSurrogate(c))
+			{
+				if (scanIndex + 1 < text.Length && char.IsLowSurrogate(text[scanIndex + 1]))
+				{
+					scanIndex += 2;
+					continue;
+				}
+				hasInvalid = true;
+				break;
+			}
+			if (char.IsLowSurrogate(c))
+			{
+				hasInvalid = true;
+				break;
+			}
+
+			scanIndex++;
+		}
+
+		if (!hasInvalid)
+		{
+			return text;
+		}
+
+		var chars = text.ToCharArray();
+		var index = 0;
+		while (index < chars.Length)
+		{
+			var c = chars[index];
+			if (char.IsHighSurrogate(c))
+			{
+				if (index + 1 < chars.Length && char.IsLowSurrogate(chars[index + 1]))
+				{
+					index += 2;
+					continue;
+				}
+				chars[index] = '\uFFFD';
+				index++;
+				continue;
+			}
+			if (char.IsLowSurrogate(c))
+			{
+				chars[index] = '\uFFFD';
+			}
+
+			index++;
+		}
+
+		return new string(chars);
+	}
+
+	private static DisposableStruct<IntPtr> CreateBiDiOrFallback(string text, FlowDirection flowDirection, byte[]? embeddingLevels, out IntPtr bidi)
+	{
+		var paraLevel = flowDirection is FlowDirection.RightToLeft ? UBIDI_DEFAULT_RTL : UBIDI_DEFAULT_LTR;
+		try
+		{
+			return ICU.CreateBiDiAndSetPara(text, 0, text.Length, paraLevel, out bidi, embeddingLevels);
+		}
+		catch (InvalidOperationException ex) when (embeddingLevels is not null)
+		{
+			// Some malformed runs can make ICU reject explicit embedding levels even though
+			// paragraph analysis still succeeds. Retry without levels to preserve rendering.
+			typeof(UnicodeText).LogError()?.Error("ubidi_setPara failed with embedding levels; retrying without them.", ex);
+			return ICU.CreateBiDiAndSetPara(text, 0, text.Length, paraLevel, out bidi, embeddingLevels: null);
+		}
+	}
+
 	private static List<int> GetWords(string text)
 	{
 		var boundaries = new List<int>();
 		AppendBoundaries(/* Word */ 1, text, 0, boundaries);
+		if (boundaries.Count == 0)
+		{
+			return new List<int> { text.Length };
+		}
 		var ret = new List<int> { boundaries[0] };
 		for (var index = 1; index < boundaries.Count; index++)
 		{
@@ -1293,6 +1426,10 @@ internal readonly partial struct UnicodeText : IParsedText
 				ret.RemoveAt(ret.Count - 1);
 			}
 			ret.Add(boundary);
+		}
+		if (ret[^1] != text.Length)
+		{
+			ret.Add(text.Length);
 		}
 
 		return ret;

@@ -176,24 +176,32 @@ internal readonly partial struct UnicodeText
 		public static unsafe DisposableStruct<IntPtr> CreateBiDiAndSetPara(string text, int start, int end, byte paraLevel, out IntPtr bidi, byte[]? embeddingLevels = null)
 		{
 			bidi = GetMethod<ubidi_open>()();
-			fixed (char* textPtr = &text.GetPinnableReference())
+			try
 			{
-				int setParaErrorCode;
-				if (embeddingLevels is not null)
+				fixed (char* textPtr = &text.GetPinnableReference())
 				{
-					fixed (byte* embeddingLevelsPtr = embeddingLevels)
+					int setParaErrorCode;
+					if (embeddingLevels is not null)
 					{
-						GetMethod<ubidi_setPara>()(bidi, (IntPtr)(textPtr + start), end - start, paraLevel, (IntPtr)embeddingLevelsPtr, out setParaErrorCode);
+						fixed (byte* embeddingLevelsPtr = embeddingLevels)
+						{
+							GetMethod<ubidi_setPara>()(bidi, (IntPtr)(textPtr + start), end - start, paraLevel, (IntPtr)embeddingLevelsPtr, out setParaErrorCode);
+						}
+					}
+					else
+					{
+						GetMethod<ubidi_setPara>()(bidi, (IntPtr)(textPtr + start), end - start, paraLevel, IntPtr.Zero, out setParaErrorCode);
+					}
+					if (setParaErrorCode > 0)
+					{
+						throw new InvalidOperationException($"{nameof(ubidi_setPara)} failed with error code {setParaErrorCode}");
 					}
 				}
-				else
-				{
-					GetMethod<ubidi_setPara>()(bidi, (IntPtr)(textPtr + start), end - start, paraLevel, IntPtr.Zero, out setParaErrorCode);
-				}
-				if (setParaErrorCode > 0)
-				{
-					throw new InvalidOperationException($"{nameof(ubidi_setPara)} failed with error code {setParaErrorCode}");
-				}
+			}
+			catch
+			{
+				GetMethod<ubidi_close>()(bidi);
+				throw;
 			}
 			return new DisposableStruct<IntPtr>(static bidi => GetMethod<ubidi_close>()(bidi), bidi);
 		}
