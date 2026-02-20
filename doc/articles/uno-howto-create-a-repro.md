@@ -121,7 +121,7 @@ VS Code requires manual ADB setup or extensions for Logcat viewing.
    - Add ADB to your system PATH or note its full path
    - Test by running: `adb version`
 
-### Option 1: Using Terminal (Manual ADB)
+#### Option 1: Using Terminal (Manual ADB)
 
 1. Open VS Code's integrated terminal: **View** → **Terminal** or press **Ctrl+`** (Windows/Linux) or **⌘`** (macOS)
 2. Ensure your device or emulator is running and connected
@@ -159,7 +159,7 @@ VS Code requires manual ADB setup or extensions for Logcat viewing.
    adb logcat -d
    ```
 
-### Option 2: Using VS Code Extensions
+#### Option 2: Using VS Code Extensions
 
 1. Open the Extensions view: **View** → **Extensions** or press **Ctrl+Shift+X** (Windows/Linux) or **⌘⇧X** (macOS)
 1. Search for and install one of these extensions:
@@ -306,10 +306,10 @@ Filter for these tags to focus on Uno Platform logs:
 
 ---
 
-## Creating a smaller zip file to upload to github
+## Creating a smaller zip file to upload to GitHub
 
 > Yowza, that’s a big file Try again with a file smaller than 10MB.
-> -- Github
+> -- GitHub
 
 If you get the above message when attempting to upload the zipped sample, thats usually because you have included, beside the source codes, needless build outputs inside `bin` and `obj` folders for each target heads.
 
@@ -328,7 +328,7 @@ If you're inside of Visual Studio:
 - Close visual studio
 - Open a command line prompt in your solution folder and type `git clean -fdx`
 
-Once done, you can zip the folder and send it to github in your issue or discussion.
+Once done, you can zip the folder and send it to GitHub in your issue or discussion.
 
 ### [**Windows (Console)**](#tab/windows-console)
 
@@ -342,7 +342,7 @@ Using the command prompt:
 - Type `git archive HEAD --format zip --output sample.zip`
 - Type `explorer /select,sample.zip`
 
-Once done, you can send the `sample.zip` to github in your issue or discussion.
+Once done, you can send the `sample.zip` to GitHub in your issue or discussion.
 
 ### [**macOS / Linux**](#tab/nix)
 
@@ -355,6 +355,6 @@ Using a terminal:
 - Type `git commit -m "Initial sample commit"`
 - Type `git clean -fdx`
 
-Once done, you can zip the folder and send it to github in your issue or discussion.
+Once done, you can zip the folder and send it to GitHub in your issue or discussion.
 
 ---
