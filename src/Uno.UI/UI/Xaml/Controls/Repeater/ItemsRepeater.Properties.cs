@@ -1,4 +1,8 @@
-﻿using System;
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// ItemsRepeater.properties.h, tag winui3/release/1.8.4
+
+using System;
 using System.Linq;
 using Microsoft.UI.Xaml;
 
@@ -60,10 +64,23 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		#endregion
 
-		#region Animator (DP - With default callback)
+		#region ItemTransitionProvider (DP - With default callback)
+		public static DependencyProperty ItemTransitionProviderProperty { get; } = DependencyProperty.Register(
+			"ItemTransitionProvider", typeof(ItemCollectionTransitionProvider), typeof(ItemsRepeater), new FrameworkPropertyMetadata(default(ItemCollectionTransitionProvider), OnPropertyChanged));
+
+		public ItemCollectionTransitionProvider ItemTransitionProvider
+		{
+			get => (ItemCollectionTransitionProvider)GetValue(ItemTransitionProviderProperty);
+			set => SetValue(ItemTransitionProviderProperty, value);
+		}
+		#endregion
+
+		#region Animator (DP - DEPRECATED - Use ItemTransitionProvider instead)
+		[Obsolete("Animator is deprecated. Use ItemTransitionProvider instead.", false)]
 		public static DependencyProperty AnimatorProperty { get; } = DependencyProperty.Register(
 			"Animator", typeof(ElementAnimator), typeof(ItemsRepeater), new FrameworkPropertyMetadata(default(ElementAnimator), OnPropertyChanged));
 
+		[Obsolete("Animator is deprecated. Use ItemTransitionProvider instead.", false)]
 		public ElementAnimator Animator
 		{
 			get => (ElementAnimator)GetValue(AnimatorProperty);
