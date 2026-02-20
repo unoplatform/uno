@@ -885,6 +885,99 @@ function Test-McpModeWithRootsFallback {
     return $mcpTestPort
 }
 
+function Test-DevserverConfigFile {
+    param(
+        [string]$SlnDir,
+        [int]$DefaultPort,
+        [int]$MaxAllocatedPort,
+        [int]$MaxAttempts
+    )
+
+    Write-Log "Validating .unoplatform/devserverconfig.json solution discovery"
+
+    $configTestPort = if ($MaxAllocatedPort -ge 65534) { $DefaultPort + 4 } else { $MaxAllocatedPort + 1 }
+
+    # Find the .sln file inside $SlnDir
+    $slnFile = Get-ChildItem -Path $SlnDir -Filter '*.sln' -File | Select-Object -First 1
+    if (-not $slnFile) {
+        throw "No .sln file found in $SlnDir for devserverconfig.json test."
+    }
+
+    # Use the parent of $SlnDir as the working directory so the devserver
+    # must discover the solution via the config file, not by being inside
+    # the solution directory itself.
+    $parentDirectory = Split-Path $SlnDir -Parent
+    if ([string]::IsNullOrWhiteSpace($parentDirectory)) {
+        $parentDirectory = [System.IO.Path]::GetTempPath()
+    }
+
+    # Compute the relative path from the parent directory to the .sln file
+    $slnDirName = Split-Path $SlnDir -Leaf
+    $relativeSolutionPath = "$slnDirName/$($slnFile.Name)"
+
+    $configFolder = Join-Path $parentDirectory '.unoplatform'
+    $configFilePath = Join-Path $configFolder 'devserverconfig.json'
+    $configFolderCreated = $false
+
+    Push-Location $parentDirectory
+    $processContext = $null
+    $devserverStarted = $false
+
+    try {
+        # Create the .unoplatform/devserverconfig.json file
+        if (-not (Test-Path $configFolder)) {
+            New-Item -ItemType Directory -Path $configFolder -Force | Out-Null
+            $configFolderCreated = $true
+        }
+
+        $configContent = @{ SolutionPath = $relativeSolutionPath } | ConvertTo-Json -Compress
+        Set-Content -Path $configFilePath -Value $configContent -Encoding utf8
+        Write-Log "Created devserverconfig.json at $configFilePath with SolutionPath=$relativeSolutionPath"
+
+        # Start devserver from the parent directory (no --solution-dir)
+        $startArguments = Get-DevserverCliArguments -Arguments @('start', '--httpPort', $configTestPort.ToString([System.Globalization.CultureInfo]::InvariantCulture), '-l', 'trace')
+        $processContext = Start-DevserverProcessCapture -WorkingDirectory $parentDirectory -Executable $script:DevServerHostExecutable -Arguments $startArguments
+        $devserverStarted = $true
+
+        $success = Wait-ForHttpPortOpen -Port $configTestPort -Path '/' -MaxAttempts $MaxAttempts -ConnectTimeoutMs 2000
+        if (-not $success) {
+            $stdoutLog = if ($processContext -and (Test-Path $processContext.StdoutLogPath)) { Get-Content $processContext.StdoutLogPath -Raw -ErrorAction SilentlyContinue } else { "" }
+            $stderrLog = if ($processContext -and (Test-Path $processContext.StderrLogPath)) { Get-Content $processContext.StderrLogPath -Raw -ErrorAction SilentlyContinue } else { "" }
+            throw "Devserver did not open HTTP port $configTestPort via devserverconfig.json after $MaxAttempts attempts.`nSTDOUT:`n$stdoutLog`nSTDERR:`n$stderrLog"
+        }
+
+        Write-Log "Devserver started successfully using devserverconfig.json at $DevServerBaseUrl"
+    }
+    finally {
+        if ($devserverStarted) {
+            Stop-DevserverInDirectory -Directory $SlnDir
+        }
+
+        Stop-DevserverProcessCapture -Context $processContext
+
+        if ($processContext) {
+            foreach ($logPath in @($processContext.StdoutLogPath, $processContext.StderrLogPath)) {
+                if ($logPath -and (Test-Path $logPath)) {
+                    Remove-Item $logPath -ErrorAction SilentlyContinue
+                }
+            }
+        }
+
+        # Remove the config file and folder we created
+        if (Test-Path $configFilePath) {
+            Remove-Item $configFilePath -Force -ErrorAction SilentlyContinue
+        }
+        if ($configFolderCreated -and (Test-Path $configFolder)) {
+            Remove-Item $configFolder -Recurse -Force -ErrorAction SilentlyContinue
+        }
+
+        Pop-Location
+        Set-Location $SlnDir
+    }
+
+    return $configTestPort
+}
+
 function Stop-DevserverInDirectory {
     param([string]$Directory)
 
@@ -972,7 +1065,10 @@ try {
     $solutionDirTestPort = Test-DevserverSolutionDirSupport -SlnDir $slnDir -DefaultPort $defaultPort -BaselinePort $primaryPort -MaxAttempts $maxAttempts
     Test-McpModeWithoutSolutionDir -SlnDir $slnDir -DefaultPort $defaultPort -PrimaryPort $primaryPort -SolutionDirPort $solutionDirTestPort -MaxAttempts $maxAttempts
     $maxAllocatedPort = [Math]::Max($primaryPort, $solutionDirTestPort)
-    Test-McpModeWithRootsFallback -SlnDir $slnDir -DefaultPort $defaultPort -MaxAllocatedPort $maxAllocatedPort
+    $rootsFallbackPort = Test-McpModeWithRootsFallback -SlnDir $slnDir -DefaultPort $defaultPort -MaxAllocatedPort $maxAllocatedPort
+    $maxAllocatedPort = [Math]::Max($maxAllocatedPort, $rootsFallbackPort)
+    $configFileTestPort = Test-DevserverConfigFile -SlnDir $slnDir -DefaultPort $defaultPort -MaxAllocatedPort $maxAllocatedPort -MaxAttempts $maxAttempts
+    $maxAllocatedPort = [Math]::Max($maxAllocatedPort, $configFileTestPort)
     Test-CodexIntegration -SlnDir $slnDir
 
     $finalExitCode = 0
