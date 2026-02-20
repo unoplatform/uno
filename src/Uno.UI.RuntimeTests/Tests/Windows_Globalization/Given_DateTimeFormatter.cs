@@ -40,6 +40,7 @@ public class Given_DateTimeFormatter
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_SettingNumeralSystem_ShouldUpdateProperty()
 	{
 		var formatter = new DateTimeFormatter("longdate");
@@ -57,6 +58,7 @@ public class Given_DateTimeFormatter
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_CallingFormatWithTimeZone_ShouldThrowNotSupportedException()
 	{
 		var formatter = new DateTimeFormatter("longdate");
@@ -75,6 +77,7 @@ public class Given_DateTimeFormatter
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_FormattingDateVariants_ShouldProduceExpectedFormats()
 	{
 		var expectedResults = new Dictionary<string, string>

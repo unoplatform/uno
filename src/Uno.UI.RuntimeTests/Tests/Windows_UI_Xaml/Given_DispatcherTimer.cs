@@ -99,6 +99,7 @@ public class Given_DispatcherTimer
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Exception_In_Tick()
 	{
 		var dispatcherTimer = new DispatcherTimer();

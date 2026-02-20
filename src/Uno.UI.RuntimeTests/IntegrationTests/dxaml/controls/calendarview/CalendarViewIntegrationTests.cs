@@ -145,6 +145,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task TestSelection()
 		{
 			TestCleanupWrapper cleanup;
@@ -751,6 +752,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task TestViewMode()
 		{
 			TestCleanupWrapper cleanup;

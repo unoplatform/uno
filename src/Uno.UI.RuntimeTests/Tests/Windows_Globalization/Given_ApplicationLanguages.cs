@@ -13,6 +13,7 @@ public class Given_ApplicationLanguages
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void Test_Chinese_With_Script_Subtag()
 	{
 		ApplicationLanguages.PrimaryLanguageOverride = "zh-Hans-CN";
@@ -21,6 +22,7 @@ public class Given_ApplicationLanguages
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void Test_French_With_Script_Subtag()
 	{
 		ApplicationLanguages.PrimaryLanguageOverride = "fr-Latn-CA";

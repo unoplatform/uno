@@ -13,6 +13,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel.Email
 	public class Given_EmailManager
 	{
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_EmailMessage_Is_Null()
 		{
 			await Assert.ThrowsExactlyAsync<ArgumentNullException>(
