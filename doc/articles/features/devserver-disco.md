@@ -4,6 +4,10 @@ uid: Uno.Features.DevServerDisco
 
 # Dev Server Diagnostics (`disco`)
 
+<p align="center">
+  <img src="../Assets/features/devserver/disco-ball.gif" height="120" alt="disco ball" />
+</p>
+
 The `disco` command inspects your development environment and reports what it finds — without invoking MSBuild. It is the fastest way to verify that the Dev Server can locate all the components it needs: the Uno SDK, the DevServer host process, add-ins, and the .NET runtime.
 
 ## When to use it
