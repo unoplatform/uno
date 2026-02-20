@@ -287,7 +287,7 @@ Filter for these tags to focus on Uno Platform logs:
 
 1. **Filter to relevant logs** before sharing:
 
-   - Focus on the timeframe when the issue occurred
+   - Focus on the time frame when the issue occurred
    - Include 10-20 lines before and after the error
    - Remove sensitive information (API keys, user data, etc.)
 
