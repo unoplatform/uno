@@ -87,41 +87,35 @@ namespace Windows.UI.Tests.Enterprise
 
 			await TestServices.WindowHelper.WaitForIdle();
 
-			//UNO TODO: Implement TopAppBar
 			// Verify enter/leave for top appbar.
-			//	LOG_OUTPUT(L"Verify enter/leave for top appbar.");
-			//	RunOnUIThread([&]()
+			LOG_OUTPUT("Verify enter/leave for top appbar.");
+			await RunOnUIThread(() =>
+			{
+				page.TopAppBar = appBar;
+				appBar.IsOpen = true;
+			});
+			await hasLoadedEvent.WaitForDefault();
 
-			//{
-			//		page->TopAppBar = appBar;
-			//		appBar->IsOpen = true;
-			//	});
-			//	hasLoadedEvent->WaitForDefault();
+			await RunOnUIThread(() =>
+			{
+				page.TopAppBar = null;
+			});
+			await hasUnloadedEvent.WaitForDefault();
 
-			//	RunOnUIThread([&]()
-
-			//{
-			//		page->TopAppBar = nullptr;
-			//	});
-			//	hasUnloadedEvent->WaitForDefault();
-
-			//UNO TODO: Implement BottomAppBar
 			// Verify enter/leave for bottom appbar.
-			//LOG_OUTPUT(L"Verify enter/leave for bottom appbar.");
-			//RunOnUIThread([&]()
+			LOG_OUTPUT("Verify enter/leave for bottom appbar.");
+			await RunOnUIThread(() =>
+			{
+				page.BottomAppBar = appBar;
+				appBar.IsOpen = true;
+			});
+			await hasLoadedEvent.WaitForDefault();
 
-			//{
-			//	page->BottomAppBar = appBar;
-			//	appBar->IsOpen = true;
-			//});
-			//hasLoadedEvent->WaitForDefault();
-
-			//RunOnUIThread([&]()
-
-			//{
-			//	page->BottomAppBar = nullptr;
-			//});
-			//hasUnloadedEvent->WaitForDefault();
+			await RunOnUIThread(() =>
+			{
+				page.BottomAppBar = null;
+			});
+			await hasUnloadedEvent.WaitForDefault();
 
 			// Verify enter/leave for inline appbar.
 			LOG_OUTPUT("Verify enter/leave for inline appbar.");
@@ -166,56 +160,35 @@ namespace Windows.UI.Tests.Enterprise
 			});
 			await WindowHelper.WaitForIdle();
 
-			//UNO TODO: Implement TapAppBar
 			// Verify open/close for top appbar.
-			//LOG_OUTPUT(L"Verify open/close for top appbar.");
-			//RunOnUIThread([&]()
+			LOG_OUTPUT("Verify open/close for top appbar.");
+			await RunOnUIThread(() =>
+			{
+				page.TopAppBar = appBar;
+				appBar.IsOpen = true;
+			});
+			await openedEvent.WaitForDefault();
 
-			//{
-			//		page->TopAppBar = appBar;
-			//		appBar->IsOpen = true;
-			//	});
-			//	openedEvent->WaitForDefault();
+			await RunOnUIThread(() => appBar.IsOpen = false);
+			await closedEvent.WaitForDefault();
 
-			//	RunOnUIThread([&]()
+			await RunOnUIThread(() => page.TopAppBar = null);
+			await WindowHelper.WaitForIdle();
 
-			//{
-			//	appBar->IsOpen = false;
-			//});
-			//closedEvent->WaitForDefault();
+			// Verify open/close for bottom appbar.
+			LOG_OUTPUT("Verify open/close for bottom appbar.");
+			await RunOnUIThread(() =>
+			{
+				page.BottomAppBar = appBar;
+				appBar.IsOpen = true;
+			});
+			await openedEvent.WaitForDefault();
 
-			//RunOnUIThread([&]()
+			await RunOnUIThread(() => appBar.IsOpen = false);
+			await closedEvent.WaitForDefault();
 
-			//{
-			//		page->TopAppBar = nullptr;
-			//	});
-			//	TestServices::WindowHelper->WaitForIdle();
-
-			//UNO TODO: Implement BottomAppBar
-			//	// Verify open/close for bottom appbar.
-			//	LOG_OUTPUT(L"Verify open/close for bottom appbar.");
-			//	RunOnUIThread([&]()
-
-			//{
-			//	page->BottomAppBar = appBar;
-			//	appBar->IsOpen = true;
-			//});
-			//openedEvent->WaitForDefault();
-
-			//RunOnUIThread([&]()
-
-			//{
-			//		appBar->IsOpen = false;
-			//	});
-			//	closedEvent->WaitForDefault();
-
-			//	RunOnUIThread([&]()
-
-			//{
-			//		page->BottomAppBar = nullptr;
-			//	});
-			//	TestServices::WindowHelper->WaitForIdle();
-			//}
+			await RunOnUIThread(() => page.BottomAppBar = null);
+			await WindowHelper.WaitForIdle();
 
 			// Verify open/close for inline appbar.
 			LOG_OUTPUT("Verify open/close for inline appbar.");
@@ -234,7 +207,6 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("Validates that Top and Bottom (and not Inline) AppBars open/close in response to ContextMenu key.")]
-		[Ignore("KeyboardHelper and Top/Bottom AppBar missing implementation")]
 		public async Task CanOpenAndCloseUsingKeyboard()
 		{
 			TestCleanupWrapper cleanup;
@@ -262,9 +234,8 @@ namespace Windows.UI.Tests.Enterprise
 
 			await RunOnUIThread(() =>
 			{
-				//TODO: TopAppBar/BottomAppBar not implemented
-				//topAppBar = page.TopAppBar;
-				//bottomAppBar = page.BottomAppBar;
+				topAppBar = page.TopAppBar;
+				bottomAppBar = page.BottomAppBar;
 				inlineAppBar = ((Panel)page.Content).FindName("inlineAppBar") as AppBar;
 			});
 			await WindowHelper.WaitForIdle();
@@ -288,7 +259,6 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("Validates that only non-sticky AppBars can be closed by using the Escape key.")]
-		[Ignore("KeyboardHelper and Top/Bottom AppBar missing implementation")]
 		public async Task CanCloseNonStickyAppBarUsingEscapeKey()
 		{
 			TestCleanupWrapper cleanup;
@@ -334,16 +304,13 @@ namespace Windows.UI.Tests.Enterprise
 				RoutedEventHandler gotFocusHandler = (s, e) => focusSequence += "[" + ((FrameworkElement)e.OriginalSource).Tag + "]";
 
 				pageGotFocusRegistration.Attach(page, gotFocusHandler);
-				//TODO: TopAppBar/BottomAppBar not implemented
-				//topAppBarGotFocusRegistration.Attach(page.TopAppBar, gotFocusHandler);
-				//bottomAppBarGotFocusRegistration.Attach(page.BottomAppBar, gotFocusHandler);
+				topAppBarGotFocusRegistration.Attach(page.TopAppBar, gotFocusHandler);
+				bottomAppBarGotFocusRegistration.Attach(page.BottomAppBar, gotFocusHandler);
 
-				//TODO: TopAppBar not implemented
-				//stickyTopAppBar = page.TopAppBar;
+				stickyTopAppBar = page.TopAppBar;
 				stickyTopAppBar.IsSticky = true;
 
-				//TODO: BottomAppBar not implemented
-				//bottomAppBar = page.BottomAppBar;
+				bottomAppBar = page.BottomAppBar;
 
 				var panel = (Panel)page.Content;
 				inlineAppBar = (AppBar)panel.FindName("inlineAppBar");
@@ -473,9 +440,8 @@ namespace Windows.UI.Tests.Enterprise
 				bottomClosedRegistration.Attach(bottomAppBar, (s, e) => bottomClosedEvent.Set());
 
 				page = WindowHelper.SetupSimulatedAppPage();
-				//TODO: TopAppBar/BottomAppBar not implemented
-				//page.TopAppBar = topAppBar;
-				//page.BottomAppBar = bottomAppBar;
+				page.TopAppBar = topAppBar;
+				page.BottomAppBar = bottomAppBar;
 
 				page.Focus(FocusState.Keyboard);
 			});
@@ -529,29 +495,26 @@ namespace Windows.UI.Tests.Enterprise
 
 			var page = await SetupTopBottomInlineAppBarsPage();
 
-			//AppBar topAppBar = null;
-			//AppBar bottomAppBar = null;
+			AppBar topAppBar = null;
+			AppBar bottomAppBar = null;
 			AppBar inlineAppBar = null;
 
 			await RunOnUIThread(() =>
 			{
-				//TODO: TopAppBar/BottomAppBar not implemented
-				//topAppBar = page.TopAppBar;
-				//bottomAppBar = page.BottomAppBar;
+				topAppBar = page.TopAppBar;
+				bottomAppBar = page.BottomAppBar;
 				inlineAppBar = (AppBar)((Panel)page.Content).FindName("inlineAppBar");
 			});
 			await WindowHelper.WaitForIdle();
 
-			//UNO TODO: Implement Top/Bottom AppBars
-			//CanOpenMinimalAppBarUsingMouseHelper(topAppBar);
-			//CanOpenMinimalAppBarUsingMouseHelper(bottomAppBar);
+			await CanOpenMinimalAppBarUsingMouseHelper(topAppBar);
+			await CanOpenMinimalAppBarUsingMouseHelper(bottomAppBar);
 			await CanOpenMinimalAppBarUsingMouseHelper(inlineAppBar);
 		}
 
 		[TestMethod]
 		[Description("Validates tapping on the '...' button opens both AppBars if at least one is closed, and closes them if they're both open.")]
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
-		[Ignore("BottomAppBar not implemented")]
 		public async Task CanOpenAndCloseUsingExpandButton()
 		{
 			TestCleanupWrapper cleanup;
@@ -567,9 +530,8 @@ namespace Windows.UI.Tests.Enterprise
 
 			await RunOnUIThread(() =>
 			{
-				//TODO: BottomAppBar not implemented
-				//bottomOpenedRegistration.Attach(page.BottomAppBar, (s, e) => bottomOpenedEvent.Set());
-				//bottomClosedRegistration.Attach(page.BottomAppBar, (s, e) => bottomClosedEvent.Set());
+				bottomOpenedRegistration.Attach(page.BottomAppBar, (s, e) => bottomOpenedEvent.Set());
+				bottomClosedRegistration.Attach(page.BottomAppBar, (s, e) => bottomClosedEvent.Set());
 
 				expandButton = (Button)TreeHelper.GetVisualChildByName(page.BottomAppBar, "ExpandButton");
 			});
@@ -591,7 +553,6 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("Validates that Tab navigation works on AppBar child items.")]
-		[Ignore("BottomAppBar/TopAppBar not implemented")]
 		public async Task CanTabThroughChildItems()
 		{
 			TestCleanupWrapper cleanup;
@@ -613,8 +574,7 @@ namespace Windows.UI.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				page = WindowHelper.SetupSimulatedAppPage();
-				//TODO: TopAppBar not implemented
-				//page.TopAppBar = new AppBar();
+				page.TopAppBar = new AppBar();
 				page.TopAppBar.IsOpen = true;
 				page.TopAppBar.IsSticky = true;
 
@@ -634,8 +594,7 @@ namespace Windows.UI.Tests.Enterprise
 					topGotFocusRegistrations.Add(gotFocusRegistration);
 				}
 
-				//TODO: BottomAppBar not implemented
-				//page.BottomAppBar = new AppBar();
+				page.BottomAppBar = new AppBar();
 				page.BottomAppBar.IsOpen = true;
 				page.BottomAppBar.IsSticky = true;
 
@@ -719,30 +678,27 @@ namespace Windows.UI.Tests.Enterprise
 				loadedRegistration.Attach(appBar, (s, e) => appBarLoadedEvent.Set());
 
 				page = WindowHelper.SetupSimulatedAppPage();
-				//TODO: TopAppBar not implemented
-				//page.TopAppBar = appBar;
+				page.TopAppBar = appBar;
 			});
 			await appBarLoadedEvent.WaitForDefault();
 
 			// Wait for edge theme animation to finish.
 			await WindowHelper.WaitForIdle();
 
-			//UNO TODO: Implement TopAppBar
-			//LOG_OUTPUT("Validate clicking a button in the top app bar.");
-			//TestServices.InputHelper.Tap(button);
-			//await clickedEvent.WaitForDefault();
+			LOG_OUTPUT("Validate clicking a button in the top app bar.");
+			TestServices.InputHelper.Tap(button);
+			await clickedEvent.WaitForDefault();
 
-			//UNO TODO: Implement BottomAppBar
-			//LOG_OUTPUT("Validate clicking a button in the bottom app bar.");
-			//await RunOnUIThread(() =>
-			//{
-			//	page.TopAppBar = null;
-			//	page.BottomAppBar = appBar;
-			//});
-			//await WindowHelper.WaitForIdle();
+			LOG_OUTPUT("Validate clicking a button in the bottom app bar.");
+			await RunOnUIThread(() =>
+			{
+				page.TopAppBar = null;
+				page.BottomAppBar = appBar;
+			});
+			await WindowHelper.WaitForIdle();
 
-			//TestServices.InputHelper.Tap(button);
-			//await clickedEvent.WaitForDefault();
+			TestServices.InputHelper.Tap(button);
+			await clickedEvent.WaitForDefault();
 
 			LOG_OUTPUT("Validate clicking a button in an inline app bar.");
 			await RunOnUIThread(() =>
@@ -758,7 +714,6 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("Validates that the AppBar.ClosedDisplayMode property is accessible and has the correct default value in Threshold.")]
-		[Ignore("TopAppBar not implemented")]
 		public async Task CanGetAndSetClosedDisplayMode()
 		{
 			TestCleanupWrapper cleanup;
@@ -769,12 +724,10 @@ namespace Windows.UI.Tests.Enterprise
 
 			await RunOnUIThread(() =>
 			{
-				//TODO: TopAppBar not implemented
-				//VERIFY_ARE_EQUAL(page.TopAppBar.ClosedDisplayMode, AppBarClosedDisplayMode.Minimal);
+				VERIFY_ARE_EQUAL(page.TopAppBar.ClosedDisplayMode, AppBarClosedDisplayMode.Minimal);
 
-				//TODO: TopAppBar not implemented
-				//page.TopAppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Compact;
-				//VERIFY_ARE_EQUAL(page.TopAppBar.ClosedDisplayMode, AppBarClosedDisplayMode.Compact);
+				page.TopAppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Compact;
+				VERIFY_ARE_EQUAL(page.TopAppBar.ClosedDisplayMode, AppBarClosedDisplayMode.Compact);
 			});
 		}
 
@@ -842,8 +795,7 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("Validates that setting ClosedDisplayMode to Hidden removes the AppBar from the visual tree.")]
-		[Ignore("TopAppBar not implemented")]
-		public async Task CanHideAppBarWithHiddenClosedDisplayMode()
+				public async Task CanHideAppBarWithHiddenClosedDisplayMode()
 		{
 			TestCleanupWrapper cleanup;
 
@@ -852,8 +804,7 @@ namespace Windows.UI.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				LOG_OUTPUT("Set TopAppBar.ClosedDisplayMode to Hidden.");
-				//TODO: TopAppBar not implemented
-				//page.TopAppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Hidden;
+				page.TopAppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Hidden;
 			});
 			await WindowHelper.WaitForIdle();
 
@@ -862,8 +813,7 @@ namespace Windows.UI.Tests.Enterprise
 				VERIFY_ARE_EQUAL(page.TopAppBar.ActualHeight, 0);
 
 				LOG_OUTPUT("Now set TopAppBar.ClosedDisplayMode back to Minimal.");
-				//TODO: TopAppBar not implemented
-				//page.TopAppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Minimal;
+				page.TopAppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Minimal;
 			});
 			await WindowHelper.WaitForIdle();
 
@@ -916,8 +866,7 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("Validates the focus stays on the current focused element and does not shift to the AppBar when a closed AppBar is added dynamically.")]
-		[Ignore("BottomAppBar not implemented")]
-		public async Task ValidateFocusShiftWhenClosedAppBarIsAdded()
+				public async Task ValidateFocusShiftWhenClosedAppBarIsAdded()
 		{
 			TestCleanupWrapper cleanup;
 
@@ -936,8 +885,7 @@ namespace Windows.UI.Tests.Enterprise
 			// Add Closed Compact AppBar dynamically.
 			await RunOnUIThread(() =>
 			{
-				//TODO: BottomAppBar not implemented
-				//page.BottomAppBar = appBar;
+				page.BottomAppBar = appBar;
 			});
 			await WindowHelper.WaitForIdle();
 
@@ -951,8 +899,7 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("Validates the focus shift between last focused element and an opened AppBar when it is added dynamically.")]
-		[Ignore("BottomAppBar not implemented")]
-		public async Task ValidateFocusShiftWhenOpenedAppBarIsAdded()
+				public async Task ValidateFocusShiftWhenOpenedAppBarIsAdded()
 		{
 			TestCleanupWrapper cleanup;
 
@@ -972,8 +919,7 @@ namespace Windows.UI.Tests.Enterprise
 			// Add Closed Compact AppBar dynamically.
 			await RunOnUIThread(() =>
 			{
-				//TODO: BottomAppBar not implemented
-				//page.BottomAppBar = appBar;
+				page.BottomAppBar = appBar;
 			});
 			await WindowHelper.WaitForIdle();
 
@@ -988,8 +934,7 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("Validates the focus shift between last focused element and the appBarButton of a closed AppBar when it is opened/closed.")]
-		[Ignore("BottomAppBar not implemented")]
-		public async Task ValidateFocusShiftWhenClosedUnfocusedAppBarIsOpenedAndClosed()
+				public async Task ValidateFocusShiftWhenClosedUnfocusedAppBarIsOpenedAndClosed()
 		{
 			TestCleanupWrapper cleanup;
 
@@ -1009,8 +954,7 @@ namespace Windows.UI.Tests.Enterprise
 			// Add Closed Compact AppBar dynamically.
 			await RunOnUIThread(() =>
 			{
-				//TODO: BottomAppBar not implemented
-				//page.BottomAppBar = appBar;
+				page.BottomAppBar = appBar;
 			});
 			await WindowHelper.WaitForIdle();
 
@@ -1041,8 +985,7 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("Validates the focus stays on the AppBar if it was was already there before the AppBar was opened/closed.")]
-		[Ignore("BottomAppBar not implemented")]
-		public async Task ValidateFocusShiftWhenClosedFocusedAppBarIsOpenedAndClosed()
+				public async Task ValidateFocusShiftWhenClosedFocusedAppBarIsOpenedAndClosed()
 		{
 			TestCleanupWrapper cleanup;
 
@@ -1053,8 +996,7 @@ namespace Windows.UI.Tests.Enterprise
 			// Add Closed Compact AppBar dynamically.
 			await RunOnUIThread(() =>
 			{
-				//TODO: BottomAppBar not implemented
-				//page.BottomAppBar = appBar;
+				page.BottomAppBar = appBar;
 			});
 			await WindowHelper.WaitForIdle();
 
@@ -1092,8 +1034,7 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("Validates that resizing the AppBar after opening and closing causes its width to properly get updated.")]
-		[Ignore("BottomAppBar not implemented")]
-		public async Task CanResizeAppBarAfterOpeningAndClosing()
+				public async Task CanResizeAppBarAfterOpeningAndClosing()
 		{
 			TestCleanupWrapper cleanup;
 
@@ -1265,8 +1206,7 @@ namespace Windows.UI.Tests.Enterprise
 		[TestMethod]
 		[Description("Validates that setting AppBar.ClosedDisplayMode causes the tab experience to be different when closed depending on the visible items that exist.")]
 		[TestProperty("Hosting:Mode", "UAP")]
-		[Ignore("TopAppBar/BottomAppBar not implemented")]
-		public async Task CanClosedDisplayModesAffectTabbingWhenClosed()
+				public async Task CanClosedDisplayModesAffectTabbingWhenClosed()
 		{
 			TestCleanupWrapper cleanup;
 			Page rootPage = null;
@@ -1322,9 +1262,8 @@ namespace Windows.UI.Tests.Enterprise
 				RoutedEventHandler gotFocusHandler = (s, e) => focusSequence = "[" + ((FrameworkElement)e.OriginalSource).Tag + "]";
 
 				pageGotFocusRegistration.Attach(rootPage, gotFocusHandler);
-				//TODO: TopAppBar/BottomAppBar not implemented
-				//topAppBarGotFocusRegistration.Attach(rootPage.TopAppBar, gotFocusHandler);
-				//bottomAppBarGotFocusRegistration.Attach(rootPage.BottomAppBar, gotFocusHandler);
+				topAppBarGotFocusRegistration.Attach(rootPage.TopAppBar, gotFocusHandler);
+				bottomAppBarGotFocusRegistration.Attach(rootPage.BottomAppBar, gotFocusHandler);
 
 				SetWindowContent(rootPage);
 			});
@@ -1371,8 +1310,7 @@ namespace Windows.UI.Tests.Enterprise
 		[TestMethod]
 		[Description("Validates that setting AppBar.ClosedDisplayMode to Hidden and IsSticky to false on all AppBars causes the WinBlue tabbing experience to occur.")]
 		[TestProperty("Hosting:Mode", "UAP")]
-		[Ignore("TopAppBar/BottomAppBar not implemented")]
-		public async Task ValidateWinBlueTabbingIsPreserved()
+				public async Task ValidateWinBlueTabbingIsPreserved()
 		{
 			TestCleanupWrapper cleanup;
 			Page rootPage = null;
@@ -1428,9 +1366,8 @@ namespace Windows.UI.Tests.Enterprise
 				RoutedEventHandler gotFocusHandler = (s, e) => focusSequence = "[" + ((FrameworkElement)e.OriginalSource).Tag + "]";
 
 				pageGotFocusRegistration.Attach(rootPage, gotFocusHandler);
-				//TODO: TopAppBar/BottomAppBar not implemented
-				//topAppBarGotFocusRegistration.Attach(rootPage.TopAppBar, gotFocusHandler);
-				//bottomAppBarGotFocusRegistration.Attach(rootPage.BottomAppBar, gotFocusHandler);
+				topAppBarGotFocusRegistration.Attach(rootPage.TopAppBar, gotFocusHandler);
+				bottomAppBarGotFocusRegistration.Attach(rootPage.BottomAppBar, gotFocusHandler);
 
 				SetWindowContent(rootPage);
 			});
@@ -1444,12 +1381,10 @@ namespace Windows.UI.Tests.Enterprise
 
 				topExpandButton.Tag = "TEB";
 				bottomExpandButton.Tag = "BEB";
-				//TODO: TopAppBar not implemented
-				//rootPage.TopAppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Hidden;
+				rootPage.TopAppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Hidden;
 				rootPage.TopAppBar.IsSticky = false;
 				rootPage.TopAppBar.IsOpen = true;
-				//TODO: BottomAppBar not implemented
-				//rootPage.BottomAppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Hidden;
+				rootPage.BottomAppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Hidden;
 				rootPage.BottomAppBar.IsSticky = false;
 				rootPage.BottomAppBar.IsOpen = true;
 			});
@@ -1475,8 +1410,7 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("Validates that AppBars can be closed by pressing the Back button.")]
-		[Ignore("TopAppBar/BottomAppBar not implemented")]
-		public async Task CanCloseAppBarUsingBackButton()
+				public async Task CanCloseAppBarUsingBackButton()
 		{
 			TestCleanupWrapper cleanup;
 
@@ -1493,16 +1427,14 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("Validates that AppBars can be closed by pressing the B button when using a gamepad.")]
-		[Ignore("TopAppBar/BottomAppBar not implemented")]
-		public async Task CanCloseAppBarUsingGamepadB()
+				public async Task CanCloseAppBarUsingGamepadB()
 		{
 			await CanCloseAppBarUsingDevice(InputDevice.Gamepad);
 		}
 
 		[TestMethod]
 		[Description("Validates that AppBars can be closed by pressing the Escape keyboard key.")]
-		[Ignore("TopAppBar/BottomAppBar not implemented")]
-		public async Task CanCloseAppBarUsingEsc()
+				public async Task CanCloseAppBarUsingEsc()
 		{
 			await CanCloseAppBarUsingDevice(InputDevice.Keyboard);
 		}
@@ -1542,8 +1474,7 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("When the AppBar is Disabled, the expand button should be greyed out")]
-		[Ignore("BottomAppBar not implemented")]
-		public async Task ValidateExpandButtonVisualInDisabledState()
+				public async Task ValidateExpandButtonVisualInDisabledState()
 		{
 			TestCleanupWrapper cleanup;
 
@@ -1557,8 +1488,7 @@ namespace Windows.UI.Tests.Enterprise
 			{
 				appBar = new AppBar();
 				page = WindowHelper.SetupSimulatedAppPage();
-				//TODO: BottomAppBar not implemented
-				//page.BottomAppBar = appBar;
+				page.BottomAppBar = appBar;
 
 				expectedBrushEnabled = (Brush)Application.Current.Resources.Lookup("SystemControlForegroundBaseHighBrush");
 				expectedBrushDisabled = (Brush)Application.Current.Resources.Lookup("SystemControlDisabledBaseMediumLowBrush");
@@ -1638,8 +1568,8 @@ namespace Windows.UI.Tests.Enterprise
 
 			double expectedAppBarWidth = 400;
 
-			double expectedAppBarCompactClosedHeight = 48;
-			double expectedAppBarCompactOpenHeight = 48;
+			double expectedAppBarCompactClosedHeight = 40;
+			double expectedAppBarCompactOpenHeight = 40;
 
 			double expectedAppBarMinimalClosedHeight = 24;
 			double expectedAppBarMinimalOpenHeight = 24;
@@ -1747,7 +1677,7 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("Validates the behavior of the LightDismissOverlayMode property when set on Top/Bottom app bars.")]
-		[Ignore("TopAppBar/BottomAppBar not implemented. TestServices.Utilities.GetPopupOverlayElement not implemented")]
+		[Ignore("TestServices.Utilities.GetPopupOverlayElement not implemented")]
 		public async Task ValidateLightDismissOverlayModeForTopBottomAppBars()
 		{
 			TestCleanupWrapper cleanup;
@@ -1760,9 +1690,8 @@ namespace Windows.UI.Tests.Enterprise
 				var bottomAppBar = new AppBar();
 
 				page = WindowHelper.SetupSimulatedAppPage();
-				//TODO: TopAppBar/BottomAppBar not implemented
-				//page.TopAppBar = topAppBar;
-				//page.BottomAppBar = bottomAppBar;
+				page.TopAppBar = topAppBar;
+				page.BottomAppBar = bottomAppBar;
 
 				SetWindowContent(page);
 			});
@@ -1887,9 +1816,8 @@ namespace Windows.UI.Tests.Enterprise
 				bottomAppBar.IsOpen = true;
 
 				page = WindowHelper.SetupSimulatedAppPage();
-				//TODO: TopAppBar/BottomAppBar not implemented
-				//page.TopAppBar = topAppBar;
-				//page.BottomAppBar = bottomAppBar;
+				page.TopAppBar = topAppBar;
+				page.BottomAppBar = bottomAppBar;
 
 				SetWindowContent(page);
 			});
@@ -2037,7 +1965,7 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("Validates that the brush used for the overlay for top/bottom app bars matches the 'AppBarLightDismissOverlayBackground' resource.")]
-		[Ignore("TopAppBar not implemented. GetPopupOverlayElement not implemented.")]
+		[Ignore("GetPopupOverlayElement not implemented.")]
 		public async Task ValidateOverlayBrushForTopBottomAppBars()
 		{
 			TestCleanupWrapper cleanup;
@@ -2051,8 +1979,7 @@ namespace Windows.UI.Tests.Enterprise
 				topAppBar.IsOpen = true;
 
 				page = WindowHelper.SetupSimulatedAppPage();
-				//TODO: TopAppBar not implemented
-				//page.TopAppBar = topAppBar;
+				page.TopAppBar = topAppBar;
 
 				SetWindowContent(page);
 			});
@@ -2201,9 +2128,8 @@ namespace Windows.UI.Tests.Enterprise
 
 			await RunOnUIThread(() =>
 			{
-				//TODO: TopAppBar/BottomAppBar not implemented
-				//topAppBar = page.TopAppBar;
-				//bottomAppBar = page.BottomAppBar;
+				topAppBar = page.TopAppBar;
+				bottomAppBar = page.BottomAppBar;
 				inlineAppBar = (AppBar)((Panel)page.Content).FindName("inlineAppBar");
 			});
 			await WindowHelper.WaitForIdle();
@@ -2341,13 +2267,11 @@ namespace Windows.UI.Tests.Enterprise
 			{
 				page = WindowHelper.SetupSimulatedAppPage();
 
-				//TODO: TopAppBar not implemented
-				//page.TopAppBar = new AppBar();
+				page.TopAppBar = new AppBar();
 
 				if (setClosedDisplayModeValues)
 				{
-					//TODO: TopAppBar not implemented
-					//page.TopAppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Minimal;
+					page.TopAppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Minimal;
 				}
 
 				var topStackPanel = new StackPanel();
@@ -2362,13 +2286,11 @@ namespace Windows.UI.Tests.Enterprise
 				topButton1.Label = "Second button";
 				topStackPanel.Children.Add(topButton2);
 
-				//TODO: BottomAppBar not implemented
-				//page.BottomAppBar = new AppBar();
+				page.BottomAppBar = new AppBar();
 
 				if (setClosedDisplayModeValues)
 				{
-					//TODO: BottomAppBar not implemented
-					//page.BottomAppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Compact;
+					page.BottomAppBar.ClosedDisplayMode = AppBarClosedDisplayMode.Compact;
 				}
 
 				var bottomStackPanel = new StackPanel();
@@ -2439,9 +2361,8 @@ namespace Windows.UI.Tests.Enterprise
 					</StackPanel>");
 
 				page = WindowHelper.SetupSimulatedAppPage();
-				//TODO: TopAppBar/BottomAppBar not implemented
-				//page.TopAppBar = topAppBar;
-				//page.BottomAppBar = bottomAppBar;
+				page.TopAppBar = topAppBar;
+				page.BottomAppBar = bottomAppBar;
 				SetPageContent(panel, page);
 			});
 			await WindowHelper.WaitForIdle();

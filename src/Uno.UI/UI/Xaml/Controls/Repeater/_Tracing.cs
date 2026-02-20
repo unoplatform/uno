@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -53,7 +54,17 @@ namespace Microsoft.UI.Xaml.Controls
 			=> Console.WriteLine(text);
 
 		[Conditional("DEBUG")]
-		public static void MUX_ASSERT(bool assertion, string message = null)
+		public static void MUX_ASSERT([DoesNotReturnIf(false)] bool assertion, string message = null)
 			=> global::System.Diagnostics.Debug.Assert(assertion, message);
+
+		// AppBar tracing stubs - TODO Uno: Wire to ETW/tracing when available
+		public static bool EventEnabledAppBarOpenBegin() => false;
+		public static bool EventEnabledAppBarOpenEnd() => false;
+		public static bool EventEnabledAppBarClosedBegin() => false;
+		public static bool EventEnabledAppBarClosedEnd() => false;
+		public static void TraceAppBarOpenBegin(uint mode) { }
+		public static void TraceAppBarOpenEnd() { }
+		public static void TraceAppBarClosedBegin(uint mode) { }
+		public static void TraceAppBarClosedEnd() { }
 	}
 }
