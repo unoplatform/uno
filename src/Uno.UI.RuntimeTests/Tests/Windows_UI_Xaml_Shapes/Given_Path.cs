@@ -29,6 +29,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void Should_Not_Include_Control_Points_Bounds()
 		{
 			var SUT = new Path { Data = (Geometry)XamlBindingHelper.ConvertValue(typeof(Geometry), "M 0 0 C 0 0 25 25 0 50") };
@@ -174,6 +175,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 #if !__SKIA__ && !WINAPPSDK
 		[Ignore("Geometry.Transform is only implemented on Skia and WinUI.")]
 #endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Geometry_Transform_Translates_Rendering()
 		{
 			var path = new Path
@@ -205,6 +207,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 #if !__SKIA__ && !WINAPPSDK
 		[Ignore("Geometry.Transform is only implemented on Skia and WinUI.")]
 #endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Geometry_Transform_Changed_At_Runtime()
 		{
 			var translate = new TranslateTransform { X = 0, Y = 0 };

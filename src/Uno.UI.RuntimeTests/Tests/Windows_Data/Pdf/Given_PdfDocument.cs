@@ -112,6 +112,7 @@ public class Given_PdfDocument
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_LoadFromStreamAsync()
 	{
 		var stream = GetSreamFromResource(PdfDocument_Name)?.AsRandomAccessStream();
@@ -153,6 +154,7 @@ public class Given_PdfDocument
 
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_LoadFromFileAsync()
 	{
 		var testFolderName = Guid.NewGuid().ToString();

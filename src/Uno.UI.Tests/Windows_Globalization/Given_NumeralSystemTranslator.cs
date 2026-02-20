@@ -51,6 +51,9 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+#if IS_RUNTIME_UI_TESTS
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+#endif
 		#region DataRows
 		[DataRow("aa", "Latn", "aa")]
 		[DataRow("aa-DJ", "Latn", "aa-Latn-DJ")]

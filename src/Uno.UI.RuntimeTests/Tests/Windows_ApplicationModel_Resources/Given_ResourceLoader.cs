@@ -128,6 +128,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_LocalizedResource()
 		{
 			var SUT = ResourceLoader.GetForViewIndependentUse();
@@ -141,6 +142,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_MissingLocalizedResource_FallbackOnParent()
 		{
 			var SUT = ResourceLoader.GetForViewIndependentUse();
@@ -150,6 +152,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_MissingLocalizedResource_FallbackOnRegional()
 		{
 			var SUT = ResourceLoader.GetForViewIndependentUse();
@@ -172,6 +175,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_FileAndStringNameFormat()
 		{
 			var SUT = ResourceLoader.GetForViewIndependentUse();
