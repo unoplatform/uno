@@ -6,8 +6,5 @@
 	},
 	"tools": {
 		"dotnet": "9.0.100"
-	},
-	"msbuild-sdks": {
-		"MSBuild.Sdk.Extras": "3.0.44"
 	}
 }
