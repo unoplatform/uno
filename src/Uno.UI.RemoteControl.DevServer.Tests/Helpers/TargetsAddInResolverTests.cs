@@ -430,7 +430,7 @@ public class TargetsAddInResolverTests
 
 		// Act & Assert — exception propagates so callers can trigger MSBuild fallback
 		var act = () => resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [_tempDir]);
-		act.Should().Throw<JsonReaderException>();
+		act.Should().Throw<JsonException>();
 	}
 
 	[TestMethod]
