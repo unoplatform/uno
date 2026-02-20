@@ -38,6 +38,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		private int _runningChildren;
 		private bool _hasFillingChildren;
 		private bool _hasScheduledCompletion;
+		private bool _isReversing;
 
 		public Storyboard()
 		{
@@ -109,6 +110,47 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			Play();
 		}
 
+		/// <summary>
+		/// Play all child animations in reverse by calling BeginReversed() on each.
+		/// This properly handles animations with null From/To values and By property.
+		/// </summary>
+		private void PlayReversed()
+		{
+			_runningChildren = Children?.Count ?? 0;
+			if (_runningChildren > 0)
+			{
+				for (int i = 0; i < Children.Count; i++)
+				{
+					ITimeline child = Children[i];
+
+					DisposeChildRegistrations(child);
+
+					child.RegisterListener(this);
+
+					// For animations with AutoReverse=true, the animation is symmetric
+					// (it ends at its starting value). Playing it forward again produces
+					// the same visual result as "reversing" it, and correctly ends at
+					// the starting value. This matches WinUI behavior.
+					// For animations without AutoReverse, we need BeginReversed() to
+					// properly reverse the direction and end at the starting value.
+					if (Children[i].AutoReverse)
+					{
+						child.Begin();
+					}
+					else
+					{
+						child.BeginReversed();
+					}
+				}
+			}
+			else
+			{
+				// No children - complete immediately
+				State = TimelineState.Stopped;
+				OnCompleted();
+			}
+		}
+
 		public void Begin()
 		{
 			if (_trace.IsEnabled)
@@ -126,6 +168,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			State = TimelineState.Active;
 			_hasFillingChildren = false;
 			_replayCount = 1;
+			_isReversing = false; // Reset reversing state on Begin
 			_activeDuration.Restart();
 
 			Play();
@@ -284,13 +327,58 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 			if (Children != null)
 			{
+				// If Storyboard has AutoReverse and we're in forward phase, children should
+				// skip to their reversed fill state (starting value)
+				var useReversedFill = AutoReverse && !_isReversing;
+
 				for (int i = 0; i < Children.Count; i++)
 				{
 					ITimeline child = Children[i];
 
-					child.SkipToFill();
+					if (useReversedFill)
+					{
+						child.SkipToFillReversed();
+					}
+					else
+					{
+						child.SkipToFill();
+					}
 				}
 			}
+		}
+
+		/// <summary>
+		/// Begins the storyboard in reverse, playing all children from their end values back to start values.
+		/// Used when this Storyboard is a child of another Storyboard with AutoReverse.
+		/// </summary>
+		void ITimeline.BeginReversed()
+		{
+			State = TimelineState.Active;
+			_hasFillingChildren = false;
+			_replayCount = 1;
+			_isReversing = true; // Mark as reversing so we use BeginReversed on children
+			_activeDuration.Restart();
+
+			PlayReversed();
+		}
+
+		/// <summary>
+		/// Skips to the fill state as if the storyboard had played in reverse.
+		/// All children will be set to their starting values.
+		/// </summary>
+		void ITimeline.SkipToFillReversed()
+		{
+			if (Children != null)
+			{
+				for (int i = 0; i < Children.Count; i++)
+				{
+					ITimeline child = Children[i];
+					child.SkipToFillReversed();
+				}
+			}
+
+			State = TimelineState.Filling;
+			OnCompleted();
 		}
 
 		internal void Deactivate()
@@ -374,6 +462,21 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			if (_runningChildren == 0)
 			{
+				// Handle AutoReverse: if enabled and we just finished the forward animation, reverse it
+				if (AutoReverse && !_isReversing)
+				{
+					_isReversing = true;
+					// Play all children in reverse using BeginReversed()
+					PlayReversed();
+					return;
+				}
+
+				// If we were reversing, we've now completed both forward and reverse
+				if (_isReversing)
+				{
+					_isReversing = false;
+				}
+
 				if (NeedsRepeat(_activeDuration, _replayCount))
 				{
 					Replay(); // replay the animation
