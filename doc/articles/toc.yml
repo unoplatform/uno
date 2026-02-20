@@ -752,7 +752,11 @@
     - name: Uno Platform Status
       href: xref:Uno.UnoPlatformStatus
     - name: Dev Server
-      href: xref:Uno.DevServer
+      items:
+      - name: Overview
+        href: xref:Uno.DevServer
+      - name: Diagnostics (disco)
+        href: xref:Uno.Features.DevServerDisco
     - name: Xaml Merging
       href: external/uno.xamlmerge.task/doc/toc.yml
     - name: Uno Resizetizer

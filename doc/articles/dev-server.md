@@ -37,6 +37,7 @@ You can manage the Dev Server from the command line using the dotnet tool `Uno.D
 - `uno-devserver start`: Start the Dev Server for the current solution directory
 - `uno-devserver stop`: Stop the Dev Server attached to the current directory
 - `uno-devserver list`: List running Dev Server instances
+- `uno-devserver disco`: Inspect the environment without invoking MSBuild — see [Diagnostics (disco)](xref:Uno.Features.DevServerDisco)
 - `uno-devserver cleanup`: Terminate stale Dev Server processes
 - `uno-devserver login`: Open the Uno Platform settings application
 - `--mcp-app`: Run an MCP proxy mode for integration with MCP-based tooling
@@ -66,6 +67,10 @@ The Dev Server enables Hot Reload for a faster inner loop:
 ## Troubleshooting
 
 ### [**Common issues**](#tab/common-issues)
+
+> [!TIP]
+> Run `uno-devserver disco` to inspect your Dev Server environment at a glance.
+> Look for `<null>` values — they indicate missing components. See [Diagnostics (disco)](xref:Uno.Features.DevServerDisco) for details.
 
 - The TCP port number used by the app to connect back to the IDE is located in the <UnoRemoteControlPort> property of the [ProjectName].csproj.user file. If the port number does not match with the one found in the Uno Platform - Hot Reload output window, restart your IDE.
 - If the Dev Server does not start, ensure NuGet restore has completed successfully and Uno Platform packages are referenced by your project(s).
