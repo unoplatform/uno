@@ -11,6 +11,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 public class Given_DependencyObjectCollection
 {
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Add_Multiple_And_Invoke()
 	{
 		DependencyObjectCollection c = new();
@@ -31,12 +32,14 @@ public class Given_DependencyObjectCollection
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Indexer_Get_IndexOutOfRange()
 	{
 		Assert.IsNull(new DependencyObjectCollection()[int.MaxValue]);
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Indexer_Get_NegativeIndex()
 	{
 		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => _ = new DependencyObjectCollection()[-1]);
