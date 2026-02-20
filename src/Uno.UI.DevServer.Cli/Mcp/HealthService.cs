@@ -102,7 +102,7 @@ internal class HealthService(
 
 		issues.AddRange(DiscoveryIssueMapper.MapDiscoveryIssues(devServerMonitor.LastDiscoveryInfo));
 
-		var toolCount = toolListManager.CachedToolCount;
+		var toolCount = toolListManager.GetCachedTools().Length;
 
 		var status = issues.Any(i => i.Severity == ValidationSeverity.Fatal)
 			? HealthStatus.Unhealthy
