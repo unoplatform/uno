@@ -21,13 +21,13 @@ Some steps and questions to answer:
 
 - Find the smallest piece of API used by your app (XAML Control, method, type) and extract that code into the repro app
 - If it's impacting a control:
-  
+
   - Try replicating the interactions as minimally as possible by cutting the ties with the rest of your original app
   - Try altering the properties of the control by either removing the styles, changing the styles, changing modes of the control if there are any.
 - If you can't repro in a separate app because there are too many dependencies in your app try, removing as much code as you can around the use of failing API or Control. This may include removing implicit styles, global initializations.
 - If the control offers events, try adding logging to Loading/Unloading/PropertyChanged/LayoutUpdated or other available events to determine if the Control or API is interacting with your code in expected ways. Sometimes adding a breakpoint in the handler of those events can show interesting stack traces.
 - When debugging data bindings:
-  
+
   - Show the text version of the binding expression somewhere in the UI, to see the type of the bound data:
     - `<TextBlock Text="{Binding}" />`
     - `<TextBlock Text="{Binding MyProperty}" />`
@@ -136,25 +136,25 @@ VS Code requires manual ADB setup or extensions for Logcat viewing.
    ```bash
    # View all logs (verbose)
    adb logcat
-   
+
    # Clear previous logs first
    adb logcat -c
-   
+
    # Filter by your app's package name
    adb logcat | grep "com.yourcompany.yourapp"
-   
+
    # Filter by log priority (E=Error, W=Warn, I=Info, D=Debug, V=Verbose)
    adb logcat *:E
-   
+
    # Filter by tag (show only Uno logs)
    adb logcat Uno:* *:S
-   
+
    # Combination: Show Uno debug logs and all errors
    adb logcat Uno:D *:E
-   
+
    # Save logs to file
    adb logcat > android-logs.txt
-   
+
    # Dump existing logs without continuous streaming
    adb logcat -d
    ```
@@ -207,10 +207,10 @@ adb logcat -c && adb logcat
   ```bash
   # Linux/macOS
   adb logcat | grep -i "exception"
-  
+
   # Windows Command Prompt
   adb logcat | findstr "exception"
-  
+
   # Windows PowerShell
   adb logcat | Select-String "exception"
   ```
@@ -237,11 +237,11 @@ public App()
         builder.AddFilter("Windows", LogLevel.Trace);
         builder.AddFilter("Microsoft", LogLevel.Trace);
     });
-    
+
     Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = factory;
     global::Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
 #endif
-    
+
     this.InitializeComponent();
 }
 ```
@@ -308,7 +308,7 @@ Filter for these tags to focus on Uno Platform logs:
 
 ## Creating a smaller zip file to upload to github
 
-> Yowza, that’s a big file Try again with a file smaller than 10MB.  
+> Yowza, that’s a big file Try again with a file smaller than 10MB.
 > -- Github
 
 If you get the above message when attempting to upload the zipped sample, thats usually because you have included, beside the source codes, needless build outputs inside `bin` and `obj` folders for each target heads.
