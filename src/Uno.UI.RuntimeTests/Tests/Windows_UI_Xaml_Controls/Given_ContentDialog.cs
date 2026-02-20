@@ -854,6 +854,64 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		}
 
+#if HAS_UNO
+		[TestMethod]
+		public async Task When_BackButton_Closes_ContentDialog()
+		{
+			var closedEvent = new Event();
+			var openedEvent = new Event();
+
+			var closedRegistration = new SafeEventRegistration<ContentDialog, TypedEventHandler<ContentDialog, ContentDialogClosedEventArgs>>("Closed");
+			var openedRegistration = new SafeEventRegistration<ContentDialog, TypedEventHandler<ContentDialog, ContentDialogOpenedEventArgs>>("Opened");
+
+			var SUT = new MyContentDialog
+			{
+				Title = "Dialog title",
+				Content = "Dialog content",
+				CloseButtonText = "Close",
+			};
+
+			SetXamlRootForIslandsOrWinUI(SUT);
+
+			closedRegistration.Attach(SUT, (s, e) => closedEvent.Set());
+			openedRegistration.Attach(SUT, (s, e) => openedEvent.Set());
+
+			try
+			{
+				var showAsyncResult = SUT.ShowAsync().AsTask();
+
+				await openedEvent.WaitForDefault();
+
+				LOG_OUTPUT("Close the ContentDialog using the Back button.");
+				bool backButtonPressHandled = await TestServices.Utilities.InjectBackButtonPress();
+				VERIFY_IS_TRUE(backButtonPressHandled);
+
+				await closedEvent.WaitForDefault();
+
+				VERIFY_IS_TRUE(closedEvent.HasFired());
+				VERIFY_IS_FALSE(SUT._popup.IsOpen);
+
+				if (await Task.WhenAny(showAsyncResult, Task.Delay(2000)) == showAsyncResult)
+				{
+					var dialogResult = showAsyncResult.Result;
+					VERIFY_ARE_EQUAL(ContentDialogResult.None, dialogResult);
+				}
+				else
+				{
+					Assert.Fail("Timed out waiting for ShowAsync");
+				}
+
+				LOG_OUTPUT("After closing a ContentDialog, further back button presses should not get handled");
+				backButtonPressHandled = await TestServices.Utilities.InjectBackButtonPress();
+				VERIFY_IS_FALSE(backButtonPressHandled);
+			}
+			finally
+			{
+				SUT.Hide();
+			}
+		}
+#endif
+
 		private void SetXamlRootForIslandsOrWinUI(ContentDialog dialog)
 		{
 #if !HAS_UNO_WINUI

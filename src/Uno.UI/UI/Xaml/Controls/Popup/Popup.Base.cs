@@ -1,6 +1,8 @@
 ﻿using System;
+using DirectUI;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Input;
@@ -14,7 +16,7 @@ using UIKit;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
-public partial class Popup : FrameworkElement, IPopup
+public partial class Popup : FrameworkElement, IPopup, IBackButtonListener
 {
 	private ManagedWeakReference _lastFocusedElement;
 	private FocusState _lastFocusState = FocusState.Unfocused;
@@ -76,6 +78,12 @@ public partial class Popup : FrameworkElement, IPopup
 	{
 		if (newIsOpen)
 		{
+			//set up back button support if necessary
+			if (DXamlCore.Current.BackButtonSupported && ShouldDismiss(DismissalTriggerFlags.BackPress))
+			{
+				BackButtonIntegration.RegisterListener(this);
+			}
+
 			var xamlRoot = XamlRoot ?? Child?.XamlRoot ?? WinUICoreServices.Instance.ContentRootCoordinator.Unsafe_IslandsIncompatible_CoreWindowContentRoot?.XamlRoot;
 
 			if (xamlRoot != XamlRoot)
@@ -117,6 +125,9 @@ public partial class Popup : FrameworkElement, IPopup
 		else
 		{
 			_openPopupRegistration?.Dispose();
+
+			BackButtonIntegration.UnregisterListener(this);
+
 			if (IsLightDismissEnabled)
 			{
 				var focusManager = VisualTree.GetFocusManagerForElement(this);
