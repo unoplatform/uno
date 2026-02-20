@@ -161,7 +161,7 @@ uno-devserver disco --addins-only --json
 
 ### No `global.json` found
 
-```
+```text
 globalJsonPath     <null> (missing global.json in working directory or parents)
 ```
 
@@ -169,7 +169,7 @@ You are running `disco` outside of an Uno Platform project directory. Change to 
 
 ### SDK package not restored
 
-```
+```text
 sdkPath            <null> (missing restored Uno.Sdk package in NuGet cache)
 ```
 
@@ -177,7 +177,7 @@ The Uno SDK version declared in `global.json` has not been restored yet. Run `do
 
 ### Host not found for current .NET version
 
-```
+```text
 hostPath           <null> (missing Uno.WinUI.DevServer host for current dotnet TFM)
 dotNetTfm          net11.0
 ```
@@ -186,7 +186,7 @@ The DevServer package does not contain a host for the .NET version you are runni
 
 ### DevServer package version missing
 
-```
+```text
 devServerPackageVersion  <null> (missing Uno.WinUI.DevServer entry in packages.json)
 ```
 
