@@ -165,6 +165,13 @@ internal class CliManager
 		return 0;
 	}
 
+	/// <summary>
+	/// Resolves add-in DLL paths via convention-based discovery.
+	/// Returns:
+	///   <c>null</c>  — discovery failed (caller should fall back to MSBuild evaluation),
+	///   <c>""</c>    — discovery succeeded but found zero add-ins (skip MSBuild fallback),
+	///   non-empty   — semicolon-separated DLL paths.
+	/// </summary>
 	private string? ResolveAddInsForCommand(string workingDirectory)
 	{
 		try
@@ -173,14 +180,14 @@ internal class CliManager
 			if (discovery.PackagesJsonPath is null)
 			{
 				_logger.LogDebug("No packages.json found, skipping convention-based add-in discovery");
-				return null;
+				return null; // discovery not possible — let MSBuild evaluate
 			}
 
 			var addIns = _addInResolver.ResolveAddIns(discovery.PackagesJsonPath);
 			if (addIns.Count == 0)
 			{
 				_logger.LogDebug("No add-ins resolved via convention-based discovery");
-				return "";
+				return ""; // discovery succeeded, zero add-ins — skip MSBuild fallback
 			}
 
 			var paths = string.Join(";", addIns.Select(a => a.EntryPointDll).Distinct(StringComparer.OrdinalIgnoreCase));
