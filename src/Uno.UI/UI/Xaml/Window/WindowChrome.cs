@@ -32,6 +32,7 @@ internal sealed partial class WindowChrome : ContentControl
 	private readonly Window _window;
 
 	private FrameworkElement? m_tpTitleBarMinMaxCloseContainerPart;
+	private FrameworkElement? m_tpDraggableAreaPart;
 	private Button? m_tpCloseButtonPart;
 	private Button? m_tpMinimizeButtonPart;
 	private Button? m_tpMaximizeButtonPart;
@@ -133,7 +134,11 @@ internal sealed partial class WindowChrome : ContentControl
 	// one needs to apply Content Control style with key WindowChromeStyle defined in generic.xaml
 	internal void ApplyStylingForMinMaxCloseButtons()
 	{
-		var style = (Style)Application.Current.Resources["WindowChromeStyle"];
+		// Select the appropriate WindowChrome style based on the runtime OS
+		// macOS uses the macOS-style with traffic light buttons on the left
+		// Windows and Linux use the Windows-style with buttons on the right
+		var styleKey = OperatingSystem.IsMacOS() ? "MacOSWindowChromeStyle" : "WindowChromeStyle";
+		var style = (Style)Application.Current.Resources[styleKey];
 		SetValue(StyleProperty, style);
 	}
 
@@ -150,6 +155,7 @@ internal sealed partial class WindowChrome : ContentControl
 		// attach event handlers
 
 		m_tpTitleBarMinMaxCloseContainerPart = GetTemplateChild("TitleBarMinMaxCloseContainer") as FrameworkElement;
+		m_tpDraggableAreaPart = GetTemplateChild("DraggableArea") as FrameworkElement;
 
 		if (m_tpTitleBarMinMaxCloseContainerPart is not null)
 		{
@@ -315,20 +321,11 @@ internal sealed partial class WindowChrome : ContentControl
 
 	private RectInt32 GetDefaultCaptionRegionRect()
 	{
-		// Caption area should be everything to the left of the buttons (except for the container)
-		var titleBarContainer = m_tpTitleBarMinMaxCloseContainerPart;
-		if (titleBarContainer is not null)
+		// Use the DraggableArea element from the template to determine the caption region
+		var draggableArea = m_tpDraggableAreaPart;
+		if (draggableArea is not null)
 		{
-			var scale = _window.AppWindow.NativeAppWindow.RasterizationScale;
-			var transform = titleBarContainer.TransformToVisual(null);
-			var point = transform.TransformPoint(new Windows.Foundation.Point(0, 0));
-			return new RectInt32
-			{
-				X = 0,
-				Y = 0,
-				Width = (int)(point.X * scale),
-				Height = (int)(titleBarContainer.ActualHeight * scale)
-			};
+			return GetScreenRect(draggableArea);
 		}
 
 		return default;
