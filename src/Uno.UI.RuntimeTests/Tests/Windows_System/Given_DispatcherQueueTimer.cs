@@ -183,6 +183,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Sleep_In_Tick()
 		{
 			var dispatcherTimer = DispatcherQueue.GetForCurrentThread().CreateTimer();

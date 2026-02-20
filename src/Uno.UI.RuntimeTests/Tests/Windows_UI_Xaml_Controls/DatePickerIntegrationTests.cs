@@ -74,6 +74,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 		// Test Cases
 		//
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task VerifyDefaultProperties()
 		{
 			DatePicker datePicker = null;
@@ -956,6 +957,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task HasPlaceholderTextByDefault()
 		{
 			var datePicker = await SetupDatePickerTest();
