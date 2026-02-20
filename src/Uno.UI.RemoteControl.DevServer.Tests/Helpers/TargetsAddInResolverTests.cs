@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text.Json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.DevServer.Cli.Helpers;
 
@@ -419,7 +420,7 @@ public class TargetsAddInResolverTests
 	}
 
 	[TestMethod]
-	public void ResolveAddIns_WhenInvalidPackagesJson_ShouldReturnEmpty()
+	public void ResolveAddIns_WhenInvalidPackagesJson_ShouldThrow()
 	{
 		// Arrange
 		var packagesJsonPath = Path.Combine(_tempDir, "invalid_packages.json");
@@ -427,11 +428,9 @@ public class TargetsAddInResolverTests
 
 		var resolver = new TargetsAddInResolver(_logger);
 
-		// Act
-		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [_tempDir]);
-
-		// Assert
-		results.Should().BeEmpty();
+		// Act & Assert — exception propagates so callers can trigger MSBuild fallback
+		var act = () => resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [_tempDir]);
+		act.Should().Throw<JsonReaderException>();
 	}
 
 	[TestMethod]
