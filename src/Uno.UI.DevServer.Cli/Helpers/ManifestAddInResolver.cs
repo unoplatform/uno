@@ -3,6 +3,18 @@ using Microsoft.Extensions.Logging;
 
 namespace Uno.UI.DevServer.Cli.Helpers;
 
+internal static partial class ManifestJsonOptions
+{
+	private static readonly JsonSerializerOptions _instance = new()
+	{
+		PropertyNameCaseInsensitive = true,
+		AllowTrailingCommas = true,
+		ReadCommentHandling = JsonCommentHandling.Skip,
+	};
+
+	public static JsonSerializerOptions Instance => _instance;
+}
+
 /// <summary>
 /// Resolves add-ins from a <c>devserver-addin.json</c> manifest file at the root of a NuGet package.
 /// This is priority 1 in the discovery chain (before <c>.targets</c> parsing).
@@ -18,13 +30,6 @@ namespace Uno.UI.DevServer.Cli.Helpers;
 /// <seealso href="../addin-discovery.md"/>
 internal class ManifestAddInResolver(ILogger<ManifestAddInResolver> logger, string? hostVersion = null)
 {
-	private static readonly JsonSerializerOptions _jsonOptions = new()
-	{
-		PropertyNameCaseInsensitive = true,
-		AllowTrailingCommas = true,
-		ReadCommentHandling = JsonCommentHandling.Skip,
-	};
-
 	private readonly ILogger<ManifestAddInResolver> _logger = logger;
 	private readonly Version? _hostVersion = hostVersion is not null && Version.TryParse(hostVersion.Split('-')[0], out var v) ? v : null;
 
@@ -40,7 +45,7 @@ internal class ManifestAddInResolver(ILogger<ManifestAddInResolver> logger, stri
 		try
 		{
 			var json = File.ReadAllText(manifestPath);
-			manifest = JsonSerializer.Deserialize<AddInManifest>(json, _jsonOptions);
+			manifest = JsonSerializer.Deserialize<AddInManifest>(json, ManifestJsonOptions.Instance);
 		}
 		catch (JsonException ex)
 		{
