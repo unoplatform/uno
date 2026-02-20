@@ -48,7 +48,17 @@ internal class McpStdioServer(
 
 				if (forceRootsFallback && toolName == addRootsTool.Name)
 				{
-					await setRootsHandler(ctx.Params!.Arguments?["roots"].Deserialize<string[]>() ?? []);
+					if (ctx.Params?.Arguments is not { } arguments ||
+						!arguments.TryGetValue("roots", out var rootsElement))
+					{
+						return new CallToolResult()
+						{
+							Content = [new TextContentBlock() { Text = "Missing required 'roots' argument." }],
+							IsError = true
+						};
+					}
+
+					await setRootsHandler(rootsElement.Deserialize<string[]>() ?? []);
 					return new CallToolResult() { Content = [new TextContentBlock() { Text = "Ok" }] };
 				}
 
