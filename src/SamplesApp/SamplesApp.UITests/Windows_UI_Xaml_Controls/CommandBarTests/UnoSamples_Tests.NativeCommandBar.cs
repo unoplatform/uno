@@ -145,6 +145,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Android)]
+		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
 		public void NativeCommandBar_Content_Alignment_Automated()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.CommandBar.CommandBar_Native_With_TextBox");

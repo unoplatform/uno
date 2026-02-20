@@ -142,6 +142,7 @@ public partial class Given_TextBox_ContextMenuPosition
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIOS)] // Flaky on iOS Skia https://github.com/unoplatform/uno/issues/9080
 	public async Task When_TextBox_Has_ContextFlyout_Keyboard_Trigger_Shows_Flyout()
 	{
 		var flyoutOpened = false;
