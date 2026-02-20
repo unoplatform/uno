@@ -57,6 +57,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ItemsControl
 
 		[Test]
 		[AutoRetry]
+		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
 		public void ItemsControl_AppendItem()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ItemsControl.ItemsControl_AppendItem");

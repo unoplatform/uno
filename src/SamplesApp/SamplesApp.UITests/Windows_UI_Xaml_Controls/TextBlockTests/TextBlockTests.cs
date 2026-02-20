@@ -19,6 +19,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.iOS, Platform.Android)] // Disabled for Browser because of missing top level .All() support
+		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
 		public void When_Visibility_Changed_During_Arrange()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_Visibility_Arrange");
@@ -32,6 +33,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 		[Test]
 		[AutoRetry]
+		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
 		public void When_Multiple_Controls_And_Some_Are_Collapsed_Arrange()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_LineHeight_MultipleControls");
@@ -66,6 +68,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 		[Test]
 		[AutoRetry]
+		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
 		public void When_Foreground_Changed_With_Visibility()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_Foreground_While_Collapsed");
@@ -97,6 +100,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 		[Test]
 		[AutoRetry]
+		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
 		public void When_TextDecoration_Changed()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_Decorations");
@@ -124,6 +128,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Android)] // Fails on Wasm and iOS. It's probably that the test is actually not correct.
+		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
 		public void When_FontWeight_Changed()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_FontWeight_Dynamic");
@@ -147,6 +152,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 		[Test]
 		[AutoRetry]
+		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
 		public void When_Foreground_Brush_Color_Changed()
 		{
 			Run("Uno.UI.Samples.Content.UITests.TextBlockControl.TextBlock_BrushColorChanging");
@@ -171,6 +177,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 		[Test]
 		[AutoRetry]
+		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
 		public void When_MaxLines_Changed_With_TextWrapping()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl.SimpleText_MaxLines_Different_Font_Size");
@@ -188,6 +195,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 		[Test]
 		[AutoRetry]
+		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
 		public void When_MaxLines_Changed_Without_TextWrapping()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl.SimpleText_MaxLines_Different_Font_Size");
@@ -206,6 +214,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 		[Test]
 		[AutoRetry()]
+		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
 		public void When_Text_is_Constrained_Then_Clipping_is_Applied()
 		{
 			Run("Uno.UI.Samples.Content.UITests.TextBlockControl.TextBlock_ConstrainedByContainer");
@@ -281,6 +290,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 		[Test]
 		[AutoRetry]
+		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
 		public void When_MaxLines_Then_AlignmentPositionIsCorrect()
 		{
 			Run("Uno.UI.Samples.Content.UITests.TextBlockControl.SimpleText_MaxLines_Two_With_Wrap");
@@ -339,6 +349,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 		[Test]
 		[AutoRetry]
+		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
 		public void When_MaxLines_Changed_On_Stack_Container()
 		{
 			Run("Uno.UI.Samples.Content.UITests.TextBlockControl.SimpleText_MaxLines_Multiple_Containers");
@@ -369,6 +380,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 		[Test]
 		[AutoRetry]
+		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
 		public void When_MaxLines_Changed_On_Grid_Container()
 		{
 			Run("Uno.UI.Samples.Content.UITests.TextBlockControl.SimpleText_MaxLines_Multiple_Containers");
@@ -458,6 +470,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Browser, Platform.Android)] // Test timed-out on iOS
+		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
 		public void When_TextAlignment_Then_Layout_Is_Correct()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_LayoutAlignment");
@@ -564,6 +577,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Android, Platform.Browser)]
+		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
 		public void When_Foreground_Is_Brush()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl.Foreground_Brushes");
@@ -581,6 +595,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Android, Platform.Browser)]
+		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
 		public void When_Foreground_Is_Brush_Should_Take_Correct_Width()
 		{
 			Run("UITests.Windows_UI_Xaml_Media.GradientBrushTests.LinearGradientBrush_Width");

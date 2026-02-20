@@ -15,6 +15,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 	{
 		[Test]
 		[AutoRetry]
+		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
 		public void When_Tap_PressedReleasedAreHandled()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ComboBox.ComboBox_Pointers");
