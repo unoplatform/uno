@@ -34,10 +34,11 @@ public class MonitorDecisionsTests
 	{
 		using var process = Process.Start(new ProcessStartInfo
 		{
-			FileName = "cmd.exe",
-			Arguments = "/c exit 0",
+			FileName = "dotnet",
+			Arguments = "--version",
 			CreateNoWindow = true,
-			UseShellExecute = false
+			UseShellExecute = false,
+			RedirectStandardOutput = true
 		})!;
 		process.WaitForExit();
 
@@ -197,10 +198,11 @@ public class MonitorDecisionsTests
 	{
 		using var process = Process.Start(new ProcessStartInfo
 		{
-			FileName = "cmd.exe",
-			Arguments = "/c exit 0",
+			FileName = "dotnet",
+			Arguments = "--version",
 			CreateNoWindow = true,
-			UseShellExecute = false
+			UseShellExecute = false,
+			RedirectStandardOutput = true
 		})!;
 		process.WaitForExit();
 
