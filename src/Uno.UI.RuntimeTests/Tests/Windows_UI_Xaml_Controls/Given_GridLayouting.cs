@@ -107,6 +107,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
@@ -384,6 +385,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif

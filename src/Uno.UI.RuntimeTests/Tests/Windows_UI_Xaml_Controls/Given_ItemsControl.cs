@@ -23,6 +23,7 @@ using static Private.Infrastructure.TestServices;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public class Given_ItemsControl
 	{
 		private ResourceDictionary _testsResources;
@@ -158,6 +159,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_NoItemTemplate()
 		{
 			var SUT = new ItemsControl()

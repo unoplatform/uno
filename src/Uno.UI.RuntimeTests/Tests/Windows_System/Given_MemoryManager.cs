@@ -16,6 +16,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_AppMemoryUsageLimit()
 		{
 			EnsureApiAvailable("AppMemoryUsageLimit");
