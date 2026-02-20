@@ -326,9 +326,13 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 
 	private void Shutdown()
 	{
+		// Check if the application should exit based on DispatcherShutdownMode
+		// This must be done BEFORE removing the window to get an accurate count
+		// Use ApplicationHelper's internal synchronization for thread safety
+		var shouldExitApplication = false;
 		if (NativeWindowFactory.SupportsMultipleWindows)
 		{
-			ApplicationHelper.RemoveWindow(Window);
+			shouldExitApplication = ShouldExitApplicationAndRemoveWindow();
 		}
 
 		if (NativeWindowWrapper is null)
@@ -349,6 +353,47 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 		if (_appWindowClosingEventArgs is null)
 		{
 			NativeWindowWrapper.Close();
+		}
+
+		// Exit the application if needed (after all cleanup is done)
+		if (shouldExitApplication)
+		{
+			Microsoft.UI.Xaml.Application.Current?.Exit();
+		}
+	}
+
+	private bool ShouldExitApplicationAndRemoveWindow()
+	{
+		// Only check on platforms that support multiple windows
+		if (!NativeWindowFactory.SupportsMultipleWindows)
+		{
+			return false;
+		}
+
+		var application = Microsoft.UI.Xaml.Application.Current;
+		if (application is null)
+		{
+			return false;
+		}
+
+		// Lock on the windows collection to ensure thread-safe check and removal
+		// We directly access WindowsInternal instead of using ApplicationHelper.RemoveWindow()
+		// because we need to atomically check the count and remove the window to avoid race conditions
+		lock (Uno.UI.ApplicationHelper.WindowsInternal)
+		{
+			var shouldExit = false;
+
+			if (application.DispatcherShutdownMode == DispatcherShutdownMode.OnLastWindowClose)
+			{
+				// Check if this is the last window (count includes the current window being closed)
+				shouldExit = Uno.UI.ApplicationHelper.WindowsInternal.Count == 1;
+			}
+
+			// Remove the window from the collection while still holding the lock
+			// This ensures the count check and removal are atomic
+			Uno.UI.ApplicationHelper.WindowsInternal.Remove(Window);
+
+			return shouldExit;
 		}
 	}
 
