@@ -864,7 +864,7 @@ function Test-McpModeWithRootsFallback {
 
         if ($process -and $mcpProcessStarted -and -not $process.HasExited) {
             try { $process.Kill() } catch {}
-            try { $process.WaitForExit(5000) } catch {}
+            try { $process.WaitForExit(5000) | Out-Null } catch {}
         }
 
         if ($stdoutStream) {
@@ -988,7 +988,7 @@ function Stop-DevserverInDirectory {
     Push-Location $Directory
     try {
         Write-Log "Ensuring no lingering devserver instances remain in $Directory"
-        Invoke-DevserverCli -Arguments @('stop', '-l', 'trace')
+        Invoke-DevserverCli -Arguments @('stop', '-l', 'trace') | Out-Null
     }
     catch {
         Write-Log "Cleanup devserver stop failed: $($_.Exception.Message)"
