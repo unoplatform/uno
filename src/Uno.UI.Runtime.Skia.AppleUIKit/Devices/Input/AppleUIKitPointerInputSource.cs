@@ -24,6 +24,10 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 {
 #if __IOS__
 	private const int ScrollWheelDeltaMultiplier = -45;
+	// For trackpad (continuous scroll), use a 1:1 pixel-to-scroll-delta multiplier.
+	// The standard ScrollWheelDeltaMultiplier of -45 causes 45x amplification which
+	// is excessive for high-frequency trackpad events and results in janky scrolling.
+	private const int TrackpadScrollDeltaMultiplier = -1;
 	private const double MinTranslationThreshold = 1.0;
 #endif
 
@@ -168,7 +172,7 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 	}
 
 #if __IOS__
-	internal void HandleScrollFromGesture(UIView source, CGPoint translation, CGPoint location, UIGestureRecognizerState gestureState, bool isNaturalScrollingEnabled)
+	internal void HandleScrollFromGesture(UIView source, CGPoint translation, CGPoint location, UIGestureRecognizerState gestureState, bool isNaturalScrollingEnabled, bool isContinuousScroll = false)
 	{
 		try
 		{
@@ -187,13 +191,13 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 				return;
 			}
 
-			_trace?.Invoke($"<ScrollGesture src={source.GetDebugName()} state={gestureState}>");
+			_trace?.Invoke($"<ScrollGesture src={source.GetDebugName()} state={gestureState} continuous={isContinuousScroll}>");
 
-			var args = CreateScrollGestureEventArgs(translation, location, isNaturalScrollingEnabled);
+			var args = CreateScrollGestureEventArgs(translation, location, isNaturalScrollingEnabled, isContinuousScroll);
 
 			_trace?.Invoke($"ScrollGesture: {args}>");
 
-			_trace?.Invoke($"iOS HandleScrollFromGesture: Delta={args.CurrentPoint.Properties.MouseWheelDelta}, IsHorizontal={args.CurrentPoint.Properties.IsHorizontalMouseWheel}, Position=({args.CurrentPoint.Position.X}, {args.CurrentPoint.Position.Y}), Translation=({translation.X:F2}, {translation.Y:F2}), State={gestureState}");
+			_trace?.Invoke($"iOS HandleScrollFromGesture: Delta={args.CurrentPoint.Properties.MouseWheelDelta}, IsHorizontal={args.CurrentPoint.Properties.IsHorizontalMouseWheel}, IsTouchPad={args.CurrentPoint.Properties.IsTouchPad}, Position=({args.CurrentPoint.Position.X}, {args.CurrentPoint.Position.Y}), Translation=({translation.X:F2}, {translation.Y:F2}), State={gestureState}");
 
 			PointerWheelChanged?.Invoke(this, args);
 
@@ -206,9 +210,12 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 		}
 	}
 
-	private PointerEventArgs CreateScrollGestureEventArgs(CGPoint translation, CGPoint location, bool isNaturalScrollingEnabled)
+	private PointerEventArgs CreateScrollGestureEventArgs(CGPoint translation, CGPoint location, bool isNaturalScrollingEnabled, bool isContinuousScroll)
 	{
-		var multiplier = isNaturalScrollingEnabled ? -ScrollWheelDeltaMultiplier : ScrollWheelDeltaMultiplier;
+		// For trackpad (continuous scroll), use a 1:1 pixel multiplier for accurate mapping.
+		// For mouse wheel (discrete scroll), use the standard amplification multiplier.
+		var baseMultiplier = isContinuousScroll ? TrackpadScrollDeltaMultiplier : ScrollWheelDeltaMultiplier;
+		var multiplier = isNaturalScrollingEnabled ? -baseMultiplier : baseMultiplier;
 
 		var scrollDeltaX = (int)(translation.X * multiplier);
 		var scrollDeltaY = (int)(translation.Y * multiplier);
@@ -237,6 +244,7 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 			MouseWheelDelta = wheelDelta,
 			IsPrimary = true,
 			IsInRange = true,
+			IsTouchPad = isContinuousScroll,
 			Orientation = 0,
 			Pressure = 0,
 			TouchConfidence = false,

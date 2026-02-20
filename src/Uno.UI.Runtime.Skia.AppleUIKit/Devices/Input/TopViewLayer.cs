@@ -76,7 +76,11 @@ internal partial class TopViewLayer : UIView
 		var location = gesture.LocationInView(this);
 		var gestureState = gesture.State;
 
-		AppleUIKitCorePointerInputSource.Instance.HandleScrollFromGesture(this, translation, location, gestureState, _isNaturalScrollingEnabled);
+		// UIScrollType.Continuous = trackpad (high-frequency, sub-pixel deltas)
+		// UIScrollType.Discrete   = mouse wheel (low-frequency, notch-based deltas)
+		var isContinuousScroll = gesture.ScrollType == UIScrollType.Continuous;
+
+		AppleUIKitCorePointerInputSource.Instance.HandleScrollFromGesture(this, translation, location, gestureState, _isNaturalScrollingEnabled, isContinuousScroll);
 
 		if (gestureState == UIGestureRecognizerState.Changed)
 		{
