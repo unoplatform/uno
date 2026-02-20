@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text.Json;
 
@@ -24,7 +25,7 @@ internal static class DevServerConfig
 	/// </param>
 	/// <returns><c>true</c> if a valid config was found with a <c>SolutionPath</c> pointing
 	/// to an existing file; otherwise <c>false</c>.</returns>
-	public static bool TryGetSolutionPath(string directory, out string? solutionPath)
+	public static bool TryGetSolutionPath(string directory, [NotNullWhen(true)] out string? solutionPath)
 	{
 		solutionPath = null;
 
@@ -56,9 +57,9 @@ internal static class DevServerConfig
 				}
 			}
 		}
-		catch
+		catch (Exception ex)
 		{
-			// Ignore malformed config files silently.
+			Console.Error.WriteLine($"Warning: Failed to read dev server config at '{configPath}': {ex.Message}");
 		}
 
 		return false;

@@ -55,7 +55,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 				string[] solutionFiles;
 				if (DevServerConfig.TryGetSolutionPath(_currentDirectory, out var configuredSolution))
 				{
-					solutionFiles = [configuredSolution!];
+					solutionFiles = [configuredSolution];
 					_logger.LogInformation(
 						"DevServerMonitor using solution from .unoplatform/devserverconfig.json: {SolutionPath}",
 						configuredSolution);
