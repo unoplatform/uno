@@ -78,10 +78,11 @@ public class MonitorDecisionsTests
 	{
 		var p = Process.Start(new ProcessStartInfo
 		{
-			FileName = "cmd.exe",
-			Arguments = "/c exit 0",
+			FileName = "dotnet",
+			Arguments = "--version",
 			CreateNoWindow = true,
-			UseShellExecute = false
+			UseShellExecute = false,
+			RedirectStandardOutput = true
 		})!;
 		p.WaitForExit();
 
