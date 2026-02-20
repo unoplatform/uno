@@ -30,6 +30,7 @@ using System.Text;
 using System.Security.Cryptography;
 using System.Collections.Immutable;
 using Private.Infrastructure;
+using Uno.UI.Samples.UITests.Helpers;
 
 #if HAS_UNO
 using Uno.Foundation.Logging;
@@ -51,6 +52,8 @@ namespace Uno.UI.Samples.Tests
 #pragma warning restore CS0109
 
 		private const StringComparison StrComp = StringComparison.InvariantCultureIgnoreCase;
+		private const string RuntimeCurrentTestFilePathVariable = "UITEST_RUNTIME_CURRENT_TEST_FILE";
+		private string _runtimeCurrentTestFilePath;
 		private Task _runner;
 		private CancellationTokenSource _cts = new CancellationTokenSource();
 #if DEBUG
@@ -796,6 +799,7 @@ namespace Uno.UI.Samples.Tests
 				async Task InvokeTestMethod(TestCase testCase)
 				{
 					var fullTestName = testName + testCase.ToString();
+					await UpdateRuntimeTestHeartbeatAsync(fullTestName);
 
 					_currentRun.Run++;
 					_currentRun.CurrentRepeatCount = 0;
@@ -1095,6 +1099,36 @@ namespace Uno.UI.Samples.Tests
 					await resultingTask;
 				}
 			}
+
+			async Task UpdateRuntimeTestHeartbeatAsync(string testName)
+			{
+				var heartbeatPath = _runtimeCurrentTestFilePath ??= Environment.GetEnvironmentVariable(RuntimeCurrentTestFilePathVariable);
+				if (string.IsNullOrWhiteSpace(heartbeatPath))
+				{
+					return;
+				}
+
+				if (ct.IsCancellationRequested)
+				{
+					return;
+				}
+
+				try
+				{
+					// This writes the active test name to a file so CI can surface hangs.
+					await SkiaSamplesAppHelper.SaveFile(heartbeatPath, testName, ct);
+					// Emit to logs so CI can show the last started test when a shard hangs.
+					Console.WriteLine($"Runtime test heartbeat: {testName}");
+				}
+				catch (OperationCanceledException) when (ct.IsCancellationRequested)
+				{
+					return;
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine($"Failed to write runtime test heartbeat to {heartbeatPath}: {e.Message}");
+				}
+			}
 		}
 
 		private static void CloseRemainingPopups()
@@ -1271,7 +1305,7 @@ namespace Uno.UI.Samples.Tests
 				for (int i = 0; i < _ciTestsGroupCountCache; i++)
 				{
 					var testGroup = GetFilteredTests(types, _ciTestsGroupCountCache, i);
-					var tests = testGroup.SelectMany(t => t.Tests);
+					var tests = testGroup.SelectMany(t => t.Tests ?? Array.Empty<MethodInfo>());
 					var testCount = tests.Count();
 					totalCount += testCount;
 
@@ -1304,8 +1338,16 @@ namespace Uno.UI.Samples.Tests
 			}
 
 			var groupedList = GetFilteredTests(types, _ciTestsGroupCountCache, _ciTestGroupCache);
+			var groupedArray = groupedList.ToArray();
 
-			return groupedList.ToArray();
+			if (_ciTestsGroupCountCache != -1)
+			{
+				var activeGroupCount = groupedArray.Sum(group => group.Tests?.Length ?? 0);
+				// CI uses these counts to spot slow shards and rebalance groups.
+				Console.WriteLine($"Active test group #{_ciTestGroupCache} contains {activeGroupCount} tests");
+			}
+
+			return groupedArray;
 		}
 
 		private IEnumerable<UnitTestClassInfo> GetFilteredTests(IEnumerable<Type> types, int groupCount, int activeGroup)

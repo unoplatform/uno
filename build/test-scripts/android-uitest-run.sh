@@ -5,6 +5,30 @@ IFS=$'\n\t'
 # echo commands
 set -x
 
+escape_for_xml() {
+	printf '%s' "$1" | tr '\r\n' ' ' | \
+		sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g' -e 's/"/\&quot;/g' -e "s/'/\&apos;/g"
+}
+
+write_heartbeat_xml() {
+	local output_path="$1"
+	local message="$2"
+	local escaped_message
+	escaped_message=$(escape_for_xml "$message")
+	cat > "$output_path" <<EOF
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="0" name="RuntimeHeartbeat" testcasecount="1" result="Skipped" total="1" passed="0" failed="0" skipped="1" inconclusive="0" duration="0">
+  <test-suite type="Assembly" name="RuntimeHeartbeat" result="Skipped" total="1" passed="0" failed="0" skipped="1" inconclusive="0" duration="0">
+    <test-case id="0-0" name="LastHeartbeat" result="Skipped" duration="0">
+      <reason>
+        <message>${escaped_message}</message>
+      </reason>
+    </test-case>
+  </test-suite>
+</test-run>
+EOF
+}
+
 export BUILDCONFIGURATION=Release
 
 if [ "$UITEST_TEST_MODE_NAME" == 'Snapshots' ];
@@ -46,6 +70,8 @@ export UNO_TESTS_RESPONSE_FILE=$BUILD_SOURCESDIRECTORY/build/nunit.response
 export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/RuntimeTestResults-android-automated-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME.xml
 
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
+# Always create the failed-results folder so artifact publishing does not fail on success.
+mkdir -p $BUILD_SOURCESDIRECTORY/build/uitests-failure-results
 
 if [ -f "$UNO_TESTS_FAILED_LIST" ] && [ `cat "$UNO_TESTS_FAILED_LIST"` = "invalid-test-for-retry" ];
 then
@@ -80,6 +106,16 @@ fi
 
 AVD_NAME=xamarin_android_emulator
 AVD_CONFIG_FILE="$ANDROID_AVD_HOME/$AVD_NAME.avd/config.ini"
+
+is_emulator_booted() {
+	if $ANDROID_HOME/platform-tools/adb devices | grep -q "emulator"; then
+		local boot_completed
+		boot_completed=$($ANDROID_HOME/platform-tools/adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r' || true)
+		[ "$boot_completed" = "1" ]
+	else
+		return 1
+	fi
+}
 
 if [[ ! -f $AVD_CONFIG_FILE ]];
 then
@@ -153,11 +189,16 @@ then
 	source $BUILD_SOURCESDIRECTORY/build/test-scripts/android-uitest-wait-systemui.sh 500
 
 else
-	# Restart the emulator to avoid running first-time tasks
-	$ANDROID_HOME/platform-tools/adb reboot
+	if is_emulator_booted; then
+		# Reuse the already-booted emulator during reruns to save startup time.
+		echo "Emulator already booted; skipping reboot."
+	else
+		# Restart the emulator to avoid running first-time tasks
+		$ANDROID_HOME/platform-tools/adb reboot
 
-	# Wait for the emulator to finish booting
-	source $BUILD_SOURCESDIRECTORY/build/test-scripts/android-uitest-wait-systemui.sh 500
+		# Wait for the emulator to finish booting
+		source $BUILD_SOURCESDIRECTORY/build/test-scripts/android-uitest-wait-systemui.sh 500
+	fi
 fi
 
 # list active devices
@@ -179,6 +220,7 @@ cd $UNO_UITEST_SCREENSHOT_PATH
 if [ "$UITEST_TEST_MODE_NAME" == 'RuntimeTests' ];
 then
 	UITEST_RUNTIME_AUTOSTART_RESULT_FILE="/sdcard/TestResult-`date +"%Y%m%d%H%M%S"`.xml"
+	UITEST_RUNTIME_CURRENT_TEST_FILE="/sdcard/RuntimeCurrentTest-$UITEST_RUNTIME_TEST_GROUP.txt"
 
 	# Install the app
 	$ANDROID_HOME/platform-tools/adb install $UNO_UITEST_ANDROIDAPK_PATH
@@ -186,7 +228,9 @@ then
 	# Create the environment file for the app to read
 	echo "UITEST_RUNTIME_TEST_GROUP=$UITEST_RUNTIME_TEST_GROUP" > samplesapp-environment.txt
 	echo "UITEST_RUNTIME_TEST_GROUP_COUNT=$UITEST_RUNTIME_TEST_GROUP_COUNT" >> samplesapp-environment.txt
-	echo "UITEST_RUNTIME_AUTOSTART_RESULT_FILE=$UITEST_RUNTIME_AUTOSTART_RESULT_FILE" >> samplesapp-environment.txt
+		echo "UITEST_RUNTIME_AUTOSTART_RESULT_FILE=$UITEST_RUNTIME_AUTOSTART_RESULT_FILE" >> samplesapp-environment.txt
+		# CI uses this file to report the last started test when a shard hangs.
+		echo "UITEST_RUNTIME_CURRENT_TEST_FILE=$UITEST_RUNTIME_CURRENT_TEST_FILE" >> samplesapp-environment.txt
 
 	if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
 		export UITEST_RUNTIME_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST | base64 -w 0`
@@ -228,7 +272,33 @@ then
 		fi
 	done
 
+	if ! $ANDROID_HOME/platform-tools/adb shell test -e "$UITEST_RUNTIME_AUTOSTART_RESULT_FILE" > /dev/null; then
+		if [ $SECONDS -ge $END_TIME ]; then
+			# Capture a timeout marker so CI artifacts explain why the run ended early.
+			echo "Runtime tests timed out after ${TIMEOUT}s (group=$UITEST_RUNTIME_TEST_GROUP)." > $BUILD_SOURCESDIRECTORY/build/uitests-failure-results/runtime-tests-timeout-android-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME-$UITEST_RUNTIME_TEST_GROUP.txt
+		else
+			echo "Runtime tests ended without results (app exited early)." > $BUILD_SOURCESDIRECTORY/build/uitests-failure-results/runtime-tests-no-results-android-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME-$UITEST_RUNTIME_TEST_GROUP.txt
+		fi
+	fi
+
 	$ANDROID_HOME/platform-tools/adb pull $UITEST_RUNTIME_AUTOSTART_RESULT_FILE $UNO_ORIGINAL_TEST_RESULTS || true
+	
+	RUNTIME_CURRENT_TEST_LOCAL="$BUILD_SOURCESDIRECTORY/build/runtime-current-test-android-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME-$UITEST_RUNTIME_TEST_GROUP.txt"
+	$ANDROID_HOME/platform-tools/adb pull $UITEST_RUNTIME_CURRENT_TEST_FILE $RUNTIME_CURRENT_TEST_LOCAL || true
+	HEARTBEAT_MESSAGE="No runtime test heartbeat file found."
+	if [ -f "$RUNTIME_CURRENT_TEST_LOCAL" ]; then
+		if command -v iconv >/dev/null 2>&1; then
+			HEARTBEAT_MESSAGE="$(iconv -f utf-16 -t utf-8 "$RUNTIME_CURRENT_TEST_LOCAL")"
+		else
+			HEARTBEAT_MESSAGE="$(cat "$RUNTIME_CURRENT_TEST_LOCAL")"
+		fi
+		echo "Last runtime test heartbeat: $HEARTBEAT_MESSAGE"
+	else
+		echo "No runtime test heartbeat file found."
+	fi
+
+	HEARTBEAT_XML_PATH="$BUILD_SOURCESDIRECTORY/build/runtime-heartbeat-android-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME-$UITEST_RUNTIME_TEST_GROUP.xml"
+	write_heartbeat_xml "$HEARTBEAT_XML_PATH" "$HEARTBEAT_MESSAGE"
 
 else
 
@@ -276,6 +346,11 @@ dotnet run fail-empty $UNO_ORIGINAL_TEST_RESULTS
 
 if [ $? -eq 0 ]; then
 	dotnet run list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
+
+	if [ "$UITEST_TEST_MODE_NAME" == 'RuntimeTests' ] && [ -f "$UNO_TESTS_FAILED_LIST" ] && [ ! -s "$UNO_TESTS_FAILED_LIST" ]; then
+		# Mark successful runtime runs so reruns are skipped when ALLOW_RERUN is enabled.
+		echo "invalid-test-for-retry" > "$UNO_TESTS_FAILED_LIST"
+	fi
 fi
 
 popd
