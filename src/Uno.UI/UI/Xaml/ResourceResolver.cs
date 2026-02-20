@@ -463,6 +463,46 @@ namespace Uno.UI
 		}
 
 		/// <summary>
+		/// Try to retrieve a default style for a type from its assembly's Generic.xaml.
+		/// This is used to find default styles for custom controls defined in the app assembly.
+		/// </summary>
+		internal static bool TryGetStyleFromGenericXaml(Type type, out Style style)
+		{
+			style = null;
+
+			if (type == null)
+			{
+				return false;
+			}
+
+			var assemblyName = type.Assembly.GetName().Name;
+
+			// Don't look up styles in Uno.UI's generic.xaml - those are handled by the master dictionary
+			if (assemblyName == "Uno.UI")
+			{
+				return false;
+			}
+
+			if (assemblyName is not null && _registeredDictionariesByAssembly.TryGetValue(assemblyName, out var assemblyDict))
+			{
+				// The assemblyDict is a ResourceDictionary that contains ResourceDictionaries for each registered Generic.xaml.
+				// When iterating, kvp.Value is already the materialized ResourceDictionary.
+				foreach (var kvp in assemblyDict)
+				{
+					if (kvp.Value is ResourceDictionary rd
+						&& rd.TryGetValue(type, out var value, shouldCheckSystem: false)
+						&& value is Style foundStyle)
+					{
+						style = foundStyle;
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		/// <summary>
 		/// Try to retrieve a resource value from system-level resources.
 		/// </summary>
 		internal static bool TrySystemResourceRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, out object value) => MasterDictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false);
