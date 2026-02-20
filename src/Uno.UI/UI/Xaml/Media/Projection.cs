@@ -43,7 +43,7 @@ public partial class Projection : DependencyObject
 	/// <summary>
 	/// Raises the Changed event.
 	/// </summary>
-	protected void OnPropertyChanged()
+	private protected void OnPropertyChanged()
 	{
 		Changed?.Invoke(this, EventArgs.Empty);
 	}
