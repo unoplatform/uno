@@ -16,7 +16,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 	{
 		[Test]
 		[AutoRetry]
-		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
+		[ActivePlatforms(Platform.Browser)] // Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688
 		public void When_Target_Is_Set_After_Start()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Media_Animation.SetTargetProperty");

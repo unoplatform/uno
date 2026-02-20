@@ -133,7 +133,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 
 		[Test]
 		[AutoRetry]
-		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
+		[ActivePlatforms(Platform.Browser)] // Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688
 		public void ScrollViewer_Removed_And_Added()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_Add_Remove");
@@ -165,7 +165,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 
 		[Test]
 		[AutoRetry]
-		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
+		[ActivePlatforms(Platform.Browser)] // Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688
 		public void ScrollViewer_Margin()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_Margin");
@@ -219,7 +219,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 
 		[Test]
 		[AutoRetry]
-		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
+		[ActivePlatforms(Platform.Browser)] // Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688
 		public void ScrollViewer_Margin_Centered()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_Margin_Centered");

@@ -38,8 +38,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.Browser)] // Test authoring problem on iOS
-		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
+		[ActivePlatforms(Platform.Browser)] // Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688
 		public void FlyoutTest_DataBoundButton_CommandExecutes()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.Flyout.Flyout_ButtonInContent");
@@ -62,8 +61,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.Browser)] // Test is flaky on iOS #9080
-		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
+		[ActivePlatforms(Platform.Browser)] // Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688
 		public void FlyoutTest_Target()
 		{
 			Run("Uno.UI.Samples.Content.UITests.Flyout.Flyout_Target");
@@ -123,8 +121,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.Browser)] // Very flaky on iOS #9080
-		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
+		[ActivePlatforms(Platform.Browser)] // Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688
 		public void FlyoutTest_Unloaded()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.Flyout.Flyout_Unloaded");
@@ -143,8 +140,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.Browser)] // Test authoring problem on iOS
-		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
+		[ActivePlatforms(Platform.Browser)] // Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688
 		public void FlyoutTest_Simple_FlyoutsCanBeDismissed()
 		{
 			Run("Uno.UI.Samples.Content.UITests.Flyout.Flyout_Simple");
@@ -222,8 +218,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.Browser)] // Test authoring problem on iOS
-		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
+		[ActivePlatforms(Platform.Browser)] // Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688
 		public void Flyout_Namescope()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.FlyoutTests.Flyout_Namescope");
@@ -244,7 +239,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 		[Test]
 		[AutoRetry]
-		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
+		[ActivePlatforms(Platform.Browser)] // Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688
 		public void Flyout_ShowAt_Window_Content()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.FlyoutTests.Flyout_ShowAt_Window_Content");

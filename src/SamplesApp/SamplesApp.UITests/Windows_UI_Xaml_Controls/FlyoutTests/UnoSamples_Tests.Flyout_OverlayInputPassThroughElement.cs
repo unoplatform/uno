@@ -20,16 +20,16 @@ partial class Flyout_Tests : PopupUITestBase
 #endif
 {
 #if !IS_RUNTIME_UI_TESTS
-	[Test][AutoRetry][Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")] public Task FlyoutTest_When_NoOverlayInputPassThroughElement_Then_DontPassThrough_woOn() => FlyoutTest_When_NoOverlayInputPassThroughElement_Then_DontPassThrough("woOn");
-	[Test][AutoRetry][Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")] public Task FlyoutTest_When_NoOverlayInputPassThroughElement_Then_DontPassThrough_woOff() => FlyoutTest_When_NoOverlayInputPassThroughElement_Then_DontPassThrough("woOff");
-	[Test][AutoRetry][Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")] public Task FlyoutTest_When_NoOverlayInputPassThroughElement_Then_DontPassThrough_woAuto() => FlyoutTest_When_NoOverlayInputPassThroughElement_Then_DontPassThrough("woAuto");
+	[Test][AutoRetry][ActivePlatforms(Platform.Browser)] public Task FlyoutTest_When_NoOverlayInputPassThroughElement_Then_DontPassThrough_woOn() => FlyoutTest_When_NoOverlayInputPassThroughElement_Then_DontPassThrough("woOn"); // Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688
+	[Test][AutoRetry][ActivePlatforms(Platform.Browser)] public Task FlyoutTest_When_NoOverlayInputPassThroughElement_Then_DontPassThrough_woOff() => FlyoutTest_When_NoOverlayInputPassThroughElement_Then_DontPassThrough("woOff"); // Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688
+	[Test][AutoRetry][ActivePlatforms(Platform.Browser)] public Task FlyoutTest_When_NoOverlayInputPassThroughElement_Then_DontPassThrough_woAuto() => FlyoutTest_When_NoOverlayInputPassThroughElement_Then_DontPassThrough("woAuto"); // Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688
 #else
 	[Test]
 	[AutoRetry]
 	[DataRow("woOn")]
 	[DataRow("woOff")]
 	[DataRow("woAuto")]
-	[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
+	[ActivePlatforms(Platform.Browser)] // Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688
 #endif
 	public async Task FlyoutTest_When_NoOverlayInputPassThroughElement_Then_DontPassThrough(string testCase)
 	{
@@ -59,16 +59,16 @@ partial class Flyout_Tests : PopupUITestBase
 	}
 
 #if !IS_RUNTIME_UI_TESTS
-	[Test][AutoRetry][Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")] public Task FlyoutTest_When_OverlayInputPassThroughElement_Then_PassThrough_withOn() => FlyoutTest_When_OverlayInputPassThroughElement_Then_PassThrough("withOn");
-	[Test][AutoRetry][Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")] public Task FlyoutTest_When_OverlayInputPassThroughElement_Then_PassThrough_withOff() => FlyoutTest_When_OverlayInputPassThroughElement_Then_PassThrough("withOff");
-	[Test][AutoRetry][Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")] public Task FlyoutTest_When_OverlayInputPassThroughElement_Then_PassThrough_withAuto() => FlyoutTest_When_OverlayInputPassThroughElement_Then_PassThrough("withAuto");
+	[Test][AutoRetry][ActivePlatforms(Platform.Browser)] public Task FlyoutTest_When_OverlayInputPassThroughElement_Then_PassThrough_withOn() => FlyoutTest_When_OverlayInputPassThroughElement_Then_PassThrough("withOn"); // Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688
+	[Test][AutoRetry][ActivePlatforms(Platform.Browser)] public Task FlyoutTest_When_OverlayInputPassThroughElement_Then_PassThrough_withOff() => FlyoutTest_When_OverlayInputPassThroughElement_Then_PassThrough("withOff"); // Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688
+	[Test][AutoRetry][ActivePlatforms(Platform.Browser)] public Task FlyoutTest_When_OverlayInputPassThroughElement_Then_PassThrough_withAuto() => FlyoutTest_When_OverlayInputPassThroughElement_Then_PassThrough("withAuto"); // Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688
 #else
 	[Test]
 	[AutoRetry]
 	[DataRow("withOn")]
 	[DataRow("withOff")]
 	[DataRow("withAuto")]
-	[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
+	[ActivePlatforms(Platform.Browser)] // Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688
 #endif
 	public async Task FlyoutTest_When_OverlayInputPassThroughElement_Then_PassThrough(string testCase)
 	{

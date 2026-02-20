@@ -767,7 +767,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 
 		[Test]
 		[AutoRetry]
-		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
+		[ActivePlatforms(Platform.Browser)] // Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688
 		public void Validate_Offscreen_Shapes()
 		{
 			Run("UITests.Windows_UI_Xaml_Shapes.Offscreen_Shapes");
