@@ -31,16 +31,7 @@ internal partial class TargetsAddInResolver(ILogger<TargetsAddInResolver> logger
 	{
 		var results = new List<ResolvedAddIn>();
 
-		List<(string packageName, string version)> packages;
-		try
-		{
-			packages = BuildMergedPackageList(packagesJsonPath, projectAssetsPaths);
-		}
-		catch (Exception ex)
-		{
-			_logger.LogWarning(ex, "Failed to build merged package list from {Path}", packagesJsonPath);
-			return results;
-		}
+		var packages = BuildMergedPackageList(packagesJsonPath, projectAssetsPaths);
 
 		nugetCachePaths ??= NuGetCacheHelper.GetNuGetCachePaths();
 
