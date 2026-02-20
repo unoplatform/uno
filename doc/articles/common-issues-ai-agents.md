@@ -24,7 +24,7 @@ If you want to use the App MCP with .NET 9 projects, you'll need to change `dnx`
 3. If the entry is missing, add it to the `.vs/mcp.json` file and restart Visual Studio.
 4. If the entry exists but the server shows as disconnected, click on "Reconnect" in the file editor:
 
-![Visual Studio MCP reconnect in mcp.json](Assets/vs-mcp-reconnect.png)
+    ![Visual Studio MCP reconnect in mcp.json](Assets/vs-mcp-reconnect.png)
 
 The Uno App MCP should now appear in the list of MCPs in Visual Studio.
 
