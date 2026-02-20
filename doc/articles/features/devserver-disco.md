@@ -13,6 +13,38 @@ The `disco` command inspects your development environment and reports what it fi
 - You want to verify your environment after installing or updating packages
 - You need machine-readable output for CI or AI agents
 
+## Prerequisites
+
+The `disco` command is part of the Dev Server CLI. You can run it in two ways:
+
+### [**.NET 10+**](#tab/net10)
+
+No installation needed — use `dnx` to run it directly:
+
+```bash
+dnx -y uno.devserver disco
+```
+
+### [**.NET 9**](#tab/net9)
+
+Install the CLI as a global tool, then run it:
+
+```bash
+dotnet tool install -g uno.devserver
+uno-devserver disco
+```
+
+To update an existing installation:
+
+```bash
+dotnet tool update -g uno.devserver
+```
+
+---
+
+> [!IMPORTANT]
+> Keep the CLI up to date. An older version may not report all fields or may not resolve add-ins correctly.
+
 ## Syntax
 
 ```bash
