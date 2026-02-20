@@ -956,13 +956,7 @@ public class Given_InputManager
 	}
 
 	[TestMethod]
-#if __WASM__
-	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
-	[Ignore("InputInjector is not supported on this platform.")]
-#elif RUNTIME_CORECLR || RUNTIME_NATIVE_AOT
-	[Ignore("TODO: figure out why this fails, how to fix")]
-#endif
+	[Ignore("Flaky on Skia runtime - see https://github.com/unoplatform/uno/issues/22702")]
 	public async Task When_DirectManipulationMultipleWithInertia_Then_RunsIndependently()
 	{
 		ScrollViewer sv1, sv2;
@@ -1035,13 +1029,7 @@ public class Given_InputManager
 	}
 
 	[TestMethod]
-#if __WASM__
-	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
-	[Ignore("InputInjector is not supported on this platform.")]
-#elif RUNTIME_CORECLR || RUNTIME_NATIVE_AOT
-	[Ignore("TODO: figure out why this fails, how to fix")]
-#endif
+	[Ignore("Flaky on Skia runtime - see https://github.com/unoplatform/uno/issues/22702")]
 	public async Task When_DirectManipulationMultipleWithMultipleInertia_Then_RunsIndependently()
 	{
 		ScrollViewer sv1, sv2;
