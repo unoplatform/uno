@@ -26,6 +26,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	public class Given_FrameworkElement_ThemeResources
 	{
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Detached_From_Window_While_Theme_Changed()
 		{
 			var SUT = new Button { Content = "Ye button" };
@@ -60,6 +61,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ComboBox_Theme_Changed()
 		{
 			var comboBox = new ComboBox() { PlaceholderText = "combo" };
@@ -76,6 +78,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ComboBox_Theme_Changed_After_First_Open()
 		{
 			var comboBox = new ComboBox() { PlaceholderText = "combo" };

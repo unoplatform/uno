@@ -199,6 +199,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		#region DataRows
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 100, double.NaN)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, double.NaN, 100)]

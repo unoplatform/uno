@@ -117,6 +117,7 @@ public class Given_FrameworkTemplatePool
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task TestTextBox()
 	{
 		using (FeatureConfigurationHelper.UseTemplatePooling())

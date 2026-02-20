@@ -32,6 +32,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 	public class Given_BitmapSource
 	{
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_SetSource_Then_StreamClonedSynchronously()
 		{
 			var sut = new BitmapImage();

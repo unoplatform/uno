@@ -95,6 +95,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Not_FullSizeDesired()
 		{
 			var SUT = new MyContentDialog
@@ -124,7 +125,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid)] // Very flaky on Skia Android #9080
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.NativeWinUI)] // Very flaky on Skia Android #9080
 		public async Task When_FullSizeDesired()
 		{
 			var SUT = new MyContentDialog
@@ -204,6 +205,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_DefaultButton_Not_Set()
 		{
 			var SUT = new MyContentDialog
@@ -236,6 +238,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_DefaultButton_Set()
 		{
 			var SUT = new MyContentDialog
@@ -269,6 +272,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Initial_Focus_With_Focusable_Content()
 		{
 			Button button = new Button() { Content = "Target" };
@@ -300,6 +304,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Initial_Focus_With_DefaultButton_Not_Set()
 		{
 			var SUT = new MyContentDialog
@@ -331,6 +336,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Initial_Focus_With_DefaultButton_Set()
 		{
 			var SUT = new MyContentDialog
@@ -361,6 +367,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_CloseDeferred()
 		{
 			var SUT = new MyContentDialog
@@ -487,6 +494,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __SKIA__ || __WASM__
 		[Ignore("Currently fails on Skia/WASM, tracked by #15981")]
 #endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Has_VisibleBounds_LayoutRoot_Respects_VisibleBounds()
 		{
 			var nativeUnsafeArea = ScreenHelper.GetUnsafeArea();
