@@ -102,13 +102,40 @@ jobs:
     matrix:
       'Runtime Tests 0':
         UITEST_RUNTIME_TEST_GROUP: 0
-        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 12
       'Runtime Tests 1':
         UITEST_RUNTIME_TEST_GROUP: 1
-        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 12
       'Runtime Tests 2':
         UITEST_RUNTIME_TEST_GROUP: 2
-        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 12
+      'Runtime Tests 3':
+        UITEST_RUNTIME_TEST_GROUP: 3
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 12
+      'Runtime Tests 4':
+        UITEST_RUNTIME_TEST_GROUP: 4
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 12
+      'Runtime Tests 5':
+        UITEST_RUNTIME_TEST_GROUP: 5
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 12
+      'Runtime Tests 6':
+        UITEST_RUNTIME_TEST_GROUP: 6
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 12
+      'Runtime Tests 7':
+        UITEST_RUNTIME_TEST_GROUP: 7
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 12
+      'Runtime Tests 8':
+        UITEST_RUNTIME_TEST_GROUP: 8
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 12
+      'Runtime Tests 9':
+        UITEST_RUNTIME_TEST_GROUP: 9
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 12
+      'Runtime Tests 10':
+        UITEST_RUNTIME_TEST_GROUP: 10
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 12
+      'Runtime Tests 11':
+        UITEST_RUNTIME_TEST_GROUP: 11
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 12
 
   variables:
     SamplesAppArtifactName: WinAppSDK-Package
