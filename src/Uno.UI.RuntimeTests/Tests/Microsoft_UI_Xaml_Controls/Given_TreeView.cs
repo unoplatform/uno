@@ -48,6 +48,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 {
 	[TestClass]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public partial class Given_TreeView // resources
 	{
 		private ResourceDictionary _testsResources;
