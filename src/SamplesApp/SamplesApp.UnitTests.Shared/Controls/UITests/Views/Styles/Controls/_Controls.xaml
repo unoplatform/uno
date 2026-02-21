@@ -1,16 +1,15 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-	<!-- Please keep this list ordered alphabetically -->
+    <!--  Please keep this list ordered alphabetically  -->
 
-	<ResourceDictionary.MergedDictionaries>
-		<ResourceDictionary Source="Button.xaml" />		
-		<ResourceDictionary Source="ListView.xaml" />
-		<ResourceDictionary Source="ListViewItem.xaml" />
-		<ResourceDictionary Source="Path.xaml" />
-		<ResourceDictionary Source="RadioButton.xaml" />
-		<ResourceDictionary Source="TextBlock.xaml" />
-		<ResourceDictionary Source="TextBox.xaml" />
-		<ResourceDictionary Source="ToggleButton.xaml" />
-	</ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/Controls/Button.xaml" />
+        <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/Controls/ListView.xaml" />
+        <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/Controls/ListViewItem.xaml" />
+        <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/Controls/Path.xaml" />
+        <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/Controls/RadioButton.xaml" />
+        <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/Controls/TextBlock.xaml" />
+        <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/Controls/TextBox.xaml" />
+        <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/Controls/ToggleButton.xaml" />
+    </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

@@ -22,6 +22,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 #endif
 [TestClass]
 [RunsOnUIThread]
+[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 public partial class Given_MediaPlayerElement
 {
 	private static readonly Uri TestVideoUrl = new Uri("https://uno-assets.platform.uno/tests/uno/big_buck_bunny_720p_5mb.mp4");

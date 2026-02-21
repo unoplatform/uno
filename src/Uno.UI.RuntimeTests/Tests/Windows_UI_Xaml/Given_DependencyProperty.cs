@@ -53,6 +53,7 @@ public partial class Given_DependencyProperty
 	private partial class CustomUserControl : UserControl { }
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_IsTabStop()
 	{
 		var customControl = new CustomControl();

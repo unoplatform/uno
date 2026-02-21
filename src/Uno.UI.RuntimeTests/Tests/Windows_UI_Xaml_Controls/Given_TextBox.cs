@@ -229,6 +229,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_TB_Fluent_And_Theme_Changed()
 		{
 			var textBox = new TextBox
@@ -286,6 +287,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Calling_Select_With_In_Range_Values()
 		{
 			var textBox = new TextBox
@@ -310,6 +312,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Calling_Select_With_Out_Of_Range_Length()
 		{
 			var textBox = new TextBox
@@ -334,6 +337,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Calling_Select_With_Out_Of_Range_Start()
 		{
 			var textBox = new TextBox
@@ -437,6 +441,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_IsEnabled_Set()
 		{
 			var foregroundColor = new SolidColorBrush(Colors.Red);
@@ -962,6 +967,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __ANDROID__
 		[Ignore("https://github.com/unoplatform/uno/issues/15457")]
 #endif
@@ -1101,6 +1107,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private void Given_TextBox_Showing(InputPane sender, InputPaneVisibilityEventArgs args) => throw new NotImplementedException();
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Size_Zero_Default()
 		{
 			using var uwpStyles = StyleHelper.UseUwpStyles();

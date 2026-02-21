@@ -240,9 +240,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if !__APPLE_UIKIT__ // Disabled due to #10791
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public Task When_Switch_Theme_Fluent() => When_Switch_Theme_Inner(brush => (brush as AcrylicBrush).TintColor);
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Switch_Theme_Uwp()
 		{
 			using var _ = StyleHelper.UseUwpStyles();

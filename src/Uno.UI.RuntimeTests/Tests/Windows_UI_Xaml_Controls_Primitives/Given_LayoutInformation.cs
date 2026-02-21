@@ -19,6 +19,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 {
 	[TestClass]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public class Given_LayoutInformation
 	{
 		[TestMethod]

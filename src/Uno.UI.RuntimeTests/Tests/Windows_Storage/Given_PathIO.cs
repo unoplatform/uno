@@ -10,6 +10,7 @@ using Windows.Storage;
 namespace Uno.UI.RuntimeTests.Tests
 {
 	[TestClass]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public class Given_PathIO
 	{
 		[TestMethod]

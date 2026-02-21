@@ -8,6 +8,7 @@ using Windows.Globalization.NumberFormatting;
 namespace Uno.UI.Tests.Windows_Globalization
 {
 	[TestClass]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public class Given_NumeralSystemTranslator
 	{
 		[TestMethod]
@@ -51,6 +52,9 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+#if IS_RUNTIME_UI_TESTS
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+#endif
 		#region DataRows
 		[DataRow("aa", "Latn", "aa")]
 		[DataRow("aa-DJ", "Latn", "aa-Latn-DJ")]

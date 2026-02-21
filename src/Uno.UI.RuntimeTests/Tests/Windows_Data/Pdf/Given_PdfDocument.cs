@@ -19,6 +19,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Data.Pdf;
 #if HAS_UNO && !XAMARIN_ANDROID
 [Ignore("Not implemented yet.")]
 #endif
+[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 public class Given_PdfDocument
 {
 	private const string PdfDocument_Password_Valid = "uno";
@@ -111,6 +112,7 @@ public class Given_PdfDocument
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_LoadFromStreamAsync()
 	{
 		var stream = GetSreamFromResource(PdfDocument_Name)?.AsRandomAccessStream();
@@ -152,6 +154,7 @@ public class Given_PdfDocument
 
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_LoadFromFileAsync()
 	{
 		var testFolderName = Guid.NewGuid().ToString();

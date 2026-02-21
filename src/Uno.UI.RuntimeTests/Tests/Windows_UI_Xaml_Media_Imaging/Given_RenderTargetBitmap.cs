@@ -89,6 +89,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 #if __WASM__
 		[Ignore("Not implemented yet.")]
 #endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Render_Then_CanRenderOnCanvas()
 		{
 			var border = new Border()

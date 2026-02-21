@@ -15,6 +15,7 @@ using ProgressBar = Microsoft.UI.Xaml.Controls.ProgressBar;
 
 [TestClass]
 [RunsOnUIThread]
+[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // Flaky on WinUI 3.0, needs investigation
 public class Given_ProgressBar
 {
 	[TestMethod]

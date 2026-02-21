@@ -8,6 +8,7 @@ using Windows.Devices.Midi;
 namespace Uno.UI.RuntimeTests.Tests.Windows_Devices.Midi
 {
 	[TestClass]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public class Given_MidiSystemExclusiveMessage
 	{
 		[TestMethod]

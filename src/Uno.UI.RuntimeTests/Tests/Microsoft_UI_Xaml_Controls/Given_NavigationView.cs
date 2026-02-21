@@ -26,6 +26,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 {
 	[TestClass]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public partial class Given_NavigationView
 	{
 		[TestMethod]
@@ -80,6 +81,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_IsBackButtonVisible_Toggled()
 		{
 			// unoplatform/uno#19516

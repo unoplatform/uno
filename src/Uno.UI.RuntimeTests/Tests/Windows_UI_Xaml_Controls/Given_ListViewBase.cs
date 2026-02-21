@@ -42,11 +42,13 @@ using static Private.Infrastructure.TestServices;
 using static Uno.UI.Extensions.ViewExtensions;
 using MUXControlsTestApp.Utilities;
 
+#if !WINAPPSDK
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 #if __APPLE_UIKIT__
 	[Ignore("Disable all listview tests until crash is resolved https://github.com/unoplatform/uno/issues/17101")]
 #endif
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public partial class Given_ListViewBase // resources
 	{
 		private ResourceDictionary _testsResources;
@@ -689,6 +691,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __APPLE_UIKIT__
 		[Ignore("The test can't find MultiSelectSquare")]
 #endif
@@ -3637,6 +3640,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Binding_and_Item_Removed()
 		{
 			const int ITEMS_TO_ADD = 6;
@@ -3780,6 +3784,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Incremental_Load_Default()
 		{
 			const int BatchSize = 25;
@@ -4235,6 +4240,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Header_DataContext()
 		{
 			TextBlock header = new TextBlock { Text = "empty" };
@@ -4279,6 +4285,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[RunsOnUIThread]
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Footer_DataContext()
 		{
 			TextBlock header = new TextBlock { Text = "empty" };
@@ -5466,3 +5473,4 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 	}
 }
+#endif

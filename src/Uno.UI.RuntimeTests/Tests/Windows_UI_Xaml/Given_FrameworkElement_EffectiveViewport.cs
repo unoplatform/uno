@@ -31,6 +31,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
 	[TestClass]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // WinUI's implementation of EVP is very broken, and we don't have the resources to fix it right now. See
 	public partial class Given_FrameworkElement_EffectiveViewport
 	{
 #if __ANDROID__
@@ -199,6 +200,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		#region DataRows
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 100, double.NaN)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, double.NaN, 100)]

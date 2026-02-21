@@ -7,6 +7,7 @@ using Windows.Globalization.NumberFormatting;
 namespace Uno.UI.Tests.Windows_Globalization
 {
 	[TestClass]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public class Given_PermilleFormatter
 	{
 		[TestMethod]

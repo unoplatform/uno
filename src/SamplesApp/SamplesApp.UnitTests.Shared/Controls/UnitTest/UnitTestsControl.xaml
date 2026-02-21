@@ -84,6 +84,11 @@
                                         <TextBlock Text="Auto retry" />
                                     </StackPanel>
                                 </ToggleButton>
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <TextBox x:Name="testGroupNumber" PlaceholderText="Group # (e.g. 0)" Width="140" />
+                                    <TextBox x:Name="testGroupCount" PlaceholderText="Group count (e.g. 12)" Width="160" />
+                                </StackPanel>
+                                <TextBox x:Name="testRepeatCount" PlaceholderText="Repeat count (default 1)" Width="200" />
                             </StackPanel>
                         </Flyout>
                     </Button.Flyout>
@@ -213,7 +218,7 @@
 
         <TextBlock x:Name="failedTests" Grid.Row="3" />
         <TextBlock x:Name="runningState" Grid.Row="3" />
-        <ScrollViewer Grid.Row="3">
+        <ScrollViewer x:Name="testResultsScroller" Grid.Row="3">
             <StackPanel x:Name="testResults" Background="Black" />
         </ScrollViewer>
         <Button

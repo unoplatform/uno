@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Controls;
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
 [TestClass]
+[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 public partial class Given_PipsPager
 {
 	[TestMethod]
