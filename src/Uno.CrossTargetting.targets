@@ -124,7 +124,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(TargetFramework.EndsWith('-windows10.0.19041.0'))">
-		<DefineConstants>$(DefineConstants);HAS_INPUT_INJECTOR;WINDOWS_WINUI;HAS_RENDER_TARGET_BITMAP;HAS_COMPOSITION_API</DefineConstants>
+		<DefineConstants>$(DefineConstants);WINDOWS_WINUI;HAS_RENDER_TARGET_BITMAP;HAS_COMPOSITION_API</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(TargetFramework)' == 'uap10.0.19041' ">
