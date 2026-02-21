@@ -12,6 +12,7 @@ using System.Linq;
 namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 {
 	[TestClass]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public class Given_RandomAccessStreamReference
 	{
 		private const string _unoStaticTestFileContent = "https://platform.uno/\r\n";

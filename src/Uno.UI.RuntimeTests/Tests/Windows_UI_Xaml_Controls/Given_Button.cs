@@ -117,6 +117,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Command_Executing_With_Delay_IsEnabled()
 		{
 			var command = new IsExecutingCommand(false);

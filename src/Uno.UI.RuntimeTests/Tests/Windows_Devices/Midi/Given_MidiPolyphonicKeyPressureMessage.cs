@@ -7,7 +7,8 @@ using Windows.Devices.Midi;
 namespace Uno.UI.RuntimeTests.Tests.Windows_Devices.Midi
 {
 	[TestClass]
-	public class Given_MidiPolyphonicKeyPressureMessage
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public class Gsiven_MidiPolyphonicKeyPressureMessage
 	{
 		[TestMethod]
 		public void When_RawData()

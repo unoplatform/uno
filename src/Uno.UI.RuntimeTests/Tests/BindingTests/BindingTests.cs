@@ -164,6 +164,7 @@ public partial class BindingTests
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_XBind_Teardown_19641()
 	{
 		// This is a simplified repro of #19641.

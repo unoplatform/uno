@@ -16,6 +16,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 {
 	[TestClass]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public class Given_Popup
 	{
 		[TestMethod]
@@ -183,6 +184,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // In WinUI, removing a Popup from the visual tree does not close it, and it can be reopened. This is because in WinUI the PopupRoot is not removed from the visual tree when the Popup is removed, while in Uno it is. This test just "documents" the current behavior, and can't run on WinUI.
 		public async Task When_Removed_From_VisualTree()
 		{
 			var stackPanel = new StackPanel();

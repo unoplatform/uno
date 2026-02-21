@@ -31,6 +31,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
 	[TestClass]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // WinUI's implementation of EVP is very broken, and we don't have the resources to fix it right now. See
 	public partial class Given_FrameworkElement_EffectiveViewport
 	{
 #if __ANDROID__
