@@ -53,6 +53,25 @@ namespace Uno.UI.Samples.Tests
 		private const StringComparison StrComp = StringComparison.InvariantCultureIgnoreCase;
 		private Task _runner;
 		private CancellationTokenSource _cts = new CancellationTokenSource();
+
+		private static string _crashLogPath;
+
+		private static void InitCrashLog()
+		{
+			_crashLogPath = Path.Combine(Path.GetTempPath(), "uno-runtime-tests-crash-log.txt");
+			File.WriteAllText(_crashLogPath, $"[{DateTime.Now:O}] Runtime tests crash log started\n");
+			Console.WriteLine($"Crash log: {_crashLogPath}");
+		}
+
+		private static void CrashLogWrite(string line)
+		{
+			if (_crashLogPath is null) return;
+			try
+			{
+				File.AppendAllText(_crashLogPath, $"[{DateTime.Now:HH:mm:ss.fff}] {line}\n");
+			}
+			catch { /* best-effort - never fail the test runner */ }
+		}
 #if DEBUG
 		private readonly TimeSpan DefaultUnitTestTimeout = TimeSpan.FromSeconds(300);
 #else
@@ -255,10 +274,26 @@ namespace Uno.UI.Samples.Tests
 		{
 			Interlocked.Exchange(ref _cts, new CancellationTokenSource())?.Cancel(); // cancel any previous CTS
 
+			// Apply test group settings from UI
+			if (int.TryParse(testGroupNumber.Text, out var groupNum) &&
+				int.TryParse(testGroupCount.Text, out var groupCount) &&
+				groupCount > 0 && groupNum >= 0)
+			{
+				CITestGroup = groupNum;
+				CITestGroupCount = groupCount;
+			}
+			else
+			{
+				CITestGroup = -1;
+				CITestGroupCount = -1;
+			}
+
+			var repeatCount = int.TryParse(testRepeatCount.Text, out var rc) && rc > 1 ? rc : 1;
+
 			var config = BuildConfig();
 			testResults.Children.Clear();
 
-			_runner = Task.Run(() => RunTests(_cts.Token, config));
+			_runner = Task.Run(() => RunTests(_cts.Token, config, repeatCount));
 		}
 
 
@@ -353,14 +388,27 @@ namespace Uno.UI.Samples.Tests
 						};
 
 						testResults.Children.Add(testResultBlock);
-						testResultBlock.StartBringIntoView();
+						ScrollTestResultsToBottomIfNeeded();
 					}
 				}
 			);
 		}
 
+		private void ScrollTestResultsToBottomIfNeeded()
+		{
+			var sv = testResultsScroller;
+			// Consider "near bottom" if within 50px of the end
+			var isNearBottom = sv.VerticalOffset >= sv.ScrollableHeight - 100;
+			if (isNearBottom)
+			{
+				sv.ChangeView(null, sv.ScrollableHeight, null, disableAnimation: true);
+			}
+		}
+
 		private void ReportTestResult(UnitTestClassInfo testClassInfo, UnitTestMethodInfo testMethodInfo, string testName, TimeSpan duration, TestResult testResult, Exception error = null, string message = null, string console = null)
 		{
+			CrashLogWrite($"{testResult.ToString().ToUpperInvariant()}: {testName}");
+
 			_testCases.Add(
 				new TestCaseResult
 				{
@@ -431,7 +479,7 @@ namespace Uno.UI.Samples.Tests
 				if (!IsRunningOnCI)
 				{
 					testResults.Children.Add(testResultBlock);
-					testResultBlock.StartBringIntoView();
+					ScrollTestResultsToBottomIfNeeded();
 				}
 
 				if (testResult == TestResult.Error || testResult == TestResult.Failed)
@@ -674,8 +722,10 @@ namespace Uno.UI.Samples.Tests
 			}
 		}
 
-		public async Task RunTests(CancellationToken ct, UnitTestEngineConfig config)
+		public async Task RunTests(CancellationToken ct, UnitTestEngineConfig config, int repeatCount = 1)
 		{
+			InitCrashLog();
+
 			_currentRun = new TestRun()
 			{
 				StartTime = DateTimeOffset.UtcNow
@@ -687,9 +737,7 @@ namespace Uno.UI.Samples.Tests
 
 				var testTypes = InitializeTests();
 
-				_ = ReportMessage($"Running tests ({testTypes.Count()} fixtures)...");
-
-				foreach (var type in testTypes)
+				for (int iteration = 0; iteration < repeatCount; iteration++)
 				{
 					if (ct.IsCancellationRequested)
 					{
@@ -697,11 +745,24 @@ namespace Uno.UI.Samples.Tests
 						break;
 					}
 
-					var instance = Activator.CreateInstance(type: type.Type);
+					var iterationLabel = repeatCount > 1 ? $" (iteration {iteration + 1}/{repeatCount})" : "";
+					_ = ReportMessage($"Running tests ({testTypes.Count()} fixtures){iterationLabel}...");
 
-					await ExecuteTestsForInstance(ct, instance, type, config);
+					foreach (var type in testTypes)
+					{
+						if (ct.IsCancellationRequested)
+						{
+							_ = ReportMessage("Stopped by user.", false);
+							break;
+						}
+
+						var instance = Activator.CreateInstance(type: type.Type);
+
+						await ExecuteTestsForInstance(ct, instance, type, config);
+					}
 				}
 
+				CrashLogWrite("ALL TESTS FINISHED");
 				_ = ReportMessage("Tests finished running.", isRunning: false);
 				ReportTestsResults();
 			}
@@ -803,6 +864,8 @@ namespace Uno.UI.Samples.Tests
 
 					_currentRun.Run++;
 					_currentRun.CurrentRepeatCount = 0;
+
+					CrashLogWrite($"STARTING: {fullTestName}");
 
 					// We await this to make sure the UI is updated before running the test.
 					// This will help developpers to identify faulty tests when the app is crashing.
@@ -1053,7 +1116,6 @@ namespace Uno.UI.Samples.Tests
 				await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
 				{
 					CloseRemainingPopups();
-
 				});
 			}
 
