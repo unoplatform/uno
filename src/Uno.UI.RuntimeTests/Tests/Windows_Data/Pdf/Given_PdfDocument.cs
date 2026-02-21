@@ -19,6 +19,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Data.Pdf;
 #if HAS_UNO && !XAMARIN_ANDROID
 [Ignore("Not implemented yet.")]
 #endif
+[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 public class Given_PdfDocument
 {
 	private const string PdfDocument_Password_Valid = "uno";
