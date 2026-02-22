@@ -210,9 +210,14 @@ namespace Microsoft.UI.Xaml.Data
 				// Convert if necessary
 				if (ParentBinding.Converter != null)
 				{
+					// For x:Bind, use the source type if available, otherwise fall back to binding path type
+					var targetType = ParentBinding.IsXBind && ParentBinding.XBindSourceType != null
+						? ParentBinding.XBindSourceType
+						: _bindingPath.ValueType;
+
 					value = ParentBinding.Converter.ConvertBack(
 						value,
-						_bindingPath.ValueType,
+						targetType,
 						ParentBinding.ConverterParameter,
 						GetCurrentCulture()
 					);
