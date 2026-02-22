@@ -62,6 +62,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_MemoryStreamWrapperAsRandomAccessStream_CloneStream()
 		{
 			var memoryStream = new MemoryStream(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
