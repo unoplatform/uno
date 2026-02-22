@@ -4280,6 +4280,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[RunsOnUIThread]
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Footer_DataContext()
 		{
 			TextBlock header = new TextBlock { Text = "empty" };

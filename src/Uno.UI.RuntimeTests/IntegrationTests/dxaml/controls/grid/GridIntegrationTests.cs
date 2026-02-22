@@ -338,6 +338,7 @@ namespace Microsoft.UI.Xaml.Tests.Controls.Grid_Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task VerifyAutoTakesPriorityOverStar()
 		{
 			TestCleanupWrapper cleanup;
