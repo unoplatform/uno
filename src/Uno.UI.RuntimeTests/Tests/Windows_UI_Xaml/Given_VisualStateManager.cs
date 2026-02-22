@@ -228,6 +228,61 @@ public partial class Given_VisualStateManager
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22055")]
+	public async Task When_StateTrigger_Changes_State_Events_Fire_In_Order()
+	{
+		var grid = new Grid { Width = 100, Height = 100 };
+
+		var narrowTrigger = new AdaptiveTrigger { MinWindowWidth = 0 };
+		var wideTrigger = new AdaptiveTrigger { MinWindowWidth = 100000 };
+
+		var narrowState = new VisualState { Name = "NarrowState" };
+		narrowState.StateTriggers.Add(narrowTrigger);
+
+		var wideState = new VisualState { Name = "WideState" };
+		wideState.StateTriggers.Add(wideTrigger);
+
+		var group = new VisualStateGroup();
+		group.States.Add(narrowState);
+		group.States.Add(wideState);
+
+		var events = new List<string>();
+		group.CurrentStateChanging += (s, e) => events.Add($"CHANGING:{e.OldState?.Name}->{e.NewState?.Name}");
+		group.CurrentStateChanged += (s, e) => events.Add($"CHANGED:{e.OldState?.Name}->{e.NewState?.Name}");
+
+		VisualStateManager.SetVisualStateGroups(grid, new List<VisualStateGroup> { group });
+
+		await UITestHelper.Load(grid);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// NarrowState should be active initially (MinWindowWidth=0 always matches)
+		Assert.AreEqual("NarrowState", group.CurrentState?.Name, "Initial state should be NarrowState");
+
+		// Clear events from initial state setup
+		events.Clear();
+
+		// Now trigger WideState by lowering its threshold so it wins
+		wideTrigger.MinWindowWidth = 1;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual("WideState", group.CurrentState?.Name, "State should have changed to WideState");
+
+		// Verify both events fired
+		Assert.IsTrue(events.Count >= 2, $"Expected at least 2 events, got {events.Count}: {string.Join(", ", events)}");
+
+		// Verify CHANGING fires before CHANGED
+		var changingIndex = events.FindIndex(e => e.StartsWith("CHANGING:"));
+		var changedIndex = events.FindIndex(e => e.StartsWith("CHANGED:"));
+		Assert.IsTrue(changingIndex >= 0, "CurrentStateChanging should have fired");
+		Assert.IsTrue(changedIndex >= 0, "CurrentStateChanged should have fired");
+		Assert.IsTrue(changingIndex < changedIndex, "CurrentStateChanging should fire before CurrentStateChanged");
+
+		// Verify the events reference correct states
+		Assert.AreEqual("CHANGING:NarrowState->WideState", events[changingIndex]);
+		Assert.AreEqual("CHANGED:NarrowState->WideState", events[changedIndex]);
+	}
+
+	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20708")]
 	public async Task When_Custom_StateTriggers_Initial_State()
 	{
