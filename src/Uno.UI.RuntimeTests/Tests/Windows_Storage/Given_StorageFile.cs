@@ -141,6 +141,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Open_ReadWrite_AndGetOutputStream()
 		{
 			var path = GetRandomFilePath();

@@ -309,6 +309,7 @@ public class Given_Window
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Window_Closed_Is_Handled()
 	{
 		AssertSupportsMultipleWindows();

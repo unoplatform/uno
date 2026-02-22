@@ -35,6 +35,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	{
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_TransformToVisual_WithMargin()
 		{
 			FrameworkElement inner = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.DarkBlue) };

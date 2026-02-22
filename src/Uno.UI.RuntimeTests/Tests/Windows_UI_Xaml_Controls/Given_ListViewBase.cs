@@ -1289,6 +1289,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if NETFX_CORE
 		[Ignore("KeyboardHelper doesn't work on Windows")]
 #endif

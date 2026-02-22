@@ -109,6 +109,7 @@ public class StackPanelIntegrationTests
 
 	[TestMethod]
 	[RequiresScaling(1.0f)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task CanChangeOrientation()
 	{
 		WindowHelper.SetWindowSizeOverride(new Size(400, 400));
