@@ -14,6 +14,7 @@ using static Private.Infrastructure.TestServices;
 using Microsoft.UI.Xaml.Media.Animation;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation.TestPages;
 using Private.Infrastructure;
+using MUXControlsTestApp.Utilities;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation;
 
@@ -60,5 +61,47 @@ public class Given_DoubleAnimationUsingKeyFrames
 		var SUT = new BeginStopBegin();
 		await UITestHelper.Load(SUT);
 		await TestServices.WindowHelper.WaitFor(() => SUT.MyAnimatedTranslateTransform.X == 500);
+	}
+
+	[TestMethod]
+	public async Task When_KeyFrameValue_From_StaticResource_In_ControlTemplate()
+	{
+		// This tests that keyframe values sourced from StaticResource bindings
+		// inside a ControlTemplate are correctly resolved when Begin() calls Play() synchronously.
+		// The original async dispatch in Begin() existed to allow template bindings to resolve,
+		// but template bindings resolve during template application, before animations begin.
+		var page = new TestPages.KeyFrameAnimationTemplatePage();
+		WindowHelper.WindowContent = page;
+		await WindowHelper.WaitForLoaded(page);
+		await WindowHelper.WaitForIdle();
+
+		var control = page.TestControl;
+		var border = control.FindVisualChildByName("AnimatedBorder") as Border;
+		Assert.IsNotNull(border, "AnimatedBorder should exist in the template");
+
+		// Verify initial state
+		Assert.AreEqual(1.0, border.Opacity, "Initial opacity should be 1.0");
+
+		// Trigger visual state with keyframe animations that use StaticResource values
+		Assert.IsTrue(
+			VisualStateManager.GoToState(control, "Animated", useTransitions: true),
+			"Failed to transition to 'Animated' visual state.");
+
+		// Wait for the animations to apply by observing the expected final values
+		await WindowHelper.WaitForIdle();
+		await WindowHelper.WaitFor(() => Math.Abs(border.Opacity - 0.5) < 0.01);
+		await WindowHelper.WaitFor(() =>
+		{
+			var currentBrush = border.Background as SolidColorBrush;
+			return currentBrush is not null && currentBrush.Color == Colors.Green;
+		});
+
+		// Verify the DoubleAnimationUsingKeyFrames applied the StaticResource value (0.5)
+		Assert.AreEqual(0.5, border.Opacity, 0.01, "Opacity should be animated to 0.5 from StaticResource");
+
+		// Verify the ColorAnimationUsingKeyFrames applied the StaticResource value (Green)
+		var brush = border.Background as SolidColorBrush;
+		Assert.IsNotNull(brush, "Background should be a SolidColorBrush");
+		Assert.AreEqual(Colors.Green, brush.Color, "Background color should be animated to Green from StaticResource");
 	}
 }
