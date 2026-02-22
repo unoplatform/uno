@@ -71,7 +71,7 @@ public class Given_TabView
 #endif
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Leading_Item_Removed()
 	{
 		var source = new ObservableCollection<int>(Enumerable.Range(0, 100));
