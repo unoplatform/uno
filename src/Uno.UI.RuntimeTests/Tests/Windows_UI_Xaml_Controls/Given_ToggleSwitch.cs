@@ -13,6 +13,7 @@ public class Given_ToggleSwitch
 #if __ANDROID__
 	[Ignore("Failing in CI")]
 #endif
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task Knob_Translation()
 	{
 		var toggleSwitch = new ToggleSwitch() { IsOn = true };

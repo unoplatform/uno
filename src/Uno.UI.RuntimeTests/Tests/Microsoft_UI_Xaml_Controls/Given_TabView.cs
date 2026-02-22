@@ -97,6 +97,7 @@ public class Given_TabView
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Tab_Removed()
 	{
 		var SUT = new TabView

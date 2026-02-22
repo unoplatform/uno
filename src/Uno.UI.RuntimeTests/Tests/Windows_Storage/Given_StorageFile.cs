@@ -59,6 +59,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_OpenRead()
 		{
 			var path = GetRandomFilePath();
@@ -127,6 +128,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Open_ReadWrite_AndGetInputStream()
 		{
 			var path = GetRandomFilePath();

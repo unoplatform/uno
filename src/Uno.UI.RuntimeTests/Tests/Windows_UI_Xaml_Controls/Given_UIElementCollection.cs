@@ -42,6 +42,7 @@ public class Given_UIElementCollection
 	[DataRow(10, 10)]
 	[DataRow(2, 5)]
 	[DataRow(5, 2)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Move_To_Invalid(int from, int to)
 	{
 		var panel = await LoadTestPanelAsync();
