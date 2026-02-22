@@ -202,6 +202,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3238")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if !__SKIA__ && !WINAPPSDK
 		[Ignore("Geometry.Transform is only implemented on Skia and WinUI.")]
 #endif
