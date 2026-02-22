@@ -240,9 +240,9 @@ public class Given_Window
 		AssertSupportsMultipleWindows();
 
 		var darkThemeDisposable = ThemeHelper.UseDarkTheme();
+		var sut = new Window();
 		try
 		{
-			var sut = new Window();
 			sut.Content = new Border() { Width = 100, Height = 100, RequestedTheme = ElementTheme.Light };
 			sut.Activate();
 			await TestServices.WindowHelper.WaitForLoaded(sut.Content as FrameworkElement);
@@ -253,6 +253,7 @@ public class Given_Window
 		{
 			// Reset the theme to avoid affecting other tests
 			darkThemeDisposable.Dispose();
+			sut.Close();
 		}
 	}
 
