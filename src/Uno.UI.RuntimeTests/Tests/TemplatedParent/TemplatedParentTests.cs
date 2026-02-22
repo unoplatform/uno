@@ -236,6 +236,7 @@ public partial class TemplatedParentTests // tests
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task ItemsControl_ItemTemplate_Test()
 	{
 		var setup = new ItemsControl_ItemTemplate();

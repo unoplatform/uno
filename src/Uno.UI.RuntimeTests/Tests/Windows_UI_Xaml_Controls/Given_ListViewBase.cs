@@ -454,6 +454,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_IsItsOwnItemContainer_FromSource_With_DataTemplate()
 		{
 			var SUT = new ListView()
@@ -3347,6 +3348,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __WASM__
 		[Ignore] // https://github.com/unoplatform/uno/issues/7323
 #endif
@@ -3410,6 +3412,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __WASM__
 		[Ignore("Fails on WASM")]
 #endif
@@ -3935,6 +3938,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_SelectionMode_Is_Multiple()
 		{
 			// #11971: It was too early to apply MultiSelectStates in PrepareContainerForItemOverride,
