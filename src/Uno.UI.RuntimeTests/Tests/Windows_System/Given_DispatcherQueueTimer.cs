@@ -15,6 +15,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 	public class Given_DispatcherQueueTimer
 	{
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ScheduleWorkItem()
 		{
 			var tcs = new TaskCompletionSource<object>();
@@ -40,6 +41,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ScheduleRepeatingWorkItem()
 		{
 			var tcs = new TaskCompletionSource<object>();

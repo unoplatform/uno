@@ -214,6 +214,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __SKIA__
 		[Ignore("Disabled due to https://github.com/unoplatform/uno-private/issues/878")]
 #endif

@@ -439,6 +439,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_IsEnabled_Set()
 		{
 			var foregroundColor = new SolidColorBrush(Colors.Red);
