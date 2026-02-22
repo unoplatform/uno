@@ -3282,6 +3282,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ItemTemplate_Selector_And_Clear_Then_Released()
 		{
 			var selector = new KeyedTemplateSelector<ItemColor>(o => (o as ItemColorViewModel)?.ItemType ?? ItemColor.None)

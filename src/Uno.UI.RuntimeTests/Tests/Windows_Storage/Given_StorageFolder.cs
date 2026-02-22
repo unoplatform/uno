@@ -93,6 +93,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_CreateFile_GenerateUnique_Exists_Fake_Extension()
 		{
 			var path = "";

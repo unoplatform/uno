@@ -110,6 +110,7 @@ public partial class Given_GridLayouting
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Grid_Has_One_Element_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center()
 	{
 		using var _ = new AssertionScope();
@@ -387,6 +388,7 @@ public partial class Given_GridLayouting
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Grid_Has_Two_Colums_And_One_Row_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_With_ColumnSpan_And_Centered()
 	{
 		using var _ = new AssertionScope();

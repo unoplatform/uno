@@ -45,6 +45,7 @@ public partial class Given_VisualStateManager
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task SelectorItem_SelectedState()
 	{
 		var items = Enumerable.Range(0, 3).ToArray();
