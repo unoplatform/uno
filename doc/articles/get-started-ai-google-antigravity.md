@@ -41,7 +41,8 @@ This guide walks you through configuring the Uno Platform MCPs for Google Antigr
                         "-y",
                         "uno.devserver",
                         "--mcp-app",
-                        "--force-roots-fallback"
+                        "--force-roots-fallback",
+                        "--mcp-wait-tools-list"
                     ]
                 }
             }

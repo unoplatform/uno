@@ -9,9 +9,194 @@ using Microsoft.Extensions.Logging;
 
 namespace Uno.UI.DevServer.Cli.Helpers;
 
-internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger)
+internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInResolver? addInResolver = null, DotNetVersionCache? dotNetVersionCache = null)
 {
 	private readonly ILogger<UnoToolsLocator> _logger = logger;
+	private readonly TargetsAddInResolver? _addInResolver = addInResolver;
+	private readonly DotNetVersionCache? _dotNetVersionCache = dotNetVersionCache;
+
+	public async Task<DiscoveryInfo> DiscoverAsync(string workDirectory)
+	{
+		string? globalJsonPath = null;
+		string? unoSdkSource = null;
+		string? unoSdkSourcePath = null;
+		string? unoSdkPackage = null;
+		string? unoSdkVersion = null;
+		string? unoSdkPath = null;
+		string? packagesJsonPath = null;
+		string? devServerPackageVersion = null;
+		string? devServerPackagePath = null;
+		string? settingsPackageVersion = null;
+		string? settingsPackagePath = null;
+		string? dotNetVersion = null;
+		string? dotNetTfm = null;
+		string? hostPath = null;
+		string? settingsPath = null;
+		var warnings = new List<string>();
+		var errors = new List<string>();
+
+		var globalJsonResult = await ParseGlobalJsonForUnoSdk(workDirectory);
+		globalJsonPath = globalJsonResult.globalJsonPath;
+		unoSdkPackage = globalJsonResult.sdkPackage;
+		unoSdkVersion = globalJsonResult.sdkVersion;
+		if (globalJsonPath is not null)
+		{
+			unoSdkSource = "global.json";
+			unoSdkSourcePath = globalJsonPath;
+		}
+
+		if (globalJsonResult.globalJsonPath is null)
+		{
+			errors.Add("No global.json found in current directory or parent directories.");
+		}
+		else if (unoSdkPackage is null || unoSdkVersion is null)
+		{
+			errors.Add("global.json does not define Uno.Sdk or Uno.Sdk.Private in msbuild-sdks.");
+		}
+
+		if (!string.IsNullOrWhiteSpace(unoSdkPackage) && !string.IsNullOrWhiteSpace(unoSdkVersion))
+		{
+			unoSdkPath = await EnsureNugetPackage(unoSdkPackage, unoSdkVersion, tryInstall: false);
+			if (unoSdkPath is null)
+			{
+				errors.Add($"Uno SDK package not found in NuGet cache: {unoSdkPackage} {unoSdkVersion}.");
+			}
+		}
+
+		if (!string.IsNullOrWhiteSpace(unoSdkPath))
+		{
+			packagesJsonPath = Path.Combine(unoSdkPath, "targets", "netstandard2.0", "packages.json");
+			if (!File.Exists(packagesJsonPath))
+			{
+				errors.Add($"packages.json not found at {packagesJsonPath}.");
+				packagesJsonPath = null;
+			}
+		}
+
+		devServerPackageVersion = unoSdkPath is null
+			? null
+			: await GetDevServerPackageVersion(unoSdkPath);
+		if (unoSdkPath is not null && devServerPackageVersion is null)
+		{
+			errors.Add("Uno.WinUI.DevServer version not found in packages.json.");
+		}
+
+		settingsPackageVersion = unoSdkPath is null
+			? null
+			: await GetSettingsPackageVersion(unoSdkPath);
+		if (unoSdkPath is not null && settingsPackageVersion is null)
+		{
+			warnings.Add("uno.settings.devserver version not found in packages.json.");
+		}
+
+		if (!string.IsNullOrWhiteSpace(devServerPackageVersion))
+		{
+			devServerPackagePath = await EnsureNugetPackage("Uno.WinUI.DevServer", devServerPackageVersion, tryInstall: false);
+			if (devServerPackagePath is null)
+			{
+				errors.Add($"Uno.WinUI.DevServer not found in NuGet cache: {devServerPackageVersion}.");
+			}
+		}
+
+		if (!string.IsNullOrWhiteSpace(settingsPackageVersion))
+		{
+			settingsPackagePath = await EnsureNugetPackage("uno.settings.devserver", settingsPackageVersion, tryInstall: false);
+			if (settingsPackagePath is null)
+			{
+				warnings.Add($"uno.settings.devserver not found in NuGet cache: {settingsPackageVersion}.");
+			}
+		}
+
+		var dotnetInfo = await TryGetDotNetVersionInfo(logErrors: false, globalJsonPath: globalJsonPath);
+		dotNetVersion = dotnetInfo.rawVersion;
+		dotNetTfm = dotnetInfo.tfm;
+		if (dotNetVersion is null)
+		{
+			errors.Add("Unable to determine dotnet --version.");
+		}
+
+		if (!string.IsNullOrWhiteSpace(devServerPackagePath) && !string.IsNullOrWhiteSpace(dotNetTfm))
+		{
+			var hostExe = Path.Combine(devServerPackagePath, "tools", "rc", "host", dotNetTfm, "Uno.UI.RemoteControl.Host.exe");
+			var hostDll = Path.Combine(devServerPackagePath, "tools", "rc", "host", dotNetTfm, "Uno.UI.RemoteControl.Host.dll");
+			if (File.Exists(hostExe))
+			{
+				hostPath = hostExe;
+			}
+			else if (File.Exists(hostDll))
+			{
+				hostPath = hostDll;
+			}
+			else
+			{
+				errors.Add("DevServer host not found in package at expected paths.");
+			}
+		}
+
+		if (!string.IsNullOrWhiteSpace(settingsPackagePath))
+		{
+			var settingsPathCandidate = Path.Combine(settingsPackagePath, "tools", "manager", "Uno.Settings.dll");
+			if (File.Exists(settingsPathCandidate))
+			{
+				settingsPath = settingsPathCandidate;
+			}
+			else
+			{
+				warnings.Add("Settings application not found in package at expected path.");
+			}
+		}
+
+		// Convention-based add-in discovery
+		var resolvedAddIns = new List<ResolvedAddIn>();
+		string? addInsDiscoveryMethod = null;
+		long addInsDiscoveryDurationMs = 0;
+		bool addInDiscoveryFailed = false;
+
+		if (_addInResolver is not null && packagesJsonPath is not null)
+		{
+			var addInStopwatch = Stopwatch.StartNew();
+			try
+			{
+				var projectAssetsFiles = ProjectAssetsParser.FindProjectAssetsFiles(workDirectory, _logger);
+				resolvedAddIns = _addInResolver.ResolveAddIns(packagesJsonPath, projectAssetsFiles);
+				addInsDiscoveryMethod = resolvedAddIns.Count > 0
+					? string.Join("+", resolvedAddIns.Select(a => a.DiscoverySource).Distinct())
+					: null;
+			}
+			catch (Exception ex)
+			{
+				addInDiscoveryFailed = true;
+				warnings.Add($"Convention-based add-in discovery failed: {ex.Message}");
+			}
+			addInsDiscoveryDurationMs = addInStopwatch.ElapsedMilliseconds;
+		}
+
+		return new DiscoveryInfo
+		{
+			WorkingDirectory = workDirectory,
+			GlobalJsonPath = globalJsonPath,
+			UnoSdkSource = unoSdkSource,
+			UnoSdkSourcePath = unoSdkSourcePath,
+			UnoSdkPackage = unoSdkPackage,
+			UnoSdkVersion = unoSdkVersion,
+			UnoSdkPath = unoSdkPath,
+			PackagesJsonPath = packagesJsonPath,
+			DevServerPackageVersion = devServerPackageVersion,
+			DevServerPackagePath = devServerPackagePath,
+			SettingsPackageVersion = settingsPackageVersion,
+			SettingsPackagePath = settingsPackagePath,
+			DotNetVersion = dotNetVersion,
+			DotNetTfm = dotNetTfm,
+			HostPath = hostPath,
+			SettingsPath = settingsPath,
+			AddIns = resolvedAddIns,
+			AddInsDiscoveryMethod = addInsDiscoveryMethod,
+			AddInsDiscoveryDurationMs = addInsDiscoveryDurationMs,
+			AddInDiscoveryFailed = addInDiscoveryFailed,
+			Warnings = warnings,
+			Errors = errors
+		};
+	}
 
 	public async Task<string?> ResolveSettingsExecutableAsync(string workDirectory)
 	{
@@ -92,16 +277,33 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger)
 
 	private async Task<(string? sdkPackage, string? sdkVersion)> GetSdkVersionFromGlobalJson(string searchDirectory)
 	{
+		var result = await ParseGlobalJsonForUnoSdk(searchDirectory);
+		if (result.globalJsonPath is null)
+		{
+			_logger.LogError("No global.json found in current directory or parent directories. Please run this command from within a project that uses Uno SDK.");
+			return (null, null);
+		}
+
+		_logger.LogDebug("Found global.json: {GlobalJsonPath}", result.globalJsonPath);
+
+		if (result.sdkPackage is null || result.sdkVersion is null)
+		{
+			_logger.LogWarning("global.json does not define Uno.Sdk or Uno.Sdk.Private in msbuild-sdks.");
+			return (null, null);
+		}
+
+		return (result.sdkPackage, result.sdkVersion);
+	}
+
+	private async Task<(string? globalJsonPath, string? sdkPackage, string? sdkVersion)> ParseGlobalJsonForUnoSdk(string searchDirectory)
+	{
 		try
 		{
 			var globalJsonPath = FindGlobalJson(searchDirectory);
 			if (globalJsonPath is null)
 			{
-				_logger.LogError("No global.json found in current directory or parent directories. Please run this command from within a project that uses Uno SDK.");
-				return (null, null);
+				return (null, null, null);
 			}
-
-			_logger.LogDebug("Found global.json: {GlobalJsonPath}", globalJsonPath);
 
 			var content = await File.ReadAllTextAsync(globalJsonPath);
 			using var document = JsonDocument.Parse(
@@ -116,21 +318,23 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger)
 			{
 				if (sdksElement.TryGetProperty("Uno.Sdk", out var unoSdkElement))
 				{
-					return ("Uno.Sdk", unoSdkElement.GetString() ?? "");
+					return (globalJsonPath, "Uno.Sdk", unoSdkElement.GetString() ?? "");
 				}
 
 				if (sdksElement.TryGetProperty("Uno.Sdk.Private", out var unoSdkPrivateElement))
 				{
-					return ("Uno.Sdk.Private", unoSdkPrivateElement.GetString() ?? "");
+					return (globalJsonPath, "Uno.Sdk.Private", unoSdkPrivateElement.GetString() ?? "");
 				}
 			}
+
+			return (globalJsonPath, null, null);
 		}
 		catch (Exception ex)
 		{
 			_logger.LogWarning(ex, "Failed to parse global.json: {ErrorMessage}", ex.Message);
 		}
 
-		return (null, null);
+		return (null, null, null);
 	}
 
 	private async Task InstallUnoSdk(string packageId, string version)
@@ -168,14 +372,14 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger)
 		}
 	}
 
+	internal static IReadOnlyList<string> GetNuGetCachePaths()
+		=> NuGetCacheHelper.GetNuGetCachePaths();
+
 	private async Task<string?> EnsureNugetPackage(string packageId, string version, bool tryInstall = true)
 	{
-		var possiblePaths = new[]
-		{
-			Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".nuget", "packages", packageId.ToLowerInvariant(), version),
-			Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "NuGet", "packages", packageId.ToLowerInvariant(), version),
-			Path.Combine(Environment.GetEnvironmentVariable("NUGET_PACKAGES") ?? "", packageId.ToLowerInvariant(), version)
-		};
+		var possiblePaths = GetNuGetCachePaths()
+			.Select(p => Path.Combine(p, packageId.ToLowerInvariant(), version))
+			.ToArray();
 
 		foreach (var path in possiblePaths)
 		{
@@ -340,6 +544,27 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger)
 
 	private async Task<string?> GetDotNetVersion()
 	{
+		var result = await TryGetDotNetVersionInfo(logErrors: true);
+		return result.tfm;
+	}
+
+	private async Task<(string? rawVersion, string? tfm)> TryGetDotNetVersionInfo(bool logErrors, string? globalJsonPath = null, bool force = false)
+	{
+		if (_dotNetVersionCache is not null)
+		{
+			try
+			{
+				return await _dotNetVersionCache.GetOrRefreshAsync(globalJsonPath, force);
+			}
+			catch (Exception ex)
+			{
+				if (logErrors)
+				{
+					_logger.LogWarning(ex, "DotNetVersionCache failed, falling back to direct subprocess");
+				}
+			}
+		}
+
 		try
 		{
 			var processInfo = new ProcessStartInfo
@@ -355,8 +580,11 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger)
 			using var process = Process.Start(processInfo);
 			if (process == null)
 			{
-				_logger.LogWarning("Failed to start dotnet --version process");
-				return null;
+				if (logErrors)
+				{
+					_logger.LogWarning("Failed to start dotnet --version process");
+				}
+				return (null, null);
 			}
 
 			var output = await process.StandardOutput.ReadToEndAsync();
@@ -365,32 +593,47 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger)
 			if (process.ExitCode == 0 && !string.IsNullOrWhiteSpace(output))
 			{
 				var version = output.Trim();
-				_logger.LogDebug("Raw .NET version output: {Version}", version);
+				if (logErrors)
+				{
+					_logger.LogDebug("Raw .NET version output: {Version}", version);
+				}
 
 				var sanitizedVersion = version.Split('-')[0]; // Remove any pre-release suffix
 
 				if (Version.TryParse(sanitizedVersion, out var parsedVersion))
 				{
 					var targetFramework = $"net{parsedVersion.Major}.{parsedVersion.Minor}";
-					_logger.LogDebug("Parsed target framework: {TargetFramework}", targetFramework);
-					return targetFramework;
+					if (logErrors)
+					{
+						_logger.LogDebug("Parsed target framework: {TargetFramework}", targetFramework);
+					}
+					return (version, targetFramework);
 				}
 				else
 				{
-					_logger.LogDebug("Failed to parse .NET Version");
+					if (logErrors)
+					{
+						_logger.LogDebug("Failed to parse .NET Version");
+					}
 				}
 			}
 			else
 			{
-				_logger.LogWarning("dotnet --version failed with exit code {ExitCode}", process.ExitCode);
+				if (logErrors)
+				{
+					_logger.LogWarning("dotnet --version failed with exit code {ExitCode}", process.ExitCode);
+				}
 			}
 
-			return null;
+			return (null, null);
 		}
 		catch (Exception ex)
 		{
-			_logger.LogError(ex, "Error getting .NET version: {ErrorMessage}", ex.Message);
-			return null;
+			if (logErrors)
+			{
+				_logger.LogError(ex, "Error getting .NET version: {ErrorMessage}", ex.Message);
+			}
+			return (null, null);
 		}
 	}
 }

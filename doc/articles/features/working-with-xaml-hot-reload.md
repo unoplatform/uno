@@ -391,6 +391,8 @@ Here's a summary of the Hot Reload connection statuses and their corresponding i
 
 ### [**Common issues**](#tab/common-issues)
 
+- If Hot Reload cannot connect to the Dev Server, run `uno-devserver disco` to verify your environment. Ensure **hostPath** and **devServerPackageVersion** are resolved and match your Uno SDK version. See [Diagnostics (disco)](xref:Uno.Features.DevServerDisco) for a full reference.
+
 - If the Hot Reload Indicator is red and shows a connection failure, ensure that you have the [latest stable version](https://www.nuget.org/packages/Uno.Sdk/latest) of [Uno.SDK](xref:Uno.Features.Uno.Sdk) and the latest version of your IDE’s extension ([Visual Studio](https://aka.platform.uno/vs-extension-marketplace), [Visual Studio Code](https://aka.platform.uno/vscode-extension-marketplace), or [Rider](https://aka.platform.uno/rider-extension-marketplace)). Additionally, [re-run Uno.Check](xref:UnoCheck.UsingUnoCheck) to update dependencies, then relaunch your IDE, [sign in with your Uno Platform account](xref:Uno.GetStarted.Licensing), and rebuild your application.
 
   For existing applications, refer to our [migration guide](xref:Uno.Development.MigratingFromPreviousReleases) for upgrade steps.

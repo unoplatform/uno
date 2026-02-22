@@ -19,7 +19,9 @@ internal static class ToolCacheFile
 		string json,
 		string cachePath,
 		ILogger logger,
-		out Tool[] tools)
+		out Tool[] tools,
+		string? expectedWorkspaceHash = null,
+		string? expectedUnoSdkVersion = null)
 	{
 		tools = [];
 		var trimmed = json.AsSpan().TrimStart();
@@ -70,6 +72,31 @@ internal static class ToolCacheFile
 					CacheVersion);
 			}
 
+			// Validate metadata if both expected and stored values are present
+			if (expectedWorkspaceHash is not null
+				&& entry.WorkspaceHash is not null
+				&& !string.Equals(expectedWorkspaceHash, entry.WorkspaceHash, StringComparison.OrdinalIgnoreCase))
+			{
+				logger.LogDebug(
+					"Tool cache workspace hash mismatch for {Path} (found {Found}, expected {Expected})",
+					cachePath,
+					entry.WorkspaceHash,
+					expectedWorkspaceHash);
+				return false;
+			}
+
+			if (expectedUnoSdkVersion is not null
+				&& entry.UnoSdkVersion is not null
+				&& !string.Equals(expectedUnoSdkVersion, entry.UnoSdkVersion, StringComparison.Ordinal))
+			{
+				logger.LogDebug(
+					"Tool cache SDK version mismatch for {Path} (found {Found}, expected {Expected})",
+					cachePath,
+					entry.UnoSdkVersion,
+					expectedUnoSdkVersion);
+				return false;
+			}
+
 			if (!TryValidateCachedTools(entry.Tools, out var reason))
 			{
 				logger.LogWarning(
@@ -117,7 +144,7 @@ internal static class ToolCacheFile
 		return true;
 	}
 
-	public static ToolCacheEntry CreateEntry(Tool[] tools)
+	public static ToolCacheEntry CreateEntry(Tool[] tools, string? workspaceHash = null, string? unoSdkVersion = null)
 	{
 		var cloned = tools.ToArray();
 		var normalizedJson = JsonSerializer.Serialize(cloned, McpJsonUtilities.DefaultOptions);
@@ -128,7 +155,23 @@ internal static class ToolCacheFile
 			Version = CacheVersion,
 			Tools = cloned,
 			Checksum = checksum,
+			WorkspaceHash = workspaceHash,
+			UnoSdkVersion = unoSdkVersion,
+			Timestamp = DateTimeOffset.UtcNow,
 		};
+	}
+
+	internal static string ComputeWorkspaceHash(string? solutionDirectory)
+	{
+		if (string.IsNullOrWhiteSpace(solutionDirectory))
+		{
+			return string.Empty;
+		}
+
+		var normalized = solutionDirectory.Replace('\\', '/').ToLowerInvariant();
+		var bytes = Encoding.UTF8.GetBytes(normalized);
+		var hash = SHA256.HashData(bytes);
+		return Convert.ToHexString(hash)[..16];
 	}
 
 	private static string ComputeChecksum(string payload)
@@ -166,5 +209,8 @@ internal static class ToolCacheFile
 		public int Version { get; set; }
 		public Tool[] Tools { get; set; } = [];
 		public string Checksum { get; set; } = string.Empty;
+		public string? WorkspaceHash { get; set; }
+		public string? UnoSdkVersion { get; set; }
+		public DateTimeOffset? Timestamp { get; set; }
 	}
 }

@@ -13,6 +13,7 @@ using Uno.UI.RemoteControl.Server.Telemetry;
 
 namespace Uno.UI.RemoteControl.Host.Extensibility;
 
+/// <seealso href="../../Uno.UI.DevServer.Cli/addin-discovery.md"/>
 public class AddIns
 {
 	private static readonly ILogger _log = typeof(AddIns).Log();

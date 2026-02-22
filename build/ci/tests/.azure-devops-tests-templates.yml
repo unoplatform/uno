@@ -316,3 +316,70 @@ jobs:
       CODEX_API_KEY: $(OPENAI_TOKEN)
       UNO_STUDIO_LICENSES_BIN: $(UNO_STUDIO_LICENSES_BIN)
       UNO_STUDIO_USER_JSON: $(UNO_STUDIO_USER_JSON)
+
+- job: Dotnet_Tests_Validate_DevServerCli_Compat
+  displayName: 'DevServer CLI Compat Tests'
+  timeoutInMinutes: 15
+  cancelTimeoutInMinutes: 0
+  dependsOn: Dotnet_Tests_Validate_DevServerCli
+
+  pool:
+    name: $(poolName)
+    vmImage: $(vmImage)
+
+  strategy:
+    matrix:
+      hosted_ubuntu:
+        poolName: '${{ parameters.vmPoolLinux }}'
+        vmImage:
+      hosted_windows:
+        poolName: '${{ parameters.poolName }}'
+        vmImage:
+      macos:
+        vmImage: 'macOS-15'
+        poolName:
+
+  variables:
+    NuGetAuditMode: direct
+
+  steps:
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      artifactName: 'Nuget_Packages'
+
+  - task: UseDotNet@2
+    displayName: Install .NET 10 SDK
+    inputs:
+      packageType: 'sdk'
+      version: '10.0.101'
+
+  - template: ../templates/gitversion.yml
+  - template: ../templates/dotnet-install.yml
+  - template: ../templates/uno-dev-feed.yml
+
+  - task: CopyFiles@2
+    displayName: Copy Artifacts to PackageCache
+    inputs:
+      SourceFolder: '$(System.ArtifactsDirectory)/Nuget_Packages/vslatest'
+      Contents: '*.nupkg'
+      TargetFolder: '$(Build.SourcesDirectory)/src/PackageCache'
+      OverWrite: true
+
+  - task: PowerShell@2
+    displayName: Setup local package feed
+    inputs:
+      targetType: 'inline'
+      script: |
+        cd $(Agent.WorkFolder)
+        dotnet nuget add source $(Build.SourcesDirectory)/src/PackageCache -n "local-source-compat"
+
+  - task: PowerShell@2
+    displayName: Run DevServer Compat Tests
+    inputs:
+      targetType: 'inline'
+      script: |
+        build/test-scripts/run-devserver-compat-tests.ps1
+      pwsh: true
+    env:
+      BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
+      NBGV_SemVer2: $(NBGV_SemVer2)

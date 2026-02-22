@@ -1,53 +1,102 @@
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using ModelContextProtocol;
 using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
 
 namespace Uno.UI.DevServer.Cli.Mcp;
 
-internal class McpProxy
+/// <summary>
+/// Top-level orchestrator for the MCP stdio-to-HTTP bridge lifecycle. Manages root initialization,
+/// DevServer startup, cache priming, and event wiring between the other MCP components.
+/// </summary>
+/// <seealso cref="MonitorDecisions"/>
+/// <seealso href="../../../specs/001-fast-devserver-startup/spec-appendix-d-mcp-improvements.md"/>
+internal class ProxyLifecycleManager
 {
-	private readonly ILogger<McpProxy> _logger;
+	private readonly ILogger<ProxyLifecycleManager> _logger;
 	private readonly DevServerMonitor _devServerMonitor;
-	private readonly McpClientProxy _mcpClientProxy;
+	private readonly McpUpstreamClient _mcpUpstreamClient;
+	private readonly HealthService _healthService;
+	private readonly ToolListManager _toolListManager;
+	private readonly McpStdioServer _mcpStdioServer;
 	private readonly Tool _addRootsTool;
-	private readonly string _toolCachePath;
-	private Tool[] _toolCache = [];
-	private bool _toolCacheLoaded;
-	private bool _shouldRefreshToolCache = true;
-	private readonly object _toolCacheLock = new();
 	private bool _waitForTools;
 	private bool _forceRootsFallback;
 	private bool _forceGenerateToolCache;
 	private string? _solutionDirectory;
-	private bool _devServerStarted;
+	private readonly MonitorDecisions.StartOnceGuard _devServerStartGuard = new();
+
+	// ┌──────────────────────────────────────────────────────────────────┐
+	// │              Observational Connection State Machine              │
+	// │                                                                  │
+	// │  Initializing                                                    │
+	// │       │                                                          │
+	// │       │ StartDevServerMonitor()                                  │
+	// │       v                                                          │
+	// │  Discovering ───[SDK/host resolved]───> Launching                │
+	// │       │                                      │                   │
+	// │       │ [resolution failed]                  │ [process ready]   │
+	// │       v                                      v                   │
+	// │  Degraded <──[max retries]──           Connecting                │
+	// │       ^                        │             │                   │
+	// │       │                        │             │ [toolListChanged] │
+	// │       │                        │             v                   │
+	// │       │                        └──────  Connected                │
+	// │       │                                      │                   │
+	// │       │                                      │ [ServerCrashed]   │
+	// │       │                                      v                   │
+	// │       └──[max reconnections]──         Reconnecting              │
+	// │                                           │                      │
+	// │                                           │ [retry]              │
+	// │                                           v                      │
+	// │                                       Discovering (cycle)        │
+	// │                                                                  │
+	// │  Any state ──[clean shutdown]──> Shutdown                        │
+	// └──────────────────────────────────────────────────────────────────┘
+	//
+	// This state machine does NOT drive behavior — it observes the state
+	// resulting from DevServerMonitor events and McpUpstreamClient callbacks.
+	// Consumers: HealthService (diagnostics), McpStdioServer (error messages).
+	//
+	// Two separate counters:
+	//   - DevServerMonitor: retry counter for initial startup failures
+	//   - _reconnectionAttempts: crash→restart cycles (reset on Connected)
+
+	private ConnectionState _connectionState = ConnectionState.Initializing;
+	private int _reconnectionAttempts;
+	private const int MaxReconnectionAttempts = 3;
 	private string? _currentDirectory;
+	private string? _workspaceHash;
 	private int _devServerPort;
 	private List<string> _forwardedArgs = [];
 	private string[] _roots = [];
 	private TaskCompletionSource<bool>? _toolCachePrimedTcs;
 	private Task? _cachePrimedWatcher;
 
-	private const string ToolCacheFileName = "tools-cache.json";
-	private bool IsToolCacheEnabled => _forceRootsFallback || _forceGenerateToolCache;
-
-	// Clients that don't support the list_updated notification
-	private static readonly string[] ClientsWithoutListUpdateSupport = ["claude-code", "codex", "codex-mcp-client"];
-
-	public McpProxy(ILogger<McpProxy> logger, DevServerMonitor mcpServerMonitor, McpClientProxy mcpClientProxy)
+	public ProxyLifecycleManager(ILogger<ProxyLifecycleManager> logger, DevServerMonitor devServerMonitor, McpUpstreamClient mcpUpstreamClient, HealthService healthService, ToolListManager toolListManager, McpStdioServer mcpStdioServer)
 	{
 		_logger = logger;
-		_devServerMonitor = mcpServerMonitor;
-		_mcpClientProxy = mcpClientProxy;
+		_devServerMonitor = devServerMonitor;
+		_mcpUpstreamClient = mcpUpstreamClient;
+		_healthService = healthService;
+		_toolListManager = toolListManager;
+		_mcpStdioServer = mcpStdioServer;
 
 		_addRootsTool = McpServerTool.Create(SetRoots, new() { Name = "uno_app_set_roots" }).ProtocolTool;
-		_toolCachePath = InitializeToolCachePath();
+	}
+
+	internal ConnectionState ConnectionState => _connectionState;
+
+	private void SetConnectionState(ConnectionState newState)
+	{
+		var oldState = _connectionState;
+		_connectionState = newState;
+		_healthService.ConnectionState = newState;
+		_logger.LogInformation("Connection state: {OldState} -> {NewState}", oldState, newState);
 	}
 
 	public async Task<int> RunAsync(
@@ -67,6 +116,11 @@ internal class McpProxy
 		_devServerPort = port;
 		_forwardedArgs = forwardedArgs;
 		_solutionDirectory = NormalizeSolutionDirectory(solutionDirectory);
+		_workspaceHash = ToolCacheFile.ComputeWorkspaceHash(_solutionDirectory);
+		_toolListManager.WorkspaceHash = _workspaceHash;
+		_toolListManager.IsToolCacheEnabled = true;
+		_toolListManager.OnToolCachePersisted = () => _toolCachePrimedTcs?.TrySetResult(true);
+		_toolListManager.OnToolCachePersistFailed = ex => FailToolCachePriming(ex);
 		InitializeToolCachePrimingTracker();
 
 		EnsureDevServerStartedFromSolutionDirectory();
@@ -84,7 +138,7 @@ internal class McpProxy
 		}
 		catch (Exception ex)
 		{
-			_logger.LogError(ex, "MCP proxy error: {Message}", ex.Message);
+			_logger.LogError(ex, "Stdio server error: {Message}", ex.Message);
 			return 1;
 		}
 	}
@@ -99,22 +153,11 @@ internal class McpProxy
 		await ProcessRoots();
 	}
 
-	private static string InitializeToolCachePath()
-	{
-		var basePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-		if (string.IsNullOrWhiteSpace(basePath))
-		{
-			basePath = Path.GetTempPath();
-		}
-
-		return Path.Combine(basePath, "Uno Platform", "uno.devserver", ToolCacheFileName);
-	}
-
 	private async Task ProcessRoots()
 	{
 		_logger.LogTrace("Processing MCP Client Roots: {Roots}", string.Join(", ", _roots));
 
-		if (_devServerStarted)
+		if (_devServerStartGuard.IsStarted)
 		{
 			_logger.LogTrace("DevServer monitor already running; skipping additional root processing");
 			return;
@@ -214,7 +257,7 @@ internal class McpProxy
 
 	private void StartDevServerMonitor(string? directory)
 	{
-		if (_devServerStarted)
+		if (!_devServerStartGuard.TryStart())
 		{
 			_logger.LogTrace("StartDevServerMonitor called but monitor already running");
 			return;
@@ -224,6 +267,7 @@ internal class McpProxy
 		if (string.IsNullOrWhiteSpace(normalized))
 		{
 			_logger.LogWarning("Unable to start DevServer monitor because the solution directory '{Directory}' is invalid", directory);
+			_devServerStartGuard.Reset();
 			FailToolCachePriming();
 			return;
 		}
@@ -231,13 +275,20 @@ internal class McpProxy
 		_logger.LogTrace("Starting DevServer monitor using solution directory {Directory}", normalized);
 		try
 		{
+			if (string.IsNullOrEmpty(_workspaceHash))
+			{
+				_workspaceHash = ToolCacheFile.ComputeWorkspaceHash(normalized);
+				_toolListManager.WorkspaceHash = _workspaceHash;
+			}
 			_devServerMonitor.StartMonitoring(normalized, _devServerPort, _forwardedArgs);
-			_devServerStarted = true;
+			_healthService.DevServerStarted = true;
+			SetConnectionState(ConnectionState.Discovering);
 			_logger.LogTrace("DevServer monitor started for {Directory} (port: {Port}, forwardedArgs: {Args})", normalized, _devServerPort, string.Join(" ", _forwardedArgs));
 		}
 		catch (Exception ex)
 		{
 			_logger.LogWarning(ex, "Unable to start DevServer monitor for solution directory '{Directory}'", normalized);
+			_devServerStartGuard.Reset();
 			FailToolCachePriming(ex);
 		}
 	}
@@ -343,20 +394,20 @@ internal class McpProxy
 
 				if (result)
 				{
-					_logger.LogInformation("Tool cache primed successfully; stopping MCP proxy");
+					_logger.LogInformation("Tool cache primed successfully; stopping stdio server");
 				}
 				else
 				{
-					_logger.LogWarning("Tool cache priming failed; stopping MCP proxy");
+					_logger.LogWarning("Tool cache priming failed; stopping stdio server");
 				}
 			}
 			catch (OperationCanceledException)
 			{
-				_logger.LogInformation("Tool cache priming was canceled; stopping MCP proxy");
+				_logger.LogInformation("Tool cache priming was canceled; stopping stdio server");
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError(ex, "Tool cache priming failed with an exception; stopping MCP proxy");
+				_logger.LogError(ex, "Tool cache priming failed with an exception; stopping stdio server");
 			}
 
 			try
@@ -365,7 +416,7 @@ internal class McpProxy
 			}
 			catch (Exception ex)
 			{
-				_logger.LogWarning(ex, "Error while stopping MCP proxy after tool cache priming");
+				_logger.LogWarning(ex, "Error while stopping stdio server after tool cache priming");
 			}
 		}
 		catch (Exception ex)
@@ -376,106 +427,35 @@ internal class McpProxy
 
 	private async Task<int> StartMcpStdIoProxyAsync(CancellationToken ct)
 	{
-		var tcs = new TaskCompletionSource();
-
-		var builder = Host.CreateApplicationBuilder();
-		builder.Services
-			.AddMcpServer()
-			.WithStdioServerTransport()
-			.WithCallToolHandler(async (ctx, ct) =>
-			{
-				if (_forceRootsFallback && ctx.Params?.Name == _addRootsTool.Name)
-				{
-					await SetRoots(ctx.Params.Arguments?["roots"].Deserialize<string[]>() ?? []);
-					return new CallToolResult() { Content = [new TextContentBlock() { Text = "Ok" }] };
-				}
-
-				var upstreamClient = await _mcpClientProxy.UpstreamClient;
-
-				if (upstreamClient is null)
-				{
-					throw new InvalidOperationException($"The tool {ctx.Params!.Name} is unknown");
-				}
-
-				_logger.LogDebug("Invoking MCP tool {Tool}", ctx.Params!.Name);
-
-				var name = ctx.Params!.Name;
-				var args = ctx.Params.Arguments ?? new Dictionary<string, JsonElement>();
-				var adjustedArguments = args.ToDictionary(v => v.Key, v => (object?)v.Value);
-
-				var result = await upstreamClient.CallToolAsync(
-					name,
-					adjustedArguments,
-					cancellationToken: ct
-				);
-
-				return result;
-			})
-			.WithListToolsHandler(async (ctx, ct) =>
-			{
-				await EnsureRootsInitialized(ctx, tcs, ct);
-
-				if (_forceRootsFallback && _roots.Length == 0)
-				{
-					List<Tool> tools = [_addRootsTool];
-					var cachedTools = GetCachedTools();
-					if (cachedTools.Length > 0)
-					{
-						tools.AddRange(cachedTools);
-					}
-
-					_logger.LogTrace("Upstream client is not connected, returning {Count} tools", tools.Count);
-
-					// The devserver is not started yet, so there are no tools to report.
-					return new() { Tools = tools };
-				}
-
-				var upstreamClient = await _mcpClientProxy.UpstreamClient;
-
-				if (upstreamClient is null)
-				{
-					_logger.LogTrace("Upstream client is not connected, returning 0 tools");
-
-					return new() { Tools = [] };
-				}
-
-				_logger.LogTrace("Got upstream client");
-
-				_logger.LogTrace("Client requested tools list update");
-
-				var list = await upstreamClient!.ListToolsAsync(cancellationToken: ct);
-				Tool[] protocolTools = [.. list.Select(t => t.ProtocolTool)];
-
-				_logger.LogDebug("Reporting {Count} tools", protocolTools.Length);
-
-				PersistToolCacheIfNeeded(protocolTools);
-
-				return new()
-				{
-					Tools = protocolTools
-				};
-			});
-
-		builder.Logging.AddConsole(consoleLogOptions =>
-		{
-			// Configure all logs to go to stderr
-			consoleLogOptions.LogToStandardErrorThreshold = LogLevel.Trace;
-		});
-
-		var host = builder.Build();
+		var (host, tcs) = _mcpStdioServer.BuildHost(
+			EnsureRootsInitialized,
+			_addRootsTool,
+			_forceRootsFallback,
+			() => _roots,
+			async roots => await SetRoots(roots));
 
 		StartCachePrimingWatcher(host);
 
-		_mcpClientProxy.RegisterToolListChangedCallback(async () =>
+		_devServerMonitor.ServerLaunching += () =>
+		{
+			SetConnectionState(ConnectionState.Launching);
+		};
+
+		_devServerMonitor.ServerStarted += _ =>
+		{
+			SetConnectionState(ConnectionState.Connecting);
+		};
+
+		_mcpUpstreamClient.RegisterToolListChangedCallback(async () =>
 		{
 			_logger.LogTrace("Upstream tool list changed");
 
-			lock (_toolCacheLock)
-			{
-				_shouldRefreshToolCache = true;
-			}
+			SetConnectionState(ConnectionState.Connected);
+			_reconnectionAttempts = 0;
 
-			await RefreshCachedToolsFromUpstreamAsync();
+			_toolListManager.MarkShouldRefresh();
+
+			await _toolListManager.RefreshCachedToolsFromUpstreamAsync();
 
 			tcs.TrySetResult();
 
@@ -485,9 +465,28 @@ internal class McpProxy
 			);
 		});
 
+		_devServerMonitor.ServerCrashed += () =>
+		{
+			_reconnectionAttempts++;
+			if (_reconnectionAttempts > MaxReconnectionAttempts)
+			{
+				_logger.LogError("DevServer crashed {Attempts} times, entering degraded mode", _reconnectionAttempts);
+				SetConnectionState(ConnectionState.Degraded);
+			}
+			else
+			{
+				_logger.LogWarning(
+					"DevServer crashed (attempt {Attempt}/{Max}), resetting connection for reconnection",
+					_reconnectionAttempts, MaxReconnectionAttempts);
+				SetConnectionState(ConnectionState.Reconnecting);
+				_ = _mcpUpstreamClient.ResetConnectionAsync();
+			}
+		};
+
 		_devServerMonitor.ServerFailed += () =>
 		{
-			_logger.LogError("DevServer failed to start, stopping MCP proxy");
+			_logger.LogError("DevServer failed to start, stopping stdio server");
+			SetConnectionState(ConnectionState.Degraded);
 			FailToolCachePriming();
 			_ = Task.Run(async () =>
 			{
@@ -497,7 +496,7 @@ internal class McpProxy
 				}
 				catch (Exception ex)
 				{
-					_logger.LogError(ex, "Error while stopping MCP proxy host after DevServer failure.");
+					_logger.LogError(ex, "Error while stopping stdio server host after DevServer failure.");
 				}
 			});
 		};
@@ -508,7 +507,9 @@ internal class McpProxy
 		}
 		finally
 		{
-			await _mcpClientProxy.DisposeAsync();
+			SetConnectionState(ConnectionState.Shutdown);
+			await _mcpUpstreamClient.DisposeAsync();
+			await _devServerMonitor.StopMonitoringAsync();
 		}
 
 		return 0;
@@ -522,7 +523,9 @@ internal class McpProxy
 			return;
 		}
 
-		var clientSupportsRoots = !_forceRootsFallback && (ctx.Server.ClientCapabilities?.Roots?.ListChanged ?? false);
+		var clientSupportsRoots = MonitorDecisions.DetermineClientSupportsRoots(
+			_forceRootsFallback,
+			rootsCapabilityPresent: ctx.Server.ClientCapabilities?.Roots is not null);
 
 		if (!_forceRootsFallback)
 		{
@@ -553,17 +556,28 @@ internal class McpProxy
 			await ProcessRoots();
 		}
 
-		// Claude Code and Codex do not support the list_updated notification.
-		// To avoid tool invocation failures, we wait for the tools to be available
-		// after the dev server has started.
+		// When there are no cached tools, wait for the upstream server to start
+		// so the first list_tools response includes real tools. Clients that support
+		// tools/list_changed will get updates later; those that don't still get tools
+		// on the first call thanks to this wait.
 		if ((!_forceRootsFallback || !clientSupportsRoots) &&
 			(_waitForTools
-			|| ClientsWithoutListUpdateSupport.Contains(ctx.Server.ClientInfo?.Name))
+			|| !_toolListManager.HasCachedTools)
 		)
 		{
-			_logger.LogTrace("Client without list_updated support detected, waiting for upstream server to start");
+			_logger.LogTrace("No cached tools available, waiting for upstream server to start");
 
-			await tcs.Task;
+			using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+			timeoutCts.CancelAfter(ToolListManager.ListToolsTimeoutMs);
+
+			try
+			{
+				await tcs.Task.WaitAsync(timeoutCts.Token);
+			}
+			catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+			{
+				_logger.LogWarning("Timed out waiting for upstream tools after {Timeout}ms", ToolListManager.ListToolsTimeoutMs);
+			}
 		}
 	}
 
@@ -585,128 +599,6 @@ internal class McpProxy
 		{
 			_logger.LogDebug(ex, "Unable to normalize fallback root '{Directory}'", directory);
 			return directory;
-		}
-	}
-
-	private async Task RefreshCachedToolsFromUpstreamAsync()
-	{
-		if (!IsToolCacheEnabled)
-		{
-			return;
-		}
-
-		try
-		{
-			var upstreamClient = await _mcpClientProxy.UpstreamClient;
-			if (upstreamClient is null)
-			{
-				return;
-			}
-
-			var list = await upstreamClient.ListToolsAsync();
-			Tool[] protocolTools = [.. list.Select(t => t.ProtocolTool)];
-
-			PersistToolCacheIfNeeded(protocolTools);
-		}
-		catch (Exception ex)
-		{
-			_logger.LogWarning(ex, "Unable to refresh cached tools from upstream");
-		}
-	}
-
-	private Tool[] GetCachedTools()
-	{
-		lock (_toolCacheLock)
-		{
-			if (_toolCacheLoaded)
-			{
-				return _toolCache;
-			}
-
-			_toolCacheLoaded = true;
-
-			if (!IsToolCacheEnabled)
-			{
-				return _toolCache;
-			}
-
-			try
-			{
-				if (File.Exists(_toolCachePath))
-				{
-					var json = File.ReadAllText(_toolCachePath);
-					if (ToolCacheFile.TryRead(
-						json,
-						_toolCachePath,
-						_logger,
-						out var cachedTools))
-					{
-						_toolCache = cachedTools;
-						_logger.LogTrace("Loaded {Count} cached tools from {Path}", _toolCache.Length, _toolCachePath);
-					}
-					else
-					{
-						_logger.LogWarning("Tool cache validation failed, ignoring data from {Path}", _toolCachePath);
-						_toolCache = [];
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				_logger.LogWarning(ex, "Unable to load tool cache from {Path}", _toolCachePath);
-				_toolCache = [];
-			}
-
-			return _toolCache;
-		}
-	}
-
-	private void PersistToolCacheIfNeeded(Tool[] tools)
-	{
-		if (!IsToolCacheEnabled || tools.Length == 0)
-		{
-			return;
-		}
-
-		lock (_toolCacheLock)
-		{
-			if (!_shouldRefreshToolCache)
-			{
-				return;
-			}
-
-			if (!ToolCacheFile.TryValidateCachedTools(
-				tools,
-				out var validationError))
-			{
-				_logger.LogWarning("Refusing to persist tool cache: {Reason}", validationError ?? "Unknown validation error");
-				return;
-			}
-
-			var directory = Path.GetDirectoryName(_toolCachePath);
-			try
-			{
-				if (!string.IsNullOrEmpty(directory))
-				{
-					Directory.CreateDirectory(directory);
-				}
-
-				var entry = ToolCacheFile.CreateEntry(tools);
-				var json = JsonSerializer.Serialize(entry, McpJsonUtilities.DefaultOptions);
-				File.WriteAllText(_toolCachePath, json);
-
-				_toolCache = entry.Tools;
-				_toolCacheLoaded = true;
-				_shouldRefreshToolCache = false;
-
-				_logger.LogTrace("Cached {Count} tools at {Path}", tools.Length, _toolCachePath);
-				_toolCachePrimedTcs?.TrySetResult(true);
-			}
-			catch (Exception ex)
-			{
-				_logger.LogWarning(ex, "Unable to persist tool cache to {Path}", _toolCachePath);
-				FailToolCachePriming(ex);
-			}
 		}
 	}
 
