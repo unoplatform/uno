@@ -10,43 +10,15 @@ namespace Windows.Media.Core
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Streams.IRandomAccessStreamReference Thumbnail
+		public global::System.TimeSpan BufferTime
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference MediaStreamSource.Thumbnail is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20MediaStreamSource.Thumbnail");
+				throw new global::System.NotImplementedException("The member TimeSpan MediaStreamSource.BufferTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaStreamSource.BufferTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSource", "IRandomAccessStreamReference MediaStreamSource.Thumbnail");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Protection.MediaProtectionManager MediaProtectionManager
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MediaProtectionManager MediaStreamSource.MediaProtectionManager is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaProtectionManager%20MediaStreamSource.MediaProtectionManager");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSource", "MediaProtectionManager MediaStreamSource.MediaProtectionManager");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan Duration
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaStreamSource.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaStreamSource.Duration");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSource", "TimeSpan MediaStreamSource.Duration");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSource", "TimeSpan MediaStreamSource.BufferTime");
 			}
 		}
 #endif
@@ -66,49 +38,15 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan BufferTime
+		public global::System.TimeSpan Duration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaStreamSource.BufferTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaStreamSource.BufferTime");
+				throw new global::System.NotImplementedException("The member TimeSpan MediaStreamSource.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaStreamSource.Duration");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSource", "TimeSpan MediaStreamSource.BufferTime");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.FileProperties.MusicProperties MusicProperties
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MusicProperties MediaStreamSource.MusicProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MusicProperties%20MediaStreamSource.MusicProperties");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.FileProperties.VideoProperties VideoProperties
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member VideoProperties MediaStreamSource.VideoProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoProperties%20MediaStreamSource.VideoProperties");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double? MaxSupportedPlaybackRate
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double? MediaStreamSource.MaxSupportedPlaybackRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%3F%20MediaStreamSource.MaxSupportedPlaybackRate");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSource", "double? MediaStreamSource.MaxSupportedPlaybackRate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSource", "TimeSpan MediaStreamSource.Duration");
 			}
 		}
 #endif
@@ -128,6 +66,68 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double? MaxSupportedPlaybackRate
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double? MediaStreamSource.MaxSupportedPlaybackRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%3F%20MediaStreamSource.MaxSupportedPlaybackRate");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSource", "double? MediaStreamSource.MaxSupportedPlaybackRate");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Protection.MediaProtectionManager MediaProtectionManager
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member MediaProtectionManager MediaStreamSource.MediaProtectionManager is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaProtectionManager%20MediaStreamSource.MediaProtectionManager");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSource", "MediaProtectionManager MediaStreamSource.MediaProtectionManager");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.FileProperties.MusicProperties MusicProperties
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member MusicProperties MediaStreamSource.MusicProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MusicProperties%20MediaStreamSource.MusicProperties");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.Streams.IRandomAccessStreamReference Thumbnail
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference MediaStreamSource.Thumbnail is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20MediaStreamSource.Thumbnail");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSource", "IRandomAccessStreamReference MediaStreamSource.Thumbnail");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.FileProperties.VideoProperties VideoProperties
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member VideoProperties MediaStreamSource.VideoProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoProperties%20MediaStreamSource.VideoProperties");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MediaStreamSource(global::Windows.Media.Core.IMediaStreamDescriptor descriptor)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSource", "MediaStreamSource.MediaStreamSource(IMediaStreamDescriptor descriptor)");
@@ -142,16 +142,16 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.MediaStreamSource.MediaStreamSource(Windows.Media.Core.IMediaStreamDescriptor, Windows.Media.Core.IMediaStreamDescriptor)
-		// Forced skipping of method Windows.Media.Core.MediaStreamSource.Closed.add
-		// Forced skipping of method Windows.Media.Core.MediaStreamSource.Closed.remove
-		// Forced skipping of method Windows.Media.Core.MediaStreamSource.Starting.add
-		// Forced skipping of method Windows.Media.Core.MediaStreamSource.Starting.remove
-		// Forced skipping of method Windows.Media.Core.MediaStreamSource.Paused.add
-		// Forced skipping of method Windows.Media.Core.MediaStreamSource.Paused.remove
-		// Forced skipping of method Windows.Media.Core.MediaStreamSource.SampleRequested.add
-		// Forced skipping of method Windows.Media.Core.MediaStreamSource.SampleRequested.remove
-		// Forced skipping of method Windows.Media.Core.MediaStreamSource.SwitchStreamsRequested.add
-		// Forced skipping of method Windows.Media.Core.MediaStreamSource.SwitchStreamsRequested.remove
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.operator ==(Windows.Media.Core.MediaStreamSource, Windows.Media.Core.MediaStreamSource)
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.operator !=(Windows.Media.Core.MediaStreamSource, Windows.Media.Core.MediaStreamSource)
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.Equals(Windows.Media.Core.MediaStreamSource)
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.Equals(object)
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.GetHashCode()
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void NotifyError(global::Windows.Media.Core.MediaStreamSourceErrorStatus errorStatus)
@@ -166,14 +166,6 @@ namespace Windows.Media.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSource", "void MediaStreamSource.AddStreamDescriptor(IMediaStreamDescriptor descriptor)");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.MediaStreamSource.MediaProtectionManager.set
-		// Forced skipping of method Windows.Media.Core.MediaStreamSource.MediaProtectionManager.get
-		// Forced skipping of method Windows.Media.Core.MediaStreamSource.Duration.set
-		// Forced skipping of method Windows.Media.Core.MediaStreamSource.Duration.get
-		// Forced skipping of method Windows.Media.Core.MediaStreamSource.CanSeek.set
-		// Forced skipping of method Windows.Media.Core.MediaStreamSource.CanSeek.get
-		// Forced skipping of method Windows.Media.Core.MediaStreamSource.BufferTime.set
-		// Forced skipping of method Windows.Media.Core.MediaStreamSource.BufferTime.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetBufferedRange(global::System.TimeSpan startOffset, global::System.TimeSpan endOffset)
@@ -181,10 +173,6 @@ namespace Windows.Media.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSource", "void MediaStreamSource.SetBufferedRange(TimeSpan startOffset, TimeSpan endOffset)");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.MediaStreamSource.MusicProperties.get
-		// Forced skipping of method Windows.Media.Core.MediaStreamSource.VideoProperties.get
-		// Forced skipping of method Windows.Media.Core.MediaStreamSource.Thumbnail.set
-		// Forced skipping of method Windows.Media.Core.MediaStreamSource.Thumbnail.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddProtectionKey(global::Windows.Media.Core.IMediaStreamDescriptor streamDescriptor, byte[] keyIdentifier, byte[] licenseData)
@@ -192,12 +180,35 @@ namespace Windows.Media.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSource", "void MediaStreamSource.AddProtectionKey(IMediaStreamDescriptor streamDescriptor, byte[] keyIdentifier, byte[] licenseData)");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.Closed.add
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.Closed.remove
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.Paused.add
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.Paused.remove
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.SampleRequested.add
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.SampleRequested.remove
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.Starting.add
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.Starting.remove
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.SwitchStreamsRequested.add
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.SwitchStreamsRequested.remove
 		// Forced skipping of method Windows.Media.Core.MediaStreamSource.SampleRendered.add
 		// Forced skipping of method Windows.Media.Core.MediaStreamSource.SampleRendered.remove
-		// Forced skipping of method Windows.Media.Core.MediaStreamSource.MaxSupportedPlaybackRate.set
-		// Forced skipping of method Windows.Media.Core.MediaStreamSource.MaxSupportedPlaybackRate.get
-		// Forced skipping of method Windows.Media.Core.MediaStreamSource.IsLive.set
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.BufferTime.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.BufferTime.set
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.CanSeek.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.CanSeek.set
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.Duration.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.Duration.set
 		// Forced skipping of method Windows.Media.Core.MediaStreamSource.IsLive.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.IsLive.set
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.MaxSupportedPlaybackRate.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.MaxSupportedPlaybackRate.set
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.MediaProtectionManager.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.MediaProtectionManager.set
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.MusicProperties.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.Thumbnail.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.Thumbnail.set
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.VideoProperties.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.MediaStreamSource, global::Windows.Media.Core.MediaStreamSourceClosedEventArgs> Closed

@@ -18,6 +18,7 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstance.As<I>()
 		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstance.Current.get
 	}
 }

@@ -9,63 +9,16 @@ namespace Windows.UI.Composition
 	public partial class CompositionShape : global::Windows.UI.Composition.CompositionObject
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal CompositionShape()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Matrix3x2 TransformMatrix
+		public global::System.Numerics.Vector2 CenterPoint
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Matrix3x2 CompositionShape.TransformMatrix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix3x2%20CompositionShape.TransformMatrix");
+				throw new global::System.NotImplementedException("The member Vector2 CompositionShape.CenterPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionShape.CenterPoint");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionShape", "Matrix3x2 CompositionShape.TransformMatrix");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector2 Scale
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionShape.Scale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionShape.Scale");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionShape", "Vector2 CompositionShape.Scale");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float RotationAngleInDegrees
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float CompositionShape.RotationAngleInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionShape.RotationAngleInDegrees");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionShape", "float CompositionShape.RotationAngleInDegrees");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float RotationAngle
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float CompositionShape.RotationAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionShape.RotationAngle");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionShape", "float CompositionShape.RotationAngle");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionShape", "Vector2 CompositionShape.CenterPoint");
 			}
 		}
 #endif
@@ -85,18 +38,70 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector2 CenterPoint
+		public float RotationAngle
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionShape.CenterPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionShape.CenterPoint");
+				throw new global::System.NotImplementedException("The member float CompositionShape.RotationAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionShape.RotationAngle");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionShape", "Vector2 CompositionShape.CenterPoint");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionShape", "float CompositionShape.RotationAngle");
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float RotationAngleInDegrees
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float CompositionShape.RotationAngleInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionShape.RotationAngleInDegrees");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionShape", "float CompositionShape.RotationAngleInDegrees");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector2 Scale
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector2 CompositionShape.Scale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionShape.Scale");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionShape", "Vector2 CompositionShape.Scale");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Matrix3x2 TransformMatrix
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Matrix3x2 CompositionShape.TransformMatrix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix3x2%20CompositionShape.TransformMatrix");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionShape", "Matrix3x2 CompositionShape.TransformMatrix");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.UI.Composition.CompositionShape.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.CompositionShape.CompositionShape(WinRT.IObjectReference)
+		// Forced skipping of method Windows.UI.Composition.CompositionShape.operator ==(Windows.UI.Composition.CompositionShape, Windows.UI.Composition.CompositionShape)
+		// Forced skipping of method Windows.UI.Composition.CompositionShape.operator !=(Windows.UI.Composition.CompositionShape, Windows.UI.Composition.CompositionShape)
+		// Forced skipping of method Windows.UI.Composition.CompositionShape.Equals(Windows.UI.Composition.CompositionShape)
+		// Forced skipping of method Windows.UI.Composition.CompositionShape.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.CompositionShape.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.CompositionShape.CompositionShape(WinRT.DerivedComposed)
+		// Forced skipping of method Windows.UI.Composition.CompositionShape.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.CompositionShape.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionShape.CenterPoint.get
 		// Forced skipping of method Windows.UI.Composition.CompositionShape.CenterPoint.set
 		// Forced skipping of method Windows.UI.Composition.CompositionShape.Offset.get
@@ -109,5 +114,7 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.CompositionShape.Scale.set
 		// Forced skipping of method Windows.UI.Composition.CompositionShape.TransformMatrix.get
 		// Forced skipping of method Windows.UI.Composition.CompositionShape.TransformMatrix.set
+		// Forced skipping of method Windows.UI.Composition.CompositionShape.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.CompositionShape.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -43,8 +43,19 @@ namespace Windows.UI.Composition.Interactions
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.operator ==(Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs, Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs)
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.operator !=(Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs, Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs)
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.Equals(Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs)
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.Position.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.RequestId.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.Scale.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

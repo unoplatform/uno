@@ -8,5 +8,17 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class ImageSource : global::Microsoft.UI.Xaml.DependencyObject
 	{
+		// Forced skipping of method Microsoft.UI.Xaml.Media.ImageSource.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.ImageSource.ImageSource(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.ImageSource.operator ==(Microsoft.UI.Xaml.Media.ImageSource, Microsoft.UI.Xaml.Media.ImageSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.ImageSource.operator !=(Microsoft.UI.Xaml.Media.ImageSource, Microsoft.UI.Xaml.Media.ImageSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.ImageSource.Equals(Microsoft.UI.Xaml.Media.ImageSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.ImageSource.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.ImageSource.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.ImageSource.ImageSource(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.ImageSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.ImageSource.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.ImageSource.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.ImageSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

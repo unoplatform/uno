@@ -10,16 +10,6 @@ namespace Windows.Globalization
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string FullWide
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.FullWide is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NumeralSystemIdentifiers.FullWide");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string Arab
 		{
 			get
@@ -60,6 +50,16 @@ namespace Windows.Globalization
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string Brah
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Brah is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NumeralSystemIdentifiers.Brah");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string Cham
 		{
 			get
@@ -80,11 +80,11 @@ namespace Windows.Globalization
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string MymrShan
+		public static string FullWide
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.MymrShan is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NumeralSystemIdentifiers.MymrShan");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.FullWide is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NumeralSystemIdentifiers.FullWide");
 			}
 		}
 #endif
@@ -220,6 +220,56 @@ namespace Windows.Globalization
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string MathBold
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.MathBold is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NumeralSystemIdentifiers.MathBold");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string MathDbl
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.MathDbl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NumeralSystemIdentifiers.MathDbl");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string MathMono
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.MathMono is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NumeralSystemIdentifiers.MathMono");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string MathSanb
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.MathSanb is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NumeralSystemIdentifiers.MathSanb");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string MathSans
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.MathSans is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NumeralSystemIdentifiers.MathSans");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string Mlym
 		{
 			get
@@ -260,6 +310,16 @@ namespace Windows.Globalization
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string MymrShan
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.MymrShan is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NumeralSystemIdentifiers.MymrShan");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string Nkoo
 		{
 			get
@@ -285,6 +345,16 @@ namespace Windows.Globalization
 			get
 			{
 				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Orya is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NumeralSystemIdentifiers.Orya");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string Osma
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Osma is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NumeralSystemIdentifiers.Osma");
 			}
 		}
 #endif
@@ -370,66 +440,6 @@ namespace Windows.Globalization
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string MathBold
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.MathBold is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NumeralSystemIdentifiers.MathBold");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string MathDbl
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.MathDbl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NumeralSystemIdentifiers.MathDbl");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string MathMono
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.MathMono is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NumeralSystemIdentifiers.MathMono");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string MathSanb
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.MathSanb is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NumeralSystemIdentifiers.MathSanb");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string MathSans
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.MathSans is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NumeralSystemIdentifiers.MathSans");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string Osma
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Osma is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NumeralSystemIdentifiers.Osma");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string ZmthBold
 		{
 			get
@@ -478,32 +488,12 @@ namespace Windows.Globalization
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string Brah
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Brah is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NumeralSystemIdentifiers.Brah");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.Brah.get
-		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.Osma.get
-		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.MathBold.get
-		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.MathDbl.get
-		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.MathSans.get
-		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.MathSanb.get
-		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.MathMono.get
-		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.ZmthBold.get
-		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.ZmthDbl.get
-		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.ZmthSans.get
-		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.ZmthSanb.get
-		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.ZmthMono.get
+		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.As<I>()
 		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.Arab.get
 		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.ArabExt.get
 		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.Bali.get
 		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.Beng.get
+		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.Brah.get
 		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.Cham.get
 		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.Deva.get
 		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.FullWide.get
@@ -520,6 +510,11 @@ namespace Windows.Globalization
 		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.Latn.get
 		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.Lepc.get
 		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.Limb.get
+		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.MathBold.get
+		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.MathDbl.get
+		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.MathMono.get
+		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.MathSanb.get
+		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.MathSans.get
 		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.Mlym.get
 		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.Mong.get
 		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.Mtei.get
@@ -528,6 +523,7 @@ namespace Windows.Globalization
 		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.Nkoo.get
 		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.Olck.get
 		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.Orya.get
+		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.Osma.get
 		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.Saur.get
 		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.Sund.get
 		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.Talu.get
@@ -536,5 +532,10 @@ namespace Windows.Globalization
 		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.Thai.get
 		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.Tibt.get
 		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.Vaii.get
+		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.ZmthBold.get
+		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.ZmthDbl.get
+		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.ZmthMono.get
+		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.ZmthSanb.get
+		// Forced skipping of method Windows.Globalization.NumeralSystemIdentifiers.ZmthSans.get
 	}
 }

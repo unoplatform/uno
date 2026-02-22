@@ -8,15 +8,26 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class TargetPropertyPath
 	{
-		// Skipping already declared property Target
 		// Skipping already declared property Path
-		// Skipping already declared method Microsoft.UI.Xaml.TargetPropertyPath.TargetPropertyPath(Microsoft.UI.Xaml.DependencyProperty)
-		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.TargetPropertyPath(Microsoft.UI.Xaml.DependencyProperty)
+		// Skipping already declared property Target
 		// Skipping already declared method Microsoft.UI.Xaml.TargetPropertyPath.TargetPropertyPath()
 		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.TargetPropertyPath()
+		// Skipping already declared method Microsoft.UI.Xaml.TargetPropertyPath.TargetPropertyPath(Microsoft.UI.Xaml.DependencyProperty)
+		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.TargetPropertyPath(Microsoft.UI.Xaml.DependencyProperty)
+		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.operator ==(Microsoft.UI.Xaml.TargetPropertyPath, Microsoft.UI.Xaml.TargetPropertyPath)
+		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.operator !=(Microsoft.UI.Xaml.TargetPropertyPath, Microsoft.UI.Xaml.TargetPropertyPath)
+		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.Equals(Microsoft.UI.Xaml.TargetPropertyPath)
+		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.Path.get
 		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.Path.set
 		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.Target.get
 		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.Target.set
+		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

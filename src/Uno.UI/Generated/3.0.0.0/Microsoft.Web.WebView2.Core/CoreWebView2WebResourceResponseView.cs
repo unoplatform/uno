@@ -43,9 +43,16 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView.Headers.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView.StatusCode.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView.ReasonPhrase.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView, Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView, Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView.Equals(Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> GetContentAsync()
@@ -53,5 +60,9 @@ namespace Microsoft.Web.WebView2.Core
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> CoreWebView2WebResourceResponseView.GetContentAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIRandomAccessStream%3E%20CoreWebView2WebResourceResponseView.GetContentAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView.Headers.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView.ReasonPhrase.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView.StatusCode.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -13,6 +13,16 @@ namespace Windows.System
 		{
 		}
 #endif
+		// Forced skipping of method Windows.System.ProtocolForResultsOperation.FromAbi(nint)
+		// Forced skipping of method Windows.System.ProtocolForResultsOperation.operator ==(Windows.System.ProtocolForResultsOperation, Windows.System.ProtocolForResultsOperation)
+		// Forced skipping of method Windows.System.ProtocolForResultsOperation.operator !=(Windows.System.ProtocolForResultsOperation, Windows.System.ProtocolForResultsOperation)
+		// Forced skipping of method Windows.System.ProtocolForResultsOperation.Equals(Windows.System.ProtocolForResultsOperation)
+		// Forced skipping of method Windows.System.ProtocolForResultsOperation.Equals(object)
+		// Forced skipping of method Windows.System.ProtocolForResultsOperation.GetHashCode()
+		// Forced skipping of method Windows.System.ProtocolForResultsOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.ProtocolForResultsOperation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.ProtocolForResultsOperation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.ProtocolForResultsOperation.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ReportCompleted(global::Windows.Foundation.Collections.ValueSet data)
@@ -20,5 +30,6 @@ namespace Windows.System
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.ProtocolForResultsOperation", "void ProtocolForResultsOperation.ReportCompleted(ValueSet data)");
 		}
 #endif
+		// Forced skipping of method Windows.System.ProtocolForResultsOperation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

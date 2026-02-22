@@ -10,20 +10,31 @@ namespace Windows.ApplicationModel.Background
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ToastNotificationHistoryChangedTrigger(string applicationId)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger", "ToastNotificationHistoryChangedTrigger.ToastNotificationHistoryChangedTrigger(string applicationId)");
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger.ToastNotificationHistoryChangedTrigger(string)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ToastNotificationHistoryChangedTrigger()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger", "ToastNotificationHistoryChangedTrigger.ToastNotificationHistoryChangedTrigger()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger.ToastNotificationHistoryChangedTrigger()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public ToastNotificationHistoryChangedTrigger(string applicationId)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger", "ToastNotificationHistoryChangedTrigger.ToastNotificationHistoryChangedTrigger(string applicationId)");
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger.ToastNotificationHistoryChangedTrigger(string)
+		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger.operator ==(Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger, Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger.operator !=(Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger, Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger.Equals(Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger
 	}
 }

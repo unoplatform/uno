@@ -10,29 +10,15 @@ namespace Windows.Media.Devices
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Rect Bounds
+		public bool AutoExposureEnabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect RegionOfInterest.Bounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20RegionOfInterest.Bounds");
+				throw new global::System.NotImplementedException("The member bool RegionOfInterest.AutoExposureEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RegionOfInterest.AutoExposureEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.RegionOfInterest", "Rect RegionOfInterest.Bounds");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AutoWhiteBalanceEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool RegionOfInterest.AutoWhiteBalanceEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RegionOfInterest.AutoWhiteBalanceEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.RegionOfInterest", "bool RegionOfInterest.AutoWhiteBalanceEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.RegionOfInterest", "bool RegionOfInterest.AutoExposureEnabled");
 			}
 		}
 #endif
@@ -52,43 +38,29 @@ namespace Windows.Media.Devices
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AutoExposureEnabled
+		public bool AutoWhiteBalanceEnabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RegionOfInterest.AutoExposureEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RegionOfInterest.AutoExposureEnabled");
+				throw new global::System.NotImplementedException("The member bool RegionOfInterest.AutoWhiteBalanceEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RegionOfInterest.AutoWhiteBalanceEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.RegionOfInterest", "bool RegionOfInterest.AutoExposureEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.RegionOfInterest", "bool RegionOfInterest.AutoWhiteBalanceEnabled");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Weight
+		public global::Windows.Foundation.Rect Bounds
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint RegionOfInterest.Weight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20RegionOfInterest.Weight");
+				throw new global::System.NotImplementedException("The member Rect RegionOfInterest.Bounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20RegionOfInterest.Bounds");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.RegionOfInterest", "uint RegionOfInterest.Weight");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Devices.RegionOfInterestType Type
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member RegionOfInterestType RegionOfInterest.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RegionOfInterestType%20RegionOfInterest.Type");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.RegionOfInterest", "RegionOfInterestType RegionOfInterest.Type");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.RegionOfInterest", "Rect RegionOfInterest.Bounds");
 			}
 		}
 #endif
@@ -108,25 +80,64 @@ namespace Windows.Media.Devices
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Devices.RegionOfInterestType Type
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member RegionOfInterestType RegionOfInterest.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RegionOfInterestType%20RegionOfInterest.Type");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.RegionOfInterest", "RegionOfInterestType RegionOfInterest.Type");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint Weight
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint RegionOfInterest.Weight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20RegionOfInterest.Weight");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.RegionOfInterest", "uint RegionOfInterest.Weight");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public RegionOfInterest()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.RegionOfInterest", "RegionOfInterest.RegionOfInterest()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.RegionOfInterest()
+		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.operator ==(Windows.Media.Devices.RegionOfInterest, Windows.Media.Devices.RegionOfInterest)
+		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.operator !=(Windows.Media.Devices.RegionOfInterest, Windows.Media.Devices.RegionOfInterest)
+		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.Equals(Windows.Media.Devices.RegionOfInterest)
+		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.Equals(object)
+		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.GetHashCode()
+		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.AutoExposureEnabled.get
+		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.AutoExposureEnabled.set
 		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.AutoFocusEnabled.get
 		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.AutoFocusEnabled.set
 		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.AutoWhiteBalanceEnabled.get
 		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.AutoWhiteBalanceEnabled.set
-		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.AutoExposureEnabled.get
-		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.AutoExposureEnabled.set
 		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.Bounds.get
 		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.Bounds.set
-		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.Type.get
-		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.Type.set
 		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.BoundsNormalized.get
 		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.BoundsNormalized.set
+		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.Type.get
+		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.Type.set
 		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.Weight.get
 		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.Weight.set
+		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

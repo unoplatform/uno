@@ -23,6 +23,17 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.Audio.FrameInputNodeQuantumStartedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Audio.FrameInputNodeQuantumStartedEventArgs.operator ==(Windows.Media.Audio.FrameInputNodeQuantumStartedEventArgs, Windows.Media.Audio.FrameInputNodeQuantumStartedEventArgs)
+		// Forced skipping of method Windows.Media.Audio.FrameInputNodeQuantumStartedEventArgs.operator !=(Windows.Media.Audio.FrameInputNodeQuantumStartedEventArgs, Windows.Media.Audio.FrameInputNodeQuantumStartedEventArgs)
+		// Forced skipping of method Windows.Media.Audio.FrameInputNodeQuantumStartedEventArgs.Equals(Windows.Media.Audio.FrameInputNodeQuantumStartedEventArgs)
+		// Forced skipping of method Windows.Media.Audio.FrameInputNodeQuantumStartedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.Audio.FrameInputNodeQuantumStartedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.Audio.FrameInputNodeQuantumStartedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Audio.FrameInputNodeQuantumStartedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Audio.FrameInputNodeQuantumStartedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Audio.FrameInputNodeQuantumStartedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Audio.FrameInputNodeQuantumStartedEventArgs.RequiredSamples.get
+		// Forced skipping of method Windows.Media.Audio.FrameInputNodeQuantumStartedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

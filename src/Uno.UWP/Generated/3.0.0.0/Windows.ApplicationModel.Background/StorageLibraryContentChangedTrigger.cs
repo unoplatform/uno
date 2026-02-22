@@ -13,6 +13,7 @@ namespace Windows.ApplicationModel.Background
 		{
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryContentChangedTrigger.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Background.StorageLibraryContentChangedTrigger Create(global::Windows.Storage.StorageLibrary storageLibrary)
@@ -27,6 +28,17 @@ namespace Windows.ApplicationModel.Background
 			throw new global::System.NotImplementedException("The member StorageLibraryContentChangedTrigger StorageLibraryContentChangedTrigger.CreateFromLibraries(IEnumerable<StorageLibrary> storageLibraries) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageLibraryContentChangedTrigger%20StorageLibraryContentChangedTrigger.CreateFromLibraries%28IEnumerable%3CStorageLibrary%3E%20storageLibraries%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryContentChangedTrigger.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryContentChangedTrigger.operator ==(Windows.ApplicationModel.Background.StorageLibraryContentChangedTrigger, Windows.ApplicationModel.Background.StorageLibraryContentChangedTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryContentChangedTrigger.operator !=(Windows.ApplicationModel.Background.StorageLibraryContentChangedTrigger, Windows.ApplicationModel.Background.StorageLibraryContentChangedTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryContentChangedTrigger.Equals(Windows.ApplicationModel.Background.StorageLibraryContentChangedTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryContentChangedTrigger.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryContentChangedTrigger.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryContentChangedTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryContentChangedTrigger.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryContentChangedTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryContentChangedTrigger.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryContentChangedTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger
 	}
 }

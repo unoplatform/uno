@@ -26,8 +26,8 @@ namespace Windows.Media
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.Media.IMediaMarker.Time.get
 		// Forced skipping of method Windows.Media.IMediaMarker.MediaMarkerType.get
 		// Forced skipping of method Windows.Media.IMediaMarker.Text.get
+		// Forced skipping of method Windows.Media.IMediaMarker.Time.get
 	}
 }

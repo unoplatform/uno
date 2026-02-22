@@ -115,6 +115,16 @@ namespace Windows.ApplicationModel.Calls
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string TransportDeviceId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string PhoneLine.TransportDeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhoneLine.TransportDeviceId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Calls.PhoneCallVideoCapabilities VideoCallingCapabilities
 		{
 			get
@@ -133,30 +143,24 @@ namespace Windows.ApplicationModel.Calls
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string TransportDeviceId
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneLine> FromIdAsync(global::System.Guid lineId)
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PhoneLine.TransportDeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhoneLine.TransportDeviceId");
-			}
+			throw new global::System.NotImplementedException("The member IAsyncOperation<PhoneLine> PhoneLine.FromIdAsync(Guid lineId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPhoneLine%3E%20PhoneLine.FromIdAsync%28Guid%20lineId%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.LineChanged.add
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.LineChanged.remove
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.Id.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.DisplayColor.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.NetworkState.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.DisplayName.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.Voicemail.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.NetworkName.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.CellularDetails.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.Transport.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.CanDial.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.SupportsTile.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.VideoCallingCapabilities.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.LineConfiguration.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.operator ==(Windows.ApplicationModel.Calls.PhoneLine, Windows.ApplicationModel.Calls.PhoneLine)
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.operator !=(Windows.ApplicationModel.Calls.PhoneLine, Windows.ApplicationModel.Calls.PhoneLine)
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.Equals(Windows.ApplicationModel.Calls.PhoneLine)
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> IsImmediateDialNumberAsync(string number)
@@ -178,6 +182,8 @@ namespace Windows.ApplicationModel.Calls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneLine", "void PhoneLine.DialWithOptions(PhoneDialOptions options)");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.LineChanged.add
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.LineChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void EnableTextReply(bool value)
@@ -185,42 +191,20 @@ namespace Windows.ApplicationModel.Calls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneLine", "void PhoneLine.EnableTextReply(bool value)");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.CanDial.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.CellularDetails.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.DisplayColor.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.DisplayName.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.Id.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.LineConfiguration.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.NetworkName.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.NetworkState.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.SupportsTile.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.Transport.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.TransportDeviceId.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Calls.PhoneLineDialResult DialWithResult(string number, string displayName)
-		{
-			throw new global::System.NotImplementedException("The member PhoneLineDialResult PhoneLine.DialWithResult(string number, string displayName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhoneLineDialResult%20PhoneLine.DialWithResult%28string%20number%2C%20string%20displayName%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneLineDialResult> DialWithResultAsync(string number, string displayName)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PhoneLineDialResult> PhoneLine.DialWithResultAsync(string number, string displayName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPhoneLineDialResult%3E%20PhoneLine.DialWithResultAsync%28string%20number%2C%20string%20displayName%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Calls.PhoneCallsResult GetAllActivePhoneCalls()
-		{
-			throw new global::System.NotImplementedException("The member PhoneCallsResult PhoneLine.GetAllActivePhoneCalls() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhoneCallsResult%20PhoneLine.GetAllActivePhoneCalls%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneCallsResult> GetAllActivePhoneCallsAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PhoneCallsResult> PhoneLine.GetAllActivePhoneCallsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPhoneCallsResult%3E%20PhoneLine.GetAllActivePhoneCallsAsync%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneLine> FromIdAsync(global::System.Guid lineId)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PhoneLine> PhoneLine.FromIdAsync(Guid lineId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPhoneLine%3E%20PhoneLine.FromIdAsync%28Guid%20lineId%29");
-		}
-#endif
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.VideoCallingCapabilities.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.Voicemail.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Calls.PhoneLine, object> LineChanged

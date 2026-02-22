@@ -8,10 +8,17 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class TriggerBase : global::Microsoft.UI.Xaml.DependencyObject
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal TriggerBase()
-		{
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Xaml.TriggerBase.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.TriggerBase.TriggerBase(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.TriggerBase.operator ==(Microsoft.UI.Xaml.TriggerBase, Microsoft.UI.Xaml.TriggerBase)
+		// Forced skipping of method Microsoft.UI.Xaml.TriggerBase.operator !=(Microsoft.UI.Xaml.TriggerBase, Microsoft.UI.Xaml.TriggerBase)
+		// Forced skipping of method Microsoft.UI.Xaml.TriggerBase.Equals(Microsoft.UI.Xaml.TriggerBase)
+		// Forced skipping of method Microsoft.UI.Xaml.TriggerBase.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.TriggerBase.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.TriggerBase.TriggerBase(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.TriggerBase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.TriggerBase.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.TriggerBase.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.TriggerBase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

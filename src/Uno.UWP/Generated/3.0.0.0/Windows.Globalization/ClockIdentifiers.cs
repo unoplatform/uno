@@ -10,6 +10,7 @@ namespace Windows.Globalization
 	{
 		// Skipping already declared property TwelveHour
 		// Skipping already declared property TwentyFourHour
+		// Forced skipping of method Windows.Globalization.ClockIdentifiers.As<I>()
 		// Forced skipping of method Windows.Globalization.ClockIdentifiers.TwelveHour.get
 		// Forced skipping of method Windows.Globalization.ClockIdentifiers.TwentyFourHour.get
 	}

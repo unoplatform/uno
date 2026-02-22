@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.AllJoyn
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -189,15 +188,11 @@ namespace Windows.Devices.AllJoyn
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynStatus.Ok.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynStatus.Fail.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynStatus.OperationTimedOut.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynStatus.OtherEndClosed.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynStatus.ConnectionRefused.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynStatus.As<I>()
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynStatus.AuthenticationFailed.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynStatus.AuthenticationRejectedByUser.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynStatus.SslConnectFailed.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynStatus.SslIdentityVerificationFailed.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynStatus.ConnectionRefused.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynStatus.Fail.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynStatus.InsufficientSecurity.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynStatus.InvalidArgument1.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynStatus.InvalidArgument2.get
@@ -207,5 +202,10 @@ namespace Windows.Devices.AllJoyn
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynStatus.InvalidArgument6.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynStatus.InvalidArgument7.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynStatus.InvalidArgument8.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynStatus.Ok.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynStatus.OperationTimedOut.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynStatus.OtherEndClosed.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynStatus.SslConnectFailed.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynStatus.SslIdentityVerificationFailed.get
 	}
 }

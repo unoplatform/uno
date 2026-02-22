@@ -3,37 +3,25 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Input
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class NonClientCaptionTappedEventArgs
 	{
-#if false
-		internal NonClientCaptionTappedEventArgs()
-		{
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Point Point
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Point NonClientCaptionTappedEventArgs.Point is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20NonClientCaptionTappedEventArgs.Point");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Input.PointerDeviceType PointerDeviceType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PointerDeviceType NonClientCaptionTappedEventArgs.PointerDeviceType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PointerDeviceType%20NonClientCaptionTappedEventArgs.PointerDeviceType");
-			}
-		}
-#endif
+		// Skipping already declared property Point
+		// Skipping already declared property PointerDeviceType
+		// Forced skipping of method Microsoft.UI.Input.NonClientCaptionTappedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Input.NonClientCaptionTappedEventArgs.operator ==(Microsoft.UI.Input.NonClientCaptionTappedEventArgs, Microsoft.UI.Input.NonClientCaptionTappedEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.NonClientCaptionTappedEventArgs.operator !=(Microsoft.UI.Input.NonClientCaptionTappedEventArgs, Microsoft.UI.Input.NonClientCaptionTappedEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.NonClientCaptionTappedEventArgs.Equals(Microsoft.UI.Input.NonClientCaptionTappedEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.NonClientCaptionTappedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Input.NonClientCaptionTappedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Input.NonClientCaptionTappedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.NonClientCaptionTappedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.NonClientCaptionTappedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Input.NonClientCaptionTappedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Input.NonClientCaptionTappedEventArgs.Point.get
 		// Forced skipping of method Microsoft.UI.Input.NonClientCaptionTappedEventArgs.PointerDeviceType.get
+		// Forced skipping of method Microsoft.UI.Input.NonClientCaptionTappedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -18,28 +18,7 @@ namespace Windows.UI.Notifications
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Notifications.ToastNotificationManagerForUser GetDefault()
-		{
-			throw new global::System.NotImplementedException("The member ToastNotificationManagerForUser ToastNotificationManager.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ToastNotificationManagerForUser%20ToastNotificationManager.GetDefault%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Notifications.ToastNotificationManagerForUser GetForUser(global::Windows.System.User user)
-		{
-			throw new global::System.NotImplementedException("The member ToastNotificationManagerForUser ToastNotificationManager.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ToastNotificationManagerForUser%20ToastNotificationManager.GetForUser%28User%20user%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void ConfigureNotificationMirroring(global::Windows.UI.Notifications.NotificationMirroring value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastNotificationManager", "void ToastNotificationManager.ConfigureNotificationMirroring(NotificationMirroring value)");
-		}
-#endif
-		// Forced skipping of method Windows.UI.Notifications.ToastNotificationManager.History.get
+		// Forced skipping of method Windows.UI.Notifications.ToastNotificationManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Notifications.ToastNotifier CreateToastNotifier()
@@ -61,5 +40,27 @@ namespace Windows.UI.Notifications
 			throw new global::System.NotImplementedException("The member XmlDocument ToastNotificationManager.GetTemplateContent(ToastTemplateType type) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=XmlDocument%20ToastNotificationManager.GetTemplateContent%28ToastTemplateType%20type%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.UI.Notifications.ToastNotificationManagerForUser GetForUser(global::Windows.System.User user)
+		{
+			throw new global::System.NotImplementedException("The member ToastNotificationManagerForUser ToastNotificationManager.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ToastNotificationManagerForUser%20ToastNotificationManager.GetForUser%28User%20user%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void ConfigureNotificationMirroring(global::Windows.UI.Notifications.NotificationMirroring value)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastNotificationManager", "void ToastNotificationManager.ConfigureNotificationMirroring(NotificationMirroring value)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.UI.Notifications.ToastNotificationManagerForUser GetDefault()
+		{
+			throw new global::System.NotImplementedException("The member ToastNotificationManagerForUser ToastNotificationManager.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ToastNotificationManagerForUser%20ToastNotificationManager.GetDefault%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.UI.Notifications.ToastNotificationManager.History.get
 	}
 }

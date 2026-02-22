@@ -46,8 +46,19 @@ namespace Windows.Devices.PointOfService
 		}
 #endif
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerReport.BarcodeScannerReport(uint, Windows.Storage.Streams.IBuffer, Windows.Storage.Streams.IBuffer)
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerReport.ScanDataType.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerReport.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerReport.operator ==(Windows.Devices.PointOfService.BarcodeScannerReport, Windows.Devices.PointOfService.BarcodeScannerReport)
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerReport.operator !=(Windows.Devices.PointOfService.BarcodeScannerReport, Windows.Devices.PointOfService.BarcodeScannerReport)
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerReport.Equals(Windows.Devices.PointOfService.BarcodeScannerReport)
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerReport.Equals(object)
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerReport.GetHashCode()
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerReport.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerReport.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerReport.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerReport.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerReport.ScanData.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerReport.ScanDataLabel.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerReport.ScanDataType.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerReport.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

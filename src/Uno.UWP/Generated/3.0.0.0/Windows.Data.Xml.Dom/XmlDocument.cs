@@ -6,8 +6,10 @@ namespace Windows.Data.Xml.Dom
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class XmlDocument : global::Windows.Data.Xml.Dom.IXmlNode, global::Windows.Data.Xml.Dom.IXmlNodeSerializer, global::Windows.Data.Xml.Dom.IXmlNodeSelector
+	public partial class XmlDocument : global::Windows.Data.Xml.Dom.IXmlNode, global::Windows.Data.Xml.Dom.IXmlNodeSelector, global::Windows.Data.Xml.Dom.IXmlNodeSerializer
 	{
+		// Skipping already declared property Attributes
+		// Skipping already declared property ChildNodes
 		// Skipping already declared property Doctype
 		// Skipping already declared property DocumentElement
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -20,27 +22,55 @@ namespace Windows.Data.Xml.Dom
 			}
 		}
 #endif
-		// Skipping already declared property Implementation
-		// Skipping already declared property Prefix
-		// Skipping already declared property NodeValue
 		// Skipping already declared property FirstChild
+		// Skipping already declared property Implementation
+		// Skipping already declared property InnerText
 		// Skipping already declared property LastChild
 		// Skipping already declared property LocalName
 		// Skipping already declared property NamespaceUri
 		// Skipping already declared property NextSibling
 		// Skipping already declared property NodeName
 		// Skipping already declared property NodeType
-		// Skipping already declared property Attributes
-		// Skipping already declared property ChildNodes
-		// Skipping already declared property ParentNode
+		// Skipping already declared property NodeValue
 		// Skipping already declared property OwnerDocument
+		// Skipping already declared property ParentNode
+		// Skipping already declared property Prefix
 		// Skipping already declared property PreviousSibling
-		// Skipping already declared property InnerText
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.XmlDocument()
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.XmlDocument()
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.Doctype.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.Implementation.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.DocumentElement.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Data.Xml.Dom.XmlDocument> LoadFromUriAsync(global::System.Uri uri)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<XmlDocument> XmlDocument.LoadFromUriAsync(Uri uri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CXmlDocument%3E%20XmlDocument.LoadFromUriAsync%28Uri%20uri%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Data.Xml.Dom.XmlDocument> LoadFromUriAsync(global::System.Uri uri, global::Windows.Data.Xml.Dom.XmlLoadSettings loadSettings)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<XmlDocument> XmlDocument.LoadFromUriAsync(Uri uri, XmlLoadSettings loadSettings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CXmlDocument%3E%20XmlDocument.LoadFromUriAsync%28Uri%20uri%2C%20XmlLoadSettings%20loadSettings%29");
+		}
+#endif
+		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.LoadFromFileAsync(Windows.Storage.IStorageFile)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Data.Xml.Dom.XmlDocument> LoadFromFileAsync(global::Windows.Storage.IStorageFile file, global::Windows.Data.Xml.Dom.XmlLoadSettings loadSettings)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<XmlDocument> XmlDocument.LoadFromFileAsync(IStorageFile file, XmlLoadSettings loadSettings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CXmlDocument%3E%20XmlDocument.LoadFromFileAsync%28IStorageFile%20file%2C%20XmlLoadSettings%20loadSettings%29");
+		}
+#endif
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.FromAbi(nint)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.operator ==(Windows.Data.Xml.Dom.XmlDocument, Windows.Data.Xml.Dom.XmlDocument)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.operator !=(Windows.Data.Xml.Dom.XmlDocument, Windows.Data.Xml.Dom.XmlDocument)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.Equals(Windows.Data.Xml.Dom.XmlDocument)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.Equals(object)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.GetHashCode()
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.CreateElement(string)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.CreateDocumentFragment()
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.CreateTextNode(string)
@@ -50,34 +80,18 @@ namespace Windows.Data.Xml.Dom
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.CreateEntityReference(string)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.GetElementsByTagName(string)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.CreateCDataSection(string)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.DocumentUri.get
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.CreateAttributeNS(object, string)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.CreateElementNS(object, string)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.GetElementById(string)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.ImportNode(Windows.Data.Xml.Dom.IXmlNode, bool)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.NodeValue.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.NodeValue.set
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.NodeType.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.NodeName.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.ParentNode.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.ChildNodes.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.FirstChild.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.LastChild.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.PreviousSibling.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.NextSibling.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.Attributes.get
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.HasChildNodes()
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.OwnerDocument.get
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.InsertBefore(Windows.Data.Xml.Dom.IXmlNode, Windows.Data.Xml.Dom.IXmlNode)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.ReplaceChild(Windows.Data.Xml.Dom.IXmlNode, Windows.Data.Xml.Dom.IXmlNode)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.RemoveChild(Windows.Data.Xml.Dom.IXmlNode)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.AppendChild(Windows.Data.Xml.Dom.IXmlNode)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.CloneNode(bool)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.NamespaceUri.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.LocalName.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.Prefix.get
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.Normalize()
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.Prefix.set
+		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.GetXml()
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.SelectSingleNode(string)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.SelectNodes(string)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -94,9 +108,6 @@ namespace Windows.Data.Xml.Dom
 			throw new global::System.NotImplementedException("The member XmlNodeList XmlDocument.SelectNodesNS(string xpath, object namespaces) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=XmlNodeList%20XmlDocument.SelectNodesNS%28string%20xpath%2C%20object%20namespaces%29");
 		}
 #endif
-		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.GetXml()
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.InnerText.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.InnerText.set
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.LoadXml(string)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -120,28 +131,29 @@ namespace Windows.Data.Xml.Dom
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlDocument", "void XmlDocument.LoadXmlFromBuffer(IBuffer buffer, XmlLoadSettings loadSettings)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Data.Xml.Dom.XmlDocument> LoadFromUriAsync(global::System.Uri uri)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<XmlDocument> XmlDocument.LoadFromUriAsync(Uri uri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CXmlDocument%3E%20XmlDocument.LoadFromUriAsync%28Uri%20uri%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Data.Xml.Dom.XmlDocument> LoadFromUriAsync(global::System.Uri uri, global::Windows.Data.Xml.Dom.XmlLoadSettings loadSettings)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<XmlDocument> XmlDocument.LoadFromUriAsync(Uri uri, XmlLoadSettings loadSettings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CXmlDocument%3E%20XmlDocument.LoadFromUriAsync%28Uri%20uri%2C%20XmlLoadSettings%20loadSettings%29");
-		}
-#endif
-		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.LoadFromFileAsync(Windows.Storage.IStorageFile)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Data.Xml.Dom.XmlDocument> LoadFromFileAsync(global::Windows.Storage.IStorageFile file, global::Windows.Data.Xml.Dom.XmlLoadSettings loadSettings)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<XmlDocument> XmlDocument.LoadFromFileAsync(IStorageFile file, XmlLoadSettings loadSettings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CXmlDocument%3E%20XmlDocument.LoadFromFileAsync%28IStorageFile%20file%2C%20XmlLoadSettings%20loadSettings%29");
-		}
-#endif
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.Attributes.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.ChildNodes.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.Doctype.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.DocumentElement.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.DocumentUri.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.FirstChild.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.Implementation.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.InnerText.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.InnerText.set
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.LastChild.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.LocalName.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.NamespaceUri.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.NextSibling.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.NodeName.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.NodeType.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.NodeValue.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.NodeValue.set
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.OwnerDocument.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.ParentNode.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.Prefix.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.Prefix.set
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.PreviousSibling.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Data.Xml.Dom.IXmlNode
 		// Processing: Windows.Data.Xml.Dom.IXmlNodeSelector
 		// Processing: Windows.Data.Xml.Dom.IXmlNodeSerializer

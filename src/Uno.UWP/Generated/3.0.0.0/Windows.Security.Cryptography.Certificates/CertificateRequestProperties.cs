@@ -10,57 +10,71 @@ namespace Windows.Security.Cryptography.Certificates
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Subject
+		public global::Windows.Security.Cryptography.Certificates.Certificate AttestationCredentialCertificate
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.Subject is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CertificateRequestProperties.Subject");
+				throw new global::System.NotImplementedException("The member Certificate CertificateRequestProperties.AttestationCredentialCertificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Certificate%20CertificateRequestProperties.AttestationCredentialCertificate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.Subject");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "Certificate CertificateRequestProperties.AttestationCredentialCertificate");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Security.Cryptography.Certificates.EnrollKeyUsages KeyUsages
+		public string ContainerName
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EnrollKeyUsages CertificateRequestProperties.KeyUsages is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EnrollKeyUsages%20CertificateRequestProperties.KeyUsages");
+				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.ContainerName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CertificateRequestProperties.ContainerName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "EnrollKeyUsages CertificateRequestProperties.KeyUsages");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.ContainerName");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string KeyStorageProviderName
+		public string ContainerNamePrefix
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.KeyStorageProviderName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CertificateRequestProperties.KeyStorageProviderName");
+				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.ContainerNamePrefix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CertificateRequestProperties.ContainerNamePrefix");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.KeyStorageProviderName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.ContainerNamePrefix");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint KeySize
+		public string CurveName
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CertificateRequestProperties.KeySize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CertificateRequestProperties.KeySize");
+				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.CurveName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CertificateRequestProperties.CurveName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "uint CertificateRequestProperties.KeySize");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.CurveName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public byte[] CurveParameters
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member byte[] CertificateRequestProperties.CurveParameters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%5B%5D%20CertificateRequestProperties.CurveParameters");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "byte[] CertificateRequestProperties.CurveParameters");
 			}
 		}
 #endif
@@ -80,43 +94,11 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Security.Cryptography.Certificates.KeyProtectionLevel KeyProtectionLevel
+		public global::System.Collections.Generic.IList<global::Windows.Security.Cryptography.Certificates.CertificateExtension> Extensions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member KeyProtectionLevel CertificateRequestProperties.KeyProtectionLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=KeyProtectionLevel%20CertificateRequestProperties.KeyProtectionLevel");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "KeyProtectionLevel CertificateRequestProperties.KeyProtectionLevel");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string KeyAlgorithmName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.KeyAlgorithmName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CertificateRequestProperties.KeyAlgorithmName");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.KeyAlgorithmName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string HashAlgorithmName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.HashAlgorithmName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CertificateRequestProperties.HashAlgorithmName");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.HashAlgorithmName");
+				throw new global::System.NotImplementedException("The member IList<CertificateExtension> CertificateRequestProperties.Extensions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CCertificateExtension%3E%20CertificateRequestProperties.Extensions");
 			}
 		}
 #endif
@@ -136,15 +118,85 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Security.Cryptography.Certificates.Certificate AttestationCredentialCertificate
+		public string HashAlgorithmName
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Certificate CertificateRequestProperties.AttestationCredentialCertificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Certificate%20CertificateRequestProperties.AttestationCredentialCertificate");
+				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.HashAlgorithmName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CertificateRequestProperties.HashAlgorithmName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "Certificate CertificateRequestProperties.AttestationCredentialCertificate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.HashAlgorithmName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string KeyAlgorithmName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.KeyAlgorithmName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CertificateRequestProperties.KeyAlgorithmName");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.KeyAlgorithmName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Security.Cryptography.Certificates.KeyProtectionLevel KeyProtectionLevel
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member KeyProtectionLevel CertificateRequestProperties.KeyProtectionLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=KeyProtectionLevel%20CertificateRequestProperties.KeyProtectionLevel");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "KeyProtectionLevel CertificateRequestProperties.KeyProtectionLevel");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint KeySize
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint CertificateRequestProperties.KeySize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CertificateRequestProperties.KeySize");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "uint CertificateRequestProperties.KeySize");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string KeyStorageProviderName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.KeyStorageProviderName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CertificateRequestProperties.KeyStorageProviderName");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.KeyStorageProviderName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Security.Cryptography.Certificates.EnrollKeyUsages KeyUsages
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member EnrollKeyUsages CertificateRequestProperties.KeyUsages is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EnrollKeyUsages%20CertificateRequestProperties.KeyUsages");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "EnrollKeyUsages CertificateRequestProperties.KeyUsages");
 			}
 		}
 #endif
@@ -178,81 +230,15 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool UseExistingKey
+		public string Subject
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CertificateRequestProperties.UseExistingKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CertificateRequestProperties.UseExistingKey");
+				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.Subject is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CertificateRequestProperties.Subject");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "bool CertificateRequestProperties.UseExistingKey");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public byte[] CurveParameters
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member byte[] CertificateRequestProperties.CurveParameters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%5B%5D%20CertificateRequestProperties.CurveParameters");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "byte[] CertificateRequestProperties.CurveParameters");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string CurveName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.CurveName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CertificateRequestProperties.CurveName");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.CurveName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ContainerNamePrefix
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.ContainerNamePrefix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CertificateRequestProperties.ContainerNamePrefix");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.ContainerNamePrefix");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ContainerName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string CertificateRequestProperties.ContainerName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CertificateRequestProperties.ContainerName");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.ContainerName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.Security.Cryptography.Certificates.CertificateExtension> Extensions
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<CertificateExtension> CertificateRequestProperties.Extensions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CCertificateExtension%3E%20CertificateRequestProperties.Extensions");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "string CertificateRequestProperties.Subject");
 			}
 		}
 #endif
@@ -278,48 +264,73 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool UseExistingKey
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool CertificateRequestProperties.UseExistingKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CertificateRequestProperties.UseExistingKey");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "bool CertificateRequestProperties.UseExistingKey");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CertificateRequestProperties()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateRequestProperties", "CertificateRequestProperties.CertificateRequestProperties()");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.CertificateRequestProperties()
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.Subject.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.Subject.set
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.KeyAlgorithmName.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.KeyAlgorithmName.set
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.KeySize.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.KeySize.set
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.FriendlyName.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.FriendlyName.set
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.HashAlgorithmName.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.HashAlgorithmName.set
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.Exportable.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.Exportable.set
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.KeyUsages.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.KeyUsages.set
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.KeyProtectionLevel.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.KeyProtectionLevel.set
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.KeyStorageProviderName.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.KeyStorageProviderName.set
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.SmartcardReaderName.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.SmartcardReaderName.set
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.SigningCertificate.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.SigningCertificate.set
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.operator ==(Windows.Security.Cryptography.Certificates.CertificateRequestProperties, Windows.Security.Cryptography.Certificates.CertificateRequestProperties)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.operator !=(Windows.Security.Cryptography.Certificates.CertificateRequestProperties, Windows.Security.Cryptography.Certificates.CertificateRequestProperties)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.Equals(Windows.Security.Cryptography.Certificates.CertificateRequestProperties)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.Equals(object)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.GetHashCode()
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.AttestationCredentialCertificate.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.AttestationCredentialCertificate.set
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.ContainerName.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.ContainerName.set
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.ContainerNamePrefix.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.ContainerNamePrefix.set
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.CurveName.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.CurveName.set
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.CurveParameters.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.CurveParameters.set
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.ContainerNamePrefix.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.ContainerNamePrefix.set
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.ContainerName.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.ContainerName.set
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.Exportable.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.Exportable.set
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.Extensions.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.FriendlyName.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.FriendlyName.set
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.HashAlgorithmName.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.HashAlgorithmName.set
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.KeyAlgorithmName.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.KeyAlgorithmName.set
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.KeyProtectionLevel.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.KeyProtectionLevel.set
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.KeySize.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.KeySize.set
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.KeyStorageProviderName.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.KeyStorageProviderName.set
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.KeyUsages.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.KeyUsages.set
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.SigningCertificate.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.SigningCertificate.set
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.SmartcardReaderName.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.SmartcardReaderName.set
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.Subject.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.Subject.set
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.SubjectAlternativeName.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.SuppressedDefaults.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.UseExistingKey.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.UseExistingKey.set
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.SuppressedDefaults.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.SubjectAlternativeName.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.Extensions.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

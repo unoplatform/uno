@@ -10,7 +10,18 @@ namespace Microsoft.UI.Input
 	{
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property Position
+		// Forced skipping of method Microsoft.UI.Input.RightTappedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Input.RightTappedEventArgs.operator ==(Microsoft.UI.Input.RightTappedEventArgs, Microsoft.UI.Input.RightTappedEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.RightTappedEventArgs.operator !=(Microsoft.UI.Input.RightTappedEventArgs, Microsoft.UI.Input.RightTappedEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.RightTappedEventArgs.Equals(Microsoft.UI.Input.RightTappedEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.RightTappedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Input.RightTappedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Input.RightTappedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.RightTappedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.RightTappedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Input.RightTappedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Input.RightTappedEventArgs.PointerDeviceType.get
 		// Forced skipping of method Microsoft.UI.Input.RightTappedEventArgs.Position.get
+		// Forced skipping of method Microsoft.UI.Input.RightTappedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,6 +10,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty EasingFunctionProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(EasingFunction), typeof(global::Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase),
+			typeof(global::Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase EasingFunction
 		{
 			get
@@ -24,22 +32,25 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty EasingFunctionProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(EasingFunction), typeof(global::Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase),
-			typeof(global::Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public EasingPointKeyFrame() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame", "EasingPointKeyFrame.EasingPointKeyFrame()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.EasingPointKeyFrame()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.EasingFunctionProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.operator ==(Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame, Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.operator !=(Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame, Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.Equals(Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.EasingFunction.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.EasingFunction.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.EasingFunctionProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingPointKeyFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

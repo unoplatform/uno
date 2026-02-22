@@ -12,7 +12,17 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property QueryText
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.AutoSuggestBoxQuerySubmittedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.AutoSuggestBoxQuerySubmittedEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.QueryText.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs, Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs, Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.Equals(Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.ChosenSuggestion.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.QueryText.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

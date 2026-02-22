@@ -8,12 +8,39 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial struct Matrix
 	{
+		// Skipping already declared property M11
+		// Skipping already declared property M12
+		// Skipping already declared property M21
+		// Skipping already declared property M22
+		// Skipping already declared property OffsetX
+		// Skipping already declared property OffsetY
+		// Skipping already declared property Identity
+		// Skipping already declared property IsIdentity
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix.Matrix()
-		// Skipping already declared field Microsoft.UI.Xaml.Media.Matrix.M11
-		// Skipping already declared field Microsoft.UI.Xaml.Media.Matrix.M12
-		// Skipping already declared field Microsoft.UI.Xaml.Media.Matrix.M21
-		// Skipping already declared field Microsoft.UI.Xaml.Media.Matrix.M22
-		// Skipping already declared field Microsoft.UI.Xaml.Media.Matrix.OffsetX
-		// Skipping already declared field Microsoft.UI.Xaml.Media.Matrix.OffsetY
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Matrix.Matrix(double, double, double, double, double, double)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix.Matrix(double, double, double, double, double, double)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix.M11.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix.M11.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix.M12.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix.M12.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix.M21.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix.M21.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix.M22.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix.M22.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix.OffsetX.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix.OffsetX.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix.OffsetY.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix.OffsetY.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix.Identity.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix.IsIdentity.get
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Matrix.ToString()
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Matrix.ToString(System.IFormatProvider)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix.System.IFormattable.ToString(string, System.IFormatProvider)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Matrix.Transform(Windows.Foundation.Point)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix.Equals(Microsoft.UI.Xaml.Media.Matrix)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix.operator ==(Microsoft.UI.Xaml.Media.Matrix, Microsoft.UI.Xaml.Media.Matrix)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix.operator !=(Microsoft.UI.Xaml.Media.Matrix, Microsoft.UI.Xaml.Media.Matrix)
 	}
 }

@@ -13,6 +13,24 @@ namespace Windows.ApplicationModel.LockScreen
 		{
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockApplicationHost.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.ApplicationModel.LockScreen.LockApplicationHost GetForCurrentView()
+		{
+			throw new global::System.NotImplementedException("The member LockApplicationHost LockApplicationHost.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LockApplicationHost%20LockApplicationHost.GetForCurrentView%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockApplicationHost.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockApplicationHost.operator ==(Windows.ApplicationModel.LockScreen.LockApplicationHost, Windows.ApplicationModel.LockScreen.LockApplicationHost)
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockApplicationHost.operator !=(Windows.ApplicationModel.LockScreen.LockApplicationHost, Windows.ApplicationModel.LockScreen.LockApplicationHost)
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockApplicationHost.Equals(Windows.ApplicationModel.LockScreen.LockApplicationHost)
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockApplicationHost.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockApplicationHost.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockApplicationHost.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockApplicationHost.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockApplicationHost.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockApplicationHost.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RequestUnlock()
@@ -22,13 +40,7 @@ namespace Windows.ApplicationModel.LockScreen
 #endif
 		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockApplicationHost.Unlocking.add
 		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockApplicationHost.Unlocking.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.ApplicationModel.LockScreen.LockApplicationHost GetForCurrentView()
-		{
-			throw new global::System.NotImplementedException("The member LockApplicationHost LockApplicationHost.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LockApplicationHost%20LockApplicationHost.GetForCurrentView%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockApplicationHost.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.LockScreen.LockApplicationHost, global::Windows.ApplicationModel.LockScreen.LockScreenUnlockingEventArgs> Unlocking

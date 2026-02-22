@@ -43,8 +43,19 @@ namespace Windows.Devices.Bluetooth.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails.Socket.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails.operator ==(Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails, Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails)
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails.operator !=(Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails, Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails)
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails.Equals(Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails)
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails.Equals(object)
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails.GetHashCode()
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails.Incoming.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails.RemoteDevice.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails.Socket.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

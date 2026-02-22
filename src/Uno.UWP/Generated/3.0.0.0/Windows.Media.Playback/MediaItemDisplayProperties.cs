@@ -15,15 +15,11 @@ namespace Windows.Media.Playback
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.MediaPlaybackType Type
+		public global::Windows.Media.MusicDisplayProperties MusicProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackType MediaItemDisplayProperties.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackType%20MediaItemDisplayProperties.Type");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaItemDisplayProperties", "MediaPlaybackType MediaItemDisplayProperties.Type");
+				throw new global::System.NotImplementedException("The member MusicDisplayProperties MediaItemDisplayProperties.MusicProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MusicDisplayProperties%20MediaItemDisplayProperties.MusicProperties");
 			}
 		}
 #endif
@@ -43,11 +39,15 @@ namespace Windows.Media.Playback
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.MusicDisplayProperties MusicProperties
+		public global::Windows.Media.MediaPlaybackType Type
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MusicDisplayProperties MediaItemDisplayProperties.MusicProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MusicDisplayProperties%20MediaItemDisplayProperties.MusicProperties");
+				throw new global::System.NotImplementedException("The member MediaPlaybackType MediaItemDisplayProperties.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackType%20MediaItemDisplayProperties.Type");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaItemDisplayProperties", "MediaPlaybackType MediaItemDisplayProperties.Type");
 			}
 		}
 #endif
@@ -61,12 +61,16 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.Type.get
-		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.Type.set
-		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.MusicProperties.get
-		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.VideoProperties.get
-		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.Thumbnail.get
-		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.Thumbnail.set
+		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.operator ==(Windows.Media.Playback.MediaItemDisplayProperties, Windows.Media.Playback.MediaItemDisplayProperties)
+		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.operator !=(Windows.Media.Playback.MediaItemDisplayProperties, Windows.Media.Playback.MediaItemDisplayProperties)
+		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.Equals(Windows.Media.Playback.MediaItemDisplayProperties)
+		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.Equals(object)
+		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.GetHashCode()
+		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ClearAll()
@@ -74,5 +78,12 @@ namespace Windows.Media.Playback
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaItemDisplayProperties", "void MediaItemDisplayProperties.ClearAll()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.MusicProperties.get
+		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.Thumbnail.get
+		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.Thumbnail.set
+		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.Type.get
+		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.Type.set
+		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.VideoProperties.get
+		// Forced skipping of method Windows.Media.Playback.MediaItemDisplayProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

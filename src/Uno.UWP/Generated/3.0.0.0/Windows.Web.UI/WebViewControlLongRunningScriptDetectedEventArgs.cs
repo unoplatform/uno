@@ -15,6 +15,16 @@ namespace Windows.Web.UI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan ExecutionTime
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan WebViewControlLongRunningScriptDetectedEventArgs.ExecutionTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20WebViewControlLongRunningScriptDetectedEventArgs.ExecutionTime");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool StopPageScriptExecution
 		{
 			get
@@ -27,18 +37,19 @@ namespace Windows.Web.UI
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan ExecutionTime
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan WebViewControlLongRunningScriptDetectedEventArgs.ExecutionTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20WebViewControlLongRunningScriptDetectedEventArgs.ExecutionTime");
-			}
-		}
-#endif
+		// Forced skipping of method Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs.operator ==(Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs, Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs)
+		// Forced skipping of method Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs.operator !=(Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs, Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs)
+		// Forced skipping of method Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs.Equals(Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs)
+		// Forced skipping of method Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs.ExecutionTime.get
 		// Forced skipping of method Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs.StopPageScriptExecution.get
 		// Forced skipping of method Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs.StopPageScriptExecution.set
+		// Forced skipping of method Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

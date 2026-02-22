@@ -9,11 +9,6 @@ namespace Windows.UI.Composition
 	public partial class CompositionDrawingSurface : global::Windows.UI.Composition.CompositionObject, global::Windows.UI.Composition.ICompositionSurface
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal CompositionDrawingSurface()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.DirectX.DirectXAlphaMode AlphaMode
 		{
@@ -53,10 +48,16 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionDrawingSurface.AlphaMode.get
-		// Forced skipping of method Windows.UI.Composition.CompositionDrawingSurface.PixelFormat.get
-		// Forced skipping of method Windows.UI.Composition.CompositionDrawingSurface.Size.get
-		// Forced skipping of method Windows.UI.Composition.CompositionDrawingSurface.SizeInt32.get
+		// Forced skipping of method Windows.UI.Composition.CompositionDrawingSurface.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.CompositionDrawingSurface.CompositionDrawingSurface(WinRT.IObjectReference)
+		// Forced skipping of method Windows.UI.Composition.CompositionDrawingSurface.operator ==(Windows.UI.Composition.CompositionDrawingSurface, Windows.UI.Composition.CompositionDrawingSurface)
+		// Forced skipping of method Windows.UI.Composition.CompositionDrawingSurface.operator !=(Windows.UI.Composition.CompositionDrawingSurface, Windows.UI.Composition.CompositionDrawingSurface)
+		// Forced skipping of method Windows.UI.Composition.CompositionDrawingSurface.Equals(Windows.UI.Composition.CompositionDrawingSurface)
+		// Forced skipping of method Windows.UI.Composition.CompositionDrawingSurface.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.CompositionDrawingSurface.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.CompositionDrawingSurface.CompositionDrawingSurface(WinRT.DerivedComposed)
+		// Forced skipping of method Windows.UI.Composition.CompositionDrawingSurface.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.CompositionDrawingSurface.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Resize(global::Windows.Graphics.SizeInt32 sizePixels)
@@ -92,6 +93,12 @@ namespace Windows.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionDrawingSurface", "void CompositionDrawingSurface.ScrollWithClip(PointInt32 offset, RectInt32 clipRect, RectInt32 scrollRect)");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.CompositionDrawingSurface.AlphaMode.get
+		// Forced skipping of method Windows.UI.Composition.CompositionDrawingSurface.PixelFormat.get
+		// Forced skipping of method Windows.UI.Composition.CompositionDrawingSurface.Size.get
+		// Forced skipping of method Windows.UI.Composition.CompositionDrawingSurface.SizeInt32.get
+		// Forced skipping of method Windows.UI.Composition.CompositionDrawingSurface.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.CompositionDrawingSurface.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.UI.Composition.ICompositionSurface
 	}
 }

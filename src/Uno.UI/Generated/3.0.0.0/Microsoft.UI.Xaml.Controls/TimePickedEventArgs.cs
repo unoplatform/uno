@@ -12,7 +12,17 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property OldTime
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TimePickedEventArgs.TimePickedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickedEventArgs.TimePickedEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickedEventArgs.OldTime.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.TimePickedEventArgs, Microsoft.UI.Xaml.Controls.TimePickedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.TimePickedEventArgs, Microsoft.UI.Xaml.Controls.TimePickedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickedEventArgs.Equals(Microsoft.UI.Xaml.Controls.TimePickedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickedEventArgs.NewTime.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickedEventArgs.OldTime.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickedEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,15 +10,15 @@ namespace Windows.ApplicationModel.Email
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Name
+		public string Description
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailIrmTemplate.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailIrmTemplate.Name");
+				throw new global::System.NotImplementedException("The member string EmailIrmTemplate.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailIrmTemplate.Description");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailIrmTemplate", "string EmailIrmTemplate.Name");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailIrmTemplate", "string EmailIrmTemplate.Description");
 			}
 		}
 #endif
@@ -38,26 +38,18 @@ namespace Windows.ApplicationModel.Email
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Description
+		public string Name
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailIrmTemplate.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailIrmTemplate.Description");
+				throw new global::System.NotImplementedException("The member string EmailIrmTemplate.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailIrmTemplate.Name");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailIrmTemplate", "string EmailIrmTemplate.Description");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailIrmTemplate", "string EmailIrmTemplate.Name");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public EmailIrmTemplate(string id, string name, string description)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailIrmTemplate", "EmailIrmTemplate.EmailIrmTemplate(string id, string name, string description)");
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.EmailIrmTemplate(string, string, string)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public EmailIrmTemplate()
@@ -66,11 +58,30 @@ namespace Windows.ApplicationModel.Email
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.EmailIrmTemplate()
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.Id.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.Id.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public EmailIrmTemplate(string id, string name, string description)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailIrmTemplate", "EmailIrmTemplate.EmailIrmTemplate(string id, string name, string description)");
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.EmailIrmTemplate(string, string, string)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.operator ==(Windows.ApplicationModel.Email.EmailIrmTemplate, Windows.ApplicationModel.Email.EmailIrmTemplate)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.operator !=(Windows.ApplicationModel.Email.EmailIrmTemplate, Windows.ApplicationModel.Email.EmailIrmTemplate)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.Equals(Windows.ApplicationModel.Email.EmailIrmTemplate)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.Description.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.Description.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.Id.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.Id.set
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.Name.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.Name.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

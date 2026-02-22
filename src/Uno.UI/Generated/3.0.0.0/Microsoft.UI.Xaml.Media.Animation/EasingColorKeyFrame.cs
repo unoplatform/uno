@@ -8,12 +8,23 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class EasingColorKeyFrame : global::Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame
 	{
-		// Skipping already declared property EasingFunction
 		// Skipping already declared property EasingFunctionProperty
+		// Skipping already declared property EasingFunction
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.EasingColorKeyFrame()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.EasingColorKeyFrame()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.EasingFunctionProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.operator ==(Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame, Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.operator !=(Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame, Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.Equals(Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.EasingFunction.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.EasingFunction.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.EasingFunctionProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

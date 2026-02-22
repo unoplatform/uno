@@ -16,6 +16,16 @@ namespace Windows.Media.Miracast
 		}
 #endif
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiver.MiracastReceiver()
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiver.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiver.operator ==(Windows.Media.Miracast.MiracastReceiver, Windows.Media.Miracast.MiracastReceiver)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiver.operator !=(Windows.Media.Miracast.MiracastReceiver, Windows.Media.Miracast.MiracastReceiver)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiver.Equals(Windows.Media.Miracast.MiracastReceiver)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiver.Equals(object)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiver.GetHashCode()
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiver.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiver.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiver.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiver.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Miracast.MiracastReceiverSettings GetDefaultSettings()
@@ -65,8 +75,6 @@ namespace Windows.Media.Miracast
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MiracastReceiverStatus> MiracastReceiver.GetStatusAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMiracastReceiverStatus%3E%20MiracastReceiver.GetStatusAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiver.StatusChanged.add
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiver.StatusChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Miracast.MiracastReceiverSession CreateSession(global::Windows.ApplicationModel.Core.CoreApplicationView view)
@@ -95,6 +103,9 @@ namespace Windows.Media.Miracast
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiver", "void MiracastReceiver.RemoveKnownTransmitter(MiracastTransmitter transmitter)");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiver.StatusChanged.add
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiver.StatusChanged.remove
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiver.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Miracast.MiracastReceiver, object> StatusChanged

@@ -10,6 +10,16 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.NonVirtualizingLayout.NonVirtualizingLayout()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayout.NonVirtualizingLayout()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayout.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayout.NonVirtualizingLayout(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayout.operator ==(Microsoft.UI.Xaml.Controls.NonVirtualizingLayout, Microsoft.UI.Xaml.Controls.NonVirtualizingLayout)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayout.operator !=(Microsoft.UI.Xaml.Controls.NonVirtualizingLayout, Microsoft.UI.Xaml.Controls.NonVirtualizingLayout)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayout.Equals(Microsoft.UI.Xaml.Controls.NonVirtualizingLayout)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayout.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayout.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayout.NonVirtualizingLayout(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayout.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayout.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		protected virtual void InitializeForContextCore(global::Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext context)
@@ -17,6 +27,7 @@ namespace Microsoft.UI.Xaml.Controls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.NonVirtualizingLayout", "void NonVirtualizingLayout.InitializeForContextCore(NonVirtualizingLayoutContext context)");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayout.Microsoft.UI.Xaml.Controls.INonVirtualizingLayoutOverrides.InitializeForContextCore(Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		protected virtual void UninitializeForContextCore(global::Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext context)
@@ -24,7 +35,12 @@ namespace Microsoft.UI.Xaml.Controls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.NonVirtualizingLayout", "void NonVirtualizingLayout.UninitializeForContextCore(NonVirtualizingLayoutContext context)");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayout.Microsoft.UI.Xaml.Controls.INonVirtualizingLayoutOverrides.UninitializeForContextCore(Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.NonVirtualizingLayout.MeasureOverride(Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext, Windows.Foundation.Size)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayout.Microsoft.UI.Xaml.Controls.INonVirtualizingLayoutOverrides.MeasureOverride(Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext, Windows.Foundation.Size)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.NonVirtualizingLayout.ArrangeOverride(Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext, Windows.Foundation.Size)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayout.Microsoft.UI.Xaml.Controls.INonVirtualizingLayoutOverrides.ArrangeOverride(Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext, Windows.Foundation.Size)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayout.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayout.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

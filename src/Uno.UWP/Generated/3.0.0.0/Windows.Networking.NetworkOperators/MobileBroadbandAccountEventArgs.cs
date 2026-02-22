@@ -23,6 +23,17 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountEventArgs.operator ==(Windows.Networking.NetworkOperators.MobileBroadbandAccountEventArgs, Windows.Networking.NetworkOperators.MobileBroadbandAccountEventArgs)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountEventArgs.operator !=(Windows.Networking.NetworkOperators.MobileBroadbandAccountEventArgs, Windows.Networking.NetworkOperators.MobileBroadbandAccountEventArgs)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountEventArgs.Equals(Windows.Networking.NetworkOperators.MobileBroadbandAccountEventArgs)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountEventArgs.Equals(object)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountEventArgs.NetworkAccountId.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -13,5 +13,16 @@ namespace Windows.System.RemoteSystems
 		{
 		}
 #endif
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemEnumerationCompletedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemEnumerationCompletedEventArgs.operator ==(Windows.System.RemoteSystems.RemoteSystemEnumerationCompletedEventArgs, Windows.System.RemoteSystems.RemoteSystemEnumerationCompletedEventArgs)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemEnumerationCompletedEventArgs.operator !=(Windows.System.RemoteSystems.RemoteSystemEnumerationCompletedEventArgs, Windows.System.RemoteSystems.RemoteSystemEnumerationCompletedEventArgs)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemEnumerationCompletedEventArgs.Equals(Windows.System.RemoteSystems.RemoteSystemEnumerationCompletedEventArgs)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemEnumerationCompletedEventArgs.Equals(object)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemEnumerationCompletedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemEnumerationCompletedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemEnumerationCompletedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemEnumerationCompletedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemEnumerationCompletedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemEnumerationCompletedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

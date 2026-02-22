@@ -10,6 +10,19 @@ namespace Windows.Media.Capture
 	{
 		// Forced skipping of method Windows.Media.Capture.WhiteBalanceGain.WhiteBalanceGain()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public WhiteBalanceGain(double _R, double _G, double _B)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.WhiteBalanceGain", "WhiteBalanceGain.WhiteBalanceGain(double _R, double _G, double _B)");
+		}
+#endif
+		// Forced skipping of method Windows.Media.Capture.WhiteBalanceGain.WhiteBalanceGain(double, double, double)
+		// Forced skipping of method Windows.Media.Capture.WhiteBalanceGain.operator ==(Windows.Media.Capture.WhiteBalanceGain, Windows.Media.Capture.WhiteBalanceGain)
+		// Forced skipping of method Windows.Media.Capture.WhiteBalanceGain.operator !=(Windows.Media.Capture.WhiteBalanceGain, Windows.Media.Capture.WhiteBalanceGain)
+		// Forced skipping of method Windows.Media.Capture.WhiteBalanceGain.Equals(Windows.Media.Capture.WhiteBalanceGain)
+		// Forced skipping of method Windows.Media.Capture.WhiteBalanceGain.Equals(object)
+		// Forced skipping of method Windows.Media.Capture.WhiteBalanceGain.GetHashCode()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public double R;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

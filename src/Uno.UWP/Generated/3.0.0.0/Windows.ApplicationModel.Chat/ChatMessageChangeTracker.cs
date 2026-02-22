@@ -13,6 +13,16 @@ namespace Windows.ApplicationModel.Chat
 		{
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageChangeTracker.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageChangeTracker.operator ==(Windows.ApplicationModel.Chat.ChatMessageChangeTracker, Windows.ApplicationModel.Chat.ChatMessageChangeTracker)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageChangeTracker.operator !=(Windows.ApplicationModel.Chat.ChatMessageChangeTracker, Windows.ApplicationModel.Chat.ChatMessageChangeTracker)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageChangeTracker.Equals(Windows.ApplicationModel.Chat.ChatMessageChangeTracker)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageChangeTracker.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageChangeTracker.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageChangeTracker.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageChangeTracker.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageChangeTracker.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageChangeTracker.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Enable()
@@ -34,5 +44,6 @@ namespace Windows.ApplicationModel.Chat
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessageChangeTracker", "void ChatMessageChangeTracker.Reset()");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageChangeTracker.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

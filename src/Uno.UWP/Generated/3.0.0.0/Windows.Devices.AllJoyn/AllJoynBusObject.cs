@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.AllJoyn
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -31,6 +30,14 @@ namespace Windows.Devices.AllJoyn
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public AllJoynBusObject()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynBusObject", "AllJoynBusObject.AllJoynBusObject()");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.AllJoynBusObject()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AllJoynBusObject(string objectPath)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynBusObject", "AllJoynBusObject.AllJoynBusObject(string objectPath)");
@@ -45,14 +52,16 @@ namespace Windows.Devices.AllJoyn
 		}
 #endif
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.AllJoynBusObject(string, Windows.Devices.AllJoyn.AllJoynBusAttachment)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public AllJoynBusObject()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynBusObject", "AllJoynBusObject.AllJoynBusObject()");
-		}
-#endif
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.AllJoynBusObject()
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.operator ==(Windows.Devices.AllJoyn.AllJoynBusObject, Windows.Devices.AllJoyn.AllJoynBusObject)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.operator !=(Windows.Devices.AllJoyn.AllJoynBusObject, Windows.Devices.AllJoyn.AllJoynBusObject)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.Equals(Windows.Devices.AllJoyn.AllJoynBusObject)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.Equals(object)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.GetHashCode()
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -74,10 +83,11 @@ namespace Windows.Devices.AllJoyn
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynBusObject", "void AllJoynBusObject.AddProducer(IAllJoynProducer producer)");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.BusAttachment.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.Session.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.Stopped.add
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.Stopped.remove
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.BusAttachment.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.Session.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.AllJoyn.AllJoynBusObject, global::Windows.Devices.AllJoyn.AllJoynBusObjectStoppedEventArgs> Stopped

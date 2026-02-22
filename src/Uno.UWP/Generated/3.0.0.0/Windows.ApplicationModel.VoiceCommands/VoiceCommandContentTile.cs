@@ -10,85 +10,15 @@ namespace Windows.ApplicationModel.VoiceCommands
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Title
+		public object AppContext
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VoiceCommandContentTile.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VoiceCommandContentTile.Title");
+				throw new global::System.NotImplementedException("The member object VoiceCommandContentTile.AppContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20VoiceCommandContentTile.AppContext");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile", "string VoiceCommandContentTile.Title");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string TextLine3
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string VoiceCommandContentTile.TextLine3 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VoiceCommandContentTile.TextLine3");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile", "string VoiceCommandContentTile.TextLine3");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string TextLine2
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string VoiceCommandContentTile.TextLine2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VoiceCommandContentTile.TextLine2");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile", "string VoiceCommandContentTile.TextLine2");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string TextLine1
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string VoiceCommandContentTile.TextLine1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VoiceCommandContentTile.TextLine1");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile", "string VoiceCommandContentTile.TextLine1");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.IStorageFile Image
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IStorageFile VoiceCommandContentTile.Image is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IStorageFile%20VoiceCommandContentTile.Image");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile", "IStorageFile VoiceCommandContentTile.Image");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTileType ContentTileType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member VoiceCommandContentTileType VoiceCommandContentTile.ContentTileType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoiceCommandContentTileType%20VoiceCommandContentTile.ContentTileType");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile", "VoiceCommandContentTileType VoiceCommandContentTile.ContentTileType");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile", "object VoiceCommandContentTile.AppContext");
 			}
 		}
 #endif
@@ -108,15 +38,85 @@ namespace Windows.ApplicationModel.VoiceCommands
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object AppContext
+		public global::Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTileType ContentTileType
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object VoiceCommandContentTile.AppContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20VoiceCommandContentTile.AppContext");
+				throw new global::System.NotImplementedException("The member VoiceCommandContentTileType VoiceCommandContentTile.ContentTileType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoiceCommandContentTileType%20VoiceCommandContentTile.ContentTileType");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile", "object VoiceCommandContentTile.AppContext");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile", "VoiceCommandContentTileType VoiceCommandContentTile.ContentTileType");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.IStorageFile Image
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IStorageFile VoiceCommandContentTile.Image is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IStorageFile%20VoiceCommandContentTile.Image");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile", "IStorageFile VoiceCommandContentTile.Image");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string TextLine1
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string VoiceCommandContentTile.TextLine1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VoiceCommandContentTile.TextLine1");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile", "string VoiceCommandContentTile.TextLine1");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string TextLine2
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string VoiceCommandContentTile.TextLine2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VoiceCommandContentTile.TextLine2");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile", "string VoiceCommandContentTile.TextLine2");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string TextLine3
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string VoiceCommandContentTile.TextLine3 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VoiceCommandContentTile.TextLine3");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile", "string VoiceCommandContentTile.TextLine3");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Title
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string VoiceCommandContentTile.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VoiceCommandContentTile.Title");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile", "string VoiceCommandContentTile.Title");
 			}
 		}
 #endif
@@ -128,21 +128,32 @@ namespace Windows.ApplicationModel.VoiceCommands
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.VoiceCommandContentTile()
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.Title.get
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.Title.set
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.TextLine1.get
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.TextLine1.set
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.TextLine2.get
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.TextLine2.set
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.TextLine3.get
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.TextLine3.set
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.Image.get
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.Image.set
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.operator ==(Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile, Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile)
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.operator !=(Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile, Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile)
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.Equals(Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile)
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.AppContext.get
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.AppContext.set
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.AppLaunchArgument.get
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.AppLaunchArgument.set
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.ContentTileType.get
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.ContentTileType.set
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.Image.get
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.Image.set
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.TextLine1.get
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.TextLine1.set
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.TextLine2.get
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.TextLine2.set
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.TextLine3.get
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.TextLine3.set
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.Title.get
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.Title.set
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

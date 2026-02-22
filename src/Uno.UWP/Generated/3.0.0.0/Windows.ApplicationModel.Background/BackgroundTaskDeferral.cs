@@ -13,6 +13,16 @@ namespace Windows.ApplicationModel.Background
 		{
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskDeferral.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskDeferral.operator ==(Windows.ApplicationModel.Background.BackgroundTaskDeferral, Windows.ApplicationModel.Background.BackgroundTaskDeferral)
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskDeferral.operator !=(Windows.ApplicationModel.Background.BackgroundTaskDeferral, Windows.ApplicationModel.Background.BackgroundTaskDeferral)
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskDeferral.Equals(Windows.ApplicationModel.Background.BackgroundTaskDeferral)
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskDeferral.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskDeferral.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskDeferral.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskDeferral.WinRT.IWinRTObject.AdditionalTypeData.get
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Complete()
@@ -20,5 +30,6 @@ namespace Windows.ApplicationModel.Background
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskDeferral", "void BackgroundTaskDeferral.Complete()");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskDeferral.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

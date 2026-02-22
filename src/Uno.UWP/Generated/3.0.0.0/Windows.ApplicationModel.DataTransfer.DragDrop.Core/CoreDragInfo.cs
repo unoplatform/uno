@@ -8,13 +8,24 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 #endif
 	public partial class CoreDragInfo
 	{
+		// Skipping already declared property AllowedOperations
 		// Skipping already declared property Data
 		// Skipping already declared property Modifiers
 		// Skipping already declared property Position
-		// Skipping already declared property AllowedOperations
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo.operator ==(Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo, Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo.operator !=(Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo, Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo.Equals(Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo.AllowedOperations.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo.Data.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo.Modifiers.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo.Position.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo.AllowedOperations.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -15,6 +15,46 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIFileSavePickerActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUIFileSavePickerActivatedEventArgs.ActivatedOperation");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string CallerPackageFamilyName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string WebUIFileSavePickerActivatedEventArgs.CallerPackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebUIFileSavePickerActivatedEventArgs.CallerPackageFamilyName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string EnterpriseId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string WebUIFileSavePickerActivatedEventArgs.EnterpriseId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebUIFileSavePickerActivatedEventArgs.EnterpriseId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.Pickers.Provider.FileSavePickerUI FileSavePickerUI
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member FileSavePickerUI WebUIFileSavePickerActivatedEventArgs.FileSavePickerUI is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileSavePickerUI%20WebUIFileSavePickerActivatedEventArgs.FileSavePickerUI");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.ActivationKind Kind
 		{
 			get
@@ -53,54 +93,25 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Pickers.Provider.FileSavePickerUI FileSavePickerUI
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FileSavePickerUI WebUIFileSavePickerActivatedEventArgs.FileSavePickerUI is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileSavePickerUI%20WebUIFileSavePickerActivatedEventArgs.FileSavePickerUI");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string CallerPackageFamilyName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string WebUIFileSavePickerActivatedEventArgs.CallerPackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebUIFileSavePickerActivatedEventArgs.CallerPackageFamilyName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string EnterpriseId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string WebUIFileSavePickerActivatedEventArgs.EnterpriseId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebUIFileSavePickerActivatedEventArgs.EnterpriseId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIFileSavePickerActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUIFileSavePickerActivatedEventArgs.ActivatedOperation");
-			}
-		}
-#endif
+		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerActivatedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerActivatedEventArgs.operator ==(Windows.UI.WebUI.WebUIFileSavePickerActivatedEventArgs, Windows.UI.WebUI.WebUIFileSavePickerActivatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerActivatedEventArgs.operator !=(Windows.UI.WebUI.WebUIFileSavePickerActivatedEventArgs, Windows.UI.WebUI.WebUIFileSavePickerActivatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerActivatedEventArgs.Equals(Windows.UI.WebUI.WebUIFileSavePickerActivatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerActivatedEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerActivatedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerActivatedEventArgs.ActivatedOperation.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerActivatedEventArgs.CallerPackageFamilyName.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerActivatedEventArgs.EnterpriseId.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerActivatedEventArgs.FileSavePickerUI.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerActivatedEventArgs.SplashScreen.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerActivatedEventArgs.CallerPackageFamilyName.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerActivatedEventArgs.EnterpriseId.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerActivatedEventArgs.ActivatedOperation.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerActivatedEventArgs.User.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIFileSavePickerActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IFileSavePickerActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IFileSavePickerActivatedEventArgs2

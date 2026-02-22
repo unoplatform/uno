@@ -23,9 +23,16 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureRelativePanelWatcher.RelativePanel.get
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureRelativePanelWatcher.Changed.add
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureRelativePanelWatcher.Changed.remove
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureRelativePanelWatcher.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureRelativePanelWatcher.operator ==(Windows.Media.Capture.MediaCaptureRelativePanelWatcher, Windows.Media.Capture.MediaCaptureRelativePanelWatcher)
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureRelativePanelWatcher.operator !=(Windows.Media.Capture.MediaCaptureRelativePanelWatcher, Windows.Media.Capture.MediaCaptureRelativePanelWatcher)
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureRelativePanelWatcher.Equals(Windows.Media.Capture.MediaCaptureRelativePanelWatcher)
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureRelativePanelWatcher.Equals(object)
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureRelativePanelWatcher.GetHashCode()
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureRelativePanelWatcher.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureRelativePanelWatcher.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureRelativePanelWatcher.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureRelativePanelWatcher.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -40,6 +47,8 @@ namespace Windows.Media.Capture
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureRelativePanelWatcher", "void MediaCaptureRelativePanelWatcher.Stop()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureRelativePanelWatcher.Changed.add
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureRelativePanelWatcher.Changed.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -47,6 +56,8 @@ namespace Windows.Media.Capture
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureRelativePanelWatcher", "void MediaCaptureRelativePanelWatcher.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureRelativePanelWatcher.RelativePanel.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureRelativePanelWatcher.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Capture.MediaCaptureRelativePanelWatcher, object> Changed

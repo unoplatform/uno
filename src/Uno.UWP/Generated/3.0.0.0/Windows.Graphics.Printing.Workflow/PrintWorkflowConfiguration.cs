@@ -43,15 +43,19 @@ namespace Windows.Graphics.Printing.Workflow
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void AbortPrintFlow(global::Windows.Graphics.Printing.Workflow.PrintWorkflowJobAbortReason reason)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration", "void PrintWorkflowConfiguration.AbortPrintFlow(PrintWorkflowJobAbortReason reason)");
-		}
-#endif
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration.SourceAppDisplayName.get
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration.operator ==(Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration, Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration.operator !=(Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration, Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration.Equals(Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration.Equals(object)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration.JobTitle.get
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration.SessionId.get
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration.SourceAppDisplayName.get
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

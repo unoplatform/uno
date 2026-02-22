@@ -15,43 +15,21 @@ namespace Windows.ApplicationModel.Email
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Email.EmailMailboxOtherAppWriteAccess OtherAppWriteAccess
+		public global::Windows.ApplicationModel.Email.EmailMailboxCapabilities Capabilities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailMailboxOtherAppWriteAccess EmailMailbox.OtherAppWriteAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMailboxOtherAppWriteAccess%20EmailMailbox.OtherAppWriteAccess");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailbox", "EmailMailboxOtherAppWriteAccess EmailMailbox.OtherAppWriteAccess");
+				throw new global::System.NotImplementedException("The member EmailMailboxCapabilities EmailMailbox.Capabilities is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMailboxCapabilities%20EmailMailbox.Capabilities");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string MailAddress
+		public global::Windows.ApplicationModel.Email.EmailMailboxChangeTracker ChangeTracker
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailMailbox.MailAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailMailbox.MailAddress");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailbox", "string EmailMailbox.MailAddress");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Email.EmailMailboxOtherAppReadAccess OtherAppReadAccess
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member EmailMailboxOtherAppReadAccess EmailMailbox.OtherAppReadAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMailboxOtherAppReadAccess%20EmailMailbox.OtherAppReadAccess");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailbox", "EmailMailboxOtherAppReadAccess EmailMailbox.OtherAppReadAccess");
+				throw new global::System.NotImplementedException("The member EmailMailboxChangeTracker EmailMailbox.ChangeTracker is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMailboxChangeTracker%20EmailMailbox.ChangeTracker");
 			}
 		}
 #endif
@@ -101,6 +79,30 @@ namespace Windows.ApplicationModel.Email
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string LinkedMailboxId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string EmailMailbox.LinkedMailboxId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailMailbox.LinkedMailboxId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string MailAddress
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string EmailMailbox.MailAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailMailbox.MailAddress");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailbox", "string EmailMailbox.MailAddress");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<string> MailAddressAliases
 		{
 			get
@@ -111,21 +113,49 @@ namespace Windows.ApplicationModel.Email
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Email.EmailMailboxCapabilities Capabilities
+		public string NetworkAccountId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailMailboxCapabilities EmailMailbox.Capabilities is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMailboxCapabilities%20EmailMailbox.Capabilities");
+				throw new global::System.NotImplementedException("The member string EmailMailbox.NetworkAccountId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailMailbox.NetworkAccountId");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Email.EmailMailboxChangeTracker ChangeTracker
+		public string NetworkId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailMailboxChangeTracker EmailMailbox.ChangeTracker is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMailboxChangeTracker%20EmailMailbox.ChangeTracker");
+				throw new global::System.NotImplementedException("The member string EmailMailbox.NetworkId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailMailbox.NetworkId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Email.EmailMailboxOtherAppReadAccess OtherAppReadAccess
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member EmailMailboxOtherAppReadAccess EmailMailbox.OtherAppReadAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMailboxOtherAppReadAccess%20EmailMailbox.OtherAppReadAccess");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailbox", "EmailMailboxOtherAppReadAccess EmailMailbox.OtherAppReadAccess");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Email.EmailMailboxOtherAppWriteAccess OtherAppWriteAccess
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member EmailMailboxOtherAppWriteAccess EmailMailbox.OtherAppWriteAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMailboxOtherAppWriteAccess%20EmailMailbox.OtherAppWriteAccess");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailbox", "EmailMailboxOtherAppWriteAccess EmailMailbox.OtherAppWriteAccess");
 			}
 		}
 #endif
@@ -169,54 +199,16 @@ namespace Windows.ApplicationModel.Email
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string LinkedMailboxId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string EmailMailbox.LinkedMailboxId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailMailbox.LinkedMailboxId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string NetworkAccountId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string EmailMailbox.NetworkAccountId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailMailbox.NetworkAccountId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string NetworkId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string EmailMailbox.NetworkId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailMailbox.NetworkId");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.Capabilities.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.ChangeTracker.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.DisplayName.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.DisplayName.set
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.Id.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.IsOwnedByCurrentApp.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.IsDataEncryptedUnderLock.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.MailAddress.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.MailAddress.set
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.MailAddressAliases.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.OtherAppReadAccess.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.OtherAppReadAccess.set
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.OtherAppWriteAccess.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.OtherAppWriteAccess.set
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.Policies.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.SourceDisplayName.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.SyncManager.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.UserDataAccountId.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.operator ==(Windows.ApplicationModel.Email.EmailMailbox, Windows.ApplicationModel.Email.EmailMailbox)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.operator !=(Windows.ApplicationModel.Email.EmailMailbox, Windows.ApplicationModel.Email.EmailMailbox)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.Equals(Windows.ApplicationModel.Email.EmailMailbox)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Email.EmailConversationReader GetConversationReader()
@@ -406,8 +398,6 @@ namespace Windows.ApplicationModel.Email
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> EmailMailbox.TryProposeNewTimeForMeetingAsync(EmailMessage meeting, DateTimeOffset newStartTime, TimeSpan newDuration, string subject, string comment) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20EmailMailbox.TryProposeNewTimeForMeetingAsync%28EmailMessage%20meeting%2C%20DateTimeOffset%20newStartTime%2C%20TimeSpan%20newDuration%2C%20string%20subject%2C%20string%20comment%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.MailboxChanged.add
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.MailboxChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SendMessageAsync(global::Windows.ApplicationModel.Email.EmailMessage message, bool smartSend)
@@ -429,9 +419,8 @@ namespace Windows.ApplicationModel.Email
 			throw new global::System.NotImplementedException("The member IAsyncOperation<EmailMailboxAutoReplySettings> EmailMailbox.TryGetAutoReplySettingsAsync(EmailMailboxAutoReplyMessageResponseKind requestedFormat) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CEmailMailboxAutoReplySettings%3E%20EmailMailbox.TryGetAutoReplySettingsAsync%28EmailMailboxAutoReplyMessageResponseKind%20requestedFormat%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.LinkedMailboxId.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.NetworkAccountId.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.NetworkId.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.MailboxChanged.add
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.MailboxChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Email.EmailRecipientResolutionResult>> ResolveRecipientsAsync(global::System.Collections.Generic.IEnumerable<string> recipients)
@@ -481,6 +470,28 @@ namespace Windows.ApplicationModel.Email
 			throw new global::System.NotImplementedException("The member EmailMailboxChangeTracker EmailMailbox.GetChangeTracker(string identity) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMailboxChangeTracker%20EmailMailbox.GetChangeTracker%28string%20identity%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.Capabilities.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.ChangeTracker.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.DisplayName.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.DisplayName.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.Id.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.IsDataEncryptedUnderLock.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.IsOwnedByCurrentApp.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.LinkedMailboxId.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.MailAddress.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.MailAddress.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.MailAddressAliases.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.NetworkAccountId.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.NetworkId.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.OtherAppReadAccess.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.OtherAppReadAccess.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.OtherAppWriteAccess.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.OtherAppWriteAccess.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.Policies.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.SourceDisplayName.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.SyncManager.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.UserDataAccountId.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailbox.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.EmailMailbox, global::Windows.ApplicationModel.Email.EmailMailboxChangedEventArgs> MailboxChanged

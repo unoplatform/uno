@@ -6,34 +6,49 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class SwipeItems : global::Microsoft.UI.Xaml.DependencyObject, global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.SwipeItem>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Controls.SwipeItem>
+	public partial class SwipeItems : global::Microsoft.UI.Xaml.DependencyObject, global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.SwipeItem>, global::System.Collections.Generic.ICollection<global::Microsoft.UI.Xaml.Controls.SwipeItem>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Controls.SwipeItem>, global::System.Collections.IEnumerable
 	{
-		// Skipping already declared property Mode
-		// Skipping already declared property Size
 		// Skipping already declared property ModeProperty
+		// Skipping already declared property Count
+		// Skipping already declared property IsReadOnly
+		// Skipping already declared property this[]
+		// Skipping already declared property Mode
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.SwipeItems.SwipeItems()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.SwipeItems()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.ModeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.SwipeItems(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.operator ==(Microsoft.UI.Xaml.Controls.SwipeItems, Microsoft.UI.Xaml.Controls.SwipeItems)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.operator !=(Microsoft.UI.Xaml.Controls.SwipeItems, Microsoft.UI.Xaml.Controls.SwipeItems)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.Equals(Microsoft.UI.Xaml.Controls.SwipeItems)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.SwipeItems(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.Count.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.IsReadOnly.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.this[int].get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.this[int].set
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.SwipeItems.IndexOf(Microsoft.UI.Xaml.Controls.SwipeItem)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.SwipeItems.Insert(int, Microsoft.UI.Xaml.Controls.SwipeItem)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.SwipeItems.RemoveAt(int)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.SwipeItems.Add(Microsoft.UI.Xaml.Controls.SwipeItem)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.SwipeItems.Clear()
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.SwipeItems.Contains(Microsoft.UI.Xaml.Controls.SwipeItem)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.SwipeItems.CopyTo(Microsoft.UI.Xaml.Controls.SwipeItem[], int)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.SwipeItems.Remove(Microsoft.UI.Xaml.Controls.SwipeItem)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.SwipeItems.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.System.Collections.IEnumerable.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.Mode.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.Mode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.GetAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.Size.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.GetView()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.IndexOf(Microsoft.UI.Xaml.Controls.SwipeItem, out uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.SetAt(uint, Microsoft.UI.Xaml.Controls.SwipeItem)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.InsertAt(uint, Microsoft.UI.Xaml.Controls.SwipeItem)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.RemoveAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.Append(Microsoft.UI.Xaml.Controls.SwipeItem)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.RemoveAtEnd()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.Clear()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.GetMany(uint, Microsoft.UI.Xaml.Controls.SwipeItem[])
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.ReplaceAll(Microsoft.UI.Xaml.Controls.SwipeItem[])
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.First()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.ModeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.System.Collections.Generic.IList<Microsoft.UI.Xaml.Controls.SwipeItem>.get_Item(int)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.System.Collections.Generic.IList<Microsoft.UI.Xaml.Controls.SwipeItem>.set_Item(int, Microsoft.UI.Xaml.Controls.SwipeItem)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Controls.SwipeItem>
-		// Skipping already implement System.Collections.Generic.IList<Microsoft.UI.Xaml.Controls.SwipeItem>.this[int]
 		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Controls.SwipeItem>
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Controls.SwipeItem>.Count
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Controls.SwipeItem>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Controls.SwipeItem>
 		// Processing: System.Collections.IEnumerable
 	}

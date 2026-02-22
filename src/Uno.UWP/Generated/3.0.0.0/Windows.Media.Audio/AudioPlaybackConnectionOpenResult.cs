@@ -33,7 +33,18 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnectionOpenResult.Status.get
+		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnectionOpenResult.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnectionOpenResult.operator ==(Windows.Media.Audio.AudioPlaybackConnectionOpenResult, Windows.Media.Audio.AudioPlaybackConnectionOpenResult)
+		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnectionOpenResult.operator !=(Windows.Media.Audio.AudioPlaybackConnectionOpenResult, Windows.Media.Audio.AudioPlaybackConnectionOpenResult)
+		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnectionOpenResult.Equals(Windows.Media.Audio.AudioPlaybackConnectionOpenResult)
+		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnectionOpenResult.Equals(object)
+		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnectionOpenResult.GetHashCode()
+		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnectionOpenResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnectionOpenResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnectionOpenResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnectionOpenResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnectionOpenResult.ExtendedError.get
+		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnectionOpenResult.Status.get
+		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnectionOpenResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

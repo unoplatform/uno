@@ -33,7 +33,18 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerFilter.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerFilter.operator ==(Windows.Devices.Enumeration.DevicePickerFilter, Windows.Devices.Enumeration.DevicePickerFilter)
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerFilter.operator !=(Windows.Devices.Enumeration.DevicePickerFilter, Windows.Devices.Enumeration.DevicePickerFilter)
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerFilter.Equals(Windows.Devices.Enumeration.DevicePickerFilter)
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerFilter.Equals(object)
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerFilter.GetHashCode()
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerFilter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerFilter.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerFilter.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerFilter.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerFilter.SupportedDeviceClasses.get
 		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerFilter.SupportedDeviceSelectors.get
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerFilter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

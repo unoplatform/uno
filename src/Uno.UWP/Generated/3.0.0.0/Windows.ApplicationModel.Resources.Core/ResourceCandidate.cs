@@ -38,8 +38,6 @@ namespace Windows.ApplicationModel.Resources.Core
 			}
 		}
 #endif
-		// Skipping already declared property Qualifiers
-		// Skipping already declared property ValueAsString
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Resources.Core.ResourceCandidateKind Kind
@@ -50,11 +48,18 @@ namespace Windows.ApplicationModel.Resources.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.Qualifiers.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.IsMatch.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.IsMatchAsDefault.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.IsDefault.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.ValueAsString.get
+		// Skipping already declared property Qualifiers
+		// Skipping already declared property ValueAsString
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.operator ==(Windows.ApplicationModel.Resources.Core.ResourceCandidate, Windows.ApplicationModel.Resources.Core.ResourceCandidate)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.operator !=(Windows.ApplicationModel.Resources.Core.ResourceCandidate, Windows.ApplicationModel.Resources.Core.ResourceCandidate)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.Equals(Windows.ApplicationModel.Resources.Core.ResourceCandidate)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> GetValueAsFileAsync()
@@ -70,6 +75,12 @@ namespace Windows.ApplicationModel.Resources.Core
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> ResourceCandidate.GetValueAsStreamAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIRandomAccessStream%3E%20ResourceCandidate.GetValueAsStreamAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.IsDefault.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.IsMatch.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.IsMatchAsDefault.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.Kind.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.Qualifiers.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.ValueAsString.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

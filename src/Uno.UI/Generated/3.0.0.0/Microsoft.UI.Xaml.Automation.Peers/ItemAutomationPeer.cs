@@ -12,9 +12,21 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property ItemsControlAutomationPeer
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.ItemAutomationPeer(object, Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.ItemAutomationPeer(object, Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.ItemAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.ItemAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.Realize()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.Item.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.ItemsControlAutomationPeer.get
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.Realize()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IVirtualizedItemProvider
 	}
 }

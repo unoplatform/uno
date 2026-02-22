@@ -3,15 +3,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation
 {
-#if false
+#if false || false || false || false || false || false || false
 	public enum AutomationCaretBidiMode
 	{
-#if false
-		LTR = 0,
-#endif
-#if false
-		RTL = 1,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationCaretBidiMode.LTR
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationCaretBidiMode.RTL
 	}
 #endif
 }

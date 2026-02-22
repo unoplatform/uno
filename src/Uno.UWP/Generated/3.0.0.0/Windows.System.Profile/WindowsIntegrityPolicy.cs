@@ -48,12 +48,13 @@ namespace Windows.System.Profile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Profile.WindowsIntegrityPolicy.IsEnabled.get
-		// Forced skipping of method Windows.System.Profile.WindowsIntegrityPolicy.IsEnabledForTrial.get
-		// Forced skipping of method Windows.System.Profile.WindowsIntegrityPolicy.CanDisable.get
-		// Forced skipping of method Windows.System.Profile.WindowsIntegrityPolicy.IsDisableSupported.get
+		// Forced skipping of method Windows.System.Profile.WindowsIntegrityPolicy.As<I>()
 		// Forced skipping of method Windows.System.Profile.WindowsIntegrityPolicy.PolicyChanged.add
 		// Forced skipping of method Windows.System.Profile.WindowsIntegrityPolicy.PolicyChanged.remove
+		// Forced skipping of method Windows.System.Profile.WindowsIntegrityPolicy.CanDisable.get
+		// Forced skipping of method Windows.System.Profile.WindowsIntegrityPolicy.IsDisableSupported.get
+		// Forced skipping of method Windows.System.Profile.WindowsIntegrityPolicy.IsEnabled.get
+		// Forced skipping of method Windows.System.Profile.WindowsIntegrityPolicy.IsEnabledForTrial.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static event global::System.EventHandler<object> PolicyChanged

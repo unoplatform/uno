@@ -10,6 +10,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty TargetNameProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(TargetName), typeof(string),
+			typeof(global::Microsoft.UI.Xaml.Media.Animation.DropTargetItemThemeAnimation),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(string)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string TargetName
 		{
 			get
@@ -24,22 +32,25 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty TargetNameProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(TargetName), typeof(string),
-			typeof(global::Microsoft.UI.Xaml.Media.Animation.DropTargetItemThemeAnimation),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(string)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public DropTargetItemThemeAnimation() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.DropTargetItemThemeAnimation", "DropTargetItemThemeAnimation.DropTargetItemThemeAnimation()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DropTargetItemThemeAnimation.DropTargetItemThemeAnimation()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DropTargetItemThemeAnimation.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DropTargetItemThemeAnimation.TargetNameProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DropTargetItemThemeAnimation.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DropTargetItemThemeAnimation.operator ==(Microsoft.UI.Xaml.Media.Animation.DropTargetItemThemeAnimation, Microsoft.UI.Xaml.Media.Animation.DropTargetItemThemeAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DropTargetItemThemeAnimation.operator !=(Microsoft.UI.Xaml.Media.Animation.DropTargetItemThemeAnimation, Microsoft.UI.Xaml.Media.Animation.DropTargetItemThemeAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DropTargetItemThemeAnimation.Equals(Microsoft.UI.Xaml.Media.Animation.DropTargetItemThemeAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DropTargetItemThemeAnimation.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DropTargetItemThemeAnimation.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DropTargetItemThemeAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DropTargetItemThemeAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DropTargetItemThemeAnimation.TargetName.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DropTargetItemThemeAnimation.TargetName.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DropTargetItemThemeAnimation.TargetNameProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DropTargetItemThemeAnimation.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DropTargetItemThemeAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

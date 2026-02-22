@@ -163,20 +163,31 @@ namespace Windows.Media.Control
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPlayEnabled.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPauseEnabled.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsStopEnabled.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsRecordEnabled.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsFastForwardEnabled.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsRewindEnabled.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsNextEnabled.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPreviousEnabled.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsChannelUpEnabled.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.operator ==(Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls, Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls)
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.operator !=(Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls, Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls)
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.Equals(Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls)
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.Equals(object)
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.GetHashCode()
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsChannelDownEnabled.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsChannelUpEnabled.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsFastForwardEnabled.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsNextEnabled.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPauseEnabled.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPlayEnabled.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPlayPauseToggleEnabled.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsShuffleEnabled.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsRepeatEnabled.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPlaybackRateEnabled.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPlaybackPositionEnabled.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPlaybackRateEnabled.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsPreviousEnabled.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsRecordEnabled.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsRepeatEnabled.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsRewindEnabled.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsShuffleEnabled.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsStopEnabled.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

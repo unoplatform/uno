@@ -15,15 +15,11 @@ namespace Windows.UI.Input.Inking
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Selected
+		public global::Windows.Foundation.Rect BoundingRect
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InkStroke.Selected is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InkStroke.Selected");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStroke", "bool InkStroke.Selected");
+				throw new global::System.NotImplementedException("The member Rect InkStroke.BoundingRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20InkStroke.BoundingRect");
 			}
 		}
 #endif
@@ -43,21 +39,11 @@ namespace Windows.UI.Input.Inking
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Rect BoundingRect
+		public uint Id
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect InkStroke.BoundingRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20InkStroke.BoundingRect");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Recognized
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool InkStroke.Recognized is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InkStroke.Recognized");
+				throw new global::System.NotImplementedException("The member uint InkStroke.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20InkStroke.Id");
 			}
 		}
 #endif
@@ -77,15 +63,25 @@ namespace Windows.UI.Input.Inking
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.DateTimeOffset? StrokeStartedTime
+		public bool Recognized
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? InkStroke.StrokeStartedTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20InkStroke.StrokeStartedTime");
+				throw new global::System.NotImplementedException("The member bool InkStroke.Recognized is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InkStroke.Recognized");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Selected
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool InkStroke.Selected is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InkStroke.Selected");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStroke", "DateTimeOffset? InkStroke.StrokeStartedTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStroke", "bool InkStroke.Selected");
 			}
 		}
 #endif
@@ -105,30 +101,28 @@ namespace Windows.UI.Input.Inking
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Id
+		public global::System.DateTimeOffset? StrokeStartedTime
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint InkStroke.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20InkStroke.Id");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? InkStroke.StrokeStartedTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20InkStroke.StrokeStartedTime");
 			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint PointerId
-		{
-			get
+			set
 			{
-				throw new global::System.NotImplementedException("The member uint InkStroke.PointerId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20InkStroke.PointerId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStroke", "DateTimeOffset? InkStroke.StrokeStartedTime");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.DrawingAttributes.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.DrawingAttributes.set
-		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.BoundingRect.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.Selected.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.Selected.set
-		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.Recognized.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.operator ==(Windows.UI.Input.Inking.InkStroke, Windows.UI.Input.Inking.InkStroke)
+		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.operator !=(Windows.UI.Input.Inking.InkStroke, Windows.UI.Input.Inking.InkStroke)
+		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.Equals(Windows.UI.Input.Inking.InkStroke)
+		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.Equals(object)
+		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Input.Inking.InkStrokeRenderingSegment> GetRenderingSegments()
@@ -143,8 +137,6 @@ namespace Windows.UI.Input.Inking
 			throw new global::System.NotImplementedException("The member InkStroke InkStroke.Clone() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InkStroke%20InkStroke.Clone%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.PointTransform.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.PointTransform.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Input.Inking.InkPoint> GetInkPoints()
@@ -152,11 +144,19 @@ namespace Windows.UI.Input.Inking
 			throw new global::System.NotImplementedException("The member IReadOnlyList<InkPoint> InkStroke.GetInkPoints() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CInkPoint%3E%20InkStroke.GetInkPoints%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.BoundingRect.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.DrawingAttributes.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.DrawingAttributes.set
 		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.Id.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.StrokeStartedTime.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.StrokeStartedTime.set
+		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.PointTransform.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.PointTransform.set
+		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.Recognized.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.Selected.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.Selected.set
 		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.StrokeDuration.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.StrokeDuration.set
-		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.PointerId.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.StrokeStartedTime.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.StrokeStartedTime.set
+		// Forced skipping of method Windows.UI.Input.Inking.InkStroke.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

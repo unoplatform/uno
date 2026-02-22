@@ -10,15 +10,15 @@ namespace Windows.UI.Notifications
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string LaunchArgs
+		public string DisplayName
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ToastCollection.LaunchArgs is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ToastCollection.LaunchArgs");
+				throw new global::System.NotImplementedException("The member string ToastCollection.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ToastCollection.DisplayName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastCollection", "string ToastCollection.LaunchArgs");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastCollection", "string ToastCollection.DisplayName");
 			}
 		}
 #endif
@@ -38,25 +38,25 @@ namespace Windows.UI.Notifications
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DisplayName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ToastCollection.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ToastCollection.DisplayName");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastCollection", "string ToastCollection.DisplayName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Id
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member string ToastCollection.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ToastCollection.Id");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string LaunchArgs
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string ToastCollection.LaunchArgs is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ToastCollection.LaunchArgs");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastCollection", "string ToastCollection.LaunchArgs");
 			}
 		}
 #endif
@@ -68,12 +68,23 @@ namespace Windows.UI.Notifications
 		}
 #endif
 		// Forced skipping of method Windows.UI.Notifications.ToastCollection.ToastCollection(string, string, string, System.Uri)
-		// Forced skipping of method Windows.UI.Notifications.ToastCollection.Id.get
+		// Forced skipping of method Windows.UI.Notifications.ToastCollection.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Notifications.ToastCollection.operator ==(Windows.UI.Notifications.ToastCollection, Windows.UI.Notifications.ToastCollection)
+		// Forced skipping of method Windows.UI.Notifications.ToastCollection.operator !=(Windows.UI.Notifications.ToastCollection, Windows.UI.Notifications.ToastCollection)
+		// Forced skipping of method Windows.UI.Notifications.ToastCollection.Equals(Windows.UI.Notifications.ToastCollection)
+		// Forced skipping of method Windows.UI.Notifications.ToastCollection.Equals(object)
+		// Forced skipping of method Windows.UI.Notifications.ToastCollection.GetHashCode()
+		// Forced skipping of method Windows.UI.Notifications.ToastCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.ToastCollection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.ToastCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Notifications.ToastCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Notifications.ToastCollection.DisplayName.get
 		// Forced skipping of method Windows.UI.Notifications.ToastCollection.DisplayName.set
-		// Forced skipping of method Windows.UI.Notifications.ToastCollection.LaunchArgs.get
-		// Forced skipping of method Windows.UI.Notifications.ToastCollection.LaunchArgs.set
 		// Forced skipping of method Windows.UI.Notifications.ToastCollection.Icon.get
 		// Forced skipping of method Windows.UI.Notifications.ToastCollection.Icon.set
+		// Forced skipping of method Windows.UI.Notifications.ToastCollection.Id.get
+		// Forced skipping of method Windows.UI.Notifications.ToastCollection.LaunchArgs.get
+		// Forced skipping of method Windows.UI.Notifications.ToastCollection.LaunchArgs.set
+		// Forced skipping of method Windows.UI.Notifications.ToastCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

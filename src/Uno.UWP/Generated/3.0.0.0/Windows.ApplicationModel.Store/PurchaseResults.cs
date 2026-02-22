@@ -53,9 +53,20 @@ namespace Windows.ApplicationModel.Store
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.operator ==(Windows.ApplicationModel.Store.PurchaseResults, Windows.ApplicationModel.Store.PurchaseResults)
+		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.operator !=(Windows.ApplicationModel.Store.PurchaseResults, Windows.ApplicationModel.Store.PurchaseResults)
+		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.Equals(Windows.ApplicationModel.Store.PurchaseResults)
+		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.OfferId.get
+		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.ReceiptXml.get
 		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.Status.get
 		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.TransactionId.get
-		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.ReceiptXml.get
-		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.OfferId.get
+		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -23,6 +23,16 @@ namespace Windows.Security.Authentication.Web.Provider
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderAddAccountOperation.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderAddAccountOperation.operator ==(Windows.Security.Authentication.Web.Provider.WebAccountProviderAddAccountOperation, Windows.Security.Authentication.Web.Provider.WebAccountProviderAddAccountOperation)
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderAddAccountOperation.operator !=(Windows.Security.Authentication.Web.Provider.WebAccountProviderAddAccountOperation, Windows.Security.Authentication.Web.Provider.WebAccountProviderAddAccountOperation)
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderAddAccountOperation.Equals(Windows.Security.Authentication.Web.Provider.WebAccountProviderAddAccountOperation)
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderAddAccountOperation.Equals(object)
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderAddAccountOperation.GetHashCode()
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderAddAccountOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderAddAccountOperation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderAddAccountOperation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderAddAccountOperation.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ReportCompleted()
@@ -31,6 +41,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderAddAccountOperation.Kind.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderAddAccountOperation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Security.Authentication.Web.Provider.IWebAccountProviderOperation
 	}
 }

@@ -13,5 +13,16 @@ namespace Windows.Devices.PointOfService
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedMagneticStripeReaderClosedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedMagneticStripeReaderClosedEventArgs.operator ==(Windows.Devices.PointOfService.ClaimedMagneticStripeReaderClosedEventArgs, Windows.Devices.PointOfService.ClaimedMagneticStripeReaderClosedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedMagneticStripeReaderClosedEventArgs.operator !=(Windows.Devices.PointOfService.ClaimedMagneticStripeReaderClosedEventArgs, Windows.Devices.PointOfService.ClaimedMagneticStripeReaderClosedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedMagneticStripeReaderClosedEventArgs.Equals(Windows.Devices.PointOfService.ClaimedMagneticStripeReaderClosedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedMagneticStripeReaderClosedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedMagneticStripeReaderClosedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedMagneticStripeReaderClosedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedMagneticStripeReaderClosedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedMagneticStripeReaderClosedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedMagneticStripeReaderClosedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedMagneticStripeReaderClosedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

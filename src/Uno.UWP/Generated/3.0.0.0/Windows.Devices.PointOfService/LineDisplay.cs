@@ -15,6 +15,16 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector StatisticsCategorySelector
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member LineDisplayStatisticsCategorySelector LineDisplay.StatisticsCategorySelector is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LineDisplayStatisticsCategorySelector%20LineDisplay.StatisticsCategorySelector");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.PointOfService.LineDisplayCapabilities Capabilities
 		{
 			get
@@ -83,45 +93,7 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector StatisticsCategorySelector
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member LineDisplayStatisticsCategorySelector LineDisplay.StatisticsCategorySelector is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LineDisplayStatisticsCategorySelector%20LineDisplay.StatisticsCategorySelector");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.DeviceId.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.Capabilities.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.PhysicalDeviceName.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.PhysicalDeviceDescription.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.DeviceControlDescription.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.DeviceControlVersion.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.DeviceServiceVersion.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.ClaimedLineDisplay> ClaimAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ClaimedLineDisplay> LineDisplay.ClaimAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CClaimedLineDisplay%3E%20LineDisplay.ClaimAsync%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.LineDisplayPowerStatus> CheckPowerStatusAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<LineDisplayPowerStatus> LineDisplay.CheckPowerStatusAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CLineDisplayPowerStatus%3E%20LineDisplay.CheckPowerStatusAsync%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplay", "void LineDisplay.Dispose()");
-		}
-#endif
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.StatisticsCategorySelector.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.LineDisplay> FromIdAsync(string deviceId)
@@ -150,6 +122,46 @@ namespace Windows.Devices.PointOfService
 			throw new global::System.NotImplementedException("The member string LineDisplay.GetDeviceSelector(PosConnectionTypes connectionTypes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20LineDisplay.GetDeviceSelector%28PosConnectionTypes%20connectionTypes%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.StatisticsCategorySelector.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.operator ==(Windows.Devices.PointOfService.LineDisplay, Windows.Devices.PointOfService.LineDisplay)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.operator !=(Windows.Devices.PointOfService.LineDisplay, Windows.Devices.PointOfService.LineDisplay)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.Equals(Windows.Devices.PointOfService.LineDisplay)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.Equals(object)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.GetHashCode()
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.ClaimedLineDisplay> ClaimAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ClaimedLineDisplay> LineDisplay.ClaimAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CClaimedLineDisplay%3E%20LineDisplay.ClaimAsync%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.LineDisplayPowerStatus> CheckPowerStatusAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<LineDisplayPowerStatus> LineDisplay.CheckPowerStatusAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CLineDisplayPowerStatus%3E%20LineDisplay.CheckPowerStatusAsync%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplay", "void LineDisplay.Dispose()");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.Capabilities.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.DeviceControlDescription.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.DeviceControlVersion.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.DeviceId.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.DeviceServiceVersion.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.PhysicalDeviceDescription.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.PhysicalDeviceName.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

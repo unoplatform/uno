@@ -8,12 +8,23 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class MatrixTransform : global::Microsoft.UI.Xaml.Media.Transform
 	{
-		// Skipping already declared property Matrix
 		// Skipping already declared property MatrixProperty
+		// Skipping already declared property Matrix
 		// Skipping already declared method Microsoft.UI.Xaml.Media.MatrixTransform.MatrixTransform()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.MatrixTransform.MatrixTransform()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.MatrixTransform.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.MatrixTransform.MatrixProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.MatrixTransform.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.MatrixTransform.operator ==(Microsoft.UI.Xaml.Media.MatrixTransform, Microsoft.UI.Xaml.Media.MatrixTransform)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.MatrixTransform.operator !=(Microsoft.UI.Xaml.Media.MatrixTransform, Microsoft.UI.Xaml.Media.MatrixTransform)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.MatrixTransform.Equals(Microsoft.UI.Xaml.Media.MatrixTransform)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.MatrixTransform.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.MatrixTransform.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.MatrixTransform.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.MatrixTransform.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.MatrixTransform.Matrix.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.MatrixTransform.Matrix.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.MatrixTransform.MatrixProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.MatrixTransform.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.MatrixTransform.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -15,20 +15,6 @@ namespace Windows.UI.ApplicationSettings
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string HeaderText
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AccountsSettingsPaneCommandsRequestedEventArgs.HeaderText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AccountsSettingsPaneCommandsRequestedEventArgs.HeaderText");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs", "string AccountsSettingsPaneCommandsRequestedEventArgs.HeaderText");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.UI.ApplicationSettings.SettingsCommand> Commands
 		{
 			get
@@ -44,6 +30,30 @@ namespace Windows.UI.ApplicationSettings
 			get
 			{
 				throw new global::System.NotImplementedException("The member IList<CredentialCommand> AccountsSettingsPaneCommandsRequestedEventArgs.CredentialCommands is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CCredentialCommand%3E%20AccountsSettingsPaneCommandsRequestedEventArgs.CredentialCommands");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string HeaderText
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string AccountsSettingsPaneCommandsRequestedEventArgs.HeaderText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AccountsSettingsPaneCommandsRequestedEventArgs.HeaderText");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs", "string AccountsSettingsPaneCommandsRequestedEventArgs.HeaderText");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.System.User User
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member User AccountsSettingsPaneCommandsRequestedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20AccountsSettingsPaneCommandsRequestedEventArgs.User");
 			}
 		}
 #endif
@@ -67,22 +77,16 @@ namespace Windows.UI.ApplicationSettings
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.System.User User
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member User AccountsSettingsPaneCommandsRequestedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20AccountsSettingsPaneCommandsRequestedEventArgs.User");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.WebAccountProviderCommands.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.WebAccountCommands.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.CredentialCommands.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.Commands.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.HeaderText.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.HeaderText.set
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.operator ==(Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs, Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs)
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.operator !=(Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs, Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs)
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.Equals(Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs)
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.ApplicationSettings.AccountsSettingsPaneEventDeferral GetDeferral()
@@ -90,6 +94,13 @@ namespace Windows.UI.ApplicationSettings
 			throw new global::System.NotImplementedException("The member AccountsSettingsPaneEventDeferral AccountsSettingsPaneCommandsRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AccountsSettingsPaneEventDeferral%20AccountsSettingsPaneCommandsRequestedEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.Commands.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.CredentialCommands.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.HeaderText.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.HeaderText.set
 		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.User.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.WebAccountCommands.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.WebAccountProviderCommands.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

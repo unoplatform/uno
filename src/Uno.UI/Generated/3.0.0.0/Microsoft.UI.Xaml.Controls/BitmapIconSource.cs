@@ -8,17 +8,30 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class BitmapIconSource : global::Microsoft.UI.Xaml.Controls.IconSource
 	{
-		// Skipping already declared property UriSource
-		// Skipping already declared property ShowAsMonochrome
 		// Skipping already declared property ShowAsMonochromeProperty
 		// Skipping already declared property UriSourceProperty
+		// Skipping already declared property ShowAsMonochrome
+		// Skipping already declared property UriSource
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.BitmapIconSource.BitmapIconSource()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.BitmapIconSource()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.UriSource.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.UriSource.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.ShowAsMonochromeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.UriSourceProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.BitmapIconSource(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.operator ==(Microsoft.UI.Xaml.Controls.BitmapIconSource, Microsoft.UI.Xaml.Controls.BitmapIconSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.operator !=(Microsoft.UI.Xaml.Controls.BitmapIconSource, Microsoft.UI.Xaml.Controls.BitmapIconSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.Equals(Microsoft.UI.Xaml.Controls.BitmapIconSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.BitmapIconSource(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.ShowAsMonochrome.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.ShowAsMonochrome.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.UriSourceProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.ShowAsMonochromeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.UriSource.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.UriSource.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIconSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -140,20 +140,16 @@ namespace Windows.Services.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StoreProduct.StoreId.get
-		// Forced skipping of method Windows.Services.Store.StoreProduct.Language.get
-		// Forced skipping of method Windows.Services.Store.StoreProduct.Title.get
-		// Forced skipping of method Windows.Services.Store.StoreProduct.Description.get
-		// Forced skipping of method Windows.Services.Store.StoreProduct.ProductKind.get
-		// Forced skipping of method Windows.Services.Store.StoreProduct.HasDigitalDownload.get
-		// Forced skipping of method Windows.Services.Store.StoreProduct.Keywords.get
-		// Forced skipping of method Windows.Services.Store.StoreProduct.Images.get
-		// Forced skipping of method Windows.Services.Store.StoreProduct.Videos.get
-		// Forced skipping of method Windows.Services.Store.StoreProduct.Skus.get
-		// Forced skipping of method Windows.Services.Store.StoreProduct.IsInUserCollection.get
-		// Forced skipping of method Windows.Services.Store.StoreProduct.Price.get
-		// Forced skipping of method Windows.Services.Store.StoreProduct.ExtendedJsonData.get
-		// Forced skipping of method Windows.Services.Store.StoreProduct.LinkUri.get
+		// Forced skipping of method Windows.Services.Store.StoreProduct.FromAbi(nint)
+		// Forced skipping of method Windows.Services.Store.StoreProduct.operator ==(Windows.Services.Store.StoreProduct, Windows.Services.Store.StoreProduct)
+		// Forced skipping of method Windows.Services.Store.StoreProduct.operator !=(Windows.Services.Store.StoreProduct, Windows.Services.Store.StoreProduct)
+		// Forced skipping of method Windows.Services.Store.StoreProduct.Equals(Windows.Services.Store.StoreProduct)
+		// Forced skipping of method Windows.Services.Store.StoreProduct.Equals(object)
+		// Forced skipping of method Windows.Services.Store.StoreProduct.GetHashCode()
+		// Forced skipping of method Windows.Services.Store.StoreProduct.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Services.Store.StoreProduct.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Services.Store.StoreProduct.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Services.Store.StoreProduct.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> GetIsAnySkuInstalledAsync()
@@ -175,6 +171,21 @@ namespace Windows.Services.Store
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorePurchaseResult> StoreProduct.RequestPurchaseAsync(StorePurchaseProperties storePurchaseProperties) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorePurchaseResult%3E%20StoreProduct.RequestPurchaseAsync%28StorePurchaseProperties%20storePurchaseProperties%29");
 		}
 #endif
+		// Forced skipping of method Windows.Services.Store.StoreProduct.Description.get
+		// Forced skipping of method Windows.Services.Store.StoreProduct.ExtendedJsonData.get
+		// Forced skipping of method Windows.Services.Store.StoreProduct.HasDigitalDownload.get
+		// Forced skipping of method Windows.Services.Store.StoreProduct.Images.get
 		// Forced skipping of method Windows.Services.Store.StoreProduct.InAppOfferToken.get
+		// Forced skipping of method Windows.Services.Store.StoreProduct.IsInUserCollection.get
+		// Forced skipping of method Windows.Services.Store.StoreProduct.Keywords.get
+		// Forced skipping of method Windows.Services.Store.StoreProduct.Language.get
+		// Forced skipping of method Windows.Services.Store.StoreProduct.LinkUri.get
+		// Forced skipping of method Windows.Services.Store.StoreProduct.Price.get
+		// Forced skipping of method Windows.Services.Store.StoreProduct.ProductKind.get
+		// Forced skipping of method Windows.Services.Store.StoreProduct.Skus.get
+		// Forced skipping of method Windows.Services.Store.StoreProduct.StoreId.get
+		// Forced skipping of method Windows.Services.Store.StoreProduct.Title.get
+		// Forced skipping of method Windows.Services.Store.StoreProduct.Videos.get
+		// Forced skipping of method Windows.Services.Store.StoreProduct.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

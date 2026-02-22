@@ -63,10 +63,21 @@ namespace Windows.ApplicationModel
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.PackageInstallingEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.PackageInstallingEventArgs.operator ==(Windows.ApplicationModel.PackageInstallingEventArgs, Windows.ApplicationModel.PackageInstallingEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.PackageInstallingEventArgs.operator !=(Windows.ApplicationModel.PackageInstallingEventArgs, Windows.ApplicationModel.PackageInstallingEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.PackageInstallingEventArgs.Equals(Windows.ApplicationModel.PackageInstallingEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.PackageInstallingEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.PackageInstallingEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.PackageInstallingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.PackageInstallingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.PackageInstallingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.PackageInstallingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.PackageInstallingEventArgs.ActivityId.get
+		// Forced skipping of method Windows.ApplicationModel.PackageInstallingEventArgs.ErrorCode.get
+		// Forced skipping of method Windows.ApplicationModel.PackageInstallingEventArgs.IsComplete.get
 		// Forced skipping of method Windows.ApplicationModel.PackageInstallingEventArgs.Package.get
 		// Forced skipping of method Windows.ApplicationModel.PackageInstallingEventArgs.Progress.get
-		// Forced skipping of method Windows.ApplicationModel.PackageInstallingEventArgs.IsComplete.get
-		// Forced skipping of method Windows.ApplicationModel.PackageInstallingEventArgs.ErrorCode.get
+		// Forced skipping of method Windows.ApplicationModel.PackageInstallingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

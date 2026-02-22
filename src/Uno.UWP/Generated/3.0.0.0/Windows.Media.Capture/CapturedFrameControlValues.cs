@@ -65,46 +65,6 @@ namespace Windows.Media.Capture
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint? IsoSpeed
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint? CapturedFrameControlValues.IsoSpeed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20CapturedFrameControlValues.IsoSpeed");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Devices.CaptureSceneMode? SceneMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CaptureSceneMode? CapturedFrameControlValues.SceneMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CaptureSceneMode%3F%20CapturedFrameControlValues.SceneMode");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint? WhiteBalance
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint? CapturedFrameControlValues.WhiteBalance is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20CapturedFrameControlValues.WhiteBalance");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float? ZoomFactor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float? CapturedFrameControlValues.ZoomFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%3F%20CapturedFrameControlValues.ZoomFactor");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Devices.MediaCaptureFocusState? FocusState
 		{
 			get
@@ -135,11 +95,41 @@ namespace Windows.Media.Capture
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint? IsoSpeed
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint? CapturedFrameControlValues.IsoSpeed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20CapturedFrameControlValues.IsoSpeed");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Devices.CaptureSceneMode? SceneMode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CaptureSceneMode? CapturedFrameControlValues.SceneMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CaptureSceneMode%3F%20CapturedFrameControlValues.SceneMode");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.MediaRatio SensorFrameRate
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member MediaRatio CapturedFrameControlValues.SensorFrameRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaRatio%20CapturedFrameControlValues.SensorFrameRate");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint? WhiteBalance
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint? CapturedFrameControlValues.WhiteBalance is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20CapturedFrameControlValues.WhiteBalance");
 			}
 		}
 #endif
@@ -153,19 +143,40 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float? ZoomFactor
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float? CapturedFrameControlValues.ZoomFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%3F%20CapturedFrameControlValues.ZoomFactor");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.operator ==(Windows.Media.Capture.CapturedFrameControlValues, Windows.Media.Capture.CapturedFrameControlValues)
+		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.operator !=(Windows.Media.Capture.CapturedFrameControlValues, Windows.Media.Capture.CapturedFrameControlValues)
+		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.Equals(Windows.Media.Capture.CapturedFrameControlValues)
+		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.Equals(object)
+		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.GetHashCode()
+		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.Exposure.get
 		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.ExposureCompensation.get
-		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.IsoSpeed.get
-		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.Focus.get
-		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.SceneMode.get
-		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.Flashed.get
 		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.FlashPowerPercent.get
-		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.WhiteBalance.get
-		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.ZoomFactor.get
+		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.Flashed.get
+		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.Focus.get
 		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.FocusState.get
-		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.IsoDigitalGain.get
 		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.IsoAnalogGain.get
+		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.IsoDigitalGain.get
+		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.IsoSpeed.get
+		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.SceneMode.get
 		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.SensorFrameRate.get
+		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.WhiteBalance.get
 		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.WhiteBalanceGain.get
+		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.ZoomFactor.get
+		// Forced skipping of method Windows.Media.Capture.CapturedFrameControlValues.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

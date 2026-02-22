@@ -11,8 +11,19 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Element
 		// Skipping already declared property NewIndex
 		// Skipping already declared property OldIndex
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementIndexChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementIndexChangedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.ItemsRepeaterElementIndexChangedEventArgs, Microsoft.UI.Xaml.Controls.ItemsRepeaterElementIndexChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementIndexChangedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.ItemsRepeaterElementIndexChangedEventArgs, Microsoft.UI.Xaml.Controls.ItemsRepeaterElementIndexChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementIndexChangedEventArgs.Equals(Microsoft.UI.Xaml.Controls.ItemsRepeaterElementIndexChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementIndexChangedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementIndexChangedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementIndexChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementIndexChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementIndexChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementIndexChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementIndexChangedEventArgs.Element.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementIndexChangedEventArgs.OldIndex.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementIndexChangedEventArgs.NewIndex.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementIndexChangedEventArgs.OldIndex.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementIndexChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

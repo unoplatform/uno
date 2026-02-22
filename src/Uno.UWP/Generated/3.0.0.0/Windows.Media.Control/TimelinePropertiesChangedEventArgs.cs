@@ -13,5 +13,16 @@ namespace Windows.Media.Control
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Media.Control.TimelinePropertiesChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Control.TimelinePropertiesChangedEventArgs.operator ==(Windows.Media.Control.TimelinePropertiesChangedEventArgs, Windows.Media.Control.TimelinePropertiesChangedEventArgs)
+		// Forced skipping of method Windows.Media.Control.TimelinePropertiesChangedEventArgs.operator !=(Windows.Media.Control.TimelinePropertiesChangedEventArgs, Windows.Media.Control.TimelinePropertiesChangedEventArgs)
+		// Forced skipping of method Windows.Media.Control.TimelinePropertiesChangedEventArgs.Equals(Windows.Media.Control.TimelinePropertiesChangedEventArgs)
+		// Forced skipping of method Windows.Media.Control.TimelinePropertiesChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.Control.TimelinePropertiesChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.Control.TimelinePropertiesChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Control.TimelinePropertiesChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Control.TimelinePropertiesChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Control.TimelinePropertiesChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Media.Control.TimelinePropertiesChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

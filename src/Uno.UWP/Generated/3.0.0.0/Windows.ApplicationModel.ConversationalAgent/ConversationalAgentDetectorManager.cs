@@ -23,6 +23,18 @@ namespace Windows.ApplicationModel.ConversationalAgent
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager.As<I>()
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager.Default.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager.operator ==(Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager, Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager)
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager.operator !=(Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager, Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager)
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager.Equals(Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager)
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector> GetAllActivationSignalDetectors()
@@ -51,20 +63,6 @@ namespace Windows.ApplicationModel.ConversationalAgent
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<ActivationSignalDetector>> ConversationalAgentDetectorManager.GetActivationSignalDetectorsAsync(ActivationSignalDetectorKind kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CActivationSignalDetector%3E%3E%20ConversationalAgentDetectorManager.GetActivationSignalDetectorsAsync%28ActivationSignalDetectorKind%20kind%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector GetActivationSignalDetectorFromId(string detectorId)
-		{
-			throw new global::System.NotImplementedException("The member ActivationSignalDetector ConversationalAgentDetectorManager.GetActivationSignalDetectorFromId(string detectorId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivationSignalDetector%20ConversationalAgentDetectorManager.GetActivationSignalDetectorFromId%28string%20detectorId%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector> GetActivationSignalDetectorFromIdAsync(string detectorId)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ActivationSignalDetector> ConversationalAgentDetectorManager.GetActivationSignalDetectorFromIdAsync(string detectorId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CActivationSignalDetector%3E%20ConversationalAgentDetectorManager.GetActivationSignalDetectorFromIdAsync%28string%20detectorId%29");
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager.Default.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

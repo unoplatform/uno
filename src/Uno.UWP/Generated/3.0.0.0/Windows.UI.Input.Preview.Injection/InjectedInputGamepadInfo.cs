@@ -10,71 +10,15 @@ namespace Windows.UI.Input.Preview.Injection
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double RightTrigger
+		public global::Windows.Gaming.Input.GamepadButtons Buttons
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double InjectedInputGamepadInfo.RightTrigger is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20InjectedInputGamepadInfo.RightTrigger");
+				throw new global::System.NotImplementedException("The member GamepadButtons InjectedInputGamepadInfo.Buttons is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GamepadButtons%20InjectedInputGamepadInfo.Buttons");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo", "double InjectedInputGamepadInfo.RightTrigger");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double RightThumbstickY
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double InjectedInputGamepadInfo.RightThumbstickY is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20InjectedInputGamepadInfo.RightThumbstickY");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo", "double InjectedInputGamepadInfo.RightThumbstickY");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double RightThumbstickX
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double InjectedInputGamepadInfo.RightThumbstickX is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20InjectedInputGamepadInfo.RightThumbstickX");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo", "double InjectedInputGamepadInfo.RightThumbstickX");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double LeftTrigger
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double InjectedInputGamepadInfo.LeftTrigger is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20InjectedInputGamepadInfo.LeftTrigger");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo", "double InjectedInputGamepadInfo.LeftTrigger");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double LeftThumbstickY
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double InjectedInputGamepadInfo.LeftThumbstickY is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20InjectedInputGamepadInfo.LeftThumbstickY");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo", "double InjectedInputGamepadInfo.LeftThumbstickY");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo", "GamepadButtons InjectedInputGamepadInfo.Buttons");
 			}
 		}
 #endif
@@ -94,26 +38,74 @@ namespace Windows.UI.Input.Preview.Injection
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Gaming.Input.GamepadButtons Buttons
+		public double LeftThumbstickY
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GamepadButtons InjectedInputGamepadInfo.Buttons is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GamepadButtons%20InjectedInputGamepadInfo.Buttons");
+				throw new global::System.NotImplementedException("The member double InjectedInputGamepadInfo.LeftThumbstickY is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20InjectedInputGamepadInfo.LeftThumbstickY");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo", "GamepadButtons InjectedInputGamepadInfo.Buttons");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo", "double InjectedInputGamepadInfo.LeftThumbstickY");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public InjectedInputGamepadInfo(global::Windows.Gaming.Input.GamepadReading reading)
+		public double LeftTrigger
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo", "InjectedInputGamepadInfo.InjectedInputGamepadInfo(GamepadReading reading)");
+			get
+			{
+				throw new global::System.NotImplementedException("The member double InjectedInputGamepadInfo.LeftTrigger is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20InjectedInputGamepadInfo.LeftTrigger");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo", "double InjectedInputGamepadInfo.LeftTrigger");
+			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.InjectedInputGamepadInfo(Windows.Gaming.Input.GamepadReading)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double RightThumbstickX
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double InjectedInputGamepadInfo.RightThumbstickX is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20InjectedInputGamepadInfo.RightThumbstickX");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo", "double InjectedInputGamepadInfo.RightThumbstickX");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double RightThumbstickY
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double InjectedInputGamepadInfo.RightThumbstickY is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20InjectedInputGamepadInfo.RightThumbstickY");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo", "double InjectedInputGamepadInfo.RightThumbstickY");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double RightTrigger
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double InjectedInputGamepadInfo.RightTrigger is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20InjectedInputGamepadInfo.RightTrigger");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo", "double InjectedInputGamepadInfo.RightTrigger");
+			}
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public InjectedInputGamepadInfo()
@@ -122,6 +114,24 @@ namespace Windows.UI.Input.Preview.Injection
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.InjectedInputGamepadInfo()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public InjectedInputGamepadInfo(global::Windows.Gaming.Input.GamepadReading reading)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo", "InjectedInputGamepadInfo.InjectedInputGamepadInfo(GamepadReading reading)");
+		}
+#endif
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.InjectedInputGamepadInfo(Windows.Gaming.Input.GamepadReading)
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.operator ==(Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo, Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo)
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.operator !=(Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo, Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo)
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.Equals(Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo)
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.Equals(object)
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.Buttons.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.Buttons.set
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.LeftThumbstickX.get
@@ -136,5 +146,6 @@ namespace Windows.UI.Input.Preview.Injection
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.RightThumbstickY.set
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.RightTrigger.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.RightTrigger.set
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -126,16 +126,27 @@ namespace Windows.Globalization.Fonts
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.LanguageFontGroup(string)
-		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.UITextFont.get
-		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.UIHeadingFont.get
-		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.UITitleFont.get
-		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.UICaptionFont.get
-		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.UINotificationHeadingFont.get
-		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.TraditionalDocumentFont.get
-		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.ModernDocumentFont.get
-		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.DocumentHeadingFont.get
-		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.FixedWidthTextFont.get
+		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.FromAbi(nint)
+		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.operator ==(Windows.Globalization.Fonts.LanguageFontGroup, Windows.Globalization.Fonts.LanguageFontGroup)
+		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.operator !=(Windows.Globalization.Fonts.LanguageFontGroup, Windows.Globalization.Fonts.LanguageFontGroup)
+		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.Equals(Windows.Globalization.Fonts.LanguageFontGroup)
+		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.Equals(object)
+		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.GetHashCode()
+		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.DocumentAlternate1Font.get
 		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.DocumentAlternate2Font.get
+		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.DocumentHeadingFont.get
+		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.FixedWidthTextFont.get
+		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.ModernDocumentFont.get
+		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.TraditionalDocumentFont.get
+		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.UICaptionFont.get
+		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.UIHeadingFont.get
+		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.UINotificationHeadingFont.get
+		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.UITextFont.get
+		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.UITitleFont.get
+		// Forced skipping of method Windows.Globalization.Fonts.LanguageFontGroup.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

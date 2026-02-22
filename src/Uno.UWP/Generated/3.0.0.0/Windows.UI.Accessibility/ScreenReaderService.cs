@@ -26,9 +26,20 @@ namespace Windows.UI.Accessibility
 		}
 #endif
 		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.ScreenReaderService()
-		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.CurrentScreenReaderPosition.get
+		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.operator ==(Windows.UI.Accessibility.ScreenReaderService, Windows.UI.Accessibility.ScreenReaderService)
+		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.operator !=(Windows.UI.Accessibility.ScreenReaderService, Windows.UI.Accessibility.ScreenReaderService)
+		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.Equals(Windows.UI.Accessibility.ScreenReaderService)
+		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.Equals(object)
+		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.GetHashCode()
+		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.ScreenReaderPositionChanged.add
 		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.ScreenReaderPositionChanged.remove
+		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.CurrentScreenReaderPosition.get
+		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Accessibility.ScreenReaderService, global::Windows.UI.Accessibility.ScreenReaderPositionChangedEventArgs> ScreenReaderPositionChanged

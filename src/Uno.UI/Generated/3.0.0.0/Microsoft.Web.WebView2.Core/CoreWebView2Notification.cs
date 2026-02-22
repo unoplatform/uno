@@ -143,21 +143,16 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.VibrationPattern.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.Body.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.Direction.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.Language.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.Tag.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.IconUri.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.Title.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.BadgeUri.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.BodyImageUri.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.ShouldRenotify.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.RequiresInteraction.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.IsSilent.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.Timestamp.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.CloseRequested.add
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.CloseRequested.remove
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2Notification, Microsoft.Web.WebView2.Core.CoreWebView2Notification)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2Notification, Microsoft.Web.WebView2.Core.CoreWebView2Notification)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.Equals(Microsoft.Web.WebView2.Core.CoreWebView2Notification)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ReportShown()
@@ -179,6 +174,22 @@ namespace Microsoft.Web.WebView2.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Notification", "void CoreWebView2Notification.ReportClosed()");
 		}
 #endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.CloseRequested.add
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.CloseRequested.remove
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.BadgeUri.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.Body.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.BodyImageUri.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.Direction.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.IconUri.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.IsSilent.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.Language.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.RequiresInteraction.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.ShouldRenotify.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.Tag.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.Timestamp.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.Title.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.VibrationPattern.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2Notification, object> CloseRequested

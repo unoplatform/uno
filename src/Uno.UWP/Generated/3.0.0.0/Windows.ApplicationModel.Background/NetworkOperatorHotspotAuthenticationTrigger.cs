@@ -16,6 +16,17 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.NetworkOperatorHotspotAuthenticationTrigger.NetworkOperatorHotspotAuthenticationTrigger()
+		// Forced skipping of method Windows.ApplicationModel.Background.NetworkOperatorHotspotAuthenticationTrigger.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Background.NetworkOperatorHotspotAuthenticationTrigger.operator ==(Windows.ApplicationModel.Background.NetworkOperatorHotspotAuthenticationTrigger, Windows.ApplicationModel.Background.NetworkOperatorHotspotAuthenticationTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.NetworkOperatorHotspotAuthenticationTrigger.operator !=(Windows.ApplicationModel.Background.NetworkOperatorHotspotAuthenticationTrigger, Windows.ApplicationModel.Background.NetworkOperatorHotspotAuthenticationTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.NetworkOperatorHotspotAuthenticationTrigger.Equals(Windows.ApplicationModel.Background.NetworkOperatorHotspotAuthenticationTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.NetworkOperatorHotspotAuthenticationTrigger.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Background.NetworkOperatorHotspotAuthenticationTrigger.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Background.NetworkOperatorHotspotAuthenticationTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.NetworkOperatorHotspotAuthenticationTrigger.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.NetworkOperatorHotspotAuthenticationTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Background.NetworkOperatorHotspotAuthenticationTrigger.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.ApplicationModel.Background.NetworkOperatorHotspotAuthenticationTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger
 	}
 }

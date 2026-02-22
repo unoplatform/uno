@@ -10,22 +10,18 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.ItemsPanelTemplate Panel
+		public global::Microsoft.UI.Xaml.Style ContainerStyle
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ItemsPanelTemplate GroupStyle.Panel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ItemsPanelTemplate%20GroupStyle.Panel");
+				throw new global::System.NotImplementedException("The member Style GroupStyle.ContainerStyle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Style%20GroupStyle.ContainerStyle");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.GroupStyle", "ItemsPanelTemplate GroupStyle.Panel");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.GroupStyle", "Style GroupStyle.ContainerStyle");
 			}
 		}
 #endif
-		// Skipping already declared property HidesIfEmpty
-		// Skipping already declared property HeaderTemplateSelector
-		// Skipping already declared property HeaderTemplate
-		// Skipping already declared property HeaderContainerStyle
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Controls.StyleSelector ContainerStyleSelector
@@ -40,38 +36,56 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
+		// Skipping already declared property HeaderContainerStyle
+		// Skipping already declared property HeaderTemplate
+		// Skipping already declared property HeaderTemplateSelector
+		// Skipping already declared property HidesIfEmpty
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Style ContainerStyle
+		public global::Microsoft.UI.Xaml.Controls.ItemsPanelTemplate Panel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Style GroupStyle.ContainerStyle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Style%20GroupStyle.ContainerStyle");
+				throw new global::System.NotImplementedException("The member ItemsPanelTemplate GroupStyle.Panel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ItemsPanelTemplate%20GroupStyle.Panel");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.GroupStyle", "Style GroupStyle.ContainerStyle");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.GroupStyle", "ItemsPanelTemplate GroupStyle.Panel");
 			}
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.GroupStyle.GroupStyle()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.GroupStyle()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.Panel.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.Panel.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.GroupStyle(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.operator ==(Microsoft.UI.Xaml.Controls.GroupStyle, Microsoft.UI.Xaml.Controls.GroupStyle)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.operator !=(Microsoft.UI.Xaml.Controls.GroupStyle, Microsoft.UI.Xaml.Controls.GroupStyle)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.Equals(Microsoft.UI.Xaml.Controls.GroupStyle)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.GroupStyle(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.PropertyChanged.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.PropertyChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.ContainerStyle.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.ContainerStyle.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.HeaderContainerStyle.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.HeaderContainerStyle.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.ContainerStyleSelector.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.ContainerStyleSelector.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.HeaderContainerStyle.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.HeaderContainerStyle.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.HeaderTemplate.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.HeaderTemplate.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.HeaderTemplateSelector.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.HeaderTemplateSelector.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.HidesIfEmpty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.HidesIfEmpty.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.PropertyChanged.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.PropertyChanged.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.Panel.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.Panel.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged
@@ -88,6 +102,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Processing: Microsoft.UI.Xaml.Data.INotifyPropertyChanged
+		// Processing: System.ComponentModel.INotifyPropertyChanged
 	}
 }

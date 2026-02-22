@@ -23,11 +23,24 @@ namespace Windows.Perception.Spatial
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.Locatability.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.LocatabilityChanged.add
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.LocatabilityChanged.remove
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.PositionalTrackingDeactivating.add
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.PositionalTrackingDeactivating.remove
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Perception.Spatial.SpatialLocator GetDefault()
+		{
+			throw new global::System.NotImplementedException("The member SpatialLocator SpatialLocator.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialLocator%20SpatialLocator.GetDefault%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.FromAbi(nint)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.operator ==(Windows.Perception.Spatial.SpatialLocator, Windows.Perception.Spatial.SpatialLocator)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.operator !=(Windows.Perception.Spatial.SpatialLocator, Windows.Perception.Spatial.SpatialLocator)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.Equals(Windows.Perception.Spatial.SpatialLocator)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.Equals(object)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.GetHashCode()
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Perception.Spatial.SpatialLocation TryLocateAtTimestamp(global::Windows.Perception.PerceptionTimestamp timestamp, global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
@@ -91,13 +104,12 @@ namespace Windows.Perception.Spatial
 			throw new global::System.NotImplementedException("The member SpatialStationaryFrameOfReference SpatialLocator.CreateStationaryFrameOfReferenceAtCurrentLocation(Vector3 relativePosition, Quaternion relativeOrientation, double relativeHeadingInRadians) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialStationaryFrameOfReference%20SpatialLocator.CreateStationaryFrameOfReferenceAtCurrentLocation%28Vector3%20relativePosition%2C%20Quaternion%20relativeOrientation%2C%20double%20relativeHeadingInRadians%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Perception.Spatial.SpatialLocator GetDefault()
-		{
-			throw new global::System.NotImplementedException("The member SpatialLocator SpatialLocator.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialLocator%20SpatialLocator.GetDefault%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.LocatabilityChanged.add
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.LocatabilityChanged.remove
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.PositionalTrackingDeactivating.add
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.PositionalTrackingDeactivating.remove
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.Locatability.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Perception.Spatial.SpatialLocator, object> LocatabilityChanged

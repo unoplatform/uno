@@ -10,15 +10,15 @@ namespace Windows.Devices.Lights.Effects
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan UpdateInterval
+		public global::System.TimeSpan Duration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBitmapEffect.UpdateInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayBitmapEffect.UpdateInterval");
+				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBitmapEffect.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayBitmapEffect.Duration");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBitmapEffect", "TimeSpan LampArrayBitmapEffect.UpdateInterval");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBitmapEffect", "TimeSpan LampArrayBitmapEffect.Duration");
 			}
 		}
 #endif
@@ -38,25 +38,25 @@ namespace Windows.Devices.Lights.Effects
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan Duration
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBitmapEffect.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayBitmapEffect.Duration");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBitmapEffect", "TimeSpan LampArrayBitmapEffect.Duration");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Size SuggestedBitmapSize
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member Size LampArrayBitmapEffect.SuggestedBitmapSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Size%20LampArrayBitmapEffect.SuggestedBitmapSize");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan UpdateInterval
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBitmapEffect.UpdateInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayBitmapEffect.UpdateInterval");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBitmapEffect", "TimeSpan LampArrayBitmapEffect.UpdateInterval");
 			}
 		}
 #endif
@@ -82,17 +82,28 @@ namespace Windows.Devices.Lights.Effects
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.LampArrayBitmapEffect(Windows.Devices.Lights.LampArray, int[])
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.operator ==(Windows.Devices.Lights.Effects.LampArrayBitmapEffect, Windows.Devices.Lights.Effects.LampArrayBitmapEffect)
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.operator !=(Windows.Devices.Lights.Effects.LampArrayBitmapEffect, Windows.Devices.Lights.Effects.LampArrayBitmapEffect)
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.Equals(Windows.Devices.Lights.Effects.LampArrayBitmapEffect)
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.Equals(object)
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.GetHashCode()
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.BitmapRequested.add
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.BitmapRequested.remove
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.Duration.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.Duration.set
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.StartDelay.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.StartDelay.set
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.SuggestedBitmapSize.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.UpdateInterval.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.UpdateInterval.set
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.SuggestedBitmapSize.get
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.BitmapRequested.add
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.BitmapRequested.remove
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.ZIndex.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.ZIndex.set
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Lights.Effects.LampArrayBitmapEffect, global::Windows.Devices.Lights.Effects.LampArrayBitmapRequestedEventArgs> BitmapRequested

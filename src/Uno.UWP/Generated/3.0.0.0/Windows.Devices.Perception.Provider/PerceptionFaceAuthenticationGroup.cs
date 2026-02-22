@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception.Provider
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -27,6 +26,17 @@ namespace Windows.Devices.Perception.Provider
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup.PerceptionFaceAuthenticationGroup(System.Collections.Generic.IEnumerable<string>, Windows.Devices.Perception.Provider.PerceptionStartFaceAuthenticationHandler, Windows.Devices.Perception.Provider.PerceptionStopFaceAuthenticationHandler)
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup.operator ==(Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup, Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup)
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup.operator !=(Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup, Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup)
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup.Equals(Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup)
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup.Equals(object)
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup.GetHashCode()
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup.FrameProviderIds.get
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

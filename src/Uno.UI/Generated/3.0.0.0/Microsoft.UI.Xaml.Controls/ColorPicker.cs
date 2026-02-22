@@ -8,26 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class ColorPicker : global::Microsoft.UI.Xaml.Controls.Control
 	{
-		// Skipping already declared property PreviousColor
-		// Skipping already declared property MinValue
-		// Skipping already declared property MinSaturation
-		// Skipping already declared property MinHue
-		// Skipping already declared property MaxValue
-		// Skipping already declared property MaxSaturation
-		// Skipping already declared property MaxHue
-		// Skipping already declared property IsMoreButtonVisible
-		// Skipping already declared property IsHexInputVisible
-		// Skipping already declared property IsColorSpectrumVisible
-		// Skipping already declared property IsColorSliderVisible
-		// Skipping already declared property IsColorPreviewVisible
-		// Skipping already declared property IsColorChannelTextInputVisible
-		// Skipping already declared property IsAlphaTextInputVisible
-		// Skipping already declared property IsAlphaSliderVisible
-		// Skipping already declared property IsAlphaEnabled
-		// Skipping already declared property ColorSpectrumShape
-		// Skipping already declared property ColorSpectrumComponents
-		// Skipping already declared property Color
-		// Skipping already declared property Orientation
 		// Skipping already declared property ColorProperty
 		// Skipping already declared property ColorSpectrumComponentsProperty
 		// Skipping already declared property ColorSpectrumShapeProperty
@@ -46,72 +26,105 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property MinHueProperty
 		// Skipping already declared property MinSaturationProperty
 		// Skipping already declared property MinValueProperty
-		// Skipping already declared property PreviousColorProperty
 		// Skipping already declared property OrientationProperty
+		// Skipping already declared property PreviousColorProperty
+		// Skipping already declared property Color
+		// Skipping already declared property ColorSpectrumComponents
+		// Skipping already declared property ColorSpectrumShape
+		// Skipping already declared property IsAlphaEnabled
+		// Skipping already declared property IsAlphaSliderVisible
+		// Skipping already declared property IsAlphaTextInputVisible
+		// Skipping already declared property IsColorChannelTextInputVisible
+		// Skipping already declared property IsColorPreviewVisible
+		// Skipping already declared property IsColorSliderVisible
+		// Skipping already declared property IsColorSpectrumVisible
+		// Skipping already declared property IsHexInputVisible
+		// Skipping already declared property IsMoreButtonVisible
+		// Skipping already declared property MaxHue
+		// Skipping already declared property MaxSaturation
+		// Skipping already declared property MaxValue
+		// Skipping already declared property MinHue
+		// Skipping already declared property MinSaturation
+		// Skipping already declared property MinValue
+		// Skipping already declared property Orientation
+		// Skipping already declared property PreviousColor
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ColorPicker.ColorPicker()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.ColorPicker()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.ColorProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.ColorSpectrumComponentsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.ColorSpectrumShapeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsAlphaEnabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsAlphaSliderVisibleProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsAlphaTextInputVisibleProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsColorChannelTextInputVisibleProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsColorPreviewVisibleProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsColorSliderVisibleProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsColorSpectrumVisibleProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsHexInputVisibleProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsMoreButtonVisibleProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MaxHueProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MaxSaturationProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MaxValueProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MinHueProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MinSaturationProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MinValueProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.OrientationProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.PreviousColorProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.ColorPicker(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.operator ==(Microsoft.UI.Xaml.Controls.ColorPicker, Microsoft.UI.Xaml.Controls.ColorPicker)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.operator !=(Microsoft.UI.Xaml.Controls.ColorPicker, Microsoft.UI.Xaml.Controls.ColorPicker)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.Equals(Microsoft.UI.Xaml.Controls.ColorPicker)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.ColorPicker(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.ColorChanged.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.ColorChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.Color.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.Color.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.PreviousColor.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.PreviousColor.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.ColorSpectrumComponents.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.ColorSpectrumComponents.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.ColorSpectrumShape.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.ColorSpectrumShape.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsAlphaEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsAlphaEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsColorSpectrumVisible.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsColorSpectrumVisible.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsAlphaSliderVisible.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsAlphaSliderVisible.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsAlphaTextInputVisible.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsAlphaTextInputVisible.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsColorChannelTextInputVisible.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsColorChannelTextInputVisible.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsColorPreviewVisible.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsColorPreviewVisible.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsColorSliderVisible.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsColorSliderVisible.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsAlphaSliderVisible.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsAlphaSliderVisible.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsMoreButtonVisible.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsMoreButtonVisible.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsColorChannelTextInputVisible.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsColorChannelTextInputVisible.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsAlphaTextInputVisible.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsAlphaTextInputVisible.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsColorSpectrumVisible.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsColorSpectrumVisible.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsHexInputVisible.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsHexInputVisible.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MinHue.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MinHue.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsMoreButtonVisible.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsMoreButtonVisible.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MaxHue.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MaxHue.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MinSaturation.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MinSaturation.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MaxSaturation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MaxSaturation.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MinValue.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MinValue.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MaxValue.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MaxValue.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.ColorSpectrumShape.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.ColorSpectrumShape.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.ColorSpectrumComponents.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.ColorSpectrumComponents.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.ColorChanged.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.ColorChanged.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MinHue.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MinHue.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MinSaturation.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MinSaturation.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MinValue.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MinValue.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.Orientation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.Orientation.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.OrientationProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.ColorProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.PreviousColorProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsAlphaEnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsColorSpectrumVisibleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsColorPreviewVisibleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsColorSliderVisibleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsAlphaSliderVisibleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsMoreButtonVisibleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsColorChannelTextInputVisibleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsAlphaTextInputVisibleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsHexInputVisibleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MinHueProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MaxHueProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MinSaturationProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MaxSaturationProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MinValueProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MaxValueProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.ColorSpectrumShapeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.ColorSpectrumComponentsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.PreviousColor.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.PreviousColor.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ColorPicker.ColorChanged
 	}
 }

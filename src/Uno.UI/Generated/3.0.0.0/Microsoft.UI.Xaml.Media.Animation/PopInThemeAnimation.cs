@@ -10,48 +10,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string TargetName
-		{
-			get
-			{
-				return (string)this.GetValue(TargetNameProperty);
-			}
-			set
-			{
-				this.SetValue(TargetNameProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double FromVerticalOffset
-		{
-			get
-			{
-				return (double)this.GetValue(FromVerticalOffsetProperty);
-			}
-			set
-			{
-				this.SetValue(FromVerticalOffsetProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double FromHorizontalOffset
-		{
-			get
-			{
-				return (double)this.GetValue(FromHorizontalOffsetProperty);
-			}
-			set
-			{
-				this.SetValue(FromHorizontalOffsetProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty FromHorizontalOffsetProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(FromHorizontalOffset), typeof(double),
@@ -76,20 +34,73 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double FromHorizontalOffset
+		{
+			get
+			{
+				return (double)this.GetValue(FromHorizontalOffsetProperty);
+			}
+			set
+			{
+				this.SetValue(FromHorizontalOffsetProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double FromVerticalOffset
+		{
+			get
+			{
+				return (double)this.GetValue(FromVerticalOffsetProperty);
+			}
+			set
+			{
+				this.SetValue(FromVerticalOffsetProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string TargetName
+		{
+			get
+			{
+				return (string)this.GetValue(TargetNameProperty);
+			}
+			set
+			{
+				this.SetValue(TargetNameProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PopInThemeAnimation() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation", "PopInThemeAnimation.PopInThemeAnimation()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.PopInThemeAnimation()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.TargetName.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.TargetName.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.FromHorizontalOffsetProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.FromVerticalOffsetProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.TargetNameProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.operator ==(Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation, Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.operator !=(Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation, Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.Equals(Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.FromHorizontalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.FromHorizontalOffset.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.FromVerticalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.FromVerticalOffset.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.TargetNameProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.FromHorizontalOffsetProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.FromVerticalOffsetProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.TargetName.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.TargetName.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopInThemeAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

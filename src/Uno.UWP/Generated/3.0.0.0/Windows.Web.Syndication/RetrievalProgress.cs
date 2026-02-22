@@ -10,6 +10,19 @@ namespace Windows.Web.Syndication
 	{
 		// Forced skipping of method Windows.Web.Syndication.RetrievalProgress.RetrievalProgress()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public RetrievalProgress(uint _BytesRetrieved, uint _TotalBytesToRetrieve)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.RetrievalProgress", "RetrievalProgress.RetrievalProgress(uint _BytesRetrieved, uint _TotalBytesToRetrieve)");
+		}
+#endif
+		// Forced skipping of method Windows.Web.Syndication.RetrievalProgress.RetrievalProgress(uint, uint)
+		// Forced skipping of method Windows.Web.Syndication.RetrievalProgress.operator ==(Windows.Web.Syndication.RetrievalProgress, Windows.Web.Syndication.RetrievalProgress)
+		// Forced skipping of method Windows.Web.Syndication.RetrievalProgress.operator !=(Windows.Web.Syndication.RetrievalProgress, Windows.Web.Syndication.RetrievalProgress)
+		// Forced skipping of method Windows.Web.Syndication.RetrievalProgress.Equals(Windows.Web.Syndication.RetrievalProgress)
+		// Forced skipping of method Windows.Web.Syndication.RetrievalProgress.Equals(object)
+		// Forced skipping of method Windows.Web.Syndication.RetrievalProgress.GetHashCode()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint BytesRetrieved;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

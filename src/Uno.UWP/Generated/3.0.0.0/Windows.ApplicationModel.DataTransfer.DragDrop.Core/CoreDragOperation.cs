@@ -10,15 +10,15 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIContentMode DragUIContentMode
+		public global::Windows.ApplicationModel.DataTransfer.DataPackageOperation AllowedOperations
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreDragUIContentMode CoreDragOperation.DragUIContentMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreDragUIContentMode%20CoreDragOperation.DragUIContentMode");
+				throw new global::System.NotImplementedException("The member DataPackageOperation CoreDragOperation.AllowedOperations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataPackageOperation%20CoreDragOperation.AllowedOperations");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation", "CoreDragUIContentMode CoreDragOperation.DragUIContentMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation", "DataPackageOperation CoreDragOperation.AllowedOperations");
 			}
 		}
 #endif
@@ -34,15 +34,15 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.DataTransfer.DataPackageOperation AllowedOperations
+		public global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIContentMode DragUIContentMode
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DataPackageOperation CoreDragOperation.AllowedOperations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataPackageOperation%20CoreDragOperation.AllowedOperations");
+				throw new global::System.NotImplementedException("The member CoreDragUIContentMode CoreDragOperation.DragUIContentMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreDragUIContentMode%20CoreDragOperation.DragUIContentMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation", "DataPackageOperation CoreDragOperation.AllowedOperations");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation", "CoreDragUIContentMode CoreDragOperation.DragUIContentMode");
 			}
 		}
 #endif
@@ -54,7 +54,16 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.CoreDragOperation()
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.Data.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.operator ==(Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation, Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.operator !=(Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation, Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.Equals(Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetPointerId(uint pointerId)
@@ -76,8 +85,6 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation", "void CoreDragOperation.SetDragUIContentFromSoftwareBitmap(SoftwareBitmap softwareBitmap, Point anchorPoint)");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.DragUIContentMode.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.DragUIContentMode.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.DataTransfer.DataPackageOperation> StartAsync()
@@ -87,5 +94,9 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 #endif
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.AllowedOperations.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.AllowedOperations.set
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.Data.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.DragUIContentMode.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.DragUIContentMode.set
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

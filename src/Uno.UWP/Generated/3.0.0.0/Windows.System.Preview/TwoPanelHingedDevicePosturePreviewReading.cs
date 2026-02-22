@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.Preview
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -74,11 +73,22 @@ namespace Windows.System.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.Timestamp.get
+		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.FromAbi(nint)
+		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.operator ==(Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading, Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading)
+		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.operator !=(Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading, Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading)
+		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.Equals(Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading)
+		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.Equals(object)
+		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.GetHashCode()
+		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.HingeState.get
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.Panel1Orientation.get
 		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.Panel1Id.get
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.Panel2Orientation.get
+		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.Panel1Orientation.get
 		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.Panel2Id.get
+		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.Panel2Orientation.get
+		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.Timestamp.get
+		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

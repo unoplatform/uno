@@ -63,11 +63,7 @@ namespace Windows.Devices.Usb
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.ClassCode.get
-		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.SubclassCode.get
-		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.ProtocolCode.get
-		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.AlternateSettingNumber.get
-		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.InterfaceNumber.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryParse(global::Windows.Devices.Usb.UsbDescriptor descriptor, out global::Windows.Devices.Usb.UsbInterfaceDescriptor parsed)
@@ -82,5 +78,21 @@ namespace Windows.Devices.Usb
 			throw new global::System.NotImplementedException("The member UsbInterfaceDescriptor UsbInterfaceDescriptor.Parse(UsbDescriptor descriptor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UsbInterfaceDescriptor%20UsbInterfaceDescriptor.Parse%28UsbDescriptor%20descriptor%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.operator ==(Windows.Devices.Usb.UsbInterfaceDescriptor, Windows.Devices.Usb.UsbInterfaceDescriptor)
+		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.operator !=(Windows.Devices.Usb.UsbInterfaceDescriptor, Windows.Devices.Usb.UsbInterfaceDescriptor)
+		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.Equals(Windows.Devices.Usb.UsbInterfaceDescriptor)
+		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.Equals(object)
+		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.GetHashCode()
+		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.AlternateSettingNumber.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.ClassCode.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.InterfaceNumber.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.ProtocolCode.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.SubclassCode.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

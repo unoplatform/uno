@@ -13,6 +13,16 @@ namespace Windows.Graphics.Imaging
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Imaging.PixelDataProvider.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Imaging.PixelDataProvider.operator ==(Windows.Graphics.Imaging.PixelDataProvider, Windows.Graphics.Imaging.PixelDataProvider)
+		// Forced skipping of method Windows.Graphics.Imaging.PixelDataProvider.operator !=(Windows.Graphics.Imaging.PixelDataProvider, Windows.Graphics.Imaging.PixelDataProvider)
+		// Forced skipping of method Windows.Graphics.Imaging.PixelDataProvider.Equals(Windows.Graphics.Imaging.PixelDataProvider)
+		// Forced skipping of method Windows.Graphics.Imaging.PixelDataProvider.Equals(object)
+		// Forced skipping of method Windows.Graphics.Imaging.PixelDataProvider.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Imaging.PixelDataProvider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Imaging.PixelDataProvider.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Imaging.PixelDataProvider.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Imaging.PixelDataProvider.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public byte[] DetachPixelData()
@@ -20,5 +30,6 @@ namespace Windows.Graphics.Imaging
 			throw new global::System.NotImplementedException("The member byte[] PixelDataProvider.DetachPixelData() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%5B%5D%20PixelDataProvider.DetachPixelData%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Imaging.PixelDataProvider.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

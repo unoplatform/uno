@@ -8,18 +8,9 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class NavigationViewTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
-		// Skipping already declared property BackButtonVisibility
-		// Skipping already declared property LeftPaneVisibility
-		// Skipping already declared property OverflowButtonVisibility
-		// Skipping already declared property PaneToggleButtonVisibility
-		// Skipping already declared property PaneToggleButtonWidth
-		// Skipping already declared property SingleSelectionFollowsFocus
-		// Skipping already declared property SmallerPaneToggleButtonWidth
-		// Skipping already declared property TopPadding
-		// Skipping already declared property TopPaneVisibility
-		// Skipping already declared property OpenPaneLength
 		// Skipping already declared property BackButtonVisibilityProperty
 		// Skipping already declared property LeftPaneVisibilityProperty
+		// Skipping already declared property OpenPaneLengthProperty
 		// Skipping already declared property OverflowButtonVisibilityProperty
 		// Skipping already declared property PaneToggleButtonVisibilityProperty
 		// Skipping already declared property PaneToggleButtonWidthProperty
@@ -27,28 +18,50 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property SmallerPaneToggleButtonWidthProperty
 		// Skipping already declared property TopPaddingProperty
 		// Skipping already declared property TopPaneVisibilityProperty
-		// Skipping already declared property OpenPaneLengthProperty
+		// Skipping already declared property BackButtonVisibility
+		// Skipping already declared property LeftPaneVisibility
+		// Skipping already declared property OpenPaneLength
+		// Skipping already declared property OverflowButtonVisibility
+		// Skipping already declared property PaneToggleButtonVisibility
+		// Skipping already declared property PaneToggleButtonWidth
+		// Skipping already declared property SingleSelectionFollowsFocus
+		// Skipping already declared property SmallerPaneToggleButtonWidth
+		// Skipping already declared property TopPadding
+		// Skipping already declared property TopPaneVisibility
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.NavigationViewTemplateSettings()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.NavigationViewTemplateSettings()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.TopPadding.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.OverflowButtonVisibility.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.PaneToggleButtonVisibility.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.BackButtonVisibility.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.TopPaneVisibility.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.LeftPaneVisibility.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.SingleSelectionFollowsFocus.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.PaneToggleButtonWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.SmallerPaneToggleButtonWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.OpenPaneLength.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.BackButtonVisibilityProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.LeftPaneVisibilityProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.OpenPaneLengthProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.TopPaddingProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.OverflowButtonVisibilityProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.PaneToggleButtonVisibilityProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.BackButtonVisibilityProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.TopPaneVisibilityProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.LeftPaneVisibilityProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.SingleSelectionFollowsFocusProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.PaneToggleButtonWidthProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.SingleSelectionFollowsFocusProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.SmallerPaneToggleButtonWidthProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.TopPaddingProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.TopPaneVisibilityProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.NavigationViewTemplateSettings(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.operator ==(Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings, Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.operator !=(Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings, Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.Equals(Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.NavigationViewTemplateSettings(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.BackButtonVisibility.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.LeftPaneVisibility.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.OpenPaneLength.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.OverflowButtonVisibility.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.PaneToggleButtonVisibility.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.PaneToggleButtonWidth.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.SingleSelectionFollowsFocus.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.SmallerPaneToggleButtonWidth.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.TopPadding.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.TopPaneVisibility.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

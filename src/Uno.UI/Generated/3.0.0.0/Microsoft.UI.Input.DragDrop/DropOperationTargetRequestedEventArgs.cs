@@ -13,6 +13,16 @@ namespace Microsoft.UI.Input.DragDrop
 		{
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DropOperationTargetRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DropOperationTargetRequestedEventArgs.operator ==(Microsoft.UI.Input.DragDrop.DropOperationTargetRequestedEventArgs, Microsoft.UI.Input.DragDrop.DropOperationTargetRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DropOperationTargetRequestedEventArgs.operator !=(Microsoft.UI.Input.DragDrop.DropOperationTargetRequestedEventArgs, Microsoft.UI.Input.DragDrop.DropOperationTargetRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DropOperationTargetRequestedEventArgs.Equals(Microsoft.UI.Input.DragDrop.DropOperationTargetRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DropOperationTargetRequestedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DropOperationTargetRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DropOperationTargetRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DropOperationTargetRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DropOperationTargetRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DropOperationTargetRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetTarget(global::Microsoft.UI.Input.DragDrop.IDropOperationTarget target)
@@ -20,5 +30,6 @@ namespace Microsoft.UI.Input.DragDrop
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DropOperationTargetRequestedEventArgs", "void DropOperationTargetRequestedEventArgs.SetTarget(IDropOperationTarget target)");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DropOperationTargetRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

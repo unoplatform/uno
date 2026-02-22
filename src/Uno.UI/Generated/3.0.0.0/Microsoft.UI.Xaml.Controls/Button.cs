@@ -8,12 +8,25 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class Button : global::Microsoft.UI.Xaml.Controls.Primitives.ButtonBase
 	{
-		// Skipping already declared property Flyout
 		// Skipping already declared property FlyoutProperty
+		// Skipping already declared property Flyout
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Button.Button()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.Button()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.FlyoutProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.Button(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.operator ==(Microsoft.UI.Xaml.Controls.Button, Microsoft.UI.Xaml.Controls.Button)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.operator !=(Microsoft.UI.Xaml.Controls.Button, Microsoft.UI.Xaml.Controls.Button)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.Equals(Microsoft.UI.Xaml.Controls.Button)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.Button(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.Flyout.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.Flyout.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.FlyoutProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -9,6 +9,17 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class ScrollingZoomCompletedEventArgs
 	{
 		// Skipping already declared property CorrelationId
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomCompletedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomCompletedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.ScrollingZoomCompletedEventArgs, Microsoft.UI.Xaml.Controls.ScrollingZoomCompletedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomCompletedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.ScrollingZoomCompletedEventArgs, Microsoft.UI.Xaml.Controls.ScrollingZoomCompletedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomCompletedEventArgs.Equals(Microsoft.UI.Xaml.Controls.ScrollingZoomCompletedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomCompletedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomCompletedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomCompletedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomCompletedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomCompletedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomCompletedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomCompletedEventArgs.CorrelationId.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomCompletedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

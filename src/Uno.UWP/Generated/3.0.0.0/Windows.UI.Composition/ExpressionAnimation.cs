@@ -27,7 +27,17 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.ExpressionAnimation.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.ExpressionAnimation.operator ==(Windows.UI.Composition.ExpressionAnimation, Windows.UI.Composition.ExpressionAnimation)
+		// Forced skipping of method Windows.UI.Composition.ExpressionAnimation.operator !=(Windows.UI.Composition.ExpressionAnimation, Windows.UI.Composition.ExpressionAnimation)
+		// Forced skipping of method Windows.UI.Composition.ExpressionAnimation.Equals(Windows.UI.Composition.ExpressionAnimation)
+		// Forced skipping of method Windows.UI.Composition.ExpressionAnimation.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.ExpressionAnimation.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.ExpressionAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.ExpressionAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.ExpressionAnimation.Expression.get
 		// Forced skipping of method Windows.UI.Composition.ExpressionAnimation.Expression.set
+		// Forced skipping of method Windows.UI.Composition.ExpressionAnimation.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.ExpressionAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,6 +10,16 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::System.Guid AlertNotification
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.AlertNotification is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20GattServiceUuids.AlertNotification");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Guid Battery
 		{
 			get
@@ -30,11 +40,41 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::System.Guid CurrentTime
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.CurrentTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20GattServiceUuids.CurrentTime");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::System.Guid CyclingPower
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.CyclingPower is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20GattServiceUuids.CyclingPower");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Guid CyclingSpeedAndCadence
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.CyclingSpeedAndCadence is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20GattServiceUuids.CyclingSpeedAndCadence");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::System.Guid DeviceInformation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.DeviceInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20GattServiceUuids.DeviceInformation");
 			}
 		}
 #endif
@@ -85,56 +125,6 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			get
 			{
 				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.HeartRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20GattServiceUuids.HeartRate");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::System.Guid RunningSpeedAndCadence
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.RunningSpeedAndCadence is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20GattServiceUuids.RunningSpeedAndCadence");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::System.Guid AlertNotification
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.AlertNotification is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20GattServiceUuids.AlertNotification");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::System.Guid CurrentTime
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.CurrentTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20GattServiceUuids.CurrentTime");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::System.Guid CyclingPower
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.CyclingPower is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20GattServiceUuids.CyclingPower");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::System.Guid DeviceInformation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.DeviceInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20GattServiceUuids.DeviceInformation");
 			}
 		}
 #endif
@@ -210,6 +200,16 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::System.Guid RunningSpeedAndCadence
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.RunningSpeedAndCadence is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20GattServiceUuids.RunningSpeedAndCadence");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Guid ScanParameters
 		{
 			get
@@ -228,10 +228,19 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.As<I>()
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.AlertNotification.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.Battery.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.BloodPressure.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.CurrentTime.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.CyclingPower.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.CyclingSpeedAndCadence.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.DeviceInformation.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.GenericAccess.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.GenericAttribute.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.Glucose.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.HealthThermometer.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.HeartRate.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.HumanInterfaceDevice.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.ImmediateAlert.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.LinkLoss.get
@@ -239,16 +248,8 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.NextDstChange.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.PhoneAlertStatus.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.ReferenceTimeUpdate.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.RunningSpeedAndCadence.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.ScanParameters.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.TxPower.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.Battery.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.BloodPressure.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.CyclingSpeedAndCadence.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.GenericAccess.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.GenericAttribute.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.Glucose.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.HealthThermometer.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.HeartRate.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids.RunningSpeedAndCadence.get
 	}
 }

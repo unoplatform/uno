@@ -18,6 +18,7 @@ namespace Windows.System.RemoteDesktop
 			}
 		}
 #endif
+		// Forced skipping of method Windows.System.RemoteDesktop.InteractiveSession.As<I>()
 		// Forced skipping of method Windows.System.RemoteDesktop.InteractiveSession.IsRemote.get
 	}
 }

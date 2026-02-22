@@ -23,6 +23,17 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionQualityDegradingEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionQualityDegradingEventArgs.operator ==(Windows.Media.SpeechRecognition.SpeechRecognitionQualityDegradingEventArgs, Windows.Media.SpeechRecognition.SpeechRecognitionQualityDegradingEventArgs)
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionQualityDegradingEventArgs.operator !=(Windows.Media.SpeechRecognition.SpeechRecognitionQualityDegradingEventArgs, Windows.Media.SpeechRecognition.SpeechRecognitionQualityDegradingEventArgs)
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionQualityDegradingEventArgs.Equals(Windows.Media.SpeechRecognition.SpeechRecognitionQualityDegradingEventArgs)
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionQualityDegradingEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionQualityDegradingEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionQualityDegradingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionQualityDegradingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionQualityDegradingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionQualityDegradingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionQualityDegradingEventArgs.Problem.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionQualityDegradingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -11,8 +11,20 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property ToggleState
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ToggleMenuFlyoutItemAutomationPeer.ToggleMenuFlyoutItemAutomationPeer(Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleMenuFlyoutItemAutomationPeer.ToggleMenuFlyoutItemAutomationPeer(Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleMenuFlyoutItemAutomationPeer.ToggleState.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleMenuFlyoutItemAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleMenuFlyoutItemAutomationPeer.ToggleMenuFlyoutItemAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleMenuFlyoutItemAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.ToggleMenuFlyoutItemAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ToggleMenuFlyoutItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleMenuFlyoutItemAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.ToggleMenuFlyoutItemAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ToggleMenuFlyoutItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleMenuFlyoutItemAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.ToggleMenuFlyoutItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleMenuFlyoutItemAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleMenuFlyoutItemAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleMenuFlyoutItemAutomationPeer.ToggleMenuFlyoutItemAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleMenuFlyoutItemAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleMenuFlyoutItemAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ToggleMenuFlyoutItemAutomationPeer.Toggle()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleMenuFlyoutItemAutomationPeer.ToggleState.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleMenuFlyoutItemAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleMenuFlyoutItemAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IToggleProvider
 	}
 }

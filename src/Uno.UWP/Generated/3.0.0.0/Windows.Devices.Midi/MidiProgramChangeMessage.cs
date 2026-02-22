@@ -8,18 +8,29 @@ namespace Windows.Devices.Midi
 #endif
 	public partial class MidiProgramChangeMessage : global::Windows.Devices.Midi.IMidiMessage
 	{
+		// Skipping already declared property Channel
+		// Skipping already declared property Program
 		// Skipping already declared property RawData
 		// Skipping already declared property Timestamp
 		// Skipping already declared property Type
-		// Skipping already declared property Channel
-		// Skipping already declared property Program
 		// Skipping already declared method Windows.Devices.Midi.MidiProgramChangeMessage.MidiProgramChangeMessage(byte, byte)
 		// Forced skipping of method Windows.Devices.Midi.MidiProgramChangeMessage.MidiProgramChangeMessage(byte, byte)
+		// Forced skipping of method Windows.Devices.Midi.MidiProgramChangeMessage.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Midi.MidiProgramChangeMessage.operator ==(Windows.Devices.Midi.MidiProgramChangeMessage, Windows.Devices.Midi.MidiProgramChangeMessage)
+		// Forced skipping of method Windows.Devices.Midi.MidiProgramChangeMessage.operator !=(Windows.Devices.Midi.MidiProgramChangeMessage, Windows.Devices.Midi.MidiProgramChangeMessage)
+		// Forced skipping of method Windows.Devices.Midi.MidiProgramChangeMessage.Equals(Windows.Devices.Midi.MidiProgramChangeMessage)
+		// Forced skipping of method Windows.Devices.Midi.MidiProgramChangeMessage.Equals(object)
+		// Forced skipping of method Windows.Devices.Midi.MidiProgramChangeMessage.GetHashCode()
+		// Forced skipping of method Windows.Devices.Midi.MidiProgramChangeMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Midi.MidiProgramChangeMessage.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Midi.MidiProgramChangeMessage.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Midi.MidiProgramChangeMessage.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Midi.MidiProgramChangeMessage.Channel.get
 		// Forced skipping of method Windows.Devices.Midi.MidiProgramChangeMessage.Program.get
-		// Forced skipping of method Windows.Devices.Midi.MidiProgramChangeMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Midi.MidiProgramChangeMessage.RawData.get
+		// Forced skipping of method Windows.Devices.Midi.MidiProgramChangeMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Midi.MidiProgramChangeMessage.Type.get
+		// Forced skipping of method Windows.Devices.Midi.MidiProgramChangeMessage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Midi.IMidiMessage
 	}
 }

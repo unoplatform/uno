@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.SelectorBarItemAutomationPeer.SelectorBarItemAutomationPeer(Microsoft.UI.Xaml.Controls.SelectorBarItem)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorBarItemAutomationPeer.SelectorBarItemAutomationPeer(Microsoft.UI.Xaml.Controls.SelectorBarItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorBarItemAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorBarItemAutomationPeer.SelectorBarItemAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorBarItemAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.SelectorBarItemAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.SelectorBarItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorBarItemAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.SelectorBarItemAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.SelectorBarItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorBarItemAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.SelectorBarItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorBarItemAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorBarItemAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorBarItemAutomationPeer.SelectorBarItemAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorBarItemAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorBarItemAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorBarItemAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorBarItemAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

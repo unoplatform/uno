@@ -10,6 +10,16 @@ namespace Windows.Media.Core
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IList<global::Windows.Media.Core.TimedTextSubformat> Subformats
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IList<TimedTextSubformat> TimedTextLine.Subformats is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CTimedTextSubformat%3E%20TimedTextLine.Subformats");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Text
 		{
 			get
@@ -24,24 +34,25 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.Media.Core.TimedTextSubformat> Subformats
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<TimedTextSubformat> TimedTextLine.Subformats is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CTimedTextSubformat%3E%20TimedTextLine.Subformats");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public TimedTextLine()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextLine", "TimedTextLine.TimedTextLine()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.TimedTextLine.TimedTextLine()
+		// Forced skipping of method Windows.Media.Core.TimedTextLine.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Core.TimedTextLine.operator ==(Windows.Media.Core.TimedTextLine, Windows.Media.Core.TimedTextLine)
+		// Forced skipping of method Windows.Media.Core.TimedTextLine.operator !=(Windows.Media.Core.TimedTextLine, Windows.Media.Core.TimedTextLine)
+		// Forced skipping of method Windows.Media.Core.TimedTextLine.Equals(Windows.Media.Core.TimedTextLine)
+		// Forced skipping of method Windows.Media.Core.TimedTextLine.Equals(object)
+		// Forced skipping of method Windows.Media.Core.TimedTextLine.GetHashCode()
+		// Forced skipping of method Windows.Media.Core.TimedTextLine.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Core.TimedTextLine.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Core.TimedTextLine.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Core.TimedTextLine.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Media.Core.TimedTextLine.Subformats.get
 		// Forced skipping of method Windows.Media.Core.TimedTextLine.Text.get
 		// Forced skipping of method Windows.Media.Core.TimedTextLine.Text.set
-		// Forced skipping of method Windows.Media.Core.TimedTextLine.Subformats.get
+		// Forced skipping of method Windows.Media.Core.TimedTextLine.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

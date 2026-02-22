@@ -23,7 +23,16 @@ namespace Windows.Security.Credentials
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Credentials.KeyCredential.Name.get
+		// Forced skipping of method Windows.Security.Credentials.KeyCredential.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Credentials.KeyCredential.operator ==(Windows.Security.Credentials.KeyCredential, Windows.Security.Credentials.KeyCredential)
+		// Forced skipping of method Windows.Security.Credentials.KeyCredential.operator !=(Windows.Security.Credentials.KeyCredential, Windows.Security.Credentials.KeyCredential)
+		// Forced skipping of method Windows.Security.Credentials.KeyCredential.Equals(Windows.Security.Credentials.KeyCredential)
+		// Forced skipping of method Windows.Security.Credentials.KeyCredential.Equals(object)
+		// Forced skipping of method Windows.Security.Credentials.KeyCredential.GetHashCode()
+		// Forced skipping of method Windows.Security.Credentials.KeyCredential.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Credentials.KeyCredential.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Credentials.KeyCredential.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Credentials.KeyCredential.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IBuffer RetrievePublicKey()
@@ -52,5 +61,7 @@ namespace Windows.Security.Credentials
 			throw new global::System.NotImplementedException("The member IAsyncOperation<KeyCredentialAttestationResult> KeyCredential.GetAttestationAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CKeyCredentialAttestationResult%3E%20KeyCredential.GetAttestationAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Security.Credentials.KeyCredential.Name.get
+		// Forced skipping of method Windows.Security.Credentials.KeyCredential.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

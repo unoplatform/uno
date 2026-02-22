@@ -224,7 +224,25 @@ namespace Uno.UWPSyncGenerator
 
 		private static bool IsIgnoredAttribute(AttributeData attributeData)
 		{
-			return attributeData.AttributeClass.ToString() is
+			var attributeName = attributeData.AttributeClass.ToString();
+
+			// Ignore all ABI.* attributes (WinRT projection internal attributes)
+			if (attributeName.StartsWith("ABI.", StringComparison.Ordinal))
+			{
+				return true;
+			}
+
+			return attributeName is
+				"System.Runtime.InteropServices.DynamicInterfaceCastableImplementationAttribute" or
+				"System.Runtime.Versioning.SupportedOSPlatformAttribute" or
+				"System.Reflection.DefaultMemberAttribute" or
+				"WinRT.ObjectReferenceWrapperAttribute" or
+				"WinRT.ProjectedRuntimeClassAttribute" or
+				"WinRT.WindowsRuntimeHelperTypeAttribute" or
+				"WinRT.WindowsRuntimeTypeAttribute" or
+				"WinRT.WinRTExposedTypeAttribute" or
+				"System.Runtime.InteropServices.GuidAttribute" or
+				"System.ComponentModel.EditorBrowsableAttribute" or
 				"Windows.Foundation.Metadata.GuidAttribute" or
 				"Windows.Foundation.Metadata.StaticAttribute" or
 				"Windows.Foundation.Metadata.AllowMultipleAttribute" or

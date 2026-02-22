@@ -65,16 +65,6 @@ namespace Windows.UI.Input.Inking.Analysis
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Foundation.Point> RotatedBoundingRect
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<Point> InkAnalysisRoot.RotatedBoundingRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPoint%3E%20InkAnalysisRoot.RotatedBoundingRect");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string RecognizedText
 		{
 			get
@@ -83,7 +73,26 @@ namespace Windows.UI.Input.Inking.Analysis
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisRoot.RecognizedText.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Foundation.Point> RotatedBoundingRect
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<Point> InkAnalysisRoot.RotatedBoundingRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPoint%3E%20InkAnalysisRoot.RotatedBoundingRect");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisRoot.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisRoot.operator ==(Windows.UI.Input.Inking.Analysis.InkAnalysisRoot, Windows.UI.Input.Inking.Analysis.InkAnalysisRoot)
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisRoot.operator !=(Windows.UI.Input.Inking.Analysis.InkAnalysisRoot, Windows.UI.Input.Inking.Analysis.InkAnalysisRoot)
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisRoot.Equals(Windows.UI.Input.Inking.Analysis.InkAnalysisRoot)
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisRoot.Equals(object)
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisRoot.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisRoot.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisRoot.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisRoot.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisRoot.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Input.Inking.Analysis.IInkAnalysisNode> FindNodes(global::Windows.UI.Input.Inking.Analysis.InkAnalysisNodeKind nodeKind)
@@ -91,12 +100,6 @@ namespace Windows.UI.Input.Inking.Analysis
 			throw new global::System.NotImplementedException("The member IReadOnlyList<IInkAnalysisNode> InkAnalysisRoot.FindNodes(InkAnalysisNodeKind nodeKind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CIInkAnalysisNode%3E%20InkAnalysisRoot.FindNodes%28InkAnalysisNodeKind%20nodeKind%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisRoot.Id.get
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisRoot.Kind.get
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisRoot.BoundingRect.get
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisRoot.RotatedBoundingRect.get
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisRoot.Children.get
-		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisRoot.Parent.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<uint> GetStrokeIds()
@@ -104,6 +107,14 @@ namespace Windows.UI.Input.Inking.Analysis
 			throw new global::System.NotImplementedException("The member IReadOnlyList<uint> InkAnalysisRoot.GetStrokeIds() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cuint%3E%20InkAnalysisRoot.GetStrokeIds%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisRoot.BoundingRect.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisRoot.Children.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisRoot.Id.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisRoot.Kind.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisRoot.Parent.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisRoot.RecognizedText.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisRoot.RotatedBoundingRect.get
+		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisRoot.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.UI.Input.Inking.Analysis.IInkAnalysisNode
 	}
 }

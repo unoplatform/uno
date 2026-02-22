@@ -73,7 +73,16 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInformation.Name.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInformation.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInformation.operator ==(Windows.ApplicationModel.Contacts.ContactInformation, Windows.ApplicationModel.Contacts.ContactInformation)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInformation.operator !=(Windows.ApplicationModel.Contacts.ContactInformation, Windows.ApplicationModel.Contacts.ContactInformation)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInformation.Equals(Windows.ApplicationModel.Contacts.ContactInformation)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInformation.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInformation.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInformation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInformation.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStreamWithContentType> GetThumbnailAsync()
@@ -81,11 +90,6 @@ namespace Windows.ApplicationModel.Contacts
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStreamWithContentType> ContactInformation.GetThumbnailAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIRandomAccessStreamWithContentType%3E%20ContactInformation.GetThumbnailAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInformation.Emails.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInformation.PhoneNumbers.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInformation.Locations.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInformation.InstantMessages.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInformation.CustomFields.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Contacts.ContactField> QueryCustomFields(string customName)
@@ -93,5 +97,12 @@ namespace Windows.ApplicationModel.Contacts
 			throw new global::System.NotImplementedException("The member IReadOnlyList<ContactField> ContactInformation.QueryCustomFields(string customName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CContactField%3E%20ContactInformation.QueryCustomFields%28string%20customName%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInformation.CustomFields.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInformation.Emails.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInformation.InstantMessages.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInformation.Locations.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInformation.Name.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInformation.PhoneNumbers.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

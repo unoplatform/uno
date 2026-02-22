@@ -33,7 +33,18 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectivityInterval.StartTime.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectivityInterval.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectivityInterval.operator ==(Windows.Networking.Connectivity.ConnectivityInterval, Windows.Networking.Connectivity.ConnectivityInterval)
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectivityInterval.operator !=(Windows.Networking.Connectivity.ConnectivityInterval, Windows.Networking.Connectivity.ConnectivityInterval)
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectivityInterval.Equals(Windows.Networking.Connectivity.ConnectivityInterval)
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectivityInterval.Equals(object)
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectivityInterval.GetHashCode()
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectivityInterval.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectivityInterval.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectivityInterval.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectivityInterval.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectivityInterval.ConnectionDuration.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectivityInterval.StartTime.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectivityInterval.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

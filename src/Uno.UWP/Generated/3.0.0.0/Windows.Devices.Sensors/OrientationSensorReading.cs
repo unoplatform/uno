@@ -15,6 +15,26 @@ namespace Windows.Devices.Sensors
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan? PerformanceCount
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan? OrientationSensorReading.PerformanceCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20OrientationSensorReading.PerformanceCount");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyDictionary<string, object> Properties
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> OrientationSensorReading.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20object%3E%20OrientationSensorReading.Properties");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Sensors.SensorQuaternion Quaternion
 		{
 			get
@@ -45,26 +65,6 @@ namespace Windows.Devices.Sensors
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan? PerformanceCount
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan? OrientationSensorReading.PerformanceCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20OrientationSensorReading.PerformanceCount");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyDictionary<string, object> Properties
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> OrientationSensorReading.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20object%3E%20OrientationSensorReading.Properties");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Sensors.MagnetometerAccuracy YawAccuracy
 		{
 			get
@@ -73,11 +73,22 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.Timestamp.get
-		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.RotationMatrix.get
-		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.Quaternion.get
-		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.YawAccuracy.get
+		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.operator ==(Windows.Devices.Sensors.OrientationSensorReading, Windows.Devices.Sensors.OrientationSensorReading)
+		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.operator !=(Windows.Devices.Sensors.OrientationSensorReading, Windows.Devices.Sensors.OrientationSensorReading)
+		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.Equals(Windows.Devices.Sensors.OrientationSensorReading)
+		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.Equals(object)
+		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.GetHashCode()
+		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.PerformanceCount.get
 		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.Properties.get
+		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.Quaternion.get
+		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.RotationMatrix.get
+		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.Timestamp.get
+		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.YawAccuracy.get
+		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

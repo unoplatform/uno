@@ -3,30 +3,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation
 {
-#if false
+#if false || false || false || false || false || false || false
 	public enum AutomationBulletStyle
 	{
-#if false
-		None = 0,
-#endif
-#if false
-		HollowRoundBullet = 1,
-#endif
-#if false
-		FilledRoundBullet = 2,
-#endif
-#if false
-		HollowSquareBullet = 3,
-#endif
-#if false
-		FilledSquareBullet = 4,
-#endif
-#if false
-		DashBullet = 5,
-#endif
-#if false
-		Other = 6,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationBulletStyle.None
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationBulletStyle.HollowRoundBullet
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationBulletStyle.FilledRoundBullet
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationBulletStyle.HollowSquareBullet
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationBulletStyle.FilledSquareBullet
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationBulletStyle.DashBullet
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationBulletStyle.Other
 	}
 #endif
 }

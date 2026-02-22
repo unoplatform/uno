@@ -33,7 +33,18 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterNaturalDecayModelProperties.UnityGainDistance.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterNaturalDecayModelProperties.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterNaturalDecayModelProperties.operator ==(Windows.Media.Audio.AudioNodeEmitterNaturalDecayModelProperties, Windows.Media.Audio.AudioNodeEmitterNaturalDecayModelProperties)
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterNaturalDecayModelProperties.operator !=(Windows.Media.Audio.AudioNodeEmitterNaturalDecayModelProperties, Windows.Media.Audio.AudioNodeEmitterNaturalDecayModelProperties)
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterNaturalDecayModelProperties.Equals(Windows.Media.Audio.AudioNodeEmitterNaturalDecayModelProperties)
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterNaturalDecayModelProperties.Equals(object)
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterNaturalDecayModelProperties.GetHashCode()
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterNaturalDecayModelProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterNaturalDecayModelProperties.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterNaturalDecayModelProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterNaturalDecayModelProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterNaturalDecayModelProperties.CutoffDistance.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterNaturalDecayModelProperties.UnityGainDistance.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterNaturalDecayModelProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

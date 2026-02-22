@@ -18,6 +18,7 @@ namespace Windows.ApplicationModel.Background
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundWorkCost.As<I>()
 		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundWorkCost.CurrentBackgroundWorkCost.get
 	}
 }

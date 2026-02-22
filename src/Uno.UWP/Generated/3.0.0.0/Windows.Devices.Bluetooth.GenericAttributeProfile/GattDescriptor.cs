@@ -10,6 +10,16 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public ushort AttributeHandle
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ushort GattDescriptor.AttributeHandle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20GattDescriptor.AttributeHandle");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtectionLevel ProtectionLevel
 		{
 			get
@@ -22,21 +32,25 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			}
 		}
 #endif
+		// Skipping already declared property Uuid
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ushort AttributeHandle
+		public static global::System.Guid ConvertShortIdToUuid(ushort shortId)
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort GattDescriptor.AttributeHandle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20GattDescriptor.AttributeHandle");
-			}
+			throw new global::System.NotImplementedException("The member Guid GattDescriptor.ConvertShortIdToUuid(ushort shortId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20GattDescriptor.ConvertShortIdToUuid%28ushort%20shortId%29");
 		}
 #endif
-		// Skipping already declared property Uuid
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor.ProtectionLevel.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor.ProtectionLevel.set
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor.Uuid.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor.AttributeHandle.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor.operator ==(Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor, Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor.operator !=(Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor, Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor.Equals(Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor.Equals(object)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor.GetHashCode()
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadResult> ReadValueAsync()
@@ -65,12 +79,10 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			throw new global::System.NotImplementedException("The member IAsyncOperation<GattWriteResult> GattDescriptor.WriteValueWithResultAsync(IBuffer value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGattWriteResult%3E%20GattDescriptor.WriteValueWithResultAsync%28IBuffer%20value%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::System.Guid ConvertShortIdToUuid(ushort shortId)
-		{
-			throw new global::System.NotImplementedException("The member Guid GattDescriptor.ConvertShortIdToUuid(ushort shortId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20GattDescriptor.ConvertShortIdToUuid%28ushort%20shortId%29");
-		}
-#endif
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor.AttributeHandle.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor.ProtectionLevel.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor.ProtectionLevel.set
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor.Uuid.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

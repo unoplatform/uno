@@ -9,6 +9,20 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class InfoBarClosedEventArgs
 	{
 		// Skipping already declared property Reason
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosedEventArgs.InfoBarClosedEventArgs(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.InfoBarClosedEventArgs, Microsoft.UI.Xaml.Controls.InfoBarClosedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.InfoBarClosedEventArgs, Microsoft.UI.Xaml.Controls.InfoBarClosedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosedEventArgs.Equals(Microsoft.UI.Xaml.Controls.InfoBarClosedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosedEventArgs.InfoBarClosedEventArgs(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosedEventArgs.Reason.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosedEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

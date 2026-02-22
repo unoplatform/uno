@@ -15,20 +15,6 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float Restitution
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float BounceVector3NaturalMotionAnimation.Restitution is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20BounceVector3NaturalMotionAnimation.Restitution");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.BounceVector3NaturalMotionAnimation", "float BounceVector3NaturalMotionAnimation.Restitution");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public float Acceleration
 		{
 			get
@@ -41,9 +27,33 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float Restitution
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float BounceVector3NaturalMotionAnimation.Restitution is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20BounceVector3NaturalMotionAnimation.Restitution");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.BounceVector3NaturalMotionAnimation", "float BounceVector3NaturalMotionAnimation.Restitution");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.UI.Composition.BounceVector3NaturalMotionAnimation.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.BounceVector3NaturalMotionAnimation.operator ==(Windows.UI.Composition.BounceVector3NaturalMotionAnimation, Windows.UI.Composition.BounceVector3NaturalMotionAnimation)
+		// Forced skipping of method Windows.UI.Composition.BounceVector3NaturalMotionAnimation.operator !=(Windows.UI.Composition.BounceVector3NaturalMotionAnimation, Windows.UI.Composition.BounceVector3NaturalMotionAnimation)
+		// Forced skipping of method Windows.UI.Composition.BounceVector3NaturalMotionAnimation.Equals(Windows.UI.Composition.BounceVector3NaturalMotionAnimation)
+		// Forced skipping of method Windows.UI.Composition.BounceVector3NaturalMotionAnimation.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.BounceVector3NaturalMotionAnimation.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.BounceVector3NaturalMotionAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.BounceVector3NaturalMotionAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.BounceVector3NaturalMotionAnimation.Acceleration.get
 		// Forced skipping of method Windows.UI.Composition.BounceVector3NaturalMotionAnimation.Acceleration.set
 		// Forced skipping of method Windows.UI.Composition.BounceVector3NaturalMotionAnimation.Restitution.get
 		// Forced skipping of method Windows.UI.Composition.BounceVector3NaturalMotionAnimation.Restitution.set
+		// Forced skipping of method Windows.UI.Composition.BounceVector3NaturalMotionAnimation.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.BounceVector3NaturalMotionAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

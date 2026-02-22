@@ -23,6 +23,16 @@ namespace Windows.ApplicationModel.UserDataAccounts
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountManagerForUser.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountManagerForUser.operator ==(Windows.ApplicationModel.UserDataAccounts.UserDataAccountManagerForUser, Windows.ApplicationModel.UserDataAccounts.UserDataAccountManagerForUser)
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountManagerForUser.operator !=(Windows.ApplicationModel.UserDataAccounts.UserDataAccountManagerForUser, Windows.ApplicationModel.UserDataAccounts.UserDataAccountManagerForUser)
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountManagerForUser.Equals(Windows.ApplicationModel.UserDataAccounts.UserDataAccountManagerForUser)
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountManagerForUser.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountManagerForUser.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountManagerForUser.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountManagerForUser.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountManagerForUser.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountManagerForUser.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore> RequestStoreAsync(global::Windows.ApplicationModel.UserDataAccounts.UserDataAccountStoreAccessType storeAccessType)
@@ -31,5 +41,6 @@ namespace Windows.ApplicationModel.UserDataAccounts
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountManagerForUser.User.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountManagerForUser.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

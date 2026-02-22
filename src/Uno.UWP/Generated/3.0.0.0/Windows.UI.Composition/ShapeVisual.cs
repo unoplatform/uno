@@ -15,6 +15,16 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Composition.CompositionShapeCollection Shapes
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CompositionShapeCollection ShapeVisual.Shapes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionShapeCollection%20ShapeVisual.Shapes");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Composition.CompositionViewBox ViewBox
 		{
 			get
@@ -27,18 +37,18 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Composition.CompositionShapeCollection Shapes
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CompositionShapeCollection ShapeVisual.Shapes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionShapeCollection%20ShapeVisual.Shapes");
-			}
-		}
-#endif
+		// Forced skipping of method Windows.UI.Composition.ShapeVisual.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.ShapeVisual.operator ==(Windows.UI.Composition.ShapeVisual, Windows.UI.Composition.ShapeVisual)
+		// Forced skipping of method Windows.UI.Composition.ShapeVisual.operator !=(Windows.UI.Composition.ShapeVisual, Windows.UI.Composition.ShapeVisual)
+		// Forced skipping of method Windows.UI.Composition.ShapeVisual.Equals(Windows.UI.Composition.ShapeVisual)
+		// Forced skipping of method Windows.UI.Composition.ShapeVisual.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.ShapeVisual.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.ShapeVisual.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.ShapeVisual.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.ShapeVisual.Shapes.get
 		// Forced skipping of method Windows.UI.Composition.ShapeVisual.ViewBox.get
 		// Forced skipping of method Windows.UI.Composition.ShapeVisual.ViewBox.set
+		// Forced skipping of method Windows.UI.Composition.ShapeVisual.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.ShapeVisual.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

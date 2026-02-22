@@ -11,8 +11,24 @@ namespace Microsoft.UI.Xaml.Resources
 		// Skipping already declared property Current
 		// Skipping already declared method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.CustomXamlResourceLoader()
 		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.CustomXamlResourceLoader()
-		// Skipping already declared method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.GetResource(string, string, string, string)
+		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.Current.get
 		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.Current.set
+		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.CustomXamlResourceLoader(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.operator ==(Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader, Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader)
+		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.operator !=(Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader, Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader)
+		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.Equals(Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader)
+		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.CustomXamlResourceLoader(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Skipping already declared method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.GetResource(string, string, string, string)
+		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.Microsoft.UI.Xaml.Resources.ICustomXamlResourceLoaderOverrides.GetResource(string, string, string, string)
+		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -63,11 +63,16 @@ namespace Windows.Web.Http
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.HttpGetInputStreamResult.ExtendedError.get
-		// Forced skipping of method Windows.Web.Http.HttpGetInputStreamResult.RequestMessage.get
-		// Forced skipping of method Windows.Web.Http.HttpGetInputStreamResult.ResponseMessage.get
-		// Forced skipping of method Windows.Web.Http.HttpGetInputStreamResult.Succeeded.get
-		// Forced skipping of method Windows.Web.Http.HttpGetInputStreamResult.Value.get
+		// Forced skipping of method Windows.Web.Http.HttpGetInputStreamResult.FromAbi(nint)
+		// Forced skipping of method Windows.Web.Http.HttpGetInputStreamResult.operator ==(Windows.Web.Http.HttpGetInputStreamResult, Windows.Web.Http.HttpGetInputStreamResult)
+		// Forced skipping of method Windows.Web.Http.HttpGetInputStreamResult.operator !=(Windows.Web.Http.HttpGetInputStreamResult, Windows.Web.Http.HttpGetInputStreamResult)
+		// Forced skipping of method Windows.Web.Http.HttpGetInputStreamResult.Equals(Windows.Web.Http.HttpGetInputStreamResult)
+		// Forced skipping of method Windows.Web.Http.HttpGetInputStreamResult.Equals(object)
+		// Forced skipping of method Windows.Web.Http.HttpGetInputStreamResult.GetHashCode()
+		// Forced skipping of method Windows.Web.Http.HttpGetInputStreamResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Web.Http.HttpGetInputStreamResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Web.Http.HttpGetInputStreamResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Web.Http.HttpGetInputStreamResult.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -82,6 +87,12 @@ namespace Windows.Web.Http
 			throw new global::System.NotImplementedException("The member string HttpGetInputStreamResult.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpGetInputStreamResult.ToString%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Web.Http.HttpGetInputStreamResult.ExtendedError.get
+		// Forced skipping of method Windows.Web.Http.HttpGetInputStreamResult.RequestMessage.get
+		// Forced skipping of method Windows.Web.Http.HttpGetInputStreamResult.ResponseMessage.get
+		// Forced skipping of method Windows.Web.Http.HttpGetInputStreamResult.Succeeded.get
+		// Forced skipping of method Windows.Web.Http.HttpGetInputStreamResult.Value.get
+		// Forced skipping of method Windows.Web.Http.HttpGetInputStreamResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

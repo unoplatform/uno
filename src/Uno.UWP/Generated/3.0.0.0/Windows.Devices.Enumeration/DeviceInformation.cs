@@ -21,8 +21,6 @@ namespace Windows.Devices.Enumeration
 		// Skipping already declared property Id
 		// Skipping already declared property IsDefault
 		// Skipping already declared property IsEnabled
-		// Skipping already declared property Name
-		// Skipping already declared property Properties
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Enumeration.DeviceInformationKind Kind
@@ -33,6 +31,7 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 #endif
+		// Skipping already declared property Name
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Enumeration.DeviceInformationPairing Pairing
@@ -43,63 +42,8 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.Id.get
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.Name.get
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.IsEnabled.get
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.IsDefault.get
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.EnclosureLocation.get
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.Properties.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Update(global::Windows.Devices.Enumeration.DeviceInformationUpdate updateInfo)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DeviceInformation", "void DeviceInformation.Update(DeviceInformationUpdate updateInfo)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceThumbnail> GetThumbnailAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceThumbnail> DeviceInformation.GetThumbnailAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDeviceThumbnail%3E%20DeviceInformation.GetThumbnailAsync%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceThumbnail> GetGlyphThumbnailAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceThumbnail> DeviceInformation.GetGlyphThumbnailAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDeviceThumbnail%3E%20DeviceInformation.GetGlyphThumbnailAsync%28%29");
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.Kind.get
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.Pairing.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetAqsFilterFromDeviceClass(global::Windows.Devices.Enumeration.DeviceClass deviceClass)
-		{
-			throw new global::System.NotImplementedException("The member string DeviceInformation.GetAqsFilterFromDeviceClass(DeviceClass deviceClass) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceInformation.GetAqsFilterFromDeviceClass%28DeviceClass%20deviceClass%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformation> CreateFromIdAsync(string deviceId, global::System.Collections.Generic.IEnumerable<string> additionalProperties, global::Windows.Devices.Enumeration.DeviceInformationKind kind)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceInformation> DeviceInformation.CreateFromIdAsync(string deviceId, IEnumerable<string> additionalProperties, DeviceInformationKind kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDeviceInformation%3E%20DeviceInformation.CreateFromIdAsync%28string%20deviceId%2C%20IEnumerable%3Cstring%3E%20additionalProperties%2C%20DeviceInformationKind%20kind%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformationCollection> FindAllAsync(string aqsFilter, global::System.Collections.Generic.IEnumerable<string> additionalProperties, global::Windows.Devices.Enumeration.DeviceInformationKind kind)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceInformationCollection> DeviceInformation.FindAllAsync(string aqsFilter, IEnumerable<string> additionalProperties, DeviceInformationKind kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDeviceInformationCollection%3E%20DeviceInformation.FindAllAsync%28string%20aqsFilter%2C%20IEnumerable%3Cstring%3E%20additionalProperties%2C%20DeviceInformationKind%20kind%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Devices.Enumeration.DeviceWatcher CreateWatcher(string aqsFilter, global::System.Collections.Generic.IEnumerable<string> additionalProperties, global::Windows.Devices.Enumeration.DeviceInformationKind kind)
-		{
-			throw new global::System.NotImplementedException("The member DeviceWatcher DeviceInformation.CreateWatcher(string aqsFilter, IEnumerable<string> additionalProperties, DeviceInformationKind kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceWatcher%20DeviceInformation.CreateWatcher%28string%20aqsFilter%2C%20IEnumerable%3Cstring%3E%20additionalProperties%2C%20DeviceInformationKind%20kind%29");
-		}
-#endif
+		// Skipping already declared property Properties
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformation> CreateFromIdAsync(string deviceId)
@@ -158,5 +102,73 @@ namespace Windows.Devices.Enumeration
 			throw new global::System.NotImplementedException("The member DeviceWatcher DeviceInformation.CreateWatcher(string aqsFilter, IEnumerable<string> additionalProperties) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceWatcher%20DeviceInformation.CreateWatcher%28string%20aqsFilter%2C%20IEnumerable%3Cstring%3E%20additionalProperties%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string GetAqsFilterFromDeviceClass(global::Windows.Devices.Enumeration.DeviceClass deviceClass)
+		{
+			throw new global::System.NotImplementedException("The member string DeviceInformation.GetAqsFilterFromDeviceClass(DeviceClass deviceClass) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceInformation.GetAqsFilterFromDeviceClass%28DeviceClass%20deviceClass%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformation> CreateFromIdAsync(string deviceId, global::System.Collections.Generic.IEnumerable<string> additionalProperties, global::Windows.Devices.Enumeration.DeviceInformationKind kind)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceInformation> DeviceInformation.CreateFromIdAsync(string deviceId, IEnumerable<string> additionalProperties, DeviceInformationKind kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDeviceInformation%3E%20DeviceInformation.CreateFromIdAsync%28string%20deviceId%2C%20IEnumerable%3Cstring%3E%20additionalProperties%2C%20DeviceInformationKind%20kind%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformationCollection> FindAllAsync(string aqsFilter, global::System.Collections.Generic.IEnumerable<string> additionalProperties, global::Windows.Devices.Enumeration.DeviceInformationKind kind)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceInformationCollection> DeviceInformation.FindAllAsync(string aqsFilter, IEnumerable<string> additionalProperties, DeviceInformationKind kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDeviceInformationCollection%3E%20DeviceInformation.FindAllAsync%28string%20aqsFilter%2C%20IEnumerable%3Cstring%3E%20additionalProperties%2C%20DeviceInformationKind%20kind%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Devices.Enumeration.DeviceWatcher CreateWatcher(string aqsFilter, global::System.Collections.Generic.IEnumerable<string> additionalProperties, global::Windows.Devices.Enumeration.DeviceInformationKind kind)
+		{
+			throw new global::System.NotImplementedException("The member DeviceWatcher DeviceInformation.CreateWatcher(string aqsFilter, IEnumerable<string> additionalProperties, DeviceInformationKind kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceWatcher%20DeviceInformation.CreateWatcher%28string%20aqsFilter%2C%20IEnumerable%3Cstring%3E%20additionalProperties%2C%20DeviceInformationKind%20kind%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.operator ==(Windows.Devices.Enumeration.DeviceInformation, Windows.Devices.Enumeration.DeviceInformation)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.operator !=(Windows.Devices.Enumeration.DeviceInformation, Windows.Devices.Enumeration.DeviceInformation)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.Equals(Windows.Devices.Enumeration.DeviceInformation)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.Equals(object)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.GetHashCode()
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Update(global::Windows.Devices.Enumeration.DeviceInformationUpdate updateInfo)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DeviceInformation", "void DeviceInformation.Update(DeviceInformationUpdate updateInfo)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceThumbnail> GetThumbnailAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceThumbnail> DeviceInformation.GetThumbnailAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDeviceThumbnail%3E%20DeviceInformation.GetThumbnailAsync%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceThumbnail> GetGlyphThumbnailAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceThumbnail> DeviceInformation.GetGlyphThumbnailAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDeviceThumbnail%3E%20DeviceInformation.GetGlyphThumbnailAsync%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.EnclosureLocation.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.Id.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.IsDefault.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.IsEnabled.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.Kind.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.Name.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.Pairing.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.Properties.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

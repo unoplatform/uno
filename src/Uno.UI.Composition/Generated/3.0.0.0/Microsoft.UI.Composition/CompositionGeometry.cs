@@ -8,14 +8,26 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionGeometry : global::Microsoft.UI.Composition.CompositionObject
 	{
-		// Skipping already declared property TrimStart
-		// Skipping already declared property TrimOffset
 		// Skipping already declared property TrimEnd
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.TrimOffset.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.TrimEnd.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.TrimStart.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.TrimOffset.set
+		// Skipping already declared property TrimOffset
+		// Skipping already declared property TrimStart
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.CompositionGeometry(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.operator ==(Microsoft.UI.Composition.CompositionGeometry, Microsoft.UI.Composition.CompositionGeometry)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.operator !=(Microsoft.UI.Composition.CompositionGeometry, Microsoft.UI.Composition.CompositionGeometry)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.Equals(Microsoft.UI.Composition.CompositionGeometry)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.CompositionGeometry(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.TrimEnd.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.TrimEnd.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.TrimOffset.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.TrimOffset.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.TrimStart.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.TrimStart.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

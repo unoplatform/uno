@@ -53,10 +53,16 @@ namespace Windows.Devices.HumanInterfaceDevice
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidInputReport.Id.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidInputReport.Data.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidInputReport.ActivatedBooleanControls.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidInputReport.TransitionedBooleanControls.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidInputReport.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidInputReport.operator ==(Windows.Devices.HumanInterfaceDevice.HidInputReport, Windows.Devices.HumanInterfaceDevice.HidInputReport)
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidInputReport.operator !=(Windows.Devices.HumanInterfaceDevice.HidInputReport, Windows.Devices.HumanInterfaceDevice.HidInputReport)
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidInputReport.Equals(Windows.Devices.HumanInterfaceDevice.HidInputReport)
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidInputReport.Equals(object)
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidInputReport.GetHashCode()
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidInputReport.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidInputReport.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidInputReport.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidInputReport.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.HumanInterfaceDevice.HidBooleanControl GetBooleanControl(ushort usagePage, ushort usageId)
@@ -85,5 +91,10 @@ namespace Windows.Devices.HumanInterfaceDevice
 			throw new global::System.NotImplementedException("The member HidNumericControl HidInputReport.GetNumericControlByDescription(HidNumericControlDescription controlDescription) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HidNumericControl%20HidInputReport.GetNumericControlByDescription%28HidNumericControlDescription%20controlDescription%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidInputReport.ActivatedBooleanControls.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidInputReport.Data.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidInputReport.Id.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidInputReport.TransitionedBooleanControls.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidInputReport.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

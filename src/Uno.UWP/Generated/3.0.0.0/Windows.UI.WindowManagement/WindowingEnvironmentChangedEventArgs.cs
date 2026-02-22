@@ -13,5 +13,16 @@ namespace Windows.UI.WindowManagement
 		{
 		}
 #endif
+		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironmentChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironmentChangedEventArgs.operator ==(Windows.UI.WindowManagement.WindowingEnvironmentChangedEventArgs, Windows.UI.WindowManagement.WindowingEnvironmentChangedEventArgs)
+		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironmentChangedEventArgs.operator !=(Windows.UI.WindowManagement.WindowingEnvironmentChangedEventArgs, Windows.UI.WindowManagement.WindowingEnvironmentChangedEventArgs)
+		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironmentChangedEventArgs.Equals(Windows.UI.WindowManagement.WindowingEnvironmentChangedEventArgs)
+		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironmentChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironmentChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironmentChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironmentChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironmentChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironmentChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironmentChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -9,7 +9,18 @@ namespace Microsoft.UI.Input
 	public partial class FocusChangedEventArgs
 	{
 		// Skipping already declared property Handled
+		// Forced skipping of method Microsoft.UI.Input.FocusChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Input.FocusChangedEventArgs.operator ==(Microsoft.UI.Input.FocusChangedEventArgs, Microsoft.UI.Input.FocusChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.FocusChangedEventArgs.operator !=(Microsoft.UI.Input.FocusChangedEventArgs, Microsoft.UI.Input.FocusChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.FocusChangedEventArgs.Equals(Microsoft.UI.Input.FocusChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.FocusChangedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Input.FocusChangedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Input.FocusChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.FocusChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.FocusChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Input.FocusChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Input.FocusChangedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Input.FocusChangedEventArgs.Handled.set
+		// Forced skipping of method Microsoft.UI.Input.FocusChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

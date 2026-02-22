@@ -15,46 +15,6 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsPressed
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SpatialInteractionSourceState.IsPressed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpatialInteractionSourceState.IsPressed");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Input.Spatial.SpatialInteractionSourceProperties Properties
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SpatialInteractionSourceProperties SpatialInteractionSourceState.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialInteractionSourceProperties%20SpatialInteractionSourceState.Properties");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Input.Spatial.SpatialInteractionSource Source
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SpatialInteractionSource SpatialInteractionSourceState.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialInteractionSource%20SpatialInteractionSourceState.Source");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Perception.PerceptionTimestamp Timestamp
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PerceptionTimestamp SpatialInteractionSourceState.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionTimestamp%20SpatialInteractionSourceState.Timestamp");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Input.Spatial.SpatialInteractionControllerProperties ControllerProperties
 		{
 			get
@@ -85,11 +45,31 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsPressed
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool SpatialInteractionSourceState.IsPressed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpatialInteractionSourceState.IsPressed");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsSelectPressed
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member bool SpatialInteractionSourceState.IsSelectPressed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpatialInteractionSourceState.IsSelectPressed");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Input.Spatial.SpatialInteractionSourceProperties Properties
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SpatialInteractionSourceProperties SpatialInteractionSourceState.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialInteractionSourceProperties%20SpatialInteractionSourceState.Properties");
 			}
 		}
 #endif
@@ -103,10 +83,36 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.Source.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.Properties.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.IsPressed.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.Timestamp.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Input.Spatial.SpatialInteractionSource Source
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SpatialInteractionSource SpatialInteractionSourceState.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialInteractionSource%20SpatialInteractionSourceState.Source");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Perception.PerceptionTimestamp Timestamp
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member PerceptionTimestamp SpatialInteractionSourceState.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionTimestamp%20SpatialInteractionSourceState.Timestamp");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.operator ==(Windows.UI.Input.Spatial.SpatialInteractionSourceState, Windows.UI.Input.Spatial.SpatialInteractionSourceState)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.operator !=(Windows.UI.Input.Spatial.SpatialInteractionSourceState, Windows.UI.Input.Spatial.SpatialInteractionSourceState)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.Equals(Windows.UI.Input.Spatial.SpatialInteractionSourceState)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.Equals(object)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Input.Spatial.SpatialPointerPose TryGetPointerPose(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
@@ -114,11 +120,6 @@ namespace Windows.UI.Input.Spatial
 			throw new global::System.NotImplementedException("The member SpatialPointerPose SpatialInteractionSourceState.TryGetPointerPose(SpatialCoordinateSystem coordinateSystem) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialPointerPose%20SpatialInteractionSourceState.TryGetPointerPose%28SpatialCoordinateSystem%20coordinateSystem%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.IsSelectPressed.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.IsMenuPressed.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.IsGrasped.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.SelectPressedValue.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.ControllerProperties.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Perception.People.HandPose TryGetHandPose()
@@ -126,5 +127,15 @@ namespace Windows.UI.Input.Spatial
 			throw new global::System.NotImplementedException("The member HandPose SpatialInteractionSourceState.TryGetHandPose() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HandPose%20SpatialInteractionSourceState.TryGetHandPose%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.ControllerProperties.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.IsGrasped.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.IsMenuPressed.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.IsPressed.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.IsSelectPressed.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.Properties.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.SelectPressedValue.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.Source.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.Timestamp.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

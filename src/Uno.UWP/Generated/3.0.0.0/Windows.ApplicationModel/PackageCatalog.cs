@@ -13,18 +13,41 @@ namespace Windows.ApplicationModel
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.PackageStaging.add
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.PackageStaging.remove
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.ApplicationModel.PackageCatalog OpenForCurrentPackage()
+		{
+			throw new global::System.NotImplementedException("The member PackageCatalog PackageCatalog.OpenForCurrentPackage() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PackageCatalog%20PackageCatalog.OpenForCurrentPackage%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.ApplicationModel.PackageCatalog OpenForCurrentUser()
+		{
+			throw new global::System.NotImplementedException("The member PackageCatalog PackageCatalog.OpenForCurrentUser() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PackageCatalog%20PackageCatalog.OpenForCurrentUser%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.operator ==(Windows.ApplicationModel.PackageCatalog, Windows.ApplicationModel.PackageCatalog)
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.operator !=(Windows.ApplicationModel.PackageCatalog, Windows.ApplicationModel.PackageCatalog)
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.Equals(Windows.ApplicationModel.PackageCatalog)
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.PackageInstalling.add
 		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.PackageInstalling.remove
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.PackageUpdating.add
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.PackageUpdating.remove
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.PackageUninstalling.add
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.PackageUninstalling.remove
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.PackageStaging.add
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.PackageStaging.remove
 		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.PackageStatusChanged.add
 		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.PackageStatusChanged.remove
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.PackageContentGroupStaging.add
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.PackageContentGroupStaging.remove
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.PackageUninstalling.add
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.PackageUninstalling.remove
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.PackageUpdating.add
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.PackageUpdating.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.PackageCatalogAddOptionalPackageResult> AddOptionalPackageAsync(string optionalPackageFamilyName)
@@ -32,6 +55,8 @@ namespace Windows.ApplicationModel
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PackageCatalogAddOptionalPackageResult> PackageCatalog.AddOptionalPackageAsync(string optionalPackageFamilyName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPackageCatalogAddOptionalPackageResult%3E%20PackageCatalog.AddOptionalPackageAsync%28string%20optionalPackageFamilyName%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.PackageContentGroupStaging.add
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.PackageContentGroupStaging.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.PackageCatalogRemoveOptionalPackagesResult> RemoveOptionalPackagesAsync(global::System.Collections.Generic.IEnumerable<string> optionalPackageFamilyNames)
@@ -53,20 +78,7 @@ namespace Windows.ApplicationModel
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PackageCatalogRemoveResourcePackagesResult> PackageCatalog.RemoveResourcePackagesAsync(IEnumerable<Package> resourcePackages) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPackageCatalogRemoveResourcePackagesResult%3E%20PackageCatalog.RemoveResourcePackagesAsync%28IEnumerable%3CPackage%3E%20resourcePackages%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.ApplicationModel.PackageCatalog OpenForCurrentPackage()
-		{
-			throw new global::System.NotImplementedException("The member PackageCatalog PackageCatalog.OpenForCurrentPackage() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PackageCatalog%20PackageCatalog.OpenForCurrentPackage%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.ApplicationModel.PackageCatalog OpenForCurrentUser()
-		{
-			throw new global::System.NotImplementedException("The member PackageCatalog PackageCatalog.OpenForCurrentUser() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PackageCatalog%20PackageCatalog.OpenForCurrentUser%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.PackageCatalog, global::Windows.ApplicationModel.PackageInstallingEventArgs> PackageInstalling

@@ -37,9 +37,16 @@ namespace Windows.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.Items.get
-		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.IsEnabled.get
-		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.IsEnabled.set
+		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.operator ==(Windows.UI.Input.RadialControllerMenu, Windows.UI.Input.RadialControllerMenu)
+		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.operator !=(Windows.UI.Input.RadialControllerMenu, Windows.UI.Input.RadialControllerMenu)
+		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.Equals(Windows.UI.Input.RadialControllerMenu)
+		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.Equals(object)
+		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Input.RadialControllerMenuItem GetSelectedMenuItem()
@@ -61,5 +68,9 @@ namespace Windows.UI.Input
 			throw new global::System.NotImplementedException("The member bool RadialControllerMenu.TrySelectPreviouslySelectedMenuItem() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RadialControllerMenu.TrySelectPreviouslySelectedMenuItem%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.IsEnabled.get
+		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.IsEnabled.set
+		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.Items.get
+		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

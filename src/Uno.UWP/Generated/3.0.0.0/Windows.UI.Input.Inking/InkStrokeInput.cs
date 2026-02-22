@@ -23,15 +23,26 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeStarted.add
-		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeStarted.remove
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.operator ==(Windows.UI.Input.Inking.InkStrokeInput, Windows.UI.Input.Inking.InkStrokeInput)
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.operator !=(Windows.UI.Input.Inking.InkStrokeInput, Windows.UI.Input.Inking.InkStrokeInput)
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.Equals(Windows.UI.Input.Inking.InkStrokeInput)
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.Equals(object)
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeCanceled.add
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeCanceled.remove
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeContinued.add
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeContinued.remove
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeEnded.add
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeEnded.remove
-		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeCanceled.add
-		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeCanceled.remove
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeStarted.add
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeStarted.remove
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.InkPresenter.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.InkStrokeInput, global::Windows.UI.Core.PointerEventArgs> StrokeCanceled

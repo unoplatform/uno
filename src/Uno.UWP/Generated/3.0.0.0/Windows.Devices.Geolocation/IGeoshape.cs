@@ -11,8 +11,8 @@ namespace Windows.Devices.Geolocation
 		// Skipping already declared property AltitudeReferenceSystem
 		// Skipping already declared property GeoshapeType
 		// Skipping already declared property SpatialReferenceId
+		// Forced skipping of method Windows.Devices.Geolocation.IGeoshape.AltitudeReferenceSystem.get
 		// Forced skipping of method Windows.Devices.Geolocation.IGeoshape.GeoshapeType.get
 		// Forced skipping of method Windows.Devices.Geolocation.IGeoshape.SpatialReferenceId.get
-		// Forced skipping of method Windows.Devices.Geolocation.IGeoshape.AltitudeReferenceSystem.get
 	}
 }

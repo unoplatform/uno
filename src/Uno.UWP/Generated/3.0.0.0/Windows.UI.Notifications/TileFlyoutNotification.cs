@@ -10,6 +10,16 @@ namespace Windows.UI.Notifications
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Data.Xml.Dom.XmlDocument Content
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member XmlDocument TileFlyoutNotification.Content is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=XmlDocument%20TileFlyoutNotification.Content");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.DateTimeOffset? ExpirationTime
 		{
 			get
@@ -24,24 +34,25 @@ namespace Windows.UI.Notifications
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Data.Xml.Dom.XmlDocument Content
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member XmlDocument TileFlyoutNotification.Content is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=XmlDocument%20TileFlyoutNotification.Content");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public TileFlyoutNotification(global::Windows.Data.Xml.Dom.XmlDocument content)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileFlyoutNotification", "TileFlyoutNotification.TileFlyoutNotification(XmlDocument content)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Notifications.TileFlyoutNotification.TileFlyoutNotification(Windows.Data.Xml.Dom.XmlDocument)
+		// Forced skipping of method Windows.UI.Notifications.TileFlyoutNotification.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Notifications.TileFlyoutNotification.operator ==(Windows.UI.Notifications.TileFlyoutNotification, Windows.UI.Notifications.TileFlyoutNotification)
+		// Forced skipping of method Windows.UI.Notifications.TileFlyoutNotification.operator !=(Windows.UI.Notifications.TileFlyoutNotification, Windows.UI.Notifications.TileFlyoutNotification)
+		// Forced skipping of method Windows.UI.Notifications.TileFlyoutNotification.Equals(Windows.UI.Notifications.TileFlyoutNotification)
+		// Forced skipping of method Windows.UI.Notifications.TileFlyoutNotification.Equals(object)
+		// Forced skipping of method Windows.UI.Notifications.TileFlyoutNotification.GetHashCode()
+		// Forced skipping of method Windows.UI.Notifications.TileFlyoutNotification.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.TileFlyoutNotification.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.TileFlyoutNotification.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Notifications.TileFlyoutNotification.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Notifications.TileFlyoutNotification.Content.get
-		// Forced skipping of method Windows.UI.Notifications.TileFlyoutNotification.ExpirationTime.set
 		// Forced skipping of method Windows.UI.Notifications.TileFlyoutNotification.ExpirationTime.get
+		// Forced skipping of method Windows.UI.Notifications.TileFlyoutNotification.ExpirationTime.set
+		// Forced skipping of method Windows.UI.Notifications.TileFlyoutNotification.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

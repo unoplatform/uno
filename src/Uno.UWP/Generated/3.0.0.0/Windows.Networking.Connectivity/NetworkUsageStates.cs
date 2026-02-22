@@ -10,6 +10,19 @@ namespace Windows.Networking.Connectivity
 	{
 		// Forced skipping of method Windows.Networking.Connectivity.NetworkUsageStates.NetworkUsageStates()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public NetworkUsageStates(global::Windows.Networking.Connectivity.TriStates _Roaming, global::Windows.Networking.Connectivity.TriStates _Shared)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.NetworkUsageStates", "NetworkUsageStates.NetworkUsageStates(TriStates _Roaming, TriStates _Shared)");
+		}
+#endif
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkUsageStates.NetworkUsageStates(Windows.Networking.Connectivity.TriStates, Windows.Networking.Connectivity.TriStates)
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkUsageStates.operator ==(Windows.Networking.Connectivity.NetworkUsageStates, Windows.Networking.Connectivity.NetworkUsageStates)
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkUsageStates.operator !=(Windows.Networking.Connectivity.NetworkUsageStates, Windows.Networking.Connectivity.NetworkUsageStates)
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkUsageStates.Equals(Windows.Networking.Connectivity.NetworkUsageStates)
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkUsageStates.Equals(object)
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkUsageStates.GetHashCode()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::Windows.Networking.Connectivity.TriStates Roaming;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

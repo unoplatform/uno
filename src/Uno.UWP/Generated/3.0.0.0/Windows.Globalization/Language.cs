@@ -8,26 +8,13 @@ namespace Windows.Globalization
 #endif
 	public partial class Language
 	{
-		// Skipping already declared property DisplayName
-		// Skipping already declared property LanguageTag
-		// Skipping already declared property NativeName
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Script
+#if false || false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string CurrentInputMethodLanguageTag
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Language.Script is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Language.Script");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Globalization.LanguageLayoutDirection LayoutDirection
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member LanguageLayoutDirection Language.LayoutDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LanguageLayoutDirection%20Language.LayoutDirection");
+				throw new global::System.NotImplementedException("The member string Language.CurrentInputMethodLanguageTag is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Language.CurrentInputMethodLanguageTag");
 			}
 		}
 #endif
@@ -41,36 +28,37 @@ namespace Windows.Globalization
 			}
 		}
 #endif
-#if false || false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string CurrentInputMethodLanguageTag
+		// Skipping already declared property DisplayName
+		// Skipping already declared property LanguageTag
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Globalization.LanguageLayoutDirection LayoutDirection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Language.CurrentInputMethodLanguageTag is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Language.CurrentInputMethodLanguageTag");
+				throw new global::System.NotImplementedException("The member LanguageLayoutDirection Language.LayoutDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LanguageLayoutDirection%20Language.LayoutDirection");
+			}
+		}
+#endif
+		// Skipping already declared property NativeName
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Script
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string Language.Script is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Language.Script");
 			}
 		}
 #endif
 		// Skipping already declared method Windows.Globalization.Language.Language(string)
 		// Forced skipping of method Windows.Globalization.Language.Language(string)
-		// Forced skipping of method Windows.Globalization.Language.LanguageTag.get
-		// Forced skipping of method Windows.Globalization.Language.DisplayName.get
-		// Forced skipping of method Windows.Globalization.Language.NativeName.get
-		// Forced skipping of method Windows.Globalization.Language.Script.get
+		// Forced skipping of method Windows.Globalization.Language.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<string> GetExtensionSubtags(string singleton)
+		public static bool IsWellFormed(string languageTag)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<string> Language.GetExtensionSubtags(string singleton) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20Language.GetExtensionSubtags%28string%20singleton%29");
-		}
-#endif
-		// Forced skipping of method Windows.Globalization.Language.LayoutDirection.get
-		// Forced skipping of method Windows.Globalization.Language.AbbreviatedName.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::System.Collections.Generic.IList<string> GetMuiCompatibleLanguageListFromLanguageTags(global::System.Collections.Generic.IEnumerable<string> languageTags)
-		{
-			throw new global::System.NotImplementedException("The member IList<string> Language.GetMuiCompatibleLanguageListFromLanguageTags(IEnumerable<string> languageTags) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20Language.GetMuiCompatibleLanguageListFromLanguageTags%28IEnumerable%3Cstring%3E%20languageTags%29");
+			throw new global::System.NotImplementedException("The member bool Language.IsWellFormed(string languageTag) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20Language.IsWellFormed%28string%20languageTag%29");
 		}
 #endif
 #if false || false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
@@ -82,11 +70,35 @@ namespace Windows.Globalization
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool IsWellFormed(string languageTag)
+		public static global::System.Collections.Generic.IList<string> GetMuiCompatibleLanguageListFromLanguageTags(global::System.Collections.Generic.IEnumerable<string> languageTags)
 		{
-			throw new global::System.NotImplementedException("The member bool Language.IsWellFormed(string languageTag) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20Language.IsWellFormed%28string%20languageTag%29");
+			throw new global::System.NotImplementedException("The member IList<string> Language.GetMuiCompatibleLanguageListFromLanguageTags(IEnumerable<string> languageTags) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20Language.GetMuiCompatibleLanguageListFromLanguageTags%28IEnumerable%3Cstring%3E%20languageTags%29");
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.Language.CurrentInputMethodLanguageTag.get
+		// Forced skipping of method Windows.Globalization.Language.FromAbi(nint)
+		// Forced skipping of method Windows.Globalization.Language.operator ==(Windows.Globalization.Language, Windows.Globalization.Language)
+		// Forced skipping of method Windows.Globalization.Language.operator !=(Windows.Globalization.Language, Windows.Globalization.Language)
+		// Forced skipping of method Windows.Globalization.Language.Equals(Windows.Globalization.Language)
+		// Forced skipping of method Windows.Globalization.Language.Equals(object)
+		// Forced skipping of method Windows.Globalization.Language.GetHashCode()
+		// Forced skipping of method Windows.Globalization.Language.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Globalization.Language.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Globalization.Language.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Globalization.Language.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<string> GetExtensionSubtags(string singleton)
+		{
+			throw new global::System.NotImplementedException("The member IReadOnlyList<string> Language.GetExtensionSubtags(string singleton) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20Language.GetExtensionSubtags%28string%20singleton%29");
+		}
+#endif
+		// Forced skipping of method Windows.Globalization.Language.AbbreviatedName.get
+		// Forced skipping of method Windows.Globalization.Language.DisplayName.get
+		// Forced skipping of method Windows.Globalization.Language.LanguageTag.get
+		// Forced skipping of method Windows.Globalization.Language.LayoutDirection.get
+		// Forced skipping of method Windows.Globalization.Language.NativeName.get
+		// Forced skipping of method Windows.Globalization.Language.Script.get
+		// Forced skipping of method Windows.Globalization.Language.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

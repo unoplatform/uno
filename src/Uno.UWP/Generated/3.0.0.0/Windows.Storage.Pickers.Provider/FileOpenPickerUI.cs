@@ -15,20 +15,6 @@ namespace Windows.Storage.Pickers.Provider
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Title
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string FileOpenPickerUI.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20FileOpenPickerUI.Title");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.Provider.FileOpenPickerUI", "string FileOpenPickerUI.Title");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<string> AllowedFileTypes
 		{
 			get
@@ -59,6 +45,30 @@ namespace Windows.Storage.Pickers.Provider
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Title
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string FileOpenPickerUI.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20FileOpenPickerUI.Title");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.Provider.FileOpenPickerUI", "string FileOpenPickerUI.Title");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Storage.Pickers.Provider.FileOpenPickerUI.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.Pickers.Provider.FileOpenPickerUI.operator ==(Windows.Storage.Pickers.Provider.FileOpenPickerUI, Windows.Storage.Pickers.Provider.FileOpenPickerUI)
+		// Forced skipping of method Windows.Storage.Pickers.Provider.FileOpenPickerUI.operator !=(Windows.Storage.Pickers.Provider.FileOpenPickerUI, Windows.Storage.Pickers.Provider.FileOpenPickerUI)
+		// Forced skipping of method Windows.Storage.Pickers.Provider.FileOpenPickerUI.Equals(Windows.Storage.Pickers.Provider.FileOpenPickerUI)
+		// Forced skipping of method Windows.Storage.Pickers.Provider.FileOpenPickerUI.Equals(object)
+		// Forced skipping of method Windows.Storage.Pickers.Provider.FileOpenPickerUI.GetHashCode()
+		// Forced skipping of method Windows.Storage.Pickers.Provider.FileOpenPickerUI.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.Pickers.Provider.FileOpenPickerUI.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.Pickers.Provider.FileOpenPickerUI.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.Pickers.Provider.FileOpenPickerUI.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Pickers.Provider.AddFileResult AddFile(string id, global::Windows.Storage.IStorageFile file)
 		{
 			throw new global::System.NotImplementedException("The member AddFileResult FileOpenPickerUI.AddFile(string id, IStorageFile file) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AddFileResult%20FileOpenPickerUI.AddFile%28string%20id%2C%20IStorageFile%20file%29");
@@ -85,15 +95,16 @@ namespace Windows.Storage.Pickers.Provider
 			throw new global::System.NotImplementedException("The member bool FileOpenPickerUI.CanAddFile(IStorageFile file) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FileOpenPickerUI.CanAddFile%28IStorageFile%20file%29");
 		}
 #endif
+		// Forced skipping of method Windows.Storage.Pickers.Provider.FileOpenPickerUI.Closing.add
+		// Forced skipping of method Windows.Storage.Pickers.Provider.FileOpenPickerUI.Closing.remove
+		// Forced skipping of method Windows.Storage.Pickers.Provider.FileOpenPickerUI.FileRemoved.add
+		// Forced skipping of method Windows.Storage.Pickers.Provider.FileOpenPickerUI.FileRemoved.remove
 		// Forced skipping of method Windows.Storage.Pickers.Provider.FileOpenPickerUI.AllowedFileTypes.get
 		// Forced skipping of method Windows.Storage.Pickers.Provider.FileOpenPickerUI.SelectionMode.get
 		// Forced skipping of method Windows.Storage.Pickers.Provider.FileOpenPickerUI.SettingsIdentifier.get
 		// Forced skipping of method Windows.Storage.Pickers.Provider.FileOpenPickerUI.Title.get
 		// Forced skipping of method Windows.Storage.Pickers.Provider.FileOpenPickerUI.Title.set
-		// Forced skipping of method Windows.Storage.Pickers.Provider.FileOpenPickerUI.FileRemoved.add
-		// Forced skipping of method Windows.Storage.Pickers.Provider.FileOpenPickerUI.FileRemoved.remove
-		// Forced skipping of method Windows.Storage.Pickers.Provider.FileOpenPickerUI.Closing.add
-		// Forced skipping of method Windows.Storage.Pickers.Provider.FileOpenPickerUI.Closing.remove
+		// Forced skipping of method Windows.Storage.Pickers.Provider.FileOpenPickerUI.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Storage.Pickers.Provider.FileOpenPickerUI, global::Windows.Storage.Pickers.Provider.PickerClosingEventArgs> Closing

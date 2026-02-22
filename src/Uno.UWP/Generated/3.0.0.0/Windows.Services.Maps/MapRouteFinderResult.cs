@@ -15,6 +15,16 @@ namespace Windows.Services.Maps
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Services.Maps.MapRoute> AlternateRoutes
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<MapRoute> MapRouteFinderResult.AlternateRoutes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMapRoute%3E%20MapRouteFinderResult.AlternateRoutes");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Services.Maps.MapRoute Route
 		{
 			get
@@ -33,18 +43,19 @@ namespace Windows.Services.Maps
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Services.Maps.MapRoute> AlternateRoutes
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MapRoute> MapRouteFinderResult.AlternateRoutes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMapRoute%3E%20MapRouteFinderResult.AlternateRoutes");
-			}
-		}
-#endif
+		// Forced skipping of method Windows.Services.Maps.MapRouteFinderResult.FromAbi(nint)
+		// Forced skipping of method Windows.Services.Maps.MapRouteFinderResult.operator ==(Windows.Services.Maps.MapRouteFinderResult, Windows.Services.Maps.MapRouteFinderResult)
+		// Forced skipping of method Windows.Services.Maps.MapRouteFinderResult.operator !=(Windows.Services.Maps.MapRouteFinderResult, Windows.Services.Maps.MapRouteFinderResult)
+		// Forced skipping of method Windows.Services.Maps.MapRouteFinderResult.Equals(Windows.Services.Maps.MapRouteFinderResult)
+		// Forced skipping of method Windows.Services.Maps.MapRouteFinderResult.Equals(object)
+		// Forced skipping of method Windows.Services.Maps.MapRouteFinderResult.GetHashCode()
+		// Forced skipping of method Windows.Services.Maps.MapRouteFinderResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Services.Maps.MapRouteFinderResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Services.Maps.MapRouteFinderResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Services.Maps.MapRouteFinderResult.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Services.Maps.MapRouteFinderResult.AlternateRoutes.get
 		// Forced skipping of method Windows.Services.Maps.MapRouteFinderResult.Route.get
 		// Forced skipping of method Windows.Services.Maps.MapRouteFinderResult.Status.get
-		// Forced skipping of method Windows.Services.Maps.MapRouteFinderResult.AlternateRoutes.get
+		// Forced skipping of method Windows.Services.Maps.MapRouteFinderResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

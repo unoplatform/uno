@@ -3,46 +3,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
-#if false
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CoreWebView2WebResourceRequest
 	{
-#if false
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal CoreWebView2WebResourceRequest()
 		{
 		}
 #endif
-#if false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public string Uri
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2WebResourceRequest.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2WebResourceRequest.Uri");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest", "string CoreWebView2WebResourceRequest.Uri");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public string Method
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2WebResourceRequest.Method is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2WebResourceRequest.Method");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest", "string CoreWebView2WebResourceRequest.Method");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IRandomAccessStream Content
 		{
 			get
@@ -55,8 +27,8 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders Headers
 		{
 			get
@@ -65,12 +37,51 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.Uri.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.Uri.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.Method.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.Method.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Method
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string CoreWebView2WebResourceRequest.Method is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2WebResourceRequest.Method");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest", "string CoreWebView2WebResourceRequest.Method");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Uri
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string CoreWebView2WebResourceRequest.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2WebResourceRequest.Uri");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest", "string CoreWebView2WebResourceRequest.Uri");
+			}
+		}
+#endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest, Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest, Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.Equals(Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.Content.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.Content.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.Headers.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.Method.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.Method.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.Uri.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.Uri.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

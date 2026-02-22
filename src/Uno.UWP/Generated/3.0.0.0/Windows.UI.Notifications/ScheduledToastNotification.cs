@@ -8,54 +8,19 @@ namespace Windows.UI.Notifications
 #endif
 	public partial class ScheduledToastNotification
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Id
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ScheduledToastNotification.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ScheduledToastNotification.Id");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledToastNotification", "string ScheduledToastNotification.Id");
-			}
-		}
-#endif
 		// Skipping already declared property Content
 		// Skipping already declared property DeliveryTime
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint MaximumSnoozeCount
+#if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.DateTimeOffset? ExpirationTime
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ScheduledToastNotification.MaximumSnoozeCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ScheduledToastNotification.MaximumSnoozeCount");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan? SnoozeInterval
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan? ScheduledToastNotification.SnoozeInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20ScheduledToastNotification.SnoozeInterval");
-			}
-		}
-#endif
-		// Skipping already declared property Tag
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool SuppressPopup
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ScheduledToastNotification.SuppressPopup is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ScheduledToastNotification.SuppressPopup");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? ScheduledToastNotification.ExpirationTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20ScheduledToastNotification.ExpirationTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledToastNotification", "bool ScheduledToastNotification.SuppressPopup");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledToastNotification", "DateTimeOffset? ScheduledToastNotification.ExpirationTime");
 			}
 		}
 #endif
@@ -75,15 +40,25 @@ namespace Windows.UI.Notifications
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string RemoteId
+		public string Id
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ScheduledToastNotification.RemoteId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ScheduledToastNotification.RemoteId");
+				throw new global::System.NotImplementedException("The member string ScheduledToastNotification.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ScheduledToastNotification.Id");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledToastNotification", "string ScheduledToastNotification.RemoteId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledToastNotification", "string ScheduledToastNotification.Id");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint MaximumSnoozeCount
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint ScheduledToastNotification.MaximumSnoozeCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ScheduledToastNotification.MaximumSnoozeCount");
 			}
 		}
 #endif
@@ -101,20 +76,45 @@ namespace Windows.UI.Notifications
 			}
 		}
 #endif
-#if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.DateTimeOffset? ExpirationTime
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string RemoteId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? ScheduledToastNotification.ExpirationTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20ScheduledToastNotification.ExpirationTime");
+				throw new global::System.NotImplementedException("The member string ScheduledToastNotification.RemoteId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ScheduledToastNotification.RemoteId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledToastNotification", "DateTimeOffset? ScheduledToastNotification.ExpirationTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledToastNotification", "string ScheduledToastNotification.RemoteId");
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan? SnoozeInterval
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan? ScheduledToastNotification.SnoozeInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20ScheduledToastNotification.SnoozeInterval");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool SuppressPopup
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ScheduledToastNotification.SuppressPopup is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ScheduledToastNotification.SuppressPopup");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledToastNotification", "bool ScheduledToastNotification.SuppressPopup");
+			}
+		}
+#endif
+		// Skipping already declared property Tag
 		// Skipping already declared method Windows.UI.Notifications.ScheduledToastNotification.ScheduledToastNotification(Windows.Data.Xml.Dom.XmlDocument, System.DateTimeOffset)
 		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.ScheduledToastNotification(Windows.Data.Xml.Dom.XmlDocument, System.DateTimeOffset)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -125,23 +125,34 @@ namespace Windows.UI.Notifications
 		}
 #endif
 		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.ScheduledToastNotification(Windows.Data.Xml.Dom.XmlDocument, System.DateTimeOffset, System.TimeSpan, uint)
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.operator ==(Windows.UI.Notifications.ScheduledToastNotification, Windows.UI.Notifications.ScheduledToastNotification)
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.operator !=(Windows.UI.Notifications.ScheduledToastNotification, Windows.UI.Notifications.ScheduledToastNotification)
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.Equals(Windows.UI.Notifications.ScheduledToastNotification)
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.Equals(object)
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.GetHashCode()
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.Content.get
 		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.DeliveryTime.get
-		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.SnoozeInterval.get
-		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.MaximumSnoozeCount.get
-		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.Id.set
-		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.Id.get
-		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.Tag.set
-		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.Tag.get
-		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.Group.set
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.ExpirationTime.get
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.ExpirationTime.set
 		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.Group.get
-		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.SuppressPopup.set
-		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.SuppressPopup.get
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.Group.set
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.Id.get
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.Id.set
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.MaximumSnoozeCount.get
 		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.NotificationMirroring.get
 		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.NotificationMirroring.set
 		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.RemoteId.get
 		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.RemoteId.set
-		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.ExpirationTime.get
-		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.ExpirationTime.set
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.SnoozeInterval.get
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.SuppressPopup.get
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.SuppressPopup.set
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.Tag.get
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.Tag.set
+		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,76 +10,6 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double ZoomLevel
-		{
-			get
-			{
-				return (double)this.GetValue(ZoomLevelProperty);
-			}
-			set
-			{
-				this.SetValue(ZoomLevelProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string MapServiceToken
-		{
-			get
-			{
-				return (string)this.GetValue(MapServiceTokenProperty);
-			}
-			set
-			{
-				this.SetValue(MapServiceTokenProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.MapLayer> Layers
-		{
-			get
-			{
-				return (global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.MapLayer>)this.GetValue(LayersProperty);
-			}
-			set
-			{
-				this.SetValue(LayersProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool InteractiveControlsVisible
-		{
-			get
-			{
-				return (bool)this.GetValue(InteractiveControlsVisibleProperty);
-			}
-			set
-			{
-				this.SetValue(InteractiveControlsVisibleProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Geolocation.Geopoint Center
-		{
-			get
-			{
-				return (global::Windows.Devices.Geolocation.Geopoint)this.GetValue(CenterProperty);
-			}
-			set
-			{
-				this.SetValue(CenterProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty CenterProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(Center), typeof(global::Windows.Devices.Geolocation.Geopoint),
@@ -120,31 +50,114 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Geolocation.Geopoint Center
+		{
+			get
+			{
+				return (global::Windows.Devices.Geolocation.Geopoint)this.GetValue(CenterProperty);
+			}
+			set
+			{
+				this.SetValue(CenterProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool InteractiveControlsVisible
+		{
+			get
+			{
+				return (bool)this.GetValue(InteractiveControlsVisibleProperty);
+			}
+			set
+			{
+				this.SetValue(InteractiveControlsVisibleProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.MapLayer> Layers
+		{
+			get
+			{
+				return (global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.MapLayer>)this.GetValue(LayersProperty);
+			}
+			set
+			{
+				this.SetValue(LayersProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string MapServiceToken
+		{
+			get
+			{
+				return (string)this.GetValue(MapServiceTokenProperty);
+			}
+			set
+			{
+				this.SetValue(MapServiceTokenProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double ZoomLevel
+		{
+			get
+			{
+				return (double)this.GetValue(ZoomLevelProperty);
+			}
+			set
+			{
+				this.SetValue(ZoomLevelProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MapControl() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.MapControl", "MapControl.MapControl()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.MapControl()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.MapServiceToken.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.MapServiceToken.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.Center.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.Center.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.Layers.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.Layers.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.ZoomLevel.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.ZoomLevel.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.InteractiveControlsVisible.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.InteractiveControlsVisible.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.CenterProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.InteractiveControlsVisibleProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.LayersProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.MapServiceTokenProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.ZoomLevelProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.MapControl(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.operator ==(Microsoft.UI.Xaml.Controls.MapControl, Microsoft.UI.Xaml.Controls.MapControl)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.operator !=(Microsoft.UI.Xaml.Controls.MapControl, Microsoft.UI.Xaml.Controls.MapControl)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.Equals(Microsoft.UI.Xaml.Controls.MapControl)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.MapControl(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.MapElementClick.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.MapElementClick.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.MapServiceErrorOccurred.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.MapServiceErrorOccurred.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.LayersProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.MapServiceTokenProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.CenterProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.ZoomLevelProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.InteractiveControlsVisibleProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.Center.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.Center.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.InteractiveControlsVisible.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.InteractiveControlsVisible.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.Layers.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.Layers.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.MapServiceToken.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.MapServiceToken.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.ZoomLevel.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.ZoomLevel.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.MapControl, global::Microsoft.UI.Xaml.Controls.MapElementClickEventArgs> MapElementClick

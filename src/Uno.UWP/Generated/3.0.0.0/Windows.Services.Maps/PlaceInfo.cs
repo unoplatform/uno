@@ -15,6 +15,16 @@ namespace Windows.Services.Maps
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static bool IsShowSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool PlaceInfo.IsShowSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PlaceInfo.IsShowSupported");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string DisplayAddress
 		{
 			get
@@ -53,48 +63,7 @@ namespace Windows.Services.Maps
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool IsShowSupported
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool PlaceInfo.IsShowSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PlaceInfo.IsShowSupported");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Show(global::Windows.Foundation.Rect selection)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.PlaceInfo", "void PlaceInfo.Show(Rect selection)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Show(global::Windows.Foundation.Rect selection, global::Windows.UI.Popups.Placement preferredPlacement)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.PlaceInfo", "void PlaceInfo.Show(Rect selection, Placement preferredPlacement)");
-		}
-#endif
-		// Forced skipping of method Windows.Services.Maps.PlaceInfo.Identifier.get
-		// Forced skipping of method Windows.Services.Maps.PlaceInfo.DisplayName.get
-		// Forced skipping of method Windows.Services.Maps.PlaceInfo.DisplayAddress.get
-		// Forced skipping of method Windows.Services.Maps.PlaceInfo.Geoshape.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Services.Maps.PlaceInfo CreateFromAddress(string displayAddress)
-		{
-			throw new global::System.NotImplementedException("The member PlaceInfo PlaceInfo.CreateFromAddress(string displayAddress) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PlaceInfo%20PlaceInfo.CreateFromAddress%28string%20displayAddress%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Services.Maps.PlaceInfo CreateFromAddress(string displayAddress, string displayName)
-		{
-			throw new global::System.NotImplementedException("The member PlaceInfo PlaceInfo.CreateFromAddress(string displayAddress, string displayName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PlaceInfo%20PlaceInfo.CreateFromAddress%28string%20displayAddress%2C%20string%20displayName%29");
-		}
-#endif
+		// Forced skipping of method Windows.Services.Maps.PlaceInfo.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Services.Maps.PlaceInfo Create(global::Windows.Devices.Geolocation.Geopoint referencePoint)
@@ -130,6 +99,49 @@ namespace Windows.Services.Maps
 			throw new global::System.NotImplementedException("The member PlaceInfo PlaceInfo.CreateFromMapLocation(MapLocation location) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PlaceInfo%20PlaceInfo.CreateFromMapLocation%28MapLocation%20location%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Services.Maps.PlaceInfo CreateFromAddress(string displayAddress)
+		{
+			throw new global::System.NotImplementedException("The member PlaceInfo PlaceInfo.CreateFromAddress(string displayAddress) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PlaceInfo%20PlaceInfo.CreateFromAddress%28string%20displayAddress%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Services.Maps.PlaceInfo CreateFromAddress(string displayAddress, string displayName)
+		{
+			throw new global::System.NotImplementedException("The member PlaceInfo PlaceInfo.CreateFromAddress(string displayAddress, string displayName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PlaceInfo%20PlaceInfo.CreateFromAddress%28string%20displayAddress%2C%20string%20displayName%29");
+		}
+#endif
 		// Forced skipping of method Windows.Services.Maps.PlaceInfo.IsShowSupported.get
+		// Forced skipping of method Windows.Services.Maps.PlaceInfo.FromAbi(nint)
+		// Forced skipping of method Windows.Services.Maps.PlaceInfo.operator ==(Windows.Services.Maps.PlaceInfo, Windows.Services.Maps.PlaceInfo)
+		// Forced skipping of method Windows.Services.Maps.PlaceInfo.operator !=(Windows.Services.Maps.PlaceInfo, Windows.Services.Maps.PlaceInfo)
+		// Forced skipping of method Windows.Services.Maps.PlaceInfo.Equals(Windows.Services.Maps.PlaceInfo)
+		// Forced skipping of method Windows.Services.Maps.PlaceInfo.Equals(object)
+		// Forced skipping of method Windows.Services.Maps.PlaceInfo.GetHashCode()
+		// Forced skipping of method Windows.Services.Maps.PlaceInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Services.Maps.PlaceInfo.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Services.Maps.PlaceInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Services.Maps.PlaceInfo.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Show(global::Windows.Foundation.Rect selection)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.PlaceInfo", "void PlaceInfo.Show(Rect selection)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Show(global::Windows.Foundation.Rect selection, global::Windows.UI.Popups.Placement preferredPlacement)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.PlaceInfo", "void PlaceInfo.Show(Rect selection, Placement preferredPlacement)");
+		}
+#endif
+		// Forced skipping of method Windows.Services.Maps.PlaceInfo.DisplayAddress.get
+		// Forced skipping of method Windows.Services.Maps.PlaceInfo.DisplayName.get
+		// Forced skipping of method Windows.Services.Maps.PlaceInfo.Geoshape.get
+		// Forced skipping of method Windows.Services.Maps.PlaceInfo.Identifier.get
+		// Forced skipping of method Windows.Services.Maps.PlaceInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -9,6 +9,16 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class PipsPagerTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property PipsPagerItems
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPagerTemplateSettings.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPagerTemplateSettings.operator ==(Microsoft.UI.Xaml.Controls.PipsPagerTemplateSettings, Microsoft.UI.Xaml.Controls.PipsPagerTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPagerTemplateSettings.operator !=(Microsoft.UI.Xaml.Controls.PipsPagerTemplateSettings, Microsoft.UI.Xaml.Controls.PipsPagerTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPagerTemplateSettings.Equals(Microsoft.UI.Xaml.Controls.PipsPagerTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPagerTemplateSettings.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPagerTemplateSettings.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPagerTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPagerTemplateSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPagerTemplateSettings.PipsPagerItems.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPagerTemplateSettings.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPagerTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -8,57 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class Pivot
 	{
-		// Skipping already declared property TitleTemplate
-		// Skipping already declared property Title
-		// Skipping already declared property SelectedItem
-		// Skipping already declared property SelectedIndex
-		// Skipping already declared property RightHeaderTemplate
-		// Skipping already declared property RightHeader
-		// Skipping already declared property LeftHeaderTemplate
-		// Skipping already declared property LeftHeader
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsLocked
-		{
-			get
-			{
-				return (bool)this.GetValue(IsLockedProperty);
-			}
-			set
-			{
-				this.SetValue(IsLockedProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsHeaderItemsCarouselEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsHeaderItemsCarouselEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsHeaderItemsCarouselEnabledProperty, value);
-			}
-		}
-#endif
-		// Skipping already declared property HeaderTemplate
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.PivotHeaderFocusVisualPlacement HeaderFocusVisualPlacement
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.PivotHeaderFocusVisualPlacement)this.GetValue(HeaderFocusVisualPlacementProperty);
-			}
-			set
-			{
-				this.SetValue(HeaderFocusVisualPlacementProperty, value);
-			}
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty HeaderFocusVisualPlacementProperty { get; } =
@@ -93,55 +42,60 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared property TitleProperty
 		// Skipping already declared property TitleTemplateProperty
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Controls.PivotHeaderFocusVisualPlacement HeaderFocusVisualPlacement
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Controls.PivotHeaderFocusVisualPlacement)this.GetValue(HeaderFocusVisualPlacementProperty);
+			}
+			set
+			{
+				this.SetValue(HeaderFocusVisualPlacementProperty, value);
+			}
+		}
+#endif
+		// Skipping already declared property HeaderTemplate
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsHeaderItemsCarouselEnabled
+		{
+			get
+			{
+				return (bool)this.GetValue(IsHeaderItemsCarouselEnabledProperty);
+			}
+			set
+			{
+				this.SetValue(IsHeaderItemsCarouselEnabledProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsLocked
+		{
+			get
+			{
+				return (bool)this.GetValue(IsLockedProperty);
+			}
+			set
+			{
+				this.SetValue(IsLockedProperty, value);
+			}
+		}
+#endif
+		// Skipping already declared property LeftHeader
+		// Skipping already declared property LeftHeaderTemplate
+		// Skipping already declared property RightHeader
+		// Skipping already declared property RightHeaderTemplate
+		// Skipping already declared property SelectedIndex
+		// Skipping already declared property SelectedItem
+		// Skipping already declared property Title
+		// Skipping already declared property TitleTemplate
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Pivot.Pivot()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.Pivot()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.Title.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.Title.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.TitleTemplate.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.TitleTemplate.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.LeftHeader.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.LeftHeader.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.LeftHeaderTemplate.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.LeftHeaderTemplate.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.RightHeader.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.RightHeader.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.RightHeaderTemplate.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.RightHeaderTemplate.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.HeaderTemplate.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.HeaderTemplate.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.SelectedIndex.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.SelectedIndex.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.SelectedItem.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.SelectedItem.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.IsLocked.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.IsLocked.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.HeaderFocusVisualPlacement.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.HeaderFocusVisualPlacement.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.IsHeaderItemsCarouselEnabled.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.IsHeaderItemsCarouselEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.SelectionChanged.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.SelectionChanged.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.PivotItemLoading.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.PivotItemLoading.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.PivotItemLoaded.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.PivotItemLoaded.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.PivotItemUnloading.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.PivotItemUnloading.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.PivotItemUnloaded.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.PivotItemUnloaded.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.TitleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.TitleTemplateProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.LeftHeaderProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.LeftHeaderTemplateProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.RightHeaderProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.RightHeaderTemplateProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.HeaderTemplateProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.SelectedIndexProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.SelectedItemProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.IsLockedProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.HeaderFocusVisualPlacementProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.IsHeaderItemsCarouselEnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.SlideInAnimationGroupProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.Controls.PivotSlideInAnimationGroup GetSlideInAnimationGroup(global::Microsoft.UI.Xaml.FrameworkElement element)
@@ -156,6 +110,65 @@ namespace Microsoft.UI.Xaml.Controls
 			element.SetValue(SlideInAnimationGroupProperty, value);
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.HeaderFocusVisualPlacementProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.HeaderTemplateProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.IsHeaderItemsCarouselEnabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.IsLockedProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.LeftHeaderProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.LeftHeaderTemplateProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.RightHeaderProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.RightHeaderTemplateProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.SelectedIndexProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.SelectedItemProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.SlideInAnimationGroupProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.TitleProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.TitleTemplateProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.Pivot(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.operator ==(Microsoft.UI.Xaml.Controls.Pivot, Microsoft.UI.Xaml.Controls.Pivot)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.operator !=(Microsoft.UI.Xaml.Controls.Pivot, Microsoft.UI.Xaml.Controls.Pivot)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.Equals(Microsoft.UI.Xaml.Controls.Pivot)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.Pivot(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.PivotItemLoaded.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.PivotItemLoaded.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.PivotItemLoading.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.PivotItemLoading.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.PivotItemUnloaded.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.PivotItemUnloaded.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.PivotItemUnloading.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.PivotItemUnloading.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.SelectionChanged.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.SelectionChanged.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.HeaderFocusVisualPlacement.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.HeaderFocusVisualPlacement.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.HeaderTemplate.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.HeaderTemplate.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.IsHeaderItemsCarouselEnabled.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.IsHeaderItemsCarouselEnabled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.IsLocked.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.IsLocked.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.LeftHeader.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.LeftHeader.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.LeftHeaderTemplate.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.LeftHeaderTemplate.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.RightHeader.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.RightHeader.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.RightHeaderTemplate.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.RightHeaderTemplate.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.SelectedIndex.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.SelectedIndex.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.SelectedItem.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.SelectedItem.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.Title.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.Title.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.TitleTemplate.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.TitleTemplate.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Pivot.PivotItemLoaded
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Pivot.PivotItemLoading
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Pivot.PivotItemUnloaded

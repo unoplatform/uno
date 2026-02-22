@@ -24,21 +24,21 @@ namespace Windows.Gaming.Input.ForceFeedback
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Gaming.Input.ForceFeedback.ForceFeedbackEffectState State
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ForceFeedbackEffectState PeriodicForceEffect.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ForceFeedbackEffectState%20PeriodicForceEffect.State");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Gaming.Input.ForceFeedback.PeriodicForceEffectKind Kind
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member PeriodicForceEffectKind PeriodicForceEffect.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PeriodicForceEffectKind%20PeriodicForceEffect.Kind");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Gaming.Input.ForceFeedback.ForceFeedbackEffectState State
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ForceFeedbackEffectState PeriodicForceEffect.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ForceFeedbackEffectState%20PeriodicForceEffect.State");
 			}
 		}
 #endif
@@ -50,9 +50,16 @@ namespace Windows.Gaming.Input.ForceFeedback
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.PeriodicForceEffect(Windows.Gaming.Input.ForceFeedback.PeriodicForceEffectKind)
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.Gain.get
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.Gain.set
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.State.get
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.FromAbi(nint)
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.operator ==(Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect, Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect)
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.operator !=(Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect, Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect)
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.Equals(Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect)
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.Equals(object)
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.GetHashCode()
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -67,7 +74,6 @@ namespace Windows.Gaming.Input.ForceFeedback
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect", "void PeriodicForceEffect.Stop()");
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.Kind.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetParameters(global::System.Numerics.Vector3 vector, float frequency, float phase, float bias, global::System.TimeSpan duration)
@@ -82,6 +88,11 @@ namespace Windows.Gaming.Input.ForceFeedback
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect", "void PeriodicForceEffect.SetParametersWithEnvelope(Vector3 vector, float frequency, float phase, float bias, float attackGain, float sustainGain, float releaseGain, TimeSpan startDelay, TimeSpan attackDuration, TimeSpan sustainDuration, TimeSpan releaseDuration, uint repeatCount)");
 		}
 #endif
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.Gain.get
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.Gain.set
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.Kind.get
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.State.get
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Gaming.Input.ForceFeedback.IForceFeedbackEffect
 	}
 }

@@ -10,128 +10,6 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.ListPickerFlyoutSelectionMode SelectionMode
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.ListPickerFlyoutSelectionMode)this.GetValue(SelectionModeProperty);
-			}
-			set
-			{
-				this.SetValue(SelectionModeProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string SelectedValuePath
-		{
-			get
-			{
-				return (string)this.GetValue(SelectedValuePathProperty);
-			}
-			set
-			{
-				this.SetValue(SelectedValuePathProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object SelectedValue
-		{
-			get
-			{
-				return (object)this.GetValue(SelectedValueProperty);
-			}
-			set
-			{
-				this.SetValue(SelectedValueProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object SelectedItem
-		{
-			get
-			{
-				return (object)this.GetValue(SelectedItemProperty);
-			}
-			set
-			{
-				this.SetValue(SelectedItemProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int SelectedIndex
-		{
-			get
-			{
-				return (int)this.GetValue(SelectedIndexProperty);
-			}
-			set
-			{
-				this.SetValue(SelectedIndexProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object ItemsSource
-		{
-			get
-			{
-				return (object)this.GetValue(ItemsSourceProperty);
-			}
-			set
-			{
-				this.SetValue(ItemsSourceProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.DataTemplate ItemTemplate
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.DataTemplate)this.GetValue(ItemTemplateProperty);
-			}
-			set
-			{
-				this.SetValue(ItemTemplateProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DisplayMemberPath
-		{
-			get
-			{
-				return (string)this.GetValue(DisplayMemberPathProperty);
-			}
-			set
-			{
-				this.SetValue(DisplayMemberPathProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<object> SelectedItems
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<object> ListPickerFlyout.SelectedItems is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cobject%3E%20ListPickerFlyout.SelectedItems");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty DisplayMemberPathProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(DisplayMemberPath), typeof(string),
@@ -194,27 +72,147 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.ListPickerFlyout),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.ListPickerFlyoutSelectionMode)));
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string DisplayMemberPath
+		{
+			get
+			{
+				return (string)this.GetValue(DisplayMemberPathProperty);
+			}
+			set
+			{
+				this.SetValue(DisplayMemberPathProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.DataTemplate ItemTemplate
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.DataTemplate)this.GetValue(ItemTemplateProperty);
+			}
+			set
+			{
+				this.SetValue(ItemTemplateProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public object ItemsSource
+		{
+			get
+			{
+				return (object)this.GetValue(ItemsSourceProperty);
+			}
+			set
+			{
+				this.SetValue(ItemsSourceProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int SelectedIndex
+		{
+			get
+			{
+				return (int)this.GetValue(SelectedIndexProperty);
+			}
+			set
+			{
+				this.SetValue(SelectedIndexProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public object SelectedItem
+		{
+			get
+			{
+				return (object)this.GetValue(SelectedItemProperty);
+			}
+			set
+			{
+				this.SetValue(SelectedItemProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IList<object> SelectedItems
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IList<object> ListPickerFlyout.SelectedItems is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cobject%3E%20ListPickerFlyout.SelectedItems");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public object SelectedValue
+		{
+			get
+			{
+				return (object)this.GetValue(SelectedValueProperty);
+			}
+			set
+			{
+				this.SetValue(SelectedValueProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string SelectedValuePath
+		{
+			get
+			{
+				return (string)this.GetValue(SelectedValuePathProperty);
+			}
+			set
+			{
+				this.SetValue(SelectedValuePathProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Controls.ListPickerFlyoutSelectionMode SelectionMode
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Controls.ListPickerFlyoutSelectionMode)this.GetValue(SelectionModeProperty);
+			}
+			set
+			{
+				this.SetValue(SelectionModeProperty, value);
+			}
+		}
+#endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ListPickerFlyout.ListPickerFlyout()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.ListPickerFlyout()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.ItemsSource.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.ItemsSource.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.ItemTemplate.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.ItemTemplate.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.DisplayMemberPath.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.DisplayMemberPath.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectionMode.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectionMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedIndex.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedIndex.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedItem.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedItem.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedValue.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedValue.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedValuePath.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedValuePath.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedItems.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.ItemsPicked.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.ItemsPicked.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.DisplayMemberPathProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.ItemTemplateProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.ItemsSourceProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedIndexProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedItemProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedValuePathProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedValueProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectionModeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.operator ==(Microsoft.UI.Xaml.Controls.ListPickerFlyout, Microsoft.UI.Xaml.Controls.ListPickerFlyout)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.operator !=(Microsoft.UI.Xaml.Controls.ListPickerFlyout, Microsoft.UI.Xaml.Controls.ListPickerFlyout)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.Equals(Microsoft.UI.Xaml.Controls.ListPickerFlyout)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<object>> ShowAtAsync(global::Microsoft.UI.Xaml.FrameworkElement target)
@@ -222,14 +220,27 @@ namespace Microsoft.UI.Xaml.Controls
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<object>> ListPickerFlyout.ShowAtAsync(FrameworkElement target) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3Cobject%3E%3E%20ListPickerFlyout.ShowAtAsync%28FrameworkElement%20target%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.ItemsSourceProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.ItemTemplateProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.DisplayMemberPathProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectionModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedIndexProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedItemProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedValueProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedValuePathProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.ItemsPicked.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.ItemsPicked.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.DisplayMemberPath.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.DisplayMemberPath.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.ItemTemplate.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.ItemTemplate.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.ItemsSource.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.ItemsSource.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedIndex.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedIndex.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedItem.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedItem.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedItems.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedValue.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedValue.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedValuePath.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedValuePath.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectionMode.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectionMode.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.ListPickerFlyout, global::Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs> ItemsPicked

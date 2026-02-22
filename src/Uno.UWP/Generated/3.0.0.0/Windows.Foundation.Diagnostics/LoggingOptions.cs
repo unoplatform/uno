@@ -10,57 +10,15 @@ namespace Windows.Foundation.Diagnostics
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public short Task
+		public global::System.Guid ActivityId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member short LoggingOptions.Task is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=short%20LoggingOptions.Task");
+				throw new global::System.NotImplementedException("The member Guid LoggingOptions.ActivityId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20LoggingOptions.ActivityId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.LoggingOptions", "short LoggingOptions.Task");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Tags
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int LoggingOptions.Tags is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20LoggingOptions.Tags");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.LoggingOptions", "int LoggingOptions.Tags");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Guid RelatedActivityId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid LoggingOptions.RelatedActivityId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20LoggingOptions.RelatedActivityId");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.LoggingOptions", "Guid LoggingOptions.RelatedActivityId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Diagnostics.LoggingOpcode Opcode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member LoggingOpcode LoggingOptions.Opcode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LoggingOpcode%20LoggingOptions.Opcode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.LoggingOptions", "LoggingOpcode LoggingOptions.Opcode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.LoggingOptions", "Guid LoggingOptions.ActivityId");
 			}
 		}
 #endif
@@ -80,15 +38,57 @@ namespace Windows.Foundation.Diagnostics
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Guid ActivityId
+		public global::Windows.Foundation.Diagnostics.LoggingOpcode Opcode
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid LoggingOptions.ActivityId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20LoggingOptions.ActivityId");
+				throw new global::System.NotImplementedException("The member LoggingOpcode LoggingOptions.Opcode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LoggingOpcode%20LoggingOptions.Opcode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.LoggingOptions", "Guid LoggingOptions.ActivityId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.LoggingOptions", "LoggingOpcode LoggingOptions.Opcode");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Guid RelatedActivityId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid LoggingOptions.RelatedActivityId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20LoggingOptions.RelatedActivityId");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.LoggingOptions", "Guid LoggingOptions.RelatedActivityId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int Tags
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int LoggingOptions.Tags is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20LoggingOptions.Tags");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.LoggingOptions", "int LoggingOptions.Tags");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public short Task
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member short LoggingOptions.Task is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=short%20LoggingOptions.Task");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.LoggingOptions", "short LoggingOptions.Task");
 			}
 		}
 #endif
@@ -108,17 +108,28 @@ namespace Windows.Foundation.Diagnostics
 		}
 #endif
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.LoggingOptions(long)
+		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.FromAbi(nint)
+		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.operator ==(Windows.Foundation.Diagnostics.LoggingOptions, Windows.Foundation.Diagnostics.LoggingOptions)
+		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.operator !=(Windows.Foundation.Diagnostics.LoggingOptions, Windows.Foundation.Diagnostics.LoggingOptions)
+		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.Equals(Windows.Foundation.Diagnostics.LoggingOptions)
+		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.Equals(object)
+		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.GetHashCode()
+		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.ActivityId.get
+		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.ActivityId.set
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.Keywords.get
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.Keywords.set
+		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.Opcode.get
+		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.Opcode.set
+		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.RelatedActivityId.get
+		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.RelatedActivityId.set
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.Tags.get
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.Tags.set
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.Task.get
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.Task.set
-		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.Opcode.get
-		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.Opcode.set
-		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.ActivityId.get
-		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.ActivityId.set
-		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.RelatedActivityId.get
-		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.RelatedActivityId.set
+		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

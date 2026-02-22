@@ -58,6 +58,7 @@ namespace Windows.Security.Cryptography.Core
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Security.Cryptography.Core.HashAlgorithmNames.As<I>()
 		// Forced skipping of method Windows.Security.Cryptography.Core.HashAlgorithmNames.Md5.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.HashAlgorithmNames.Sha1.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.HashAlgorithmNames.Sha256.get

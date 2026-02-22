@@ -113,15 +113,26 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures, Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures, Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.Equals(Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.HasPosition.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.HasSize.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.Left.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.Top.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.Height.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.Width.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.Left.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.ShouldDisplayMenuBar.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.ShouldDisplayScrollBars.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.ShouldDisplayStatus.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.ShouldDisplayToolbar.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.ShouldDisplayScrollBars.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.Top.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.Width.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

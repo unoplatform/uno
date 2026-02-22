@@ -10,20 +10,6 @@ namespace Windows.Devices.Sms
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Sms.CellularClass CellularClass
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CellularClass SmsFilterRule.CellularClass is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CellularClass%20SmsFilterRule.CellularClass");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsFilterRule", "CellularClass SmsFilterRule.CellularClass");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<int> BroadcastChannels
 		{
 			get
@@ -39,6 +25,20 @@ namespace Windows.Devices.Sms
 			get
 			{
 				throw new global::System.NotImplementedException("The member IList<SmsBroadcastType> SmsFilterRule.BroadcastTypes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CSmsBroadcastType%3E%20SmsFilterRule.BroadcastTypes");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Sms.CellularClass CellularClass
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CellularClass SmsFilterRule.CellularClass is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CellularClass%20SmsFilterRule.CellularClass");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsFilterRule", "CellularClass SmsFilterRule.CellularClass");
 			}
 		}
 #endif
@@ -150,19 +150,30 @@ namespace Windows.Devices.Sms
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.SmsFilterRule(Windows.Devices.Sms.SmsMessageType)
-		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.MessageType.get
-		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.ImsiPrefixes.get
-		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.DeviceIds.get
-		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.SenderNumbers.get
-		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.TextMessagePrefixes.get
-		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.PortNumbers.get
+		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.operator ==(Windows.Devices.Sms.SmsFilterRule, Windows.Devices.Sms.SmsFilterRule)
+		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.operator !=(Windows.Devices.Sms.SmsFilterRule, Windows.Devices.Sms.SmsFilterRule)
+		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.Equals(Windows.Devices.Sms.SmsFilterRule)
+		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.Equals(object)
+		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.GetHashCode()
+		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.BroadcastChannels.get
+		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.BroadcastTypes.get
 		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.CellularClass.get
 		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.CellularClass.set
+		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.DeviceIds.get
+		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.ImsiPrefixes.get
+		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.MessageType.get
+		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.PortNumbers.get
 		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.ProtocolIds.get
+		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.SenderNumbers.get
 		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.TeleserviceIds.get
+		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.TextMessagePrefixes.get
 		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.WapApplicationIds.get
 		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.WapContentTypes.get
-		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.BroadcastTypes.get
-		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.BroadcastChannels.get
+		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

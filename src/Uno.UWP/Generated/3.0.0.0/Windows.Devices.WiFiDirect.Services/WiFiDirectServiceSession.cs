@@ -83,13 +83,16 @@ namespace Windows.Devices.WiFiDirect.Services
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.ServiceName.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.Status.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.ErrorStatus.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.SessionId.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.AdvertisementId.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.ServiceAddress.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.SessionAddress.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.operator ==(Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession, Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession)
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.operator !=(Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession, Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession)
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.Equals(Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession)
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.Equals(object)
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.GetHashCode()
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.EndpointPair> GetConnectionEndpointPairs()
@@ -97,8 +100,6 @@ namespace Windows.Devices.WiFiDirect.Services
 			throw new global::System.NotImplementedException("The member IReadOnlyList<EndpointPair> WiFiDirectServiceSession.GetConnectionEndpointPairs() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CEndpointPair%3E%20WiFiDirectServiceSession.GetConnectionEndpointPairs%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.SessionStatusChanged.add
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.SessionStatusChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction AddStreamSocketListenerAsync(global::Windows.Networking.Sockets.StreamSocketListener value)
@@ -115,6 +116,8 @@ namespace Windows.Devices.WiFiDirect.Services
 #endif
 		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.RemotePortAdded.add
 		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.RemotePortAdded.remove
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.SessionStatusChanged.add
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.SessionStatusChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -122,6 +125,14 @@ namespace Windows.Devices.WiFiDirect.Services
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession", "void WiFiDirectServiceSession.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.AdvertisementId.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.ErrorStatus.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.ServiceAddress.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.ServiceName.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.SessionAddress.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.SessionId.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.Status.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession, global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceRemotePortAddedEventArgs> RemotePortAdded

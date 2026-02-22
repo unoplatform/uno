@@ -12,9 +12,21 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property IsSelectionRequired
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ItemsViewAutomationPeer.ItemsViewAutomationPeer(Microsoft.UI.Xaml.Controls.ItemsView)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemsViewAutomationPeer.ItemsViewAutomationPeer(Microsoft.UI.Xaml.Controls.ItemsView)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemsViewAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemsViewAutomationPeer.ItemsViewAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemsViewAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.ItemsViewAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ItemsViewAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemsViewAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.ItemsViewAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ItemsViewAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemsViewAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.ItemsViewAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemsViewAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemsViewAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemsViewAutomationPeer.ItemsViewAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemsViewAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemsViewAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ItemsViewAutomationPeer.GetSelection()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemsViewAutomationPeer.CanSelectMultiple.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemsViewAutomationPeer.IsSelectionRequired.get
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ItemsViewAutomationPeer.GetSelection()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemsViewAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemsViewAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.ISelectionProvider
 	}
 }

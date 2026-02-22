@@ -8,28 +8,39 @@ namespace Windows.ApplicationModel.Contacts
 #endif
 	public partial class ContactAddress
 	{
-		// Skipping already declared property StreetAddress
-		// Skipping already declared property Region
-		// Skipping already declared property PostalCode
-		// Skipping already declared property Locality
-		// Skipping already declared property Kind
-		// Skipping already declared property Description
 		// Skipping already declared property Country
+		// Skipping already declared property Description
+		// Skipping already declared property Kind
+		// Skipping already declared property Locality
+		// Skipping already declared property PostalCode
+		// Skipping already declared property Region
+		// Skipping already declared property StreetAddress
 		// Skipping already declared method Windows.ApplicationModel.Contacts.ContactAddress.ContactAddress()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.ContactAddress()
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.StreetAddress.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.StreetAddress.set
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.Locality.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.Locality.set
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.Region.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.Region.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.operator ==(Windows.ApplicationModel.Contacts.ContactAddress, Windows.ApplicationModel.Contacts.ContactAddress)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.operator !=(Windows.ApplicationModel.Contacts.ContactAddress, Windows.ApplicationModel.Contacts.ContactAddress)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.Equals(Windows.ApplicationModel.Contacts.ContactAddress)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.Country.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.Country.set
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.PostalCode.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.PostalCode.set
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.Kind.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.Kind.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.Description.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.Description.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.Kind.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.Kind.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.Locality.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.Locality.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.PostalCode.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.PostalCode.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.Region.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.Region.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.StreetAddress.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.StreetAddress.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

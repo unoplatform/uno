@@ -10,43 +10,45 @@ namespace Windows.Networking.Vpn
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Networking.Vpn.VpnAuthenticationMethod UserAuthenticationMethod
+		public bool AlwaysOn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VpnAuthenticationMethod VpnNativeProfile.UserAuthenticationMethod is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnAuthenticationMethod%20VpnNativeProfile.UserAuthenticationMethod");
+				throw new global::System.NotImplementedException("The member bool VpnNativeProfile.AlwaysOn is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnNativeProfile.AlwaysOn");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnNativeProfile", "VpnAuthenticationMethod VpnNativeProfile.UserAuthenticationMethod");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnNativeProfile", "bool VpnNativeProfile.AlwaysOn");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Networking.Vpn.VpnAuthenticationMethod TunnelAuthenticationMethod
+		public global::System.Collections.Generic.IList<global::Windows.Networking.Vpn.VpnAppId> AppTriggers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VpnAuthenticationMethod VpnNativeProfile.TunnelAuthenticationMethod is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnAuthenticationMethod%20VpnNativeProfile.TunnelAuthenticationMethod");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnNativeProfile", "VpnAuthenticationMethod VpnNativeProfile.TunnelAuthenticationMethod");
+				throw new global::System.NotImplementedException("The member IList<VpnAppId> VpnNativeProfile.AppTriggers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CVpnAppId%3E%20VpnNativeProfile.AppTriggers");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Networking.Vpn.VpnRoutingPolicyType RoutingPolicyType
+		public global::Windows.Networking.Vpn.VpnManagementConnectionStatus ConnectionStatus
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VpnRoutingPolicyType VpnNativeProfile.RoutingPolicyType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnRoutingPolicyType%20VpnNativeProfile.RoutingPolicyType");
+				throw new global::System.NotImplementedException("The member VpnManagementConnectionStatus VpnNativeProfile.ConnectionStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnManagementConnectionStatus%20VpnNativeProfile.ConnectionStatus");
 			}
-			set
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IList<global::Windows.Networking.Vpn.VpnDomainNameInfo> DomainNameInfoList
+		{
+			get
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnNativeProfile", "VpnRoutingPolicyType VpnNativeProfile.RoutingPolicyType");
+				throw new global::System.NotImplementedException("The member IList<VpnDomainNameInfo> VpnNativeProfile.DomainNameInfoList is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CVpnDomainNameInfo%3E%20VpnNativeProfile.DomainNameInfoList");
 			}
 		}
 #endif
@@ -80,40 +82,6 @@ namespace Windows.Networking.Vpn
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<string> Servers
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<string> VpnNativeProfile.Servers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20VpnNativeProfile.Servers");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool RequireVpnClientAppUI
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool VpnNativeProfile.RequireVpnClientAppUI is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnNativeProfile.RequireVpnClientAppUI");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnNativeProfile", "bool VpnNativeProfile.RequireVpnClientAppUI");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Networking.Vpn.VpnManagementConnectionStatus ConnectionStatus
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member VpnManagementConnectionStatus VpnNativeProfile.ConnectionStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnManagementConnectionStatus%20VpnNativeProfile.ConnectionStatus");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string ProfileName
 		{
 			get
@@ -142,15 +110,15 @@ namespace Windows.Networking.Vpn
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AlwaysOn
+		public bool RequireVpnClientAppUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnNativeProfile.AlwaysOn is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnNativeProfile.AlwaysOn");
+				throw new global::System.NotImplementedException("The member bool VpnNativeProfile.RequireVpnClientAppUI is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnNativeProfile.RequireVpnClientAppUI");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnNativeProfile", "bool VpnNativeProfile.AlwaysOn");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnNativeProfile", "bool VpnNativeProfile.RequireVpnClientAppUI");
 			}
 		}
 #endif
@@ -166,11 +134,25 @@ namespace Windows.Networking.Vpn
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.Networking.Vpn.VpnAppId> AppTriggers
+		public global::Windows.Networking.Vpn.VpnRoutingPolicyType RoutingPolicyType
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<VpnAppId> VpnNativeProfile.AppTriggers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CVpnAppId%3E%20VpnNativeProfile.AppTriggers");
+				throw new global::System.NotImplementedException("The member VpnRoutingPolicyType VpnNativeProfile.RoutingPolicyType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnRoutingPolicyType%20VpnNativeProfile.RoutingPolicyType");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnNativeProfile", "VpnRoutingPolicyType VpnNativeProfile.RoutingPolicyType");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IList<string> Servers
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IList<string> VpnNativeProfile.Servers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20VpnNativeProfile.Servers");
 			}
 		}
 #endif
@@ -186,11 +168,29 @@ namespace Windows.Networking.Vpn
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.Networking.Vpn.VpnDomainNameInfo> DomainNameInfoList
+		public global::Windows.Networking.Vpn.VpnAuthenticationMethod TunnelAuthenticationMethod
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<VpnDomainNameInfo> VpnNativeProfile.DomainNameInfoList is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CVpnDomainNameInfo%3E%20VpnNativeProfile.DomainNameInfoList");
+				throw new global::System.NotImplementedException("The member VpnAuthenticationMethod VpnNativeProfile.TunnelAuthenticationMethod is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnAuthenticationMethod%20VpnNativeProfile.TunnelAuthenticationMethod");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnNativeProfile", "VpnAuthenticationMethod VpnNativeProfile.TunnelAuthenticationMethod");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Networking.Vpn.VpnAuthenticationMethod UserAuthenticationMethod
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member VpnAuthenticationMethod VpnNativeProfile.UserAuthenticationMethod is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnAuthenticationMethod%20VpnNativeProfile.UserAuthenticationMethod");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnNativeProfile", "VpnAuthenticationMethod VpnNativeProfile.UserAuthenticationMethod");
 			}
 		}
 #endif
@@ -202,30 +202,41 @@ namespace Windows.Networking.Vpn
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.VpnNativeProfile()
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.Servers.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.RoutingPolicyType.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.RoutingPolicyType.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.NativeProtocolType.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.NativeProtocolType.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.UserAuthenticationMethod.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.UserAuthenticationMethod.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.TunnelAuthenticationMethod.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.TunnelAuthenticationMethod.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.EapConfiguration.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.EapConfiguration.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.ProfileName.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.ProfileName.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.AppTriggers.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.Routes.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.DomainNameInfoList.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.TrafficFilters.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.RememberCredentials.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.RememberCredentials.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.operator ==(Windows.Networking.Vpn.VpnNativeProfile, Windows.Networking.Vpn.VpnNativeProfile)
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.operator !=(Windows.Networking.Vpn.VpnNativeProfile, Windows.Networking.Vpn.VpnNativeProfile)
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.Equals(Windows.Networking.Vpn.VpnNativeProfile)
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.Equals(object)
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.GetHashCode()
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.AlwaysOn.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.AlwaysOn.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.AppTriggers.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.ConnectionStatus.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.DomainNameInfoList.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.EapConfiguration.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.EapConfiguration.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.NativeProtocolType.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.NativeProtocolType.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.ProfileName.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.ProfileName.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.RememberCredentials.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.RememberCredentials.set
 		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.RequireVpnClientAppUI.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.RequireVpnClientAppUI.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.ConnectionStatus.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.Routes.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.RoutingPolicyType.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.RoutingPolicyType.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.Servers.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.TrafficFilters.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.TunnelAuthenticationMethod.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.TunnelAuthenticationMethod.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.UserAuthenticationMethod.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.UserAuthenticationMethod.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Networking.Vpn.IVpnProfile
 	}
 }

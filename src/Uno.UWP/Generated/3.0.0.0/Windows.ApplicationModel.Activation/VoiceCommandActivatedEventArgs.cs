@@ -35,6 +35,16 @@ namespace Windows.ApplicationModel.Activation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.SpeechRecognition.SpeechRecognitionResult Result
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SpeechRecognitionResult VoiceCommandActivatedEventArgs.Result is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechRecognitionResult%20VoiceCommandActivatedEventArgs.Result");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.SplashScreen SplashScreen
 		{
 			get
@@ -53,21 +63,22 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.SpeechRecognition.SpeechRecognitionResult Result
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SpeechRecognitionResult VoiceCommandActivatedEventArgs.Result is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechRecognitionResult%20VoiceCommandActivatedEventArgs.Result");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.VoiceCommandActivatedEventArgs.Result.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.VoiceCommandActivatedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Activation.VoiceCommandActivatedEventArgs.operator ==(Windows.ApplicationModel.Activation.VoiceCommandActivatedEventArgs, Windows.ApplicationModel.Activation.VoiceCommandActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.VoiceCommandActivatedEventArgs.operator !=(Windows.ApplicationModel.Activation.VoiceCommandActivatedEventArgs, Windows.ApplicationModel.Activation.VoiceCommandActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.VoiceCommandActivatedEventArgs.Equals(Windows.ApplicationModel.Activation.VoiceCommandActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.VoiceCommandActivatedEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Activation.VoiceCommandActivatedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Activation.VoiceCommandActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.VoiceCommandActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.VoiceCommandActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.VoiceCommandActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.VoiceCommandActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.VoiceCommandActivatedEventArgs.PreviousExecutionState.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.VoiceCommandActivatedEventArgs.Result.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.VoiceCommandActivatedEventArgs.SplashScreen.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.VoiceCommandActivatedEventArgs.User.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.VoiceCommandActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IVoiceCommandActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgsWithUser

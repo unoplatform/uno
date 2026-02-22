@@ -8,14 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class MediaPlayerElement : global::Microsoft.UI.Xaml.Controls.Control
 	{
-		// Skipping already declared property TransportControls
-		// Skipping already declared property Stretch
-		// Skipping already declared property Source
-		// Skipping already declared property PosterSource
-		// Skipping already declared property IsFullWindow
-		// Skipping already declared property AutoPlay
-		// Skipping already declared property AreTransportControlsEnabled
-		// Skipping already declared property MediaPlayer
 		// Skipping already declared property AreTransportControlsEnabledProperty
 		// Skipping already declared property AutoPlayProperty
 		// Skipping already declared property IsFullWindowProperty
@@ -23,30 +15,51 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property PosterSourceProperty
 		// Skipping already declared property SourceProperty
 		// Skipping already declared property StretchProperty
+		// Skipping already declared property AreTransportControlsEnabled
+		// Skipping already declared property AutoPlay
+		// Skipping already declared property IsFullWindow
+		// Skipping already declared property MediaPlayer
+		// Skipping already declared property PosterSource
+		// Skipping already declared property Source
+		// Skipping already declared property Stretch
+		// Skipping already declared property TransportControls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.MediaPlayerElement.MediaPlayerElement()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.MediaPlayerElement()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.Source.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.Source.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.TransportControls.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.TransportControls.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.AreTransportControlsEnabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.AutoPlayProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.IsFullWindowProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.MediaPlayerProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.PosterSourceProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.SourceProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.StretchProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.MediaPlayerElement(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.operator ==(Microsoft.UI.Xaml.Controls.MediaPlayerElement, Microsoft.UI.Xaml.Controls.MediaPlayerElement)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.operator !=(Microsoft.UI.Xaml.Controls.MediaPlayerElement, Microsoft.UI.Xaml.Controls.MediaPlayerElement)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.Equals(Microsoft.UI.Xaml.Controls.MediaPlayerElement)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.MediaPlayerElement(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.WinRT.IWinRTObject.NativeObject.get
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.MediaPlayerElement.SetMediaPlayer(Windows.Media.Playback.MediaPlayer)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.AreTransportControlsEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.AreTransportControlsEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.PosterSource.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.PosterSource.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.Stretch.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.Stretch.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.AutoPlay.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.AutoPlay.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.IsFullWindow.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.IsFullWindow.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.MediaPlayer.get
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.MediaPlayerElement.SetMediaPlayer(Windows.Media.Playback.MediaPlayer)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.SourceProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.AreTransportControlsEnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.PosterSourceProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.StretchProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.AutoPlayProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.IsFullWindowProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.MediaPlayerProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.PosterSource.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.PosterSource.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.Source.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.Source.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.Stretch.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.Stretch.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.TransportControls.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.TransportControls.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerElement.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

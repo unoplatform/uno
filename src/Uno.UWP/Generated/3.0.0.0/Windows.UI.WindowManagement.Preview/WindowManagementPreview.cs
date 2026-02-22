@@ -13,6 +13,7 @@ namespace Windows.UI.WindowManagement.Preview
 		{
 		}
 #endif
+		// Forced skipping of method Windows.UI.WindowManagement.Preview.WindowManagementPreview.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void SetPreferredMinSize(global::Windows.UI.WindowManagement.AppWindow window, global::Windows.Foundation.Size preferredFrameMinSize)
@@ -20,5 +21,16 @@ namespace Windows.UI.WindowManagement.Preview
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WindowManagement.Preview.WindowManagementPreview", "void WindowManagementPreview.SetPreferredMinSize(AppWindow window, Size preferredFrameMinSize)");
 		}
 #endif
+		// Forced skipping of method Windows.UI.WindowManagement.Preview.WindowManagementPreview.FromAbi(nint)
+		// Forced skipping of method Windows.UI.WindowManagement.Preview.WindowManagementPreview.operator ==(Windows.UI.WindowManagement.Preview.WindowManagementPreview, Windows.UI.WindowManagement.Preview.WindowManagementPreview)
+		// Forced skipping of method Windows.UI.WindowManagement.Preview.WindowManagementPreview.operator !=(Windows.UI.WindowManagement.Preview.WindowManagementPreview, Windows.UI.WindowManagement.Preview.WindowManagementPreview)
+		// Forced skipping of method Windows.UI.WindowManagement.Preview.WindowManagementPreview.Equals(Windows.UI.WindowManagement.Preview.WindowManagementPreview)
+		// Forced skipping of method Windows.UI.WindowManagement.Preview.WindowManagementPreview.Equals(object)
+		// Forced skipping of method Windows.UI.WindowManagement.Preview.WindowManagementPreview.GetHashCode()
+		// Forced skipping of method Windows.UI.WindowManagement.Preview.WindowManagementPreview.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.WindowManagement.Preview.WindowManagementPreview.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.WindowManagement.Preview.WindowManagementPreview.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.WindowManagement.Preview.WindowManagementPreview.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.UI.WindowManagement.Preview.WindowManagementPreview.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

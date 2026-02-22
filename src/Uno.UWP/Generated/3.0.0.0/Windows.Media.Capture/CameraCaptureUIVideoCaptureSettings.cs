@@ -10,18 +10,19 @@ namespace Windows.Media.Capture
 	{
 #if false || false || __TVOS__ || false || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Capture.CameraCaptureUIMaxVideoResolution MaxResolution
+		public bool AllowTrimming
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CameraCaptureUIMaxVideoResolution CameraCaptureUIVideoCaptureSettings.MaxResolution is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CameraCaptureUIMaxVideoResolution%20CameraCaptureUIVideoCaptureSettings.MaxResolution");
+				throw new global::System.NotImplementedException("The member bool CameraCaptureUIVideoCaptureSettings.AllowTrimming is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CameraCaptureUIVideoCaptureSettings.AllowTrimming");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings", "CameraCaptureUIMaxVideoResolution CameraCaptureUIVideoCaptureSettings.MaxResolution");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings", "bool CameraCaptureUIVideoCaptureSettings.AllowTrimming");
 			}
 		}
 #endif
+		// Skipping already declared property Format
 #if false || false || __TVOS__ || false || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public float MaxDurationInSeconds
@@ -36,28 +37,38 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Skipping already declared property Format
 #if false || false || __TVOS__ || false || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AllowTrimming
+		public global::Windows.Media.Capture.CameraCaptureUIMaxVideoResolution MaxResolution
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CameraCaptureUIVideoCaptureSettings.AllowTrimming is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CameraCaptureUIVideoCaptureSettings.AllowTrimming");
+				throw new global::System.NotImplementedException("The member CameraCaptureUIMaxVideoResolution CameraCaptureUIVideoCaptureSettings.MaxResolution is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CameraCaptureUIMaxVideoResolution%20CameraCaptureUIVideoCaptureSettings.MaxResolution");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings", "bool CameraCaptureUIVideoCaptureSettings.AllowTrimming");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings", "CameraCaptureUIMaxVideoResolution CameraCaptureUIVideoCaptureSettings.MaxResolution");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.Format.get
-		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.Format.set
-		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.MaxResolution.get
-		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.MaxResolution.set
-		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.MaxDurationInSeconds.get
-		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.MaxDurationInSeconds.set
+		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.operator ==(Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings, Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings)
+		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.operator !=(Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings, Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings)
+		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.Equals(Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings)
+		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.Equals(object)
+		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.GetHashCode()
+		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.AllowTrimming.get
 		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.AllowTrimming.set
+		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.Format.get
+		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.Format.set
+		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.MaxDurationInSeconds.get
+		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.MaxDurationInSeconds.set
+		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.MaxResolution.get
+		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.MaxResolution.set
+		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,7 +10,19 @@ namespace Microsoft.UI.Xaml.Automation
 	{
 		// Skipping already declared property IsReadOnlyProperty
 		// Skipping already declared property ValueProperty
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ValuePatternIdentifiers.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.ValuePatternIdentifiers.IsReadOnlyProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.ValuePatternIdentifiers.ValueProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ValuePatternIdentifiers.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ValuePatternIdentifiers.operator ==(Microsoft.UI.Xaml.Automation.ValuePatternIdentifiers, Microsoft.UI.Xaml.Automation.ValuePatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ValuePatternIdentifiers.operator !=(Microsoft.UI.Xaml.Automation.ValuePatternIdentifiers, Microsoft.UI.Xaml.Automation.ValuePatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ValuePatternIdentifiers.Equals(Microsoft.UI.Xaml.Automation.ValuePatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ValuePatternIdentifiers.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ValuePatternIdentifiers.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ValuePatternIdentifiers.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ValuePatternIdentifiers.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ValuePatternIdentifiers.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ValuePatternIdentifiers.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ValuePatternIdentifiers.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

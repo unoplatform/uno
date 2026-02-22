@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer.PersonPictureAutomationPeer(Microsoft.UI.Xaml.Controls.PersonPicture)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer.PersonPictureAutomationPeer(Microsoft.UI.Xaml.Controls.PersonPicture)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer.PersonPictureAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer.PersonPictureAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

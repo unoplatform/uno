@@ -25,6 +25,16 @@ namespace Windows.Services.Maps
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan DurationWithoutTraffic
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan MapRouteLeg.DurationWithoutTraffic is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MapRouteLeg.DurationWithoutTraffic");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.TimeSpan EstimatedDuration
 		{
 			get
@@ -65,16 +75,6 @@ namespace Windows.Services.Maps
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan DurationWithoutTraffic
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan MapRouteLeg.DurationWithoutTraffic is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MapRouteLeg.DurationWithoutTraffic");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Services.Maps.TrafficCongestion TrafficCongestion
 		{
 			get
@@ -83,12 +83,23 @@ namespace Windows.Services.Maps
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.FromAbi(nint)
+		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.operator ==(Windows.Services.Maps.MapRouteLeg, Windows.Services.Maps.MapRouteLeg)
+		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.operator !=(Windows.Services.Maps.MapRouteLeg, Windows.Services.Maps.MapRouteLeg)
+		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.Equals(Windows.Services.Maps.MapRouteLeg)
+		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.Equals(object)
+		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.GetHashCode()
+		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.BoundingBox.get
-		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.Path.get
-		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.LengthInMeters.get
-		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.EstimatedDuration.get
-		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.Maneuvers.get
 		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.DurationWithoutTraffic.get
+		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.EstimatedDuration.get
+		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.LengthInMeters.get
+		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.Maneuvers.get
+		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.Path.get
 		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.TrafficCongestion.get
+		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

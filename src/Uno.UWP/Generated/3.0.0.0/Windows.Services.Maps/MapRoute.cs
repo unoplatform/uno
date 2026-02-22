@@ -25,11 +25,41 @@ namespace Windows.Services.Maps
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan DurationWithoutTraffic
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan MapRoute.DurationWithoutTraffic is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MapRoute.DurationWithoutTraffic");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.TimeSpan EstimatedDuration
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member TimeSpan MapRoute.EstimatedDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MapRoute.EstimatedDuration");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool HasBlockedRoads
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool MapRoute.HasBlockedRoads is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MapRoute.HasBlockedRoads");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsScenic
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool MapRoute.IsScenic is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MapRoute.IsScenic");
 			}
 		}
 #endif
@@ -75,11 +105,11 @@ namespace Windows.Services.Maps
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool HasBlockedRoads
+		public global::Windows.Services.Maps.TrafficCongestion TrafficCongestion
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MapRoute.HasBlockedRoads is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MapRoute.HasBlockedRoads");
+				throw new global::System.NotImplementedException("The member TrafficCongestion MapRoute.TrafficCongestion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TrafficCongestion%20MapRoute.TrafficCongestion");
 			}
 		}
 #endif
@@ -93,46 +123,27 @@ namespace Windows.Services.Maps
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan DurationWithoutTraffic
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan MapRoute.DurationWithoutTraffic is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MapRoute.DurationWithoutTraffic");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Services.Maps.TrafficCongestion TrafficCongestion
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TrafficCongestion MapRoute.TrafficCongestion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TrafficCongestion%20MapRoute.TrafficCongestion");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsScenic
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool MapRoute.IsScenic is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MapRoute.IsScenic");
-			}
-		}
-#endif
+		// Forced skipping of method Windows.Services.Maps.MapRoute.FromAbi(nint)
+		// Forced skipping of method Windows.Services.Maps.MapRoute.operator ==(Windows.Services.Maps.MapRoute, Windows.Services.Maps.MapRoute)
+		// Forced skipping of method Windows.Services.Maps.MapRoute.operator !=(Windows.Services.Maps.MapRoute, Windows.Services.Maps.MapRoute)
+		// Forced skipping of method Windows.Services.Maps.MapRoute.Equals(Windows.Services.Maps.MapRoute)
+		// Forced skipping of method Windows.Services.Maps.MapRoute.Equals(object)
+		// Forced skipping of method Windows.Services.Maps.MapRoute.GetHashCode()
+		// Forced skipping of method Windows.Services.Maps.MapRoute.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Services.Maps.MapRoute.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Services.Maps.MapRoute.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Services.Maps.MapRoute.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Maps.MapRoute.BoundingBox.get
-		// Forced skipping of method Windows.Services.Maps.MapRoute.LengthInMeters.get
-		// Forced skipping of method Windows.Services.Maps.MapRoute.EstimatedDuration.get
-		// Forced skipping of method Windows.Services.Maps.MapRoute.Path.get
-		// Forced skipping of method Windows.Services.Maps.MapRoute.Legs.get
-		// Forced skipping of method Windows.Services.Maps.MapRoute.IsTrafficBased.get
-		// Forced skipping of method Windows.Services.Maps.MapRoute.ViolatedRestrictions.get
-		// Forced skipping of method Windows.Services.Maps.MapRoute.HasBlockedRoads.get
 		// Forced skipping of method Windows.Services.Maps.MapRoute.DurationWithoutTraffic.get
-		// Forced skipping of method Windows.Services.Maps.MapRoute.TrafficCongestion.get
+		// Forced skipping of method Windows.Services.Maps.MapRoute.EstimatedDuration.get
+		// Forced skipping of method Windows.Services.Maps.MapRoute.HasBlockedRoads.get
 		// Forced skipping of method Windows.Services.Maps.MapRoute.IsScenic.get
+		// Forced skipping of method Windows.Services.Maps.MapRoute.IsTrafficBased.get
+		// Forced skipping of method Windows.Services.Maps.MapRoute.Legs.get
+		// Forced skipping of method Windows.Services.Maps.MapRoute.LengthInMeters.get
+		// Forced skipping of method Windows.Services.Maps.MapRoute.Path.get
+		// Forced skipping of method Windows.Services.Maps.MapRoute.TrafficCongestion.get
+		// Forced skipping of method Windows.Services.Maps.MapRoute.ViolatedRestrictions.get
+		// Forced skipping of method Windows.Services.Maps.MapRoute.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

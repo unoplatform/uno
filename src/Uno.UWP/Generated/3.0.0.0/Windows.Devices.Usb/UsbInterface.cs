@@ -83,12 +83,23 @@ namespace Windows.Devices.Usb
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Usb.UsbInterface.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Usb.UsbInterface.operator ==(Windows.Devices.Usb.UsbInterface, Windows.Devices.Usb.UsbInterface)
+		// Forced skipping of method Windows.Devices.Usb.UsbInterface.operator !=(Windows.Devices.Usb.UsbInterface, Windows.Devices.Usb.UsbInterface)
+		// Forced skipping of method Windows.Devices.Usb.UsbInterface.Equals(Windows.Devices.Usb.UsbInterface)
+		// Forced skipping of method Windows.Devices.Usb.UsbInterface.Equals(object)
+		// Forced skipping of method Windows.Devices.Usb.UsbInterface.GetHashCode()
+		// Forced skipping of method Windows.Devices.Usb.UsbInterface.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterface.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterface.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterface.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Usb.UsbInterface.BulkInPipes.get
-		// Forced skipping of method Windows.Devices.Usb.UsbInterface.InterruptInPipes.get
 		// Forced skipping of method Windows.Devices.Usb.UsbInterface.BulkOutPipes.get
-		// Forced skipping of method Windows.Devices.Usb.UsbInterface.InterruptOutPipes.get
-		// Forced skipping of method Windows.Devices.Usb.UsbInterface.InterfaceSettings.get
-		// Forced skipping of method Windows.Devices.Usb.UsbInterface.InterfaceNumber.get
 		// Forced skipping of method Windows.Devices.Usb.UsbInterface.Descriptors.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterface.InterfaceNumber.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterface.InterfaceSettings.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterface.InterruptInPipes.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterface.InterruptOutPipes.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterface.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

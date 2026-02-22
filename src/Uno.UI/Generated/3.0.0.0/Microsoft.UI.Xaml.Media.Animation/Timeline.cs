@@ -10,38 +10,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double SpeedRatio
-		{
-			get
-			{
-				return (double)this.GetValue(SpeedRatioProperty);
-			}
-			set
-			{
-				this.SetValue(SpeedRatioProperty, value);
-			}
-		}
-#endif
-		// Skipping already declared property RepeatBehavior
-		// Skipping already declared property FillBehavior
-		// Skipping already declared property Duration
-		// Skipping already declared property BeginTime
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AutoReverse
-		{
-			get
-			{
-				return (bool)this.GetValue(AutoReverseProperty);
-			}
-			set
-			{
-				this.SetValue(AutoReverseProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool AllowDependentAnimations
 		{
 			get
@@ -74,30 +42,75 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			typeof(global::Microsoft.UI.Xaml.Media.Animation.Timeline),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool AutoReverse
+		{
+			get
+			{
+				return (bool)this.GetValue(AutoReverseProperty);
+			}
+			set
+			{
+				this.SetValue(AutoReverseProperty, value);
+			}
+		}
+#endif
+		// Skipping already declared property BeginTime
+		// Skipping already declared property Duration
+		// Skipping already declared property FillBehavior
+		// Skipping already declared property RepeatBehavior
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double SpeedRatio
+		{
+			get
+			{
+				return (double)this.GetValue(SpeedRatioProperty);
+			}
+			set
+			{
+				this.SetValue(SpeedRatioProperty, value);
+			}
+		}
+#endif
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.Timeline.Timeline()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.Timeline()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.AllowDependentAnimations.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.AllowDependentAnimations.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.AutoReverseProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.BeginTimeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.DurationProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.FillBehaviorProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.RepeatBehaviorProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.SpeedRatioProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.Timeline(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.operator ==(Microsoft.UI.Xaml.Media.Animation.Timeline, Microsoft.UI.Xaml.Media.Animation.Timeline)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.operator !=(Microsoft.UI.Xaml.Media.Animation.Timeline, Microsoft.UI.Xaml.Media.Animation.Timeline)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.Equals(Microsoft.UI.Xaml.Media.Animation.Timeline)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.Timeline(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.Completed.add
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.Completed.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.AutoReverse.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.AutoReverse.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.BeginTime.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.BeginTime.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.Duration.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.Duration.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.SpeedRatio.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.SpeedRatio.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.FillBehavior.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.FillBehavior.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.RepeatBehavior.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.RepeatBehavior.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.Completed.add
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.Completed.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.AllowDependentAnimations.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.AllowDependentAnimations.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.AutoReverseProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.BeginTimeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.DurationProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.SpeedRatioProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.FillBehaviorProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.RepeatBehaviorProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.SpeedRatio.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.SpeedRatio.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Timeline.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Media.Animation.Timeline.Completed
 	}
 }

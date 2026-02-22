@@ -8,17 +8,23 @@ namespace Windows.Devices.Sensors
 #endif
 	public partial class Compass
 	{
-#if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint ReportInterval
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string DeviceId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Compass.ReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Compass.ReportInterval");
+				throw new global::System.NotImplementedException("The member string Compass.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Compass.DeviceId");
 			}
-			set
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint MaxBatchSize
+		{
+			get
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Compass", "uint Compass.ReportInterval");
+				throw new global::System.NotImplementedException("The member uint Compass.MaxBatchSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Compass.MaxBatchSize");
 			}
 		}
 #endif
@@ -46,6 +52,20 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
+#if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint ReportInterval
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint Compass.ReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Compass.ReportInterval");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Compass", "uint Compass.ReportInterval");
+			}
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint ReportLatency
@@ -62,16 +82,6 @@ namespace Windows.Devices.Sensors
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint MaxBatchSize
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint Compass.MaxBatchSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Compass.MaxBatchSize");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Sensors.CompassDataThreshold ReportThreshold
 		{
 			get
@@ -80,35 +90,8 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DeviceId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string Compass.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Compass.DeviceId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Sensors.CompassReading GetCurrentReading()
-		{
-			throw new global::System.NotImplementedException("The member CompassReading Compass.GetCurrentReading() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompassReading%20Compass.GetCurrentReading%28%29");
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Sensors.Compass.MinimumReportInterval.get
-		// Forced skipping of method Windows.Devices.Sensors.Compass.ReportInterval.set
-		// Forced skipping of method Windows.Devices.Sensors.Compass.ReportInterval.get
-		// Forced skipping of method Windows.Devices.Sensors.Compass.ReadingChanged.add
-		// Forced skipping of method Windows.Devices.Sensors.Compass.ReadingChanged.remove
-		// Forced skipping of method Windows.Devices.Sensors.Compass.DeviceId.get
-		// Forced skipping of method Windows.Devices.Sensors.Compass.ReadingTransform.set
-		// Forced skipping of method Windows.Devices.Sensors.Compass.ReadingTransform.get
-		// Forced skipping of method Windows.Devices.Sensors.Compass.ReportLatency.set
-		// Forced skipping of method Windows.Devices.Sensors.Compass.ReportLatency.get
-		// Forced skipping of method Windows.Devices.Sensors.Compass.MaxBatchSize.get
-		// Forced skipping of method Windows.Devices.Sensors.Compass.ReportThreshold.get
+		// Forced skipping of method Windows.Devices.Sensors.Compass.As<I>()
+		// Skipping already declared method Windows.Devices.Sensors.Compass.GetDefault()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
@@ -123,7 +106,36 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Compass> Compass.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCompass%3E%20Compass.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
-		// Skipping already declared method Windows.Devices.Sensors.Compass.GetDefault()
+		// Forced skipping of method Windows.Devices.Sensors.Compass.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Sensors.Compass.operator ==(Windows.Devices.Sensors.Compass, Windows.Devices.Sensors.Compass)
+		// Forced skipping of method Windows.Devices.Sensors.Compass.operator !=(Windows.Devices.Sensors.Compass, Windows.Devices.Sensors.Compass)
+		// Forced skipping of method Windows.Devices.Sensors.Compass.Equals(Windows.Devices.Sensors.Compass)
+		// Forced skipping of method Windows.Devices.Sensors.Compass.Equals(object)
+		// Forced skipping of method Windows.Devices.Sensors.Compass.GetHashCode()
+		// Forced skipping of method Windows.Devices.Sensors.Compass.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.Compass.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.Compass.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Sensors.Compass.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Sensors.CompassReading GetCurrentReading()
+		{
+			throw new global::System.NotImplementedException("The member CompassReading Compass.GetCurrentReading() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompassReading%20Compass.GetCurrentReading%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Sensors.Compass.ReadingChanged.add
+		// Forced skipping of method Windows.Devices.Sensors.Compass.ReadingChanged.remove
+		// Forced skipping of method Windows.Devices.Sensors.Compass.DeviceId.get
+		// Forced skipping of method Windows.Devices.Sensors.Compass.MaxBatchSize.get
+		// Forced skipping of method Windows.Devices.Sensors.Compass.MinimumReportInterval.get
+		// Forced skipping of method Windows.Devices.Sensors.Compass.ReadingTransform.get
+		// Forced skipping of method Windows.Devices.Sensors.Compass.ReadingTransform.set
+		// Forced skipping of method Windows.Devices.Sensors.Compass.ReportInterval.get
+		// Forced skipping of method Windows.Devices.Sensors.Compass.ReportInterval.set
+		// Forced skipping of method Windows.Devices.Sensors.Compass.ReportLatency.get
+		// Forced skipping of method Windows.Devices.Sensors.Compass.ReportLatency.set
+		// Forced skipping of method Windows.Devices.Sensors.Compass.ReportThreshold.get
+		// Forced skipping of method Windows.Devices.Sensors.Compass.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Sensors.Compass, global::Windows.Devices.Sensors.CompassReadingChangedEventArgs> ReadingChanged

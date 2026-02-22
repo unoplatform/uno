@@ -8,10 +8,17 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionShadow : global::Microsoft.UI.Composition.CompositionObject
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal CompositionShadow()
-		{
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShadow.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShadow.CompositionShadow(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShadow.operator ==(Microsoft.UI.Composition.CompositionShadow, Microsoft.UI.Composition.CompositionShadow)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShadow.operator !=(Microsoft.UI.Composition.CompositionShadow, Microsoft.UI.Composition.CompositionShadow)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShadow.Equals(Microsoft.UI.Composition.CompositionShadow)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShadow.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShadow.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShadow.CompositionShadow(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShadow.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShadow.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShadow.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionShadow.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

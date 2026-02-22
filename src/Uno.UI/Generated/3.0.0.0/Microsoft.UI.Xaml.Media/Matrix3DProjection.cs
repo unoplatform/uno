@@ -11,6 +11,14 @@ namespace Microsoft.UI.Xaml.Media
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty ProjectionMatrixProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(ProjectionMatrix), typeof(global::Microsoft.UI.Xaml.Media.Media3D.Matrix3D),
+			typeof(global::Microsoft.UI.Xaml.Media.Matrix3DProjection),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Media3D.Matrix3D)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Media.Media3D.Matrix3D ProjectionMatrix
 		{
 			get
@@ -25,22 +33,25 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ProjectionMatrixProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(ProjectionMatrix), typeof(global::Microsoft.UI.Xaml.Media.Media3D.Matrix3D),
-			typeof(global::Microsoft.UI.Xaml.Media.Matrix3DProjection),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Media3D.Matrix3D)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public Matrix3DProjection() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Matrix3DProjection", "Matrix3DProjection.Matrix3DProjection()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.Matrix3DProjection()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.ProjectionMatrixProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.operator ==(Microsoft.UI.Xaml.Media.Matrix3DProjection, Microsoft.UI.Xaml.Media.Matrix3DProjection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.operator !=(Microsoft.UI.Xaml.Media.Matrix3DProjection, Microsoft.UI.Xaml.Media.Matrix3DProjection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.Equals(Microsoft.UI.Xaml.Media.Matrix3DProjection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.ProjectionMatrix.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.ProjectionMatrix.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.ProjectionMatrixProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

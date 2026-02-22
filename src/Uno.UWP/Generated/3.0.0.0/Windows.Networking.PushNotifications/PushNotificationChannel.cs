@@ -33,8 +33,16 @@ namespace Windows.Networking.PushNotifications
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannel.Uri.get
-		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannel.ExpirationTime.get
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannel.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannel.operator ==(Windows.Networking.PushNotifications.PushNotificationChannel, Windows.Networking.PushNotifications.PushNotificationChannel)
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannel.operator !=(Windows.Networking.PushNotifications.PushNotificationChannel, Windows.Networking.PushNotifications.PushNotificationChannel)
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannel.Equals(Windows.Networking.PushNotifications.PushNotificationChannel)
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannel.Equals(object)
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannel.GetHashCode()
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannel.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannel.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannel.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Close()
@@ -44,6 +52,9 @@ namespace Windows.Networking.PushNotifications
 #endif
 		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannel.PushNotificationReceived.add
 		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannel.PushNotificationReceived.remove
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannel.ExpirationTime.get
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannel.Uri.get
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannel.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.PushNotifications.PushNotificationChannel, global::Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs> PushNotificationReceived

@@ -13,5 +13,16 @@ namespace Windows.Media.Control
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Media.Control.SessionsChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Control.SessionsChangedEventArgs.operator ==(Windows.Media.Control.SessionsChangedEventArgs, Windows.Media.Control.SessionsChangedEventArgs)
+		// Forced skipping of method Windows.Media.Control.SessionsChangedEventArgs.operator !=(Windows.Media.Control.SessionsChangedEventArgs, Windows.Media.Control.SessionsChangedEventArgs)
+		// Forced skipping of method Windows.Media.Control.SessionsChangedEventArgs.Equals(Windows.Media.Control.SessionsChangedEventArgs)
+		// Forced skipping of method Windows.Media.Control.SessionsChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.Control.SessionsChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.Control.SessionsChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Control.SessionsChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Control.SessionsChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Control.SessionsChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Media.Control.SessionsChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

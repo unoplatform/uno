@@ -8,9 +8,20 @@ namespace Windows.Storage.Streams
 #endif
 	public partial class OutputStreamOverStream : global::Windows.Storage.Streams.IOutputStream, global::System.IDisposable
 	{
+		// Forced skipping of method Windows.Storage.Streams.OutputStreamOverStream.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.Streams.OutputStreamOverStream.operator ==(Windows.Storage.Streams.OutputStreamOverStream, Windows.Storage.Streams.OutputStreamOverStream)
+		// Forced skipping of method Windows.Storage.Streams.OutputStreamOverStream.operator !=(Windows.Storage.Streams.OutputStreamOverStream, Windows.Storage.Streams.OutputStreamOverStream)
+		// Forced skipping of method Windows.Storage.Streams.OutputStreamOverStream.Equals(Windows.Storage.Streams.OutputStreamOverStream)
+		// Forced skipping of method Windows.Storage.Streams.OutputStreamOverStream.Equals(object)
+		// Forced skipping of method Windows.Storage.Streams.OutputStreamOverStream.GetHashCode()
+		// Forced skipping of method Windows.Storage.Streams.OutputStreamOverStream.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.Streams.OutputStreamOverStream.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.Streams.OutputStreamOverStream.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.Streams.OutputStreamOverStream.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.Storage.Streams.OutputStreamOverStream.WriteAsync(Windows.Storage.Streams.IBuffer)
 		// Skipping already declared method Windows.Storage.Streams.OutputStreamOverStream.FlushAsync()
 		// Skipping already declared method Windows.Storage.Streams.OutputStreamOverStream.Dispose()
+		// Forced skipping of method Windows.Storage.Streams.OutputStreamOverStream.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Storage.Streams.IOutputStream
 		// Processing: System.IDisposable
 	}

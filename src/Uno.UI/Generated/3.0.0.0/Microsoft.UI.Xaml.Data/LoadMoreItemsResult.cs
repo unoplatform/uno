@@ -9,6 +9,19 @@ namespace Microsoft.UI.Xaml.Data
 	public partial struct LoadMoreItemsResult
 	{
 		// Forced skipping of method Microsoft.UI.Xaml.Data.LoadMoreItemsResult.LoadMoreItemsResult()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public LoadMoreItemsResult(uint _Count)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Data.LoadMoreItemsResult", "LoadMoreItemsResult.LoadMoreItemsResult(uint _Count)");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Xaml.Data.LoadMoreItemsResult.LoadMoreItemsResult(uint)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.LoadMoreItemsResult.operator ==(Microsoft.UI.Xaml.Data.LoadMoreItemsResult, Microsoft.UI.Xaml.Data.LoadMoreItemsResult)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.LoadMoreItemsResult.operator !=(Microsoft.UI.Xaml.Data.LoadMoreItemsResult, Microsoft.UI.Xaml.Data.LoadMoreItemsResult)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.LoadMoreItemsResult.Equals(Microsoft.UI.Xaml.Data.LoadMoreItemsResult)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.LoadMoreItemsResult.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.LoadMoreItemsResult.GetHashCode()
 		// Skipping already declared field Microsoft.UI.Xaml.Data.LoadMoreItemsResult.Count
 	}
 }

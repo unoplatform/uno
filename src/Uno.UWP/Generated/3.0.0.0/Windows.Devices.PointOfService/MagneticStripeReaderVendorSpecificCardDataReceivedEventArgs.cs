@@ -23,6 +23,17 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderVendorSpecificCardDataReceivedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderVendorSpecificCardDataReceivedEventArgs.operator ==(Windows.Devices.PointOfService.MagneticStripeReaderVendorSpecificCardDataReceivedEventArgs, Windows.Devices.PointOfService.MagneticStripeReaderVendorSpecificCardDataReceivedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderVendorSpecificCardDataReceivedEventArgs.operator !=(Windows.Devices.PointOfService.MagneticStripeReaderVendorSpecificCardDataReceivedEventArgs, Windows.Devices.PointOfService.MagneticStripeReaderVendorSpecificCardDataReceivedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderVendorSpecificCardDataReceivedEventArgs.Equals(Windows.Devices.PointOfService.MagneticStripeReaderVendorSpecificCardDataReceivedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderVendorSpecificCardDataReceivedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderVendorSpecificCardDataReceivedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderVendorSpecificCardDataReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderVendorSpecificCardDataReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderVendorSpecificCardDataReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderVendorSpecificCardDataReceivedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderVendorSpecificCardDataReceivedEventArgs.Report.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderVendorSpecificCardDataReceivedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -9,6 +9,18 @@ namespace Microsoft.UI.Xaml.Automation
 	public partial class ExpandCollapsePatternIdentifiers
 	{
 		// Skipping already declared property ExpandCollapseStateProperty
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ExpandCollapsePatternIdentifiers.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.ExpandCollapsePatternIdentifiers.ExpandCollapseStateProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ExpandCollapsePatternIdentifiers.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ExpandCollapsePatternIdentifiers.operator ==(Microsoft.UI.Xaml.Automation.ExpandCollapsePatternIdentifiers, Microsoft.UI.Xaml.Automation.ExpandCollapsePatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ExpandCollapsePatternIdentifiers.operator !=(Microsoft.UI.Xaml.Automation.ExpandCollapsePatternIdentifiers, Microsoft.UI.Xaml.Automation.ExpandCollapsePatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ExpandCollapsePatternIdentifiers.Equals(Microsoft.UI.Xaml.Automation.ExpandCollapsePatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ExpandCollapsePatternIdentifiers.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ExpandCollapsePatternIdentifiers.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ExpandCollapsePatternIdentifiers.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ExpandCollapsePatternIdentifiers.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ExpandCollapsePatternIdentifiers.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ExpandCollapsePatternIdentifiers.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ExpandCollapsePatternIdentifiers.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

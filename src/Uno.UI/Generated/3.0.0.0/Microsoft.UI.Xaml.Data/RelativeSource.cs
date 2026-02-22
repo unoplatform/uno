@@ -11,7 +11,19 @@ namespace Microsoft.UI.Xaml.Data
 		// Skipping already declared property Mode
 		// Skipping already declared method Microsoft.UI.Xaml.Data.RelativeSource.RelativeSource()
 		// Forced skipping of method Microsoft.UI.Xaml.Data.RelativeSource.RelativeSource()
+		// Forced skipping of method Microsoft.UI.Xaml.Data.RelativeSource.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.RelativeSource.RelativeSource(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.RelativeSource.operator ==(Microsoft.UI.Xaml.Data.RelativeSource, Microsoft.UI.Xaml.Data.RelativeSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.RelativeSource.operator !=(Microsoft.UI.Xaml.Data.RelativeSource, Microsoft.UI.Xaml.Data.RelativeSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.RelativeSource.Equals(Microsoft.UI.Xaml.Data.RelativeSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.RelativeSource.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.RelativeSource.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Data.RelativeSource.RelativeSource(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.RelativeSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.RelativeSource.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.RelativeSource.Mode.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.RelativeSource.Mode.set
+		// Forced skipping of method Microsoft.UI.Xaml.Data.RelativeSource.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.RelativeSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

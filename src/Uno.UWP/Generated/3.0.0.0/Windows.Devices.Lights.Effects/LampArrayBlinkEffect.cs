@@ -10,85 +10,15 @@ namespace Windows.Devices.Lights.Effects
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan SustainDuration
+		public global::System.TimeSpan AttackDuration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBlinkEffect.SustainDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayBlinkEffect.SustainDuration");
+				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBlinkEffect.AttackDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayBlinkEffect.AttackDuration");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "TimeSpan LampArrayBlinkEffect.SustainDuration");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan StartDelay
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBlinkEffect.StartDelay is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayBlinkEffect.StartDelay");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "TimeSpan LampArrayBlinkEffect.StartDelay");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Lights.Effects.LampArrayRepetitionMode RepetitionMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member LampArrayRepetitionMode LampArrayBlinkEffect.RepetitionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LampArrayRepetitionMode%20LampArrayBlinkEffect.RepetitionMode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "LampArrayRepetitionMode LampArrayBlinkEffect.RepetitionMode");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan RepetitionDelay
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBlinkEffect.RepetitionDelay is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayBlinkEffect.RepetitionDelay");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "TimeSpan LampArrayBlinkEffect.RepetitionDelay");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Occurrences
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int LampArrayBlinkEffect.Occurrences is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20LampArrayBlinkEffect.Occurrences");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "int LampArrayBlinkEffect.Occurrences");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan DecayDuration
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBlinkEffect.DecayDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayBlinkEffect.DecayDuration");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "TimeSpan LampArrayBlinkEffect.DecayDuration");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "TimeSpan LampArrayBlinkEffect.AttackDuration");
 			}
 		}
 #endif
@@ -108,15 +38,85 @@ namespace Windows.Devices.Lights.Effects
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan AttackDuration
+		public global::System.TimeSpan DecayDuration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBlinkEffect.AttackDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayBlinkEffect.AttackDuration");
+				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBlinkEffect.DecayDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayBlinkEffect.DecayDuration");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "TimeSpan LampArrayBlinkEffect.AttackDuration");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "TimeSpan LampArrayBlinkEffect.DecayDuration");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int Occurrences
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int LampArrayBlinkEffect.Occurrences is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20LampArrayBlinkEffect.Occurrences");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "int LampArrayBlinkEffect.Occurrences");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan RepetitionDelay
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBlinkEffect.RepetitionDelay is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayBlinkEffect.RepetitionDelay");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "TimeSpan LampArrayBlinkEffect.RepetitionDelay");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Lights.Effects.LampArrayRepetitionMode RepetitionMode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member LampArrayRepetitionMode LampArrayBlinkEffect.RepetitionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LampArrayRepetitionMode%20LampArrayBlinkEffect.RepetitionMode");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "LampArrayRepetitionMode LampArrayBlinkEffect.RepetitionMode");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan StartDelay
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBlinkEffect.StartDelay is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayBlinkEffect.StartDelay");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "TimeSpan LampArrayBlinkEffect.StartDelay");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan SustainDuration
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBlinkEffect.SustainDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayBlinkEffect.SustainDuration");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "TimeSpan LampArrayBlinkEffect.SustainDuration");
 			}
 		}
 #endif
@@ -142,24 +142,35 @@ namespace Windows.Devices.Lights.Effects
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.LampArrayBlinkEffect(Windows.Devices.Lights.LampArray, int[])
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.Color.get
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.Color.set
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.operator ==(Windows.Devices.Lights.Effects.LampArrayBlinkEffect, Windows.Devices.Lights.Effects.LampArrayBlinkEffect)
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.operator !=(Windows.Devices.Lights.Effects.LampArrayBlinkEffect, Windows.Devices.Lights.Effects.LampArrayBlinkEffect)
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.Equals(Windows.Devices.Lights.Effects.LampArrayBlinkEffect)
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.Equals(object)
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.GetHashCode()
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.AttackDuration.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.AttackDuration.set
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.SustainDuration.get
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.SustainDuration.set
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.Color.get
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.Color.set
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.DecayDuration.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.DecayDuration.set
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.RepetitionDelay.get
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.RepetitionDelay.set
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.StartDelay.get
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.StartDelay.set
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.Occurrences.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.Occurrences.set
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.RepetitionDelay.get
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.RepetitionDelay.set
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.RepetitionMode.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.RepetitionMode.set
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.StartDelay.get
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.StartDelay.set
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.SustainDuration.get
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.SustainDuration.set
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.ZIndex.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.ZIndex.set
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Lights.Effects.ILampArrayEffect
 	}
 }

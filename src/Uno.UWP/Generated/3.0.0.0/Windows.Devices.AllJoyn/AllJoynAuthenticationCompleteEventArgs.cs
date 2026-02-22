@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.AllJoyn
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -44,8 +43,19 @@ namespace Windows.Devices.AllJoyn
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs.operator ==(Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs, Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs.operator !=(Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs, Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs.Equals(Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs.AuthenticationMechanism.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs.PeerUniqueName.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs.Succeeded.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

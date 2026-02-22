@@ -30,21 +30,32 @@ namespace Windows.ApplicationModel.Payments
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public PaymentMerchantInfo(global::System.Uri uri)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentMerchantInfo", "PaymentMerchantInfo.PaymentMerchantInfo(Uri uri)");
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMerchantInfo.PaymentMerchantInfo(System.Uri)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PaymentMerchantInfo()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentMerchantInfo", "PaymentMerchantInfo.PaymentMerchantInfo()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMerchantInfo.PaymentMerchantInfo()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public PaymentMerchantInfo(global::System.Uri uri)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentMerchantInfo", "PaymentMerchantInfo.PaymentMerchantInfo(Uri uri)");
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMerchantInfo.PaymentMerchantInfo(System.Uri)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMerchantInfo.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMerchantInfo.operator ==(Windows.ApplicationModel.Payments.PaymentMerchantInfo, Windows.ApplicationModel.Payments.PaymentMerchantInfo)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMerchantInfo.operator !=(Windows.ApplicationModel.Payments.PaymentMerchantInfo, Windows.ApplicationModel.Payments.PaymentMerchantInfo)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMerchantInfo.Equals(Windows.ApplicationModel.Payments.PaymentMerchantInfo)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMerchantInfo.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMerchantInfo.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMerchantInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMerchantInfo.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMerchantInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMerchantInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMerchantInfo.PackageFullName.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMerchantInfo.Uri.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMerchantInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

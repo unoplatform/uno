@@ -8,5 +8,17 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class Transform : global::Microsoft.UI.Xaml.Media.GeneralTransform
 	{
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Transform.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Transform.Transform(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Transform.operator ==(Microsoft.UI.Xaml.Media.Transform, Microsoft.UI.Xaml.Media.Transform)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Transform.operator !=(Microsoft.UI.Xaml.Media.Transform, Microsoft.UI.Xaml.Media.Transform)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Transform.Equals(Microsoft.UI.Xaml.Media.Transform)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Transform.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Transform.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Transform.Transform(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Transform.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Transform.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Transform.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Transform.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

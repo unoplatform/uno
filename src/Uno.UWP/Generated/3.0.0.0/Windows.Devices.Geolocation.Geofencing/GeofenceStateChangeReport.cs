@@ -53,9 +53,20 @@ namespace Windows.Devices.Geolocation.Geofencing
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.NewState.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.operator ==(Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport, Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport)
+		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.operator !=(Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport, Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport)
+		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.Equals(Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport)
+		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.Equals(object)
+		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.GetHashCode()
+		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.Geofence.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.Geoposition.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.NewState.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.RemovalReason.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

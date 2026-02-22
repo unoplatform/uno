@@ -23,6 +23,17 @@ namespace Windows.Security.Authentication.Web.Core
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountEventArgs.operator ==(Windows.Security.Authentication.Web.Core.WebAccountEventArgs, Windows.Security.Authentication.Web.Core.WebAccountEventArgs)
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountEventArgs.operator !=(Windows.Security.Authentication.Web.Core.WebAccountEventArgs, Windows.Security.Authentication.Web.Core.WebAccountEventArgs)
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountEventArgs.Equals(Windows.Security.Authentication.Web.Core.WebAccountEventArgs)
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountEventArgs.Equals(object)
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountEventArgs.Account.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

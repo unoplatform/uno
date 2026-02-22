@@ -10,57 +10,15 @@ namespace Windows.Networking.Connectivity
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Guid? ServiceProviderGuid
+		public bool? IsBackgroundDataUsageRestricted
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid? ConnectionProfileFilter.ServiceProviderGuid is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%3F%20ConnectionProfileFilter.ServiceProviderGuid");
+				throw new global::System.NotImplementedException("The member bool? ConnectionProfileFilter.IsBackgroundDataUsageRestricted is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%3F%20ConnectionProfileFilter.IsBackgroundDataUsageRestricted");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.ConnectionProfileFilter", "Guid? ConnectionProfileFilter.ServiceProviderGuid");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Networking.Connectivity.NetworkCostType NetworkCostType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member NetworkCostType ConnectionProfileFilter.NetworkCostType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NetworkCostType%20ConnectionProfileFilter.NetworkCostType");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.ConnectionProfileFilter", "NetworkCostType ConnectionProfileFilter.NetworkCostType");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsWwanConnectionProfile
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ConnectionProfileFilter.IsWwanConnectionProfile is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ConnectionProfileFilter.IsWwanConnectionProfile");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.ConnectionProfileFilter", "bool ConnectionProfileFilter.IsWwanConnectionProfile");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsWlanConnectionProfile
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ConnectionProfileFilter.IsWlanConnectionProfile is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ConnectionProfileFilter.IsWlanConnectionProfile");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.ConnectionProfileFilter", "bool ConnectionProfileFilter.IsWlanConnectionProfile");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.ConnectionProfileFilter", "bool? ConnectionProfileFilter.IsBackgroundDataUsageRestricted");
 			}
 		}
 #endif
@@ -80,20 +38,6 @@ namespace Windows.Networking.Connectivity
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool? IsRoaming
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool? ConnectionProfileFilter.IsRoaming is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%3F%20ConnectionProfileFilter.IsRoaming");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.ConnectionProfileFilter", "bool? ConnectionProfileFilter.IsRoaming");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool? IsOverDataLimit
 		{
 			get
@@ -108,25 +52,57 @@ namespace Windows.Networking.Connectivity
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool? IsBackgroundDataUsageRestricted
+		public bool? IsRoaming
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool? ConnectionProfileFilter.IsBackgroundDataUsageRestricted is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%3F%20ConnectionProfileFilter.IsBackgroundDataUsageRestricted");
+				throw new global::System.NotImplementedException("The member bool? ConnectionProfileFilter.IsRoaming is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%3F%20ConnectionProfileFilter.IsRoaming");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.ConnectionProfileFilter", "bool? ConnectionProfileFilter.IsBackgroundDataUsageRestricted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.ConnectionProfileFilter", "bool? ConnectionProfileFilter.IsRoaming");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Streams.IBuffer RawData
+		public bool IsWlanConnectionProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer ConnectionProfileFilter.RawData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20ConnectionProfileFilter.RawData");
+				throw new global::System.NotImplementedException("The member bool ConnectionProfileFilter.IsWlanConnectionProfile is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ConnectionProfileFilter.IsWlanConnectionProfile");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.ConnectionProfileFilter", "bool ConnectionProfileFilter.IsWlanConnectionProfile");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsWwanConnectionProfile
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ConnectionProfileFilter.IsWwanConnectionProfile is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ConnectionProfileFilter.IsWwanConnectionProfile");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.ConnectionProfileFilter", "bool ConnectionProfileFilter.IsWwanConnectionProfile");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Networking.Connectivity.NetworkCostType NetworkCostType
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member NetworkCostType ConnectionProfileFilter.NetworkCostType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NetworkCostType%20ConnectionProfileFilter.NetworkCostType");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.ConnectionProfileFilter", "NetworkCostType ConnectionProfileFilter.NetworkCostType");
 			}
 		}
 #endif
@@ -146,30 +122,65 @@ namespace Windows.Networking.Connectivity
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.Streams.IBuffer RawData
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IBuffer ConnectionProfileFilter.RawData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20ConnectionProfileFilter.RawData");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Guid? ServiceProviderGuid
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid? ConnectionProfileFilter.ServiceProviderGuid is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%3F%20ConnectionProfileFilter.ServiceProviderGuid");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.ConnectionProfileFilter", "Guid? ConnectionProfileFilter.ServiceProviderGuid");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ConnectionProfileFilter()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.ConnectionProfileFilter", "ConnectionProfileFilter.ConnectionProfileFilter()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.ConnectionProfileFilter()
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.IsConnected.set
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.IsConnected.get
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.IsWwanConnectionProfile.set
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.IsWwanConnectionProfile.get
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.IsWlanConnectionProfile.set
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.IsWlanConnectionProfile.get
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.NetworkCostType.set
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.NetworkCostType.get
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.ServiceProviderGuid.set
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.ServiceProviderGuid.get
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.IsRoaming.set
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.IsRoaming.get
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.IsOverDataLimit.set
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.IsOverDataLimit.get
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.IsBackgroundDataUsageRestricted.set
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.operator ==(Windows.Networking.Connectivity.ConnectionProfileFilter, Windows.Networking.Connectivity.ConnectionProfileFilter)
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.operator !=(Windows.Networking.Connectivity.ConnectionProfileFilter, Windows.Networking.Connectivity.ConnectionProfileFilter)
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.Equals(Windows.Networking.Connectivity.ConnectionProfileFilter)
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.Equals(object)
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.GetHashCode()
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.IsBackgroundDataUsageRestricted.get
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.RawData.get
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.PurposeGuid.set
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.IsBackgroundDataUsageRestricted.set
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.IsConnected.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.IsConnected.set
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.IsOverDataLimit.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.IsOverDataLimit.set
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.IsRoaming.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.IsRoaming.set
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.IsWlanConnectionProfile.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.IsWlanConnectionProfile.set
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.IsWwanConnectionProfile.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.IsWwanConnectionProfile.set
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.NetworkCostType.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.NetworkCostType.set
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.PurposeGuid.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.PurposeGuid.set
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.RawData.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.ServiceProviderGuid.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.ServiceProviderGuid.set
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -13,6 +13,7 @@ namespace Microsoft.UI.Xaml.Markup
 		{
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlMarkupHelper.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void UnloadObject(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -20,5 +21,16 @@ namespace Microsoft.UI.Xaml.Markup
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Markup.XamlMarkupHelper", "void XamlMarkupHelper.UnloadObject(DependencyObject element)");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlMarkupHelper.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlMarkupHelper.operator ==(Microsoft.UI.Xaml.Markup.XamlMarkupHelper, Microsoft.UI.Xaml.Markup.XamlMarkupHelper)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlMarkupHelper.operator !=(Microsoft.UI.Xaml.Markup.XamlMarkupHelper, Microsoft.UI.Xaml.Markup.XamlMarkupHelper)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlMarkupHelper.Equals(Microsoft.UI.Xaml.Markup.XamlMarkupHelper)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlMarkupHelper.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlMarkupHelper.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlMarkupHelper.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlMarkupHelper.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlMarkupHelper.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlMarkupHelper.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlMarkupHelper.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

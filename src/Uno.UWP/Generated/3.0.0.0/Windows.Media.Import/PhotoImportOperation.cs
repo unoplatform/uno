@@ -63,10 +63,21 @@ namespace Windows.Media.Import
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Import.PhotoImportOperation.Stage.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportOperation.Session.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportOperation.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Import.PhotoImportOperation.operator ==(Windows.Media.Import.PhotoImportOperation, Windows.Media.Import.PhotoImportOperation)
+		// Forced skipping of method Windows.Media.Import.PhotoImportOperation.operator !=(Windows.Media.Import.PhotoImportOperation, Windows.Media.Import.PhotoImportOperation)
+		// Forced skipping of method Windows.Media.Import.PhotoImportOperation.Equals(Windows.Media.Import.PhotoImportOperation)
+		// Forced skipping of method Windows.Media.Import.PhotoImportOperation.Equals(object)
+		// Forced skipping of method Windows.Media.Import.PhotoImportOperation.GetHashCode()
+		// Forced skipping of method Windows.Media.Import.PhotoImportOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportOperation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportOperation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportOperation.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportOperation.ContinueDeletingImportedItemsFromSourceAsync.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportOperation.ContinueFindingItemsAsync.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportOperation.ContinueImportingItemsAsync.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportOperation.ContinueDeletingImportedItemsFromSourceAsync.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportOperation.Session.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportOperation.Stage.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportOperation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

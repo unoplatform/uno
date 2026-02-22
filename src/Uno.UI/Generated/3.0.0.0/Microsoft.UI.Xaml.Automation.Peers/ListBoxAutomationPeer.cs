@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ListBoxAutomationPeer.ListBoxAutomationPeer(Microsoft.UI.Xaml.Controls.ListBox)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxAutomationPeer.ListBoxAutomationPeer(Microsoft.UI.Xaml.Controls.ListBox)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxAutomationPeer.ListBoxAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.ListBoxAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ListBoxAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.ListBoxAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ListBoxAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.ListBoxAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxAutomationPeer.ListBoxAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

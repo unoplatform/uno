@@ -13,6 +13,16 @@ namespace Windows.Media.Capture
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Media.Capture.LowLagPhotoCapture.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Capture.LowLagPhotoCapture.operator ==(Windows.Media.Capture.LowLagPhotoCapture, Windows.Media.Capture.LowLagPhotoCapture)
+		// Forced skipping of method Windows.Media.Capture.LowLagPhotoCapture.operator !=(Windows.Media.Capture.LowLagPhotoCapture, Windows.Media.Capture.LowLagPhotoCapture)
+		// Forced skipping of method Windows.Media.Capture.LowLagPhotoCapture.Equals(Windows.Media.Capture.LowLagPhotoCapture)
+		// Forced skipping of method Windows.Media.Capture.LowLagPhotoCapture.Equals(object)
+		// Forced skipping of method Windows.Media.Capture.LowLagPhotoCapture.GetHashCode()
+		// Forced skipping of method Windows.Media.Capture.LowLagPhotoCapture.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Capture.LowLagPhotoCapture.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Capture.LowLagPhotoCapture.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Capture.LowLagPhotoCapture.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Capture.CapturedPhoto> CaptureAsync()
@@ -27,5 +37,6 @@ namespace Windows.Media.Capture
 			throw new global::System.NotImplementedException("The member IAsyncAction LowLagPhotoCapture.FinishAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20LowLagPhotoCapture.FinishAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Capture.LowLagPhotoCapture.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

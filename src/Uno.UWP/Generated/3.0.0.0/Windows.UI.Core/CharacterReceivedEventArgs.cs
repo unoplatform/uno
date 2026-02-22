@@ -15,6 +15,20 @@ namespace Windows.UI.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Handled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool CharacterReceivedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CharacterReceivedEventArgs.Handled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CharacterReceivedEventArgs", "bool CharacterReceivedEventArgs.Handled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint KeyCode
 		{
 			get
@@ -33,24 +47,21 @@ namespace Windows.UI.Core
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Handled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CharacterReceivedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CharacterReceivedEventArgs.Handled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CharacterReceivedEventArgs", "bool CharacterReceivedEventArgs.Handled");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.KeyCode.get
-		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.KeyStatus.get
+		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.operator ==(Windows.UI.Core.CharacterReceivedEventArgs, Windows.UI.Core.CharacterReceivedEventArgs)
+		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.operator !=(Windows.UI.Core.CharacterReceivedEventArgs, Windows.UI.Core.CharacterReceivedEventArgs)
+		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.Equals(Windows.UI.Core.CharacterReceivedEventArgs)
+		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.Handled.set
+		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.KeyCode.get
+		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.KeyStatus.get
+		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.UI.Core.ICoreWindowEventArgs
 	}
 }

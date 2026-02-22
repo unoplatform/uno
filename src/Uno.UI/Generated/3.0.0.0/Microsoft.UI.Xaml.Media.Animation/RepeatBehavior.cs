@@ -8,9 +8,34 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial struct RepeatBehavior
 	{
+		// Skipping already declared property Forever
+		// Skipping already declared property HasCount
+		// Skipping already declared property HasDuration
+		// Skipping already declared property Count
+		// Skipping already declared property Duration
+		// Skipping already declared property Type
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.RepeatBehavior()
-		// Skipping already declared field Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.Count
-		// Skipping already declared field Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.Duration
-		// Skipping already declared field Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.Type
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.RepeatBehavior(double)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.RepeatBehavior(double)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.RepeatBehavior(System.TimeSpan)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.RepeatBehavior(System.TimeSpan)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.Forever.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.HasCount.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.HasDuration.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.Count.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.Count.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.Duration.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.Duration.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.Type.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.Type.set
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.ToString()
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.ToString(System.IFormatProvider)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.System.IFormattable.ToString(string, System.IFormatProvider)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.Equals(Microsoft.UI.Xaml.Media.Animation.RepeatBehavior)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.Equals(Microsoft.UI.Xaml.Media.Animation.RepeatBehavior, Microsoft.UI.Xaml.Media.Animation.RepeatBehavior)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.operator ==(Microsoft.UI.Xaml.Media.Animation.RepeatBehavior, Microsoft.UI.Xaml.Media.Animation.RepeatBehavior)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepeatBehavior.operator !=(Microsoft.UI.Xaml.Media.Animation.RepeatBehavior, Microsoft.UI.Xaml.Media.Animation.RepeatBehavior)
 	}
 }

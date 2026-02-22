@@ -23,6 +23,17 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationEventDetails.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationEventDetails.operator ==(Windows.Networking.NetworkOperators.HotspotAuthenticationEventDetails, Windows.Networking.NetworkOperators.HotspotAuthenticationEventDetails)
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationEventDetails.operator !=(Windows.Networking.NetworkOperators.HotspotAuthenticationEventDetails, Windows.Networking.NetworkOperators.HotspotAuthenticationEventDetails)
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationEventDetails.Equals(Windows.Networking.NetworkOperators.HotspotAuthenticationEventDetails)
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationEventDetails.Equals(object)
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationEventDetails.GetHashCode()
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationEventDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationEventDetails.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationEventDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationEventDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationEventDetails.EventToken.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotAuthenticationEventDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

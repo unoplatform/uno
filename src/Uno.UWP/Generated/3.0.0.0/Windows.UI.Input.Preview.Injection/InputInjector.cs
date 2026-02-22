@@ -8,6 +8,25 @@ namespace Windows.UI.Input.Preview.Injection
 #endif
 	public partial class InputInjector
 	{
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InputInjector.As<I>()
+		// Skipping already declared method Windows.UI.Input.Preview.Injection.InputInjector.TryCreate()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.UI.Input.Preview.Injection.InputInjector TryCreateForAppBroadcastOnly()
+		{
+			throw new global::System.NotImplementedException("The member InputInjector InputInjector.TryCreateForAppBroadcastOnly() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputInjector%20InputInjector.TryCreateForAppBroadcastOnly%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InputInjector.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InputInjector.operator ==(Windows.UI.Input.Preview.Injection.InputInjector, Windows.UI.Input.Preview.Injection.InputInjector)
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InputInjector.operator !=(Windows.UI.Input.Preview.Injection.InputInjector, Windows.UI.Input.Preview.Injection.InputInjector)
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InputInjector.Equals(Windows.UI.Input.Preview.Injection.InputInjector)
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InputInjector.Equals(object)
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InputInjector.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InputInjector.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InputInjector.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InputInjector.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InputInjector.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void InjectKeyboardInput(global::System.Collections.Generic.IEnumerable<global::Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo> input)
@@ -68,13 +87,6 @@ namespace Windows.UI.Input.Preview.Injection
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InputInjector", "void InputInjector.UninitializeGamepadInjection()");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Input.Preview.Injection.InputInjector TryCreateForAppBroadcastOnly()
-		{
-			throw new global::System.NotImplementedException("The member InputInjector InputInjector.TryCreateForAppBroadcastOnly() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputInjector%20InputInjector.TryCreateForAppBroadcastOnly%28%29");
-		}
-#endif
-		// Skipping already declared method Windows.UI.Input.Preview.Injection.InputInjector.TryCreate()
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InputInjector.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

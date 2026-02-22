@@ -518,35 +518,7 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatDV25.get
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatDV50.get
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatDvc.get
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatDvh1.get
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatDvhD.get
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatDvsd.get
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatDvsl.get
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatH263.get
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatH264.get
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatH265.get
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatH264ES.get
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatHevc.get
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatHevcES.get
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatM4S2.get
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatMjpg.get
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatMP43.get
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatMP4S.get
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatMP4V.get
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatMpeg2.get
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatVP80.get
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatVP90.get
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatMpg1.get
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatMss1.get
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatMss2.get
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatWmv1.get
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatWmv2.get
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatWmv3.get
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatWvc1.get
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormat420O.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.As<I>()
 		// Forced skipping of method Windows.Media.Core.CodecSubtypes.AudioFormatAac.get
 		// Forced skipping of method Windows.Media.Core.CodecSubtypes.AudioFormatAdts.get
 		// Forced skipping of method Windows.Media.Core.CodecSubtypes.AudioFormatAlac.get
@@ -565,9 +537,38 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.CodecSubtypes.AudioFormatMsp1.get
 		// Forced skipping of method Windows.Media.Core.CodecSubtypes.AudioFormatOpus.get
 		// Forced skipping of method Windows.Media.Core.CodecSubtypes.AudioFormatPcm.get
-		// Forced skipping of method Windows.Media.Core.CodecSubtypes.AudioFormatWmaSpdif.get
 		// Forced skipping of method Windows.Media.Core.CodecSubtypes.AudioFormatWMAudioLossless.get
 		// Forced skipping of method Windows.Media.Core.CodecSubtypes.AudioFormatWMAudioV8.get
 		// Forced skipping of method Windows.Media.Core.CodecSubtypes.AudioFormatWMAudioV9.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.AudioFormatWmaSpdif.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormat420O.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatDV25.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatDV50.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatDvc.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatDvh1.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatDvhD.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatDvsd.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatDvsl.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatH263.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatH264.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatH264ES.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatH265.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatHevc.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatHevcES.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatM4S2.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatMP43.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatMP4S.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatMP4V.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatMjpg.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatMpeg2.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatMpg1.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatMss1.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatMss2.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatVP80.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatVP90.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatWmv1.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatWmv2.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatWmv3.get
+		// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatWvc1.get
 	}
 }

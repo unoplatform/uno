@@ -9,12 +9,25 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class UserControl
 	{
-		// Skipping already declared property Content
 		// Skipping already declared property ContentProperty
+		// Skipping already declared property Content
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.UserControl.UserControl()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.UserControl()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.ContentProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.UserControl(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.operator ==(Microsoft.UI.Xaml.Controls.UserControl, Microsoft.UI.Xaml.Controls.UserControl)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.operator !=(Microsoft.UI.Xaml.Controls.UserControl, Microsoft.UI.Xaml.Controls.UserControl)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.Equals(Microsoft.UI.Xaml.Controls.UserControl)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.UserControl(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.Content.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.Content.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.ContentProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

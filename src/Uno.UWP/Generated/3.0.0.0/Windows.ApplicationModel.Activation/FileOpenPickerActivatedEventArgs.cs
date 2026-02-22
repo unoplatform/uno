@@ -15,6 +15,26 @@ namespace Windows.ApplicationModel.Activation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string CallerPackageFamilyName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string FileOpenPickerActivatedEventArgs.CallerPackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20FileOpenPickerActivatedEventArgs.CallerPackageFamilyName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.Pickers.Provider.FileOpenPickerUI FileOpenPickerUI
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member FileOpenPickerUI FileOpenPickerActivatedEventArgs.FileOpenPickerUI is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileOpenPickerUI%20FileOpenPickerActivatedEventArgs.FileOpenPickerUI");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.ActivationKind Kind
 		{
 			get
@@ -53,32 +73,23 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Pickers.Provider.FileOpenPickerUI FileOpenPickerUI
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FileOpenPickerUI FileOpenPickerActivatedEventArgs.FileOpenPickerUI is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileOpenPickerUI%20FileOpenPickerActivatedEventArgs.FileOpenPickerUI");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string CallerPackageFamilyName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string FileOpenPickerActivatedEventArgs.CallerPackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20FileOpenPickerActivatedEventArgs.CallerPackageFamilyName");
-			}
-		}
-#endif
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs.operator ==(Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs, Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs.operator !=(Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs, Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs.Equals(Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs.CallerPackageFamilyName.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs.FileOpenPickerUI.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs.SplashScreen.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs.CallerPackageFamilyName.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs.User.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IFileOpenPickerActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IFileOpenPickerActivatedEventArgs2

@@ -15,21 +15,21 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedKind ProcessFailedKind
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CoreWebView2ProcessFailedKind CoreWebView2ProcessFailedEventArgs.ProcessFailedKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2ProcessFailedKind%20CoreWebView2ProcessFailedEventArgs.ProcessFailedKind");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int ExitCode
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member int CoreWebView2ProcessFailedEventArgs.ExitCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreWebView2ProcessFailedEventArgs.ExitCode");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string FailureSourceModulePath
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string CoreWebView2ProcessFailedEventArgs.FailureSourceModulePath is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2ProcessFailedEventArgs.FailureSourceModulePath");
 			}
 		}
 #endif
@@ -55,6 +55,16 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedKind ProcessFailedKind
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CoreWebView2ProcessFailedKind CoreWebView2ProcessFailedEventArgs.ProcessFailedKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2ProcessFailedKind%20CoreWebView2ProcessFailedEventArgs.ProcessFailedKind");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedReason Reason
 		{
 			get
@@ -63,21 +73,22 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string FailureSourceModulePath
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2ProcessFailedEventArgs.FailureSourceModulePath is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2ProcessFailedEventArgs.FailureSourceModulePath");
-			}
-		}
-#endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs.Reason.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs.Equals(Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs.ExitCode.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs.ProcessDescription.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs.FrameInfosForFailedProcess.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs.FailureSourceModulePath.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs.FrameInfosForFailedProcess.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs.ProcessDescription.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs.ProcessFailedKind.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs.Reason.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

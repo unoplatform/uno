@@ -21,14 +21,14 @@ namespace Windows.Gaming.Input.ForceFeedback
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.IForceFeedbackEffect.Gain.get
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.IForceFeedbackEffect.Gain.set
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.IForceFeedbackEffect.State.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		void Start();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		void Stop();
 #endif
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.IForceFeedbackEffect.Gain.get
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.IForceFeedbackEffect.Gain.set
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.IForceFeedbackEffect.State.get
 	}
 }

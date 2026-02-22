@@ -23,6 +23,17 @@ namespace Windows.Media.Casting
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.Casting.CastingDeviceSelectedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Casting.CastingDeviceSelectedEventArgs.operator ==(Windows.Media.Casting.CastingDeviceSelectedEventArgs, Windows.Media.Casting.CastingDeviceSelectedEventArgs)
+		// Forced skipping of method Windows.Media.Casting.CastingDeviceSelectedEventArgs.operator !=(Windows.Media.Casting.CastingDeviceSelectedEventArgs, Windows.Media.Casting.CastingDeviceSelectedEventArgs)
+		// Forced skipping of method Windows.Media.Casting.CastingDeviceSelectedEventArgs.Equals(Windows.Media.Casting.CastingDeviceSelectedEventArgs)
+		// Forced skipping of method Windows.Media.Casting.CastingDeviceSelectedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.Casting.CastingDeviceSelectedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.Casting.CastingDeviceSelectedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Casting.CastingDeviceSelectedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Casting.CastingDeviceSelectedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Casting.CastingDeviceSelectedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Casting.CastingDeviceSelectedEventArgs.SelectedCastingDevice.get
+		// Forced skipping of method Windows.Media.Casting.CastingDeviceSelectedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

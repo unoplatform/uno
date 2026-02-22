@@ -23,7 +23,16 @@ namespace Windows.ApplicationModel.UserActivities
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestedEventArgs.Request.get
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestedEventArgs.operator ==(Windows.ApplicationModel.UserActivities.UserActivityRequestedEventArgs, Windows.ApplicationModel.UserActivities.UserActivityRequestedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestedEventArgs.operator !=(Windows.ApplicationModel.UserActivities.UserActivityRequestedEventArgs, Windows.ApplicationModel.UserActivities.UserActivityRequestedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestedEventArgs.Equals(Windows.ApplicationModel.UserActivities.UserActivityRequestedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestedEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -31,5 +40,7 @@ namespace Windows.ApplicationModel.UserActivities
 			throw new global::System.NotImplementedException("The member Deferral UserActivityRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20UserActivityRequestedEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestedEventArgs.Request.get
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

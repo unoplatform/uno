@@ -6,57 +6,31 @@ namespace Windows.Web.Http.Headers
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class HttpRequestHeaderCollection : global::System.Collections.Generic.IDictionary<string, string>, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>>, global::Windows.Foundation.IStringable
+	public partial class HttpRequestHeaderCollection : global::System.Collections.Generic.IDictionary<string, string>, global::System.Collections.Generic.ICollection<global::System.Collections.Generic.KeyValuePair<string, string>>, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>>, global::System.Collections.IEnumerable, global::Windows.Foundation.IStringable
 	{
-		// Skipping already declared property Size
-		// Skipping already declared property Referer
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Web.Http.Headers.HttpCredentialsHeaderValue ProxyAuthorization
+		public global::System.Collections.Generic.ICollection<string> Keys
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpCredentialsHeaderValue HttpRequestHeaderCollection.ProxyAuthorization is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpCredentialsHeaderValue%20HttpRequestHeaderCollection.ProxyAuthorization");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "HttpCredentialsHeaderValue HttpRequestHeaderCollection.ProxyAuthorization");
+				throw new global::System.NotImplementedException("The member ICollection<string> HttpRequestHeaderCollection.Keys is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ICollection%3Cstring%3E%20HttpRequestHeaderCollection.Keys");
 			}
 		}
 #endif
-		// Skipping already declared property MaxForwards
-		// Skipping already declared property IfUnmodifiedSince
-		// Skipping already declared property IfModifiedSince
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Networking.HostName Host
+		public global::System.Collections.Generic.ICollection<string> Values
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName HttpRequestHeaderCollection.Host is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HostName%20HttpRequestHeaderCollection.Host");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "HostName HttpRequestHeaderCollection.Host");
+				throw new global::System.NotImplementedException("The member ICollection<string> HttpRequestHeaderCollection.Values is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ICollection%3Cstring%3E%20HttpRequestHeaderCollection.Values");
 			}
 		}
 #endif
-		// Skipping already declared property From
-		// Skipping already declared property Date
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Web.Http.Headers.HttpCredentialsHeaderValue Authorization
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member HttpCredentialsHeaderValue HttpRequestHeaderCollection.Authorization is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpCredentialsHeaderValue%20HttpRequestHeaderCollection.Authorization");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "HttpCredentialsHeaderValue HttpRequestHeaderCollection.Authorization");
-			}
-		}
-#endif
+		// Skipping already declared property Count
+		// Skipping already declared property IsReadOnly
+		// Skipping already declared property this[]
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection Accept
@@ -84,6 +58,20 @@ namespace Windows.Web.Http.Headers
 			get
 			{
 				throw new global::System.NotImplementedException("The member HttpLanguageRangeWithQualityHeaderValueCollection HttpRequestHeaderCollection.AcceptLanguage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpLanguageRangeWithQualityHeaderValueCollection%20HttpRequestHeaderCollection.AcceptLanguage");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Web.Http.Headers.HttpCredentialsHeaderValue Authorization
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member HttpCredentialsHeaderValue HttpRequestHeaderCollection.Authorization is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpCredentialsHeaderValue%20HttpRequestHeaderCollection.Authorization");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "HttpCredentialsHeaderValue HttpRequestHeaderCollection.Authorization");
 			}
 		}
 #endif
@@ -117,6 +105,7 @@ namespace Windows.Web.Http.Headers
 			}
 		}
 #endif
+		// Skipping already declared property Date
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection Expect
@@ -127,6 +116,39 @@ namespace Windows.Web.Http.Headers
 			}
 		}
 #endif
+		// Skipping already declared property From
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Networking.HostName Host
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member HostName HttpRequestHeaderCollection.Host is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HostName%20HttpRequestHeaderCollection.Host");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "HostName HttpRequestHeaderCollection.Host");
+			}
+		}
+#endif
+		// Skipping already declared property IfModifiedSince
+		// Skipping already declared property IfUnmodifiedSince
+		// Skipping already declared property MaxForwards
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Web.Http.Headers.HttpCredentialsHeaderValue ProxyAuthorization
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member HttpCredentialsHeaderValue HttpRequestHeaderCollection.ProxyAuthorization is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpCredentialsHeaderValue%20HttpRequestHeaderCollection.ProxyAuthorization");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "HttpCredentialsHeaderValue HttpRequestHeaderCollection.ProxyAuthorization");
+			}
+		}
+#endif
+		// Skipping already declared property Referer
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Web.Http.Headers.HttpTransferCodingHeaderValueCollection TransferEncoding
@@ -147,6 +169,60 @@ namespace Windows.Web.Http.Headers
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.FromAbi(nint)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.operator ==(Windows.Web.Http.Headers.HttpRequestHeaderCollection, Windows.Web.Http.Headers.HttpRequestHeaderCollection)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.operator !=(Windows.Web.Http.Headers.HttpRequestHeaderCollection, Windows.Web.Http.Headers.HttpRequestHeaderCollection)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.Equals(Windows.Web.Http.Headers.HttpRequestHeaderCollection)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.Equals(object)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.GetHashCode()
+		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Append(string name, string value)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "void HttpRequestHeaderCollection.Append(string name, string value)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool TryAppendWithoutValidation(string name, string value)
+		{
+			throw new global::System.NotImplementedException("The member bool HttpRequestHeaderCollection.TryAppendWithoutValidation(string name, string value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpRequestHeaderCollection.TryAppendWithoutValidation%28string%20name%2C%20string%20value%29");
+		}
+#endif
+		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.Keys.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.Values.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.Count.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.IsReadOnly.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.this[string].get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.this[string].set
+		// Skipping already declared method Windows.Web.Http.Headers.HttpRequestHeaderCollection.Add(string, string)
+		// Skipping already declared method Windows.Web.Http.Headers.HttpRequestHeaderCollection.ContainsKey(string)
+		// Skipping already declared method Windows.Web.Http.Headers.HttpRequestHeaderCollection.Remove(string)
+		// Skipping already declared method Windows.Web.Http.Headers.HttpRequestHeaderCollection.TryGetValue(string, out string)
+		// Skipping already declared method Windows.Web.Http.Headers.HttpRequestHeaderCollection.Add(System.Collections.Generic.KeyValuePair<string, string>)
+		// Skipping already declared method Windows.Web.Http.Headers.HttpRequestHeaderCollection.Clear()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Contains(global::System.Collections.Generic.KeyValuePair<string, string> item)
+		{
+			throw new global::System.NotImplementedException("The member bool HttpRequestHeaderCollection.Contains(KeyValuePair<string, string> item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpRequestHeaderCollection.Contains%28KeyValuePair%3Cstring%2C%20string%3E%20item%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void CopyTo(global::System.Collections.Generic.KeyValuePair<string, string>[] array, int arrayIndex)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "void HttpRequestHeaderCollection.CopyTo(KeyValuePair<string, string>[] array, int arrayIndex)");
+		}
+#endif
+		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>.Remove(System.Collections.Generic.KeyValuePair<string, string>)
+		// Skipping already declared method Windows.Web.Http.Headers.HttpRequestHeaderCollection.GetEnumerator()
+		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.System.Collections.IEnumerable.GetEnumerator()
+		// Skipping already declared method Windows.Web.Http.Headers.HttpRequestHeaderCollection.ToString()
 		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.Accept.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.AcceptEncoding.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.AcceptLanguage.get
@@ -174,70 +250,9 @@ namespace Windows.Web.Http.Headers
 		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.Referer.set
 		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.TransferEncoding.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.UserAgent.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Append(string name, string value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "void HttpRequestHeaderCollection.Append(string name, string value)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool TryAppendWithoutValidation(string name, string value)
-		{
-			throw new global::System.NotImplementedException("The member bool HttpRequestHeaderCollection.TryAppendWithoutValidation(string name, string value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpRequestHeaderCollection.TryAppendWithoutValidation%28string%20name%2C%20string%20value%29");
-		}
-#endif
-		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.Lookup(string)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.Size.get
-		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.HasKey(string)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.GetView()
-		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.Insert(string, string)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.Remove(string)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.Clear()
-		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.First()
-		// Skipping already declared method Windows.Web.Http.Headers.HttpRequestHeaderCollection.ToString()
+		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.Collections.Generic.IDictionary<string, string>
-		// Skipping already implement System.Collections.Generic.IDictionary<string, string>.this[string]
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.ICollection<string> Keys
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.ICollection<string> Values
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
 		// Processing: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Contains(global::System.Collections.Generic.KeyValuePair<string, string> item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void CopyTo(global::System.Collections.Generic.KeyValuePair<string, string>[] array, int arrayIndex)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-		// Skipping already implement System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>.Count
-		// Skipping already implement System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>>
 		// Processing: System.Collections.IEnumerable
 	}

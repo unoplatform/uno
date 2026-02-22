@@ -40,10 +40,21 @@ namespace Windows.ApplicationModel.Resources.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.QualifierName.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.QualifierValue.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.operator ==(Windows.ApplicationModel.Resources.Core.ResourceQualifier, Windows.ApplicationModel.Resources.Core.ResourceQualifier)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.operator !=(Windows.ApplicationModel.Resources.Core.ResourceQualifier, Windows.ApplicationModel.Resources.Core.ResourceQualifier)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.Equals(Windows.ApplicationModel.Resources.Core.ResourceQualifier)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.IsDefault.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.IsMatch.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.QualifierName.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.QualifierValue.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.Score.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifier.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

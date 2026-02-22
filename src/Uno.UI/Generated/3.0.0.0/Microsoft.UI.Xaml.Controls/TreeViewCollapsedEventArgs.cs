@@ -8,9 +8,20 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class TreeViewCollapsedEventArgs
 	{
-		// Skipping already declared property Node
 		// Skipping already declared property Item
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.Node.get
+		// Skipping already declared property Node
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs, Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs, Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.Equals(Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.Item.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.Node.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

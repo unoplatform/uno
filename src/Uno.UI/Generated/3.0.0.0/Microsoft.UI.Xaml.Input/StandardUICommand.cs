@@ -8,14 +8,27 @@ namespace Microsoft.UI.Xaml.Input
 #endif
 	public partial class StandardUICommand : global::Microsoft.UI.Xaml.Input.XamlUICommand
 	{
-		// Skipping already declared property Kind
 		// Skipping already declared property KindProperty
+		// Skipping already declared property Kind
 		// Skipping already declared method Microsoft.UI.Xaml.Input.StandardUICommand.StandardUICommand()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.StandardUICommand()
 		// Skipping already declared method Microsoft.UI.Xaml.Input.StandardUICommand.StandardUICommand(Microsoft.UI.Xaml.Input.StandardUICommandKind)
 		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.StandardUICommand(Microsoft.UI.Xaml.Input.StandardUICommandKind)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.KindProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.StandardUICommand(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.operator ==(Microsoft.UI.Xaml.Input.StandardUICommand, Microsoft.UI.Xaml.Input.StandardUICommand)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.operator !=(Microsoft.UI.Xaml.Input.StandardUICommand, Microsoft.UI.Xaml.Input.StandardUICommand)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.Equals(Microsoft.UI.Xaml.Input.StandardUICommand)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.StandardUICommand(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.Kind.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.Kind.set
-		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.KindProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

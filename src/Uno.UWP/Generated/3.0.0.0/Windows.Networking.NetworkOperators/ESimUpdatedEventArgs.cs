@@ -23,6 +23,17 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimUpdatedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimUpdatedEventArgs.operator ==(Windows.Networking.NetworkOperators.ESimUpdatedEventArgs, Windows.Networking.NetworkOperators.ESimUpdatedEventArgs)
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimUpdatedEventArgs.operator !=(Windows.Networking.NetworkOperators.ESimUpdatedEventArgs, Windows.Networking.NetworkOperators.ESimUpdatedEventArgs)
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimUpdatedEventArgs.Equals(Windows.Networking.NetworkOperators.ESimUpdatedEventArgs)
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimUpdatedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimUpdatedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimUpdatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimUpdatedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimUpdatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimUpdatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimUpdatedEventArgs.ESim.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimUpdatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

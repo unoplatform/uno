@@ -18,15 +18,24 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.Layout(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.operator ==(Microsoft.UI.Xaml.Controls.Layout, Microsoft.UI.Xaml.Controls.Layout)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.operator !=(Microsoft.UI.Xaml.Controls.Layout, Microsoft.UI.Xaml.Controls.Layout)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.Equals(Microsoft.UI.Xaml.Controls.Layout)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.Layout(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Layout.InitializeForContext(Microsoft.UI.Xaml.Controls.LayoutContext)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Layout.UninitializeForContext(Microsoft.UI.Xaml.Controls.LayoutContext)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Layout.Measure(Microsoft.UI.Xaml.Controls.LayoutContext, Windows.Foundation.Size)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Layout.Arrange(Microsoft.UI.Xaml.Controls.LayoutContext, Windows.Foundation.Size)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.MeasureInvalidated.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.MeasureInvalidated.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.ArrangeInvalidated.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.ArrangeInvalidated.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.IndexBasedLayoutOrientation.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.MeasureInvalidated.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.MeasureInvalidated.remove
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Layout.InvalidateMeasure()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Layout.InvalidateArrange()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -43,6 +52,10 @@ namespace Microsoft.UI.Xaml.Controls
 			throw new global::System.NotImplementedException("The member ItemCollectionTransitionProvider Layout.CreateDefaultItemTransitionProvider() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ItemCollectionTransitionProvider%20Layout.CreateDefaultItemTransitionProvider%28%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.Microsoft.UI.Xaml.Controls.ILayoutOverrides.CreateDefaultItemTransitionProvider()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.IndexBasedLayoutOrientation.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Layout.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Layout.ArrangeInvalidated
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Layout.MeasureInvalidated
 	}

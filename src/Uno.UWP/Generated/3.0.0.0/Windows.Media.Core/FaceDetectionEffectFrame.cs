@@ -25,48 +25,6 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan? SystemRelativeTime
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan? FaceDetectionEffectFrame.SystemRelativeTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20FaceDetectionEffectFrame.SystemRelativeTime");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.FaceDetectionEffectFrame", "TimeSpan? FaceDetectionEffectFrame.SystemRelativeTime");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan? RelativeTime
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan? FaceDetectionEffectFrame.RelativeTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20FaceDetectionEffectFrame.RelativeTime");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.FaceDetectionEffectFrame", "TimeSpan? FaceDetectionEffectFrame.RelativeTime");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsDiscontinuous
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool FaceDetectionEffectFrame.IsDiscontinuous is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FaceDetectionEffectFrame.IsDiscontinuous");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.FaceDetectionEffectFrame", "bool FaceDetectionEffectFrame.IsDiscontinuous");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.TimeSpan? Duration
 		{
 			get
@@ -91,11 +49,53 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsDiscontinuous
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool FaceDetectionEffectFrame.IsDiscontinuous is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FaceDetectionEffectFrame.IsDiscontinuous");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.FaceDetectionEffectFrame", "bool FaceDetectionEffectFrame.IsDiscontinuous");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsReadOnly
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member bool FaceDetectionEffectFrame.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FaceDetectionEffectFrame.IsReadOnly");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan? RelativeTime
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan? FaceDetectionEffectFrame.RelativeTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20FaceDetectionEffectFrame.RelativeTime");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.FaceDetectionEffectFrame", "TimeSpan? FaceDetectionEffectFrame.RelativeTime");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan? SystemRelativeTime
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan? FaceDetectionEffectFrame.SystemRelativeTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20FaceDetectionEffectFrame.SystemRelativeTime");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.FaceDetectionEffectFrame", "TimeSpan? FaceDetectionEffectFrame.SystemRelativeTime");
 			}
 		}
 #endif
@@ -109,18 +109,16 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.DetectedFaces.get
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.Type.get
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.IsReadOnly.get
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.RelativeTime.set
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.RelativeTime.get
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.SystemRelativeTime.set
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.SystemRelativeTime.get
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.Duration.set
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.Duration.get
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.IsDiscontinuous.set
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.IsDiscontinuous.get
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.ExtendedProperties.get
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.operator ==(Windows.Media.Core.FaceDetectionEffectFrame, Windows.Media.Core.FaceDetectionEffectFrame)
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.operator !=(Windows.Media.Core.FaceDetectionEffectFrame, Windows.Media.Core.FaceDetectionEffectFrame)
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.Equals(Windows.Media.Core.FaceDetectionEffectFrame)
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.Equals(object)
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.GetHashCode()
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -128,6 +126,19 @@ namespace Windows.Media.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.FaceDetectionEffectFrame", "void FaceDetectionEffectFrame.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.DetectedFaces.get
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.Duration.get
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.Duration.set
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.ExtendedProperties.get
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.IsDiscontinuous.get
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.IsDiscontinuous.set
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.IsReadOnly.get
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.RelativeTime.get
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.RelativeTime.set
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.SystemRelativeTime.get
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.SystemRelativeTime.set
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.Type.get
+		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.IMediaFrame
 		// Processing: System.IDisposable
 	}

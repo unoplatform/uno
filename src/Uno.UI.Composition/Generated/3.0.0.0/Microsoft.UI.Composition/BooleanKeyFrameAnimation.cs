@@ -8,6 +8,16 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class BooleanKeyFrameAnimation : global::Microsoft.UI.Composition.KeyFrameAnimation
 	{
+		// Forced skipping of method Microsoft.UI.Composition.BooleanKeyFrameAnimation.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.BooleanKeyFrameAnimation.operator ==(Microsoft.UI.Composition.BooleanKeyFrameAnimation, Microsoft.UI.Composition.BooleanKeyFrameAnimation)
+		// Forced skipping of method Microsoft.UI.Composition.BooleanKeyFrameAnimation.operator !=(Microsoft.UI.Composition.BooleanKeyFrameAnimation, Microsoft.UI.Composition.BooleanKeyFrameAnimation)
+		// Forced skipping of method Microsoft.UI.Composition.BooleanKeyFrameAnimation.Equals(Microsoft.UI.Composition.BooleanKeyFrameAnimation)
+		// Forced skipping of method Microsoft.UI.Composition.BooleanKeyFrameAnimation.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.BooleanKeyFrameAnimation.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.BooleanKeyFrameAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.BooleanKeyFrameAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Composition.BooleanKeyFrameAnimation.InsertKeyFrame(float, bool)
+		// Forced skipping of method Microsoft.UI.Composition.BooleanKeyFrameAnimation.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.BooleanKeyFrameAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

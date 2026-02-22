@@ -13,6 +13,16 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateChain.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateChain.operator ==(Windows.Security.Cryptography.Certificates.CertificateChain, Windows.Security.Cryptography.Certificates.CertificateChain)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateChain.operator !=(Windows.Security.Cryptography.Certificates.CertificateChain, Windows.Security.Cryptography.Certificates.CertificateChain)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateChain.Equals(Windows.Security.Cryptography.Certificates.CertificateChain)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateChain.Equals(object)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateChain.GetHashCode()
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateChain.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateChain.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateChain.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateChain.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Cryptography.Certificates.ChainValidationResult Validate()
@@ -34,5 +44,6 @@ namespace Windows.Security.Cryptography.Certificates
 			throw new global::System.NotImplementedException("The member IReadOnlyList<Certificate> CertificateChain.GetCertificates(bool includeRoot) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CCertificate%3E%20CertificateChain.GetCertificates%28bool%20includeRoot%29");
 		}
 #endif
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateChain.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

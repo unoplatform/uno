@@ -8,163 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class TextBox
 	{
-		// Skipping already declared property TextWrapping
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.TextReadingOrder TextReadingOrder
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.TextReadingOrder)this.GetValue(TextReadingOrderProperty);
-			}
-			set
-			{
-				this.SetValue(TextReadingOrderProperty, value);
-			}
-		}
-#endif
-		// Skipping already declared property TextAlignment
-		// Skipping already declared property Text
-		// Skipping already declared property SelectionStart
-		// Skipping already declared property SelectionLength
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.SolidColorBrush SelectionHighlightColorWhenNotFocused
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.SolidColorBrush)this.GetValue(SelectionHighlightColorWhenNotFocusedProperty);
-			}
-			set
-			{
-				this.SetValue(SelectionHighlightColorWhenNotFocusedProperty, value);
-			}
-		}
-#endif
-		// Skipping already declared property SelectionHighlightColor
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase SelectionFlyout
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase)this.GetValue(SelectionFlyoutProperty);
-			}
-			set
-			{
-				this.SetValue(SelectionFlyoutProperty, value);
-			}
-		}
-#endif
-		// Skipping already declared property SelectedText
-#if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool PreventKeyboardDisplayOnProgrammaticFocus
-		{
-			get
-			{
-				return (bool)this.GetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty);
-			}
-			set
-			{
-				this.SetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty, value);
-			}
-		}
-#endif
-		// Skipping already declared property PlaceholderText
-		// Skipping already declared property PlaceholderForeground
-		// Skipping already declared property MaxLength
-		// Skipping already declared property IsTextPredictionEnabled
-		// Skipping already declared property IsSpellCheckEnabled
-		// Skipping already declared property IsReadOnly
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsColorFontEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsColorFontEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsColorFontEnabledProperty, value);
-			}
-		}
-#endif
-		// Skipping already declared property InputScope
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.TextAlignment HorizontalTextAlignment
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.TextAlignment)this.GetValue(HorizontalTextAlignmentProperty);
-			}
-			set
-			{
-				this.SetValue(HorizontalTextAlignmentProperty, value);
-			}
-		}
-#endif
-		// Skipping already declared property HeaderTemplate
-		// Skipping already declared property Header
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.CandidateWindowAlignment DesiredCandidateWindowAlignment
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.CandidateWindowAlignment)this.GetValue(DesiredCandidateWindowAlignmentProperty);
-			}
-			set
-			{
-				this.SetValue(DesiredCandidateWindowAlignmentProperty, value);
-			}
-		}
-#endif
-		// Skipping already declared property Description
-		// Skipping already declared property CharacterCasing
-		// Skipping already declared property AcceptsReturn
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool CanPasteClipboardContent
-		{
-			get
-			{
-				return (bool)this.GetValue(CanPasteClipboardContentProperty);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public bool CanRedo
-		{
-			get
-			{
-				return (bool)this.GetValue(CanRedoProperty);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public bool CanUndo
-		{
-			get
-			{
-				return (bool)this.GetValue(CanUndoProperty);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase ProofingMenuFlyout
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase)this.GetValue(ProofingMenuFlyoutProperty);
-			}
-		}
-#endif
 		// Skipping already declared property AcceptsReturnProperty
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -269,82 +112,203 @@ namespace Microsoft.UI.Xaml.Controls
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.TextReadingOrder)));
 #endif
 		// Skipping already declared property TextWrappingProperty
+		// Skipping already declared property AcceptsReturn
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool CanPasteClipboardContent
+		{
+			get
+			{
+				return (bool)this.GetValue(CanPasteClipboardContentProperty);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+		public bool CanRedo
+		{
+			get
+			{
+				return (bool)this.GetValue(CanRedoProperty);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+		public bool CanUndo
+		{
+			get
+			{
+				return (bool)this.GetValue(CanUndoProperty);
+			}
+		}
+#endif
+		// Skipping already declared property CharacterCasing
+		// Skipping already declared property Description
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Controls.CandidateWindowAlignment DesiredCandidateWindowAlignment
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Controls.CandidateWindowAlignment)this.GetValue(DesiredCandidateWindowAlignmentProperty);
+			}
+			set
+			{
+				this.SetValue(DesiredCandidateWindowAlignmentProperty, value);
+			}
+		}
+#endif
+		// Skipping already declared property Header
+		// Skipping already declared property HeaderTemplate
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.TextAlignment HorizontalTextAlignment
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.TextAlignment)this.GetValue(HorizontalTextAlignmentProperty);
+			}
+			set
+			{
+				this.SetValue(HorizontalTextAlignmentProperty, value);
+			}
+		}
+#endif
+		// Skipping already declared property InputScope
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsColorFontEnabled
+		{
+			get
+			{
+				return (bool)this.GetValue(IsColorFontEnabledProperty);
+			}
+			set
+			{
+				this.SetValue(IsColorFontEnabledProperty, value);
+			}
+		}
+#endif
+		// Skipping already declared property IsReadOnly
+		// Skipping already declared property IsSpellCheckEnabled
+		// Skipping already declared property IsTextPredictionEnabled
+		// Skipping already declared property MaxLength
+		// Skipping already declared property PlaceholderForeground
+		// Skipping already declared property PlaceholderText
+#if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool PreventKeyboardDisplayOnProgrammaticFocus
+		{
+			get
+			{
+				return (bool)this.GetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty);
+			}
+			set
+			{
+				this.SetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase ProofingMenuFlyout
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase)this.GetValue(ProofingMenuFlyoutProperty);
+			}
+		}
+#endif
+		// Skipping already declared property SelectedText
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase SelectionFlyout
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase)this.GetValue(SelectionFlyoutProperty);
+			}
+			set
+			{
+				this.SetValue(SelectionFlyoutProperty, value);
+			}
+		}
+#endif
+		// Skipping already declared property SelectionHighlightColor
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Media.SolidColorBrush SelectionHighlightColorWhenNotFocused
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Media.SolidColorBrush)this.GetValue(SelectionHighlightColorWhenNotFocusedProperty);
+			}
+			set
+			{
+				this.SetValue(SelectionHighlightColorWhenNotFocusedProperty, value);
+			}
+		}
+#endif
+		// Skipping already declared property SelectionLength
+		// Skipping already declared property SelectionStart
+		// Skipping already declared property Text
+		// Skipping already declared property TextAlignment
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.TextReadingOrder TextReadingOrder
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.TextReadingOrder)this.GetValue(TextReadingOrderProperty);
+			}
+			set
+			{
+				this.SetValue(TextReadingOrderProperty, value);
+			}
+		}
+#endif
+		// Skipping already declared property TextWrapping
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TextBox.TextBox()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextBox()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.Text.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.Text.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectedText.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectedText.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionLength.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionLength.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionStart.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionStart.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.MaxLength.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.MaxLength.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.IsReadOnly.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.IsReadOnly.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.AcceptsReturn.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.AcceptsReturn.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextAlignment.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextAlignment.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextWrapping.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextWrapping.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.IsSpellCheckEnabled.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.IsSpellCheckEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.IsTextPredictionEnabled.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.IsTextPredictionEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.InputScope.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.InputScope.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.Header.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.Header.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.HeaderTemplate.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.HeaderTemplate.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.PlaceholderText.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.PlaceholderText.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionHighlightColor.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionHighlightColor.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.PreventKeyboardDisplayOnProgrammaticFocus.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.PreventKeyboardDisplayOnProgrammaticFocus.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.IsColorFontEnabled.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.IsColorFontEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionHighlightColorWhenNotFocused.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionHighlightColorWhenNotFocused.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.HorizontalTextAlignment.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.HorizontalTextAlignment.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CharacterCasing.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CharacterCasing.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.PlaceholderForeground.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.PlaceholderForeground.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CanPasteClipboardContent.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CanUndo.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CanRedo.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionFlyout.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionFlyout.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.ProofingMenuFlyout.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.Description.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.Description.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextChanged.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextChanged.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionChanged.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionChanged.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.ContextMenuOpening.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.ContextMenuOpening.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.Paste.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.Paste.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextCompositionStarted.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextCompositionStarted.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextCompositionChanged.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextCompositionChanged.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextCompositionEnded.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextCompositionEnded.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CopyingToClipboard.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CopyingToClipboard.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CuttingToClipboard.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CuttingToClipboard.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.BeforeTextChanging.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.BeforeTextChanging.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionChanging.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionChanging.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.AcceptsReturnProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CanPasteClipboardContentProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CanRedoProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CanUndoProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CharacterCasingProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.DescriptionProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.DesiredCandidateWindowAlignmentProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.HeaderProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.HeaderTemplateProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.HorizontalTextAlignmentProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.InputScopeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.IsColorFontEnabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.IsReadOnlyProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.IsSpellCheckEnabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.IsTextPredictionEnabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.MaxLengthProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.PlaceholderForegroundProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.PlaceholderTextProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.PreventKeyboardDisplayOnProgrammaticFocusProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.ProofingMenuFlyoutProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionFlyoutProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionHighlightColorProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionHighlightColorWhenNotFocusedProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextAlignmentProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextReadingOrderProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextWrappingProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextBox(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.operator ==(Microsoft.UI.Xaml.Controls.TextBox, Microsoft.UI.Xaml.Controls.TextBox)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.operator !=(Microsoft.UI.Xaml.Controls.TextBox, Microsoft.UI.Xaml.Controls.TextBox)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.Equals(Microsoft.UI.Xaml.Controls.TextBox)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextBox(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TextBox.Select(int, int)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TextBox.SelectAll()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -385,41 +349,90 @@ namespace Microsoft.UI.Xaml.Controls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TextBox", "void TextBox.ClearUndoRedoHistory()");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextReadingOrder.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextReadingOrder.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.DesiredCandidateWindowAlignment.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.DesiredCandidateWindowAlignment.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.BeforeTextChanging.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.BeforeTextChanging.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CandidateWindowBoundsChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CandidateWindowBoundsChanged.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.ContextMenuOpening.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.ContextMenuOpening.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CopyingToClipboard.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CopyingToClipboard.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CuttingToClipboard.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CuttingToClipboard.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.Paste.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.Paste.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionChanged.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionChanged.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionChanging.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionChanging.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextChanged.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextChanging.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextChanging.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.MaxLengthProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.IsReadOnlyProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.AcceptsReturnProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextAlignmentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextWrappingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.IsSpellCheckEnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.IsTextPredictionEnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.InputScopeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.HeaderProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.HeaderTemplateProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.PlaceholderTextProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionHighlightColorProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.PreventKeyboardDisplayOnProgrammaticFocusProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.IsColorFontEnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionHighlightColorWhenNotFocusedProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.HorizontalTextAlignmentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CharacterCasingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.PlaceholderForegroundProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CanPasteClipboardContentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CanUndoProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CanRedoProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionFlyoutProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.ProofingMenuFlyoutProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.DescriptionProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.DesiredCandidateWindowAlignmentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextReadingOrderProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextCompositionChanged.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextCompositionChanged.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextCompositionEnded.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextCompositionEnded.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextCompositionStarted.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextCompositionStarted.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.AcceptsReturn.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.AcceptsReturn.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CanPasteClipboardContent.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CanRedo.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CanUndo.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CharacterCasing.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CharacterCasing.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.Description.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.Description.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.DesiredCandidateWindowAlignment.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.DesiredCandidateWindowAlignment.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.Header.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.Header.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.HeaderTemplate.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.HeaderTemplate.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.HorizontalTextAlignment.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.HorizontalTextAlignment.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.InputScope.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.InputScope.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.IsColorFontEnabled.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.IsColorFontEnabled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.IsReadOnly.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.IsReadOnly.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.IsSpellCheckEnabled.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.IsSpellCheckEnabled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.IsTextPredictionEnabled.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.IsTextPredictionEnabled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.MaxLength.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.MaxLength.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.PlaceholderForeground.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.PlaceholderForeground.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.PlaceholderText.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.PlaceholderText.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.PreventKeyboardDisplayOnProgrammaticFocus.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.PreventKeyboardDisplayOnProgrammaticFocus.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.ProofingMenuFlyout.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectedText.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectedText.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionFlyout.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionFlyout.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionHighlightColor.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionHighlightColor.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionHighlightColorWhenNotFocused.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionHighlightColorWhenNotFocused.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionLength.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionLength.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionStart.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.SelectionStart.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.Text.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.Text.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextAlignment.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextAlignment.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextReadingOrder.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextReadingOrder.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextWrapping.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextWrapping.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TextBox.BeforeTextChanging
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -502,6 +515,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TextBox.SelectionChanged
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.TextBox.SelectionChanging
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TextBox.TextChanged
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TextBox.TextChanging
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

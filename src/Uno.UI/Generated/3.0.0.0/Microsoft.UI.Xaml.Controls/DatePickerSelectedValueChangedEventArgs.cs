@@ -10,7 +10,18 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property NewDate
 		// Skipping already declared property OldDate
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerSelectedValueChangedEventArgs.OldDate.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerSelectedValueChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerSelectedValueChangedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.DatePickerSelectedValueChangedEventArgs, Microsoft.UI.Xaml.Controls.DatePickerSelectedValueChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerSelectedValueChangedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.DatePickerSelectedValueChangedEventArgs, Microsoft.UI.Xaml.Controls.DatePickerSelectedValueChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerSelectedValueChangedEventArgs.Equals(Microsoft.UI.Xaml.Controls.DatePickerSelectedValueChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerSelectedValueChangedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerSelectedValueChangedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerSelectedValueChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerSelectedValueChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerSelectedValueChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerSelectedValueChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerSelectedValueChangedEventArgs.NewDate.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerSelectedValueChangedEventArgs.OldDate.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerSelectedValueChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

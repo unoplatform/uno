@@ -8,12 +8,22 @@ namespace Microsoft.UI.Xaml.Input
 #endif
 	public partial class CharacterReceivedRoutedEventArgs : global::Microsoft.UI.Xaml.RoutedEventArgs
 	{
-		// Skipping already declared property Handled
 		// Skipping already declared property Character
+		// Skipping already declared property Handled
 		// Skipping already declared property KeyStatus
+		// Forced skipping of method Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.operator ==(Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs, Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.operator !=(Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs, Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.Equals(Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.Character.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.KeyStatus.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.Handled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.KeyStatus.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

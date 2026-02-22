@@ -20,6 +20,16 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string Ecdh
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Ecdh is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KeyAlgorithmNames.Ecdh");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string Ecdh256
 		{
 			get
@@ -45,6 +55,16 @@ namespace Windows.Security.Cryptography.Certificates
 			get
 			{
 				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Ecdh521 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KeyAlgorithmNames.Ecdh521");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string Ecdsa
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Ecdsa is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KeyAlgorithmNames.Ecdsa");
 			}
 		}
 #endif
@@ -88,35 +108,16 @@ namespace Windows.Security.Cryptography.Certificates
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string Ecdh
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Ecdh is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KeyAlgorithmNames.Ecdh");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string Ecdsa
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Ecdsa is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KeyAlgorithmNames.Ecdsa");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.KeyAlgorithmNames.Ecdsa.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.KeyAlgorithmNames.Ecdh.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.KeyAlgorithmNames.Rsa.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.KeyAlgorithmNames.As<I>()
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.KeyAlgorithmNames.Dsa.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.KeyAlgorithmNames.Ecdh.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.KeyAlgorithmNames.Ecdh256.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.KeyAlgorithmNames.Ecdh384.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.KeyAlgorithmNames.Ecdh521.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.KeyAlgorithmNames.Ecdsa.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.KeyAlgorithmNames.Ecdsa256.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.KeyAlgorithmNames.Ecdsa384.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.KeyAlgorithmNames.Ecdsa521.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.KeyAlgorithmNames.Rsa.get
 	}
 }

@@ -23,6 +23,17 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.XamlResourceReferenceFailedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.XamlResourceReferenceFailedEventArgs.operator ==(Microsoft.UI.Xaml.XamlResourceReferenceFailedEventArgs, Microsoft.UI.Xaml.XamlResourceReferenceFailedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.XamlResourceReferenceFailedEventArgs.operator !=(Microsoft.UI.Xaml.XamlResourceReferenceFailedEventArgs, Microsoft.UI.Xaml.XamlResourceReferenceFailedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.XamlResourceReferenceFailedEventArgs.Equals(Microsoft.UI.Xaml.XamlResourceReferenceFailedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.XamlResourceReferenceFailedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.XamlResourceReferenceFailedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.XamlResourceReferenceFailedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.XamlResourceReferenceFailedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.XamlResourceReferenceFailedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.XamlResourceReferenceFailedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.XamlResourceReferenceFailedEventArgs.Message.get
+		// Forced skipping of method Microsoft.UI.Xaml.XamlResourceReferenceFailedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

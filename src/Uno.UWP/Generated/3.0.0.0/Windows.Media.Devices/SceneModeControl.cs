@@ -33,8 +33,16 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.SceneModeControl.SupportedModes.get
-		// Forced skipping of method Windows.Media.Devices.SceneModeControl.Value.get
+		// Forced skipping of method Windows.Media.Devices.SceneModeControl.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Devices.SceneModeControl.operator ==(Windows.Media.Devices.SceneModeControl, Windows.Media.Devices.SceneModeControl)
+		// Forced skipping of method Windows.Media.Devices.SceneModeControl.operator !=(Windows.Media.Devices.SceneModeControl, Windows.Media.Devices.SceneModeControl)
+		// Forced skipping of method Windows.Media.Devices.SceneModeControl.Equals(Windows.Media.Devices.SceneModeControl)
+		// Forced skipping of method Windows.Media.Devices.SceneModeControl.Equals(object)
+		// Forced skipping of method Windows.Media.Devices.SceneModeControl.GetHashCode()
+		// Forced skipping of method Windows.Media.Devices.SceneModeControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Devices.SceneModeControl.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Devices.SceneModeControl.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Devices.SceneModeControl.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetValueAsync(global::Windows.Media.Devices.CaptureSceneMode sceneMode)
@@ -42,5 +50,8 @@ namespace Windows.Media.Devices
 			throw new global::System.NotImplementedException("The member IAsyncAction SceneModeControl.SetValueAsync(CaptureSceneMode sceneMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20SceneModeControl.SetValueAsync%28CaptureSceneMode%20sceneMode%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Devices.SceneModeControl.SupportedModes.get
+		// Forced skipping of method Windows.Media.Devices.SceneModeControl.Value.get
+		// Forced skipping of method Windows.Media.Devices.SceneModeControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

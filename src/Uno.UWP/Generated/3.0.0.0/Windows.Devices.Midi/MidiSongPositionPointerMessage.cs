@@ -8,16 +8,27 @@ namespace Windows.Devices.Midi
 #endif
 	public partial class MidiSongPositionPointerMessage : global::Windows.Devices.Midi.IMidiMessage
 	{
+		// Skipping already declared property Beats
 		// Skipping already declared property RawData
 		// Skipping already declared property Timestamp
 		// Skipping already declared property Type
-		// Skipping already declared property Beats
 		// Skipping already declared method Windows.Devices.Midi.MidiSongPositionPointerMessage.MidiSongPositionPointerMessage(ushort)
 		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.MidiSongPositionPointerMessage(ushort)
+		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.operator ==(Windows.Devices.Midi.MidiSongPositionPointerMessage, Windows.Devices.Midi.MidiSongPositionPointerMessage)
+		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.operator !=(Windows.Devices.Midi.MidiSongPositionPointerMessage, Windows.Devices.Midi.MidiSongPositionPointerMessage)
+		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.Equals(Windows.Devices.Midi.MidiSongPositionPointerMessage)
+		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.Equals(object)
+		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.GetHashCode()
+		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.Beats.get
-		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.RawData.get
+		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.Type.get
+		// Forced skipping of method Windows.Devices.Midi.MidiSongPositionPointerMessage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Midi.IMidiMessage
 	}
 }

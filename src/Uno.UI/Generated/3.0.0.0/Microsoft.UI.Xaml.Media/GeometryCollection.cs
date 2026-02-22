@@ -6,29 +6,42 @@ namespace Microsoft.UI.Xaml.Media
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class GeometryCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Media.Geometry>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Media.Geometry>
+	public partial class GeometryCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Media.Geometry>, global::System.Collections.Generic.ICollection<global::Microsoft.UI.Xaml.Media.Geometry>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Media.Geometry>, global::System.Collections.IEnumerable
 	{
-		// Skipping already declared property Size
+		// Skipping already declared property Count
+		// Skipping already declared property IsReadOnly
+		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.GeometryCollection.GeometryCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.GeometryCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.GetAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.Size.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.GetView()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.IndexOf(Microsoft.UI.Xaml.Media.Geometry, out uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.SetAt(uint, Microsoft.UI.Xaml.Media.Geometry)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.InsertAt(uint, Microsoft.UI.Xaml.Media.Geometry)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.RemoveAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.Append(Microsoft.UI.Xaml.Media.Geometry)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.RemoveAtEnd()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.Clear()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.GetMany(uint, Microsoft.UI.Xaml.Media.Geometry[])
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.ReplaceAll(Microsoft.UI.Xaml.Media.Geometry[])
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.First()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.operator ==(Microsoft.UI.Xaml.Media.GeometryCollection, Microsoft.UI.Xaml.Media.GeometryCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.operator !=(Microsoft.UI.Xaml.Media.GeometryCollection, Microsoft.UI.Xaml.Media.GeometryCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.Equals(Microsoft.UI.Xaml.Media.GeometryCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.Count.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.IsReadOnly.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.this[int].get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.this[int].set
+		// Skipping already declared method Microsoft.UI.Xaml.Media.GeometryCollection.IndexOf(Microsoft.UI.Xaml.Media.Geometry)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.GeometryCollection.Insert(int, Microsoft.UI.Xaml.Media.Geometry)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.GeometryCollection.RemoveAt(int)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.GeometryCollection.Add(Microsoft.UI.Xaml.Media.Geometry)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.GeometryCollection.Clear()
+		// Skipping already declared method Microsoft.UI.Xaml.Media.GeometryCollection.Contains(Microsoft.UI.Xaml.Media.Geometry)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.GeometryCollection.CopyTo(Microsoft.UI.Xaml.Media.Geometry[], int)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.GeometryCollection.Remove(Microsoft.UI.Xaml.Media.Geometry)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.GeometryCollection.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Geometry>.get_Item(int)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Geometry>.set_Item(int, Microsoft.UI.Xaml.Media.Geometry)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Geometry>
-		// Skipping already implement System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Geometry>.this[int]
 		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Geometry>
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Geometry>.Count
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Geometry>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.Geometry>
 		// Processing: System.Collections.IEnumerable
 	}

@@ -33,8 +33,16 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceService.DeviceServiceId.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceService.SupportedCommands.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceService.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceService.operator ==(Windows.Networking.NetworkOperators.MobileBroadbandDeviceService, Windows.Networking.NetworkOperators.MobileBroadbandDeviceService)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceService.operator !=(Windows.Networking.NetworkOperators.MobileBroadbandDeviceService, Windows.Networking.NetworkOperators.MobileBroadbandDeviceService)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceService.Equals(Windows.Networking.NetworkOperators.MobileBroadbandDeviceService)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceService.Equals(object)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceService.GetHashCode()
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceService.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceService.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceService.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceService.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceDataSession OpenDataSession()
@@ -49,5 +57,8 @@ namespace Windows.Networking.NetworkOperators
 			throw new global::System.NotImplementedException("The member MobileBroadbandDeviceServiceCommandSession MobileBroadbandDeviceService.OpenCommandSession() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MobileBroadbandDeviceServiceCommandSession%20MobileBroadbandDeviceService.OpenCommandSession%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceService.DeviceServiceId.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceService.SupportedCommands.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceService.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

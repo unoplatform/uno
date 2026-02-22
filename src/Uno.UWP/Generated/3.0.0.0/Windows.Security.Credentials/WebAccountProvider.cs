@@ -10,11 +10,31 @@ namespace Windows.Security.Credentials
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Authority
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string WebAccountProvider.Authority is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebAccountProvider.Authority");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string DisplayName
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member string WebAccountProvider.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebAccountProvider.DisplayName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string DisplayPurpose
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string WebAccountProvider.DisplayPurpose is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebAccountProvider.DisplayPurpose");
 			}
 		}
 #endif
@@ -40,21 +60,11 @@ namespace Windows.Security.Credentials
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Authority
+		public bool IsSystemProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebAccountProvider.Authority is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebAccountProvider.Authority");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DisplayPurpose
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string WebAccountProvider.DisplayPurpose is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebAccountProvider.DisplayPurpose");
+				throw new global::System.NotImplementedException("The member bool WebAccountProvider.IsSystemProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WebAccountProvider.IsSystemProvider");
 			}
 		}
 #endif
@@ -70,28 +80,29 @@ namespace Windows.Security.Credentials
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsSystemProvider
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool WebAccountProvider.IsSystemProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WebAccountProvider.IsSystemProvider");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WebAccountProvider(string id, string displayName, global::System.Uri iconUri)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.WebAccountProvider", "WebAccountProvider.WebAccountProvider(string id, string displayName, Uri iconUri)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.WebAccountProvider(string, string, System.Uri)
-		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.Id.get
-		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.DisplayName.get
-		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.IconUri.get
-		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.DisplayPurpose.get
+		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.operator ==(Windows.Security.Credentials.WebAccountProvider, Windows.Security.Credentials.WebAccountProvider)
+		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.operator !=(Windows.Security.Credentials.WebAccountProvider, Windows.Security.Credentials.WebAccountProvider)
+		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.Equals(Windows.Security.Credentials.WebAccountProvider)
+		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.Equals(object)
+		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.GetHashCode()
+		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.Authority.get
-		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.User.get
+		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.DisplayName.get
+		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.DisplayPurpose.get
+		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.IconUri.get
+		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.Id.get
 		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.IsSystemProvider.get
+		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.User.get
+		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

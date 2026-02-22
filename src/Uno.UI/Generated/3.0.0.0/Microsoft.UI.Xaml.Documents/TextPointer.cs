@@ -53,10 +53,16 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.Parent.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.VisualParent.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.LogicalDirection.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.Offset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.operator ==(Microsoft.UI.Xaml.Documents.TextPointer, Microsoft.UI.Xaml.Documents.TextPointer)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.operator !=(Microsoft.UI.Xaml.Documents.TextPointer, Microsoft.UI.Xaml.Documents.TextPointer)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.Equals(Microsoft.UI.Xaml.Documents.TextPointer)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Rect GetCharacterRect(global::Microsoft.UI.Xaml.Documents.LogicalDirection direction)
@@ -71,5 +77,10 @@ namespace Microsoft.UI.Xaml.Documents
 			throw new global::System.NotImplementedException("The member TextPointer TextPointer.GetPositionAtOffset(int offset, LogicalDirection direction) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextPointer%20TextPointer.GetPositionAtOffset%28int%20offset%2C%20LogicalDirection%20direction%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.LogicalDirection.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.Offset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.Parent.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.VisualParent.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextPointer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

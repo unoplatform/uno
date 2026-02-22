@@ -10,7 +10,23 @@ namespace Microsoft.UI.Xaml.Markup
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Markup.MarkupExtension.MarkupExtension()
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.MarkupExtension.MarkupExtension()
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.MarkupExtension.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.MarkupExtension.MarkupExtension(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.MarkupExtension.operator ==(Microsoft.UI.Xaml.Markup.MarkupExtension, Microsoft.UI.Xaml.Markup.MarkupExtension)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.MarkupExtension.operator !=(Microsoft.UI.Xaml.Markup.MarkupExtension, Microsoft.UI.Xaml.Markup.MarkupExtension)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.MarkupExtension.Equals(Microsoft.UI.Xaml.Markup.MarkupExtension)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.MarkupExtension.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.MarkupExtension.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.MarkupExtension.MarkupExtension(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.MarkupExtension.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.MarkupExtension.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.MarkupExtension.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.MarkupExtension.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Microsoft.UI.Xaml.Markup.MarkupExtension.ProvideValue()
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.MarkupExtension.Microsoft.UI.Xaml.Markup.IMarkupExtensionOverrides.ProvideValue()
 		// Skipping already declared method Microsoft.UI.Xaml.Markup.MarkupExtension.ProvideValue(Microsoft.UI.Xaml.IXamlServiceProvider)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.MarkupExtension.Microsoft.UI.Xaml.Markup.IMarkupExtensionOverrides.ProvideValue(Microsoft.UI.Xaml.IXamlServiceProvider)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.MarkupExtension.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.MarkupExtension.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

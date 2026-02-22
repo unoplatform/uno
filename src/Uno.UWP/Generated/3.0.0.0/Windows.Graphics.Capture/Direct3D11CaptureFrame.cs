@@ -43,9 +43,16 @@ namespace Windows.Graphics.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.Surface.get
-		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.SystemRelativeTime.get
-		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.ContentSize.get
+		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.operator ==(Windows.Graphics.Capture.Direct3D11CaptureFrame, Windows.Graphics.Capture.Direct3D11CaptureFrame)
+		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.operator !=(Windows.Graphics.Capture.Direct3D11CaptureFrame, Windows.Graphics.Capture.Direct3D11CaptureFrame)
+		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.Equals(Windows.Graphics.Capture.Direct3D11CaptureFrame)
+		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.Equals(object)
+		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -53,6 +60,10 @@ namespace Windows.Graphics.Capture
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Capture.Direct3D11CaptureFrame", "void Direct3D11CaptureFrame.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.ContentSize.get
+		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.Surface.get
+		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.SystemRelativeTime.get
+		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

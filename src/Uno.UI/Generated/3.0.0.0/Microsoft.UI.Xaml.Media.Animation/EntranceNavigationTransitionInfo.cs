@@ -11,8 +11,19 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared property IsTargetElementProperty
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo.EntranceNavigationTransitionInfo()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo.EntranceNavigationTransitionInfo()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo.IsTargetElementProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo.As<I>()
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo.GetIsTargetElement(Microsoft.UI.Xaml.UIElement)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo.SetIsTargetElement(Microsoft.UI.Xaml.UIElement, bool)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo.IsTargetElementProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo.operator ==(Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo, Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo.operator !=(Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo, Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo.Equals(Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

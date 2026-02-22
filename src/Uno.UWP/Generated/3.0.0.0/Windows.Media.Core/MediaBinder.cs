@@ -10,6 +10,16 @@ namespace Windows.Media.Core
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Core.MediaSource Source
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member MediaSource MediaBinder.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSource%20MediaBinder.Source");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Token
 		{
 			get
@@ -24,27 +34,28 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Core.MediaSource Source
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MediaSource MediaBinder.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSource%20MediaBinder.Source");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MediaBinder()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaBinder", "MediaBinder.MediaBinder()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.MediaBinder.MediaBinder()
+		// Forced skipping of method Windows.Media.Core.MediaBinder.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Core.MediaBinder.operator ==(Windows.Media.Core.MediaBinder, Windows.Media.Core.MediaBinder)
+		// Forced skipping of method Windows.Media.Core.MediaBinder.operator !=(Windows.Media.Core.MediaBinder, Windows.Media.Core.MediaBinder)
+		// Forced skipping of method Windows.Media.Core.MediaBinder.Equals(Windows.Media.Core.MediaBinder)
+		// Forced skipping of method Windows.Media.Core.MediaBinder.Equals(object)
+		// Forced skipping of method Windows.Media.Core.MediaBinder.GetHashCode()
+		// Forced skipping of method Windows.Media.Core.MediaBinder.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Core.MediaBinder.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Core.MediaBinder.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Core.MediaBinder.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Core.MediaBinder.Binding.add
 		// Forced skipping of method Windows.Media.Core.MediaBinder.Binding.remove
+		// Forced skipping of method Windows.Media.Core.MediaBinder.Source.get
 		// Forced skipping of method Windows.Media.Core.MediaBinder.Token.get
 		// Forced skipping of method Windows.Media.Core.MediaBinder.Token.set
-		// Forced skipping of method Windows.Media.Core.MediaBinder.Source.get
+		// Forced skipping of method Windows.Media.Core.MediaBinder.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.MediaBinder, global::Windows.Media.Core.MediaBindingEventArgs> Binding

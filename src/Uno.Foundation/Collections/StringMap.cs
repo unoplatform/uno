@@ -26,6 +26,14 @@ public sealed partial class StringMap :
 	/// </summary>
 	public event MapChangedEventHandler<string, string?>? MapChanged;
 
+#if HAS_UNO_WINUI
+	event MapChangedEventHandler<string, string?> IObservableMap<string, string?>.MapChanged
+	{
+		add => MapChanged += value;
+		remove => MapChanged -= value;
+	}
+#endif
+
 	/// <summary>
 	/// Gets the number of items contained in the string map.
 	/// </summary>

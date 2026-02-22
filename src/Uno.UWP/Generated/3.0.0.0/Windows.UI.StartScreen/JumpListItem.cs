@@ -15,43 +15,11 @@ namespace Windows.UI.StartScreen
 #endif
 #if false || false || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri Logo
+		public string Arguments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri JumpListItem.Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20JumpListItem.Logo");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.JumpListItem", "Uri JumpListItem.Logo");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string GroupName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string JumpListItem.GroupName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20JumpListItem.GroupName");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.JumpListItem", "string JumpListItem.GroupName");
-			}
-		}
-#endif
-#if false || false || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DisplayName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string JumpListItem.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20JumpListItem.DisplayName");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.JumpListItem", "string JumpListItem.DisplayName");
+				throw new global::System.NotImplementedException("The member string JumpListItem.Arguments is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20JumpListItem.Arguments");
 			}
 		}
 #endif
@@ -71,11 +39,29 @@ namespace Windows.UI.StartScreen
 #endif
 #if false || false || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Arguments
+		public string DisplayName
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string JumpListItem.Arguments is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20JumpListItem.Arguments");
+				throw new global::System.NotImplementedException("The member string JumpListItem.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20JumpListItem.DisplayName");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.JumpListItem", "string JumpListItem.DisplayName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string GroupName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string JumpListItem.GroupName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20JumpListItem.GroupName");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.JumpListItem", "string JumpListItem.GroupName");
 			}
 		}
 #endif
@@ -91,6 +77,20 @@ namespace Windows.UI.StartScreen
 #endif
 #if false || false || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Uri Logo
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Uri JumpListItem.Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20JumpListItem.Logo");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.JumpListItem", "Uri JumpListItem.Logo");
+			}
+		}
+#endif
+#if false || false || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool RemovedByUser
 		{
 			get
@@ -99,17 +99,7 @@ namespace Windows.UI.StartScreen
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.Kind.get
-		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.Arguments.get
-		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.RemovedByUser.get
-		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.Description.get
-		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.Description.set
-		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.DisplayName.get
-		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.DisplayName.set
-		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.GroupName.get
-		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.GroupName.set
-		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.Logo.get
-		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.Logo.set
+		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.As<I>()
 #if false || false || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.StartScreen.JumpListItem CreateWithArguments(string arguments, string displayName)
@@ -124,5 +114,27 @@ namespace Windows.UI.StartScreen
 			throw new global::System.NotImplementedException("The member JumpListItem JumpListItem.CreateSeparator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=JumpListItem%20JumpListItem.CreateSeparator%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.FromAbi(nint)
+		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.operator ==(Windows.UI.StartScreen.JumpListItem, Windows.UI.StartScreen.JumpListItem)
+		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.operator !=(Windows.UI.StartScreen.JumpListItem, Windows.UI.StartScreen.JumpListItem)
+		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.Equals(Windows.UI.StartScreen.JumpListItem)
+		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.Equals(object)
+		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.GetHashCode()
+		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.Arguments.get
+		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.Description.get
+		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.Description.set
+		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.DisplayName.get
+		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.DisplayName.set
+		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.GroupName.get
+		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.GroupName.set
+		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.Kind.get
+		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.Logo.get
+		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.Logo.set
+		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.RemovedByUser.get
+		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

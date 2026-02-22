@@ -15,6 +15,26 @@ namespace Windows.Networking.NetworkOperators
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::System.Collections.Generic.IReadOnlyList<string> AvailableNetworkAccountIds
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> MobileBroadbandAccount.AvailableNetworkAccountIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20MobileBroadbandAccount.AvailableNetworkAccountIds");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Uri AccountExperienceUrl
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Uri MobileBroadbandAccount.AccountExperienceUrl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20MobileBroadbandAccount.AccountExperienceUrl");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation CurrentDeviceInformation
 		{
 			get
@@ -63,31 +83,25 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri AccountExperienceUrl
+		public static global::Windows.Networking.NetworkOperators.MobileBroadbandAccount CreateFromNetworkAccountId(string networkAccountId)
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Uri MobileBroadbandAccount.AccountExperienceUrl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20MobileBroadbandAccount.AccountExperienceUrl");
-			}
+			throw new global::System.NotImplementedException("The member MobileBroadbandAccount MobileBroadbandAccount.CreateFromNetworkAccountId(string networkAccountId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MobileBroadbandAccount%20MobileBroadbandAccount.CreateFromNetworkAccountId%28string%20networkAccountId%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::System.Collections.Generic.IReadOnlyList<string> AvailableNetworkAccountIds
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> MobileBroadbandAccount.AvailableNetworkAccountIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20MobileBroadbandAccount.AvailableNetworkAccountIds");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.NetworkAccountId.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.ServiceProviderGuid.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.ServiceProviderName.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.CurrentNetwork.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.CurrentDeviceInformation.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.AvailableNetworkAccountIds.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.operator ==(Windows.Networking.NetworkOperators.MobileBroadbandAccount, Windows.Networking.NetworkOperators.MobileBroadbandAccount)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.operator !=(Windows.Networking.NetworkOperators.MobileBroadbandAccount, Windows.Networking.NetworkOperators.MobileBroadbandAccount)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.Equals(Windows.Networking.NetworkOperators.MobileBroadbandAccount)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.Equals(object)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.GetHashCode()
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.Connectivity.ConnectionProfile> GetConnectionProfiles()
@@ -96,13 +110,11 @@ namespace Windows.Networking.NetworkOperators
 		}
 #endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.AccountExperienceUrl.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.AvailableNetworkAccountIds.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Networking.NetworkOperators.MobileBroadbandAccount CreateFromNetworkAccountId(string networkAccountId)
-		{
-			throw new global::System.NotImplementedException("The member MobileBroadbandAccount MobileBroadbandAccount.CreateFromNetworkAccountId(string networkAccountId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MobileBroadbandAccount%20MobileBroadbandAccount.CreateFromNetworkAccountId%28string%20networkAccountId%29");
-		}
-#endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.CurrentDeviceInformation.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.CurrentNetwork.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.NetworkAccountId.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.ServiceProviderGuid.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.ServiceProviderName.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -15,29 +15,15 @@ namespace Windows.ApplicationModel.Chat
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Subject
+		public bool CanModifyParticipants
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ChatConversation.Subject is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatConversation.Subject");
+				throw new global::System.NotImplementedException("The member bool ChatConversation.CanModifyParticipants is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChatConversation.CanModifyParticipants");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatConversation", "string ChatConversation.Subject");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsConversationMuted
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ChatConversation.IsConversationMuted is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChatConversation.IsConversationMuted");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatConversation", "bool ChatConversation.IsConversationMuted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatConversation", "bool ChatConversation.CanModifyParticipants");
 			}
 		}
 #endif
@@ -63,6 +49,30 @@ namespace Windows.ApplicationModel.Chat
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsConversationMuted
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ChatConversation.IsConversationMuted is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChatConversation.IsConversationMuted");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatConversation", "bool ChatConversation.IsConversationMuted");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Chat.ChatItemKind ItemKind
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ChatItemKind ChatConversation.ItemKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChatItemKind%20ChatConversation.ItemKind");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string MostRecentMessageId
 		{
 			get
@@ -83,6 +93,20 @@ namespace Windows.ApplicationModel.Chat
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Subject
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string ChatConversation.Subject is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatConversation.Subject");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatConversation", "string ChatConversation.Subject");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Chat.ChatConversationThreadingInfo ThreadingInfo
 		{
 			get
@@ -91,39 +115,16 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool CanModifyParticipants
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ChatConversation.CanModifyParticipants is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChatConversation.CanModifyParticipants");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatConversation", "bool ChatConversation.CanModifyParticipants");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Chat.ChatItemKind ItemKind
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ChatItemKind ChatConversation.ItemKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChatItemKind%20ChatConversation.ItemKind");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.HasUnreadMessages.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.Id.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.Subject.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.Subject.set
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.IsConversationMuted.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.IsConversationMuted.set
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.MostRecentMessageId.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.Participants.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.ThreadingInfo.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.operator ==(Windows.ApplicationModel.Chat.ChatConversation, Windows.ApplicationModel.Chat.ChatConversation)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.operator !=(Windows.ApplicationModel.Chat.ChatConversation, Windows.ApplicationModel.Chat.ChatConversation)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.Equals(Windows.ApplicationModel.Chat.ChatConversation)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction DeleteAsync()
@@ -177,7 +178,17 @@ namespace Windows.ApplicationModel.Chat
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.RemoteParticipantComposingChanged.remove
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.CanModifyParticipants.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.CanModifyParticipants.set
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.HasUnreadMessages.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.Id.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.IsConversationMuted.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.IsConversationMuted.set
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.ItemKind.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.MostRecentMessageId.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.Participants.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.Subject.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.Subject.set
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.ThreadingInfo.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Chat.ChatConversation, global::Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs> RemoteParticipantComposingChanged

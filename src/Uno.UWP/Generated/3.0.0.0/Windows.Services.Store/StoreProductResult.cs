@@ -10,7 +10,18 @@ namespace Windows.Services.Store
 	{
 		// Skipping already declared property ExtendedError
 		// Skipping already declared property Product
-		// Forced skipping of method Windows.Services.Store.StoreProductResult.Product.get
+		// Forced skipping of method Windows.Services.Store.StoreProductResult.FromAbi(nint)
+		// Forced skipping of method Windows.Services.Store.StoreProductResult.operator ==(Windows.Services.Store.StoreProductResult, Windows.Services.Store.StoreProductResult)
+		// Forced skipping of method Windows.Services.Store.StoreProductResult.operator !=(Windows.Services.Store.StoreProductResult, Windows.Services.Store.StoreProductResult)
+		// Forced skipping of method Windows.Services.Store.StoreProductResult.Equals(Windows.Services.Store.StoreProductResult)
+		// Forced skipping of method Windows.Services.Store.StoreProductResult.Equals(object)
+		// Forced skipping of method Windows.Services.Store.StoreProductResult.GetHashCode()
+		// Forced skipping of method Windows.Services.Store.StoreProductResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Services.Store.StoreProductResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Services.Store.StoreProductResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Services.Store.StoreProductResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Store.StoreProductResult.ExtendedError.get
+		// Forced skipping of method Windows.Services.Store.StoreProductResult.Product.get
+		// Forced skipping of method Windows.Services.Store.StoreProductResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

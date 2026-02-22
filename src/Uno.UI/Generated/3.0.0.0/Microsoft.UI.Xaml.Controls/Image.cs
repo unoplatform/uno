@@ -8,8 +8,16 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class Image
 	{
-		// Skipping already declared property Stretch
-		// Skipping already declared property Source
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty NineGridProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(NineGrid), typeof(global::Microsoft.UI.Xaml.Thickness),
+			typeof(global::Microsoft.UI.Xaml.Controls.Image),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Thickness)));
+#endif
+		// Skipping already declared property SourceProperty
+		// Skipping already declared property StretchProperty
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Thickness NineGrid
@@ -24,28 +32,22 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty NineGridProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(NineGrid), typeof(global::Microsoft.UI.Xaml.Thickness),
-			typeof(global::Microsoft.UI.Xaml.Controls.Image),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Thickness)));
-#endif
-		// Skipping already declared property SourceProperty
-		// Skipping already declared property StretchProperty
+		// Skipping already declared property Source
+		// Skipping already declared property Stretch
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Image.Image()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.Image()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.Source.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.Source.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.Stretch.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.Stretch.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.NineGrid.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.NineGrid.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.ImageFailed.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.ImageFailed.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.ImageOpened.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.ImageOpened.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.NineGridProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.SourceProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.StretchProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.operator ==(Microsoft.UI.Xaml.Controls.Image, Microsoft.UI.Xaml.Controls.Image)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.operator !=(Microsoft.UI.Xaml.Controls.Image, Microsoft.UI.Xaml.Controls.Image)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.Equals(Microsoft.UI.Xaml.Controls.Image)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Casting.CastingSource GetAsCastingSource()
@@ -60,9 +62,18 @@ namespace Microsoft.UI.Xaml.Controls
 			throw new global::System.NotImplementedException("The member CompositionBrush Image.GetAlphaMask() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBrush%20Image.GetAlphaMask%28%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.SourceProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.StretchProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.NineGridProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.ImageFailed.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.ImageFailed.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.ImageOpened.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.ImageOpened.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.NineGrid.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.NineGrid.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.Source.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.Source.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.Stretch.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.Stretch.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Image.ImageFailed
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Image.ImageOpened
 	}

@@ -23,6 +23,17 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpaceCameraRemovedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpaceCameraRemovedEventArgs.operator ==(Windows.Graphics.Holographic.HolographicSpaceCameraRemovedEventArgs, Windows.Graphics.Holographic.HolographicSpaceCameraRemovedEventArgs)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpaceCameraRemovedEventArgs.operator !=(Windows.Graphics.Holographic.HolographicSpaceCameraRemovedEventArgs, Windows.Graphics.Holographic.HolographicSpaceCameraRemovedEventArgs)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpaceCameraRemovedEventArgs.Equals(Windows.Graphics.Holographic.HolographicSpaceCameraRemovedEventArgs)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpaceCameraRemovedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpaceCameraRemovedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpaceCameraRemovedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpaceCameraRemovedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpaceCameraRemovedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpaceCameraRemovedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpaceCameraRemovedEventArgs.Camera.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpaceCameraRemovedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

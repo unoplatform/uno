@@ -23,6 +23,17 @@ namespace Windows.Web.UI
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Web.UI.WebViewControlDOMContentLoadedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Web.UI.WebViewControlDOMContentLoadedEventArgs.operator ==(Windows.Web.UI.WebViewControlDOMContentLoadedEventArgs, Windows.Web.UI.WebViewControlDOMContentLoadedEventArgs)
+		// Forced skipping of method Windows.Web.UI.WebViewControlDOMContentLoadedEventArgs.operator !=(Windows.Web.UI.WebViewControlDOMContentLoadedEventArgs, Windows.Web.UI.WebViewControlDOMContentLoadedEventArgs)
+		// Forced skipping of method Windows.Web.UI.WebViewControlDOMContentLoadedEventArgs.Equals(Windows.Web.UI.WebViewControlDOMContentLoadedEventArgs)
+		// Forced skipping of method Windows.Web.UI.WebViewControlDOMContentLoadedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Web.UI.WebViewControlDOMContentLoadedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Web.UI.WebViewControlDOMContentLoadedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Web.UI.WebViewControlDOMContentLoadedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Web.UI.WebViewControlDOMContentLoadedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Web.UI.WebViewControlDOMContentLoadedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Web.UI.WebViewControlDOMContentLoadedEventArgs.Uri.get
+		// Forced skipping of method Windows.Web.UI.WebViewControlDOMContentLoadedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -9,6 +9,17 @@ namespace Windows.Devices.Sensors
 	public partial class ProximitySensorReadingChangedEventArgs
 	{
 		// Skipping already declared property Reading
+		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorReadingChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorReadingChangedEventArgs.operator ==(Windows.Devices.Sensors.ProximitySensorReadingChangedEventArgs, Windows.Devices.Sensors.ProximitySensorReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorReadingChangedEventArgs.operator !=(Windows.Devices.Sensors.ProximitySensorReadingChangedEventArgs, Windows.Devices.Sensors.ProximitySensorReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorReadingChangedEventArgs.Equals(Windows.Devices.Sensors.ProximitySensorReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorReadingChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorReadingChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorReadingChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorReadingChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorReadingChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorReadingChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorReadingChangedEventArgs.Reading.get
+		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorReadingChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

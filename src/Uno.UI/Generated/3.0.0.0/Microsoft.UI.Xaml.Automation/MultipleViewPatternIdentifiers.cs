@@ -10,7 +10,19 @@ namespace Microsoft.UI.Xaml.Automation
 	{
 		// Skipping already declared property CurrentViewProperty
 		// Skipping already declared property SupportedViewsProperty
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.MultipleViewPatternIdentifiers.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.MultipleViewPatternIdentifiers.CurrentViewProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.MultipleViewPatternIdentifiers.SupportedViewsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.MultipleViewPatternIdentifiers.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.MultipleViewPatternIdentifiers.operator ==(Microsoft.UI.Xaml.Automation.MultipleViewPatternIdentifiers, Microsoft.UI.Xaml.Automation.MultipleViewPatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.MultipleViewPatternIdentifiers.operator !=(Microsoft.UI.Xaml.Automation.MultipleViewPatternIdentifiers, Microsoft.UI.Xaml.Automation.MultipleViewPatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.MultipleViewPatternIdentifiers.Equals(Microsoft.UI.Xaml.Automation.MultipleViewPatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.MultipleViewPatternIdentifiers.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.MultipleViewPatternIdentifiers.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.MultipleViewPatternIdentifiers.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.MultipleViewPatternIdentifiers.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.MultipleViewPatternIdentifiers.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.MultipleViewPatternIdentifiers.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.MultipleViewPatternIdentifiers.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

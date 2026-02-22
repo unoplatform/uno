@@ -23,9 +23,16 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.MediaBindingEventArgs.Canceled.add
-		// Forced skipping of method Windows.Media.Core.MediaBindingEventArgs.Canceled.remove
-		// Forced skipping of method Windows.Media.Core.MediaBindingEventArgs.MediaBinder.get
+		// Forced skipping of method Windows.Media.Core.MediaBindingEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Core.MediaBindingEventArgs.operator ==(Windows.Media.Core.MediaBindingEventArgs, Windows.Media.Core.MediaBindingEventArgs)
+		// Forced skipping of method Windows.Media.Core.MediaBindingEventArgs.operator !=(Windows.Media.Core.MediaBindingEventArgs, Windows.Media.Core.MediaBindingEventArgs)
+		// Forced skipping of method Windows.Media.Core.MediaBindingEventArgs.Equals(Windows.Media.Core.MediaBindingEventArgs)
+		// Forced skipping of method Windows.Media.Core.MediaBindingEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.Core.MediaBindingEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.Core.MediaBindingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Core.MediaBindingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Core.MediaBindingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Core.MediaBindingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -54,6 +61,8 @@ namespace Windows.Media.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaBindingEventArgs", "void MediaBindingEventArgs.SetStreamReference(IRandomAccessStreamReference stream, string contentType)");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Core.MediaBindingEventArgs.Canceled.add
+		// Forced skipping of method Windows.Media.Core.MediaBindingEventArgs.Canceled.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetAdaptiveMediaSource(global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSource mediaSource)
@@ -75,6 +84,8 @@ namespace Windows.Media.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaBindingEventArgs", "void MediaBindingEventArgs.SetDownloadOperation(DownloadOperation downloadOperation)");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Core.MediaBindingEventArgs.MediaBinder.get
+		// Forced skipping of method Windows.Media.Core.MediaBindingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.MediaBindingEventArgs, object> Canceled

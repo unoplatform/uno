@@ -10,6 +10,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty KeySplineProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(KeySpline), typeof(global::Microsoft.UI.Xaml.Media.Animation.KeySpline),
+			typeof(global::Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Animation.KeySpline)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Media.Animation.KeySpline KeySpline
 		{
 			get
@@ -22,18 +30,21 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty KeySplineProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(KeySpline), typeof(global::Microsoft.UI.Xaml.Media.Animation.KeySpline),
-			typeof(global::Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Animation.KeySpline)));
-#endif
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.SplineColorKeyFrame()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.SplineColorKeyFrame()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.KeySplineProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.operator ==(Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame, Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.operator !=(Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame, Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.Equals(Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.KeySpline.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.KeySpline.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.KeySplineProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -35,6 +35,26 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Bluetooth.BluetoothDevice Device
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member BluetoothDevice RfcommDeviceService.Device is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothDevice%20RfcommDeviceService.Device");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Enumeration.DeviceAccessInformation DeviceAccessInformation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DeviceAccessInformation RfcommDeviceService.DeviceAccessInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceAccessInformation%20RfcommDeviceService.DeviceAccessInformation");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Sockets.SocketProtectionLevel MaxProtectionLevel
 		{
 			get
@@ -63,59 +83,19 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Bluetooth.BluetoothDevice Device
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService> FromIdAsync(string deviceId)
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member BluetoothDevice RfcommDeviceService.Device is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothDevice%20RfcommDeviceService.Device");
-			}
+			throw new global::System.NotImplementedException("The member IAsyncOperation<RfcommDeviceService> RfcommDeviceService.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CRfcommDeviceService%3E%20RfcommDeviceService.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Enumeration.DeviceAccessInformation DeviceAccessInformation
+		public static string GetDeviceSelector(global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId serviceId)
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DeviceAccessInformation RfcommDeviceService.DeviceAccessInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceAccessInformation%20RfcommDeviceService.DeviceAccessInformation");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.ConnectionHostName.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.ConnectionServiceName.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.ServiceId.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.ProtectionLevel.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.MaxProtectionLevel.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyDictionary<uint, global::Windows.Storage.Streams.IBuffer>> GetSdpRawAttributesAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyDictionary<uint, IBuffer>> RfcommDeviceService.GetSdpRawAttributesAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyDictionary%3Cuint%2C%20IBuffer%3E%3E%20RfcommDeviceService.GetSdpRawAttributesAsync%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyDictionary<uint, global::Windows.Storage.Streams.IBuffer>> GetSdpRawAttributesAsync(global::Windows.Devices.Bluetooth.BluetoothCacheMode cacheMode)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyDictionary<uint, IBuffer>> RfcommDeviceService.GetSdpRawAttributesAsync(BluetoothCacheMode cacheMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyDictionary%3Cuint%2C%20IBuffer%3E%3E%20RfcommDeviceService.GetSdpRawAttributesAsync%28BluetoothCacheMode%20cacheMode%29");
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.Device.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "void RfcommDeviceService.Dispose()");
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.DeviceAccessInformation.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceAccessStatus> RequestAccessAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceAccessStatus> RfcommDeviceService.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDeviceAccessStatus%3E%20RfcommDeviceService.RequestAccessAsync%28%29");
+			throw new global::System.NotImplementedException("The member string RfcommDeviceService.GetDeviceSelector(RfcommServiceId serviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RfcommDeviceService.GetDeviceSelector%28RfcommServiceId%20serviceId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -146,20 +126,52 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 			throw new global::System.NotImplementedException("The member string RfcommDeviceService.GetDeviceSelectorForBluetoothDeviceAndServiceId(BluetoothDevice bluetoothDevice, RfcommServiceId serviceId, BluetoothCacheMode cacheMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RfcommDeviceService.GetDeviceSelectorForBluetoothDeviceAndServiceId%28BluetoothDevice%20bluetoothDevice%2C%20RfcommServiceId%20serviceId%2C%20BluetoothCacheMode%20cacheMode%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.operator ==(Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService, Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService)
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.operator !=(Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService, Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService)
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.Equals(Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService)
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.Equals(object)
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.GetHashCode()
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService> FromIdAsync(string deviceId)
+		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyDictionary<uint, global::Windows.Storage.Streams.IBuffer>> GetSdpRawAttributesAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<RfcommDeviceService> RfcommDeviceService.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CRfcommDeviceService%3E%20RfcommDeviceService.FromIdAsync%28string%20deviceId%29");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyDictionary<uint, IBuffer>> RfcommDeviceService.GetSdpRawAttributesAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyDictionary%3Cuint%2C%20IBuffer%3E%3E%20RfcommDeviceService.GetSdpRawAttributesAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetDeviceSelector(global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId serviceId)
+		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyDictionary<uint, global::Windows.Storage.Streams.IBuffer>> GetSdpRawAttributesAsync(global::Windows.Devices.Bluetooth.BluetoothCacheMode cacheMode)
 		{
-			throw new global::System.NotImplementedException("The member string RfcommDeviceService.GetDeviceSelector(RfcommServiceId serviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RfcommDeviceService.GetDeviceSelector%28RfcommServiceId%20serviceId%29");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyDictionary<uint, IBuffer>> RfcommDeviceService.GetSdpRawAttributesAsync(BluetoothCacheMode cacheMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyDictionary%3Cuint%2C%20IBuffer%3E%3E%20RfcommDeviceService.GetSdpRawAttributesAsync%28BluetoothCacheMode%20cacheMode%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService", "void RfcommDeviceService.Dispose()");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceAccessStatus> RequestAccessAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceAccessStatus> RfcommDeviceService.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDeviceAccessStatus%3E%20RfcommDeviceService.RequestAccessAsync%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.ConnectionHostName.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.ConnectionServiceName.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.Device.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.DeviceAccessInformation.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.MaxProtectionLevel.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.ProtectionLevel.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.ServiceId.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceService.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

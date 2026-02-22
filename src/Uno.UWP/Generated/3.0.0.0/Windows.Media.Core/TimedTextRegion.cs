@@ -10,57 +10,15 @@ namespace Windows.Media.Core
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Name
+		public global::Windows.UI.Color Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string TimedTextRegion.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20TimedTextRegion.Name");
+				throw new global::System.NotImplementedException("The member Color TimedTextRegion.Background is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20TimedTextRegion.Background");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "string TimedTextRegion.Name");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Core.TimedTextDouble LineHeight
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimedTextDouble TimedTextRegion.LineHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextDouble%20TimedTextRegion.LineHeight");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "TimedTextDouble TimedTextRegion.LineHeight");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsOverflowClipped
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool TimedTextRegion.IsOverflowClipped is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20TimedTextRegion.IsOverflowClipped");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "bool TimedTextRegion.IsOverflowClipped");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Core.TimedTextSize Extent
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimedTextSize TimedTextRegion.Extent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextSize%20TimedTextRegion.Extent");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "TimedTextSize TimedTextRegion.Extent");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "Color TimedTextRegion.Background");
 			}
 		}
 #endif
@@ -80,6 +38,62 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Core.TimedTextSize Extent
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimedTextSize TimedTextRegion.Extent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextSize%20TimedTextRegion.Extent");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "TimedTextSize TimedTextRegion.Extent");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsOverflowClipped
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool TimedTextRegion.IsOverflowClipped is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20TimedTextRegion.IsOverflowClipped");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "bool TimedTextRegion.IsOverflowClipped");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Core.TimedTextDouble LineHeight
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimedTextDouble TimedTextRegion.LineHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextDouble%20TimedTextRegion.LineHeight");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "TimedTextDouble TimedTextRegion.LineHeight");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Name
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string TimedTextRegion.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20TimedTextRegion.Name");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "string TimedTextRegion.Name");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Core.TimedTextPadding Padding
 		{
 			get
@@ -89,76 +103,6 @@ namespace Windows.Media.Core
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "TimedTextPadding TimedTextRegion.Padding");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color Background
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color TimedTextRegion.Background is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20TimedTextRegion.Background");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "Color TimedTextRegion.Background");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int ZIndex
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int TimedTextRegion.ZIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20TimedTextRegion.ZIndex");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "int TimedTextRegion.ZIndex");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Core.TimedTextWritingMode WritingMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimedTextWritingMode TimedTextRegion.WritingMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextWritingMode%20TimedTextRegion.WritingMode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "TimedTextWritingMode TimedTextRegion.WritingMode");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Core.TimedTextWrapping TextWrapping
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimedTextWrapping TimedTextRegion.TextWrapping is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextWrapping%20TimedTextRegion.TextWrapping");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "TimedTextWrapping TimedTextRegion.TextWrapping");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Core.TimedTextScrollMode ScrollMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimedTextScrollMode TimedTextRegion.ScrollMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextScrollMode%20TimedTextRegion.ScrollMode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "TimedTextScrollMode TimedTextRegion.ScrollMode");
 			}
 		}
 #endif
@@ -178,35 +122,102 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Core.TimedTextScrollMode ScrollMode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimedTextScrollMode TimedTextRegion.ScrollMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextScrollMode%20TimedTextRegion.ScrollMode");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "TimedTextScrollMode TimedTextRegion.ScrollMode");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Core.TimedTextWrapping TextWrapping
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimedTextWrapping TimedTextRegion.TextWrapping is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextWrapping%20TimedTextRegion.TextWrapping");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "TimedTextWrapping TimedTextRegion.TextWrapping");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Core.TimedTextWritingMode WritingMode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimedTextWritingMode TimedTextRegion.WritingMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextWritingMode%20TimedTextRegion.WritingMode");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "TimedTextWritingMode TimedTextRegion.WritingMode");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int ZIndex
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int TimedTextRegion.ZIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20TimedTextRegion.ZIndex");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "int TimedTextRegion.ZIndex");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public TimedTextRegion()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "TimedTextRegion.TimedTextRegion()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.TimedTextRegion.TimedTextRegion()
-		// Forced skipping of method Windows.Media.Core.TimedTextRegion.Name.get
-		// Forced skipping of method Windows.Media.Core.TimedTextRegion.Name.set
-		// Forced skipping of method Windows.Media.Core.TimedTextRegion.Position.get
-		// Forced skipping of method Windows.Media.Core.TimedTextRegion.Position.set
-		// Forced skipping of method Windows.Media.Core.TimedTextRegion.Extent.get
-		// Forced skipping of method Windows.Media.Core.TimedTextRegion.Extent.set
+		// Forced skipping of method Windows.Media.Core.TimedTextRegion.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Core.TimedTextRegion.operator ==(Windows.Media.Core.TimedTextRegion, Windows.Media.Core.TimedTextRegion)
+		// Forced skipping of method Windows.Media.Core.TimedTextRegion.operator !=(Windows.Media.Core.TimedTextRegion, Windows.Media.Core.TimedTextRegion)
+		// Forced skipping of method Windows.Media.Core.TimedTextRegion.Equals(Windows.Media.Core.TimedTextRegion)
+		// Forced skipping of method Windows.Media.Core.TimedTextRegion.Equals(object)
+		// Forced skipping of method Windows.Media.Core.TimedTextRegion.GetHashCode()
+		// Forced skipping of method Windows.Media.Core.TimedTextRegion.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Core.TimedTextRegion.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Core.TimedTextRegion.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Core.TimedTextRegion.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Core.TimedTextRegion.Background.get
 		// Forced skipping of method Windows.Media.Core.TimedTextRegion.Background.set
-		// Forced skipping of method Windows.Media.Core.TimedTextRegion.WritingMode.get
-		// Forced skipping of method Windows.Media.Core.TimedTextRegion.WritingMode.set
 		// Forced skipping of method Windows.Media.Core.TimedTextRegion.DisplayAlignment.get
 		// Forced skipping of method Windows.Media.Core.TimedTextRegion.DisplayAlignment.set
-		// Forced skipping of method Windows.Media.Core.TimedTextRegion.LineHeight.get
-		// Forced skipping of method Windows.Media.Core.TimedTextRegion.LineHeight.set
+		// Forced skipping of method Windows.Media.Core.TimedTextRegion.Extent.get
+		// Forced skipping of method Windows.Media.Core.TimedTextRegion.Extent.set
 		// Forced skipping of method Windows.Media.Core.TimedTextRegion.IsOverflowClipped.get
 		// Forced skipping of method Windows.Media.Core.TimedTextRegion.IsOverflowClipped.set
+		// Forced skipping of method Windows.Media.Core.TimedTextRegion.LineHeight.get
+		// Forced skipping of method Windows.Media.Core.TimedTextRegion.LineHeight.set
+		// Forced skipping of method Windows.Media.Core.TimedTextRegion.Name.get
+		// Forced skipping of method Windows.Media.Core.TimedTextRegion.Name.set
 		// Forced skipping of method Windows.Media.Core.TimedTextRegion.Padding.get
 		// Forced skipping of method Windows.Media.Core.TimedTextRegion.Padding.set
-		// Forced skipping of method Windows.Media.Core.TimedTextRegion.TextWrapping.get
-		// Forced skipping of method Windows.Media.Core.TimedTextRegion.TextWrapping.set
-		// Forced skipping of method Windows.Media.Core.TimedTextRegion.ZIndex.get
-		// Forced skipping of method Windows.Media.Core.TimedTextRegion.ZIndex.set
+		// Forced skipping of method Windows.Media.Core.TimedTextRegion.Position.get
+		// Forced skipping of method Windows.Media.Core.TimedTextRegion.Position.set
 		// Forced skipping of method Windows.Media.Core.TimedTextRegion.ScrollMode.get
 		// Forced skipping of method Windows.Media.Core.TimedTextRegion.ScrollMode.set
+		// Forced skipping of method Windows.Media.Core.TimedTextRegion.TextWrapping.get
+		// Forced skipping of method Windows.Media.Core.TimedTextRegion.TextWrapping.set
+		// Forced skipping of method Windows.Media.Core.TimedTextRegion.WritingMode.get
+		// Forced skipping of method Windows.Media.Core.TimedTextRegion.WritingMode.set
+		// Forced skipping of method Windows.Media.Core.TimedTextRegion.ZIndex.get
+		// Forced skipping of method Windows.Media.Core.TimedTextRegion.ZIndex.set
+		// Forced skipping of method Windows.Media.Core.TimedTextRegion.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -26,6 +26,17 @@ namespace Microsoft.UI.Xaml.Printing
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Printing.AddPagesEventArgs.AddPagesEventArgs()
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.AddPagesEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.AddPagesEventArgs.operator ==(Microsoft.UI.Xaml.Printing.AddPagesEventArgs, Microsoft.UI.Xaml.Printing.AddPagesEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.AddPagesEventArgs.operator !=(Microsoft.UI.Xaml.Printing.AddPagesEventArgs, Microsoft.UI.Xaml.Printing.AddPagesEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.AddPagesEventArgs.Equals(Microsoft.UI.Xaml.Printing.AddPagesEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.AddPagesEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.AddPagesEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.AddPagesEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.AddPagesEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.AddPagesEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.AddPagesEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Printing.AddPagesEventArgs.PrintTaskOptions.get
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.AddPagesEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

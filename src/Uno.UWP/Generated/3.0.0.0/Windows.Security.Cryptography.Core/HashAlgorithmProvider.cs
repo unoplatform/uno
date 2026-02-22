@@ -33,8 +33,24 @@ namespace Windows.Security.Cryptography.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Cryptography.Core.HashAlgorithmProvider.AlgorithmName.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.HashAlgorithmProvider.HashLength.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.HashAlgorithmProvider.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Security.Cryptography.Core.HashAlgorithmProvider OpenAlgorithm(string algorithm)
+		{
+			throw new global::System.NotImplementedException("The member HashAlgorithmProvider HashAlgorithmProvider.OpenAlgorithm(string algorithm) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HashAlgorithmProvider%20HashAlgorithmProvider.OpenAlgorithm%28string%20algorithm%29");
+		}
+#endif
+		// Forced skipping of method Windows.Security.Cryptography.Core.HashAlgorithmProvider.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Cryptography.Core.HashAlgorithmProvider.operator ==(Windows.Security.Cryptography.Core.HashAlgorithmProvider, Windows.Security.Cryptography.Core.HashAlgorithmProvider)
+		// Forced skipping of method Windows.Security.Cryptography.Core.HashAlgorithmProvider.operator !=(Windows.Security.Cryptography.Core.HashAlgorithmProvider, Windows.Security.Cryptography.Core.HashAlgorithmProvider)
+		// Forced skipping of method Windows.Security.Cryptography.Core.HashAlgorithmProvider.Equals(Windows.Security.Cryptography.Core.HashAlgorithmProvider)
+		// Forced skipping of method Windows.Security.Cryptography.Core.HashAlgorithmProvider.Equals(object)
+		// Forced skipping of method Windows.Security.Cryptography.Core.HashAlgorithmProvider.GetHashCode()
+		// Forced skipping of method Windows.Security.Cryptography.Core.HashAlgorithmProvider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.HashAlgorithmProvider.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.HashAlgorithmProvider.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.HashAlgorithmProvider.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IBuffer HashData(global::Windows.Storage.Streams.IBuffer data)
@@ -49,12 +65,8 @@ namespace Windows.Security.Cryptography.Core
 			throw new global::System.NotImplementedException("The member CryptographicHash HashAlgorithmProvider.CreateHash() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CryptographicHash%20HashAlgorithmProvider.CreateHash%28%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Security.Cryptography.Core.HashAlgorithmProvider OpenAlgorithm(string algorithm)
-		{
-			throw new global::System.NotImplementedException("The member HashAlgorithmProvider HashAlgorithmProvider.OpenAlgorithm(string algorithm) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HashAlgorithmProvider%20HashAlgorithmProvider.OpenAlgorithm%28string%20algorithm%29");
-		}
-#endif
+		// Forced skipping of method Windows.Security.Cryptography.Core.HashAlgorithmProvider.AlgorithmName.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.HashAlgorithmProvider.HashLength.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.HashAlgorithmProvider.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

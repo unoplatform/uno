@@ -10,6 +10,19 @@ namespace Windows.Perception.People
 	{
 		// Forced skipping of method Windows.Perception.People.HandMeshVertex.HandMeshVertex()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public HandMeshVertex(global::System.Numerics.Vector3 _Position, global::System.Numerics.Vector3 _Normal)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.People.HandMeshVertex", "HandMeshVertex.HandMeshVertex(Vector3 _Position, Vector3 _Normal)");
+		}
+#endif
+		// Forced skipping of method Windows.Perception.People.HandMeshVertex.HandMeshVertex(System.Numerics.Vector3, System.Numerics.Vector3)
+		// Forced skipping of method Windows.Perception.People.HandMeshVertex.operator ==(Windows.Perception.People.HandMeshVertex, Windows.Perception.People.HandMeshVertex)
+		// Forced skipping of method Windows.Perception.People.HandMeshVertex.operator !=(Windows.Perception.People.HandMeshVertex, Windows.Perception.People.HandMeshVertex)
+		// Forced skipping of method Windows.Perception.People.HandMeshVertex.Equals(Windows.Perception.People.HandMeshVertex)
+		// Forced skipping of method Windows.Perception.People.HandMeshVertex.Equals(object)
+		// Forced skipping of method Windows.Perception.People.HandMeshVertex.GetHashCode()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::System.Numerics.Vector3 Position;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

@@ -3,64 +3,30 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class TabViewExternalTornOutTabsDroppingEventArgs
 	{
-#if false
-		internal TabViewExternalTornOutTabsDroppingEventArgs()
-		{
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AllowDrop
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool TabViewExternalTornOutTabsDroppingEventArgs.AllowDrop is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20TabViewExternalTornOutTabsDroppingEventArgs.AllowDrop");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs", "bool TabViewExternalTornOutTabsDroppingEventArgs.AllowDrop");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int DropIndex
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int TabViewExternalTornOutTabsDroppingEventArgs.DropIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20TabViewExternalTornOutTabsDroppingEventArgs.DropIndex");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object[] Items
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member object[] TabViewExternalTornOutTabsDroppingEventArgs.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%5B%5D%20TabViewExternalTornOutTabsDroppingEventArgs.Items");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.UIElement[] Tabs
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member UIElement[] TabViewExternalTornOutTabsDroppingEventArgs.Tabs is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UIElement%5B%5D%20TabViewExternalTornOutTabsDroppingEventArgs.Tabs");
-			}
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs.Items.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs.Tabs.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs.DropIndex.get
+		// Skipping already declared property AllowDrop
+		// Skipping already declared property DropIndex
+		// Skipping already declared property Items
+		// Skipping already declared property Tabs
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs.operator ==(Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs, Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs.operator !=(Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs, Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs.Equals(Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs.AllowDrop.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs.AllowDrop.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs.DropIndex.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs.Items.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs.Tabs.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

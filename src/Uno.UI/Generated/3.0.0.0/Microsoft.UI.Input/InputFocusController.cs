@@ -9,6 +9,22 @@ namespace Microsoft.UI.Input
 	public partial class InputFocusController : global::Microsoft.UI.Input.InputObject
 	{
 		// Skipping already declared property HasFocus
+		// Forced skipping of method Microsoft.UI.Input.InputFocusController.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Input.InputFocusController GetForIsland(global::Microsoft.UI.Content.ContentIsland island)
+		{
+			throw new global::System.NotImplementedException("The member InputFocusController InputFocusController.GetForIsland(ContentIsland island) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputFocusController%20InputFocusController.GetForIsland%28ContentIsland%20island%29");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Input.InputFocusController.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Input.InputFocusController.operator ==(Microsoft.UI.Input.InputFocusController, Microsoft.UI.Input.InputFocusController)
+		// Forced skipping of method Microsoft.UI.Input.InputFocusController.operator !=(Microsoft.UI.Input.InputFocusController, Microsoft.UI.Input.InputFocusController)
+		// Forced skipping of method Microsoft.UI.Input.InputFocusController.Equals(Microsoft.UI.Input.InputFocusController)
+		// Forced skipping of method Microsoft.UI.Input.InputFocusController.Equals(object)
+		// Forced skipping of method Microsoft.UI.Input.InputFocusController.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Input.InputFocusController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.InputFocusController.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TrySetFocus()
@@ -24,13 +40,8 @@ namespace Microsoft.UI.Input
 		// Forced skipping of method Microsoft.UI.Input.InputFocusController.NavigateFocusRequested.add
 		// Forced skipping of method Microsoft.UI.Input.InputFocusController.NavigateFocusRequested.remove
 		// Forced skipping of method Microsoft.UI.Input.InputFocusController.HasFocus.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Input.InputFocusController GetForIsland(global::Microsoft.UI.Content.ContentIsland island)
-		{
-			throw new global::System.NotImplementedException("The member InputFocusController InputFocusController.GetForIsland(ContentIsland island) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputFocusController%20InputFocusController.GetForIsland%28ContentIsland%20island%29");
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Input.InputFocusController.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Input.InputFocusController.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Input.InputFocusController.GotFocus
 		// Skipping already declared event Microsoft.UI.Input.InputFocusController.LostFocus
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

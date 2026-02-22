@@ -15,29 +15,15 @@ namespace Windows.UI.Text
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint UndoLimit
+		public bool AlignmentIncludesTrailingWhitespace
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint RichEditTextDocument.UndoLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20RichEditTextDocument.UndoLimit");
+				throw new global::System.NotImplementedException("The member bool RichEditTextDocument.AlignmentIncludesTrailingWhitespace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RichEditTextDocument.AlignmentIncludesTrailingWhitespace");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.RichEditTextDocument", "uint RichEditTextDocument.UndoLimit");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float DefaultTabStop
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float RichEditTextDocument.DefaultTabStop is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20RichEditTextDocument.DefaultTabStop");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.RichEditTextDocument", "float RichEditTextDocument.DefaultTabStop");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.RichEditTextDocument", "bool RichEditTextDocument.AlignmentIncludesTrailingWhitespace");
 			}
 		}
 #endif
@@ -57,11 +43,15 @@ namespace Windows.UI.Text
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Text.ITextSelection Selection
+		public float DefaultTabStop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ITextSelection RichEditTextDocument.Selection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ITextSelection%20RichEditTextDocument.Selection");
+				throw new global::System.NotImplementedException("The member float RichEditTextDocument.DefaultTabStop is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20RichEditTextDocument.DefaultTabStop");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.RichEditTextDocument", "float RichEditTextDocument.DefaultTabStop");
 			}
 		}
 #endif
@@ -81,22 +71,38 @@ namespace Windows.UI.Text
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AlignmentIncludesTrailingWhitespace
+		public global::Windows.UI.Text.ITextSelection Selection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RichEditTextDocument.AlignmentIncludesTrailingWhitespace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RichEditTextDocument.AlignmentIncludesTrailingWhitespace");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.RichEditTextDocument", "bool RichEditTextDocument.AlignmentIncludesTrailingWhitespace");
+				throw new global::System.NotImplementedException("The member ITextSelection RichEditTextDocument.Selection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ITextSelection%20RichEditTextDocument.Selection");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.AlignmentIncludesTrailingWhitespace.get
-		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.AlignmentIncludesTrailingWhitespace.set
-		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.IgnoreTrailingCharacterSpacing.get
-		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.IgnoreTrailingCharacterSpacing.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint UndoLimit
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint RichEditTextDocument.UndoLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20RichEditTextDocument.UndoLimit");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.RichEditTextDocument", "uint RichEditTextDocument.UndoLimit");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.operator ==(Windows.UI.Text.RichEditTextDocument, Windows.UI.Text.RichEditTextDocument)
+		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.operator !=(Windows.UI.Text.RichEditTextDocument, Windows.UI.Text.RichEditTextDocument)
+		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.Equals(Windows.UI.Text.RichEditTextDocument)
+		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.Equals(object)
+		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.GetHashCode()
+		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ClearUndoRedoHistory()
@@ -125,13 +131,6 @@ namespace Windows.UI.Text
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.RichEditTextDocument", "void RichEditTextDocument.SetMathMode(RichEditMathMode mode)");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.CaretType.get
-		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.CaretType.set
-		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.DefaultTabStop.get
-		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.DefaultTabStop.set
-		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.Selection.get
-		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.UndoLimit.get
-		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.UndoLimit.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool CanCopy()
@@ -272,6 +271,18 @@ namespace Windows.UI.Text
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.RichEditTextDocument", "void RichEditTextDocument.Undo()");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.AlignmentIncludesTrailingWhitespace.get
+		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.AlignmentIncludesTrailingWhitespace.set
+		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.CaretType.get
+		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.CaretType.set
+		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.DefaultTabStop.get
+		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.DefaultTabStop.set
+		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.IgnoreTrailingCharacterSpacing.get
+		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.IgnoreTrailingCharacterSpacing.set
+		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.Selection.get
+		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.UndoLimit.get
+		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.UndoLimit.set
+		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.UI.Text.ITextDocument
 	}
 }

@@ -253,19 +253,16 @@ namespace Windows.Media.Import
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.Session.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.HasSucceeded.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.FoundItems.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.PhotosCount.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.PhotosSizeInBytes.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.VideosCount.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.VideosSizeInBytes.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SidecarsCount.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SidecarsSizeInBytes.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SiblingsCount.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SiblingsSizeInBytes.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.TotalCount.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.TotalSizeInBytes.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.operator ==(Windows.Media.Import.PhotoImportFindItemsResult, Windows.Media.Import.PhotoImportFindItemsResult)
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.operator !=(Windows.Media.Import.PhotoImportFindItemsResult, Windows.Media.Import.PhotoImportFindItemsResult)
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.Equals(Windows.Media.Import.PhotoImportFindItemsResult)
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.Equals(object)
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.GetHashCode()
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SelectAll()
@@ -294,19 +291,6 @@ namespace Windows.Media.Import
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportFindItemsResult", "void PhotoImportFindItemsResult.SetImportMode(PhotoImportImportMode value)");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.ImportMode.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedPhotosCount.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedPhotosSizeInBytes.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedVideosCount.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedVideosSizeInBytes.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedSidecarsCount.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedSidecarsSizeInBytes.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedSiblingsCount.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedSiblingsSizeInBytes.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedTotalCount.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedTotalSizeInBytes.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectionChanged.add
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectionChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Media.Import.PhotoImportImportItemsResult, global::Windows.Media.Import.PhotoImportProgress> ImportItemsAsync()
@@ -316,6 +300,8 @@ namespace Windows.Media.Import
 #endif
 		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.ItemImported.add
 		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.ItemImported.remove
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectionChanged.add
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectionChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddItemsInDateRangeToSelection(global::System.DateTimeOffset rangeStart, global::System.TimeSpan rangeLength)
@@ -323,6 +309,31 @@ namespace Windows.Media.Import
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportFindItemsResult", "void PhotoImportFindItemsResult.AddItemsInDateRangeToSelection(DateTimeOffset rangeStart, TimeSpan rangeLength)");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.FoundItems.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.HasSucceeded.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.ImportMode.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.PhotosCount.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.PhotosSizeInBytes.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedPhotosCount.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedPhotosSizeInBytes.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedSiblingsCount.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedSiblingsSizeInBytes.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedSidecarsCount.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedSidecarsSizeInBytes.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedTotalCount.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedTotalSizeInBytes.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedVideosCount.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedVideosSizeInBytes.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.Session.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SiblingsCount.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SiblingsSizeInBytes.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SidecarsCount.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SidecarsSizeInBytes.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.TotalCount.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.TotalSizeInBytes.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.VideosCount.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.VideosSizeInBytes.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Import.PhotoImportFindItemsResult, global::Windows.Media.Import.PhotoImportItemImportedEventArgs> ItemImported

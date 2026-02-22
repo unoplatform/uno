@@ -11,7 +11,18 @@ namespace Windows.ApplicationModel.Background
 		// Skipping already declared property ConditionType
 		// Skipping already declared method Windows.ApplicationModel.Background.SystemCondition.SystemCondition(Windows.ApplicationModel.Background.SystemConditionType)
 		// Forced skipping of method Windows.ApplicationModel.Background.SystemCondition.SystemCondition(Windows.ApplicationModel.Background.SystemConditionType)
+		// Forced skipping of method Windows.ApplicationModel.Background.SystemCondition.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Background.SystemCondition.operator ==(Windows.ApplicationModel.Background.SystemCondition, Windows.ApplicationModel.Background.SystemCondition)
+		// Forced skipping of method Windows.ApplicationModel.Background.SystemCondition.operator !=(Windows.ApplicationModel.Background.SystemCondition, Windows.ApplicationModel.Background.SystemCondition)
+		// Forced skipping of method Windows.ApplicationModel.Background.SystemCondition.Equals(Windows.ApplicationModel.Background.SystemCondition)
+		// Forced skipping of method Windows.ApplicationModel.Background.SystemCondition.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Background.SystemCondition.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Background.SystemCondition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.SystemCondition.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.SystemCondition.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Background.SystemCondition.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Background.SystemCondition.ConditionType.get
+		// Forced skipping of method Windows.ApplicationModel.Background.SystemCondition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Background.IBackgroundCondition
 	}
 }

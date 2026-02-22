@@ -8,12 +8,25 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class InfoBarTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
-		// Skipping already declared property IconElement
 		// Skipping already declared property IconElementProperty
+		// Skipping already declared property IconElement
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.InfoBarTemplateSettings()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.InfoBarTemplateSettings()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.IconElementProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.InfoBarTemplateSettings(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.operator ==(Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings, Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.operator !=(Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings, Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.Equals(Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.InfoBarTemplateSettings(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.IconElement.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.IconElement.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.IconElementProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,48 +10,6 @@ namespace Windows.UI.Notifications
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Tag
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ScheduledTileNotification.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ScheduledTileNotification.Tag");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledTileNotification", "string ScheduledTileNotification.Tag");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Id
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ScheduledTileNotification.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ScheduledTileNotification.Id");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledTileNotification", "string ScheduledTileNotification.Id");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.DateTimeOffset? ExpirationTime
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? ScheduledTileNotification.ExpirationTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20ScheduledTileNotification.ExpirationTime");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledTileNotification", "DateTimeOffset? ScheduledTileNotification.ExpirationTime");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.XmlDocument Content
 		{
 			get
@@ -72,19 +30,72 @@ namespace Windows.UI.Notifications
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.DateTimeOffset? ExpirationTime
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DateTimeOffset? ScheduledTileNotification.ExpirationTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20ScheduledTileNotification.ExpirationTime");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledTileNotification", "DateTimeOffset? ScheduledTileNotification.ExpirationTime");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Id
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string ScheduledTileNotification.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ScheduledTileNotification.Id");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledTileNotification", "string ScheduledTileNotification.Id");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Tag
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string ScheduledTileNotification.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ScheduledTileNotification.Tag");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledTileNotification", "string ScheduledTileNotification.Tag");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ScheduledTileNotification(global::Windows.Data.Xml.Dom.XmlDocument content, global::System.DateTimeOffset deliveryTime)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledTileNotification", "ScheduledTileNotification.ScheduledTileNotification(XmlDocument content, DateTimeOffset deliveryTime)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.ScheduledTileNotification(Windows.Data.Xml.Dom.XmlDocument, System.DateTimeOffset)
+		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.operator ==(Windows.UI.Notifications.ScheduledTileNotification, Windows.UI.Notifications.ScheduledTileNotification)
+		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.operator !=(Windows.UI.Notifications.ScheduledTileNotification, Windows.UI.Notifications.ScheduledTileNotification)
+		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.Equals(Windows.UI.Notifications.ScheduledTileNotification)
+		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.Equals(object)
+		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.GetHashCode()
+		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.Content.get
 		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.DeliveryTime.get
-		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.ExpirationTime.set
 		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.ExpirationTime.get
-		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.Tag.set
-		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.Tag.get
-		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.Id.set
+		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.ExpirationTime.set
 		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.Id.get
+		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.Id.set
+		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.Tag.get
+		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.Tag.set
+		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

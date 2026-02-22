@@ -8,194 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class TextBlock
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsColorFontEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsColorFontEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsColorFontEnabledProperty, value);
-			}
-		}
-#endif
-		// Skipping already declared property LineHeight
-		// Skipping already declared property HorizontalTextAlignment
-		// Skipping already declared property Foreground
-		// Skipping already declared property FontWeight
-		// Skipping already declared property FontStyle
-		// Skipping already declared property FontStretch
-		// Skipping already declared property FontSize
-		// Skipping already declared property FontFamily
-		// Skipping already declared property IsTextSelectionEnabled
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsTextScaleFactorEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsTextScaleFactorEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsTextScaleFactorEnabledProperty, value);
-			}
-		}
-#endif
-		// Skipping already declared property CharacterSpacing
-		// Skipping already declared property TextWrapping
-		// Skipping already declared property LineStackingStrategy
-		// Skipping already declared property TextTrimming
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.TextReadingOrder TextReadingOrder
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.TextReadingOrder)this.GetValue(TextReadingOrderProperty);
-			}
-			set
-			{
-				this.SetValue(TextReadingOrderProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.TextLineBounds TextLineBounds
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.TextLineBounds)this.GetValue(TextLineBoundsProperty);
-			}
-			set
-			{
-				this.SetValue(TextLineBoundsProperty, value);
-			}
-		}
-#endif
-		// Skipping already declared property TextDecorations
-		// Skipping already declared property TextAlignment
-		// Skipping already declared property Text
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.SolidColorBrush SelectionHighlightColor
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.SolidColorBrush)this.GetValue(SelectionHighlightColorProperty);
-			}
-			set
-			{
-				this.SetValue(SelectionHighlightColorProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase SelectionFlyout
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase)this.GetValue(SelectionFlyoutProperty);
-			}
-			set
-			{
-				this.SetValue(SelectionFlyoutProperty, value);
-			}
-		}
-#endif
-		// Skipping already declared property Padding
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.OpticalMarginAlignment OpticalMarginAlignment
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.OpticalMarginAlignment)this.GetValue(OpticalMarginAlignmentProperty);
-			}
-			set
-			{
-				this.SetValue(OpticalMarginAlignmentProperty, value);
-			}
-		}
-#endif
-		// Skipping already declared property MaxLines
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Documents.TextPointer ContentEnd
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TextPointer TextBlock.ContentEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextPointer%20TextBlock.ContentEnd");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Documents.TextPointer ContentStart
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TextPointer TextBlock.ContentStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextPointer%20TextBlock.ContentStart");
-			}
-		}
-#endif
-		// Skipping already declared property Inlines
-		// Skipping already declared property IsTextTrimmed
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public string SelectedText
-		{
-			get
-			{
-				return (string)this.GetValue(SelectedTextProperty);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Documents.TextPointer SelectionEnd
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TextPointer TextBlock.SelectionEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextPointer%20TextBlock.SelectionEnd");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Documents.TextPointer SelectionStart
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TextPointer TextBlock.SelectionStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextPointer%20TextBlock.SelectionStart");
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Documents.TextHighlighter> TextHighlighters
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<TextHighlighter> TextBlock.TextHighlighters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CTextHighlighter%3E%20TextBlock.TextHighlighters");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double BaselineOffset
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double TextBlock.BaselineOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20TextBlock.BaselineOffset");
-			}
-		}
-#endif
 		// Skipping already declared property CharacterSpacingProperty
 		// Skipping already declared property FontFamilyProperty
 		// Skipping already declared property FontSizeProperty
@@ -234,7 +46,7 @@ namespace Microsoft.UI.Xaml.Controls
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.OpticalMarginAlignment)));
 #endif
 		// Skipping already declared property PaddingProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty SelectedTextProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -279,73 +91,223 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared property TextTrimmingProperty
 		// Skipping already declared property TextWrappingProperty
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double BaselineOffset
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double TextBlock.BaselineOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20TextBlock.BaselineOffset");
+			}
+		}
+#endif
+		// Skipping already declared property CharacterSpacing
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Documents.TextPointer ContentEnd
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TextPointer TextBlock.ContentEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextPointer%20TextBlock.ContentEnd");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Documents.TextPointer ContentStart
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TextPointer TextBlock.ContentStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextPointer%20TextBlock.ContentStart");
+			}
+		}
+#endif
+		// Skipping already declared property FontFamily
+		// Skipping already declared property FontSize
+		// Skipping already declared property FontStretch
+		// Skipping already declared property FontStyle
+		// Skipping already declared property FontWeight
+		// Skipping already declared property Foreground
+		// Skipping already declared property HorizontalTextAlignment
+		// Skipping already declared property Inlines
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsColorFontEnabled
+		{
+			get
+			{
+				return (bool)this.GetValue(IsColorFontEnabledProperty);
+			}
+			set
+			{
+				this.SetValue(IsColorFontEnabledProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsTextScaleFactorEnabled
+		{
+			get
+			{
+				return (bool)this.GetValue(IsTextScaleFactorEnabledProperty);
+			}
+			set
+			{
+				this.SetValue(IsTextScaleFactorEnabledProperty, value);
+			}
+		}
+#endif
+		// Skipping already declared property IsTextSelectionEnabled
+		// Skipping already declared property IsTextTrimmed
+		// Skipping already declared property LineHeight
+		// Skipping already declared property LineStackingStrategy
+		// Skipping already declared property MaxLines
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.OpticalMarginAlignment OpticalMarginAlignment
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.OpticalMarginAlignment)this.GetValue(OpticalMarginAlignmentProperty);
+			}
+			set
+			{
+				this.SetValue(OpticalMarginAlignmentProperty, value);
+			}
+		}
+#endif
+		// Skipping already declared property Padding
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+		public string SelectedText
+		{
+			get
+			{
+				return (string)this.GetValue(SelectedTextProperty);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Documents.TextPointer SelectionEnd
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TextPointer TextBlock.SelectionEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextPointer%20TextBlock.SelectionEnd");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase SelectionFlyout
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase)this.GetValue(SelectionFlyoutProperty);
+			}
+			set
+			{
+				this.SetValue(SelectionFlyoutProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Media.SolidColorBrush SelectionHighlightColor
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Media.SolidColorBrush)this.GetValue(SelectionHighlightColorProperty);
+			}
+			set
+			{
+				this.SetValue(SelectionHighlightColorProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Documents.TextPointer SelectionStart
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TextPointer TextBlock.SelectionStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextPointer%20TextBlock.SelectionStart");
+			}
+		}
+#endif
+		// Skipping already declared property Text
+		// Skipping already declared property TextAlignment
+		// Skipping already declared property TextDecorations
+		// Skipping already declared property TextHighlighters
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.TextLineBounds TextLineBounds
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.TextLineBounds)this.GetValue(TextLineBoundsProperty);
+			}
+			set
+			{
+				this.SetValue(TextLineBoundsProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.TextReadingOrder TextReadingOrder
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.TextReadingOrder)this.GetValue(TextReadingOrderProperty);
+			}
+			set
+			{
+				this.SetValue(TextReadingOrderProperty, value);
+			}
+		}
+#endif
+		// Skipping already declared property TextTrimming
+		// Skipping already declared property TextWrapping
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TextBlock.TextBlock()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextBlock()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontSize.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontSize.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontFamily.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontFamily.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontWeight.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontWeight.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontStyle.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontStyle.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontStretch.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontStretch.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.CharacterSpacing.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.CharacterSpacing.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.Foreground.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.Foreground.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextWrapping.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextWrapping.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextTrimming.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextTrimming.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextAlignment.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextAlignment.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.Text.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.Text.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.Inlines.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.Padding.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.Padding.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.LineHeight.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.LineHeight.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.LineStackingStrategy.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.LineStackingStrategy.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.IsTextSelectionEnabled.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.IsTextSelectionEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.SelectedText.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.ContentStart.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.ContentEnd.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.SelectionStart.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.SelectionEnd.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.BaselineOffset.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.SelectionHighlightColor.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.SelectionHighlightColor.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.MaxLines.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.MaxLines.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextLineBounds.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextLineBounds.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.OpticalMarginAlignment.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.OpticalMarginAlignment.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.IsColorFontEnabled.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.IsColorFontEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextReadingOrder.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextReadingOrder.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.IsTextScaleFactorEnabled.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.IsTextScaleFactorEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextDecorations.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextDecorations.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.IsTextTrimmed.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.HorizontalTextAlignment.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.HorizontalTextAlignment.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextHighlighters.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.SelectionFlyout.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.SelectionFlyout.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.SelectionChanged.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.SelectionChanged.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.ContextMenuOpening.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.ContextMenuOpening.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.IsTextTrimmedChanged.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.IsTextTrimmedChanged.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.CharacterSpacingProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontFamilyProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontSizeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontStretchProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontStyleProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontWeightProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.ForegroundProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.HorizontalTextAlignmentProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.IsColorFontEnabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.IsTextScaleFactorEnabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.IsTextSelectionEnabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.IsTextTrimmedProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.LineHeightProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.LineStackingStrategyProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.MaxLinesProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.OpticalMarginAlignmentProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.PaddingProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.SelectedTextProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.SelectionFlyoutProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.SelectionHighlightColorProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextAlignmentProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextDecorationsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextLineBoundsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextReadingOrderProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextTrimmingProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextWrappingProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.operator ==(Microsoft.UI.Xaml.Controls.TextBlock, Microsoft.UI.Xaml.Controls.TextBlock)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.operator !=(Microsoft.UI.Xaml.Controls.TextBlock, Microsoft.UI.Xaml.Controls.TextBlock)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.Equals(Microsoft.UI.Xaml.Controls.TextBlock)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public void SelectAll()
@@ -374,33 +336,73 @@ namespace Microsoft.UI.Xaml.Controls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TextBlock", "void TextBlock.CopySelectionToClipboard()");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontSizeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontFamilyProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontWeightProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontStyleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontStretchProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.CharacterSpacingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.ForegroundProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextWrappingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextTrimmingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextAlignmentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.PaddingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.LineHeightProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.LineStackingStrategyProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.IsTextSelectionEnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.SelectedTextProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.SelectionHighlightColorProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.MaxLinesProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextLineBoundsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.OpticalMarginAlignmentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.IsColorFontEnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextReadingOrderProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.IsTextScaleFactorEnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextDecorationsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.IsTextTrimmedProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.HorizontalTextAlignmentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.SelectionFlyoutProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.ContextMenuOpening.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.ContextMenuOpening.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.IsTextTrimmedChanged.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.IsTextTrimmedChanged.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.SelectionChanged.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.SelectionChanged.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.BaselineOffset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.CharacterSpacing.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.CharacterSpacing.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.ContentEnd.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.ContentStart.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontFamily.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontFamily.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontSize.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontSize.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontStretch.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontStretch.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontStyle.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontStyle.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontWeight.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.FontWeight.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.Foreground.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.Foreground.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.HorizontalTextAlignment.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.HorizontalTextAlignment.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.Inlines.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.IsColorFontEnabled.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.IsColorFontEnabled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.IsTextScaleFactorEnabled.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.IsTextScaleFactorEnabled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.IsTextSelectionEnabled.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.IsTextSelectionEnabled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.IsTextTrimmed.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.LineHeight.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.LineHeight.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.LineStackingStrategy.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.LineStackingStrategy.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.MaxLines.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.MaxLines.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.OpticalMarginAlignment.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.OpticalMarginAlignment.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.Padding.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.Padding.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.SelectedText.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.SelectionEnd.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.SelectionFlyout.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.SelectionFlyout.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.SelectionHighlightColor.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.SelectionHighlightColor.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.SelectionStart.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.Text.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.Text.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextAlignment.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextAlignment.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextDecorations.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextDecorations.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextHighlighters.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextLineBounds.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextLineBounds.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextReadingOrder.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextReadingOrder.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextTrimming.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextTrimming.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextWrapping.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.TextWrapping.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBlock.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Microsoft.UI.Xaml.Controls.ContextMenuOpeningEventHandler ContextMenuOpening

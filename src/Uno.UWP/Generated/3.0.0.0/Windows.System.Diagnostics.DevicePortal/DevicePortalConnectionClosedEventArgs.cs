@@ -23,6 +23,17 @@ namespace Windows.System.Diagnostics.DevicePortal
 			}
 		}
 #endif
+		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionClosedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionClosedEventArgs.operator ==(Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionClosedEventArgs, Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionClosedEventArgs)
+		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionClosedEventArgs.operator !=(Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionClosedEventArgs, Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionClosedEventArgs)
+		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionClosedEventArgs.Equals(Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionClosedEventArgs)
+		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionClosedEventArgs.Equals(object)
+		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionClosedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionClosedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionClosedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionClosedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionClosedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionClosedEventArgs.Reason.get
+		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionClosedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

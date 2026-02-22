@@ -53,10 +53,16 @@ namespace Windows.Graphics.Printing.PrintTicket
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketOption.Name.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketOption.XmlNamespace.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketOption.XmlNode.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketOption.DisplayName.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketOption.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketOption.operator ==(Windows.Graphics.Printing.PrintTicket.PrintTicketOption, Windows.Graphics.Printing.PrintTicket.PrintTicketOption)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketOption.operator !=(Windows.Graphics.Printing.PrintTicket.PrintTicketOption, Windows.Graphics.Printing.PrintTicket.PrintTicketOption)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketOption.Equals(Windows.Graphics.Printing.PrintTicket.PrintTicketOption)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketOption.Equals(object)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketOption.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketOption.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketOption.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketOption.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketOption.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.IXmlNode GetPropertyNode(string name, string xmlNamespace)
@@ -85,5 +91,10 @@ namespace Windows.Graphics.Printing.PrintTicket
 			throw new global::System.NotImplementedException("The member PrintTicketValue PrintTicketOption.GetScoredPropertyValue(string name, string xmlNamespace) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintTicketValue%20PrintTicketOption.GetScoredPropertyValue%28string%20name%2C%20string%20xmlNamespace%29");
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketOption.DisplayName.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketOption.Name.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketOption.XmlNamespace.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketOption.XmlNode.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketOption.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

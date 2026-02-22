@@ -9,63 +9,16 @@ namespace Windows.UI.Composition
 	public partial class KeyFrameAnimation : global::Windows.UI.Composition.CompositionAnimation
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal KeyFrameAnimation()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Composition.AnimationStopBehavior StopBehavior
+		public global::Windows.UI.Composition.AnimationDelayBehavior DelayBehavior
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AnimationStopBehavior KeyFrameAnimation.StopBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AnimationStopBehavior%20KeyFrameAnimation.StopBehavior");
+				throw new global::System.NotImplementedException("The member AnimationDelayBehavior KeyFrameAnimation.DelayBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AnimationDelayBehavior%20KeyFrameAnimation.DelayBehavior");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "AnimationStopBehavior KeyFrameAnimation.StopBehavior");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int IterationCount
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int KeyFrameAnimation.IterationCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20KeyFrameAnimation.IterationCount");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "int KeyFrameAnimation.IterationCount");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Composition.AnimationIterationBehavior IterationBehavior
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AnimationIterationBehavior KeyFrameAnimation.IterationBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AnimationIterationBehavior%20KeyFrameAnimation.IterationBehavior");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "AnimationIterationBehavior KeyFrameAnimation.IterationBehavior");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan Duration
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan KeyFrameAnimation.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20KeyFrameAnimation.Duration");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "TimeSpan KeyFrameAnimation.Duration");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "AnimationDelayBehavior KeyFrameAnimation.DelayBehavior");
 			}
 		}
 #endif
@@ -85,16 +38,6 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int KeyFrameCount
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int KeyFrameAnimation.KeyFrameCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20KeyFrameAnimation.KeyFrameCount");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Composition.AnimationDirection Direction
 		{
 			get
@@ -109,29 +52,80 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Composition.AnimationDelayBehavior DelayBehavior
+		public global::System.TimeSpan Duration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AnimationDelayBehavior KeyFrameAnimation.DelayBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AnimationDelayBehavior%20KeyFrameAnimation.DelayBehavior");
+				throw new global::System.NotImplementedException("The member TimeSpan KeyFrameAnimation.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20KeyFrameAnimation.Duration");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "AnimationDelayBehavior KeyFrameAnimation.DelayBehavior");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "TimeSpan KeyFrameAnimation.Duration");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.DelayTime.get
-		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.DelayTime.set
-		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.Duration.get
-		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.Duration.set
-		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.IterationBehavior.get
-		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.IterationBehavior.set
-		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.IterationCount.get
-		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.IterationCount.set
-		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.KeyFrameCount.get
-		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.StopBehavior.get
-		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.StopBehavior.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Composition.AnimationIterationBehavior IterationBehavior
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AnimationIterationBehavior KeyFrameAnimation.IterationBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AnimationIterationBehavior%20KeyFrameAnimation.IterationBehavior");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "AnimationIterationBehavior KeyFrameAnimation.IterationBehavior");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int IterationCount
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int KeyFrameAnimation.IterationCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20KeyFrameAnimation.IterationCount");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "int KeyFrameAnimation.IterationCount");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int KeyFrameCount
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int KeyFrameAnimation.KeyFrameCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20KeyFrameAnimation.KeyFrameCount");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Composition.AnimationStopBehavior StopBehavior
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AnimationStopBehavior KeyFrameAnimation.StopBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AnimationStopBehavior%20KeyFrameAnimation.StopBehavior");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "AnimationStopBehavior KeyFrameAnimation.StopBehavior");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.KeyFrameAnimation(WinRT.IObjectReference)
+		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.operator ==(Windows.UI.Composition.KeyFrameAnimation, Windows.UI.Composition.KeyFrameAnimation)
+		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.operator !=(Windows.UI.Composition.KeyFrameAnimation, Windows.UI.Composition.KeyFrameAnimation)
+		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.Equals(Windows.UI.Composition.KeyFrameAnimation)
+		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.KeyFrameAnimation(WinRT.DerivedComposed)
+		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void InsertExpressionKeyFrame(float normalizedProgressKey, string value)
@@ -146,9 +140,22 @@ namespace Windows.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.KeyFrameAnimation", "void KeyFrameAnimation.InsertExpressionKeyFrame(float normalizedProgressKey, string value, CompositionEasingFunction easingFunction)");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.Direction.get
-		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.Direction.set
 		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.DelayBehavior.get
 		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.DelayBehavior.set
+		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.DelayTime.get
+		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.DelayTime.set
+		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.Direction.get
+		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.Direction.set
+		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.Duration.get
+		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.Duration.set
+		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.IterationBehavior.get
+		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.IterationBehavior.set
+		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.IterationCount.get
+		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.IterationCount.set
+		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.KeyFrameCount.get
+		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.StopBehavior.get
+		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.StopBehavior.set
+		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.KeyFrameAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

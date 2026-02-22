@@ -33,7 +33,18 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageAvailableTriggerDetails.Title.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageAvailableTriggerDetails.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageAvailableTriggerDetails.operator ==(Windows.ApplicationModel.Chat.RcsEndUserMessageAvailableTriggerDetails, Windows.ApplicationModel.Chat.RcsEndUserMessageAvailableTriggerDetails)
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageAvailableTriggerDetails.operator !=(Windows.ApplicationModel.Chat.RcsEndUserMessageAvailableTriggerDetails, Windows.ApplicationModel.Chat.RcsEndUserMessageAvailableTriggerDetails)
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageAvailableTriggerDetails.Equals(Windows.ApplicationModel.Chat.RcsEndUserMessageAvailableTriggerDetails)
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageAvailableTriggerDetails.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageAvailableTriggerDetails.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageAvailableTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageAvailableTriggerDetails.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageAvailableTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageAvailableTriggerDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageAvailableTriggerDetails.Text.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageAvailableTriggerDetails.Title.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageAvailableTriggerDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

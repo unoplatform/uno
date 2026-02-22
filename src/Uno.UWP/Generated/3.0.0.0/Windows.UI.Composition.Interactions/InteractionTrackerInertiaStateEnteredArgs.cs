@@ -15,6 +15,26 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsFromBinding
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool InteractionTrackerInertiaStateEnteredArgs.IsFromBinding is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InteractionTrackerInertiaStateEnteredArgs.IsFromBinding");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsInertiaFromImpulse
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool InteractionTrackerInertiaStateEnteredArgs.IsInertiaFromImpulse is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InteractionTrackerInertiaStateEnteredArgs.IsInertiaFromImpulse");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Numerics.Vector3? ModifiedRestingPosition
 		{
 			get
@@ -83,26 +103,18 @@ namespace Windows.UI.Composition.Interactions
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsInertiaFromImpulse
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool InteractionTrackerInertiaStateEnteredArgs.IsInertiaFromImpulse is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InteractionTrackerInertiaStateEnteredArgs.IsInertiaFromImpulse");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsFromBinding
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool InteractionTrackerInertiaStateEnteredArgs.IsFromBinding is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InteractionTrackerInertiaStateEnteredArgs.IsFromBinding");
-			}
-		}
-#endif
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.operator ==(Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs, Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs)
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.operator !=(Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs, Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs)
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.Equals(Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs)
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.IsFromBinding.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.IsInertiaFromImpulse.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.ModifiedRestingPosition.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.ModifiedRestingScale.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.NaturalRestingPosition.get
@@ -110,7 +122,6 @@ namespace Windows.UI.Composition.Interactions
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.PositionVelocityInPixelsPerSecond.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.RequestId.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.ScaleVelocityInPercentPerSecond.get
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.IsInertiaFromImpulse.get
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.IsFromBinding.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

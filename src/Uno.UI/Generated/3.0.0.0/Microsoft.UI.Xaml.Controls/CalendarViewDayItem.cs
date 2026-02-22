@@ -8,17 +8,30 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class CalendarViewDayItem
 	{
-		// Skipping already declared property IsBlackout
-		// Skipping already declared property Date
 		// Skipping already declared property DateProperty
 		// Skipping already declared property IsBlackoutProperty
+		// Skipping already declared property Date
+		// Skipping already declared property IsBlackout
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.CalendarViewDayItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.CalendarViewDayItem()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.DateProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.IsBlackoutProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.CalendarViewDayItem(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.operator ==(Microsoft.UI.Xaml.Controls.CalendarViewDayItem, Microsoft.UI.Xaml.Controls.CalendarViewDayItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.operator !=(Microsoft.UI.Xaml.Controls.CalendarViewDayItem, Microsoft.UI.Xaml.Controls.CalendarViewDayItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.Equals(Microsoft.UI.Xaml.Controls.CalendarViewDayItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.CalendarViewDayItem(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.WinRT.IWinRTObject.NativeObject.get
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.SetDensityColors(System.Collections.Generic.IEnumerable<Windows.UI.Color>)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.Date.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.IsBlackout.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.IsBlackout.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.Date.get
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.SetDensityColors(System.Collections.Generic.IEnumerable<Windows.UI.Color>)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.IsBlackoutProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.DateProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -31,7 +31,17 @@ namespace Microsoft.UI.Xaml.Documents
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.InlineUIContainer.InlineUIContainer()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.InlineUIContainer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.InlineUIContainer.operator ==(Microsoft.UI.Xaml.Documents.InlineUIContainer, Microsoft.UI.Xaml.Documents.InlineUIContainer)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.InlineUIContainer.operator !=(Microsoft.UI.Xaml.Documents.InlineUIContainer, Microsoft.UI.Xaml.Documents.InlineUIContainer)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.InlineUIContainer.Equals(Microsoft.UI.Xaml.Documents.InlineUIContainer)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.InlineUIContainer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.InlineUIContainer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.InlineUIContainer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.InlineUIContainer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.InlineUIContainer.Child.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.InlineUIContainer.Child.set
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.InlineUIContainer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.InlineUIContainer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

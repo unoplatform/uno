@@ -53,9 +53,20 @@ namespace Windows.ApplicationModel.Email
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailItemCounts.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailItemCounts.operator ==(Windows.ApplicationModel.Email.EmailItemCounts, Windows.ApplicationModel.Email.EmailItemCounts)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailItemCounts.operator !=(Windows.ApplicationModel.Email.EmailItemCounts, Windows.ApplicationModel.Email.EmailItemCounts)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailItemCounts.Equals(Windows.ApplicationModel.Email.EmailItemCounts)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailItemCounts.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailItemCounts.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailItemCounts.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailItemCounts.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailItemCounts.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailItemCounts.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailItemCounts.Flagged.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailItemCounts.Important.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailItemCounts.Total.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailItemCounts.Unread.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailItemCounts.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

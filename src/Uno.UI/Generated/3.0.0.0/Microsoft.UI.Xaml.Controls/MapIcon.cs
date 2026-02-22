@@ -10,6 +10,14 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty LocationProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(Location), typeof(global::Windows.Devices.Geolocation.Geopoint),
+			typeof(global::Microsoft.UI.Xaml.Controls.MapIcon),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Devices.Geolocation.Geopoint)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Geolocation.Geopoint Location
 		{
 			get
@@ -24,22 +32,27 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty LocationProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Location), typeof(global::Windows.Devices.Geolocation.Geopoint),
-			typeof(global::Microsoft.UI.Xaml.Controls.MapIcon),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Devices.Geolocation.Geopoint)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MapIcon()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.MapIcon", "MapIcon.MapIcon()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapIcon.MapIcon()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapIcon.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapIcon.LocationProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapIcon.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapIcon.MapIcon(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapIcon.operator ==(Microsoft.UI.Xaml.Controls.MapIcon, Microsoft.UI.Xaml.Controls.MapIcon)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapIcon.operator !=(Microsoft.UI.Xaml.Controls.MapIcon, Microsoft.UI.Xaml.Controls.MapIcon)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapIcon.Equals(Microsoft.UI.Xaml.Controls.MapIcon)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapIcon.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapIcon.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapIcon.MapIcon(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapIcon.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapIcon.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapIcon.Location.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapIcon.Location.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapIcon.LocationProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapIcon.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapIcon.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

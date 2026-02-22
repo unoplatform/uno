@@ -33,6 +33,16 @@ namespace Windows.Storage.AccessCache
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Storage.AccessCache.StorageItemAccessList.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.AccessCache.StorageItemAccessList.operator ==(Windows.Storage.AccessCache.StorageItemAccessList, Windows.Storage.AccessCache.StorageItemAccessList)
+		// Forced skipping of method Windows.Storage.AccessCache.StorageItemAccessList.operator !=(Windows.Storage.AccessCache.StorageItemAccessList, Windows.Storage.AccessCache.StorageItemAccessList)
+		// Forced skipping of method Windows.Storage.AccessCache.StorageItemAccessList.Equals(Windows.Storage.AccessCache.StorageItemAccessList)
+		// Forced skipping of method Windows.Storage.AccessCache.StorageItemAccessList.Equals(object)
+		// Forced skipping of method Windows.Storage.AccessCache.StorageItemAccessList.GetHashCode()
+		// Forced skipping of method Windows.Storage.AccessCache.StorageItemAccessList.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.AccessCache.StorageItemAccessList.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.AccessCache.StorageItemAccessList.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.AccessCache.StorageItemAccessList.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Add(global::Windows.Storage.IStorageItem file)
@@ -133,6 +143,7 @@ namespace Windows.Storage.AccessCache
 #endif
 		// Forced skipping of method Windows.Storage.AccessCache.StorageItemAccessList.Entries.get
 		// Forced skipping of method Windows.Storage.AccessCache.StorageItemAccessList.MaximumItemsAllowed.get
+		// Forced skipping of method Windows.Storage.AccessCache.StorageItemAccessList.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Storage.AccessCache.IStorageItemAccessList
 	}
 }

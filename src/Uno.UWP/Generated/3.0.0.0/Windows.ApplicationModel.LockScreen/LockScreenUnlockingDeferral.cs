@@ -13,6 +13,16 @@ namespace Windows.ApplicationModel.LockScreen
 		{
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral.operator ==(Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral, Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral)
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral.operator !=(Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral, Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral)
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral.Equals(Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral)
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Complete()
@@ -20,5 +30,6 @@ namespace Windows.ApplicationModel.LockScreen
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral", "void LockScreenUnlockingDeferral.Complete()");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

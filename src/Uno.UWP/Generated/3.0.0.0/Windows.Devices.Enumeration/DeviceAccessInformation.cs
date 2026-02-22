@@ -9,9 +9,7 @@ namespace Windows.Devices.Enumeration
 	public partial class DeviceAccessInformation
 	{
 		// Skipping already declared property CurrentStatus
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessInformation.AccessChanged.add
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessInformation.AccessChanged.remove
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessInformation.CurrentStatus.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessInformation.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Enumeration.DeviceAccessInformation CreateFromId(string deviceId)
@@ -33,6 +31,20 @@ namespace Windows.Devices.Enumeration
 			throw new global::System.NotImplementedException("The member DeviceAccessInformation DeviceAccessInformation.CreateFromDeviceClass(DeviceClass deviceClass) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceAccessInformation%20DeviceAccessInformation.CreateFromDeviceClass%28DeviceClass%20deviceClass%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessInformation.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessInformation.operator ==(Windows.Devices.Enumeration.DeviceAccessInformation, Windows.Devices.Enumeration.DeviceAccessInformation)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessInformation.operator !=(Windows.Devices.Enumeration.DeviceAccessInformation, Windows.Devices.Enumeration.DeviceAccessInformation)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessInformation.Equals(Windows.Devices.Enumeration.DeviceAccessInformation)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessInformation.Equals(object)
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessInformation.GetHashCode()
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessInformation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessInformation.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessInformation.AccessChanged.add
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessInformation.AccessChanged.remove
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessInformation.CurrentStatus.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Enumeration.DeviceAccessInformation, global::Windows.Devices.Enumeration.DeviceAccessChangedEventArgs> AccessChanged

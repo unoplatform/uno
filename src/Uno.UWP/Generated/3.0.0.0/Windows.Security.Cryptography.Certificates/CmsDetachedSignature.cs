@@ -36,15 +36,7 @@ namespace Windows.Security.Cryptography.Certificates
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsDetachedSignature.CmsDetachedSignature(Windows.Storage.Streams.IBuffer)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsDetachedSignature.Certificates.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsDetachedSignature.Signers.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Cryptography.Certificates.SignatureValidationResult> VerifySignatureAsync(global::Windows.Storage.Streams.IInputStream data)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SignatureValidationResult> CmsDetachedSignature.VerifySignatureAsync(IInputStream data) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSignatureValidationResult%3E%20CmsDetachedSignature.VerifySignatureAsync%28IInputStream%20data%29");
-		}
-#endif
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsDetachedSignature.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IBuffer> GenerateSignatureAsync(global::Windows.Storage.Streams.IInputStream data, global::System.Collections.Generic.IEnumerable<global::Windows.Security.Cryptography.Certificates.CmsSignerInfo> signers, global::System.Collections.Generic.IEnumerable<global::Windows.Security.Cryptography.Certificates.Certificate> certificates)
@@ -52,5 +44,25 @@ namespace Windows.Security.Cryptography.Certificates
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IBuffer> CmsDetachedSignature.GenerateSignatureAsync(IInputStream data, IEnumerable<CmsSignerInfo> signers, IEnumerable<Certificate> certificates) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIBuffer%3E%20CmsDetachedSignature.GenerateSignatureAsync%28IInputStream%20data%2C%20IEnumerable%3CCmsSignerInfo%3E%20signers%2C%20IEnumerable%3CCertificate%3E%20certificates%29");
 		}
 #endif
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsDetachedSignature.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsDetachedSignature.operator ==(Windows.Security.Cryptography.Certificates.CmsDetachedSignature, Windows.Security.Cryptography.Certificates.CmsDetachedSignature)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsDetachedSignature.operator !=(Windows.Security.Cryptography.Certificates.CmsDetachedSignature, Windows.Security.Cryptography.Certificates.CmsDetachedSignature)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsDetachedSignature.Equals(Windows.Security.Cryptography.Certificates.CmsDetachedSignature)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsDetachedSignature.Equals(object)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsDetachedSignature.GetHashCode()
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsDetachedSignature.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsDetachedSignature.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsDetachedSignature.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsDetachedSignature.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Cryptography.Certificates.SignatureValidationResult> VerifySignatureAsync(global::Windows.Storage.Streams.IInputStream data)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<SignatureValidationResult> CmsDetachedSignature.VerifySignatureAsync(IInputStream data) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSignatureValidationResult%3E%20CmsDetachedSignature.VerifySignatureAsync%28IInputStream%20data%29");
+		}
+#endif
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsDetachedSignature.Certificates.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsDetachedSignature.Signers.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsDetachedSignature.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

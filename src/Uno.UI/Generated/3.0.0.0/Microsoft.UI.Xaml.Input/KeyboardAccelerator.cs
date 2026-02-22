@@ -8,30 +8,43 @@ namespace Microsoft.UI.Xaml.Input
 #endif
 	public partial class KeyboardAccelerator : global::Microsoft.UI.Xaml.DependencyObject
 	{
-		// Skipping already declared property ScopeOwner
-		// Skipping already declared property Modifiers
-		// Skipping already declared property Key
-		// Skipping already declared property IsEnabled
 		// Skipping already declared property IsEnabledProperty
 		// Skipping already declared property KeyProperty
 		// Skipping already declared property ModifiersProperty
 		// Skipping already declared property ScopeOwnerProperty
+		// Skipping already declared property IsEnabled
+		// Skipping already declared property Key
+		// Skipping already declared property Modifiers
+		// Skipping already declared property ScopeOwner
 		// Skipping already declared method Microsoft.UI.Xaml.Input.KeyboardAccelerator.KeyboardAccelerator()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.KeyboardAccelerator()
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.IsEnabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.KeyProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.ModifiersProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.ScopeOwnerProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.KeyboardAccelerator(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.operator ==(Microsoft.UI.Xaml.Input.KeyboardAccelerator, Microsoft.UI.Xaml.Input.KeyboardAccelerator)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.operator !=(Microsoft.UI.Xaml.Input.KeyboardAccelerator, Microsoft.UI.Xaml.Input.KeyboardAccelerator)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.Equals(Microsoft.UI.Xaml.Input.KeyboardAccelerator)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.KeyboardAccelerator(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.Invoked.add
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.Invoked.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.IsEnabled.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.IsEnabled.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.Key.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.Key.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.Modifiers.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.Modifiers.set
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.IsEnabled.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.IsEnabled.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.ScopeOwner.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.ScopeOwner.set
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.Invoked.add
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.Invoked.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.KeyProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.ModifiersProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.IsEnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.ScopeOwnerProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Input.KeyboardAccelerator.Invoked
 	}
 }

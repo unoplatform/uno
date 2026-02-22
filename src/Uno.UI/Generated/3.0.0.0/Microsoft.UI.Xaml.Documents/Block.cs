@@ -10,76 +10,6 @@ namespace Microsoft.UI.Xaml.Documents
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.TextAlignment TextAlignment
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.TextAlignment)this.GetValue(TextAlignmentProperty);
-			}
-			set
-			{
-				this.SetValue(TextAlignmentProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Thickness Margin
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Thickness)this.GetValue(MarginProperty);
-			}
-			set
-			{
-				this.SetValue(MarginProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.LineStackingStrategy LineStackingStrategy
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.LineStackingStrategy)this.GetValue(LineStackingStrategyProperty);
-			}
-			set
-			{
-				this.SetValue(LineStackingStrategyProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double LineHeight
-		{
-			get
-			{
-				return (double)this.GetValue(LineHeightProperty);
-			}
-			set
-			{
-				this.SetValue(LineHeightProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.TextAlignment HorizontalTextAlignment
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.TextAlignment)this.GetValue(HorizontalTextAlignmentProperty);
-			}
-			set
-			{
-				this.SetValue(HorizontalTextAlignmentProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty HorizontalTextAlignmentProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(HorizontalTextAlignment), typeof(global::Microsoft.UI.Xaml.TextAlignment),
@@ -120,14 +50,98 @@ namespace Microsoft.UI.Xaml.Documents
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.TextAlignment HorizontalTextAlignment
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.TextAlignment)this.GetValue(HorizontalTextAlignmentProperty);
+			}
+			set
+			{
+				this.SetValue(HorizontalTextAlignmentProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double LineHeight
+		{
+			get
+			{
+				return (double)this.GetValue(LineHeightProperty);
+			}
+			set
+			{
+				this.SetValue(LineHeightProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.LineStackingStrategy LineStackingStrategy
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.LineStackingStrategy)this.GetValue(LineStackingStrategyProperty);
+			}
+			set
+			{
+				this.SetValue(LineStackingStrategyProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Thickness Margin
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Thickness)this.GetValue(MarginProperty);
+			}
+			set
+			{
+				this.SetValue(MarginProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.TextAlignment TextAlignment
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.TextAlignment)this.GetValue(TextAlignmentProperty);
+			}
+			set
+			{
+				this.SetValue(TextAlignmentProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		protected Block()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Documents.Block", "Block.Block()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.Block()
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.TextAlignment.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.TextAlignment.set
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.HorizontalTextAlignmentProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.LineHeightProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.LineStackingStrategyProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.MarginProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.TextAlignmentProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.Block(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.operator ==(Microsoft.UI.Xaml.Documents.Block, Microsoft.UI.Xaml.Documents.Block)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.operator !=(Microsoft.UI.Xaml.Documents.Block, Microsoft.UI.Xaml.Documents.Block)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.Equals(Microsoft.UI.Xaml.Documents.Block)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.Block(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.HorizontalTextAlignment.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.HorizontalTextAlignment.set
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.LineHeight.get
@@ -136,10 +150,9 @@ namespace Microsoft.UI.Xaml.Documents
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.LineStackingStrategy.set
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.Margin.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.Margin.set
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.TextAlignmentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.HorizontalTextAlignmentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.LineHeightProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.LineStackingStrategyProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.MarginProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.TextAlignment.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.TextAlignment.set
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

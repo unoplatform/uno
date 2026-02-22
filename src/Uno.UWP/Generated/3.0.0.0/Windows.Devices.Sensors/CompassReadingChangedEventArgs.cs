@@ -9,6 +9,17 @@ namespace Windows.Devices.Sensors
 	public partial class CompassReadingChangedEventArgs
 	{
 		// Skipping already declared property Reading
+		// Forced skipping of method Windows.Devices.Sensors.CompassReadingChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Sensors.CompassReadingChangedEventArgs.operator ==(Windows.Devices.Sensors.CompassReadingChangedEventArgs, Windows.Devices.Sensors.CompassReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.CompassReadingChangedEventArgs.operator !=(Windows.Devices.Sensors.CompassReadingChangedEventArgs, Windows.Devices.Sensors.CompassReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.CompassReadingChangedEventArgs.Equals(Windows.Devices.Sensors.CompassReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.CompassReadingChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.Sensors.CompassReadingChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.Sensors.CompassReadingChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.CompassReadingChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.CompassReadingChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Sensors.CompassReadingChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.CompassReadingChangedEventArgs.Reading.get
+		// Forced skipping of method Windows.Devices.Sensors.CompassReadingChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -15,15 +15,11 @@ namespace Windows.Devices.Lights
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsEnabled
+		public global::System.Numerics.Vector3 BoundingBox
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LampArray.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LampArray.IsEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.LampArray", "bool LampArray.IsEnabled");
+				throw new global::System.NotImplementedException("The member Vector3 LampArray.BoundingBox is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20LampArray.BoundingBox");
 			}
 		}
 #endif
@@ -38,16 +34,6 @@ namespace Windows.Devices.Lights
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.LampArray", "double LampArray.BrightnessLevel");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 BoundingBox
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector3 LampArray.BoundingBox is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20LampArray.BoundingBox");
 			}
 		}
 #endif
@@ -103,6 +89,20 @@ namespace Windows.Devices.Lights
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsEnabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool LampArray.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LampArray.IsEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.LampArray", "bool LampArray.IsEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Lights.LampArrayKind LampArrayKind
 		{
 			get
@@ -141,20 +141,31 @@ namespace Windows.Devices.Lights
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Lights.LampArray.DeviceId.get
-		// Forced skipping of method Windows.Devices.Lights.LampArray.HardwareVendorId.get
-		// Forced skipping of method Windows.Devices.Lights.LampArray.HardwareProductId.get
-		// Forced skipping of method Windows.Devices.Lights.LampArray.HardwareVersion.get
-		// Forced skipping of method Windows.Devices.Lights.LampArray.LampArrayKind.get
-		// Forced skipping of method Windows.Devices.Lights.LampArray.LampCount.get
-		// Forced skipping of method Windows.Devices.Lights.LampArray.MinUpdateInterval.get
-		// Forced skipping of method Windows.Devices.Lights.LampArray.BoundingBox.get
-		// Forced skipping of method Windows.Devices.Lights.LampArray.IsEnabled.get
-		// Forced skipping of method Windows.Devices.Lights.LampArray.IsEnabled.set
-		// Forced skipping of method Windows.Devices.Lights.LampArray.BrightnessLevel.get
-		// Forced skipping of method Windows.Devices.Lights.LampArray.BrightnessLevel.set
-		// Forced skipping of method Windows.Devices.Lights.LampArray.IsConnected.get
-		// Forced skipping of method Windows.Devices.Lights.LampArray.SupportsVirtualKeys.get
+		// Forced skipping of method Windows.Devices.Lights.LampArray.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string GetDeviceSelector()
+		{
+			throw new global::System.NotImplementedException("The member string LampArray.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20LampArray.GetDeviceSelector%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Lights.LampArray> FromIdAsync(string deviceId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<LampArray> LampArray.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CLampArray%3E%20LampArray.FromIdAsync%28string%20deviceId%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Lights.LampArray.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Lights.LampArray.operator ==(Windows.Devices.Lights.LampArray, Windows.Devices.Lights.LampArray)
+		// Forced skipping of method Windows.Devices.Lights.LampArray.operator !=(Windows.Devices.Lights.LampArray, Windows.Devices.Lights.LampArray)
+		// Forced skipping of method Windows.Devices.Lights.LampArray.Equals(Windows.Devices.Lights.LampArray)
+		// Forced skipping of method Windows.Devices.Lights.LampArray.Equals(object)
+		// Forced skipping of method Windows.Devices.Lights.LampArray.GetHashCode()
+		// Forced skipping of method Windows.Devices.Lights.LampArray.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Lights.LampArray.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Lights.LampArray.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Lights.LampArray.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Lights.LampInfo GetLampInfo(int lampIndex)
@@ -239,19 +250,20 @@ namespace Windows.Devices.Lights
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IBuffer> LampArray.RequestMessageAsync(int messageId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIBuffer%3E%20LampArray.RequestMessageAsync%28int%20messageId%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetDeviceSelector()
-		{
-			throw new global::System.NotImplementedException("The member string LampArray.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20LampArray.GetDeviceSelector%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Lights.LampArray> FromIdAsync(string deviceId)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<LampArray> LampArray.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CLampArray%3E%20LampArray.FromIdAsync%28string%20deviceId%29");
-		}
-#endif
+		// Forced skipping of method Windows.Devices.Lights.LampArray.BoundingBox.get
+		// Forced skipping of method Windows.Devices.Lights.LampArray.BrightnessLevel.get
+		// Forced skipping of method Windows.Devices.Lights.LampArray.BrightnessLevel.set
+		// Forced skipping of method Windows.Devices.Lights.LampArray.DeviceId.get
+		// Forced skipping of method Windows.Devices.Lights.LampArray.HardwareProductId.get
+		// Forced skipping of method Windows.Devices.Lights.LampArray.HardwareVendorId.get
+		// Forced skipping of method Windows.Devices.Lights.LampArray.HardwareVersion.get
+		// Forced skipping of method Windows.Devices.Lights.LampArray.IsConnected.get
+		// Forced skipping of method Windows.Devices.Lights.LampArray.IsEnabled.get
+		// Forced skipping of method Windows.Devices.Lights.LampArray.IsEnabled.set
+		// Forced skipping of method Windows.Devices.Lights.LampArray.LampArrayKind.get
+		// Forced skipping of method Windows.Devices.Lights.LampArray.LampCount.get
+		// Forced skipping of method Windows.Devices.Lights.LampArray.MinUpdateInterval.get
+		// Forced skipping of method Windows.Devices.Lights.LampArray.SupportsVirtualKeys.get
+		// Forced skipping of method Windows.Devices.Lights.LampArray.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

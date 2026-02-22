@@ -23,6 +23,16 @@ namespace Windows.UI.Notifications
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.Notifications.BadgeUpdateManagerForUser.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Notifications.BadgeUpdateManagerForUser.operator ==(Windows.UI.Notifications.BadgeUpdateManagerForUser, Windows.UI.Notifications.BadgeUpdateManagerForUser)
+		// Forced skipping of method Windows.UI.Notifications.BadgeUpdateManagerForUser.operator !=(Windows.UI.Notifications.BadgeUpdateManagerForUser, Windows.UI.Notifications.BadgeUpdateManagerForUser)
+		// Forced skipping of method Windows.UI.Notifications.BadgeUpdateManagerForUser.Equals(Windows.UI.Notifications.BadgeUpdateManagerForUser)
+		// Forced skipping of method Windows.UI.Notifications.BadgeUpdateManagerForUser.Equals(object)
+		// Forced skipping of method Windows.UI.Notifications.BadgeUpdateManagerForUser.GetHashCode()
+		// Forced skipping of method Windows.UI.Notifications.BadgeUpdateManagerForUser.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.BadgeUpdateManagerForUser.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.BadgeUpdateManagerForUser.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Notifications.BadgeUpdateManagerForUser.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Notifications.BadgeUpdater CreateBadgeUpdaterForApplication()
@@ -45,5 +55,6 @@ namespace Windows.UI.Notifications
 		}
 #endif
 		// Forced skipping of method Windows.UI.Notifications.BadgeUpdateManagerForUser.User.get
+		// Forced skipping of method Windows.UI.Notifications.BadgeUpdateManagerForUser.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

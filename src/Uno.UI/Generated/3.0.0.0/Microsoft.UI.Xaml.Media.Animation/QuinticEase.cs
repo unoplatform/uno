@@ -10,5 +10,15 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.QuinticEase.QuinticEase()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.QuinticEase.QuinticEase()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.QuinticEase.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.QuinticEase.operator ==(Microsoft.UI.Xaml.Media.Animation.QuinticEase, Microsoft.UI.Xaml.Media.Animation.QuinticEase)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.QuinticEase.operator !=(Microsoft.UI.Xaml.Media.Animation.QuinticEase, Microsoft.UI.Xaml.Media.Animation.QuinticEase)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.QuinticEase.Equals(Microsoft.UI.Xaml.Media.Animation.QuinticEase)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.QuinticEase.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.QuinticEase.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.QuinticEase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.QuinticEase.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.QuinticEase.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.QuinticEase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

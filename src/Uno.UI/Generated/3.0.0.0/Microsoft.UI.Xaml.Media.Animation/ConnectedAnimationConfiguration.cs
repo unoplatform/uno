@@ -8,10 +8,19 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class ConnectedAnimationConfiguration
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal ConnectedAnimationConfiguration()
-		{
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationConfiguration.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationConfiguration.ConnectedAnimationConfiguration(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationConfiguration.operator ==(Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationConfiguration, Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationConfiguration)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationConfiguration.operator !=(Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationConfiguration, Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationConfiguration)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationConfiguration.Equals(Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationConfiguration)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationConfiguration.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationConfiguration.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationConfiguration.ConnectedAnimationConfiguration(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationConfiguration.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationConfiguration.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationConfiguration.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationConfiguration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

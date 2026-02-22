@@ -63,11 +63,45 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.DeviceId.get
-		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.Capabilities.get
-		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.Status.get
-		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.IsDrawerOpen.get
-		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.DrawerEventSource.get
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.CashDrawer> GetDefaultAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<CashDrawer> CashDrawer.GetDefaultAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCashDrawer%3E%20CashDrawer.GetDefaultAsync%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.CashDrawer> FromIdAsync(string deviceId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<CashDrawer> CashDrawer.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCashDrawer%3E%20CashDrawer.FromIdAsync%28string%20deviceId%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string GetDeviceSelector()
+		{
+			throw new global::System.NotImplementedException("The member string CashDrawer.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CashDrawer.GetDeviceSelector%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string GetDeviceSelector(global::Windows.Devices.PointOfService.PosConnectionTypes connectionTypes)
+		{
+			throw new global::System.NotImplementedException("The member string CashDrawer.GetDeviceSelector(PosConnectionTypes connectionTypes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CashDrawer.GetDeviceSelector%28PosConnectionTypes%20connectionTypes%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.operator ==(Windows.Devices.PointOfService.CashDrawer, Windows.Devices.PointOfService.CashDrawer)
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.operator !=(Windows.Devices.PointOfService.CashDrawer, Windows.Devices.PointOfService.CashDrawer)
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.Equals(Windows.Devices.PointOfService.CashDrawer)
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.Equals(object)
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.GetHashCode()
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.ClaimedCashDrawer> ClaimDrawerAsync()
@@ -98,34 +132,12 @@ namespace Windows.Devices.PointOfService
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.CashDrawer", "void CashDrawer.Dispose()");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetDeviceSelector(global::Windows.Devices.PointOfService.PosConnectionTypes connectionTypes)
-		{
-			throw new global::System.NotImplementedException("The member string CashDrawer.GetDeviceSelector(PosConnectionTypes connectionTypes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CashDrawer.GetDeviceSelector%28PosConnectionTypes%20connectionTypes%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.CashDrawer> GetDefaultAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<CashDrawer> CashDrawer.GetDefaultAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCashDrawer%3E%20CashDrawer.GetDefaultAsync%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.CashDrawer> FromIdAsync(string deviceId)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<CashDrawer> CashDrawer.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCashDrawer%3E%20CashDrawer.FromIdAsync%28string%20deviceId%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetDeviceSelector()
-		{
-			throw new global::System.NotImplementedException("The member string CashDrawer.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CashDrawer.GetDeviceSelector%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.Capabilities.get
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.DeviceId.get
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.DrawerEventSource.get
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.IsDrawerOpen.get
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.Status.get
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.CashDrawer, global::Windows.Devices.PointOfService.CashDrawerStatusUpdatedEventArgs> StatusUpdated

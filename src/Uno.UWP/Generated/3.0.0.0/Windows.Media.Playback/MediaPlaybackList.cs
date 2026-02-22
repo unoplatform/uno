@@ -10,20 +10,6 @@ namespace Windows.Media.Playback
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ShuffleEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool MediaPlaybackList.ShuffleEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPlaybackList.ShuffleEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackList", "bool MediaPlaybackList.ShuffleEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool AutoRepeatEnabled
 		{
 			get
@@ -68,15 +54,15 @@ namespace Windows.Media.Playback
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Playback.MediaPlaybackItem StartingItem
+		public uint? MaxPlayedItemsToKeepOpen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackItem MediaPlaybackList.StartingItem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackItem%20MediaPlaybackList.StartingItem");
+				throw new global::System.NotImplementedException("The member uint? MediaPlaybackList.MaxPlayedItemsToKeepOpen is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20MediaPlaybackList.MaxPlayedItemsToKeepOpen");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackList", "MediaPlaybackItem MediaPlaybackList.StartingItem");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackList", "uint? MediaPlaybackList.MaxPlayedItemsToKeepOpen");
 			}
 		}
 #endif
@@ -96,6 +82,20 @@ namespace Windows.Media.Playback
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool ShuffleEnabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool MediaPlaybackList.ShuffleEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPlaybackList.ShuffleEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackList", "bool MediaPlaybackList.ShuffleEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Playback.MediaPlaybackItem> ShuffledItems
 		{
 			get
@@ -106,15 +106,15 @@ namespace Windows.Media.Playback
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint? MaxPlayedItemsToKeepOpen
+		public global::Windows.Media.Playback.MediaPlaybackItem StartingItem
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? MediaPlaybackList.MaxPlayedItemsToKeepOpen is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20MediaPlaybackList.MaxPlayedItemsToKeepOpen");
+				throw new global::System.NotImplementedException("The member MediaPlaybackItem MediaPlaybackList.StartingItem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackItem%20MediaPlaybackList.StartingItem");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackList", "uint? MediaPlaybackList.MaxPlayedItemsToKeepOpen");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackList", "MediaPlaybackItem MediaPlaybackList.StartingItem");
 			}
 		}
 #endif
@@ -126,19 +126,16 @@ namespace Windows.Media.Playback
 		}
 #endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.MediaPlaybackList()
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.ItemFailed.add
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.ItemFailed.remove
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.CurrentItemChanged.add
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.CurrentItemChanged.remove
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.ItemOpened.add
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.ItemOpened.remove
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.Items.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.AutoRepeatEnabled.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.AutoRepeatEnabled.set
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.ShuffleEnabled.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.ShuffleEnabled.set
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.CurrentItem.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.CurrentItemIndex.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.operator ==(Windows.Media.Playback.MediaPlaybackList, Windows.Media.Playback.MediaPlaybackList)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.operator !=(Windows.Media.Playback.MediaPlaybackList, Windows.Media.Playback.MediaPlaybackList)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.Equals(Windows.Media.Playback.MediaPlaybackList)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.Equals(object)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.GetHashCode()
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Playback.MediaPlaybackItem MoveNext()
@@ -160,11 +157,12 @@ namespace Windows.Media.Playback
 			throw new global::System.NotImplementedException("The member MediaPlaybackItem MediaPlaybackList.MoveTo(uint itemIndex) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackItem%20MediaPlaybackList.MoveTo%28uint%20itemIndex%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.MaxPrefetchTime.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.MaxPrefetchTime.set
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.StartingItem.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.StartingItem.set
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.ShuffledItems.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.CurrentItemChanged.add
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.CurrentItemChanged.remove
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.ItemFailed.add
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.ItemFailed.remove
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.ItemOpened.add
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.ItemOpened.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetShuffledItems(global::System.Collections.Generic.IEnumerable<global::Windows.Media.Playback.MediaPlaybackItem> value)
@@ -172,8 +170,21 @@ namespace Windows.Media.Playback
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackList", "void MediaPlaybackList.SetShuffledItems(IEnumerable<MediaPlaybackItem> value)");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.AutoRepeatEnabled.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.AutoRepeatEnabled.set
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.CurrentItem.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.CurrentItemIndex.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.Items.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.MaxPlayedItemsToKeepOpen.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.MaxPlayedItemsToKeepOpen.set
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.MaxPrefetchTime.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.MaxPrefetchTime.set
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.ShuffleEnabled.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.ShuffleEnabled.set
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.ShuffledItems.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.StartingItem.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.StartingItem.set
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackList, global::Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs> CurrentItemChanged

@@ -23,6 +23,16 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters.operator ==(Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters, Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters.operator !=(Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters, Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters.Equals(Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters.Equals(object)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface AcquireBufferToUpdateContent()
@@ -65,7 +75,6 @@ namespace Windows.Graphics.Holographic
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters", "void HolographicQuadLayerUpdateParameters.UpdateLocationWithDisplayRelativeMode(Vector3 position, Quaternion orientation)");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters.CanAcquireWithHardwareProtection.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface AcquireBufferToUpdateContentWithHardwareProtection()
@@ -73,5 +82,7 @@ namespace Windows.Graphics.Holographic
 			throw new global::System.NotImplementedException("The member IDirect3DSurface HolographicQuadLayerUpdateParameters.AcquireBufferToUpdateContentWithHardwareProtection() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDirect3DSurface%20HolographicQuadLayerUpdateParameters.AcquireBufferToUpdateContentWithHardwareProtection%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters.CanAcquireWithHardwareProtection.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

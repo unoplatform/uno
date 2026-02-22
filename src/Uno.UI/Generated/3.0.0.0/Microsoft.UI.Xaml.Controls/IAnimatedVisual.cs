@@ -11,8 +11,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Duration
 		// Skipping already declared property RootVisual
 		// Skipping already declared property Size
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.IAnimatedVisual.Duration.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.IAnimatedVisual.RootVisual.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.IAnimatedVisual.Size.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.IAnimatedVisual.Duration.get
 	}
 }

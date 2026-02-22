@@ -63,11 +63,38 @@ namespace Windows.Devices.HumanInterfaceDevice
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.VendorId.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.ProductId.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.Version.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.UsagePage.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.UsageId.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string GetDeviceSelector(ushort usagePage, ushort usageId)
+		{
+			throw new global::System.NotImplementedException("The member string HidDevice.GetDeviceSelector(ushort usagePage, ushort usageId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HidDevice.GetDeviceSelector%28ushort%20usagePage%2C%20ushort%20usageId%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string GetDeviceSelector(ushort usagePage, ushort usageId, ushort vendorId, ushort productId)
+		{
+			throw new global::System.NotImplementedException("The member string HidDevice.GetDeviceSelector(ushort usagePage, ushort usageId, ushort vendorId, ushort productId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HidDevice.GetDeviceSelector%28ushort%20usagePage%2C%20ushort%20usageId%2C%20ushort%20vendorId%2C%20ushort%20productId%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.HumanInterfaceDevice.HidDevice> FromIdAsync(string deviceId, global::Windows.Storage.FileAccessMode accessMode)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<HidDevice> HidDevice.FromIdAsync(string deviceId, FileAccessMode accessMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CHidDevice%3E%20HidDevice.FromIdAsync%28string%20deviceId%2C%20FileAccessMode%20accessMode%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.operator ==(Windows.Devices.HumanInterfaceDevice.HidDevice, Windows.Devices.HumanInterfaceDevice.HidDevice)
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.operator !=(Windows.Devices.HumanInterfaceDevice.HidDevice, Windows.Devices.HumanInterfaceDevice.HidDevice)
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.Equals(Windows.Devices.HumanInterfaceDevice.HidDevice)
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.Equals(object)
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.GetHashCode()
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.HumanInterfaceDevice.HidInputReport> GetInputReportAsync()
@@ -161,27 +188,12 @@ namespace Windows.Devices.HumanInterfaceDevice
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.HumanInterfaceDevice.HidDevice", "void HidDevice.Dispose()");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetDeviceSelector(ushort usagePage, ushort usageId)
-		{
-			throw new global::System.NotImplementedException("The member string HidDevice.GetDeviceSelector(ushort usagePage, ushort usageId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HidDevice.GetDeviceSelector%28ushort%20usagePage%2C%20ushort%20usageId%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetDeviceSelector(ushort usagePage, ushort usageId, ushort vendorId, ushort productId)
-		{
-			throw new global::System.NotImplementedException("The member string HidDevice.GetDeviceSelector(ushort usagePage, ushort usageId, ushort vendorId, ushort productId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HidDevice.GetDeviceSelector%28ushort%20usagePage%2C%20ushort%20usageId%2C%20ushort%20vendorId%2C%20ushort%20productId%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.HumanInterfaceDevice.HidDevice> FromIdAsync(string deviceId, global::Windows.Storage.FileAccessMode accessMode)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<HidDevice> HidDevice.FromIdAsync(string deviceId, FileAccessMode accessMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CHidDevice%3E%20HidDevice.FromIdAsync%28string%20deviceId%2C%20FileAccessMode%20accessMode%29");
-		}
-#endif
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.ProductId.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.UsageId.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.UsagePage.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.VendorId.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.Version.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidDevice.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.HumanInterfaceDevice.HidDevice, global::Windows.Devices.HumanInterfaceDevice.HidInputReportReceivedEventArgs> InputReportReceived

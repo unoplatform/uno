@@ -10,17 +10,19 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Point Value
-		{
-			get
-			{
-				return (global::Windows.Foundation.Point)this.GetValue(ValueProperty);
-			}
-			set
-			{
-				this.SetValue(ValueProperty, value);
-			}
-		}
+		public static global::Microsoft.UI.Xaml.DependencyProperty KeyTimeProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(KeyTime), typeof(global::Microsoft.UI.Xaml.Media.Animation.KeyTime),
+			typeof(global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Animation.KeyTime)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty ValueProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(Value), typeof(global::Windows.Foundation.Point),
+			typeof(global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Foundation.Point)));
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -38,19 +40,17 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty KeyTimeProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(KeyTime), typeof(global::Microsoft.UI.Xaml.Media.Animation.KeyTime),
-			typeof(global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Animation.KeyTime)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ValueProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Value), typeof(global::Windows.Foundation.Point),
-			typeof(global::Microsoft.UI.Xaml.Media.Animation.PointKeyFrame),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Foundation.Point)));
+		public global::Windows.Foundation.Point Value
+		{
+			get
+			{
+				return (global::Windows.Foundation.Point)this.GetValue(ValueProperty);
+			}
+			set
+			{
+				this.SetValue(ValueProperty, value);
+			}
+		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -60,11 +60,24 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.PointKeyFrame()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.Value.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.Value.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.KeyTimeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.ValueProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.PointKeyFrame(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.operator ==(Microsoft.UI.Xaml.Media.Animation.PointKeyFrame, Microsoft.UI.Xaml.Media.Animation.PointKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.operator !=(Microsoft.UI.Xaml.Media.Animation.PointKeyFrame, Microsoft.UI.Xaml.Media.Animation.PointKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.Equals(Microsoft.UI.Xaml.Media.Animation.PointKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.PointKeyFrame(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.KeyTime.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.KeyTime.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.ValueProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.KeyTimeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.Value.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.Value.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }
