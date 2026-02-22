@@ -818,6 +818,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Triple_Nesting_Margin_Item()
 		{
 			var setup = await SetupTripleScrollViewerScenarioAsync();

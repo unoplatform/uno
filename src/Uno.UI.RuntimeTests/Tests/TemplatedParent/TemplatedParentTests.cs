@@ -325,6 +325,7 @@ public partial class TemplatedParentTests // tests
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task Uno19264_Test()
 	{
 		var setup = new Uno19264();

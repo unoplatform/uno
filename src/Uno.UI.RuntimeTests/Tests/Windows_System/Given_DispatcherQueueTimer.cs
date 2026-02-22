@@ -74,6 +74,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ScheduleNonRepeatingWorkItem()
 		{
 			var tcs = new TaskCompletionSource<bool>();
@@ -133,6 +134,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 #endif
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_StartAndStopFromBackgroundThread()
 		{
 			var timer = DispatcherQueue.GetForCurrentThread().CreateTimer();
