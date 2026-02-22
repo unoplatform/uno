@@ -179,12 +179,11 @@ namespace Uno.UI.RemoteControl.HotReload
 							this.Log().Error("Hot Reload is not supported when the debugger is attached.");
 						}
 						_status.ReportLocalStarting([]).ReportIgnored("Hot Reload is not supported when the debugger is attached");
+						return;
 					}
-
-					return;
 				}
 
-				if (assemblyDeltaReload.IsValid())
+				if (assemblyDeltaReload.IsValid(_runningInsideVSCodeExtension))
 				{
 					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
@@ -194,17 +193,23 @@ namespace Uno.UI.RemoteControl.HotReload
 					var changedTypesStreams = new MemoryStream(Convert.FromBase64String(assemblyDeltaReload.UpdatedTypes));
 					var changedTypesReader = new BinaryReader(changedTypesStreams);
 
+					// when executing in VSCode extension / mono runtime the MetadataDelta, ILDelta and PdbBytes are processed thru the debugger
+					// however we still need to apply the updated types (e.g. for XAML HR to work properly)
 					var delta = new UpdateDelta
 					{
-						MetadataDelta = Convert.FromBase64String(assemblyDeltaReload.MetadataDelta),
-						ILDelta = Convert.FromBase64String(assemblyDeltaReload.ILDelta),
-						PdbBytes = Convert.FromBase64String(assemblyDeltaReload.PdbDelta),
+						MetadataDelta = _runningInsideVSCodeExtension ? Array.Empty<byte>() : Convert.FromBase64String(assemblyDeltaReload.MetadataDelta),
+						ILDelta = _runningInsideVSCodeExtension ? Array.Empty<byte>() : Convert.FromBase64String(assemblyDeltaReload.ILDelta),
+						PdbBytes = _runningInsideVSCodeExtension ? Array.Empty<byte>() : Convert.FromBase64String(assemblyDeltaReload.PdbDelta),
 						ModuleId = Guid.Parse(assemblyDeltaReload.ModuleId),
 						UpdatedTypes = ReadIntArray(changedTypesReader)
 					};
 
 					_status.ConfigureSourceForNextOperation(HotReloadSource.DevServer);
-					_agent?.ApplyDeltas(new[] { delta });
+					if (!_runningInsideVSCodeExtension)
+					{
+						_agent?.ApplyDeltas([delta]);
+					}
+					_agent?.ApplyUpdatedTypes([delta]);
 
 					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
