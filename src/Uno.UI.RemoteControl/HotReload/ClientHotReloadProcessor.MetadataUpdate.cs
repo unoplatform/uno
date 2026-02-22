@@ -246,16 +246,6 @@ partial class ClientHotReloadProcessor
 				}
 			}
 
-			// Explicit AlcContentHost refresh: the standard visual tree update may not
-			// propagate through the ALC content boundary (the ALC window's Content
-			// returns ContentHostOverride content, but the tree enumeration root
-			// may not reach it). Force a content refresh as a fallback.
-			var contentHostOverride = Window.ContentHostOverride;
-			if (contentHostOverride is Uno.UI.Xaml.Controls.AlcContentHost alcHost)
-			{
-				alcHost.ForceContentRefresh(updatedTypes);
-			}
-
 			// Wait for the tree to be layouted before restoring state
 			var tcs = new TaskCompletionSource();
 #if HAS_UNO_WINUI || WINDOWS_WINUI
