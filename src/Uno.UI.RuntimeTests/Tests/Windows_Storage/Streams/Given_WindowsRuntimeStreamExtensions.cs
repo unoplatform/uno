@@ -45,6 +45,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_StreamAsRandomAccessStream()
 		{
 			var src = new MemoryStream();

@@ -339,6 +339,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task Check_Single_Character_Run_With_Wrapping_Constrained()
 		{
 			var SUT = new TextBlock

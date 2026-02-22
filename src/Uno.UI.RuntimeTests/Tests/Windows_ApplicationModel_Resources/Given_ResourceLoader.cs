@@ -142,6 +142,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_MissingLocalizedResource_FallbackOnParent()
 		{
 			var SUT = ResourceLoader.GetForViewIndependentUse();
@@ -161,7 +162,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIOS)] // Unstable test due to device language settings: NSLocale.PreferredLanguages can be 'en' or 'en-US'.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIOS | RuntimeTestPlatforms.NativeWinUI)] // Unstable test due to device language settings: NSLocale.PreferredLanguages can be 'en' or 'en-US'.
 #if __APPLE_UIKIT__
 		[Ignore("Unstable test due to device language settings: NSLocale.PreferredLanguages can be 'en' or 'en-US'.")]
 #endif

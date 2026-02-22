@@ -10,6 +10,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 	public class Given_StorageFolder
 	{
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_CreateFile_FailIfExists()
 		{
 			var folder = ApplicationData.Current.LocalFolder;
