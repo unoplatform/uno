@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,7 +10,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
-	[SampleControlInfo("Image", "LoadFromBytes")]
+	[Sample("Image", Name = "LoadFromBytes")]
 	public sealed partial class LoadFromBytes : UserControl
 	{
 		public LoadFromBytes()

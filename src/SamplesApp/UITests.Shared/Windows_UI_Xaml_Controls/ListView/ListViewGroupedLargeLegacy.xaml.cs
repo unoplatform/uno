@@ -1,10 +1,10 @@
-﻿using SamplesApp.Windows_UI_Xaml_Controls.Models;
+using SamplesApp.Windows_UI_Xaml_Controls.Models;
 using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListViewGroupedLargeLegacy", typeof(ListViewGroupedViewModel))]
+	[Sample("ListView", Name = "ListViewGroupedLargeLegacy", ViewModelType = typeof(ListViewGroupedViewModel))]
 	public sealed partial class ListViewGroupedLargeLegacy : UserControl
 	{
 		public ListViewGroupedLargeLegacy()

@@ -13,12 +13,7 @@ using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
-#else
-using Windows.UI.Input;
-using Windows.Devices.Input;
-#endif
 
 namespace Microsoft.UI.Xaml
 {

@@ -1,10 +1,10 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
 namespace GenericApp.Views.Content.UITests.TextBoxControl
 {
-	[SampleControlInfo("TextBox", "Textbox_Keyboard_AutoFocused", ignoreInSnapshotTests: true /*Cursor blinks in TextBox*/)]
+	[Sample("TextBox", Name = "Textbox_Keyboard_AutoFocused", IgnoreInSnapshotTests = true /*Cursor blinks in TextBox*/)]
 	public sealed partial class Textbox_Keyboard_AutoFocus : UserControl
 	{
 		public Textbox_Keyboard_AutoFocus()

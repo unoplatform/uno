@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -9,7 +9,7 @@ using Uno.UI.Samples.Controls;
 
 namespace GenericApp.Views.Content.UITests.Animations
 {
-	[SampleControlInfo("Animations", "DoubleAnimation_Opacity_TextBlock")]
+	[Sample("Animations", Name = "DoubleAnimation_Opacity_TextBlock")]
 	public sealed partial class DoubleAnimation_Opacity_TextBlock : UserControl
 	{
 		private Storyboard _storyboard;

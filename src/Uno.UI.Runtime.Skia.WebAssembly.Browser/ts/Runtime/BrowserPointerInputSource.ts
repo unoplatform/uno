@@ -33,18 +33,14 @@
 
 		private static _exports: any;
 		
-		public static async initialize(inputSource: any): Promise<any> {
-
-			const module = <any>window.Module;
-			if (BrowserPointerInputSource._exports == undefined
-				&& module.getAssemblyExports !== undefined) {
-					
-				const browserExports = (await module.getAssemblyExports("Uno.UI.Runtime.Skia.WebAssembly.Browser"));
+		public static async initialize(inputSource: any) {
+			if (BrowserPointerInputSource._exports == undefined) {
+				const browserExports = WebAssemblyWindowWrapper.getAssemblyExports();
 
 				BrowserPointerInputSource._exports = browserExports.Uno.UI.Runtime.Skia.BrowserPointerInputSource;
 			}
 
-			return new BrowserPointerInputSource(inputSource);
+			new BrowserPointerInputSource(inputSource);
 		}
 
 		public static setPointerCapture(pointerId: number): void {

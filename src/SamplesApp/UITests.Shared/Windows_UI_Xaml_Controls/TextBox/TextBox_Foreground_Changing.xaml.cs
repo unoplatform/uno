@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,7 +19,7 @@ using Windows.UI;
 
 namespace UITests.Windows_UI_Xaml_Controls.TextBox
 {
-	[SampleControlInfo]
+	[Sample]
 	public sealed partial class TextBox_Foreground_Changing : UserControl
 	{
 		public TextBox_Foreground_Changing()

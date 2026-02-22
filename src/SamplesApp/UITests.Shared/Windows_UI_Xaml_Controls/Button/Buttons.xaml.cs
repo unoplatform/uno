@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -12,7 +12,7 @@ using Microsoft.UI.Xaml.Input;
 
 namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 {
-	[SampleControlInfo("Buttons", "Buttons")]
+	[Sample("Buttons", Name = "Buttons")]
 	public sealed partial class Buttons : UserControl
 	{
 		private ButtonsViewModel _viewModel;

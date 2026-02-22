@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Input;
 using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml;
@@ -10,7 +10,7 @@ using EventHandler = System.EventHandler;
 
 namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 {
-	[SampleControlInfo("Buttons", "Button_IsEnabled", typeof(ButtonTestsViewModel), ignoreInSnapshotTests: true)]
+	[Sample("Buttons", Name = "Button_IsEnabled", ViewModelType = typeof(ButtonTestsViewModel), IgnoreInSnapshotTests = true)]
 	public sealed partial class Button_IsEnabled : UserControl
 	{
 		public Button_IsEnabled()

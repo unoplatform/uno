@@ -7,7 +7,7 @@ jobs:
 - job: Skia_Tests_Build
   displayName: 'Build Samples App'
   timeoutInMinutes: 60
-  cancelTimeoutInMinutes: 1
+  cancelTimeoutInMinutes: 0
 
   pool:
     vmImage: ${{ parameters.vmImage }}

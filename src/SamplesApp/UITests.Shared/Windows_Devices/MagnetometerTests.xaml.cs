@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -24,7 +24,7 @@ using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_Devices
 {
-	[SampleControlInfo("Windows.Devices", "Magnetometer", description: "Demonstrates use of Windows.Devices.Sensors.Magnetometer", viewModelType: typeof(MagnetometerTestsViewModel), ignoreInSnapshotTests: true)]
+	[Sample("Windows.Devices", Name = "Magnetometer", Description = "Demonstrates use of Windows.Devices.Sensors.Magnetometer", ViewModelType = typeof(MagnetometerTestsViewModel), IgnoreInSnapshotTests = true)]
 	public sealed partial class MagnetometerTests : UserControl
 	{
 		public MagnetometerTests()

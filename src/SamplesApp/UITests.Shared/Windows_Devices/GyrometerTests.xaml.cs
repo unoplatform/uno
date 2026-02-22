@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Uno.Disposables;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
@@ -12,7 +12,7 @@ using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_Devices
 {
-	[SampleControlInfo("Windows.Devices", "Gyrometer", description: "Demonstrates use of Windows.Devices.Sensors.Gyrometer", viewModelType: typeof(GyrometerTestsViewModel), ignoreInSnapshotTests: true)]
+	[Sample("Windows.Devices", Name = "Gyrometer", Description = "Demonstrates use of Windows.Devices.Sensors.Gyrometer", ViewModelType = typeof(GyrometerTestsViewModel), IgnoreInSnapshotTests = true)]
 	public sealed partial class GyrometerTests : UserControl
 	{
 		public GyrometerTests()

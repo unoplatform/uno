@@ -1,10 +1,10 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 
 namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 {
-	[SampleControlInfo("TextBlock", "TextBlock_Hyperlink")]
+	[Sample("TextBlock", Name = "TextBlock_Hyperlink")]
 	public sealed partial class TextBlock_Hyperlink : UserControl
 	{
 		public TextBlock_Hyperlink()

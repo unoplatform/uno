@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Uno.Extensions;
 using Uno.UI.Samples.Controls;
@@ -17,7 +17,7 @@ using Uno.Logging;
 
 namespace Uno.UI.Samples.Content.UITests.MapControl
 {
-	[SampleControlInfo("Mapping", "MapControl")]
+	[Sample("Mapping", Name = "MapControl")]
 	public sealed partial class MapControl : UserControl
 	{
 #pragma warning disable CS0109

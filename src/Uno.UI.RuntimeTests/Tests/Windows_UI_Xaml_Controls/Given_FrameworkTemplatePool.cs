@@ -229,4 +229,22 @@ public class Given_FrameworkTemplatePool
 			AssertEditorContents();
 		}
 	}
+
+#if HAS_UNO
+	[TestMethod]
+	public async Task When_PoolingIsDisabled_NoEntriesAreAdded()
+	{
+		using (FeatureConfigurationHelper.UseTemplatePooling())
+		{
+			FrameworkTemplatePool.InternalIsPoolingEnabled = false;
+
+			var capture = new object();
+			var template = new DataTemplate(() => new ContentPresenter { Content = capture });
+
+			Assert.IsFalse(FrameworkTemplatePool.Instance.ContainsKey(template));
+			template.LoadContentCached();
+			Assert.IsFalse(FrameworkTemplatePool.Instance.ContainsKey(template));
+		}
+	}
+#endif
 }

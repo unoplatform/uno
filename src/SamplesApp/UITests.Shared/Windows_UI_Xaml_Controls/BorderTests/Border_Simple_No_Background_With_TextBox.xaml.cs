@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.BorderTestsControl
 {
-	[SampleControlInfo("Border", "Border_Simple_No_Background_With_TextBox")]
+	[Sample("Border", Name = "Border_Simple_No_Background_With_TextBox")]
 	public sealed partial class Border_Simple_No_Background_With_TextBox : UserControl
 	{
 		public Border_Simple_No_Background_With_TextBox()

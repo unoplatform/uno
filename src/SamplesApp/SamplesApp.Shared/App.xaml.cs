@@ -26,6 +26,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Microsoft.UI.Xaml.Documents;
 using Private.Infrastructure;
 
 #if !HAS_UNO
@@ -78,6 +79,9 @@ namespace SamplesApp
 		static App()
 		{
 			ConfigureLogging();
+#if __SKIA__
+			InitializeIcuData();
+#endif
 		}
 
 		/// <summary>
@@ -203,6 +207,17 @@ namespace SamplesApp
 			Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow =
 				_mainWindow;
 		}
+
+#if __SKIA__
+		private static void InitializeIcuData()
+		{
+			// This is done by the IcuDataInitializerGenerator for external projects
+			var icuType = Type.GetType("Microsoft.UI.Xaml.Documents.UnicodeText+ICU, Uno.UI");
+			var setMethod = icuType?.GetMethod("SetDataAssembly", BindingFlags.Public | BindingFlags.Static);
+			var assembly = AppDomain.CurrentDomain.GetAssemblies().First(a => a.GetName().Name is { } name && name.StartsWith("SamplesApp", StringComparison.Ordinal) && !name.Equals("SamplesApp.Skia", StringComparison.Ordinal));
+			setMethod?.Invoke(null, [assembly]);
+		}
+#endif
 
 		private void SetupAndroidEnvironment()
 		{

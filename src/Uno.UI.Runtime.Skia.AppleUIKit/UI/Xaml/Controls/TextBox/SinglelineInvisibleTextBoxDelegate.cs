@@ -1,17 +1,15 @@
-﻿using Foundation;
-using Uno.Extensions;
-using System;
+﻿using System;
 using System.Linq;
-using UIKit;
-using Windows.UI.Core;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Controls;
+using Foundation;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using Windows.System;
-using Uno.Foundation.Logging;
-using Uno.UI.Runtime.Skia.AppleUIKit;
+using UIKit;
+using Uno.Extensions;
 using Uno.WinUI.Runtime.Skia.AppleUIKit.Extensions;
+using Windows.System;
+using Windows.UI.Core;
 
 namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 

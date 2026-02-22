@@ -1,11 +1,11 @@
-﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 
 namespace Uno.UI.Samples.Content.UITests.Popup
 {
-	[SampleControlInfo("Popup", "Popup_Simple", description: "Description for sample of Popup_Simple")]
+	[Sample("Popup", Name = "Popup_Simple", Description = "Description for sample of Popup_Simple")]
 	public sealed partial class Popup_Simple : UserControl
 	{
 		public Popup_Simple()

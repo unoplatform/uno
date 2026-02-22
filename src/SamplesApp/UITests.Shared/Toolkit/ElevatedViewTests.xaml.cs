@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -6,7 +6,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Toolkit
 {
-	[SampleControlInfo("Toolkit")]
+	[Sample("Toolkit")]
 	public sealed partial class ElevatedViewTests : Page
 	{
 		public ElevatedViewTests()

@@ -5,7 +5,6 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using Uno;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 
@@ -15,10 +14,12 @@ internal readonly partial struct UnicodeText
 {
 	private static class ICU
 	{
+		private static Assembly? _dataAssembly;
+
 		// The version number of ICU is important because the exported symbols have their names appended by
 		// the version number. For example, there's a ubrk_open_74 in ICU v74, but not a ubrk_open.
-		private static readonly int _icuVersion;
-		private static readonly IntPtr _libicuuc;
+		private static int _icuVersion;
+		private static IntPtr _libicuuc;
 		private static readonly Dictionary<Type, object> _lookupCache = new();
 
 		private const DllImportSearchPath NativeLibrarySearchDirectories =
@@ -27,14 +28,23 @@ internal readonly partial struct UnicodeText
 			| DllImportSearchPath.UserDirectories
 			;
 
-		static unsafe ICU()
+		public static void SetDataAssembly(Assembly assembly)
+		{
+			_dataAssembly = assembly;
+			Init();
+		}
+
+		const int MinSupportedIcuucVersion = 50;
+		const int MaxSupportedIcuucVersion = 100;
+
+		private static unsafe void Init()
 		{
 			IntPtr libicuuc;
 			if (OperatingSystem.IsWindows())
 			{
-				// On Windows, We get the ICU binaries from the Microsoft.ICU.ICU4C.Runtime package
-				_icuVersion = 72;
-				if (!NativeLibrary.TryLoad("icuuc72", typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
+				// On Windows, we get the ICU binaries from the uno.icu-win package.
+				_icuVersion = 77;
+				if (!NativeLibrary.TryLoad("icuuc77", typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
 				{
 					throw new Exception("Failed to load libicuuc.");
 				}
@@ -58,7 +68,7 @@ internal readonly partial struct UnicodeText
 				{
 					if (OperatingSystem.IsLinux())
 					{
-						for (int j = 100; j >= 67; j--)
+						for (int j = MaxSupportedIcuucVersion; j >= MinSupportedIcuucVersion; j--)
 						{
 							// some environments only have a versioned library and don't symlink it to libicuuc.so
 							if (NativeLibrary.TryLoad($"libicuuc.so.{j}", typeof(ICU).Assembly, DllImportSearchPath.UserDirectories, out libicuuc))
@@ -75,46 +85,25 @@ internal readonly partial struct UnicodeText
 
 				// Since libicuuc not installed by us, we have no control over the specific version number, so
 				// we try a wide range of versions.
-				for (int i = 100; i >= 67; i--)
+				for (int i = MaxSupportedIcuucVersion; i >= MinSupportedIcuucVersion; i--)
 				{
 					if (NativeLibrary.TryGetExport(libicuuc, $"u_getVersion_{i}", out _))
 					{
 						_icuVersion = i;
+						break;
 					}
 				}
 
 				if (_icuVersion == 0)
 				{
-					throw new Exception("Failed to load icuuc.");
+					throw new Exception($"Loaded icuuc, but could not find symbol `u_getVersion_N`, where N is in range [{MinSupportedIcuucVersion}-{MaxSupportedIcuucVersion}].");
 				}
 			}
 			else if (OperatingSystem.IsBrowser())
 			{
-				var stream = AppDomain.CurrentDomain
-					.GetAssemblies()
-					.Select(a => (a, a.GetManifestResourceNames().FirstOrDefault(name => name.EndsWith("icudt.dat", StringComparison.InvariantCulture))))
-					.Where(t => t.Item2 != null)
-					.Select(t => t.a.GetManifestResourceStream(t.Item2!))
-					.First()!;
-				var data = new byte[stream.Length];
-				stream.ReadExactly(data, 0, data.Length);
-				fixed (byte* dataPtr = data)
-				{
-					var errorPtr = BrowserICUSymbols.uno_udata_setCommonData((IntPtr)dataPtr);
-					var errorString = Marshal.PtrToStringUTF8(errorPtr);
-					if (errorString is not null)
-					{
-						throw new InvalidOperationException($"uno_udata_setCommonData failed: {errorString}");
-					}
-				}
-
-				// ICU is included in the dotnet runtime itself
-				// the version doesn't matter as the symbols don't have the version postfix
+				// ICU is included in the unoicu.a static library without version postfixes, so the version doesn't matter
 				_icuVersion = 1;
-				if (!NativeLibrary.TryLoad("__Internal", Assembly.GetEntryAssembly()!, unchecked((DllImportSearchPath)0xFFFFFFFF), out libicuuc))
-				{
-					throw new DllNotFoundException("Failed to load libicuuc.");
-				}
+				libicuuc = IntPtr.Zero;
 			}
 			else
 			{
@@ -126,34 +115,54 @@ internal readonly partial struct UnicodeText
 			GetMethod<u_getVersion>()(out var versionInfo);
 			var ptr = Marshal.AllocHGlobal(1000);
 			GetMethod<u_versionToString>()((IntPtr)(&versionInfo), ptr);
-			typeof(ICU).LogInfo()?.Info($"Found ICU version {Marshal.PtrToStringAnsi(ptr)}.");
+			typeof(ICU).LogDebug()?.Debug($"Found ICU version {Marshal.PtrToStringAnsi(ptr)}.");
 			Marshal.FreeHGlobal(ptr);
+
+			if (OperatingSystem.IsBrowser() || OperatingSystem.IsMacOS() || OperatingSystem.IsWindows())
+			{
+				if (_dataAssembly is null)
+				{
+					throw new InvalidOperationException("Failed to find the assembly containing icudt.dat resource in the entry assembly.");
+				}
+				var resourceName = _dataAssembly.GetManifestResourceNames().FirstOrDefault(name => name.EndsWith("icudt.dat", StringComparison.InvariantCulture));
+				if (resourceName is null || _dataAssembly.GetManifestResourceStream(resourceName) is not { } stream)
+				{
+					throw new InvalidOperationException($"Failed to find icudt.dat resource in {_dataAssembly.FullName}.");
+				}
+				// udata_setCommonData does not copy the buffer, so it needs to be pinned.
+				// For alignment, the ICU docs require 16-byte alignment. https://unicode-org.github.io/icu/userguide/icu_data/#alignment
+				var data = NativeMemory.AlignedAlloc((UIntPtr)stream.Length, 16);
+				stream.ReadExactly(new Span<byte>(data, (int)stream.Length));
+				GetMethod<udata_setCommonData>()((IntPtr)data, out var errorCode);
+				CheckErrorCode<udata_setCommonData>(errorCode);
+			}
 		}
 
 		public static T GetMethod<T>()
 		{
 			if (!_lookupCache.TryGetValue(typeof(T), out var value))
 			{
-				if (OperatingSystem.IsIOS())
+				if (OperatingSystem.IsIOS() || OperatingSystem.IsBrowser())
 				{
 					// iOS doesn't support NativeLibrary.TryGetExport so we have to make DllImport declarations to
 					// the exact symbol names at compile times (even DllImport.EntryPoint doesn't work) and do the
 					// method mapping by reflection.
-					var methodName = typeof(T).Name + "_" + _icuVersion;
-					var method = typeof(IOSICUSymbols).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static);
+					// On WASM, NativeLibrary.TryGetExport is supported, but not on NativeAOT.
+					var (methodName, type) = OperatingSystem.IsBrowser() ? ($"uno_{typeof(T).Name}", typeof(BrowserICUSymbols)) : ($"{typeof(T).Name}_{_icuVersion}", typeof(IOSICUSymbols));
+					var method = type.GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static);
 					if (method is null)
 					{
-						throw new InvalidOperationException($"Failed to find {typeof(T).Name} in {nameof(IOSICUSymbols)}.");
+						throw new InvalidOperationException($"Failed to find {typeof(T).Name} in {type.Name}.");
 					}
 					value = Delegate.CreateDelegate(typeof(T), method);
 				}
-				else if (NativeLibrary.TryGetExport(_libicuuc, typeof(T).Name, out var func))
+				else if (NativeLibrary.TryGetExport(_libicuuc, typeof(T).Name, out var originalNameFunc))
 				{
-					value = Marshal.GetDelegateForFunctionPointer<T>(func)!;
+					value = Marshal.GetDelegateForFunctionPointer<T>(originalNameFunc)!;
 				}
-				else if (NativeLibrary.TryGetExport(_libicuuc, $"{typeof(T).Name}_{_icuVersion}", out var func2))
+				else if (NativeLibrary.TryGetExport(_libicuuc, $"{typeof(T).Name}_{_icuVersion}", out var versionPostfixedFunc))
 				{
-					value = Marshal.GetDelegateForFunctionPointer<T>(func2)!;
+					value = Marshal.GetDelegateForFunctionPointer<T>(versionPostfixedFunc)!;
 				}
 				else
 				{
@@ -164,12 +173,23 @@ internal readonly partial struct UnicodeText
 			return (T)value;
 		}
 
-		public static unsafe DisposableStruct<IntPtr> CreateBiDiAndSetPara(string text, int start, int end, byte paraLevel, out IntPtr bidi)
+		public static unsafe DisposableStruct<IntPtr> CreateBiDiAndSetPara(string text, int start, int end, byte paraLevel, out IntPtr bidi, byte[]? embeddingLevels = null)
 		{
 			bidi = GetMethod<ubidi_open>()();
 			fixed (char* textPtr = &text.GetPinnableReference())
 			{
-				GetMethod<ubidi_setPara>()(bidi, (IntPtr)(textPtr + start), end - start, paraLevel, IntPtr.Zero, out var setParaErrorCode);
+				int setParaErrorCode;
+				if (embeddingLevels is not null)
+				{
+					fixed (byte* embeddingLevelsPtr = embeddingLevels)
+					{
+						GetMethod<ubidi_setPara>()(bidi, (IntPtr)(textPtr + start), end - start, paraLevel, (IntPtr)embeddingLevelsPtr, out setParaErrorCode);
+					}
+				}
+				else
+				{
+					GetMethod<ubidi_setPara>()(bidi, (IntPtr)(textPtr + start), end - start, paraLevel, IntPtr.Zero, out setParaErrorCode);
+				}
 				if (setParaErrorCode > 0)
 				{
 					throw new InvalidOperationException($"{nameof(ubidi_setPara)} failed with error code {setParaErrorCode}");
@@ -182,12 +202,14 @@ internal readonly partial struct UnicodeText
 		{
 			if (status > 0)
 			{
-				throw new InvalidOperationException($"{typeof(T).Name} failed with error code {status.ToString("X", CultureInfo.InvariantCulture)}");
+				var errorString = Marshal.PtrToStringUTF8(GetMethod<u_errorName>()(status));
+				throw new InvalidOperationException($"{typeof(T).Name} failed with error code {errorString}");
 			}
 			else if (status < 0)
 			{
-				// ICU has a very low bar for what it considers a "warning", so this can be very spammy. 
-				typeof(ICU).LogTrace()?.Warn($"{typeof(T).Name} raised a warning code {status.ToString("X", CultureInfo.InvariantCulture)}");
+				// ICU has a very low bar for what it considers a "warning", so this can be very spammy.
+				var errorString = Marshal.PtrToStringUTF8(GetMethod<u_errorName>()(status));
+				typeof(ICU).LogTrace()?.Trace($"{typeof(T).Name} raised a warning code: {errorString}");
 			}
 		}
 
@@ -201,7 +223,19 @@ internal readonly partial struct UnicodeText
 		public delegate void ubidi_setPara(IntPtr pBiDi, IntPtr text, int length, byte paraLevel, IntPtr embeddingLevels, out int errorCode);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void ubidi_setLine(IntPtr pBiDi, int start, int limit, IntPtr pLine, out int errorCode);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void ubidi_getLogicalRun(IntPtr pBiDi, int logicalPosition, out int logicalLimit, out byte level);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate IntPtr ubidi_getLevels(IntPtr pBiDi, out int errorCode);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate byte ubidi_getParaLevel(IntPtr pBiDi);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void ubidi_getLogicalMap(IntPtr pBiDi, IntPtr indexMap, out int errorCode);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate int ubidi_countRuns(IntPtr pBiDI, out int errorCode);
@@ -213,7 +247,7 @@ internal readonly partial struct UnicodeText
 		public delegate IntPtr ubrk_open(int type, IntPtr locale, IntPtr text, int textLength, out int status);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate IntPtr ubrk_close(IntPtr bi);
+		public delegate void ubrk_close(IntPtr bi);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate int ubrk_first(IntPtr bi);
@@ -222,10 +256,19 @@ internal readonly partial struct UnicodeText
 		public delegate int ubrk_next(IntPtr bi);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate int uscript_getScript(int codepoint, out int errorCode);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate void u_getVersion(out UVersionInfo versionInfo);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate void u_versionToString(IntPtr versionArray, IntPtr versionString);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate void udata_setCommonData(IntPtr bytes, out int errorCode);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate IntPtr u_errorName(int code);
 
 		[StructLayout(LayoutKind.Sequential)]
 		private struct UVersionInfo
@@ -238,48 +281,79 @@ internal readonly partial struct UnicodeText
 
 		public class BrowserICUSymbols
 		{
-			// These methods are supplied by our own unoicu.a static library and includes support for the BreakIterator
-			// API. The dotnet runtime version of ICU complains about mising resources when calling ubrk_open even
-			// when udata_setCommonData is called.
-			[DllImport("unoicu")]
-			public static extern IntPtr uno_udata_setCommonData(IntPtr bytes);
-
 			[DllImport("unoicu", CharSet = CharSet.Unicode)]
 			public static extern IntPtr init_line_breaker(string bytes);
 
 			[DllImport("unoicu")]
 			public static extern int next_line_breaking_opportunity(IntPtr breaker);
 
-			// These symbols come from dotnet's own ICU.
-			// WASM needs all used symbols from ICU defined as DllImports to be added to emscripten's linker EXPORTED_FUNCTIONS option.
-			// These won't actually be used and the signature of the functions can be anything, just the symbol name is enough.
-			[DllImport("__Internal")]
-			static extern void ubidi_open();
+			// These are methods from ICU that are redeclared under the uno_ prefix for WASM linking purposes.
+			// These methods are also present in the dotnet runtime ICU build (through __Internal), except that
+			// the symbols are not available on NativeAOT.
 
-			[DllImport("__Internal")]
-			static extern void ubidi_close();
+			[DllImport("unoicu")]
+			static extern void uno_udata_setCommonData(IntPtr bytes, out int errorCode);
 
-			[DllImport("__Internal")]
-			static extern void ubidi_setPara();
+			[DllImport("unoicu")]
+			static extern IntPtr uno_ubidi_open();
 
-			[DllImport("__Internal")]
-			static extern void ubidi_getLogicalRun();
+			[DllImport("unoicu")]
+			static extern void uno_ubidi_close(IntPtr pBiDi);
 
-			[DllImport("__Internal")]
-			static extern void ubidi_countRuns();
+			[DllImport("unoicu")]
+			static extern void uno_ubidi_setPara(IntPtr pBiDi, IntPtr text, int length, byte paraLevel, IntPtr embeddingLevels, out int errorCode);
 
-			[DllImport("__Internal")]
-			static extern void ubidi_getVisualRun();
+			[DllImport("unoicu")]
+			static extern void uno_ubidi_setLine(IntPtr pBiDi, int start, int limit, IntPtr pLine, out int errorCode);
 
-			[DllImport("__Internal")]
-			static extern void u_getVersion();
+			[DllImport("unoicu")]
+			static extern void uno_ubidi_getLogicalRun(IntPtr pBiDi, int logicalPosition, out int logicalLimit, out byte level);
 
-			[DllImport("__Internal")]
-			static extern void u_versionToString();
+			[DllImport("unoicu")]
+			static extern int uno_ubidi_countRuns(IntPtr pBiDI, out int errorCode);
+
+			[DllImport("unoicu")]
+			static extern int uno_ubidi_getVisualRun(IntPtr pBiDi, int runIndex, out int logicalStart, out int length);
+
+			[DllImport("unoicu")]
+			static extern IntPtr uno_ubidi_getLevels(IntPtr pBiDi, out int errorCode);
+
+			[DllImport("unoicu")]
+			static extern byte uno_ubidi_getParaLevel(IntPtr pBiDi);
+
+			[DllImport("unoicu")]
+			static extern void uno_ubidi_getLogicalMap(IntPtr pBiDi, IntPtr indexMap, out int errorCode);
+
+			[DllImport("unoicu")]
+			static extern IntPtr uno_ubrk_open(int type, IntPtr locale, IntPtr text, int textLength, out int status);
+
+			[DllImport("unoicu")]
+			static extern void uno_ubrk_close(IntPtr bi);
+
+			[DllImport("unoicu")]
+			static extern int uno_ubrk_first(IntPtr bi);
+
+			[DllImport("unoicu")]
+			static extern int uno_ubrk_next(IntPtr bi);
+
+			[DllImport("unoicu")]
+			static extern int uno_uscript_getScript(int codepoint, out int errorCode);
+
+			[DllImport("unoicu")]
+			static extern void uno_u_getVersion(out UVersionInfo versionInfo);
+
+			[DllImport("unoicu")]
+			static extern void uno_u_versionToString(IntPtr versionArray, IntPtr versionString);
+
+			[DllImport("unoicu")]
+			static extern IntPtr uno_u_errorName(int code);
 		}
 
 		private static class IOSICUSymbols
 		{
+			[DllImport("__Internal")]
+			static extern void udata_setCommonData_77(IntPtr bytes, out int errorCode);
+
 			[DllImport("__Internal")]
 			static extern IntPtr ubidi_open_77();
 
@@ -288,6 +362,9 @@ internal readonly partial struct UnicodeText
 
 			[DllImport("__Internal")]
 			static extern void ubidi_setPara_77(IntPtr pBiDi, IntPtr text, int length, byte paraLevel, IntPtr embeddingLevels, out int errorCode);
+
+			[DllImport("__Internal")]
+			static extern void ubidi_setLine_77(IntPtr pBiDi, int start, int limit, IntPtr pLine, out int errorCode);
 
 			[DllImport("__Internal")]
 			static extern void ubidi_getLogicalRun_77(IntPtr pBiDi, int logicalPosition, out int logicalLimit, out byte level);
@@ -299,10 +376,19 @@ internal readonly partial struct UnicodeText
 			static extern int ubidi_getVisualRun_77(IntPtr pBiDi, int runIndex, out int logicalStart, out int length);
 
 			[DllImport("__Internal")]
+			static extern IntPtr ubidi_getLevels_77(IntPtr pBiDi, out int errorCode);
+
+			[DllImport("__Internal")]
+			static extern byte ubidi_getParaLevel_77(IntPtr pBiDi);
+
+			[DllImport("__Internal")]
+			static extern void ubidi_getLogicalMap_77(IntPtr pBiDi, IntPtr indexMap, out int errorCode);
+
+			[DllImport("__Internal")]
 			static extern IntPtr ubrk_open_77(int type, IntPtr locale, IntPtr text, int textLength, out int status);
 
 			[DllImport("__Internal")]
-			static extern IntPtr ubrk_close_77(IntPtr bi);
+			static extern void ubrk_close_77(IntPtr bi);
 
 			[DllImport("__Internal")]
 			static extern int ubrk_first_77(IntPtr bi);
@@ -311,10 +397,16 @@ internal readonly partial struct UnicodeText
 			static extern int ubrk_next_77(IntPtr bi);
 
 			[DllImport("__Internal")]
+			static extern int uscript_getScript_77(int codepoint, out int errorCode);
+
+			[DllImport("__Internal")]
 			static extern void u_getVersion_77(out UVersionInfo versionInfo);
 
 			[DllImport("__Internal")]
 			static extern void u_versionToString_77(IntPtr versionArray, IntPtr versionString);
+
+			[DllImport("__Internal")]
+			static extern IntPtr u_errorName_77(int code);
 		}
 	}
 }

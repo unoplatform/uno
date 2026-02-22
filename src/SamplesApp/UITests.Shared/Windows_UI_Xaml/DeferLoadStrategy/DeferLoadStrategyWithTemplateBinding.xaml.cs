@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,7 +18,7 @@ using System.Globalization;
 
 namespace Uno.UI.Samples.Content.UITests.DeferLoadStrategy
 {
-	[SampleControlInfo("XAML", "DeferLoadStrategyWithTemplateBinding", typeof(Presentation.SamplePages.DeferLoadStrategyViewModel),
+	[Sample("XAML", Name = "DeferLoadStrategyWithTemplateBinding", ViewModelType = typeof(Presentation.SamplePages.DeferLoadStrategyViewModel),
 		Description = "DeferLoadStrategyWithTemplateBinding - content should load after a brief delay")]
 	public sealed partial class DeferLoadStrategyWithTemplateBinding : UserControl
 	{

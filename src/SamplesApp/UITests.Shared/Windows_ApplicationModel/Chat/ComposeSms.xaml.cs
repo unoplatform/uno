@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -20,7 +20,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_ApplicationModel.Chat
 {
-	[SampleControlInfo("Windows.ApplicationModel", "ChatMessageManager", ignoreInSnapshotTests: true, description: "Test the ChatMessageManager.ShowComposeSmsMessageAsync API.")]
+	[Sample("Windows.ApplicationModel", Name = "ChatMessageManager", IgnoreInSnapshotTests = true, Description = "Test the ChatMessageManager.ShowComposeSmsMessageAsync API.")]
 	public sealed partial class ComposeSms : UserControl, System.ComponentModel.INotifyPropertyChanged
 	{
 		private string _phoneNumber;

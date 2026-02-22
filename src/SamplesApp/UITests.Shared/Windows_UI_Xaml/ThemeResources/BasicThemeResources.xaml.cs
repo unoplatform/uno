@@ -1,4 +1,4 @@
-﻿using Windows.UI.Core;
+using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -6,7 +6,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml.ThemeResources
 {
-	[SampleControlInfo("XAML", "BasicThemeResources")]
+	[Sample("XAML", Name = "BasicThemeResources")]
 	public sealed partial class BasicThemeResources : Page
 	{
 		public BasicThemeResources()

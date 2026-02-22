@@ -104,8 +104,7 @@ namespace Uno.UI.RemoteControl.Host
 						throw new InvalidOperationException("IIdeChannel is required"),
 						context.RequestServices);
 
-					await server.RunAsync(await context.WebSockets.AcceptWebSocketAsync(),
-						CancellationToken.None);
+					await server.RunAsync(await context.WebSockets.AcceptWebSocketAsync(), context.RequestAborted);
 				}
 				else
 				{

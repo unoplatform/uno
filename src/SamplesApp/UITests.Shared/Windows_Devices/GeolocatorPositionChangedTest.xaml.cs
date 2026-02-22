@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Uno.Disposables;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
@@ -13,11 +13,10 @@ using System.Threading.Tasks;
 
 namespace UITests.Shared.Windows_Devices;
 
-[SampleControlInfo("Windows.Devices",
-	"GeolocatorPositionChanged",
-	description: "Test the Geolocator PositionChanged reading from non-UI thread",
-	viewModelType: typeof(GeolocatorPositionChangedTestViewModel),
-	isManualTest: true)]
+[Sample("Windows.Devices", Name = "GeolocatorPositionChanged",
+	Description = "Test the Geolocator PositionChanged reading from non-UI thread",
+	ViewModelType = typeof(GeolocatorPositionChangedTestViewModel),
+	IsManualTest = true)]
 public sealed partial class GeolocatorPositionChangedTest : UserControl
 {
 	public GeolocatorPositionChangedTest()

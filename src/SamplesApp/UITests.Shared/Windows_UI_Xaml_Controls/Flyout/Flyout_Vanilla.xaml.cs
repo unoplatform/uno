@@ -1,10 +1,10 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.FlyoutTests
 {
-	[SampleControlInfo("Flyouts", "Vanilla")]
+	[Sample("Flyouts", Name = "Vanilla")]
 	public sealed partial class Flyout_Vanilla : UserControl
 	{
 		public Flyout_Vanilla()

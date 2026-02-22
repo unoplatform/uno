@@ -1,6 +1,7 @@
 #if !(__APPLE_UIKIT__ || __ANDROID__ || __TVOS__)
 #nullable enable
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Xml;
 using Uno.Foundation.Logging;
@@ -25,21 +26,34 @@ public partial class Package
 	private DateTimeOffset GetInstallDate() => DateTimeOffset.Now;
 
 	private string GetInstalledPath()
+		=> GetAppInstallDirectory(_entryAssembly) ?? Environment.CurrentDirectory;
+
+	internal static string? GetAppInstallDirectory(Assembly? appAssembly)
 	{
-#pragma warning disable IL3000
-		// "Assembly.Location.get' always returns an empty string for assemblies embedded in a single-file app."
-		// We check the return value; it should be safe to ignore this.
-		if (_entryAssembly?.Location is { Length: > 0 } location)
-#pragma warning restore IL3000
+		if (GetAssemblyLocation(appAssembly) is string location &&
+				global::System.IO.Path.GetDirectoryName(location) is string directory)
 		{
-			return global::System.IO.Path.GetDirectoryName(location) ?? "";
+			return directory;
 		}
 		else if (AppContext.BaseDirectory is { Length: > 0 } baseDirectory)
 		{
 			return global::System.IO.Path.GetDirectoryName(baseDirectory) ?? "";
 		}
 
-		return Environment.CurrentDirectory;
+		return null;
+
+		// "Assembly.Location.get' always returns an empty string for assemblies embedded in a single-file app."
+		// We check the return value; it should be safe to ignore this.
+		[UnconditionalSuppressMessage("Trimming", "IL3000", Justification = "On an empty string, we fallback to other locations.")]
+		static string? GetAssemblyLocation(Assembly? assembly)
+		{
+			var loc = assembly?.Location;
+			if (!string.IsNullOrEmpty(loc))
+			{
+				return loc;
+			}
+			return null;
+		}
 	}
 
 	public string DisplayName

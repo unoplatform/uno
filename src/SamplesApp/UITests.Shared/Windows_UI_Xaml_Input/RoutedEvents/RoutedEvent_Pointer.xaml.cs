@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.Samples.Controls;
 using System;
@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml;
 
 namespace UITests.Shared.Windows_UI_Xaml_Input.RoutedEvents
 {
-	[SampleControlInfo("Routed Events", "Pointer Events")]
+	[Sample("Routed Events", Name = "Pointer Events")]
 	public sealed partial class RoutedEvent_Pointer : Page
 	{
 		public RoutedEvent_Pointer()

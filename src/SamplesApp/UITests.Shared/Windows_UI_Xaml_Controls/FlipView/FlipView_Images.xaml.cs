@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Controls.FlipView
 {
-	[SampleControlInfo("FlipView", "FlipView_Images", description: "User should see a single image at the time")]
+	[Sample("FlipView", Name = "FlipView_Images", Description = "User should see a single image at the time")]
 	public sealed partial class FlipView_Images : UserControl
 	{
 		public FlipView_Images()

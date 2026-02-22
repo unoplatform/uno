@@ -15,7 +15,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property BorderThickness
 		// Skipping already declared property BorderBrush
 		// Skipping already declared property BackgroundSizing
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool AreScrollSnapPointsRegular
 		{
@@ -65,7 +65,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackPanel.VerticalSnapPointsChanged.remove
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.StackPanel.GetIrregularSnapPoints(Microsoft.UI.Xaml.Controls.Orientation, Microsoft.UI.Xaml.Controls.Primitives.SnapPointsAlignment)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.StackPanel.GetRegularSnapPoints(Microsoft.UI.Xaml.Controls.Orientation, Microsoft.UI.Xaml.Controls.Primitives.SnapPointsAlignment, out float)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void GetInsertionIndexes(global::Windows.Foundation.Point position, out int first, out int second)
 		{

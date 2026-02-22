@@ -174,7 +174,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var SUT = new When_ResourceDictionary_DP();
 			await UITestHelper.Load(SUT);
 			var resourceDictionary = MyClass.GetX(SUT.MyButton);
-			Assert.AreEqual(2, resourceDictionary.Count);
+			Assert.HasCount(2, resourceDictionary);
 			Assert.AreEqual(Colors.Yellow, (Color)resourceDictionary["PrimaryColor"]);
 			Assert.AreEqual(Colors.Red, (Color)resourceDictionary["SecondaryColor"]);
 		}

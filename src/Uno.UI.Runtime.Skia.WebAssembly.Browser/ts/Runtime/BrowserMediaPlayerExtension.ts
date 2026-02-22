@@ -3,10 +3,7 @@ namespace Uno.UI.Runtime.Skia {
 		static unoExports: any;
 
 		public static buildImports() {
-			(<any>window.Module).getAssemblyExports("Uno.UI.Runtime.Skia.WebAssembly.Browser")
-				.then((e: any) => {
-					BrowserMediaPlayerExtension.unoExports = e.Uno.UI.Runtime.Skia.BrowserMediaPlayerExtension;
-				});
+			BrowserMediaPlayerExtension.unoExports = WebAssemblyWindowWrapper.getAssemblyExports().Uno.UI.Runtime.Skia.BrowserMediaPlayerExtension;
 		}
 		
 		public static getVideoPlaybackRate(elementId: string): number {

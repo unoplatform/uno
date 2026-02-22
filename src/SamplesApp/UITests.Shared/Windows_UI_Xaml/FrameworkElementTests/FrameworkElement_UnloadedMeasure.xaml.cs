@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,7 +21,7 @@ using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_UI_Xaml.FrameworkElementTests
 {
-	[SampleControlInfo("FrameworkElement", "UnloadedMeasure", description: "This control should not display anything if unloaded UIElements get arranged")]
+	[Sample("FrameworkElement", Name = "UnloadedMeasure", Description = "This control should not display anything if unloaded UIElements get arranged")]
 	public sealed partial class FrameworkElement_UnloadedMeasure : UserControl
 	{
 		public FrameworkElement_UnloadedMeasure()

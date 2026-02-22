@@ -38,7 +38,7 @@ Adding Uno Platform support to an existing class library entails changing the co
 
 ## Adding dependencies
 
-If your class library had additional dependencies, you will need to restore them. See [here](migrating-before-you-start.md) for tips on finding compatible dependency versions for each target. See the [working with Control libraries article](xref:Guide.HowTo.Create-Control-Library) for how to add dependencies to your project.
+If your class library had additional dependencies, you will need to restore them. See [Migrating - Before You Start](migrating-before-you-start.md) for tips on finding compatible dependency versions for each target. See the [working with Control libraries article](xref:Guide.HowTo.Create-Control-Library) for how to add dependencies to your project.
 
 ## Adjusting code for Uno compatibility
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -9,7 +9,7 @@ using Uno.UI.Samples.UITests.Helpers;
 
 namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 {
-	[SampleControlInfo("UIElement", ignoreInSnapshotTests: true)]
+	[Sample("UIElement", IgnoreInSnapshotTests = true)]
 	public sealed partial class TransformToVisual_ScrollViewer : Page
 	{
 		private readonly TestRunner _tests;

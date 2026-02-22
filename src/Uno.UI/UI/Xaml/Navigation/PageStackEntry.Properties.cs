@@ -9,6 +9,10 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media.Animation;
 using Uno.UI.Helpers;
 
+[assembly: UnconditionalSuppressMessage("Trimming", "IL2111", Scope = "member",
+	Target = "M:Microsoft.UI.Xaml.Navigation.PageStackEntry.#cctor()",
+	Justification = "From the `SourcePageTypeProperty` assignment; `typeof(Type)` triggers IL2111 regarding `Type.TypeInitializer`, but Uno doesn't use `Type.TypeInitializer`!")]
+
 namespace Microsoft.UI.Xaml.Navigation;
 
 partial class PageStackEntry

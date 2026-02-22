@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,7 +21,7 @@ using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 {
-	[SampleControlInfo("Dialogs", "ContentDialog_ComboBox", description: "ContentDialog with a ComboBox inside")]
+	[Sample("Dialogs", Name = "ContentDialog_ComboBox", Description = "ContentDialog with a ComboBox inside")]
 	public sealed partial class ContentDialog_ComboBox : UserControl
 	{
 		public ContentDialog_ComboBox()

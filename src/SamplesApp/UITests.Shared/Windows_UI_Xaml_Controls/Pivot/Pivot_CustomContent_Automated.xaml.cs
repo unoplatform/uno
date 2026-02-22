@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Pivot
 {
-	[SampleControlInfo("Pivot", nameof(Pivot_CustomContent_Automated))]
+	[Sample("Pivot", Name = nameof(Pivot_CustomContent_Automated))]
 	public sealed partial class Pivot_CustomContent_Automated : UserControl
 	{
 		public Pivot_CustomContent_Automated()

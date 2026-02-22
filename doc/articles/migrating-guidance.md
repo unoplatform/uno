@@ -38,4 +38,4 @@ If, for example, your control is defined in the `CoolControls` namespace, and yo
 
 ## Adjust for unsupported runtime features
 
-Not all .NET runtime features are supported on every platform. See [here](migrating-before-you-start.md) for more details.
+Not all .NET runtime features are supported on every platform. See [Migrating - Before You Start](migrating-before-you-start.md) for more details.

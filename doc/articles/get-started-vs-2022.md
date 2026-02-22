@@ -1,7 +1,7 @@
 ---
 uid: Uno.GetStarted.vs2022
 ---
-## Get Started on Visual Studio 2022/2026
+# Get Started on Visual Studio
 
 This getting started will guide you through setting up your environment to create Uno Platform applications using C#, .NET and Copilot with Visual Studio 2022/2026.
 

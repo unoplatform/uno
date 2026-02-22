@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
@@ -9,9 +9,9 @@ using ICommand = System.Windows.Input.ICommand;
 
 namespace UITests.Shared.Windows_System
 {
-	[SampleControlInfo("Windows.System", "Launcher",
-		description: "Tests the Launcher. Some special URIs are supported on certain platforms (Windows, Android, iOS—such as ms-settings:). On Android, the 'Open System Notification Settings' option should take you directly to the 'App Notifications' section in the system settings.",
-		viewModelType: typeof(LauncherTestsViewModel))]
+	[Sample("Windows.System", Name = "Launcher",
+		Description = "Tests the Launcher. Some special URIs are supported on certain platforms (Windows, Android, iOS�such as ms-settings:). On Android, the 'Open System Notification Settings' option should take you directly to the 'App Notifications' section in the system settings.",
+		ViewModelType = typeof(LauncherTestsViewModel))]
 	public sealed partial class LauncherTests : UserControl
 	{
 		public LauncherTests()

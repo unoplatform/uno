@@ -1,4 +1,3 @@
-#if HAS_UNO_WINUI
 using Windows.Foundation;
 
 namespace Microsoft.Windows.ApplicationModel.Resources;
@@ -25,4 +24,3 @@ public partial interface IResourceManager
 	/// </summary>
 	event TypedEventHandler<ResourceManager, ResourceNotFoundEventArgs> ResourceNotFound;
 }
-#endif

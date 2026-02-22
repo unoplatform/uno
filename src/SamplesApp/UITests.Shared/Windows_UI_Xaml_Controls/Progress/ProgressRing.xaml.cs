@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,7 +21,7 @@ namespace SamplesApp.Samples.Progress
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[SampleControlInfo("Progress", "ProgressRing", ignoreInSnapshotTests: true)]
+	[Sample("Progress", Name = "ProgressRing", IgnoreInSnapshotTests = true)]
 	public sealed partial class ProgressRing : Page
 	{
 		public ProgressRing()

@@ -176,12 +176,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var flyoutSeparatorBounds = flyoutSeparator.GetRelativeBounds(menuBarItem);
 				var flyoutItem2Bounds = flyoutItem2.GetRelativeBounds(menuBarItem);
 
-				Assert.IsTrue(flyoutItem1Bounds.Height > 0);
-				Assert.IsTrue(flyoutSeparatorBounds.Height > 0);
-				Assert.IsTrue(flyoutItem2Bounds.Height > 0);
+				Assert.IsGreaterThan(0, flyoutItem1Bounds.Height);
+				Assert.IsGreaterThan(0, flyoutSeparatorBounds.Height);
+				Assert.IsGreaterThan(0, flyoutItem2Bounds.Height);
 
-				Assert.IsTrue(flyoutItem1Bounds.Y < flyoutSeparatorBounds.Y);
-				Assert.IsTrue(flyoutSeparatorBounds.Y < flyoutItem2Bounds.Y);
+				Assert.IsLessThan(flyoutSeparatorBounds.Y, flyoutItem1Bounds.Y);
+				Assert.IsLessThan(flyoutItem2Bounds.Y, flyoutSeparatorBounds.Y);
 			}
 			finally
 			{
@@ -420,7 +420,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var subSubItemBounds = ((MenuFlyoutSubItem)subItem.Items.Single()).GetAbsoluteBounds();
 
 				var difference = subItemBounds.X - subSubItemBounds.Right;
-				Assert.IsTrue(Math.Abs(difference) <= 3);
+				Assert.IsLessThanOrEqualTo(3d, Math.Abs(difference));
 
 			}
 			finally

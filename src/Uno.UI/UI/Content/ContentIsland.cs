@@ -12,10 +12,7 @@ namespace Microsoft.UI.Content;
 /// <summary>
 /// A self-contained piece of content with independent input, output, layout, and accessibility that is connected to a parent ContentSite.
 /// </summary>
-public partial class ContentIsland
-#if HAS_UNO_WINUI // These interfaces are not currently implemented and the Generated partial does not exist in UWP build.
-	: IDisposable, IClosableNotifier, ICompositionSupportsSystemBackdrop
-#endif
+public partial class ContentIsland : IDisposable, IClosableNotifier, ICompositionSupportsSystemBackdrop
 {
 	private readonly ContentSiteView _contentSiteView;
 

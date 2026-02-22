@@ -39,7 +39,7 @@ This folder contains [all the assets](xref:Uno.Features.Assets) (images, splash 
 - `App.xaml` and `App.xaml.cs` are the common entry point for the app. The generic app setup runtime code generally goes here.
 - `MainPage.xaml` and `MainPage.xaml.cs` contain the main UI of the app.
 - `GlobalUsings.cs` contains the [global usings](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/using-directive#global-modifier) define for the project.
-- `app.manifest` contains [Windows specific configuration](https://learn.microsoft.com/en-us/windows/win32/sbscs/application-manifests) for `net9.0-desktop` and `net9.0-windows` targets.
+- `app.manifest` contains [Windows specific configuration](https://learn.microsoft.com/en-us/windows/win32/sbscs/application-manifests) for `net10.0-desktop` and `net10.0-windows` targets.
 - `Package.appxmanifest` contains metadata about the application such as the app name and description.
 
 ### Solution items

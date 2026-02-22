@@ -17,6 +17,7 @@ using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.UI;
 using Uno.UI.Dispatching;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Xaml.Media;
@@ -78,10 +79,7 @@ public partial class TextBox
 
 	static TextBox()
 	{
-		_platformCtrlKey =
-			OperatingSystem.IsMacOS() || (OperatingSystem.IsBrowser() && WebAssemblyImports.EvalBool("navigator?.platform.toUpperCase().includes('MAC') ?? false"))
-			? VirtualKeyModifiers.Windows
-			: VirtualKeyModifiers.Control;
+		_platformCtrlKey = Uno.UI.Helpers.DeviceTargetHelper.PlatformCommandModifier;
 	}
 
 	internal CaretDisplayMode CaretMode
@@ -93,7 +91,10 @@ public partial class TextBox
 			{
 				_caretMode = value;
 				UpdateDisplaySelection();
-				TextBoxView?.DisplayBlock.InvalidateInlines(false);
+				if (TextBoxView?.DisplayBlock.Visual is { } visual)
+				{
+					Visual.Compositor.InvalidateRender(visual);
+				}
 				if (value is CaretDisplayMode.ThumblessCaretShowing)
 				{
 					_timer.Start(); // restart
@@ -180,7 +181,14 @@ public partial class TextBox
 
 	partial void OnInputScopeChangedPartial(InputScope newValue) => TextBoxView?.UpdateProperties();
 
-	partial void OnIsSpellCheckEnabledChangedPartial(bool newValue) => TextBoxView?.UpdateProperties();
+	partial void OnIsSpellCheckEnabledChangedPartial(bool newValue)
+	{
+		if (TextBoxView is not null)
+		{
+			TextBoxView.DisplayBlock.IsSpellCheckEnabled = newValue;
+			TextBoxView.UpdateProperties();
+		}
+	}
 
 	partial void OnIsTextPredictionEnabledChangedPartial(bool newValue) => TextBoxView?.UpdateProperties();
 
@@ -200,6 +208,11 @@ public partial class TextBox
 			// locally-set values and/or changes in the template.
 			sv.HorizontalScrollBarVisibility = TextWrapping == TextWrapping.NoWrap ? ScrollBarVisibility.Hidden : ScrollBarVisibility.Disabled;
 		}
+	}
+
+	partial void OnTextAlignmentChangedPartial(TextAlignment newValue)
+	{
+		TextBoxView?.SetTextAlignment();
 	}
 
 	partial void SetInputReturnTypePlatform(InputReturnType inputReturnType)
@@ -282,8 +295,8 @@ public partial class TextBox
 		}
 		else
 		{
-			_selectionStartThumbfulCaret.Hide();
-			_selectionEndThumbfulCaret.Hide();
+			_selectionStartThumbfulCaret?.Hide();
+			_selectionEndThumbfulCaret?.Hide();
 		}
 	}
 
@@ -404,6 +417,34 @@ public partial class TextBox
 	private void UpdateScrolling() => UpdateScrolling(true);
 
 	/// <summary>
+	/// Gets the position where a context menu should be shown for keyboard invocation.
+	/// Returns the position at the selection/caret location.
+	/// </summary>
+	/// <returns>The position in local coordinates, or null if position cannot be determined.</returns>
+	internal Point? GetContextMenuShowPosition()
+	{
+		if (!_isSkiaTextBox || TextBoxView?.DisplayBlock?.ParsedText == null)
+		{
+			return null;
+		}
+
+		// Determine the character index to use for positioning
+		// Use selection end for LTR (selection start for RTL to match WinUI behavior)
+		var index = FlowDirection == FlowDirection.RightToLeft && SelectionLength > 0
+			? SelectionStart
+			: SelectionStart + SelectionLength;
+
+		// Get the rect for the character at the position
+		var rect = TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(index);
+
+		// Transform from DisplayBlock coordinates to TextBox coordinates
+		var transform = TextBoxView.DisplayBlock.TransformToVisual(this);
+		var point = transform.TransformPoint(new Point(rect.Left, rect.Bottom));
+
+		return point;
+	}
+
+	/// <summary>
 	/// Scrolls the <see cref="_contentElement"/> so that the caret is inside the visible viewport
 	/// </summary>
 	/// <remarks>
@@ -436,14 +477,80 @@ public partial class TextBox
 
 	partial void OnKeyDownPartial(KeyRoutedEventArgs args)
 	{
+		// This is a minimal copy of OnkeyDownSkia that just sets args.Handled without doing any work.
+		// This is to match WinUI behavior where Handled is set for certain keys before public
+		// subscribers get the event, but before any actual text processing is done.
 		if (!_isSkiaTextBox)
 		{
-			OnKeyDownInternal(args);
 			return;
 		}
 
-		base.OnKeyDown(args);
+		var (selectionStart, selectionLength) = _selection.selectionEndsAtTheStart ? (_selection.start + _selection.length, -_selection.length) : (_selection.start, _selection.length);
+		var text = Text;
+		var shift = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Shift);
+		var ctrl = args.KeyboardModifiers.HasFlag(_platformCtrlKey);
+		switch (args.Key)
+		{
+			case VirtualKey.Escape:
+				if (HasPointerCapture)
+				{
+					args.Handled = true;
+				}
+				return;
+			case VirtualKey.Z when ctrl:
+			case VirtualKey.Y when ctrl:
+			case VirtualKey.Delete when !IsReadOnly:
+			case VirtualKey.A when ctrl:
+				if (!HasPointerCapture)
+				{
+					args.Handled = true;
+				}
+				return;
+			case VirtualKey.Up:
+				// on Apple platforms start of document is `Command` and `Up`
+				if (ctrl && DeviceTargetHelper.UsesAppleKeyboardLayout)
+				{
+					KeyDownHome(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
+				}
+				else
+				{
+					KeyDownUpArrow(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
+				}
+				break;
+			case VirtualKey.Down:
+				// on Apple platforms end of document is `Command` and `Down`
+				if (ctrl && DeviceTargetHelper.UsesAppleKeyboardLayout)
+				{
+					KeyDownEnd(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
+				}
+				else
+				{
+					KeyDownDownArrow(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
+				}
+				break;
+			case VirtualKey.Left when !TextBoxView.DisplayBlock.ParsedText.IsBaseDirectionRightToLeft:
+			case VirtualKey.Right when TextBoxView.DisplayBlock.ParsedText.IsBaseDirectionRightToLeft:
+				KeyDownLeftArrow(args, text, shift, ctrl, ref selectionStart, ref selectionLength);
+				break;
+			case VirtualKey.Left when TextBoxView.DisplayBlock.ParsedText.IsBaseDirectionRightToLeft:
+			case VirtualKey.Right when !TextBoxView.DisplayBlock.ParsedText.IsBaseDirectionRightToLeft:
+				KeyDownRightArrow(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
+				break;
+			case VirtualKey.Home:
+				KeyDownHome(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
+				break;
+			case VirtualKey.End:
+				KeyDownEnd(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
+				break;
+			// TODO: PageUp/Down
+			case VirtualKey.Back when !IsReadOnly:
+				KeyDownBack(args, ref text, ctrl, shift, ref selectionStart, ref selectionLength);
+				break;
+		}
+	}
 
+	private void OnKeyDownSkia(KeyRoutedEventArgs args)
+	{
 		if (_selection.length != 0 &&
 			args.Key is not (VirtualKey.Up or VirtualKey.Down or VirtualKey.Left or VirtualKey.Right))
 		{
@@ -509,8 +616,8 @@ public partial class TextBox
 		switch (args.Key)
 		{
 			case VirtualKey.Up:
-				// on macOS start of document is `Command` and `Up`
-				if (ctrl && OperatingSystem.IsMacOS())
+				// on Apple platforms start of document is `Command` and `Up`
+				if (ctrl && DeviceTargetHelper.UsesAppleKeyboardLayout)
 				{
 					KeyDownHome(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 				}
@@ -520,8 +627,8 @@ public partial class TextBox
 				}
 				break;
 			case VirtualKey.Down:
-				// on macOS end of document is `Command` and `Down`
-				if (ctrl && OperatingSystem.IsMacOS())
+				// on Apple platforms end of document is `Command` and `Down`
+				if (ctrl && DeviceTargetHelper.UsesAppleKeyboardLayout)
 				{
 					KeyDownEnd(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 				}
@@ -588,31 +695,26 @@ public partial class TextBox
 		selectionStart = Math.Max(0, Math.Min(text.Length, selectionStart));
 		selectionLength = Math.Max(-selectionStart, Math.Min(text.Length - selectionStart, selectionLength));
 
-		// This is queued in order to run after public KeyDown callbacks are fired and is enqueued on High to run
-		// before the next TextChanged+KeyUp sequence.
-		DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, () =>
+		var caretXOffset = _caretXOffset;
+
+		_suppressCurrentlyTyping = true;
+		_clearHistoryOnTextChanged = false;
+		if (!HasPointerCapture)
 		{
-			var caretXOffset = _caretXOffset;
+			_pendingSelection = (selectionStart, selectionLength);
+		}
 
-			_suppressCurrentlyTyping = true;
-			_clearHistoryOnTextChanged = false;
-			if (!HasPointerCapture)
-			{
-				_pendingSelection = (selectionStart, selectionLength);
-			}
+		ProcessTextInput(text);
+		_clearHistoryOnTextChanged = true;
+		_suppressCurrentlyTyping = false;
 
-			ProcessTextInput(text);
-			_clearHistoryOnTextChanged = true;
-			_suppressCurrentlyTyping = false;
-
-			// don't change the caret offset when moving up and down
-			if (args.Key is VirtualKey.Up or VirtualKey.Down)
-			{
-				// this condition is accurate in the case of hitting Down on the last line
-				// or up on the first line. On WinUI, the caret offset won't change.
-				_caretXOffset = caretXOffset;
-			}
-		});
+		// don't change the caret offset when moving up and down
+		if (args.Key is VirtualKey.Up or VirtualKey.Down)
+		{
+			// this condition is accurate in the case of hitting Down on the last line
+			// or up on the first line. On WinUI, the caret offset won't change.
+			_caretXOffset = caretXOffset;
+		}
 	}
 
 	internal void SetPendingSelection(int selectionStart, int selectionLength)
@@ -620,8 +722,8 @@ public partial class TextBox
 
 	private void KeyDownBack(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
-		// on macOS it is `option` + `delete` (same location as backspace on PC keyboards) that removes the previous word
-		if (OperatingSystem.IsMacOS())
+		// on Apple platforms it is `option` + `delete` (same location as backspace on PC keyboards) that removes the previous word
+		if (DeviceTargetHelper.UsesAppleKeyboardLayout)
 		{
 			ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
 		}
@@ -771,10 +873,10 @@ public partial class TextBox
 
 	private void KeyDownRightArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
-		// on macOS it is:
+		// on Apple platforms it is:
 		// * `option` + `right` that moves to the next word
 		// * `shift` + `option` + `right` that select the next word
-		if (OperatingSystem.IsMacOS())
+		if (DeviceTargetHelper.UsesAppleKeyboardLayout)
 		{
 			ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
 		}
@@ -904,8 +1006,8 @@ public partial class TextBox
 
 	private void KeyDownDelete(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
-		// on macOS it is `option` + `delete>` that removes the next word
-		if (OperatingSystem.IsMacOS())
+		// on Apple platforms it is `option` + `delete>` that removes the next word
+		if (DeviceTargetHelper.UsesAppleKeyboardLayout)
 		{
 			ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
 		}

@@ -15,7 +15,7 @@ jobs:
 - job: Skia_Linux_Screenshot_Tests
   displayName: 'Snapshot Tests'
   timeoutInMinutes: 60
-  cancelTimeoutInMinutes: 1
+  cancelTimeoutInMinutes: 0
 
   pool:
     vmImage: ${{ parameters.vmLinuxImage }}
@@ -60,7 +60,7 @@ jobs:
 - job: Skia_Linux_Runtime_Tests_Build
   displayName: 'Runtime Tests'
   timeoutInMinutes: 60
-  cancelTimeoutInMinutes: 1
+  cancelTimeoutInMinutes: 0
 
   pool:
     vmImage: ${{ parameters.vmLinuxImage }}

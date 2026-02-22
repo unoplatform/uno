@@ -1,4 +1,4 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -7,7 +7,7 @@ using static System.Math;
 
 namespace SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl
 {
-	[SampleControlInfo("Path", "Path_Dynamic")]
+	[Sample("Path", Name = "Path_Dynamic")]
 	public sealed partial class Path_Dynamic : UserControl
 	{
 		public Path_Dynamic()

@@ -79,7 +79,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			var path = new Uri("ms-appx:///Assets/scale-test.png");
 			var resolved = await BitmapImage.TryResolveLocalResource(path, scaleOverride: Windows.Graphics.Display.ResolutionScale.Scale400Percent);
 
-			Assert.IsTrue(resolved.PathAndQuery.Contains("scale-400"), $"Resolved asset path did not contain the expected .scale-400 qualifier: {resolved}");
+			Assert.Contains("scale-400", resolved.PathAndQuery, $"Resolved asset path did not contain the expected .scale-400 qualifier: {resolved}");
 		}
 #endif
 
@@ -104,6 +104,129 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			await tcs.Task;
 		}
 #endif
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWasm)]
+		public async Task When_BundleImages_Loaded_StreamsAreDisposed()
+		{
+			var panel = new StackPanel { Orientation = Orientation.Horizontal };
+			WindowHelper.WindowContent = panel;
+
+			var imageUris = new[]
+			{
+				"ms-appx:///Assets/ingredient3.png",
+				"ms-appx:///Assets/BlueSquare.png",
+				"ms-appx:///Assets/StoreLogo.png"
+			};
+
+			var loadTasks = new List<Task>();
+			var images = new List<Image>();
+			var bitmapImages = new List<BitmapImage>();
+
+			foreach (var uri in imageUris)
+			{
+				var image = new Image { Width = 50, Height = 50 };
+				var bitmapImage = new BitmapImage();
+
+				var tcs = new TaskCompletionSource<bool>();
+				bitmapImage.ImageOpened += (s, e) => tcs.TrySetResult(true);
+				bitmapImage.ImageFailed += (s, e) => tcs.TrySetException(new Exception($"Failed to load {uri}: {e.ErrorMessage}"));
+
+				bitmapImage.UriSource = new Uri(uri);
+				image.Source = bitmapImage;
+				panel.Children.Add(image);
+
+				images.Add(image);
+				bitmapImages.Add(bitmapImage);
+				loadTasks.Add(tcs.Task);
+			}
+
+			await Task.WhenAll(loadTasks);
+
+			foreach (var bitmapImage in bitmapImages)
+			{
+				Assert.IsGreaterThan(0, bitmapImage.PixelWidth, "Image should have valid pixel dimensions after loading");
+			}
+
+			foreach (var image in images)
+			{
+				image.Source = null;
+			}
+			foreach (var bitmapImage in bitmapImages)
+			{
+				bitmapImage.UriSource = null;
+			}
+			panel.Children.Clear();
+
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(100);
+
+			GC.Collect();
+			GC.WaitForPendingFinalizers();
+			GC.Collect();
+
+			Assert.HasCount(imageUris.Length, images, "All images were processed");
+		}
+
+		[TestMethod]
+		public async Task When_MsAppData_StreamDisposed_FileNotLocked()
+		{
+			var fileName = $"test_stream_disposed_{Guid.NewGuid()}.png";
+
+			var sourceFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/ingredient3.png"));
+			var copiedFile = await sourceFile.CopyAsync(ApplicationData.Current.LocalFolder, fileName, NameCollisionOption.ReplaceExisting);
+			var filePath = copiedFile.Path;
+
+			try
+			{
+				var image = new Image();
+				WindowHelper.WindowContent = image;
+
+				var bitmapImage = new BitmapImage();
+
+				TaskCompletionSource<bool> imageOpenedTcs = new();
+				bitmapImage.ImageOpened += (s, e) => imageOpenedTcs.TrySetResult(true);
+				bitmapImage.ImageFailed += (s, e) => imageOpenedTcs.TrySetException(new Exception($"Image failed to load: {e.ErrorMessage}"));
+
+				bitmapImage.UriSource = new Uri($"ms-appdata:///local/{fileName}");
+				image.Source = bitmapImage;
+
+				await imageOpenedTcs.Task;
+
+				await Task.Delay(100);
+
+				image.Source = null;
+				bitmapImage.UriSource = null;
+
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(100);
+
+				Exception lockException = null;
+				try
+				{
+					using var exclusiveStream = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+					exclusiveStream.WriteByte(0);
+				}
+				catch (IOException ex)
+				{
+					lockException = ex;
+				}
+
+				Assert.IsNull(lockException, $"File is still locked after image load completed. This indicates the stream was not properly disposed. Exception: {lockException?.Message}");
+			}
+			finally
+			{
+				try
+				{
+					File.Delete(filePath);
+				}
+				catch (Exception deleteEx)
+				{
+					// Best-effort cleanup: log and ignore failures when deleting the temporary test file.
+					Debug.WriteLine($"Failed to delete temporary test file '{filePath}': {deleteEx}");
+				}
+			}
+		}
 
 #if !WINAPPSDK
 		[TestMethod]

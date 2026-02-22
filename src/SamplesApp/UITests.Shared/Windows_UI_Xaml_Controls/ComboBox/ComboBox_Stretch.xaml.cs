@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,7 +21,7 @@ namespace UITests.Windows_UI_Xaml_Controls.ComboBox
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[SampleControlInfo("ComboBox")]
+	[Sample("ComboBox")]
 	sealed partial class ComboBox_Stretch : Page
 	{
 		public ComboBox_Stretch()

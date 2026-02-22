@@ -956,6 +956,11 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			{
 				ProcessStaticResourceMarkupNode(instance, member, propertyInfo);
 			}
+			else
+			{
+				// Handle custom markup extensions
+				ProcessCustomMarkupExtension(instance, rootInstance, member, propertyInfo);
+			}
 		}
 
 		private void ProcessStaticResourceMarkupNode(object instance, XamlMemberDefinition member, PropertyInfo? propertyInfo)
@@ -1019,6 +1024,75 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						);
 					}
 				}
+			}
+		}
+
+		private void ProcessCustomMarkupExtension(object instance, object? rootInstance, XamlMemberDefinition member, PropertyInfo? propertyInfo)
+		{
+			var extensionNode = member.Objects.FirstOrDefault();
+			if (extensionNode == null)
+			{
+				return;
+			}
+
+			try
+			{
+				// Load the markup extension object which will process its members and call ProvideValue
+				var memberContext = propertyInfo != null
+					? new MemberInitializationContext(instance, propertyInfo)
+					: null;
+
+				var value = LoadObject(extensionNode, rootInstance, memberContext: memberContext);
+
+				// Set the value on the target instance (markup extensions can return null)
+				if (propertyInfo != null)
+				{
+					// Check if this is an initialized collection property (like Panel.Children)
+					if (TypeResolver.IsInitializedCollection(propertyInfo))
+					{
+						if (propertyInfo.GetMethod == null)
+						{
+							throw new InvalidOperationException($"The property {propertyInfo} does not provide a getter (Line {member.LineNumber}:{member.LinePosition}).");
+						}
+
+						var propertyInstance = propertyInfo.GetMethod.Invoke(instance, null);
+
+						if (propertyInstance != null)
+						{
+							// Add the value returned by the markup extension to the collection (even if null)
+							var addMethod = propertyInstance.GetType().GetMethod("Add");
+							if (addMethod != null)
+							{
+								addMethod.Invoke(propertyInstance, new[] { value });
+							}
+							else
+							{
+								throw new InvalidOperationException($"Unable to find Add method for collection property [{propertyInfo}]");
+							}
+						}
+						else
+						{
+							throw new InvalidOperationException($"The property {propertyInfo} getter did not provide a value (Line {member.LineNumber}:{member.LinePosition}).");
+						}
+					}
+					else
+					{
+						GetPropertySetter(propertyInfo).Invoke(instance, new[] { value });
+					}
+				}
+				else if (TypeResolver.FindDependencyProperty(member) is { } dependencyProperty &&
+						 instance is DependencyObject dependencyObject)
+				{
+					dependencyObject.SetValue(dependencyProperty, value);
+				}
+			}
+			catch (Exception ex) when (!(ex is XamlParseException))
+			{
+				throw new XamlParseException(
+					$"Failed to process custom markup extension '{extensionNode.Type.Name}'.",
+					ex,
+					extensionNode.LineNumber,
+					extensionNode.LinePosition);
 			}
 		}
 
@@ -1253,7 +1327,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			return false;
 		}
 
-		private static bool IsMarkupExtension(XamlMemberDefinition member)
+		private bool IsMarkupExtension(XamlMemberDefinition member)
 			=> member
 				.Objects
 				.Where(m =>
@@ -1263,8 +1337,20 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					|| m.Type.Name == "ThemeResource"
 					|| m.Type.Name == "CustomResource"
 					|| m.Type.Name == "TemplateBinding"
+					|| IsCustomMarkupExtension(m.Type)
 				)
 				.Any();
+
+		private bool IsCustomMarkupExtension(XamlType xamlType)
+		{
+			var type = TypeResolver.FindType(xamlType);
+			if (type == null && !xamlType.Name.EndsWith("Extension", StringComparison.Ordinal))
+			{
+				// Try with "Extension" suffix per XAML markup extension naming convention
+				type = TypeResolver.FindType(xamlType.PreferredXamlNamespace, xamlType.Name + "Extension");
+			}
+			return type?.Is<MarkupExtension>() == true;
+		}
 
 		private void AddGenericDictionaryItems(
 			IDictionary<object, object> dictionary,

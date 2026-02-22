@@ -11,11 +11,6 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<EnableAutomaticXamlPageInclusion>false</EnableAutomaticXamlPageInclusion>
 		<OutputType>Exe</OutputType>
-		<!-- To be able to get newer versions of Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.MSTest -->
-		<!-- that are not yet published to NuGet.org -->
-		<!-- The latest on NuGet.org doesn't have the fix from https://github.com/dotnet/roslyn-sdk/pull/988 -->
-		<!-- which is very important for us -->
-		<RestoreAdditionalProjectSources Condition="'$(UNO_UWP_BUILD)'=='false'">https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-tools/nuget/v3/index.json</RestoreAdditionalProjectSources>
 
 		<!-- We need all the intermediate assemblies -->
 		<DisablePrivateProjectReference>true</DisablePrivateProjectReference>
@@ -47,7 +42,7 @@
 		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.13.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Features" Version="4.13.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.13.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.MSTest" Version="1.1.2" Condition="'$(UNO_UWP_BUILD)'=='false'" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing" Version="1.1.2" Condition="'$(UNO_UWP_BUILD)'=='false'" />
 		<PackageReference Include="AwesomeAssertions" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Condition="'$(UNO_UWP_BUILD)'=='false'" />
 		<PackageReference Include="NuGet.Packaging" Version="6.3.4" />

@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Linq;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Shapes
 {
-	[SampleControlInfo("Shapes", "Measure")]
+	[Sample("Shapes", Name = "Measure")]
 	public sealed partial class MeasurePage : Page
 	{
 		public MeasurePage()

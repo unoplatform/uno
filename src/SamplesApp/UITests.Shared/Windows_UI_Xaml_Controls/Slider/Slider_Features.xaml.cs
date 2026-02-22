@@ -1,9 +1,9 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Slider
 {
-	[SampleControlInfo("Slider", "Slider_Features", description: "Various features about Slider")]
+	[Sample("Slider", Name = "Slider_Features", Description = "Various features about Slider")]
 	public sealed partial class Slider_Features : UserControl
 	{
 		public Slider_Features()

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,7 +21,7 @@ namespace Benchmarks.Shared.Controls
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[SampleControlInfo("Performance", "BenchmarkDotNet")]
+	[Sample("Performance", Name = "BenchmarkDotNet")]
 	public sealed partial class BenchmarkDotNetTestsPage : Page
 	{
 		public BenchmarkDotNetTestsPage()

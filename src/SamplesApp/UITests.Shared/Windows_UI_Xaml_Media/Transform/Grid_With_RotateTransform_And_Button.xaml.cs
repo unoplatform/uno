@@ -1,10 +1,10 @@
-﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 namespace SamplesApp.Wasm.Windows_UI_Xaml_Media.Transform
 {
-	[SampleControlInfo("Transform", "Grid_With_RotateTransform_And_Button", description: "Rotated Grid with Button inside. Button should be clickable.")]
+	[Sample("Transform", Name = "Grid_With_RotateTransform_And_Button", Description = "Rotated Grid with Button inside. Button should be clickable.")]
 	public sealed partial class Grid_With_RotateTransform_And_Button : UserControl
 	{
 		public Grid_With_RotateTransform_And_Button()

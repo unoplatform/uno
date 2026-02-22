@@ -907,4 +907,54 @@ public partial class Given_Parser
 
 		await test.RunAsync();
 	}
+
+	[TestMethod]
+	public async Task When_KeyboardAccelerator_Key_Property()
+	{
+		var xamlFile = new XamlFile(
+			"MainPage.xaml",
+			"""
+			<Page x:Class="TestRepro.MainPage"
+				  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+				<Grid>
+					<Grid.KeyboardAccelerators>
+						<KeyboardAccelerator Key="F" Modifiers="Control" Invoked="OnCtrlF" />
+						<KeyboardAccelerator Key="F5" Invoked="OnF5" />
+					</Grid.KeyboardAccelerators>
+				</Grid>
+			</Page>
+			""");
+
+		var test = new Verify.Test(xamlFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using Microsoft.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml.Input;
+
+					namespace TestRepro
+					{
+						public sealed partial class MainPage : Page
+						{
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+
+							private void OnCtrlF(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args) { }
+							private void OnF5(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args) { }
+						}
+					}
+					"""
+				}
+			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
 }

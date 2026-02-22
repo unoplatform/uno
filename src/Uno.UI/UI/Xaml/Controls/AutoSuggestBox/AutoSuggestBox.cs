@@ -208,6 +208,17 @@ namespace Microsoft.UI.Xaml.Controls
 				popup.VerticalOffset = 0;
 				popup.HorizontalOffset = 0;
 
+				// Get header height to account for positioning when opening upward.
+				// The Header is rendered inside the TextBox template (via HeaderContentPresenter),
+				// so when positioning the popup above the control, we need to ensure the popup
+				// overlaps the header area to match WinUI behavior.
+				double headerHeight = 0;
+
+				if (_textBox?.GetTemplateChild("HeaderContentPresenter") is FrameworkElement headerPresenter)
+				{
+					headerHeight = headerPresenter.ActualHeight;
+				}
+
 				// Inject layouting constraints
 				popupChild.MinHeight = _layoutRoot.ActualHeight;
 				popupChild.MinWidth = _layoutRoot.ActualWidth;
@@ -273,7 +284,8 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else if (availableHeightAbove >= popupChild.DesiredSize.Height)
 				{
-					targetY = containerRect.Top - popupChild.DesiredSize.Height;
+					// Position popup so it overlaps header area like on WinUI
+					targetY = containerRect.Top + headerHeight - popupChild.DesiredSize.Height;
 				}
 				else if (availableHeightBelow > availableHeightAbove)
 				{
@@ -282,7 +294,8 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else
 				{
-					targetY = containerRect.Top - availableHeightAbove;
+					// Position popup so it overlaps header area like on WinUI
+					targetY = containerRect.Top + headerHeight - availableHeightAbove;
 					targetHeight = availableHeightAbove;
 				}
 
@@ -300,7 +313,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (_textBox != null)
 			{
-				_textBox.KeyDown += OnTextBoxKeyDown;
+				_textBox.PostKeyDown += OnTextBoxPostKeyDown;
 				_queryButton = _textBox.GetTemplateChild<Button>("QueryButton");
 			}
 
@@ -332,7 +345,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_textBoxLoadedDisposable?.Dispose();
 			if (_textBox != null)
 			{
-				_textBox.KeyDown -= OnTextBoxKeyDown;
+				_textBox.PostKeyDown -= OnTextBoxPostKeyDown;
 			}
 
 			if (_queryButton != null)
@@ -448,7 +461,7 @@ namespace Microsoft.UI.Xaml.Controls
 			IsSuggestionListOpen = false;
 		}
 
-		private void OnTextBoxKeyDown(object sender, KeyRoutedEventArgs e)
+		private void OnTextBoxPostKeyDown(object sender, KeyRoutedEventArgs e)
 		{
 			if (e.Key == VirtualKey.Enter)
 			{

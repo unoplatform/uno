@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml;
@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml.Media.Animation;
 
 namespace SamplesApp.Windows_UI_Xaml_Media.Animation
 {
-	[SampleControlInfo("Animations", "Sequential Animations", ignoreInSnapshotTests: true)]
+	[Sample("Animations", Name = "Sequential Animations", IgnoreInSnapshotTests = true)]
 	public sealed partial class SequentialAnimationsPage : Page
 	{
 		private readonly TimeSpan DURATION = TimeSpan.FromMilliseconds(250);

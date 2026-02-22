@@ -1,11 +1,11 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using SamplesApp.Windows_UI_Xaml_Controls.Models;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListViewScrollIntoViewSnapPoints", typeof(ListViewViewModel))]
+	[Sample("ListView", Name = "ListViewScrollIntoViewSnapPoints", ViewModelType = typeof(ListViewViewModel))]
 	public sealed partial class ListViewScrollIntoViewSnapPoints : UserControl
 	{
 		public ListViewScrollIntoViewSnapPoints()

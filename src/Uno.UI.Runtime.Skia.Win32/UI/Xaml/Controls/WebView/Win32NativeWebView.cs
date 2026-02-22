@@ -45,9 +45,10 @@ internal class Win32NativeWebViewProvider(CoreWebView2 owner) : INativeWebViewPr
 	}
 }
 
-internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
+internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping, ISupportsWebResourceRequested
 {
 	private const string WindowClassName = "UnoPlatformWebViewWindow";
+	private const uint SC_MASK = 0xFFF0; // Mask to extract system command from wParam
 
 	// _windowClass must be statically stored, otherwise lpfnWndProc will get collected and the CLR will throw some weird exceptions
 	// ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
@@ -67,6 +68,8 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 	private Dictionary<ulong, string> _navigationIdToUriMap = new();
 	private string _documentTitle = string.Empty;
 	private readonly NativeWebView.CoreWebView2Controller _controller;
+
+	private HWND ParentHwnd => (_presenter.XamlRoot?.HostWindow?.NativeWindow as Win32NativeWindow)?.Hwnd is IntPtr hwnd ? (HWND)hwnd : HWND.Null;
 
 	static unsafe Win32NativeWebView()
 	{
@@ -165,9 +168,17 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 		_nativeWebView.NavigationStarting += EventHandlerBuilder<NativeWebView.CoreWebView2NavigationStartingEventArgs>(static (@this, o, a) => @this.NativeWebView_NavigationStarting(o, a));
 		_nativeWebView.HistoryChanged += EventHandlerBuilder<object>(static (@this, o, a) => @this.CoreWebView2_HistoryChanged(o, a));
 		_nativeWebView.DocumentTitleChanged += EventHandlerBuilder<object>(static (@this, o, a) => @this.OnNativeTitleChanged(o, a));
+		_nativeWebView.WebResourceRequested += NativeWebView2_WebResourceRequested;
 		UpdateDocumentTitle();
 
 		presenter.Content = new Win32NativeWindow(_hwnd);
+	}
+
+	public event EventHandler<CoreWebView2WebResourceRequestedEventArgs>? WebResourceRequested;
+
+	private void NativeWebView2_WebResourceRequested(object? sender, NativeWebView.CoreWebView2WebResourceRequestedEventArgs e)
+	{
+		WebResourceRequested?.Invoke(this, new(new Win32WebResourceRequestedEventArgsWrapper(e)));
 	}
 
 	private EventHandler<T> EventHandlerBuilder<T>(Action<Win32NativeWebView, object?, T> handler)
@@ -231,6 +242,33 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 				PInvoke.GetClientRect(_hwnd, out var bounds);
 				_controller.Bounds = bounds;
 				return new LRESULT(0);
+			case PInvoke.WM_SYSCOMMAND:
+				// When Alt+F4 is pressed on a focused WebView2, Windows sends WM_SYSCOMMAND with SC_CLOSE
+				// to the WebView2's child window. We need to forward this to the parent window to close
+				// the entire application instead of just the WebView2 control.
+				var syscommand = (uint)wParam.Value & SC_MASK;
+				if (syscommand == PInvoke.SC_CLOSE)
+				{
+					var parentHwnd = ParentHwnd;
+					if (parentHwnd != HWND.Null)
+					{
+						PInvoke.SendMessage(parentHwnd, msg, wParam, lParam);
+						return new LRESULT(0);
+					}
+				}
+				break;
+			case PInvoke.WM_CLOSE:
+				// Prevent the WebView2 window from being closed directly. Instead, forward to the parent
+				// window so the entire application can close properly.
+				{
+					var parentHwnd = ParentHwnd;
+					if (parentHwnd != HWND.Null)
+					{
+						PInvoke.SendMessage(parentHwnd, msg, wParam, lParam);
+						return new LRESULT(0);
+					}
+				}
+				break;
 		}
 		return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
 	}
@@ -404,4 +442,10 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 
 	public void SetVirtualHostNameToFolderMapping(string hostName, string folderPath, CoreWebView2HostResourceAccessKind accessKind)
 		=> _nativeWebView.SetVirtualHostNameToFolderMapping(hostName, folderPath, (NativeWebView.CoreWebView2HostResourceAccessKind)accessKind);
+
+	public void AddWebResourceRequestedFilter(string uri, CoreWebView2WebResourceContext resourceContext, CoreWebView2WebResourceRequestSourceKinds requestSourceKinds)
+		=> _nativeWebView.AddWebResourceRequestedFilter(uri, (NativeWebView.CoreWebView2WebResourceContext)resourceContext, (NativeWebView.CoreWebView2WebResourceRequestSourceKinds)requestSourceKinds);
+
+	public void RemoveWebResourceRequestedFilter(string uri, CoreWebView2WebResourceContext resourceContext, CoreWebView2WebResourceRequestSourceKinds requestSourceKinds)
+		=> _nativeWebView.RemoveWebResourceRequestedFilter(uri, (NativeWebView.CoreWebView2WebResourceContext)resourceContext, (NativeWebView.CoreWebView2WebResourceRequestSourceKinds)requestSourceKinds);
 }

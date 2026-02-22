@@ -22,11 +22,7 @@ using Microsoft.UI.Composition;
 using Windows.Storage;
 
 
-#if HAS_UNO_WINUI || WINAPPSDK
 using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
-#else
-using DispatcherQueue = Windows.System.DispatcherQueue;
-#endif
 
 namespace Microsoft.UI.Xaml
 {
@@ -40,8 +36,14 @@ namespace Microsoft.UI.Xaml
 		[ThreadStatic]
 		private static string? _argumentsOverride;
 
+		[ThreadStatic]
+		private static Uri? _activationUri;
+
 		internal static void SetArguments(string arguments)
 			=> _argumentsOverride = arguments;
+
+		internal static void SetActivationUri(Uri uri)
+			=> _activationUri = uri;
 
 		partial void InitializePartial()
 		{
@@ -130,6 +132,12 @@ namespace Microsoft.UI.Xaml
 				if (CoreApplication.IsFullFledgedApp)
 				{
 					OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable()));
+
+					if (OperatingSystem.IsAndroid() && _activationUri is { } uri)
+					{
+						OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.NotRunning));
+						_activationUri = null;
+					}
 				}
 			}
 		}

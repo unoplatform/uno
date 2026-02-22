@@ -5,12 +5,7 @@ using System.Threading;
 using Uno;
 
 using PointerIdentifier = Windows.Devices.Input.PointerIdentifier; // internal type (should be in Uno namespace)
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
-#else
-using Windows.Devices.Input;
-using Windows.UI.Input;
-#endif
 
 namespace Microsoft.UI.Xaml.Input
 {

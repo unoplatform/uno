@@ -17,11 +17,7 @@ using Microsoft.UI.Xaml.Input;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 using static Uno.UI.Helpers.WinUI.ResourceAccessor;
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Text;
-#else
-using Windows.UI.Text;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls;
 

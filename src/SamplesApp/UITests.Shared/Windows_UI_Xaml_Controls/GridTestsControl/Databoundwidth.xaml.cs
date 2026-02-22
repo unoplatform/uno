@@ -1,10 +1,10 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Controls;
 using UITests.Shared.Windows_UI_Xaml_Controls.GridTestsControl;
 
 namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 {
-	[SampleControlInfo("Grid", "Databoundwidth", typeof(GridTestsViewModel), ignoreInSnapshotTests: true)]
+	[Sample("Grid", Name = "Databoundwidth", ViewModelType = typeof(GridTestsViewModel), IgnoreInSnapshotTests = true)]
 	public sealed partial class Databoundwidth : UserControl
 	{
 		public Databoundwidth()

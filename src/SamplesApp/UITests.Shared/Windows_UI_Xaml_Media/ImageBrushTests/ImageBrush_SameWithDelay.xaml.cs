@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -22,7 +22,7 @@ using UITests.Shared.Helpers;
 
 namespace UITests.Shared.Windows_UI_Xaml_Media.ImageBrushTests
 {
-	[SampleControlInfo(category: "Brushes")]
+	[Sample("Brushes")]
 	public sealed partial class ImageBrush_SameWithDelay : UserControl, IWaitableSample
 	{
 		private BrushContext _ctx = new BrushContext();

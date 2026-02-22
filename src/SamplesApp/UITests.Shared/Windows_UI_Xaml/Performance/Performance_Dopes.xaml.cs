@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -24,7 +24,7 @@ namespace UITests.Windows_UI_Xaml.Performance
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[SampleControlInfo("Performance", "Dopes")]
+	[Sample("Performance", Name = "Dopes")]
 	public sealed partial class Performance_Dopes : Page
 	{
 		volatile bool breakTest = false;

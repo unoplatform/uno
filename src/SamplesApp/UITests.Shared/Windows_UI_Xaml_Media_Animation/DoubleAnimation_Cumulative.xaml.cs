@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -10,7 +10,7 @@ using Uno.UI.Samples.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.Animations
 {
-	[SampleControlInfo("Animations", "DoubleAnimation_Cumulative")]
+	[Sample("Animations", Name = "DoubleAnimation_Cumulative")]
 	public sealed partial class DoubleAnimation_Cumulative : UserControl
 	{
 		public DoubleAnimation_Cumulative()

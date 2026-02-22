@@ -9,12 +9,7 @@ using Microsoft.UI.Xaml.Input;
 using ICommand = System.Windows.Input.ICommand;
 using Microsoft.UI.Xaml.Markup;
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
-#else
-using Windows.Devices.Input;
-using Windows.UI.Input;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {

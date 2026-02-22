@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,7 +21,7 @@ namespace UITests.Windows_UI_Xaml_Controls.SplitView
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[SampleControlInfo("SplitView", nameof(BindableDrawerLayout_ChangePane))]
+	[Sample("SplitView", Name = nameof(BindableDrawerLayout_ChangePane))]
 	public sealed partial class BindableDrawerLayout_ChangePane : Page
 	{
 		public BindableDrawerLayout_ChangePane()

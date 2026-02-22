@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml;
 using System;
@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 {
-	[SampleControlInfo(category: "Image")]
+	[Sample("Image")]
 	public sealed partial class Image_Margins : Page
 	{
 		public Image_Margins()

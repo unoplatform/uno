@@ -1,10 +1,10 @@
-﻿using UITests.Shared.Windows_UI_Xaml_Controls.GridTestsControl;
+using UITests.Shared.Windows_UI_Xaml_Controls.GridTestsControl;
 using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 {
-	[SampleControlInfo("Grid", "CenteredGridinGridwiththreefixedsizechildren", typeof(GridTestsViewModel))]
+	[Sample("Grid", Name = "CenteredGridinGridwiththreefixedsizechildren", ViewModelType = typeof(GridTestsViewModel))]
 	public sealed partial class CenteredGridinGridwiththreefixedsizechildren : UserControl
 	{
 		public CenteredGridinGridwiththreefixedsizechildren()

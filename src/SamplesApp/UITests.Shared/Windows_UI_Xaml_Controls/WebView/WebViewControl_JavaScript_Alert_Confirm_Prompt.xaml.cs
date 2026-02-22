@@ -1,10 +1,10 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.WebView
 {
-	[SampleControlInfo("WebView", "Javascript_AlertConfirmPrompt")]
+	[Sample("WebView", Name = "Javascript_AlertConfirmPrompt")]
 	public sealed partial class WebViewControlJavaScriptAlertConfirmPrompt : UserControl
 	{
 #if HAS_UNO

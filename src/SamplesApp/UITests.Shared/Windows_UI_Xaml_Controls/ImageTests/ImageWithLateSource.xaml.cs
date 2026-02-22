@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,7 +18,7 @@ using Private.Infrastructure;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
-	[SampleControlInfo("Image", "ImageWithLateSource", Description = "ImageWithLateSource - source is set after the image is loaded and visible.")]
+	[Sample("Image", Name = "ImageWithLateSource", Description = "ImageWithLateSource - source is set after the image is loaded and visible.")]
 	public sealed partial class ImageWithLateSource : UserControl
 	{
 		public ImageWithLateSource()

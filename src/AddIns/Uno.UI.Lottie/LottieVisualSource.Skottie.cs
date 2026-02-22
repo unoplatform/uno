@@ -280,22 +280,22 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private void OnSoftwareCanvas_PaintSurface(object? sender, SKPaintSurfaceEventArgs e)
 		{
-			Render(e.Surface.Canvas, saveRestoreAndCleanCanvas: true);
+			Render(e.Surface.Canvas, e.Surface.Canvas.LocalClipBounds.Size, saveRestoreAndCleanCanvas: true);
 		}
 
 		private void OnHardwareCanvas_PaintSurface(object? sender, SKPaintGLSurfaceEventArgs e)
 		{
-			Render(e.Surface.Canvas, saveRestoreAndCleanCanvas: true);
+			Render(e.Surface.Canvas, e.Surface.Canvas.LocalClipBounds.Size, saveRestoreAndCleanCanvas: true);
 		}
 
 #if __SKIA__
 		private void OnRenderOverride(SKCanvas canvas, Size area)
 		{
-			Render(canvas, saveRestoreAndCleanCanvas: false);
+			Render(canvas, area.ToSKSize(), saveRestoreAndCleanCanvas: false);
 		}
 #endif
 
-		private void Render(SKCanvas canvas, bool saveRestoreAndCleanCanvas)
+		private void Render(SKCanvas canvas, SKSize localSize, bool saveRestoreAndCleanCanvas)
 		{
 			lock (_gate)
 			{
@@ -312,8 +312,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				}
 
 				var frameTime = GetFrameTime();
-
-				var localSize = canvas.LocalClipBounds.Size;
 
 				var scale = ImageSizeHelper.BuildScale(_player.Stretch, localSize.ToSize(), animation.Size.ToSize());
 				var scaledSize = new Windows.Foundation.Size(animation.Size.Width * scale.x, animation.Size.Height * scale.y);

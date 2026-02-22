@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 namespace SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox
 {
-	[SampleControlInfo("ComboBox", "ComboBox_With_ItemTemplate")]
+	[Sample("ComboBox", Name = "ComboBox_With_ItemTemplate")]
 	public sealed partial class ComboBox_With_ItemTemplate : UserControl
 	{
 

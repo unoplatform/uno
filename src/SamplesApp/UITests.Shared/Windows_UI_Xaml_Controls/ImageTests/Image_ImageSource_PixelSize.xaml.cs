@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,7 +19,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ImageTests
 {
-	[SampleControlInfo("Image", "Image_ImageSource_PixelSize")]
+	[Sample("Image", Name = "Image_ImageSource_PixelSize")]
 	public sealed partial class Image_ImageSource_PixelSize : UserControl
 	{
 		public Image_ImageSource_PixelSize()

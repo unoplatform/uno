@@ -178,7 +178,7 @@ public class Given_ResourceDictionary
 	public async Task When_Nested_With_Sibling_Ref_And_Event()
 	{
 		var test = new TestSetup(
-			xamlFileName: "ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event.xaml",
+			xamlFileName: "RD_WNWSRAE.xaml",
 			subFolder: Path.Combine("SourceGenerators", "Uno.UI.SourceGenerators.Tests", "XamlCodeGeneratorTests", "TestCases"))
 		{
 		};

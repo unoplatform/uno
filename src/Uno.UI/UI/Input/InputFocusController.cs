@@ -2,15 +2,7 @@
 
 namespace Microsoft.UI.Input;
 
-#if HAS_UNO_WINUI
-public
-#else
-internal
-#endif
-	partial class InputFocusController
-#if HAS_UNO_WINUI
-	: global::Microsoft.UI.Input.InputObject
-#endif
+public partial class InputFocusController : global::Microsoft.UI.Input.InputObject
 {
 	internal InputFocusController()
 	{

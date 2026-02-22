@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,7 +22,7 @@ using Private.Infrastructure;
 
 namespace UITests.Windows_Media
 {
-	[SampleControlInfo("Windows.Media", "SpeechRecognizer", viewModelType: typeof(SpeechRecognizerTestsViewModel))]
+	[Sample("Windows.Media", Name = "SpeechRecognizer", ViewModelType = typeof(SpeechRecognizerTestsViewModel))]
 	public sealed partial class SpeechRecognizerTests : Page
 	{
 		public SpeechRecognizerTests()

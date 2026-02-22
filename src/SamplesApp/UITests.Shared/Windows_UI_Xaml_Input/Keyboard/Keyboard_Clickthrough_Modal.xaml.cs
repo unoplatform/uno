@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,7 +22,7 @@ using UIKit;
 
 namespace UITests.Shared.Windows_UI_Xaml_Input.Keyboard
 {
-	[SampleControlInfo("Keyboard", "Keyboard_Clickthrough_Modal", null, true, "Currently only implemented for iOS")]
+	[Sample("Keyboard", Name = "Keyboard_Clickthrough_Modal", IgnoreInSnapshotTests = true, Description = "Currently only implemented for iOS")]
 	public sealed partial class Keyboard_Clickthrough_Modal : Page
 	{
 		public Keyboard_Clickthrough_Modal()

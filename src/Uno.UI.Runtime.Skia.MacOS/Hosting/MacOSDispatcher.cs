@@ -35,7 +35,7 @@ internal static class MacOSDispatcher
 	{
 		if (typeof(MacOSDispatcher).Log().IsEnabled(LogLevel.Trace))
 		{
-			typeof(MacOSDispatcher).Log().Trace($"Dispatching {d}");
+			typeof(MacOSDispatcher).Log().Trace($"Dispatching {d} on {d.Method.DeclaringType?.FullName ?? "[no-type]"}.{d.Method.Name} with target {d.Target}");
 		}
 
 		NativeMac.dispatch_async_f(_mainQueue, (nint)GCHandle.Alloc(d), &NativeToManaged);

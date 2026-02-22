@@ -76,7 +76,7 @@ internal static class TreeAssert
 			.ToList();
 		var descendants = (flatten?.Invoke(root) ?? FlattenVT(root)).ToArray();
 
-		Assert.AreEqual(expectations.Count, descendants.Length, "Mismatched descendant size");
+		Assert.HasCount(expectations.Count, descendants, "Mismatched descendant size");
 		for (int i = 0; i < expectations.Count; i++)
 		{
 			var expected = expectations[i];

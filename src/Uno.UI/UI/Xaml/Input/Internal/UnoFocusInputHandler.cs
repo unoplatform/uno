@@ -103,6 +103,7 @@ internal class UnoFocusInputHandler
 			focusMovement.IsShiftPressed = isShiftDown;
 			focusMovement.IsProcessingTab = true;
 			focusMovement.ForceBringIntoView = true;
+			focusMovement.FocusState = FocusState.Keyboard;
 
 			focusManager.FocusObserver.FocusController.FocusDeparting += OnFocusDeparting;
 

@@ -35,7 +35,10 @@ The standard Uno template configures logging in the **App.xaml.cs** file.
 
     Notice that Uno provides a logger factory implementation.
 
-1. Locate the **ConfigureFilters** method and review the code:
+1. Locate the **InitializeLogging** method and review the code:
+
+   > [!IMPORTANT]
+   > The `InitializeLogging()` method is wrapped in a `#if DEBUG` preprocessor directive. This means **logging is only enabled in DEBUG builds by default**. If you need logging in Release builds, you'll need to remove or modify the `#if DEBUG` condition, keeping in mind the performance implications mentioned in the code comments.
 
     ```csharp
 
@@ -112,7 +115,7 @@ The standard Uno template configures logging in the **App.xaml.cs** file.
     Notice that the logging levels of various categories can be added and configured.
 
     > [!NOTE]
-    > Notice that console logging is configured by default- `.AddConsole();`. This **does not** log output to the Visual Studio console when running a WinUI app. The next task details how to add WinUI logging.
+    > Notice that console logging is configured by default with `.AddConsole();` for most platforms. However, this **does not** log output to the Visual Studio console when running a WinUI app. For WinUI apps (the `NETFX_CORE` platform in the code above), logging is configured with `builder.AddDebug();` instead, which outputs to the Visual Studio Debug window.
 
 ### Uno logging extensions
 

@@ -118,7 +118,9 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 				direction: PipeDirection.InOut,
 				maxNumberOfServerInstances: 1,
 				transmissionMode: PipeTransmissionMode.Byte,
-				options: PipeOptions.Asynchronous | PipeOptions.WriteThrough);
+				options: PipeOptions.Asynchronous | PipeOptions.WriteThrough,
+				inBufferSize: 8 * 1024 * 1024,
+				outBufferSize: 8 * 1024 * 1024);
 
 			await _pipeServer.WaitForConnectionAsync();
 

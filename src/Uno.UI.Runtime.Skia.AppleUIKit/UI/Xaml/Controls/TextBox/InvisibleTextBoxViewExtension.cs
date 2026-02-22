@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using UIKit;
+using Uno.UI;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.AppleUIKit;
 using Uno.UI.Runtime.Skia.AppleUIKit.Hosting;
@@ -212,6 +213,16 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		}
 	}
 
+	internal void SyncSelectionToTextBox()
+	{
+		if (_owner?.TextBox is { } textBox)
+		{
+			var start = GetSelectionStart();
+			var length = GetSelectionLength();
+			textBox.SelectInternal(start, length);
+		}
+	}
+
 	internal void ProcessNativeTextInput(string? text)
 	{
 		if (_owner?.TextBox is { } textBox)
@@ -250,9 +261,19 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			{
 				_latestNativeView = view;
 				layer.AddSubview(nativeView);
+
+				var textBox = _textBoxView?.Owner?.TextBox;
+				var rect = textBox?.GetAbsoluteBoundsRect();
+				var physical = rect?.LogicalToPhysicalPixels();
+				var width = physical?.Width ?? 10;
+				var height = physical?.Height ?? 10;
 				// Push the overlay native view out of the visible view - this way
 				// the blue typing suggestion overlay will not be shown to the user.
-				nativeView.Frame = new CoreGraphics.CGRect(-1000, -1000, 10, 10);
+				nativeView.Frame = new CoreGraphics.CGRect(
+					-1000 - width,
+					-1000 - height,
+					width,
+					height);
 			}
 		}
 	}

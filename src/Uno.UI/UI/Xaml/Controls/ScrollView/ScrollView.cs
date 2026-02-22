@@ -17,11 +17,7 @@ using Windows.Foundation;
 using Windows.System;
 using Windows.UI.ViewManagement;
 
-#if HAS_UNO_WINUI
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
-#else
-using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
-#endif
 
 using static Microsoft.UI.Xaml.Controls._Tracing;
 

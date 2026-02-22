@@ -54,6 +54,8 @@ POINTER_MESSAGE_FLAG_SECONDBUTTON
 POINTER_MESSAGE_FLAG_THIRDBUTTON
 RDH_RECTANGLES
 S_OK
+SC_CLOSE
+SC_KEYMENU
 TOUCH_MASK_CONTACTAREA
 TOUCH_MASK_ORIENTATION
 TOUCH_MASK_PRESSURE
@@ -71,6 +73,8 @@ WM_ERASEBKGND
 WM_GETMINMAXINFO
 WM_KEYDOWN
 WM_KEYUP
+WM_SYSKEYDOWN
+WM_SYSKEYUP
 WM_MOVE
 WM_NCCALCSIZE
 WM_DWMCOMPOSITIONCHANGED
@@ -94,13 +98,17 @@ WM_POINTERWHEEL
 WM_SETCURSOR
 WM_SETICON
 WM_SIZE
+WM_SYSCOMMAND
 
 // Structs
+BITMAP
 DATADIR
 BITMAPFILEHEADER
 BROWSEINFOW
 CLIPBOARD_FORMAT
+ICONINFO
 IDataObject
+IDataObjectAsyncCapability
 IDropSource
 IEnumUnknown
 IFileOpenDialog
@@ -111,8 +119,11 @@ MONITORINFOEXW
 PIXELFORMATDESCRIPTOR
 RECT
 MARGINS
+STGC
 
 // Enums
+BI_COMPRESSION
+DI_FLAGS
 DWM_WINDOW_CORNER_PREFERENCE
 
 // Functions
@@ -134,6 +145,10 @@ DescribePixelFormat
 DestroyWindow
 DispatchMessage
 DragQueryFile
+DeleteDC
+DeleteObject
+DestroyIcon
+DrawIconEx
 DwmSetWindowAttribute
 DwmIsCompositionEnabled
 DwmExtendFrameIntoClientArea
@@ -160,11 +175,14 @@ GetActiveWindow
 GetCapture
 GetClientRect
 GetClipboardData
+GetClipboardFormatName
 GetDC
 GetDeviceCaps
 GetDpiForWindow
 GetDpiForMonitor
+GetIconInfo
 GetKeyState
+GetObject
 GetMessage
 GetMessageTime
 GetMonitorInfo
@@ -201,6 +219,7 @@ PeekMessage
 PostMessage
 RegGetValue
 RegisterClassEx
+RegisterClipboardFormat
 RegisterDragDrop
 RegisterTouchWindow
 RegisterWindowMessage
@@ -229,6 +248,7 @@ SetWindowText
 SHCreateItemFromParsingName
 SHCreateItemInKnownFolder
 ShowWindow
+StgCreateStorageEx
 SwapBuffers
 TranslateMessage
 wglCreateContext
