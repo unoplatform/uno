@@ -332,12 +332,26 @@ namespace Microsoft.UI.Xaml
 			var visual = Visual;
 			visual.ArrangeOffset = new Vector3((float)rect.X, (float)rect.Y, 0) + _translation;
 			visual.Size = new Vector2((float)rect.Width, (float)rect.Height);
-			if (_renderTransform is null && !GetFlowDirectionTransform().IsIdentity)
+
+			var hasProjection = _projection is not null;
+			if (_renderTransform is null && (!GetFlowDirectionTransform().IsIdentity || hasProjection))
 			{
 				_renderTransform = new NativeRenderTransformAdapter(this, RenderTransform, RenderTransformOrigin);
 			}
 
-			_renderTransform?.UpdateFlowDirectionTransform();
+			if (_renderTransform is not null)
+			{
+				// Update with the new layout size - this is important for Projection calculations
+				var newSize = new Size(rect.Width, rect.Height);
+				if (_renderTransform.CurrentSize != newSize)
+				{
+					_renderTransform.UpdateSize(newSize);
+				}
+				else
+				{
+					_renderTransform.UpdateFlowDirectionTransform();
+				}
+			}
 
 			// The clipping applied by our parent due to layout constraints are pushed to the visual through the LayoutClip property
 			// This allows special handling of this clipping by the compositor (cf. ContainerVisual.Render).
