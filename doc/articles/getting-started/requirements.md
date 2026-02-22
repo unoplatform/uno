@@ -34,6 +34,9 @@ At compile time, Uno Platform typically supports two versions of the Android SDK
 
 Uno Platform apps run on iOS 11 and above, using the `net10.0-ios` target framework.
 
+> [!NOTE]
+> Using the Skia renderer on iOS 15.0 and above is recommended for optimal frame rate control. iOS 11-14 is supported with a legacy frame rate API.
+
 ## macOS - Desktop
 
 Uno Platform applications run on all macOS versions supported by .NET, currently macOS 10.15 and above, using the `net10.0-desktop` target framework.
