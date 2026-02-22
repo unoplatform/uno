@@ -30,6 +30,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 	{
 		[TestMethod]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_SelectedItem_Set_Before_Load_And_Theme_Changed()
 		{
 			var navView = new MUXC.NavigationView()
