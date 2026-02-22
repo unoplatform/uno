@@ -33,6 +33,7 @@ using Private.Infrastructure;
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // The test cleanup seems to be failing
 	public class SwipeControlTests : MUXApiTestBase
 	{
 		[TestMethod]

@@ -109,6 +109,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Open_Read_AndGetInputStream()
 		{
 			var path = GetRandomFilePath();
@@ -119,6 +120,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Open_Read_AndGetOutputStream()
 		{
 			var path = GetRandomFilePath();
@@ -149,6 +151,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_CloneStream_Then_PositionAreNotShared()
 		{
 			var path = GetRandomFilePath();

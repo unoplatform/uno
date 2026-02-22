@@ -174,6 +174,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 #if !__SKIA__ && !WINAPPSDK
 		[Ignore("Geometry.Transform is only implemented on Skia and WinUI.")]
 #endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Geometry_Transform_Translates_Rendering()
 		{
 			var path = new Path

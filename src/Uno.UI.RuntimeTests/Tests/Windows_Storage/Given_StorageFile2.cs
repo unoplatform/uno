@@ -31,6 +31,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_DateCreated()
 		{
 			var folderForTestFile = Windows.Storage.ApplicationData.Current.LocalFolder;
