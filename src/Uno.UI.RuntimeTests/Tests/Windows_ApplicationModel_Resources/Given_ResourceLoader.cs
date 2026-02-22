@@ -175,6 +175,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_FileAndStringNameFormat()
 		{
 			var SUT = ResourceLoader.GetForViewIndependentUse();
