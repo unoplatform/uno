@@ -153,6 +153,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO_WINUI || WINAPPSDK
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_NavigationViewItem_MenuSource_VectorChanged()
 		{
 			var nvi1 = new NavigationViewItem

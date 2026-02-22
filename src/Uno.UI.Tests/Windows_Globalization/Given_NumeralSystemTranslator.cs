@@ -906,7 +906,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("dje-NE", "Latn", "dje-Latn-NE")]
 		[DataRow("zu", "Latn", "zu")]
 		[DataRow("zu-ZA", "Latn", "zu")]
-#endregion
+		#endregion
 		public void When_UsingLanguage_Then_InitializeCorrectly(string languageTag, string numeralSystem, string resolveLanguage)
 		{
 			var sut = new NumeralSystemTranslator(new string[] { languageTag });
