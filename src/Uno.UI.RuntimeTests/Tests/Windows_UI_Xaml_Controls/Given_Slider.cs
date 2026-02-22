@@ -20,6 +20,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public class Given_Slider
 	{
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Value_At_Maximum()
 		{
 			var slider = new Slider { Minimum = 0, Maximum = 100, Value = 100, Orientation = Orientation.Horizontal, Width = 320, VerticalAlignment = VerticalAlignment.Stretch };

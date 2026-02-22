@@ -4937,6 +4937,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/257")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if !UNO_HAS_MANAGED_SCROLL_PRESENTER
 		[Ignore("This test is only for managed scrollers.")]
 #endif
