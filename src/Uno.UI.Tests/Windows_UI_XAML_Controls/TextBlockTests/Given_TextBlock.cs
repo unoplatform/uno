@@ -7,8 +7,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Controls;
-using System.Drawing;
 using Microsoft.UI.Xaml.Media;
+using Windows.Foundation;
 
 namespace Uno.UI.Tests.Windows_UI_XAML_Controls.TextBlockTests
 {
@@ -50,6 +50,55 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.TextBlockTests
 			Assert.AreEqual(SolidColorBrushHelper.AliceBlue.Color, ((SolidColorBrush)tb.Foreground).Color);
 		}
 #endif
+
+		[TestMethod]
+		public void When_Text_Has_Unpaired_Surrogate_Does_Not_Throw()
+		{
+			var tb = new TextBlock
+			{
+				Text = "A\uD800B\uDC00"
+			};
+
+			tb.Measure(new Size(300, 80));
+		}
+
+		[TestMethod]
+		public void When_Text_Has_Unpaired_Surrogate_With_Highlighter_Does_Not_Throw()
+		{
+			var tb = new TextBlock
+			{
+				Text = "A\uD800B\uDC00"
+			};
+
+			tb.TextHighlighters.Add(new TextHighlighter
+			{
+				Ranges =
+				{
+					new TextRange { StartIndex = 0, Length = tb.Text.Length }
+				}
+			});
+
+			tb.Measure(new Size(300, 80));
+		}
+
+		[TestMethod]
+		public void When_Highlighter_Range_Exceeds_Text_Does_Not_Throw()
+		{
+			var tb = new TextBlock
+			{
+				Text = "abc"
+			};
+
+			tb.TextHighlighters.Add(new TextHighlighter
+			{
+				Ranges =
+				{
+					new TextRange { StartIndex = 0, Length = 999 }
+				}
+			});
+
+			tb.Measure(new Size(300, 80));
+		}
 
 		[TestMethod]
 		public void When_LineBreak_SurroundingWhiteSpace()

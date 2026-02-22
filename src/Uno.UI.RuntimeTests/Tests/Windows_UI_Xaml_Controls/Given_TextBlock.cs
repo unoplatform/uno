@@ -740,6 +740,66 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		public async Task When_TextBlock_With_Unpaired_Surrogate_Renders()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
+			{
+				Assert.Inconclusive();
+			}
+
+			var text = "LTR \uD800 RTL שלום";
+			var sut = new TextBlock
+			{
+				Text = text,
+				TextWrapping = TextWrapping.Wrap
+			};
+			sut.TextHighlighters.Add(new TextHighlighter
+			{
+				Ranges =
+				{
+					new TextRange { StartIndex = 0, Length = text.Length }
+				}
+			});
+
+			var root = new Border
+			{
+				Width = 240,
+				Height = 120,
+				Child = sut
+			};
+
+			await UITestHelper.Load(root);
+			await UITestHelper.ScreenShot(root);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		public async Task When_TextBlock_With_Unpaired_Surrogate_And_No_Highlighter_Renders()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
+			{
+				Assert.Inconclusive();
+			}
+
+			var sut = new TextBlock
+			{
+				Text = "LTR \uD800 RTL שלום",
+				TextWrapping = TextWrapping.Wrap
+			};
+
+			var root = new Border
+			{
+				Width = 240,
+				Height = 120,
+				Child = sut
+			};
+
+			await UITestHelper.Load(root);
+			await UITestHelper.ScreenShot(root);
+		}
+
+		[TestMethod]
 #if !__ANDROID__
 		[Ignore("Android-only test for AndroidAssets backward compatibility")]
 #endif
