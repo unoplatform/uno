@@ -46,6 +46,37 @@ You can manage the Dev Server from the command line using the dotnet tool `Uno.D
 - `--force-generate-tool-cache`: Immediately request the Uno App tool list once the Dev Server is online and persist it to the local cache. Use this to prime CI environments or agents that expect a tools cache before they can call `list_tools`.
 - `--solution-dir <path>`: Explicit solution directory Uno.DevServer should monitor. Useful when starting the DevServer manually (e.g., CI agents) or when priming tools via `--force-generate-tool-cache`. Defaults to the current working directory when omitted.
 
+## Solution Discovery
+
+When you start the Dev Server from a directory that does not directly contain a `.sln` or `.slnx` file, it automatically searches subdirectories to find one. This is useful when you launch the Dev Server from a repository root while your solution lives in a subfolder such as `src/`.
+
+The search works as follows:
+
+1. **Current directory first** — if the working directory already contains solution files, those are used immediately (no subdirectory search).
+2. **Subdirectory search** — subdirectories are searched up to **2 levels deep**.
+   - Prioritized directories (`src`, `source`, `app`) are searched before others.
+   - Directories that typically contain build artifacts or metadata are skipped: `bin`, `obj`, `node_modules`, `packages`, `.git`, `.vs`, `.idea`, and any directory whose name starts with `.` or `_`.
+3. **Ordering** — results are sorted by depth (shallower matches first), then alphabetically. The first match is used.
+
+Both `.sln` and `.slnx` solution files are recognized.
+
+## Configuration File
+
+You can create a `.unoplatform/devserverconfig.json` file to explicitly tell the Dev Server which solution to use. When this file is present and valid, it takes precedence over automatic solution discovery.
+
+**File location:** `.unoplatform/devserverconfig.json` relative to the working directory.
+
+**Format:**
+
+```json
+{
+  "SolutionPath": "src/MyApp.sln"
+}
+```
+
+- `SolutionPath` can be a **relative** path (resolved relative to the working directory) or an **absolute** path.
+- The file must point to an existing solution file; if the path is missing or the file does not exist, the Dev Server falls back to automatic discovery.
+
 ## Hot Reload
 
 The Dev Server enables Hot Reload for a faster inner loop:

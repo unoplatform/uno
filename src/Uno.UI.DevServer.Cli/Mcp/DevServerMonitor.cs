@@ -51,9 +51,19 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 			try
 			{
 				// If we don't have a solution, we can't start a DevServer yet.
-				var solutionFiles = Directory
-					.EnumerateFiles(_currentDirectory, "*.sln")
-					.Concat(Directory.EnumerateFiles(_currentDirectory, "*.slnx")).ToArray();
+				// First, check for a configured solution in .unoplatform/devserverconfig.json
+				string[] solutionFiles;
+				if (DevServerConfig.TryGetSolutionPath(_currentDirectory, out var configuredSolution))
+				{
+					solutionFiles = [configuredSolution];
+					_logger.LogInformation(
+						"DevServerMonitor using solution from .unoplatform/devserverconfig.json: {SolutionPath}",
+						configuredSolution);
+				}
+				else
+				{
+					solutionFiles = SolutionDiscovery.DiscoverSolutions(_currentDirectory, _logger);
+				}
 
 				_logger.LogTrace(
 					"DevServerMonitor scan found {Count} solution files in {Directory}",
