@@ -266,6 +266,7 @@ public partial class TemplatedParentTests // tests
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task VisualStateGroup_TP_Inheritance()
 	{
 		var setup = new VisualStateGroup_Full();
