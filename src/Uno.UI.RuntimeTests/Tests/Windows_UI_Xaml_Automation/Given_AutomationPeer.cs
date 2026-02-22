@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 {
@@ -394,6 +396,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			var result = automationPeer.GetFullDescription();
 			Assert.AreEqual(string.Empty, result);
 		}
+
+#if __WASM__ || __SKIA__
+		[TestMethod]
+		[RunsOnUIThread]
+		public void When_RoleOverride_Set_FindHtmlRole_Returns_Override()
+		{
+			var button = new Button();
+			AutomationPropertiesExtensions.SetRole(button, "tab");
+
+			var role = AutomationProperties.FindHtmlRole(button);
+
+			Assert.AreEqual("tab", role);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public void When_RoleOverride_Not_Set_FindHtmlRole_Returns_Default()
+		{
+			var button = new Button();
+
+			// No override set — should return the standard "button" role.
+			var role = AutomationProperties.FindHtmlRole(button);
+
+			Assert.AreEqual("button", role);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public void When_RoleOverride_Cleared_FindHtmlRole_Falls_Back()
+		{
+			var button = new Button();
+			AutomationPropertiesExtensions.SetRole(button, "tab");
+
+			// Clear the override.
+			AutomationPropertiesExtensions.SetRole(button, null);
+
+			// Should fall back to the default role for Button.
+			var role = AutomationProperties.FindHtmlRole(button);
+
+			Assert.AreEqual("button", role);
+		}
+#endif
 
 		private class TestAutomationPeer : AutomationPeer
 		{
