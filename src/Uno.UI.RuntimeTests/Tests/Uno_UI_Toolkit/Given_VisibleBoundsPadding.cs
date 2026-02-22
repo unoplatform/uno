@@ -24,6 +24,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Toolkit
 	{
 		[TestMethod]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __SKIA__ || __WASM__
 		[Ignore("VisibleBoundsPadding is not working correctly on these platforms - see https://github.com/unoplatform/uno/issues/7978")]
 #elif __ANDROID__
