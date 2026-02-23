@@ -288,6 +288,170 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			await UITestHelper.Load(container);
 		}
 
+		[TestMethod]
+		public async Task When_DashCap_Round_Endpoints_Are_Flat()
+		{
+			// WinUI uses StrokeStartLineCap/StrokeEndLineCap at path endpoints, not StrokeDashCap.
+			// Default start/end caps are Flat, so even with DashCap=Round, the outermost endpoints
+			// should NOT have round cap protrusions.
+			var container = new Grid { Width = 300, Height = 50, Background = new SolidColorBrush(Colors.White) };
+			var line = new Line
+			{
+				X1 = 30,
+				Y1 = 25,
+				X2 = 270,
+				Y2 = 25,
+				Stroke = new SolidColorBrush(Colors.Red),
+				StrokeThickness = 20,
+				StrokeDashArray = new DoubleCollection { 3, 2 },
+				StrokeDashCap = PenLineCap.Round,
+				// Start/End caps default to Flat
+			};
+			container.Children.Add(line);
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+
+			// With Flat start/end caps, there should be no protrusion beyond the endpoints.
+			// halfWidth = 10, so Round DashCap would extend to x=20; Flat should not.
+			// Check pixel well before the start point: should be white (background)
+			ImageAssert.HasColorAt(screenshot, 18, 25, Colors.White, tolerance: 30);
+			// Check pixel well after the end point: should be white
+			ImageAssert.HasColorAt(screenshot, 282, 25, Colors.White, tolerance: 30);
+			// Center of the line should have the stroke color
+			ImageAssert.HasColorAt(screenshot, 150, 25, Colors.Red, tolerance: 30);
+		}
+
+		[TestMethod]
+		public async Task When_DashCap_Round_EndCap_Square()
+		{
+			// DashCap=Round, StartCap=Flat, EndCap=Square
+			// End of path should have a square cap (extending halfWidth beyond endpoint),
+			// while start should be flat (no extension).
+			var container = new Grid { Width = 300, Height = 50, Background = new SolidColorBrush(Colors.White) };
+			var line = new Line
+			{
+				X1 = 30,
+				Y1 = 25,
+				X2 = 270,
+				Y2 = 25,
+				Stroke = new SolidColorBrush(Colors.Red),
+				StrokeThickness = 20,
+				StrokeDashArray = new DoubleCollection { 3, 2 },
+				StrokeDashCap = PenLineCap.Round,
+				StrokeStartLineCap = PenLineCap.Flat,
+				StrokeEndLineCap = PenLineCap.Square,
+			};
+			container.Children.Add(line);
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+
+			// Start should be flat: no color before x=30
+			ImageAssert.HasColorAt(screenshot, 18, 25, Colors.White, tolerance: 30);
+			// End has Square cap: extends halfWidth(10) beyond x=270 → color at x=278
+			ImageAssert.HasColorAt(screenshot, 278, 25, Colors.Red, tolerance: 30);
+		}
+
+		[TestMethod]
+		public async Task When_DashCap_Matches_EndCaps_No_Correction()
+		{
+			// When DashCap == StartCap == EndCap, no endpoint correction is needed.
+			// All caps are Round, so the endpoints should have round cap protrusions.
+			var container = new Grid { Width = 300, Height = 50, Background = new SolidColorBrush(Colors.White) };
+			var line = new Line
+			{
+				X1 = 30,
+				Y1 = 25,
+				X2 = 270,
+				Y2 = 25,
+				Stroke = new SolidColorBrush(Colors.Red),
+				StrokeThickness = 20,
+				StrokeDashArray = new DoubleCollection { 3, 2 },
+				StrokeDashCap = PenLineCap.Round,
+				StrokeStartLineCap = PenLineCap.Round,
+				StrokeEndLineCap = PenLineCap.Round,
+			};
+			container.Children.Add(line);
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+
+			// With Round caps everywhere, the stroke extends beyond endpoints by halfWidth=10.
+			// Pixel at x=22 (inside the round cap extension from x=30) should be Red.
+			ImageAssert.HasColorAt(screenshot, 22, 25, Colors.Red, tolerance: 30);
+			// Pixel at x=278 (inside the round cap extension from x=270) should be Red.
+			ImageAssert.HasColorAt(screenshot, 278, 25, Colors.Red, tolerance: 30);
+		}
+
+		[TestMethod]
+		public async Task When_DashCap_Round_Endpoint_In_Gap_No_Cap()
+		{
+			// When the path endpoint falls in a gap, no cap should be rendered at all.
+			// Use a dash offset so the end of the path lands in a gap.
+			var container = new Grid { Width = 300, Height = 50, Background = new SolidColorBrush(Colors.White) };
+			// Line length = 240 (270-30). DashArray = "3 2" → pixel values: 60,40 (total=100).
+			// With offset=1 → pixel offset=20. patternPos at end (240+20)%100 = 60 → index 1 (gap starts at 60).
+			// So end falls exactly at the start of the gap.
+			// Try offset=1.5 → pixel offset=30. (240+30)%100 = 70 → accumulated: 60(dash), then 100(gap).
+			// 70 < 100, index 1 = gap. End is in a gap.
+			var line = new Line
+			{
+				X1 = 30,
+				Y1 = 25,
+				X2 = 270,
+				Y2 = 25,
+				Stroke = new SolidColorBrush(Colors.Red),
+				StrokeThickness = 20,
+				StrokeDashArray = new DoubleCollection { 3, 2 },
+				StrokeDashCap = PenLineCap.Round,
+				StrokeDashOffset = 1.5,
+			};
+			container.Children.Add(line);
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+
+			// End falls on a gap, so there should be no stroke at the end at all.
+			// Pixel well after the endpoint should be white.
+			ImageAssert.HasColorAt(screenshot, 278, 25, Colors.White, tolerance: 30);
+		}
+
+		[TestMethod]
+		public async Task When_DashCap_Round_Path_Endpoints_Are_Flat()
+		{
+			// Same concept as the Line test, but using a Path with an open figure
+			// to verify multi-contour handling works correctly.
+			var container = new Grid { Width = 250, Height = 120, Background = new SolidColorBrush(Colors.White) };
+
+			var geometry = new PathGeometry();
+			var figure = new PathFigure { StartPoint = new Point(30, 60), IsClosed = false };
+			figure.Segments.Add(new LineSegment { Point = new Point(220, 60) });
+			geometry.Figures.Add(figure);
+
+			var path = new Path
+			{
+				Stroke = new SolidColorBrush(Colors.Blue),
+				StrokeThickness = 16,
+				StrokeDashArray = new DoubleCollection { 2, 1 },
+				StrokeDashCap = PenLineCap.Round,
+				// Start/End caps default to Flat
+				Data = geometry,
+			};
+			container.Children.Add(path);
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+
+			// halfWidth = 8. With Flat start/end caps, no protrusion beyond endpoints.
+			// Pixel before start (x=20, well before x=30) should be white
+			ImageAssert.HasColorAt(screenshot, 20, 60, Colors.White, tolerance: 30);
+			// Pixel after end (x=230, well after x=220) should be white
+			ImageAssert.HasColorAt(screenshot, 230, 60, Colors.White, tolerance: 30);
+			// Center should be blue
+			ImageAssert.HasColorAt(screenshot, 125, 60, Colors.Blue, tolerance: 30);
+		}
+
 		// This needs the netstd layouter + non-legacy shapes layout
 		[TestMethod]
 		public async Task When_Shape_Stretch_UniformToFill()
