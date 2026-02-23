@@ -392,11 +392,16 @@ function Install-DevServerCliTool {
         return
     }
 
-    Write-Log "Installing uno-devserver CLI tool version $nbgvVersion..."
-    & dotnet tool install -g uno.devserver --version $nbgvVersion
+    # Create a local tool manifest so `dotnet uno-devserver` works
+    if (-not (Test-Path '.config/dotnet-tools.json')) {
+        & dotnet new tool-manifest
+    }
+
+    Write-Log "Installing uno-devserver CLI tool version $nbgvVersion (local tool)..."
+    & dotnet tool install uno.devserver --version $nbgvVersion
     if ($LASTEXITCODE -ne 0) {
         # Try update if already installed
-        & dotnet tool update -g uno.devserver --version $nbgvVersion
+        & dotnet tool update uno.devserver --version $nbgvVersion
         if ($LASTEXITCODE -ne 0) {
             throw "Failed to install/update uno-devserver CLI tool."
         }
