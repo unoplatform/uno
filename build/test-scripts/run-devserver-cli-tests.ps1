@@ -1149,7 +1149,8 @@ try {
     $primaryPort = Test-DevserverStartStop -SlnDir $slnDir -CsprojDir $csprojDir -CsprojPath $csprojPath -DefaultPort $defaultPort -MaxAttempts $maxAttempts
     $solutionDirTestPort = Test-DevserverSolutionDirSupport -SlnDir $slnDir -DefaultPort $defaultPort -BaselinePort $primaryPort -MaxAttempts $maxAttempts
     Test-McpModeWithoutSolutionDir -SlnDir $slnDir -DefaultPort $defaultPort -PrimaryPort $primaryPort -SolutionDirPort $solutionDirTestPort -MaxAttempts $maxAttempts
-    $maxAllocatedPort = [Math]::Max($primaryPort, $solutionDirTestPort)
+    # +1 accounts for the port used internally by Test-McpModeWithoutSolutionDir
+    $maxAllocatedPort = [Math]::Max($primaryPort, $solutionDirTestPort) + 1
     Test-McpModeWithRootsFallback -SlnDir $slnDir -DefaultPort $defaultPort -MaxAllocatedPort $maxAllocatedPort
     Test-CodexIntegration -SlnDir $slnDir
 
