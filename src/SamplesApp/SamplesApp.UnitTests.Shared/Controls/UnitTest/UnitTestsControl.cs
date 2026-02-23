@@ -255,6 +255,20 @@ namespace Uno.UI.Samples.Tests
 		{
 			Interlocked.Exchange(ref _cts, new CancellationTokenSource())?.Cancel(); // cancel any previous CTS
 
+			// Apply test group settings from UI
+			if (int.TryParse(testGroupNumber.Text, out var groupNum) &&
+				int.TryParse(testGroupCount.Text, out var groupCount) &&
+				groupCount > 0 && groupNum >= 0)
+			{
+				CITestGroup = groupNum;
+				CITestGroupCount = groupCount;
+			}
+			else
+			{
+				CITestGroup = -1;
+				CITestGroupCount = -1;
+			}
+
 			var config = BuildConfig();
 			testResults.Children.Clear();
 
@@ -560,6 +574,7 @@ namespace Uno.UI.Samples.Tests
 					consoleOutput.IsChecked = config.IsConsoleOutputEnabled;
 					runIgnored.IsChecked = config.IsRunningIgnored;
 					retry.IsChecked = config.Attempts > 1;
+					unloadTestContent.IsChecked = config.IsUnloadingTestContent;
 					testFilter.Text = string.Join(";", config.Filters);
 				}
 				catch (Exception e)
@@ -579,6 +594,8 @@ namespace Uno.UI.Samples.Tests
 			runIgnored.Unchecked += (snd, e) => StoreConfig();
 			retry.Checked += (snd, e) => StoreConfig();
 			retry.Unchecked += (snd, e) => StoreConfig();
+			unloadTestContent.Checked += (snd, e) => StoreConfig();
+			unloadTestContent.Unchecked += (snd, e) => StoreConfig();
 			testFilter.TextChanged += (snd, e) => StoreConfig();
 
 			void StoreConfig()
@@ -605,6 +622,7 @@ namespace Uno.UI.Samples.Tests
 				IsConsoleOutputEnabled = isConsoleOutput,
 				IsRunningIgnored = isRunningIgnored,
 				Attempts = attempts,
+				IsUnloadingTestContent = unloadTestContent.IsChecked ?? false,
 			};
 		}
 
@@ -1060,7 +1078,10 @@ namespace Uno.UI.Samples.Tests
 				await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
 				{
 					CloseRemainingPopups();
-
+					if (config.IsUnloadingTestContent)
+					{
+						TestServices.WindowHelper.WindowContent = null;
+					}
 				});
 			}
 

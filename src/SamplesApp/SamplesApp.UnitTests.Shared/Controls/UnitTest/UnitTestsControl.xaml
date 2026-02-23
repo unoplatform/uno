@@ -84,6 +84,17 @@
                                         <TextBlock Text="Auto retry" />
                                     </StackPanel>
                                 </ToggleButton>
+                                <ToggleButton x:Name="unloadTestContent">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE74D;" />
+                                        <TextBlock Text="Unload test content" />
+                                    </StackPanel>
+                                </ToggleButton>
+                                <StackPanel Orientation="Vertical" Spacing="8">
+                                    <TextBlock Text="Run a specific test group:" />
+                                    <TextBox x:Name="testGroupNumber" Header="Group ID" PlaceholderText="Group # (e.g. 0)" Width="140" />
+                                    <TextBox x:Name="testGroupCount" Header="Group count" PlaceholderText="Group count (e.g. 12)" Width="160" />
+                                </StackPanel>
                             </StackPanel>
                         </Flyout>
                     </Button.Flyout>

@@ -13,4 +13,6 @@ public class UnitTestEngineConfig
 	public bool IsConsoleOutputEnabled { get; set; }
 
 	public bool IsRunningIgnored { get; set; }
+
+	public bool IsUnloadingTestContent { get; set; } = true;
 }
