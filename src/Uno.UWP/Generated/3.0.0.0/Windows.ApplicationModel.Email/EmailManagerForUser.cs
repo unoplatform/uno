@@ -23,6 +23,16 @@ namespace Windows.ApplicationModel.Email
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailManagerForUser.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailManagerForUser.operator ==(Windows.ApplicationModel.Email.EmailManagerForUser, Windows.ApplicationModel.Email.EmailManagerForUser)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailManagerForUser.operator !=(Windows.ApplicationModel.Email.EmailManagerForUser, Windows.ApplicationModel.Email.EmailManagerForUser)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailManagerForUser.Equals(Windows.ApplicationModel.Email.EmailManagerForUser)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailManagerForUser.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailManagerForUser.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailManagerForUser.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailManagerForUser.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailManagerForUser.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailManagerForUser.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ShowComposeNewEmailAsync(global::Windows.ApplicationModel.Email.EmailMessage message)
@@ -38,5 +48,6 @@ namespace Windows.ApplicationModel.Email
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailManagerForUser.User.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailManagerForUser.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

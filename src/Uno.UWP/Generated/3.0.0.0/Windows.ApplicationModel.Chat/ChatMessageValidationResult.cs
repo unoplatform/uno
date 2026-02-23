@@ -53,9 +53,20 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageValidationResult.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageValidationResult.operator ==(Windows.ApplicationModel.Chat.ChatMessageValidationResult, Windows.ApplicationModel.Chat.ChatMessageValidationResult)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageValidationResult.operator !=(Windows.ApplicationModel.Chat.ChatMessageValidationResult, Windows.ApplicationModel.Chat.ChatMessageValidationResult)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageValidationResult.Equals(Windows.ApplicationModel.Chat.ChatMessageValidationResult)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageValidationResult.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageValidationResult.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageValidationResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageValidationResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageValidationResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageValidationResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageValidationResult.MaxPartCount.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageValidationResult.PartCount.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageValidationResult.RemainingCharacterCountInPart.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageValidationResult.Status.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageValidationResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

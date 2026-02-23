@@ -13,5 +13,16 @@ namespace Windows.Media.Control
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Media.Control.PlaybackInfoChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Control.PlaybackInfoChangedEventArgs.operator ==(Windows.Media.Control.PlaybackInfoChangedEventArgs, Windows.Media.Control.PlaybackInfoChangedEventArgs)
+		// Forced skipping of method Windows.Media.Control.PlaybackInfoChangedEventArgs.operator !=(Windows.Media.Control.PlaybackInfoChangedEventArgs, Windows.Media.Control.PlaybackInfoChangedEventArgs)
+		// Forced skipping of method Windows.Media.Control.PlaybackInfoChangedEventArgs.Equals(Windows.Media.Control.PlaybackInfoChangedEventArgs)
+		// Forced skipping of method Windows.Media.Control.PlaybackInfoChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.Control.PlaybackInfoChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.Control.PlaybackInfoChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Control.PlaybackInfoChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Control.PlaybackInfoChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Control.PlaybackInfoChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Media.Control.PlaybackInfoChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

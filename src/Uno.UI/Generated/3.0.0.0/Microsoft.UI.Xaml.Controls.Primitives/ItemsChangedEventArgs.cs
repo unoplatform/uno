@@ -63,10 +63,21 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs, Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs, Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.Equals(Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.Action.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.Position.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.OldPosition.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.ItemCount.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.ItemUICount.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.OldPosition.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.Position.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

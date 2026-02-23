@@ -15,20 +15,6 @@ namespace Windows.Devices.Usb
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Usb.UsbWriteOptions WriteOptions
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member UsbWriteOptions UsbBulkOutPipe.WriteOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UsbWriteOptions%20UsbBulkOutPipe.WriteOptions");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbBulkOutPipe", "UsbWriteOptions UsbBulkOutPipe.WriteOptions");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Usb.UsbBulkOutEndpointDescriptor EndpointDescriptor
 		{
 			get
@@ -47,7 +33,30 @@ namespace Windows.Devices.Usb
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Usb.UsbBulkOutPipe.EndpointDescriptor.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Usb.UsbWriteOptions WriteOptions
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member UsbWriteOptions UsbBulkOutPipe.WriteOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UsbWriteOptions%20UsbBulkOutPipe.WriteOptions");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbBulkOutPipe", "UsbWriteOptions UsbBulkOutPipe.WriteOptions");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkOutPipe.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkOutPipe.operator ==(Windows.Devices.Usb.UsbBulkOutPipe, Windows.Devices.Usb.UsbBulkOutPipe)
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkOutPipe.operator !=(Windows.Devices.Usb.UsbBulkOutPipe, Windows.Devices.Usb.UsbBulkOutPipe)
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkOutPipe.Equals(Windows.Devices.Usb.UsbBulkOutPipe)
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkOutPipe.Equals(object)
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkOutPipe.GetHashCode()
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkOutPipe.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkOutPipe.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkOutPipe.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkOutPipe.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ClearStallAsync()
@@ -55,8 +64,10 @@ namespace Windows.Devices.Usb
 			throw new global::System.NotImplementedException("The member IAsyncAction UsbBulkOutPipe.ClearStallAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20UsbBulkOutPipe.ClearStallAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Usb.UsbBulkOutPipe.WriteOptions.set
-		// Forced skipping of method Windows.Devices.Usb.UsbBulkOutPipe.WriteOptions.get
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkOutPipe.EndpointDescriptor.get
 		// Forced skipping of method Windows.Devices.Usb.UsbBulkOutPipe.OutputStream.get
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkOutPipe.WriteOptions.get
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkOutPipe.WriteOptions.set
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkOutPipe.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

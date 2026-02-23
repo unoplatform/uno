@@ -8,8 +8,15 @@ namespace Microsoft.UI.Xaml.Documents
 #endif
 	public partial class Run : global::Microsoft.UI.Xaml.Documents.Inline
 	{
-		// Skipping already declared property Text
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty FlowDirectionProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(FlowDirection), typeof(global::Microsoft.UI.Xaml.FlowDirection),
+			typeof(global::Microsoft.UI.Xaml.Documents.Run),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.FlowDirection)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.FlowDirection FlowDirection
 		{
@@ -23,20 +30,24 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty FlowDirectionProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(FlowDirection), typeof(global::Microsoft.UI.Xaml.FlowDirection),
-			typeof(global::Microsoft.UI.Xaml.Documents.Run),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.FlowDirection)));
-#endif
+		// Skipping already declared property Text
 		// Skipping already declared method Microsoft.UI.Xaml.Documents.Run.Run()
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.Run()
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.Text.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.Text.set
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.FlowDirectionProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.operator ==(Microsoft.UI.Xaml.Documents.Run, Microsoft.UI.Xaml.Documents.Run)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.operator !=(Microsoft.UI.Xaml.Documents.Run, Microsoft.UI.Xaml.Documents.Run)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.Equals(Microsoft.UI.Xaml.Documents.Run)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.FlowDirection.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.FlowDirection.set
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.FlowDirectionProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.Text.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.Text.set
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

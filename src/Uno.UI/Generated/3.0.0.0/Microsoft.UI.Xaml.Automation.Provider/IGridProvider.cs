@@ -10,8 +10,8 @@ namespace Microsoft.UI.Xaml.Automation.Provider
 	{
 		// Skipping already declared property ColumnCount
 		// Skipping already declared property RowCount
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.IGridProvider.GetItem(int, int)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IGridProvider.ColumnCount.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IGridProvider.RowCount.get
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.IGridProvider.GetItem(int, int)
 	}
 }

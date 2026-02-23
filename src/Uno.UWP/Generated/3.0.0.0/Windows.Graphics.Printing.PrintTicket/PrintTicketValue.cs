@@ -23,7 +23,16 @@ namespace Windows.Graphics.Printing.PrintTicket
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketValue.Type.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketValue.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketValue.operator ==(Windows.Graphics.Printing.PrintTicket.PrintTicketValue, Windows.Graphics.Printing.PrintTicket.PrintTicketValue)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketValue.operator !=(Windows.Graphics.Printing.PrintTicket.PrintTicketValue, Windows.Graphics.Printing.PrintTicket.PrintTicketValue)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketValue.Equals(Windows.Graphics.Printing.PrintTicket.PrintTicketValue)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketValue.Equals(object)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketValue.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketValue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketValue.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketValue.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketValue.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int GetValueAsInteger()
@@ -38,5 +47,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 			throw new global::System.NotImplementedException("The member string PrintTicketValue.GetValueAsString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintTicketValue.GetValueAsString%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketValue.Type.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketValue.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

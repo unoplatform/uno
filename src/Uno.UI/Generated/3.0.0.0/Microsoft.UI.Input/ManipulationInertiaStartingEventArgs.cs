@@ -13,10 +13,21 @@ namespace Microsoft.UI.Input
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property Position
 		// Skipping already declared property Velocities
-		// Forced skipping of method Microsoft.UI.Input.ManipulationInertiaStartingEventArgs.PointerDeviceType.get
-		// Forced skipping of method Microsoft.UI.Input.ManipulationInertiaStartingEventArgs.Delta.get
+		// Forced skipping of method Microsoft.UI.Input.ManipulationInertiaStartingEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Input.ManipulationInertiaStartingEventArgs.operator ==(Microsoft.UI.Input.ManipulationInertiaStartingEventArgs, Microsoft.UI.Input.ManipulationInertiaStartingEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.ManipulationInertiaStartingEventArgs.operator !=(Microsoft.UI.Input.ManipulationInertiaStartingEventArgs, Microsoft.UI.Input.ManipulationInertiaStartingEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.ManipulationInertiaStartingEventArgs.Equals(Microsoft.UI.Input.ManipulationInertiaStartingEventArgs)
+		// Forced skipping of method Microsoft.UI.Input.ManipulationInertiaStartingEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Input.ManipulationInertiaStartingEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Input.ManipulationInertiaStartingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.ManipulationInertiaStartingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.ManipulationInertiaStartingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Input.ManipulationInertiaStartingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Input.ManipulationInertiaStartingEventArgs.Cumulative.get
+		// Forced skipping of method Microsoft.UI.Input.ManipulationInertiaStartingEventArgs.Delta.get
+		// Forced skipping of method Microsoft.UI.Input.ManipulationInertiaStartingEventArgs.PointerDeviceType.get
 		// Forced skipping of method Microsoft.UI.Input.ManipulationInertiaStartingEventArgs.Position.get
 		// Forced skipping of method Microsoft.UI.Input.ManipulationInertiaStartingEventArgs.Velocities.get
+		// Forced skipping of method Microsoft.UI.Input.ManipulationInertiaStartingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -24,6 +23,17 @@ namespace Windows.Devices.Perception
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameSourceRemovedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameSourceRemovedEventArgs.operator ==(Windows.Devices.Perception.PerceptionColorFrameSourceRemovedEventArgs, Windows.Devices.Perception.PerceptionColorFrameSourceRemovedEventArgs)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameSourceRemovedEventArgs.operator !=(Windows.Devices.Perception.PerceptionColorFrameSourceRemovedEventArgs, Windows.Devices.Perception.PerceptionColorFrameSourceRemovedEventArgs)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameSourceRemovedEventArgs.Equals(Windows.Devices.Perception.PerceptionColorFrameSourceRemovedEventArgs)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameSourceRemovedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameSourceRemovedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameSourceRemovedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameSourceRemovedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameSourceRemovedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameSourceRemovedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameSourceRemovedEventArgs.FrameSource.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameSourceRemovedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

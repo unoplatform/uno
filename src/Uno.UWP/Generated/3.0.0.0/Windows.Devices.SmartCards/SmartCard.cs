@@ -23,7 +23,16 @@ namespace Windows.Devices.SmartCards
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCard.Reader.get
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCard.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCard.operator ==(Windows.Devices.SmartCards.SmartCard, Windows.Devices.SmartCards.SmartCard)
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCard.operator !=(Windows.Devices.SmartCards.SmartCard, Windows.Devices.SmartCards.SmartCard)
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCard.Equals(Windows.Devices.SmartCards.SmartCard)
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCard.Equals(object)
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCard.GetHashCode()
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCard.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCard.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCard.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCard.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardStatus> GetStatusAsync()
@@ -45,5 +54,7 @@ namespace Windows.Devices.SmartCards
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SmartCardConnection> SmartCard.ConnectAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSmartCardConnection%3E%20SmartCard.ConnectAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCard.Reader.get
+		// Forced skipping of method Windows.Devices.SmartCards.SmartCard.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -15,20 +15,6 @@ namespace Windows.UI.Input.Inking
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsPrimaryBarrelButtonInputEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool InkInputConfiguration.IsPrimaryBarrelButtonInputEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InkInputConfiguration.IsPrimaryBarrelButtonInputEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkInputConfiguration", "bool InkInputConfiguration.IsPrimaryBarrelButtonInputEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsEraserInputEnabled
 		{
 			get
@@ -43,23 +29,32 @@ namespace Windows.UI.Input.Inking
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsPenHapticFeedbackEnabled
+		public bool IsPrimaryBarrelButtonInputEnabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InkInputConfiguration.IsPenHapticFeedbackEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InkInputConfiguration.IsPenHapticFeedbackEnabled");
+				throw new global::System.NotImplementedException("The member bool InkInputConfiguration.IsPrimaryBarrelButtonInputEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InkInputConfiguration.IsPrimaryBarrelButtonInputEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkInputConfiguration", "bool InkInputConfiguration.IsPenHapticFeedbackEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkInputConfiguration", "bool InkInputConfiguration.IsPrimaryBarrelButtonInputEnabled");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.InkInputConfiguration.IsPrimaryBarrelButtonInputEnabled.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkInputConfiguration.IsPrimaryBarrelButtonInputEnabled.set
+		// Forced skipping of method Windows.UI.Input.Inking.InkInputConfiguration.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.Inking.InkInputConfiguration.operator ==(Windows.UI.Input.Inking.InkInputConfiguration, Windows.UI.Input.Inking.InkInputConfiguration)
+		// Forced skipping of method Windows.UI.Input.Inking.InkInputConfiguration.operator !=(Windows.UI.Input.Inking.InkInputConfiguration, Windows.UI.Input.Inking.InkInputConfiguration)
+		// Forced skipping of method Windows.UI.Input.Inking.InkInputConfiguration.Equals(Windows.UI.Input.Inking.InkInputConfiguration)
+		// Forced skipping of method Windows.UI.Input.Inking.InkInputConfiguration.Equals(object)
+		// Forced skipping of method Windows.UI.Input.Inking.InkInputConfiguration.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.Inking.InkInputConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkInputConfiguration.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkInputConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkInputConfiguration.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkInputConfiguration.IsEraserInputEnabled.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkInputConfiguration.IsEraserInputEnabled.set
-		// Forced skipping of method Windows.UI.Input.Inking.InkInputConfiguration.IsPenHapticFeedbackEnabled.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkInputConfiguration.IsPenHapticFeedbackEnabled.set
+		// Forced skipping of method Windows.UI.Input.Inking.InkInputConfiguration.IsPrimaryBarrelButtonInputEnabled.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkInputConfiguration.IsPrimaryBarrelButtonInputEnabled.set
+		// Forced skipping of method Windows.UI.Input.Inking.InkInputConfiguration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

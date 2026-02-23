@@ -10,6 +10,19 @@ namespace Windows.Gaming.Input.Custom
 	{
 		// Forced skipping of method Windows.Gaming.Input.Custom.GameControllerVersionInfo.GameControllerVersionInfo()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public GameControllerVersionInfo(ushort _Major, ushort _Minor, ushort _Build, ushort _Revision)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Custom.GameControllerVersionInfo", "GameControllerVersionInfo.GameControllerVersionInfo(ushort _Major, ushort _Minor, ushort _Build, ushort _Revision)");
+		}
+#endif
+		// Forced skipping of method Windows.Gaming.Input.Custom.GameControllerVersionInfo.GameControllerVersionInfo(ushort, ushort, ushort, ushort)
+		// Forced skipping of method Windows.Gaming.Input.Custom.GameControllerVersionInfo.operator ==(Windows.Gaming.Input.Custom.GameControllerVersionInfo, Windows.Gaming.Input.Custom.GameControllerVersionInfo)
+		// Forced skipping of method Windows.Gaming.Input.Custom.GameControllerVersionInfo.operator !=(Windows.Gaming.Input.Custom.GameControllerVersionInfo, Windows.Gaming.Input.Custom.GameControllerVersionInfo)
+		// Forced skipping of method Windows.Gaming.Input.Custom.GameControllerVersionInfo.Equals(Windows.Gaming.Input.Custom.GameControllerVersionInfo)
+		// Forced skipping of method Windows.Gaming.Input.Custom.GameControllerVersionInfo.Equals(object)
+		// Forced skipping of method Windows.Gaming.Input.Custom.GameControllerVersionInfo.GetHashCode()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public ushort Major;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

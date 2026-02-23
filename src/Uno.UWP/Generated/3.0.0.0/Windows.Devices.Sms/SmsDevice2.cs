@@ -15,20 +15,6 @@ namespace Windows.Devices.Sms
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string SmscAddress
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string SmsDevice2.SmscAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsDevice2.SmscAddress");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsDevice2", "string SmsDevice2.SmscAddress");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string AccountPhoneNumber
 		{
 			get
@@ -77,29 +63,21 @@ namespace Windows.Devices.Sms
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.SmscAddress.get
-		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.SmscAddress.set
-		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.DeviceId.get
-		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.ParentDeviceId.get
-		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.AccountPhoneNumber.get
-		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.CellularClass.get
-		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.DeviceStatus.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Sms.SmsEncodedLength CalculateLength(global::Windows.Devices.Sms.ISmsMessageBase message)
+		public string SmscAddress
 		{
-			throw new global::System.NotImplementedException("The member SmsEncodedLength SmsDevice2.CalculateLength(ISmsMessageBase message) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsEncodedLength%20SmsDevice2.CalculateLength%28ISmsMessageBase%20message%29");
+			get
+			{
+				throw new global::System.NotImplementedException("The member string SmsDevice2.SmscAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsDevice2.SmscAddress");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsDevice2", "string SmsDevice2.SmscAddress");
+			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sms.SmsSendMessageResult> SendMessageAndGetResultAsync(global::Windows.Devices.Sms.ISmsMessageBase message)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SmsSendMessageResult> SmsDevice2.SendMessageAndGetResultAsync(ISmsMessageBase message) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSmsSendMessageResult%3E%20SmsDevice2.SendMessageAndGetResultAsync%28ISmsMessageBase%20message%29");
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.DeviceStatusChanged.add
-		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.DeviceStatusChanged.remove
+		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
@@ -128,6 +106,40 @@ namespace Windows.Devices.Sms
 			throw new global::System.NotImplementedException("The member SmsDevice2 SmsDevice2.FromParentId(string parentDeviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsDevice2%20SmsDevice2.FromParentId%28string%20parentDeviceId%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.operator ==(Windows.Devices.Sms.SmsDevice2, Windows.Devices.Sms.SmsDevice2)
+		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.operator !=(Windows.Devices.Sms.SmsDevice2, Windows.Devices.Sms.SmsDevice2)
+		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.Equals(Windows.Devices.Sms.SmsDevice2)
+		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.Equals(object)
+		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.GetHashCode()
+		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Sms.SmsEncodedLength CalculateLength(global::Windows.Devices.Sms.ISmsMessageBase message)
+		{
+			throw new global::System.NotImplementedException("The member SmsEncodedLength SmsDevice2.CalculateLength(ISmsMessageBase message) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsEncodedLength%20SmsDevice2.CalculateLength%28ISmsMessageBase%20message%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sms.SmsSendMessageResult> SendMessageAndGetResultAsync(global::Windows.Devices.Sms.ISmsMessageBase message)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<SmsSendMessageResult> SmsDevice2.SendMessageAndGetResultAsync(ISmsMessageBase message) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSmsSendMessageResult%3E%20SmsDevice2.SendMessageAndGetResultAsync%28ISmsMessageBase%20message%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.DeviceStatusChanged.add
+		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.DeviceStatusChanged.remove
+		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.AccountPhoneNumber.get
+		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.CellularClass.get
+		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.DeviceId.get
+		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.DeviceStatus.get
+		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.ParentDeviceId.get
+		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.SmscAddress.get
+		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.SmscAddress.set
+		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Sms.SmsDevice2, object> DeviceStatusChanged

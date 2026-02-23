@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Pickers.Provider
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -24,6 +23,17 @@ namespace Windows.Storage.Pickers.Provider
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Storage.Pickers.Provider.FileRemovedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.Pickers.Provider.FileRemovedEventArgs.operator ==(Windows.Storage.Pickers.Provider.FileRemovedEventArgs, Windows.Storage.Pickers.Provider.FileRemovedEventArgs)
+		// Forced skipping of method Windows.Storage.Pickers.Provider.FileRemovedEventArgs.operator !=(Windows.Storage.Pickers.Provider.FileRemovedEventArgs, Windows.Storage.Pickers.Provider.FileRemovedEventArgs)
+		// Forced skipping of method Windows.Storage.Pickers.Provider.FileRemovedEventArgs.Equals(Windows.Storage.Pickers.Provider.FileRemovedEventArgs)
+		// Forced skipping of method Windows.Storage.Pickers.Provider.FileRemovedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Storage.Pickers.Provider.FileRemovedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Storage.Pickers.Provider.FileRemovedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.Pickers.Provider.FileRemovedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.Pickers.Provider.FileRemovedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.Pickers.Provider.FileRemovedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.Pickers.Provider.FileRemovedEventArgs.Id.get
+		// Forced skipping of method Windows.Storage.Pickers.Provider.FileRemovedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

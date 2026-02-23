@@ -11,62 +11,6 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsHeaderInteractive
-		{
-			get
-			{
-				return (bool)this.GetValue(IsHeaderInteractiveProperty);
-			}
-			set
-			{
-				this.SetValue(IsHeaderInteractiveProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.DataTemplate HeaderTemplate
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.DataTemplate)this.GetValue(HeaderTemplateProperty);
-			}
-			set
-			{
-				this.SetValue(HeaderTemplateProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object Header
-		{
-			get
-			{
-				return (object)this.GetValue(HeaderProperty);
-			}
-			set
-			{
-				this.SetValue(HeaderProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.DataTemplate ContentTemplate
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.DataTemplate)this.GetValue(ContentTemplateProperty);
-			}
-			set
-			{
-				this.SetValue(ContentTemplateProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ContentTemplateProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ContentTemplate), typeof(global::Microsoft.UI.Xaml.DataTemplate),
@@ -99,23 +43,92 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.DataTemplate ContentTemplate
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.DataTemplate)this.GetValue(ContentTemplateProperty);
+			}
+			set
+			{
+				this.SetValue(ContentTemplateProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public object Header
+		{
+			get
+			{
+				return (object)this.GetValue(HeaderProperty);
+			}
+			set
+			{
+				this.SetValue(HeaderProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.DataTemplate HeaderTemplate
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.DataTemplate)this.GetValue(HeaderTemplateProperty);
+			}
+			set
+			{
+				this.SetValue(HeaderTemplateProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsHeaderInteractive
+		{
+			get
+			{
+				return (bool)this.GetValue(IsHeaderInteractiveProperty);
+			}
+			set
+			{
+				this.SetValue(IsHeaderInteractiveProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public HubSection() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.HubSection", "HubSection.HubSection()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.HubSection()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.ContentTemplateProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.HeaderProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.HeaderTemplateProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.IsHeaderInteractiveProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.HubSection(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.operator ==(Microsoft.UI.Xaml.Controls.HubSection, Microsoft.UI.Xaml.Controls.HubSection)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.operator !=(Microsoft.UI.Xaml.Controls.HubSection, Microsoft.UI.Xaml.Controls.HubSection)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.Equals(Microsoft.UI.Xaml.Controls.HubSection)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.HubSection(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.ContentTemplate.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.ContentTemplate.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.Header.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.Header.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.HeaderTemplate.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.HeaderTemplate.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.ContentTemplate.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.ContentTemplate.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.IsHeaderInteractive.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.IsHeaderInteractive.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.HeaderProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.HeaderTemplateProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.ContentTemplateProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.IsHeaderInteractiveProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

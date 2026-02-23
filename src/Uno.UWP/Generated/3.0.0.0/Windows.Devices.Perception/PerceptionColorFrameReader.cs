@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -38,11 +37,16 @@ namespace Windows.Devices.Perception
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.FrameArrived.add
-		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.FrameArrived.remove
-		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.Source.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.IsPaused.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.IsPaused.set
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.operator ==(Windows.Devices.Perception.PerceptionColorFrameReader, Windows.Devices.Perception.PerceptionColorFrameReader)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.operator !=(Windows.Devices.Perception.PerceptionColorFrameReader, Windows.Devices.Perception.PerceptionColorFrameReader)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.Equals(Windows.Devices.Perception.PerceptionColorFrameReader)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.Equals(object)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.GetHashCode()
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Perception.PerceptionColorFrame TryReadLatestFrame()
@@ -50,6 +54,8 @@ namespace Windows.Devices.Perception
 			throw new global::System.NotImplementedException("The member PerceptionColorFrame PerceptionColorFrameReader.TryReadLatestFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionColorFrame%20PerceptionColorFrameReader.TryReadLatestFrame%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.FrameArrived.add
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.FrameArrived.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -57,6 +63,10 @@ namespace Windows.Devices.Perception
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionColorFrameReader", "void PerceptionColorFrameReader.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.IsPaused.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.IsPaused.set
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.Source.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Perception.PerceptionColorFrameReader, global::Windows.Devices.Perception.PerceptionColorFrameArrivedEventArgs> FrameArrived

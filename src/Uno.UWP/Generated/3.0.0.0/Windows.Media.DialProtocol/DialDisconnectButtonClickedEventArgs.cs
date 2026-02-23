@@ -23,6 +23,17 @@ namespace Windows.Media.DialProtocol
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.DialProtocol.DialDisconnectButtonClickedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.DialProtocol.DialDisconnectButtonClickedEventArgs.operator ==(Windows.Media.DialProtocol.DialDisconnectButtonClickedEventArgs, Windows.Media.DialProtocol.DialDisconnectButtonClickedEventArgs)
+		// Forced skipping of method Windows.Media.DialProtocol.DialDisconnectButtonClickedEventArgs.operator !=(Windows.Media.DialProtocol.DialDisconnectButtonClickedEventArgs, Windows.Media.DialProtocol.DialDisconnectButtonClickedEventArgs)
+		// Forced skipping of method Windows.Media.DialProtocol.DialDisconnectButtonClickedEventArgs.Equals(Windows.Media.DialProtocol.DialDisconnectButtonClickedEventArgs)
+		// Forced skipping of method Windows.Media.DialProtocol.DialDisconnectButtonClickedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.DialProtocol.DialDisconnectButtonClickedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.DialProtocol.DialDisconnectButtonClickedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.DialProtocol.DialDisconnectButtonClickedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.DialProtocol.DialDisconnectButtonClickedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.DialProtocol.DialDisconnectButtonClickedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.DialProtocol.DialDisconnectButtonClickedEventArgs.Device.get
+		// Forced skipping of method Windows.Media.DialProtocol.DialDisconnectButtonClickedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -16,5 +16,15 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscretePointKeyFrame.DiscretePointKeyFrame()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscretePointKeyFrame.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscretePointKeyFrame.operator ==(Microsoft.UI.Xaml.Media.Animation.DiscretePointKeyFrame, Microsoft.UI.Xaml.Media.Animation.DiscretePointKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscretePointKeyFrame.operator !=(Microsoft.UI.Xaml.Media.Animation.DiscretePointKeyFrame, Microsoft.UI.Xaml.Media.Animation.DiscretePointKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscretePointKeyFrame.Equals(Microsoft.UI.Xaml.Media.Animation.DiscretePointKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscretePointKeyFrame.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscretePointKeyFrame.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscretePointKeyFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscretePointKeyFrame.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscretePointKeyFrame.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscretePointKeyFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

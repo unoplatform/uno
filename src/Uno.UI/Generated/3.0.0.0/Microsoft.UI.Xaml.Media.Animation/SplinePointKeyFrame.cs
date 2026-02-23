@@ -10,6 +10,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty KeySplineProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(KeySpline), typeof(global::Microsoft.UI.Xaml.Media.Animation.KeySpline),
+			typeof(global::Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Animation.KeySpline)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Media.Animation.KeySpline KeySpline
 		{
 			get
@@ -24,22 +32,25 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty KeySplineProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(KeySpline), typeof(global::Microsoft.UI.Xaml.Media.Animation.KeySpline),
-			typeof(global::Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Animation.KeySpline)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SplinePointKeyFrame() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame", "SplinePointKeyFrame.SplinePointKeyFrame()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.SplinePointKeyFrame()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.KeySplineProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.operator ==(Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame, Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.operator !=(Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame, Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.Equals(Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.KeySpline.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.KeySpline.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.KeySplineProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplinePointKeyFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

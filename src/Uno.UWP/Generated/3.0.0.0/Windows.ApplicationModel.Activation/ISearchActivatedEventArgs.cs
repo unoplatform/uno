@@ -20,7 +20,7 @@ namespace Windows.ApplicationModel.Activation
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.ISearchActivatedEventArgs.QueryText.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.ISearchActivatedEventArgs.Language.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.ISearchActivatedEventArgs.QueryText.get
 	}
 }

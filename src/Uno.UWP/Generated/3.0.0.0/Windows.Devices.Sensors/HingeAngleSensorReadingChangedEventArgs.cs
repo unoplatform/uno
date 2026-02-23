@@ -23,6 +23,17 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Sensors.HingeAngleSensorReadingChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Sensors.HingeAngleSensorReadingChangedEventArgs.operator ==(Windows.Devices.Sensors.HingeAngleSensorReadingChangedEventArgs, Windows.Devices.Sensors.HingeAngleSensorReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.HingeAngleSensorReadingChangedEventArgs.operator !=(Windows.Devices.Sensors.HingeAngleSensorReadingChangedEventArgs, Windows.Devices.Sensors.HingeAngleSensorReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.HingeAngleSensorReadingChangedEventArgs.Equals(Windows.Devices.Sensors.HingeAngleSensorReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.HingeAngleSensorReadingChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.Sensors.HingeAngleSensorReadingChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.Sensors.HingeAngleSensorReadingChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.HingeAngleSensorReadingChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.HingeAngleSensorReadingChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Sensors.HingeAngleSensorReadingChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.HingeAngleSensorReadingChangedEventArgs.Reading.get
+		// Forced skipping of method Windows.Devices.Sensors.HingeAngleSensorReadingChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

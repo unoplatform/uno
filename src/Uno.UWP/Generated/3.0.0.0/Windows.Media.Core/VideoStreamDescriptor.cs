@@ -10,29 +10,11 @@ namespace Windows.Media.Core
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Name
+		public global::Windows.Media.MediaProperties.VideoEncodingProperties EncodingProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VideoStreamDescriptor.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VideoStreamDescriptor.Name");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.VideoStreamDescriptor", "string VideoStreamDescriptor.Name");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Language
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string VideoStreamDescriptor.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VideoStreamDescriptor.Language");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.VideoStreamDescriptor", "string VideoStreamDescriptor.Language");
+				throw new global::System.NotImplementedException("The member VideoEncodingProperties VideoStreamDescriptor.EncodingProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoEncodingProperties%20VideoStreamDescriptor.EncodingProperties");
 			}
 		}
 #endif
@@ -62,11 +44,29 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.MediaProperties.VideoEncodingProperties EncodingProperties
+		public string Language
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoEncodingProperties VideoStreamDescriptor.EncodingProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoEncodingProperties%20VideoStreamDescriptor.EncodingProperties");
+				throw new global::System.NotImplementedException("The member string VideoStreamDescriptor.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VideoStreamDescriptor.Language");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.VideoStreamDescriptor", "string VideoStreamDescriptor.Language");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Name
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string VideoStreamDescriptor.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VideoStreamDescriptor.Name");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.VideoStreamDescriptor", "string VideoStreamDescriptor.Name");
 			}
 		}
 #endif
@@ -78,14 +78,16 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.VideoStreamDescriptor(Windows.Media.MediaProperties.VideoEncodingProperties)
-		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.EncodingProperties.get
-		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.IsSelected.get
-		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.Name.set
-		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.Name.get
-		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.Language.set
-		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.Language.get
-		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.Label.set
-		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.Label.get
+		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.operator ==(Windows.Media.Core.VideoStreamDescriptor, Windows.Media.Core.VideoStreamDescriptor)
+		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.operator !=(Windows.Media.Core.VideoStreamDescriptor, Windows.Media.Core.VideoStreamDescriptor)
+		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.Equals(Windows.Media.Core.VideoStreamDescriptor)
+		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.Equals(object)
+		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.GetHashCode()
+		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Core.VideoStreamDescriptor Copy()
@@ -93,6 +95,15 @@ namespace Windows.Media.Core
 			throw new global::System.NotImplementedException("The member VideoStreamDescriptor VideoStreamDescriptor.Copy() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoStreamDescriptor%20VideoStreamDescriptor.Copy%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.EncodingProperties.get
+		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.IsSelected.get
+		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.Label.get
+		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.Label.set
+		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.Language.get
+		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.Language.set
+		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.Name.get
+		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.Name.set
+		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Core.IMediaStreamDescriptor
 		// Processing: Windows.Media.Core.IMediaStreamDescriptor2
 	}

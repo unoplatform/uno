@@ -6,7 +6,7 @@ namespace Windows.Foundation.Collections
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial interface IObservableVector<T> : global::System.Collections.Generic.IList<T>
+	public partial interface IObservableVector<T> : global::System.Collections.Generic.IList<T>, global::System.Collections.Generic.ICollection<T>, global::System.Collections.Generic.IEnumerable<T>, global::System.Collections.IEnumerable
 	{
 		// Forced skipping of method Windows.Foundation.Collections.IObservableVector<T>.VectorChanged.add
 		// Forced skipping of method Windows.Foundation.Collections.IObservableVector<T>.VectorChanged.remove

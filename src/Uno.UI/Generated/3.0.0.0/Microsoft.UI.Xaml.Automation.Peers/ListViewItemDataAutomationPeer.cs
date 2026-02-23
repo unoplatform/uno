@@ -16,6 +16,16 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewItemDataAutomationPeer.ListViewItemDataAutomationPeer(object, Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewItemDataAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewItemDataAutomationPeer.ListViewItemDataAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewItemDataAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.ListViewItemDataAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ListViewItemDataAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewItemDataAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.ListViewItemDataAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ListViewItemDataAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewItemDataAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.ListViewItemDataAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewItemDataAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewItemDataAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewItemDataAutomationPeer.ListViewItemDataAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewItemDataAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewItemDataAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ScrollIntoView()
@@ -23,6 +33,8 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.ListViewItemDataAutomationPeer", "void ListViewItemDataAutomationPeer.ScrollIntoView()");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewItemDataAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewItemDataAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IScrollItemProvider
 	}
 }

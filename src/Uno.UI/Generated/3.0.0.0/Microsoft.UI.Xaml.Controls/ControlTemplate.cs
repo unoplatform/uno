@@ -11,7 +11,17 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property TargetType
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ControlTemplate.ControlTemplate()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ControlTemplate.ControlTemplate()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ControlTemplate.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ControlTemplate.operator ==(Microsoft.UI.Xaml.Controls.ControlTemplate, Microsoft.UI.Xaml.Controls.ControlTemplate)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ControlTemplate.operator !=(Microsoft.UI.Xaml.Controls.ControlTemplate, Microsoft.UI.Xaml.Controls.ControlTemplate)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ControlTemplate.Equals(Microsoft.UI.Xaml.Controls.ControlTemplate)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ControlTemplate.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ControlTemplate.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ControlTemplate.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ControlTemplate.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ControlTemplate.TargetType.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ControlTemplate.TargetType.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ControlTemplate.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ControlTemplate.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

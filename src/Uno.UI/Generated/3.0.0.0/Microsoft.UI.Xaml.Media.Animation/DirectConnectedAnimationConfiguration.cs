@@ -16,5 +16,17 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DirectConnectedAnimationConfiguration.DirectConnectedAnimationConfiguration()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DirectConnectedAnimationConfiguration.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DirectConnectedAnimationConfiguration.DirectConnectedAnimationConfiguration(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DirectConnectedAnimationConfiguration.operator ==(Microsoft.UI.Xaml.Media.Animation.DirectConnectedAnimationConfiguration, Microsoft.UI.Xaml.Media.Animation.DirectConnectedAnimationConfiguration)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DirectConnectedAnimationConfiguration.operator !=(Microsoft.UI.Xaml.Media.Animation.DirectConnectedAnimationConfiguration, Microsoft.UI.Xaml.Media.Animation.DirectConnectedAnimationConfiguration)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DirectConnectedAnimationConfiguration.Equals(Microsoft.UI.Xaml.Media.Animation.DirectConnectedAnimationConfiguration)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DirectConnectedAnimationConfiguration.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DirectConnectedAnimationConfiguration.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DirectConnectedAnimationConfiguration.DirectConnectedAnimationConfiguration(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DirectConnectedAnimationConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DirectConnectedAnimationConfiguration.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DirectConnectedAnimationConfiguration.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DirectConnectedAnimationConfiguration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

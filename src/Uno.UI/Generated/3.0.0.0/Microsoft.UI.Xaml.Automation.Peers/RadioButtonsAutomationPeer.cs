@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.RadioButtonsAutomationPeer.RadioButtonsAutomationPeer(Microsoft.UI.Xaml.Controls.RadioButtons)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RadioButtonsAutomationPeer.RadioButtonsAutomationPeer(Microsoft.UI.Xaml.Controls.RadioButtons)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RadioButtonsAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RadioButtonsAutomationPeer.RadioButtonsAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RadioButtonsAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.RadioButtonsAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.RadioButtonsAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RadioButtonsAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.RadioButtonsAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.RadioButtonsAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RadioButtonsAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.RadioButtonsAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RadioButtonsAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RadioButtonsAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RadioButtonsAutomationPeer.RadioButtonsAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RadioButtonsAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RadioButtonsAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RadioButtonsAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RadioButtonsAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

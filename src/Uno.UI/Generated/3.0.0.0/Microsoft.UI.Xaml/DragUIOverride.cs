@@ -8,18 +8,20 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class DragUIOverride
 	{
-		// Skipping already declared property IsGlyphVisible
-		// Skipping already declared property IsContentVisible
-		// Skipping already declared property IsCaptionVisible
 		// Skipping already declared property Caption
-		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.Caption.get
-		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.Caption.set
-		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.IsContentVisible.get
-		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.IsContentVisible.set
-		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.IsCaptionVisible.get
-		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.IsCaptionVisible.set
-		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.IsGlyphVisible.get
-		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.IsGlyphVisible.set
+		// Skipping already declared property IsCaptionVisible
+		// Skipping already declared property IsContentVisible
+		// Skipping already declared property IsGlyphVisible
+		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.operator ==(Microsoft.UI.Xaml.DragUIOverride, Microsoft.UI.Xaml.DragUIOverride)
+		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.operator !=(Microsoft.UI.Xaml.DragUIOverride, Microsoft.UI.Xaml.DragUIOverride)
+		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.Equals(Microsoft.UI.Xaml.DragUIOverride)
+		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Microsoft.UI.Xaml.DragUIOverride.Clear()
 		// Skipping already declared method Microsoft.UI.Xaml.DragUIOverride.SetContentFromBitmapImage(Microsoft.UI.Xaml.Media.Imaging.BitmapImage)
 		// Skipping already declared method Microsoft.UI.Xaml.DragUIOverride.SetContentFromBitmapImage(Microsoft.UI.Xaml.Media.Imaging.BitmapImage, Windows.Foundation.Point)
@@ -37,5 +39,14 @@ namespace Microsoft.UI.Xaml
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DragUIOverride", "void DragUIOverride.SetContentFromSoftwareBitmap(SoftwareBitmap softwareBitmap, Point anchorPoint)");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.Caption.get
+		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.Caption.set
+		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.IsCaptionVisible.get
+		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.IsCaptionVisible.set
+		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.IsContentVisible.get
+		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.IsContentVisible.set
+		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.IsGlyphVisible.get
+		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.IsGlyphVisible.set
+		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

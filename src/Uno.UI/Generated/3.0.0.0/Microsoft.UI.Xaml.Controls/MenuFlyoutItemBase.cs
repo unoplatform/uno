@@ -8,5 +8,17 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class MenuFlyoutItemBase : global::Microsoft.UI.Xaml.Controls.Control
 	{
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutItemBase.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutItemBase.MenuFlyoutItemBase(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutItemBase.operator ==(Microsoft.UI.Xaml.Controls.MenuFlyoutItemBase, Microsoft.UI.Xaml.Controls.MenuFlyoutItemBase)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutItemBase.operator !=(Microsoft.UI.Xaml.Controls.MenuFlyoutItemBase, Microsoft.UI.Xaml.Controls.MenuFlyoutItemBase)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutItemBase.Equals(Microsoft.UI.Xaml.Controls.MenuFlyoutItemBase)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutItemBase.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutItemBase.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutItemBase.MenuFlyoutItemBase(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutItemBase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutItemBase.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutItemBase.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutItemBase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

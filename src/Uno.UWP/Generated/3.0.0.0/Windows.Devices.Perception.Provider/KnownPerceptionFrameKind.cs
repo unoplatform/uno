@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception.Provider
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -39,6 +38,7 @@ namespace Windows.Devices.Perception.Provider
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Perception.Provider.KnownPerceptionFrameKind.As<I>()
 		// Forced skipping of method Windows.Devices.Perception.Provider.KnownPerceptionFrameKind.Color.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.KnownPerceptionFrameKind.Depth.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.KnownPerceptionFrameKind.Infrared.get

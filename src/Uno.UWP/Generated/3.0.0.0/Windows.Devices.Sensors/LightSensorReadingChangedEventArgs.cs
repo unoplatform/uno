@@ -9,6 +9,17 @@ namespace Windows.Devices.Sensors
 	public partial class LightSensorReadingChangedEventArgs
 	{
 		// Skipping already declared property Reading
+		// Forced skipping of method Windows.Devices.Sensors.LightSensorReadingChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Sensors.LightSensorReadingChangedEventArgs.operator ==(Windows.Devices.Sensors.LightSensorReadingChangedEventArgs, Windows.Devices.Sensors.LightSensorReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.LightSensorReadingChangedEventArgs.operator !=(Windows.Devices.Sensors.LightSensorReadingChangedEventArgs, Windows.Devices.Sensors.LightSensorReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.LightSensorReadingChangedEventArgs.Equals(Windows.Devices.Sensors.LightSensorReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.LightSensorReadingChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.Sensors.LightSensorReadingChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.Sensors.LightSensorReadingChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.LightSensorReadingChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.LightSensorReadingChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Sensors.LightSensorReadingChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.LightSensorReadingChangedEventArgs.Reading.get
+		// Forced skipping of method Windows.Devices.Sensors.LightSensorReadingChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

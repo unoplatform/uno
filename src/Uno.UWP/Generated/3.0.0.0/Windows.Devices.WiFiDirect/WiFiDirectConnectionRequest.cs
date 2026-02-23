@@ -23,7 +23,16 @@ namespace Windows.Devices.WiFiDirect
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionRequest.DeviceInformation.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionRequest.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionRequest.operator ==(Windows.Devices.WiFiDirect.WiFiDirectConnectionRequest, Windows.Devices.WiFiDirect.WiFiDirectConnectionRequest)
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionRequest.operator !=(Windows.Devices.WiFiDirect.WiFiDirectConnectionRequest, Windows.Devices.WiFiDirect.WiFiDirectConnectionRequest)
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionRequest.Equals(Windows.Devices.WiFiDirect.WiFiDirectConnectionRequest)
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionRequest.Equals(object)
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionRequest.GetHashCode()
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionRequest.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -31,6 +40,8 @@ namespace Windows.Devices.WiFiDirect
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectConnectionRequest", "void WiFiDirectConnectionRequest.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionRequest.DeviceInformation.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

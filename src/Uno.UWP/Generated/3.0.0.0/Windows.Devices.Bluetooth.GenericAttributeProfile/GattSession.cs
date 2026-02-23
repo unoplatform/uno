@@ -15,20 +15,6 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool MaintainConnection
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool GattSession.MaintainConnection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GattSession.MaintainConnection");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession", "bool GattSession.MaintainConnection");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool CanMaintainConnection
 		{
 			get
@@ -44,6 +30,20 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			get
 			{
 				throw new global::System.NotImplementedException("The member BluetoothDeviceId GattSession.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothDeviceId%20GattSession.DeviceId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool MaintainConnection
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool GattSession.MaintainConnection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GattSession.MaintainConnection");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession", "bool GattSession.MaintainConnection");
 			}
 		}
 #endif
@@ -67,12 +67,24 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.DeviceId.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.CanMaintainConnection.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.MaintainConnection.set
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.MaintainConnection.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.MaxPduSize.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.SessionStatus.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession> FromDeviceIdAsync(global::Windows.Devices.Bluetooth.BluetoothDeviceId deviceId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<GattSession> GattSession.FromDeviceIdAsync(BluetoothDeviceId deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGattSession%3E%20GattSession.FromDeviceIdAsync%28BluetoothDeviceId%20deviceId%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.operator ==(Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession, Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.operator !=(Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession, Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.Equals(Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.Equals(object)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.GetHashCode()
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.MaxPduSizeChanged.add
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.MaxPduSizeChanged.remove
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.SessionStatusChanged.add
@@ -84,13 +96,13 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession", "void GattSession.Dispose()");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession> FromDeviceIdAsync(global::Windows.Devices.Bluetooth.BluetoothDeviceId deviceId)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GattSession> GattSession.FromDeviceIdAsync(BluetoothDeviceId deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGattSession%3E%20GattSession.FromDeviceIdAsync%28BluetoothDeviceId%20deviceId%29");
-		}
-#endif
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.CanMaintainConnection.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.DeviceId.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.MaintainConnection.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.MaintainConnection.set
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.MaxPduSize.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.SessionStatus.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession, object> MaxPduSizeChanged

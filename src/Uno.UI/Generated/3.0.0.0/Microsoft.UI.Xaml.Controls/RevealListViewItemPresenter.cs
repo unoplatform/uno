@@ -16,5 +16,17 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RevealListViewItemPresenter.RevealListViewItemPresenter()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RevealListViewItemPresenter.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RevealListViewItemPresenter.RevealListViewItemPresenter(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RevealListViewItemPresenter.operator ==(Microsoft.UI.Xaml.Controls.RevealListViewItemPresenter, Microsoft.UI.Xaml.Controls.RevealListViewItemPresenter)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RevealListViewItemPresenter.operator !=(Microsoft.UI.Xaml.Controls.RevealListViewItemPresenter, Microsoft.UI.Xaml.Controls.RevealListViewItemPresenter)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RevealListViewItemPresenter.Equals(Microsoft.UI.Xaml.Controls.RevealListViewItemPresenter)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RevealListViewItemPresenter.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RevealListViewItemPresenter.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RevealListViewItemPresenter.RevealListViewItemPresenter(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RevealListViewItemPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RevealListViewItemPresenter.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RevealListViewItemPresenter.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RevealListViewItemPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

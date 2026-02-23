@@ -8,17 +8,30 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 	public partial class MonochromaticOverlayPresenter : global::Microsoft.UI.Xaml.Controls.Grid
 	{
-		// Skipping already declared property SourceElement
-		// Skipping already declared property ReplacementColor
 		// Skipping already declared property ReplacementColorProperty
 		// Skipping already declared property SourceElementProperty
+		// Skipping already declared property ReplacementColor
+		// Skipping already declared property SourceElement
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.MonochromaticOverlayPresenter()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.MonochromaticOverlayPresenter()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.SourceElement.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.SourceElement.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.ReplacementColorProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.SourceElementProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.MonochromaticOverlayPresenter(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.operator ==(Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter, Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.operator !=(Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter, Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.Equals(Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.MonochromaticOverlayPresenter(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.ReplacementColor.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.ReplacementColor.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.SourceElementProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.ReplacementColorProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.SourceElement.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.SourceElement.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

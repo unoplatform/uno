@@ -8,13 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class TimePicker : global::Microsoft.UI.Xaml.Controls.Control
 	{
-		// Skipping already declared property Time
-		// Skipping already declared property SelectedTime
-		// Skipping already declared property MinuteIncrement
-		// Skipping already declared property LightDismissOverlayMode
-		// Skipping already declared property HeaderTemplate
-		// Skipping already declared property Header
-		// Skipping already declared property ClockIdentifier
 		// Skipping already declared property ClockIdentifierProperty
 		// Skipping already declared property HeaderProperty
 		// Skipping already declared property HeaderTemplateProperty
@@ -22,33 +15,53 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property MinuteIncrementProperty
 		// Skipping already declared property SelectedTimeProperty
 		// Skipping already declared property TimeProperty
+		// Skipping already declared property ClockIdentifier
+		// Skipping already declared property Header
+		// Skipping already declared property HeaderTemplate
+		// Skipping already declared property LightDismissOverlayMode
+		// Skipping already declared property MinuteIncrement
+		// Skipping already declared property SelectedTime
+		// Skipping already declared property Time
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TimePicker.TimePicker()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.TimePicker()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.ClockIdentifierProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.HeaderProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.HeaderTemplateProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.LightDismissOverlayModeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.MinuteIncrementProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.SelectedTimeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.TimeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.TimePicker(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.operator ==(Microsoft.UI.Xaml.Controls.TimePicker, Microsoft.UI.Xaml.Controls.TimePicker)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.operator !=(Microsoft.UI.Xaml.Controls.TimePicker, Microsoft.UI.Xaml.Controls.TimePicker)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.Equals(Microsoft.UI.Xaml.Controls.TimePicker)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.TimePicker(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.SelectedTimeChanged.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.SelectedTimeChanged.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.TimeChanged.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.TimeChanged.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.ClockIdentifier.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.ClockIdentifier.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.Header.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.Header.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.HeaderTemplate.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.HeaderTemplate.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.ClockIdentifier.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.ClockIdentifier.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.MinuteIncrement.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.MinuteIncrement.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.Time.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.Time.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.LightDismissOverlayMode.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.LightDismissOverlayMode.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.MinuteIncrement.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.MinuteIncrement.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.SelectedTime.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.SelectedTime.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.TimeChanged.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.TimeChanged.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.SelectedTimeChanged.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.SelectedTimeChanged.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.HeaderProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.HeaderTemplateProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.ClockIdentifierProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.MinuteIncrementProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.TimeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.LightDismissOverlayModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.SelectedTimeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.Time.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.Time.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TimePicker.SelectedTimeChanged
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TimePicker.TimeChanged
 	}

@@ -35,6 +35,16 @@ namespace Windows.ApplicationModel.Activation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Appointments.AppointmentsProvider.RemoveAppointmentOperation RemoveAppointmentOperation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member RemoveAppointmentOperation AppointmentsProviderRemoveAppointmentActivatedEventArgs.RemoveAppointmentOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoveAppointmentOperation%20AppointmentsProviderRemoveAppointmentActivatedEventArgs.RemoveAppointmentOperation");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.SplashScreen SplashScreen
 		{
 			get
@@ -63,22 +73,23 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Appointments.AppointmentsProvider.RemoveAppointmentOperation RemoveAppointmentOperation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member RemoveAppointmentOperation AppointmentsProviderRemoveAppointmentActivatedEventArgs.RemoveAppointmentOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoveAppointmentOperation%20AppointmentsProviderRemoveAppointmentActivatedEventArgs.RemoveAppointmentOperation");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderRemoveAppointmentActivatedEventArgs.RemoveAppointmentOperation.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderRemoveAppointmentActivatedEventArgs.Verb.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderRemoveAppointmentActivatedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderRemoveAppointmentActivatedEventArgs.operator ==(Windows.ApplicationModel.Activation.AppointmentsProviderRemoveAppointmentActivatedEventArgs, Windows.ApplicationModel.Activation.AppointmentsProviderRemoveAppointmentActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderRemoveAppointmentActivatedEventArgs.operator !=(Windows.ApplicationModel.Activation.AppointmentsProviderRemoveAppointmentActivatedEventArgs, Windows.ApplicationModel.Activation.AppointmentsProviderRemoveAppointmentActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderRemoveAppointmentActivatedEventArgs.Equals(Windows.ApplicationModel.Activation.AppointmentsProviderRemoveAppointmentActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderRemoveAppointmentActivatedEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderRemoveAppointmentActivatedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderRemoveAppointmentActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderRemoveAppointmentActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderRemoveAppointmentActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderRemoveAppointmentActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderRemoveAppointmentActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderRemoveAppointmentActivatedEventArgs.PreviousExecutionState.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderRemoveAppointmentActivatedEventArgs.RemoveAppointmentOperation.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderRemoveAppointmentActivatedEventArgs.SplashScreen.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderRemoveAppointmentActivatedEventArgs.User.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderRemoveAppointmentActivatedEventArgs.Verb.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.AppointmentsProviderRemoveAppointmentActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IAppointmentsProviderRemoveAppointmentActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IAppointmentsProviderActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs

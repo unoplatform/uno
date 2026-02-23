@@ -13,6 +13,16 @@ namespace Windows.Devices.PointOfService.Provider
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReaderFrameArrivedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReaderFrameArrivedEventArgs.operator ==(Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReaderFrameArrivedEventArgs, Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReaderFrameArrivedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReaderFrameArrivedEventArgs.operator !=(Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReaderFrameArrivedEventArgs, Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReaderFrameArrivedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReaderFrameArrivedEventArgs.Equals(Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReaderFrameArrivedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReaderFrameArrivedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReaderFrameArrivedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReaderFrameArrivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReaderFrameArrivedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReaderFrameArrivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReaderFrameArrivedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -20,5 +30,6 @@ namespace Windows.Devices.PointOfService.Provider
 			throw new global::System.NotImplementedException("The member Deferral BarcodeScannerFrameReaderFrameArrivedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20BarcodeScannerFrameReaderFrameArrivedEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReaderFrameArrivedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -14,11 +14,26 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.PropertyMetadata.PropertyMetadata(object)
 		// Skipping already declared method Microsoft.UI.Xaml.PropertyMetadata.PropertyMetadata(object, Microsoft.UI.Xaml.PropertyChangedCallback)
 		// Forced skipping of method Microsoft.UI.Xaml.PropertyMetadata.PropertyMetadata(object, Microsoft.UI.Xaml.PropertyChangedCallback)
-		// Forced skipping of method Microsoft.UI.Xaml.PropertyMetadata.DefaultValue.get
-		// Forced skipping of method Microsoft.UI.Xaml.PropertyMetadata.CreateDefaultValueCallback.get
+		// Forced skipping of method Microsoft.UI.Xaml.PropertyMetadata.As<I>()
 		// Skipping already declared method Microsoft.UI.Xaml.PropertyMetadata.Create(object)
 		// Skipping already declared method Microsoft.UI.Xaml.PropertyMetadata.Create(object, Microsoft.UI.Xaml.PropertyChangedCallback)
 		// Skipping already declared method Microsoft.UI.Xaml.PropertyMetadata.Create(Microsoft.UI.Xaml.CreateDefaultValueCallback)
 		// Skipping already declared method Microsoft.UI.Xaml.PropertyMetadata.Create(Microsoft.UI.Xaml.CreateDefaultValueCallback, Microsoft.UI.Xaml.PropertyChangedCallback)
+		// Forced skipping of method Microsoft.UI.Xaml.PropertyMetadata.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.PropertyMetadata.PropertyMetadata(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.PropertyMetadata.operator ==(Microsoft.UI.Xaml.PropertyMetadata, Microsoft.UI.Xaml.PropertyMetadata)
+		// Forced skipping of method Microsoft.UI.Xaml.PropertyMetadata.operator !=(Microsoft.UI.Xaml.PropertyMetadata, Microsoft.UI.Xaml.PropertyMetadata)
+		// Forced skipping of method Microsoft.UI.Xaml.PropertyMetadata.Equals(Microsoft.UI.Xaml.PropertyMetadata)
+		// Forced skipping of method Microsoft.UI.Xaml.PropertyMetadata.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.PropertyMetadata.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.PropertyMetadata.PropertyMetadata(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.PropertyMetadata.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.PropertyMetadata.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.PropertyMetadata.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.PropertyMetadata.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.PropertyMetadata.CreateDefaultValueCallback.get
+		// Forced skipping of method Microsoft.UI.Xaml.PropertyMetadata.DefaultValue.get
+		// Forced skipping of method Microsoft.UI.Xaml.PropertyMetadata.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.PropertyMetadata.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

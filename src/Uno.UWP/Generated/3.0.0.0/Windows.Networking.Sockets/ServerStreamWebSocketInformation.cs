@@ -43,8 +43,19 @@ namespace Windows.Networking.Sockets
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocketInformation.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocketInformation.operator ==(Windows.Networking.Sockets.ServerStreamWebSocketInformation, Windows.Networking.Sockets.ServerStreamWebSocketInformation)
+		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocketInformation.operator !=(Windows.Networking.Sockets.ServerStreamWebSocketInformation, Windows.Networking.Sockets.ServerStreamWebSocketInformation)
+		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocketInformation.Equals(Windows.Networking.Sockets.ServerStreamWebSocketInformation)
+		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocketInformation.Equals(object)
+		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocketInformation.GetHashCode()
+		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocketInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocketInformation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocketInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocketInformation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocketInformation.BandwidthStatistics.get
-		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocketInformation.Protocol.get
 		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocketInformation.LocalAddress.get
+		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocketInformation.Protocol.get
+		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocketInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -11,11 +11,11 @@ namespace Windows.UI.Popups
 		// Skipping already declared property Id
 		// Skipping already declared property Invoked
 		// Skipping already declared property Label
-		// Forced skipping of method Windows.UI.Popups.IUICommand.Label.get
-		// Forced skipping of method Windows.UI.Popups.IUICommand.Label.set
-		// Forced skipping of method Windows.UI.Popups.IUICommand.Invoked.get
-		// Forced skipping of method Windows.UI.Popups.IUICommand.Invoked.set
 		// Forced skipping of method Windows.UI.Popups.IUICommand.Id.get
 		// Forced skipping of method Windows.UI.Popups.IUICommand.Id.set
+		// Forced skipping of method Windows.UI.Popups.IUICommand.Invoked.get
+		// Forced skipping of method Windows.UI.Popups.IUICommand.Invoked.set
+		// Forced skipping of method Windows.UI.Popups.IUICommand.Label.get
+		// Forced skipping of method Windows.UI.Popups.IUICommand.Label.set
 	}
 }

@@ -15,15 +15,11 @@ namespace Windows.Graphics.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.DirectX.DirectXPixelFormat PixelFormat
+		public global::Windows.Graphics.Holographic.HolographicDisplay Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DirectXPixelFormat HolographicViewConfiguration.PixelFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DirectXPixelFormat%20HolographicViewConfiguration.PixelFormat");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicViewConfiguration", "DirectXPixelFormat HolographicViewConfiguration.PixelFormat");
+				throw new global::System.NotImplementedException("The member HolographicDisplay HolographicViewConfiguration.Display is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicDisplay%20HolographicViewConfiguration.Display");
 			}
 		}
 #endif
@@ -38,16 +34,6 @@ namespace Windows.Graphics.Holographic
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicViewConfiguration", "bool HolographicViewConfiguration.IsEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.Holographic.HolographicDisplay Display
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member HolographicDisplay HolographicViewConfiguration.Display is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicDisplay%20HolographicViewConfiguration.Display");
 			}
 		}
 #endif
@@ -83,6 +69,20 @@ namespace Windows.Graphics.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.DirectX.DirectXPixelFormat PixelFormat
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DirectXPixelFormat HolographicViewConfiguration.PixelFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DirectXPixelFormat%20HolographicViewConfiguration.PixelFormat");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicViewConfiguration", "DirectXPixelFormat HolographicViewConfiguration.PixelFormat");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public double RefreshRate
 		{
 			get
@@ -111,18 +111,16 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Graphics.Holographic.HolographicDepthReprojectionMethod> SupportedDepthReprojectionMethods
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<HolographicDepthReprojectionMethod> HolographicViewConfiguration.SupportedDepthReprojectionMethods is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CHolographicDepthReprojectionMethod%3E%20HolographicViewConfiguration.SupportedDepthReprojectionMethods");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.NativeRenderTargetSize.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.RenderTargetSize.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.operator ==(Windows.Graphics.Holographic.HolographicViewConfiguration, Windows.Graphics.Holographic.HolographicViewConfiguration)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.operator !=(Windows.Graphics.Holographic.HolographicViewConfiguration, Windows.Graphics.Holographic.HolographicViewConfiguration)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.Equals(Windows.Graphics.Holographic.HolographicViewConfiguration)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.Equals(object)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Size RequestRenderTargetSize(global::Windows.Foundation.Size size)
@@ -130,15 +128,17 @@ namespace Windows.Graphics.Holographic
 			throw new global::System.NotImplementedException("The member Size HolographicViewConfiguration.RequestRenderTargetSize(Size size) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Size%20HolographicViewConfiguration.RequestRenderTargetSize%28Size%20size%29");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.SupportedPixelFormats.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.PixelFormat.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.PixelFormat.set
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.IsStereo.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.RefreshRate.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.Kind.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.Display.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.IsEnabled.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.IsEnabled.set
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.SupportedDepthReprojectionMethods.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.IsStereo.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.Kind.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.NativeRenderTargetSize.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.PixelFormat.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.PixelFormat.set
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.RefreshRate.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.RenderTargetSize.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.SupportedPixelFormats.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

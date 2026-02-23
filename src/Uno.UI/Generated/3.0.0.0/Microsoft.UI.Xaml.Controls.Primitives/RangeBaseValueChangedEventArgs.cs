@@ -10,7 +10,17 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 	{
 		// Skipping already declared property NewValue
 		// Skipping already declared property OldValue
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs.OldValue.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs.Equals(Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs.NewValue.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs.OldValue.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

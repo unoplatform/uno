@@ -23,14 +23,7 @@ namespace Windows.Security.Cryptography.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationAlgorithmProvider.AlgorithmName.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Security.Cryptography.Core.CryptographicKey CreateKey(global::Windows.Storage.Streams.IBuffer keyMaterial)
-		{
-			throw new global::System.NotImplementedException("The member CryptographicKey KeyDerivationAlgorithmProvider.CreateKey(IBuffer keyMaterial) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CryptographicKey%20KeyDerivationAlgorithmProvider.CreateKey%28IBuffer%20keyMaterial%29");
-		}
-#endif
+		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationAlgorithmProvider.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Security.Cryptography.Core.KeyDerivationAlgorithmProvider OpenAlgorithm(string algorithm)
@@ -38,5 +31,24 @@ namespace Windows.Security.Cryptography.Core
 			throw new global::System.NotImplementedException("The member KeyDerivationAlgorithmProvider KeyDerivationAlgorithmProvider.OpenAlgorithm(string algorithm) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=KeyDerivationAlgorithmProvider%20KeyDerivationAlgorithmProvider.OpenAlgorithm%28string%20algorithm%29");
 		}
 #endif
+		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationAlgorithmProvider.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationAlgorithmProvider.operator ==(Windows.Security.Cryptography.Core.KeyDerivationAlgorithmProvider, Windows.Security.Cryptography.Core.KeyDerivationAlgorithmProvider)
+		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationAlgorithmProvider.operator !=(Windows.Security.Cryptography.Core.KeyDerivationAlgorithmProvider, Windows.Security.Cryptography.Core.KeyDerivationAlgorithmProvider)
+		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationAlgorithmProvider.Equals(Windows.Security.Cryptography.Core.KeyDerivationAlgorithmProvider)
+		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationAlgorithmProvider.Equals(object)
+		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationAlgorithmProvider.GetHashCode()
+		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationAlgorithmProvider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationAlgorithmProvider.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationAlgorithmProvider.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationAlgorithmProvider.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Security.Cryptography.Core.CryptographicKey CreateKey(global::Windows.Storage.Streams.IBuffer keyMaterial)
+		{
+			throw new global::System.NotImplementedException("The member CryptographicKey KeyDerivationAlgorithmProvider.CreateKey(IBuffer keyMaterial) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CryptographicKey%20KeyDerivationAlgorithmProvider.CreateKey%28IBuffer%20keyMaterial%29");
+		}
+#endif
+		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationAlgorithmProvider.AlgorithmName.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationAlgorithmProvider.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

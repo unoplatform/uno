@@ -23,11 +23,16 @@ namespace Windows.Graphics.Printing.Workflow
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.SetupRequested.add
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.SetupRequested.remove
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.XpsDataAvailable.add
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.XpsDataAvailable.remove
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.Status.get
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.operator ==(Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession, Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.operator !=(Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession, Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.Equals(Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.Equals(object)
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -35,6 +40,12 @@ namespace Windows.Graphics.Printing.Workflow
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession", "void PrintWorkflowForegroundSession.Start()");
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.SetupRequested.add
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.SetupRequested.remove
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.XpsDataAvailable.add
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.XpsDataAvailable.remove
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.Status.get
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSession, global::Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSetupRequestedEventArgs> SetupRequested

@@ -15,29 +15,15 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Point Position
+		public global::Windows.Devices.PointOfService.LineDisplayCursorType CursorType
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point LineDisplayCursorAttributes.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20LineDisplayCursorAttributes.Position");
+				throw new global::System.NotImplementedException("The member LineDisplayCursorType LineDisplayCursorAttributes.CursorType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LineDisplayCursorType%20LineDisplayCursorAttributes.CursorType");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayCursorAttributes", "Point LineDisplayCursorAttributes.Position");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsBlinkEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayCursorAttributes.IsBlinkEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LineDisplayCursorAttributes.IsBlinkEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayCursorAttributes", "bool LineDisplayCursorAttributes.IsBlinkEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayCursorAttributes", "LineDisplayCursorType LineDisplayCursorAttributes.CursorType");
 			}
 		}
 #endif
@@ -57,25 +43,50 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.PointOfService.LineDisplayCursorType CursorType
+		public bool IsBlinkEnabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LineDisplayCursorType LineDisplayCursorAttributes.CursorType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LineDisplayCursorType%20LineDisplayCursorAttributes.CursorType");
+				throw new global::System.NotImplementedException("The member bool LineDisplayCursorAttributes.IsBlinkEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LineDisplayCursorAttributes.IsBlinkEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayCursorAttributes", "LineDisplayCursorType LineDisplayCursorAttributes.CursorType");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayCursorAttributes", "bool LineDisplayCursorAttributes.IsBlinkEnabled");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.IsBlinkEnabled.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.IsBlinkEnabled.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.Point Position
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Point LineDisplayCursorAttributes.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20LineDisplayCursorAttributes.Position");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayCursorAttributes", "Point LineDisplayCursorAttributes.Position");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.operator ==(Windows.Devices.PointOfService.LineDisplayCursorAttributes, Windows.Devices.PointOfService.LineDisplayCursorAttributes)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.operator !=(Windows.Devices.PointOfService.LineDisplayCursorAttributes, Windows.Devices.PointOfService.LineDisplayCursorAttributes)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.Equals(Windows.Devices.PointOfService.LineDisplayCursorAttributes)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.Equals(object)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.GetHashCode()
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.CursorType.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.CursorType.set
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.IsAutoAdvanceEnabled.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.IsAutoAdvanceEnabled.set
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.IsBlinkEnabled.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.IsBlinkEnabled.set
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.Position.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.Position.set
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

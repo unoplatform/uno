@@ -9,7 +9,18 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 	public partial class DownloadProgressEventArgs
 	{
 		// Skipping already declared property Progress
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.DownloadProgressEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.DownloadProgressEventArgs.operator ==(Microsoft.UI.Xaml.Media.Imaging.DownloadProgressEventArgs, Microsoft.UI.Xaml.Media.Imaging.DownloadProgressEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.DownloadProgressEventArgs.operator !=(Microsoft.UI.Xaml.Media.Imaging.DownloadProgressEventArgs, Microsoft.UI.Xaml.Media.Imaging.DownloadProgressEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.DownloadProgressEventArgs.Equals(Microsoft.UI.Xaml.Media.Imaging.DownloadProgressEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.DownloadProgressEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.DownloadProgressEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.DownloadProgressEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.DownloadProgressEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.DownloadProgressEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.DownloadProgressEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.DownloadProgressEventArgs.Progress.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.DownloadProgressEventArgs.Progress.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.DownloadProgressEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

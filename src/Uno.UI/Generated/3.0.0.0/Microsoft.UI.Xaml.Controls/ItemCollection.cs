@@ -6,31 +6,44 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ItemCollection : global::Windows.Foundation.Collections.IObservableVector<object>, global::System.Collections.Generic.IList<object>, global::System.Collections.Generic.IEnumerable<object>
+	public partial class ItemCollection : global::Windows.Foundation.Collections.IObservableVector<object>, global::System.Collections.Generic.IList<object>, global::System.Collections.Generic.ICollection<object>, global::System.Collections.Generic.IEnumerable<object>, global::System.Collections.IEnumerable
 	{
-		// Skipping already declared property Size
+		// Skipping already declared property Count
+		// Skipping already declared property IsReadOnly
+		// Skipping already declared property this[]
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.operator ==(Microsoft.UI.Xaml.Controls.ItemCollection, Microsoft.UI.Xaml.Controls.ItemCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.operator !=(Microsoft.UI.Xaml.Controls.ItemCollection, Microsoft.UI.Xaml.Controls.ItemCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.Equals(Microsoft.UI.Xaml.Controls.ItemCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.VectorChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.VectorChanged.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.GetAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.Size.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.GetView()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.IndexOf(object, out uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.SetAt(uint, object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.InsertAt(uint, object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.RemoveAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.Append(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.RemoveAtEnd()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.Clear()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.GetMany(uint, object[])
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.ReplaceAll(object[])
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.First()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.Count.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.IsReadOnly.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.this[int].get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.this[int].set
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemCollection.IndexOf(object)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemCollection.Insert(int, object)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemCollection.RemoveAt(int)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemCollection.Add(object)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemCollection.Clear()
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemCollection.Contains(object)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemCollection.CopyTo(object[], int)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemCollection.Remove(object)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemCollection.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.System.Collections.Generic.IList<object>.get_Item(int)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollection.System.Collections.Generic.IList<object>.set_Item(int, object)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ItemCollection.VectorChanged
 		// Processing: Windows.Foundation.Collections.IObservableVector<object>
 		// Processing: System.Collections.Generic.IList<object>
-		// Skipping already implement System.Collections.Generic.IList<object>.this[int]
 		// Processing: System.Collections.Generic.ICollection<object>
-		// Skipping already implement System.Collections.Generic.ICollection<object>.Count
-		// Skipping already implement System.Collections.Generic.ICollection<object>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<object>
 		// Processing: System.Collections.IEnumerable
 	}

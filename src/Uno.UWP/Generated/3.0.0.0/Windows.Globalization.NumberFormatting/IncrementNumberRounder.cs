@@ -8,10 +8,20 @@ namespace Windows.Globalization.NumberFormatting
 #endif
 	public partial class IncrementNumberRounder : global::Windows.Globalization.NumberFormatting.INumberRounder
 	{
-		// Skipping already declared property RoundingAlgorithm
 		// Skipping already declared property Increment
+		// Skipping already declared property RoundingAlgorithm
 		// Skipping already declared method Windows.Globalization.NumberFormatting.IncrementNumberRounder.IncrementNumberRounder()
 		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.IncrementNumberRounder()
+		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.FromAbi(nint)
+		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.operator ==(Windows.Globalization.NumberFormatting.IncrementNumberRounder, Windows.Globalization.NumberFormatting.IncrementNumberRounder)
+		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.operator !=(Windows.Globalization.NumberFormatting.IncrementNumberRounder, Windows.Globalization.NumberFormatting.IncrementNumberRounder)
+		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.Equals(Windows.Globalization.NumberFormatting.IncrementNumberRounder)
+		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.Equals(object)
+		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.GetHashCode()
+		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int RoundInt32(int value)
@@ -48,10 +58,11 @@ namespace Windows.Globalization.NumberFormatting
 		}
 #endif
 		// Skipping already declared method Windows.Globalization.NumberFormatting.IncrementNumberRounder.RoundDouble(double)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.RoundingAlgorithm.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.RoundingAlgorithm.set
 		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.Increment.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.Increment.set
+		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.RoundingAlgorithm.get
+		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.RoundingAlgorithm.set
+		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Globalization.NumberFormatting.INumberRounder
 	}
 }

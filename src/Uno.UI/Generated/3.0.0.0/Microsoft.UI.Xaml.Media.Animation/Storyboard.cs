@@ -8,12 +8,27 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class Storyboard : global::Microsoft.UI.Xaml.Media.Animation.Timeline
 	{
-		// Skipping already declared property Children
 		// Skipping already declared property TargetNameProperty
 		// Skipping already declared property TargetPropertyProperty
+		// Skipping already declared property Children
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.Storyboard.Storyboard()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Storyboard.Storyboard()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Storyboard.Children.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Storyboard.As<I>()
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.Storyboard.GetTargetProperty(Microsoft.UI.Xaml.Media.Animation.Timeline)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.Storyboard.SetTargetProperty(Microsoft.UI.Xaml.Media.Animation.Timeline, string)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.Storyboard.GetTargetName(Microsoft.UI.Xaml.Media.Animation.Timeline)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.Storyboard.SetTargetName(Microsoft.UI.Xaml.Media.Animation.Timeline, string)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.Storyboard.SetTarget(Microsoft.UI.Xaml.Media.Animation.Timeline, Microsoft.UI.Xaml.DependencyObject)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Storyboard.TargetNameProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Storyboard.TargetPropertyProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Storyboard.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Storyboard.operator ==(Microsoft.UI.Xaml.Media.Animation.Storyboard, Microsoft.UI.Xaml.Media.Animation.Storyboard)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Storyboard.operator !=(Microsoft.UI.Xaml.Media.Animation.Storyboard, Microsoft.UI.Xaml.Media.Animation.Storyboard)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Storyboard.Equals(Microsoft.UI.Xaml.Media.Animation.Storyboard)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Storyboard.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Storyboard.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Storyboard.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Storyboard.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.Storyboard.Seek(System.TimeSpan)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.Storyboard.Stop()
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.Storyboard.Begin()
@@ -23,12 +38,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.Storyboard.GetCurrentTime()
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.Storyboard.SeekAlignedToLastTick(System.TimeSpan)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.Storyboard.SkipToFill()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Storyboard.TargetPropertyProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.Storyboard.GetTargetProperty(Microsoft.UI.Xaml.Media.Animation.Timeline)
-		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.Storyboard.SetTargetProperty(Microsoft.UI.Xaml.Media.Animation.Timeline, string)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Storyboard.TargetNameProperty.get
-		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.Storyboard.GetTargetName(Microsoft.UI.Xaml.Media.Animation.Timeline)
-		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.Storyboard.SetTargetName(Microsoft.UI.Xaml.Media.Animation.Timeline, string)
-		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.Storyboard.SetTarget(Microsoft.UI.Xaml.Media.Animation.Timeline, Microsoft.UI.Xaml.DependencyObject)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Storyboard.Children.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Storyboard.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Storyboard.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

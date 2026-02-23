@@ -37,10 +37,10 @@ namespace Windows.Networking.Sockets
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.IWebSocketControl.OutboundBufferSizeInBytes.get
 		// Forced skipping of method Windows.Networking.Sockets.IWebSocketControl.OutboundBufferSizeInBytes.set
-		// Forced skipping of method Windows.Networking.Sockets.IWebSocketControl.ServerCredential.get
-		// Forced skipping of method Windows.Networking.Sockets.IWebSocketControl.ServerCredential.set
 		// Forced skipping of method Windows.Networking.Sockets.IWebSocketControl.ProxyCredential.get
 		// Forced skipping of method Windows.Networking.Sockets.IWebSocketControl.ProxyCredential.set
+		// Forced skipping of method Windows.Networking.Sockets.IWebSocketControl.ServerCredential.get
+		// Forced skipping of method Windows.Networking.Sockets.IWebSocketControl.ServerCredential.set
 		// Forced skipping of method Windows.Networking.Sockets.IWebSocketControl.SupportedProtocols.get
 	}
 }

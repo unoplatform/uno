@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.CommandBarOverflowPresenter.CommandBarOverflowPresenter()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarOverflowPresenter.CommandBarOverflowPresenter()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarOverflowPresenter.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarOverflowPresenter.CommandBarOverflowPresenter(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarOverflowPresenter.operator ==(Microsoft.UI.Xaml.Controls.CommandBarOverflowPresenter, Microsoft.UI.Xaml.Controls.CommandBarOverflowPresenter)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarOverflowPresenter.operator !=(Microsoft.UI.Xaml.Controls.CommandBarOverflowPresenter, Microsoft.UI.Xaml.Controls.CommandBarOverflowPresenter)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarOverflowPresenter.Equals(Microsoft.UI.Xaml.Controls.CommandBarOverflowPresenter)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarOverflowPresenter.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarOverflowPresenter.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarOverflowPresenter.CommandBarOverflowPresenter(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarOverflowPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarOverflowPresenter.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarOverflowPresenter.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarOverflowPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

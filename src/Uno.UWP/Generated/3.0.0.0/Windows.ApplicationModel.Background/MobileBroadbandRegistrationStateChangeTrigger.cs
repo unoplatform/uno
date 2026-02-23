@@ -16,6 +16,17 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandRegistrationStateChangeTrigger.MobileBroadbandRegistrationStateChangeTrigger()
+		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandRegistrationStateChangeTrigger.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandRegistrationStateChangeTrigger.operator ==(Windows.ApplicationModel.Background.MobileBroadbandRegistrationStateChangeTrigger, Windows.ApplicationModel.Background.MobileBroadbandRegistrationStateChangeTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandRegistrationStateChangeTrigger.operator !=(Windows.ApplicationModel.Background.MobileBroadbandRegistrationStateChangeTrigger, Windows.ApplicationModel.Background.MobileBroadbandRegistrationStateChangeTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandRegistrationStateChangeTrigger.Equals(Windows.ApplicationModel.Background.MobileBroadbandRegistrationStateChangeTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandRegistrationStateChangeTrigger.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandRegistrationStateChangeTrigger.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandRegistrationStateChangeTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandRegistrationStateChangeTrigger.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandRegistrationStateChangeTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandRegistrationStateChangeTrigger.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.ApplicationModel.Background.MobileBroadbandRegistrationStateChangeTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger
 	}
 }

@@ -68,13 +68,7 @@ namespace Windows.System.UserProfile
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.System.UserProfile.GlobalizationPreferencesForUser GetForUser(global::Windows.System.User user)
-		{
-			throw new global::System.NotImplementedException("The member GlobalizationPreferencesForUser GlobalizationPreferences.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GlobalizationPreferencesForUser%20GlobalizationPreferences.GetForUser%28User%20user%29");
-		}
-#endif
+		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferences.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TrySetHomeGeographicRegion(string region)
@@ -89,11 +83,18 @@ namespace Windows.System.UserProfile
 			throw new global::System.NotImplementedException("The member bool GlobalizationPreferences.TrySetLanguages(IEnumerable<string> languageTags) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GlobalizationPreferences.TrySetLanguages%28IEnumerable%3Cstring%3E%20languageTags%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.System.UserProfile.GlobalizationPreferencesForUser GetForUser(global::Windows.System.User user)
+		{
+			throw new global::System.NotImplementedException("The member GlobalizationPreferencesForUser GlobalizationPreferences.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GlobalizationPreferencesForUser%20GlobalizationPreferences.GetForUser%28User%20user%29");
+		}
+#endif
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferences.Calendars.get
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferences.Clocks.get
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferences.Currencies.get
-		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferences.Languages.get
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferences.HomeGeographicRegion.get
+		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferences.Languages.get
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferences.WeekStartsOn.get
 	}
 }

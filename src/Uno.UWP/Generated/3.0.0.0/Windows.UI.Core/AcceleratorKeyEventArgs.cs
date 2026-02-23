@@ -15,11 +15,35 @@ namespace Windows.UI.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string DeviceId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string AcceleratorKeyEventArgs.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AcceleratorKeyEventArgs.DeviceId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Core.CoreAcceleratorKeyEventType EventType
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member CoreAcceleratorKeyEventType AcceleratorKeyEventArgs.EventType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreAcceleratorKeyEventType%20AcceleratorKeyEventArgs.EventType");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Handled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool AcceleratorKeyEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AcceleratorKeyEventArgs.Handled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.AcceleratorKeyEventArgs", "bool AcceleratorKeyEventArgs.Handled");
 			}
 		}
 #endif
@@ -43,36 +67,23 @@ namespace Windows.UI.Core
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DeviceId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AcceleratorKeyEventArgs.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AcceleratorKeyEventArgs.DeviceId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Handled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool AcceleratorKeyEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AcceleratorKeyEventArgs.Handled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.AcceleratorKeyEventArgs", "bool AcceleratorKeyEventArgs.Handled");
-			}
-		}
-#endif
+		// Forced skipping of method Windows.UI.Core.AcceleratorKeyEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Core.AcceleratorKeyEventArgs.operator ==(Windows.UI.Core.AcceleratorKeyEventArgs, Windows.UI.Core.AcceleratorKeyEventArgs)
+		// Forced skipping of method Windows.UI.Core.AcceleratorKeyEventArgs.operator !=(Windows.UI.Core.AcceleratorKeyEventArgs, Windows.UI.Core.AcceleratorKeyEventArgs)
+		// Forced skipping of method Windows.UI.Core.AcceleratorKeyEventArgs.Equals(Windows.UI.Core.AcceleratorKeyEventArgs)
+		// Forced skipping of method Windows.UI.Core.AcceleratorKeyEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.Core.AcceleratorKeyEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.Core.AcceleratorKeyEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Core.AcceleratorKeyEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Core.AcceleratorKeyEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Core.AcceleratorKeyEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.UI.Core.AcceleratorKeyEventArgs.DeviceId.get
 		// Forced skipping of method Windows.UI.Core.AcceleratorKeyEventArgs.EventType.get
-		// Forced skipping of method Windows.UI.Core.AcceleratorKeyEventArgs.VirtualKey.get
-		// Forced skipping of method Windows.UI.Core.AcceleratorKeyEventArgs.KeyStatus.get
 		// Forced skipping of method Windows.UI.Core.AcceleratorKeyEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Core.AcceleratorKeyEventArgs.Handled.set
-		// Forced skipping of method Windows.UI.Core.AcceleratorKeyEventArgs.DeviceId.get
+		// Forced skipping of method Windows.UI.Core.AcceleratorKeyEventArgs.KeyStatus.get
+		// Forced skipping of method Windows.UI.Core.AcceleratorKeyEventArgs.VirtualKey.get
+		// Forced skipping of method Windows.UI.Core.AcceleratorKeyEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.UI.Core.ICoreWindowEventArgs
 	}
 }

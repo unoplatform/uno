@@ -13,5 +13,15 @@ namespace Windows.UI.Composition
 		{
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.CompositionBackdropBrush.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.CompositionBackdropBrush.operator ==(Windows.UI.Composition.CompositionBackdropBrush, Windows.UI.Composition.CompositionBackdropBrush)
+		// Forced skipping of method Windows.UI.Composition.CompositionBackdropBrush.operator !=(Windows.UI.Composition.CompositionBackdropBrush, Windows.UI.Composition.CompositionBackdropBrush)
+		// Forced skipping of method Windows.UI.Composition.CompositionBackdropBrush.Equals(Windows.UI.Composition.CompositionBackdropBrush)
+		// Forced skipping of method Windows.UI.Composition.CompositionBackdropBrush.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.CompositionBackdropBrush.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.CompositionBackdropBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.CompositionBackdropBrush.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Composition.CompositionBackdropBrush.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.CompositionBackdropBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

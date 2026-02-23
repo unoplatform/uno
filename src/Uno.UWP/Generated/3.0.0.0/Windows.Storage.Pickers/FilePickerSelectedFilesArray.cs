@@ -6,19 +6,29 @@ namespace Windows.Storage.Pickers
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class FilePickerSelectedFilesArray : global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.StorageFile>, global::System.Collections.Generic.IEnumerable<global::Windows.Storage.StorageFile>
+	public partial class FilePickerSelectedFilesArray : global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.StorageFile>, global::System.Collections.Generic.IEnumerable<global::Windows.Storage.StorageFile>, global::System.Collections.IEnumerable, global::System.Collections.Generic.IReadOnlyCollection<global::Windows.Storage.StorageFile>
 	{
-		// Skipping already declared property Size
-		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.GetAt(uint)
-		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.Size.get
-		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.IndexOf(Windows.Storage.StorageFile, out uint)
-		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.GetMany(uint, Windows.Storage.StorageFile[])
-		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.First()
+		// Skipping already declared property Count
+		// Skipping already declared property this[]
+		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.operator ==(Windows.Storage.Pickers.FilePickerSelectedFilesArray, Windows.Storage.Pickers.FilePickerSelectedFilesArray)
+		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.operator !=(Windows.Storage.Pickers.FilePickerSelectedFilesArray, Windows.Storage.Pickers.FilePickerSelectedFilesArray)
+		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.Equals(Windows.Storage.Pickers.FilePickerSelectedFilesArray)
+		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.Equals(object)
+		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.GetHashCode()
+		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.Count.get
+		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.this[int].get
+		// Skipping already declared method Windows.Storage.Pickers.FilePickerSelectedFilesArray.GetEnumerator()
+		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.System.Collections.Generic.IReadOnlyList<Windows.Storage.StorageFile>.get_Item(int)
 		// Processing: System.Collections.Generic.IReadOnlyList<Windows.Storage.StorageFile>
-		// Skipping already implement System.Collections.Generic.IReadOnlyList<Windows.Storage.StorageFile>.this[int]
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Storage.StorageFile>
 		// Processing: System.Collections.IEnumerable
 		// Processing: System.Collections.Generic.IReadOnlyCollection<Windows.Storage.StorageFile>
-		// Skipping already implement System.Collections.Generic.IReadOnlyCollection<Windows.Storage.StorageFile>.Count
 	}
 }

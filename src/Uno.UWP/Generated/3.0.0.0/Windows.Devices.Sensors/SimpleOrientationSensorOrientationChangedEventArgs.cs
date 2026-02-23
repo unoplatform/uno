@@ -10,7 +10,18 @@ namespace Windows.Devices.Sensors
 	{
 		// Skipping already declared property Orientation
 		// Skipping already declared property Timestamp
-		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensorOrientationChangedEventArgs.Timestamp.get
+		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensorOrientationChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensorOrientationChangedEventArgs.operator ==(Windows.Devices.Sensors.SimpleOrientationSensorOrientationChangedEventArgs, Windows.Devices.Sensors.SimpleOrientationSensorOrientationChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensorOrientationChangedEventArgs.operator !=(Windows.Devices.Sensors.SimpleOrientationSensorOrientationChangedEventArgs, Windows.Devices.Sensors.SimpleOrientationSensorOrientationChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensorOrientationChangedEventArgs.Equals(Windows.Devices.Sensors.SimpleOrientationSensorOrientationChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensorOrientationChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensorOrientationChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensorOrientationChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensorOrientationChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensorOrientationChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensorOrientationChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensorOrientationChangedEventArgs.Orientation.get
+		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensorOrientationChangedEventArgs.Timestamp.get
+		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensorOrientationChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics.Holographic
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -64,10 +63,21 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.CompositorGpuDuration.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.operator ==(Windows.Graphics.Holographic.HolographicFramePresentationReport, Windows.Graphics.Holographic.HolographicFramePresentationReport)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.operator !=(Windows.Graphics.Holographic.HolographicFramePresentationReport, Windows.Graphics.Holographic.HolographicFramePresentationReport)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.Equals(Windows.Graphics.Holographic.HolographicFramePresentationReport)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.Equals(object)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.AppGpuDuration.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.AppGpuOverrun.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.CompositorGpuDuration.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.MissedPresentationOpportunityCount.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.PresentationCount.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

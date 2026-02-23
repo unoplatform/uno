@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -14,6 +13,16 @@ namespace Windows.Devices.Perception
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper.operator ==(Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper, Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper.operator !=(Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper, Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper.Equals(Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper.Equals(object)
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper.GetHashCode()
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Point MapPixelToTarget(global::Windows.Foundation.Point sourcePixelCoordinate, global::Windows.Devices.Perception.PerceptionDepthFrame depthFrame)
@@ -42,5 +51,6 @@ namespace Windows.Devices.Perception
 			throw new global::System.NotImplementedException("The member IAsyncAction PerceptionDepthCorrelatedCoordinateMapper.MapAllPixelsToTargetAsync(PerceptionDepthFrame depthFrame, Point[] targetCoordinates) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20PerceptionDepthCorrelatedCoordinateMapper.MapAllPixelsToTargetAsync%28PerceptionDepthFrame%20depthFrame%2C%20Point%5B%5D%20targetCoordinates%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

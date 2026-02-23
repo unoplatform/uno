@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.Power
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -89,18 +88,19 @@ namespace Windows.System.Power
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Power.BackgroundEnergyManager.LowUsageLevel.get
-		// Forced skipping of method Windows.System.Power.BackgroundEnergyManager.NearMaxAcceptableUsageLevel.get
-		// Forced skipping of method Windows.System.Power.BackgroundEnergyManager.MaxAcceptableUsageLevel.get
-		// Forced skipping of method Windows.System.Power.BackgroundEnergyManager.ExcessiveUsageLevel.get
-		// Forced skipping of method Windows.System.Power.BackgroundEnergyManager.NearTerminationUsageLevel.get
-		// Forced skipping of method Windows.System.Power.BackgroundEnergyManager.TerminationUsageLevel.get
-		// Forced skipping of method Windows.System.Power.BackgroundEnergyManager.RecentEnergyUsage.get
-		// Forced skipping of method Windows.System.Power.BackgroundEnergyManager.RecentEnergyUsageLevel.get
+		// Forced skipping of method Windows.System.Power.BackgroundEnergyManager.As<I>()
 		// Forced skipping of method Windows.System.Power.BackgroundEnergyManager.RecentEnergyUsageIncreased.add
 		// Forced skipping of method Windows.System.Power.BackgroundEnergyManager.RecentEnergyUsageIncreased.remove
 		// Forced skipping of method Windows.System.Power.BackgroundEnergyManager.RecentEnergyUsageReturnedToLow.add
 		// Forced skipping of method Windows.System.Power.BackgroundEnergyManager.RecentEnergyUsageReturnedToLow.remove
+		// Forced skipping of method Windows.System.Power.BackgroundEnergyManager.ExcessiveUsageLevel.get
+		// Forced skipping of method Windows.System.Power.BackgroundEnergyManager.LowUsageLevel.get
+		// Forced skipping of method Windows.System.Power.BackgroundEnergyManager.MaxAcceptableUsageLevel.get
+		// Forced skipping of method Windows.System.Power.BackgroundEnergyManager.NearMaxAcceptableUsageLevel.get
+		// Forced skipping of method Windows.System.Power.BackgroundEnergyManager.NearTerminationUsageLevel.get
+		// Forced skipping of method Windows.System.Power.BackgroundEnergyManager.RecentEnergyUsage.get
+		// Forced skipping of method Windows.System.Power.BackgroundEnergyManager.RecentEnergyUsageLevel.get
+		// Forced skipping of method Windows.System.Power.BackgroundEnergyManager.TerminationUsageLevel.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static event global::System.EventHandler<object> RecentEnergyUsageIncreased

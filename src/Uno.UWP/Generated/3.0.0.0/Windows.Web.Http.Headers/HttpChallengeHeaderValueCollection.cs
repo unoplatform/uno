@@ -6,7 +6,7 @@ namespace Windows.Web.Http.Headers
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class HttpChallengeHeaderValueCollection : global::System.Collections.Generic.IList<global::Windows.Web.Http.Headers.HttpChallengeHeaderValue>, global::System.Collections.Generic.IEnumerable<global::Windows.Web.Http.Headers.HttpChallengeHeaderValue>, global::Windows.Foundation.IStringable
+	public partial class HttpChallengeHeaderValueCollection : global::System.Collections.Generic.IList<global::Windows.Web.Http.Headers.HttpChallengeHeaderValue>, global::System.Collections.Generic.ICollection<global::Windows.Web.Http.Headers.HttpChallengeHeaderValue>, global::System.Collections.Generic.IEnumerable<global::Windows.Web.Http.Headers.HttpChallengeHeaderValue>, global::System.Collections.IEnumerable, global::Windows.Foundation.IStringable
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal HttpChallengeHeaderValueCollection()
@@ -15,14 +15,48 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
+		public int Count
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HttpChallengeHeaderValueCollection.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20HttpChallengeHeaderValueCollection.Size");
+				throw new global::System.NotImplementedException("The member int HttpChallengeHeaderValueCollection.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20HttpChallengeHeaderValueCollection.Count");
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsReadOnly
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool HttpChallengeHeaderValueCollection.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpChallengeHeaderValueCollection.IsReadOnly");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Web.Http.Headers.HttpChallengeHeaderValue this[int index]
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member HttpChallengeHeaderValue HttpChallengeHeaderValueCollection.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpChallengeHeaderValue%20HttpChallengeHeaderValueCollection.this%5Bint%20index%5D");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection", "HttpChallengeHeaderValue HttpChallengeHeaderValueCollection.this[int index]");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.FromAbi(nint)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.operator ==(Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection, Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.operator !=(Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection, Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.Equals(Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.Equals(object)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.GetHashCode()
+		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ParseAdd(string input)
@@ -37,19 +71,74 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotImplementedException("The member bool HttpChallengeHeaderValueCollection.TryParseAdd(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpChallengeHeaderValueCollection.TryParseAdd%28string%20input%29");
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.GetAt(uint)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.Size.get
-		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.GetView()
-		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.IndexOf(Windows.Web.Http.Headers.HttpChallengeHeaderValue, out uint)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.SetAt(uint, Windows.Web.Http.Headers.HttpChallengeHeaderValue)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.InsertAt(uint, Windows.Web.Http.Headers.HttpChallengeHeaderValue)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.RemoveAt(uint)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.Append(Windows.Web.Http.Headers.HttpChallengeHeaderValue)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.RemoveAtEnd()
-		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.Clear()
-		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.GetMany(uint, Windows.Web.Http.Headers.HttpChallengeHeaderValue[])
-		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.ReplaceAll(Windows.Web.Http.Headers.HttpChallengeHeaderValue[])
-		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.First()
+		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.Count.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.IsReadOnly.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.this[int].get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.this[int].set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int IndexOf(global::Windows.Web.Http.Headers.HttpChallengeHeaderValue item)
+		{
+			throw new global::System.NotImplementedException("The member int HttpChallengeHeaderValueCollection.IndexOf(HttpChallengeHeaderValue item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20HttpChallengeHeaderValueCollection.IndexOf%28HttpChallengeHeaderValue%20item%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Insert(int index, global::Windows.Web.Http.Headers.HttpChallengeHeaderValue item)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection", "void HttpChallengeHeaderValueCollection.Insert(int index, HttpChallengeHeaderValue item)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void RemoveAt(int index)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection", "void HttpChallengeHeaderValueCollection.RemoveAt(int index)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Add(global::Windows.Web.Http.Headers.HttpChallengeHeaderValue item)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection", "void HttpChallengeHeaderValueCollection.Add(HttpChallengeHeaderValue item)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Clear()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection", "void HttpChallengeHeaderValueCollection.Clear()");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Contains(global::Windows.Web.Http.Headers.HttpChallengeHeaderValue item)
+		{
+			throw new global::System.NotImplementedException("The member bool HttpChallengeHeaderValueCollection.Contains(HttpChallengeHeaderValue item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpChallengeHeaderValueCollection.Contains%28HttpChallengeHeaderValue%20item%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void CopyTo(global::Windows.Web.Http.Headers.HttpChallengeHeaderValue[] array, int arrayIndex)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection", "void HttpChallengeHeaderValueCollection.CopyTo(HttpChallengeHeaderValue[] array, int arrayIndex)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Remove(global::Windows.Web.Http.Headers.HttpChallengeHeaderValue item)
+		{
+			throw new global::System.NotImplementedException("The member bool HttpChallengeHeaderValueCollection.Remove(HttpChallengeHeaderValue item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpChallengeHeaderValueCollection.Remove%28HttpChallengeHeaderValue%20item%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IEnumerator<global::Windows.Web.Http.Headers.HttpChallengeHeaderValue> GetEnumerator()
+		{
+			throw new global::System.NotImplementedException("The member IEnumerator<HttpChallengeHeaderValue> HttpChallengeHeaderValueCollection.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CHttpChallengeHeaderValue%3E%20HttpChallengeHeaderValueCollection.GetEnumerator%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.System.Collections.IEnumerable.GetEnumerator()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
@@ -57,115 +146,12 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotImplementedException("The member string HttpChallengeHeaderValueCollection.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpChallengeHeaderValueCollection.ToString%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.System.Collections.Generic.IList<Windows.Web.Http.Headers.HttpChallengeHeaderValue>.get_Item(int)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValueCollection.System.Collections.Generic.IList<Windows.Web.Http.Headers.HttpChallengeHeaderValue>.set_Item(int, Windows.Web.Http.Headers.HttpChallengeHeaderValue)
 		// Processing: System.Collections.Generic.IList<Windows.Web.Http.Headers.HttpChallengeHeaderValue>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IList<Windows.Web.Http.Headers.HttpChallengeHeaderValue>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int IndexOf(global::Windows.Web.Http.Headers.HttpChallengeHeaderValue item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IList<Windows.Web.Http.Headers.HttpChallengeHeaderValue>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Insert(int index, global::Windows.Web.Http.Headers.HttpChallengeHeaderValue item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IList<Windows.Web.Http.Headers.HttpChallengeHeaderValue>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void RemoveAt(int index)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Web.Http.Headers.HttpChallengeHeaderValue this[int index]
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
 		// Processing: System.Collections.Generic.ICollection<Windows.Web.Http.Headers.HttpChallengeHeaderValue>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.Web.Http.Headers.HttpChallengeHeaderValue>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Add(global::Windows.Web.Http.Headers.HttpChallengeHeaderValue item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.Web.Http.Headers.HttpChallengeHeaderValue>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Clear()
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.Web.Http.Headers.HttpChallengeHeaderValue>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Contains(global::Windows.Web.Http.Headers.HttpChallengeHeaderValue item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.Web.Http.Headers.HttpChallengeHeaderValue>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void CopyTo(global::Windows.Web.Http.Headers.HttpChallengeHeaderValue[] array, int arrayIndex)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.Web.Http.Headers.HttpChallengeHeaderValue>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Remove(global::Windows.Web.Http.Headers.HttpChallengeHeaderValue item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Count
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsReadOnly
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Web.Http.Headers.HttpChallengeHeaderValue>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.Web.Http.Headers.HttpChallengeHeaderValue>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IEnumerator<global::Windows.Web.Http.Headers.HttpChallengeHeaderValue> GetEnumerator()
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable

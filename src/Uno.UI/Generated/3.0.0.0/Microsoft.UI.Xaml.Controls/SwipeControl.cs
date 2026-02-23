@@ -8,28 +8,41 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class SwipeControl : global::Microsoft.UI.Xaml.Controls.ContentControl
 	{
-		// Skipping already declared property TopItems
-		// Skipping already declared property RightItems
-		// Skipping already declared property LeftItems
-		// Skipping already declared property BottomItems
 		// Skipping already declared property BottomItemsProperty
 		// Skipping already declared property LeftItemsProperty
 		// Skipping already declared property RightItemsProperty
 		// Skipping already declared property TopItemsProperty
+		// Skipping already declared property BottomItems
+		// Skipping already declared property LeftItems
+		// Skipping already declared property RightItems
+		// Skipping already declared property TopItems
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.SwipeControl.SwipeControl()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.SwipeControl()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.BottomItemsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.LeftItemsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.RightItemsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.TopItemsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.SwipeControl(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.operator ==(Microsoft.UI.Xaml.Controls.SwipeControl, Microsoft.UI.Xaml.Controls.SwipeControl)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.operator !=(Microsoft.UI.Xaml.Controls.SwipeControl, Microsoft.UI.Xaml.Controls.SwipeControl)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.Equals(Microsoft.UI.Xaml.Controls.SwipeControl)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.SwipeControl(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.WinRT.IWinRTObject.NativeObject.get
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.SwipeControl.Close()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.BottomItems.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.BottomItems.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.LeftItems.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.LeftItems.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.RightItems.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.RightItems.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.TopItems.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.TopItems.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.BottomItems.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.BottomItems.set
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.SwipeControl.Close()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.LeftItemsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.RightItemsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.TopItemsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.BottomItemsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

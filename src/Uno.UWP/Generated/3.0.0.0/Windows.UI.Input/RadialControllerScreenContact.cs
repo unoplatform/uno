@@ -33,7 +33,18 @@ namespace Windows.UI.Input
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContact.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContact.operator ==(Windows.UI.Input.RadialControllerScreenContact, Windows.UI.Input.RadialControllerScreenContact)
+		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContact.operator !=(Windows.UI.Input.RadialControllerScreenContact, Windows.UI.Input.RadialControllerScreenContact)
+		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContact.Equals(Windows.UI.Input.RadialControllerScreenContact)
+		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContact.Equals(object)
+		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContact.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContact.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContact.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContact.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContact.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContact.Bounds.get
 		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContact.Position.get
+		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContact.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

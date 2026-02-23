@@ -46,16 +46,7 @@ namespace Windows.Security.Cryptography.Certificates
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsAttachedSignature.CmsAttachedSignature(Windows.Storage.Streams.IBuffer)
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsAttachedSignature.Certificates.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsAttachedSignature.Content.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsAttachedSignature.Signers.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Security.Cryptography.Certificates.SignatureValidationResult VerifySignature()
-		{
-			throw new global::System.NotImplementedException("The member SignatureValidationResult CmsAttachedSignature.VerifySignature() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SignatureValidationResult%20CmsAttachedSignature.VerifySignature%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsAttachedSignature.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IBuffer> GenerateSignatureAsync(global::Windows.Storage.Streams.IBuffer data, global::System.Collections.Generic.IEnumerable<global::Windows.Security.Cryptography.Certificates.CmsSignerInfo> signers, global::System.Collections.Generic.IEnumerable<global::Windows.Security.Cryptography.Certificates.Certificate> certificates)
@@ -63,5 +54,26 @@ namespace Windows.Security.Cryptography.Certificates
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IBuffer> CmsAttachedSignature.GenerateSignatureAsync(IBuffer data, IEnumerable<CmsSignerInfo> signers, IEnumerable<Certificate> certificates) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIBuffer%3E%20CmsAttachedSignature.GenerateSignatureAsync%28IBuffer%20data%2C%20IEnumerable%3CCmsSignerInfo%3E%20signers%2C%20IEnumerable%3CCertificate%3E%20certificates%29");
 		}
 #endif
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsAttachedSignature.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsAttachedSignature.operator ==(Windows.Security.Cryptography.Certificates.CmsAttachedSignature, Windows.Security.Cryptography.Certificates.CmsAttachedSignature)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsAttachedSignature.operator !=(Windows.Security.Cryptography.Certificates.CmsAttachedSignature, Windows.Security.Cryptography.Certificates.CmsAttachedSignature)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsAttachedSignature.Equals(Windows.Security.Cryptography.Certificates.CmsAttachedSignature)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsAttachedSignature.Equals(object)
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsAttachedSignature.GetHashCode()
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsAttachedSignature.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsAttachedSignature.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsAttachedSignature.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsAttachedSignature.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Security.Cryptography.Certificates.SignatureValidationResult VerifySignature()
+		{
+			throw new global::System.NotImplementedException("The member SignatureValidationResult CmsAttachedSignature.VerifySignature() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SignatureValidationResult%20CmsAttachedSignature.VerifySignature%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsAttachedSignature.Certificates.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsAttachedSignature.Content.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsAttachedSignature.Signers.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsAttachedSignature.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

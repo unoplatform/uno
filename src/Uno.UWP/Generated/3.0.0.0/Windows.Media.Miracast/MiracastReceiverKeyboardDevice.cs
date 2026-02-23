@@ -15,20 +15,6 @@ namespace Windows.Media.Miracast
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool TransmitInput
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool MiracastReceiverKeyboardDevice.TransmitInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MiracastReceiverKeyboardDevice.TransmitInput");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverKeyboardDevice", "bool MiracastReceiverKeyboardDevice.TransmitInput");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsRequestedByTransmitter
 		{
 			get
@@ -47,12 +33,37 @@ namespace Windows.Media.Miracast
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.TransmitInput.get
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.TransmitInput.set
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.IsRequestedByTransmitter.get
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.IsTransmittingInput.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool TransmitInput
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool MiracastReceiverKeyboardDevice.TransmitInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MiracastReceiverKeyboardDevice.TransmitInput");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverKeyboardDevice", "bool MiracastReceiverKeyboardDevice.TransmitInput");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.operator ==(Windows.Media.Miracast.MiracastReceiverKeyboardDevice, Windows.Media.Miracast.MiracastReceiverKeyboardDevice)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.operator !=(Windows.Media.Miracast.MiracastReceiverKeyboardDevice, Windows.Media.Miracast.MiracastReceiverKeyboardDevice)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.Equals(Windows.Media.Miracast.MiracastReceiverKeyboardDevice)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.Equals(object)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.GetHashCode()
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.Changed.add
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.Changed.remove
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.IsRequestedByTransmitter.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.IsTransmittingInput.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.TransmitInput.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.TransmitInput.set
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Miracast.MiracastReceiverKeyboardDevice, object> Changed

@@ -8,5 +8,16 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class ExpanderCollapsedEventArgs
 	{
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ExpanderCollapsedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ExpanderCollapsedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.ExpanderCollapsedEventArgs, Microsoft.UI.Xaml.Controls.ExpanderCollapsedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ExpanderCollapsedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.ExpanderCollapsedEventArgs, Microsoft.UI.Xaml.Controls.ExpanderCollapsedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ExpanderCollapsedEventArgs.Equals(Microsoft.UI.Xaml.Controls.ExpanderCollapsedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ExpanderCollapsedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ExpanderCollapsedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ExpanderCollapsedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ExpanderCollapsedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ExpanderCollapsedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ExpanderCollapsedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ExpanderCollapsedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

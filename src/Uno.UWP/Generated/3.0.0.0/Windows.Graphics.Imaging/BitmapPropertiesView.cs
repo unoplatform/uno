@@ -13,6 +13,16 @@ namespace Windows.Graphics.Imaging
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertiesView.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertiesView.operator ==(Windows.Graphics.Imaging.BitmapPropertiesView, Windows.Graphics.Imaging.BitmapPropertiesView)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertiesView.operator !=(Windows.Graphics.Imaging.BitmapPropertiesView, Windows.Graphics.Imaging.BitmapPropertiesView)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertiesView.Equals(Windows.Graphics.Imaging.BitmapPropertiesView)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertiesView.Equals(object)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertiesView.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertiesView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertiesView.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertiesView.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertiesView.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.BitmapPropertySet> GetPropertiesAsync(global::System.Collections.Generic.IEnumerable<string> propertiesToRetrieve)
@@ -20,6 +30,7 @@ namespace Windows.Graphics.Imaging
 			throw new global::System.NotImplementedException("The member IAsyncOperation<BitmapPropertySet> BitmapPropertiesView.GetPropertiesAsync(IEnumerable<string> propertiesToRetrieve) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBitmapPropertySet%3E%20BitmapPropertiesView.GetPropertiesAsync%28IEnumerable%3Cstring%3E%20propertiesToRetrieve%29");
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertiesView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Graphics.Imaging.IBitmapPropertiesView
 	}
 }

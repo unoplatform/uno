@@ -125,36 +125,6 @@ namespace Windows.Networking.NetworkOperators
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string SimIccId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string MobileBroadbandDeviceInformation.SimIccId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MobileBroadbandDeviceInformation.SimIccId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string SubscriberId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string MobileBroadbandDeviceInformation.SubscriberId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MobileBroadbandDeviceInformation.SubscriberId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<string> TelephoneNumbers
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> MobileBroadbandDeviceInformation.TelephoneNumbers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20MobileBroadbandDeviceInformation.TelephoneNumbers");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.NetworkOperators.MobileBroadbandPinManager PinManager
 		{
 			get
@@ -195,6 +165,16 @@ namespace Windows.Networking.NetworkOperators
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string SimIccId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string MobileBroadbandDeviceInformation.SimIccId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MobileBroadbandDeviceInformation.SimIccId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string SimPnn
 		{
 			get
@@ -215,34 +195,54 @@ namespace Windows.Networking.NetworkOperators
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Networking.NetworkOperators.MobileBroadbandSlotManager SlotManager
+		public string SubscriberId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MobileBroadbandSlotManager MobileBroadbandDeviceInformation.SlotManager is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MobileBroadbandSlotManager%20MobileBroadbandDeviceInformation.SlotManager");
+				throw new global::System.NotImplementedException("The member string MobileBroadbandDeviceInformation.SubscriberId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MobileBroadbandDeviceInformation.SubscriberId");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.NetworkDeviceStatus.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.Manufacturer.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.Model.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.FirmwareInformation.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<string> TelephoneNumbers
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> MobileBroadbandDeviceInformation.TelephoneNumbers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20MobileBroadbandDeviceInformation.TelephoneNumbers");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.operator ==(Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation, Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.operator !=(Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation, Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.Equals(Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.Equals(object)
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.GetHashCode()
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.CellularClass.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.DataClasses.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.CustomDataClass.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.MobileEquipmentId.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.TelephoneNumbers.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.SubscriberId.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.SimIccId.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.DeviceType.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.DeviceId.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.CurrentRadioState.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.CustomDataClass.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.DataClasses.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.DeviceId.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.DeviceType.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.FirmwareInformation.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.Manufacturer.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.MobileEquipmentId.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.Model.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.NetworkDeviceStatus.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.PinManager.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.Revision.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.SerialNumber.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.SimSpn.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.SimPnn.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.SimGid1.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.SlotManager.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.SimIccId.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.SimPnn.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.SimSpn.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.SubscriberId.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.TelephoneNumbers.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

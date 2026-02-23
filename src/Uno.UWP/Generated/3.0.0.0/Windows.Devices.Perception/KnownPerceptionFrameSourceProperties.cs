@@ -3,12 +3,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
 	public static partial class KnownPerceptionFrameSourceProperties
 	{
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string DeviceId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string KnownPerceptionFrameSourceProperties.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownPerceptionFrameSourceProperties.DeviceId");
+			}
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string DeviceModelVersion
@@ -59,21 +68,12 @@ namespace Windows.Devices.Perception
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string DeviceId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionFrameSourceProperties.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownPerceptionFrameSourceProperties.DeviceId");
-			}
-		}
-#endif
+		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionFrameSourceProperties.As<I>()
 		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionFrameSourceProperties.DeviceId.get
-		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionFrameSourceProperties.Id.get
-		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionFrameSourceProperties.PhysicalDeviceIds.get
-		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionFrameSourceProperties.FrameKind.get
 		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionFrameSourceProperties.DeviceModelVersion.get
 		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionFrameSourceProperties.EnclosureLocation.get
+		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionFrameSourceProperties.FrameKind.get
+		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionFrameSourceProperties.Id.get
+		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionFrameSourceProperties.PhysicalDeviceIds.get
 	}
 }

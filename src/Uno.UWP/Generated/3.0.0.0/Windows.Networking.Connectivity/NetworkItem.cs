@@ -23,7 +23,16 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkItem.NetworkId.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkItem.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkItem.operator ==(Windows.Networking.Connectivity.NetworkItem, Windows.Networking.Connectivity.NetworkItem)
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkItem.operator !=(Windows.Networking.Connectivity.NetworkItem, Windows.Networking.Connectivity.NetworkItem)
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkItem.Equals(Windows.Networking.Connectivity.NetworkItem)
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkItem.Equals(object)
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkItem.GetHashCode()
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkItem.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkItem.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkItem.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Connectivity.NetworkTypes GetNetworkTypes()
@@ -31,5 +40,7 @@ namespace Windows.Networking.Connectivity
 			throw new global::System.NotImplementedException("The member NetworkTypes NetworkItem.GetNetworkTypes() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NetworkTypes%20NetworkItem.GetNetworkTypes%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkItem.NetworkId.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

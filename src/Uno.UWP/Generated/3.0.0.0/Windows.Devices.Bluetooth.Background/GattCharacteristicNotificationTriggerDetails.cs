@@ -25,16 +25,6 @@ namespace Windows.Devices.Bluetooth.Background
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Streams.IBuffer Value
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IBuffer GattCharacteristicNotificationTriggerDetails.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20GattCharacteristicNotificationTriggerDetails.Value");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Bluetooth.BluetoothError Error
 		{
 			get
@@ -55,6 +45,16 @@ namespace Windows.Devices.Bluetooth.Background
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.Streams.IBuffer Value
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IBuffer GattCharacteristicNotificationTriggerDetails.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20GattCharacteristicNotificationTriggerDetails.Value");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattValueChangedEventArgs> ValueChangedEvents
 		{
 			get
@@ -63,10 +63,21 @@ namespace Windows.Devices.Bluetooth.Background
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails.operator ==(Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails, Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails)
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails.operator !=(Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails, Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails)
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails.Equals(Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails)
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails.Equals(object)
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails.GetHashCode()
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails.Characteristic.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails.Value.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails.Error.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails.EventTriggeringMode.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails.Value.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails.ValueChangedEvents.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattCharacteristicNotificationTriggerDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

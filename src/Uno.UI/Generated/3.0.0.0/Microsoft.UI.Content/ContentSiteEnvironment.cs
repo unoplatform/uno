@@ -9,25 +9,6 @@ namespace Microsoft.UI.Content
 	public partial class ContentSiteEnvironment
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal ContentSiteEnvironment()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.DisplayId DisplayId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DisplayId ContentSiteEnvironment.DisplayId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayId%20ContentSiteEnvironment.DisplayId");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSiteEnvironment", "DisplayId ContentSiteEnvironment.DisplayId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.WindowId AppWindowId
 		{
@@ -43,11 +24,15 @@ namespace Microsoft.UI.Content
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Content.ContentSiteEnvironmentView View
+		public global::Microsoft.UI.DisplayId DisplayId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContentSiteEnvironmentView ContentSiteEnvironment.View is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentSiteEnvironmentView%20ContentSiteEnvironment.View");
+				throw new global::System.NotImplementedException("The member DisplayId ContentSiteEnvironment.DisplayId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayId%20ContentSiteEnvironment.DisplayId");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSiteEnvironment", "DisplayId ContentSiteEnvironment.DisplayId");
 			}
 		}
 #endif
@@ -67,17 +52,41 @@ namespace Microsoft.UI.Content
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Content.ContentSiteEnvironmentView View
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ContentSiteEnvironmentView ContentSiteEnvironment.View is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentSiteEnvironmentView%20ContentSiteEnvironment.View");
+			}
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.ContentSiteEnvironment(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.operator ==(Microsoft.UI.Content.ContentSiteEnvironment, Microsoft.UI.Content.ContentSiteEnvironment)
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.operator !=(Microsoft.UI.Content.ContentSiteEnvironment, Microsoft.UI.Content.ContentSiteEnvironment)
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.Equals(Microsoft.UI.Content.ContentSiteEnvironment)
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.Equals(object)
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.ContentSiteEnvironment(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void NotifySettingChanged(string setting)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSiteEnvironment", "void ContentSiteEnvironment.NotifySettingChanged(string setting)");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.AppWindowId.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.AppWindowId.set
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.DisplayId.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.DisplayId.set
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.View.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.AppWindowId.set
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.DisplayScale.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.DisplayScale.set
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.AppWindowId.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.View.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

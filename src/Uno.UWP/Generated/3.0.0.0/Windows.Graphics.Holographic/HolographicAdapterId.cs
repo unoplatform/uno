@@ -10,6 +10,19 @@ namespace Windows.Graphics.Holographic
 	{
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicAdapterId.HolographicAdapterId()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public HolographicAdapterId(uint _LowPart, int _HighPart)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicAdapterId", "HolographicAdapterId.HolographicAdapterId(uint _LowPart, int _HighPart)");
+		}
+#endif
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicAdapterId.HolographicAdapterId(uint, int)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicAdapterId.operator ==(Windows.Graphics.Holographic.HolographicAdapterId, Windows.Graphics.Holographic.HolographicAdapterId)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicAdapterId.operator !=(Windows.Graphics.Holographic.HolographicAdapterId, Windows.Graphics.Holographic.HolographicAdapterId)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicAdapterId.Equals(Windows.Graphics.Holographic.HolographicAdapterId)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicAdapterId.Equals(object)
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicAdapterId.GetHashCode()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public uint LowPart;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

@@ -43,8 +43,19 @@ namespace Windows.Data.Text
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Data.Text.AlternateWordForm.SourceTextSegment.get
+		// Forced skipping of method Windows.Data.Text.AlternateWordForm.FromAbi(nint)
+		// Forced skipping of method Windows.Data.Text.AlternateWordForm.operator ==(Windows.Data.Text.AlternateWordForm, Windows.Data.Text.AlternateWordForm)
+		// Forced skipping of method Windows.Data.Text.AlternateWordForm.operator !=(Windows.Data.Text.AlternateWordForm, Windows.Data.Text.AlternateWordForm)
+		// Forced skipping of method Windows.Data.Text.AlternateWordForm.Equals(Windows.Data.Text.AlternateWordForm)
+		// Forced skipping of method Windows.Data.Text.AlternateWordForm.Equals(object)
+		// Forced skipping of method Windows.Data.Text.AlternateWordForm.GetHashCode()
+		// Forced skipping of method Windows.Data.Text.AlternateWordForm.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Data.Text.AlternateWordForm.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Data.Text.AlternateWordForm.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Data.Text.AlternateWordForm.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Data.Text.AlternateWordForm.AlternateText.get
 		// Forced skipping of method Windows.Data.Text.AlternateWordForm.NormalizationFormat.get
+		// Forced skipping of method Windows.Data.Text.AlternateWordForm.SourceTextSegment.get
+		// Forced skipping of method Windows.Data.Text.AlternateWordForm.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

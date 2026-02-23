@@ -23,6 +23,17 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SourceChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SourceChangedEventArgs.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2SourceChangedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2SourceChangedEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SourceChangedEventArgs.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2SourceChangedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2SourceChangedEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SourceChangedEventArgs.Equals(Microsoft.Web.WebView2.Core.CoreWebView2SourceChangedEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SourceChangedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SourceChangedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SourceChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SourceChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SourceChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SourceChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SourceChangedEventArgs.IsNewDocument.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SourceChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,20 +10,6 @@ namespace Windows.Media.MediaProperties
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Width
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint ImageEncodingProperties.Width is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ImageEncodingProperties.Width");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.ImageEncodingProperties", "uint ImageEncodingProperties.Width");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint Height
 		{
 			get
@@ -33,6 +19,16 @@ namespace Windows.Media.MediaProperties
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.ImageEncodingProperties", "uint ImageEncodingProperties.Height");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.MediaProperties.MediaPropertySet Properties
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member MediaPropertySet ImageEncodingProperties.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPropertySet%20ImageEncodingProperties.Properties");
 			}
 		}
 #endif
@@ -52,21 +48,25 @@ namespace Windows.Media.MediaProperties
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.MediaProperties.MediaPropertySet Properties
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MediaPropertySet ImageEncodingProperties.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPropertySet%20ImageEncodingProperties.Properties");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Type
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member string ImageEncodingProperties.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ImageEncodingProperties.Type");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint Width
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint ImageEncodingProperties.Width is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ImageEncodingProperties.Width");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.ImageEncodingProperties", "uint ImageEncodingProperties.Width");
 			}
 		}
 #endif
@@ -78,42 +78,7 @@ namespace Windows.Media.MediaProperties
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.ImageEncodingProperties()
-		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.Width.set
-		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.Width.get
-		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.Height.set
-		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.Height.get
-		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.Properties.get
-		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.Type.get
-		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.Subtype.set
-		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.Subtype.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.MediaProperties.ImageEncodingProperties Copy()
-		{
-			throw new global::System.NotImplementedException("The member ImageEncodingProperties ImageEncodingProperties.Copy() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ImageEncodingProperties%20ImageEncodingProperties.Copy%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Media.MediaProperties.ImageEncodingProperties CreateHeif()
-		{
-			throw new global::System.NotImplementedException("The member ImageEncodingProperties ImageEncodingProperties.CreateHeif() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ImageEncodingProperties%20ImageEncodingProperties.CreateHeif%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Media.MediaProperties.ImageEncodingProperties CreateUncompressed(global::Windows.Media.MediaProperties.MediaPixelFormat format)
-		{
-			throw new global::System.NotImplementedException("The member ImageEncodingProperties ImageEncodingProperties.CreateUncompressed(MediaPixelFormat format) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ImageEncodingProperties%20ImageEncodingProperties.CreateUncompressed%28MediaPixelFormat%20format%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Media.MediaProperties.ImageEncodingProperties CreateBmp()
-		{
-			throw new global::System.NotImplementedException("The member ImageEncodingProperties ImageEncodingProperties.CreateBmp() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ImageEncodingProperties%20ImageEncodingProperties.CreateBmp%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.ImageEncodingProperties CreateJpeg()
@@ -135,6 +100,53 @@ namespace Windows.Media.MediaProperties
 			throw new global::System.NotImplementedException("The member ImageEncodingProperties ImageEncodingProperties.CreateJpegXR() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ImageEncodingProperties%20ImageEncodingProperties.CreateJpegXR%28%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Media.MediaProperties.ImageEncodingProperties CreateUncompressed(global::Windows.Media.MediaProperties.MediaPixelFormat format)
+		{
+			throw new global::System.NotImplementedException("The member ImageEncodingProperties ImageEncodingProperties.CreateUncompressed(MediaPixelFormat format) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ImageEncodingProperties%20ImageEncodingProperties.CreateUncompressed%28MediaPixelFormat%20format%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Media.MediaProperties.ImageEncodingProperties CreateBmp()
+		{
+			throw new global::System.NotImplementedException("The member ImageEncodingProperties ImageEncodingProperties.CreateBmp() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ImageEncodingProperties%20ImageEncodingProperties.CreateBmp%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Media.MediaProperties.ImageEncodingProperties CreateHeif()
+		{
+			throw new global::System.NotImplementedException("The member ImageEncodingProperties ImageEncodingProperties.CreateHeif() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ImageEncodingProperties%20ImageEncodingProperties.CreateHeif%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.FromAbi(nint)
+		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.operator ==(Windows.Media.MediaProperties.ImageEncodingProperties, Windows.Media.MediaProperties.ImageEncodingProperties)
+		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.operator !=(Windows.Media.MediaProperties.ImageEncodingProperties, Windows.Media.MediaProperties.ImageEncodingProperties)
+		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.Equals(Windows.Media.MediaProperties.ImageEncodingProperties)
+		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.Equals(object)
+		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.GetHashCode()
+		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.MediaProperties.ImageEncodingProperties Copy()
+		{
+			throw new global::System.NotImplementedException("The member ImageEncodingProperties ImageEncodingProperties.Copy() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ImageEncodingProperties%20ImageEncodingProperties.Copy%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.Height.get
+		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.Height.set
+		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.Properties.get
+		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.Subtype.get
+		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.Subtype.set
+		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.Type.get
+		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.Width.get
+		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.Width.set
+		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.MediaProperties.IMediaEncodingProperties
 	}
 }

@@ -53,20 +53,20 @@ namespace Windows.ApplicationModel.ConversationalAgent
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.ConversationalAgent.SignalDetectorResourceKind> UnavailableSystemResources
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<SignalDetectorResourceKind> DetectionConfigurationAvailabilityInfo.UnavailableSystemResources is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CSignalDetectorResourceKind%3E%20DetectionConfigurationAvailabilityInfo.UnavailableSystemResources");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.IsEnabled.get
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.HasSystemResourceAccess.get
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.HasPermission.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.operator ==(Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo, Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo)
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.operator !=(Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo, Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo)
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.Equals(Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo)
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.HasLockScreenPermission.get
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.UnavailableSystemResources.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.HasPermission.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.HasSystemResourceAccess.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.IsEnabled.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

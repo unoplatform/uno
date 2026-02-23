@@ -33,7 +33,18 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageStoreChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageStoreChangedEventArgs.operator ==(Windows.ApplicationModel.Chat.ChatMessageStoreChangedEventArgs, Windows.ApplicationModel.Chat.ChatMessageStoreChangedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageStoreChangedEventArgs.operator !=(Windows.ApplicationModel.Chat.ChatMessageStoreChangedEventArgs, Windows.ApplicationModel.Chat.ChatMessageStoreChangedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageStoreChangedEventArgs.Equals(Windows.ApplicationModel.Chat.ChatMessageStoreChangedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageStoreChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageStoreChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageStoreChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageStoreChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageStoreChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageStoreChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageStoreChangedEventArgs.Id.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageStoreChangedEventArgs.Kind.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageStoreChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

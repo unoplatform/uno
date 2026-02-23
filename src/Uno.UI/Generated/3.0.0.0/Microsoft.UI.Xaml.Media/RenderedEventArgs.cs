@@ -23,6 +23,17 @@ namespace Microsoft.UI.Xaml.Media
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Media.RenderedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.RenderedEventArgs.operator ==(Microsoft.UI.Xaml.Media.RenderedEventArgs, Microsoft.UI.Xaml.Media.RenderedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.RenderedEventArgs.operator !=(Microsoft.UI.Xaml.Media.RenderedEventArgs, Microsoft.UI.Xaml.Media.RenderedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.RenderedEventArgs.Equals(Microsoft.UI.Xaml.Media.RenderedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.RenderedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.RenderedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.RenderedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.RenderedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.RenderedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.RenderedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RenderedEventArgs.FrameDuration.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.RenderedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

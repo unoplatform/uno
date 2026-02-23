@@ -23,6 +23,16 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Composition.RenderingDeviceReplacedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.RenderingDeviceReplacedEventArgs.operator ==(Microsoft.UI.Composition.RenderingDeviceReplacedEventArgs, Microsoft.UI.Composition.RenderingDeviceReplacedEventArgs)
+		// Forced skipping of method Microsoft.UI.Composition.RenderingDeviceReplacedEventArgs.operator !=(Microsoft.UI.Composition.RenderingDeviceReplacedEventArgs, Microsoft.UI.Composition.RenderingDeviceReplacedEventArgs)
+		// Forced skipping of method Microsoft.UI.Composition.RenderingDeviceReplacedEventArgs.Equals(Microsoft.UI.Composition.RenderingDeviceReplacedEventArgs)
+		// Forced skipping of method Microsoft.UI.Composition.RenderingDeviceReplacedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.RenderingDeviceReplacedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.RenderingDeviceReplacedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.RenderingDeviceReplacedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.RenderingDeviceReplacedEventArgs.GraphicsDevice.get
+		// Forced skipping of method Microsoft.UI.Composition.RenderingDeviceReplacedEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.RenderingDeviceReplacedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

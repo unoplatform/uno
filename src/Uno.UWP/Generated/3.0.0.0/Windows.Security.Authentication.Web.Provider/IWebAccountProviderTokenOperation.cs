@@ -27,9 +27,9 @@ namespace Windows.Security.Authentication.Web.Provider
 			get;
 		}
 #endif
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.IWebAccountProviderTokenOperation.CacheExpirationTime.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.IWebAccountProviderTokenOperation.CacheExpirationTime.set
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.IWebAccountProviderTokenOperation.ProviderRequest.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.IWebAccountProviderTokenOperation.ProviderResponses.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.IWebAccountProviderTokenOperation.CacheExpirationTime.set
-		// Forced skipping of method Windows.Security.Authentication.Web.Provider.IWebAccountProviderTokenOperation.CacheExpirationTime.get
 	}
 }

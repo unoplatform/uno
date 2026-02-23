@@ -8,15 +8,26 @@ namespace Windows.UI.Core
 #endif
 	public partial class KeyEventArgs : global::Windows.UI.Core.ICoreWindowEventArgs
 	{
+		// Skipping already declared property DeviceId
 		// Skipping already declared property Handled
 		// Skipping already declared property KeyStatus
 		// Skipping already declared property VirtualKey
-		// Skipping already declared property DeviceId
-		// Forced skipping of method Windows.UI.Core.KeyEventArgs.VirtualKey.get
-		// Forced skipping of method Windows.UI.Core.KeyEventArgs.KeyStatus.get
+		// Forced skipping of method Windows.UI.Core.KeyEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Core.KeyEventArgs.operator ==(Windows.UI.Core.KeyEventArgs, Windows.UI.Core.KeyEventArgs)
+		// Forced skipping of method Windows.UI.Core.KeyEventArgs.operator !=(Windows.UI.Core.KeyEventArgs, Windows.UI.Core.KeyEventArgs)
+		// Forced skipping of method Windows.UI.Core.KeyEventArgs.Equals(Windows.UI.Core.KeyEventArgs)
+		// Forced skipping of method Windows.UI.Core.KeyEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.Core.KeyEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.Core.KeyEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Core.KeyEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Core.KeyEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Core.KeyEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.UI.Core.KeyEventArgs.DeviceId.get
 		// Forced skipping of method Windows.UI.Core.KeyEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Core.KeyEventArgs.Handled.set
-		// Forced skipping of method Windows.UI.Core.KeyEventArgs.DeviceId.get
+		// Forced skipping of method Windows.UI.Core.KeyEventArgs.KeyStatus.get
+		// Forced skipping of method Windows.UI.Core.KeyEventArgs.VirtualKey.get
+		// Forced skipping of method Windows.UI.Core.KeyEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.UI.Core.ICoreWindowEventArgs
 	}
 }

@@ -9,6 +9,19 @@ namespace Windows.Graphics
 	public partial struct DisplayAdapterId
 	{
 		// Forced skipping of method Windows.Graphics.DisplayAdapterId.DisplayAdapterId()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public DisplayAdapterId(uint _LowPart, int _HighPart)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.DisplayAdapterId", "DisplayAdapterId.DisplayAdapterId(uint _LowPart, int _HighPart)");
+		}
+#endif
+		// Forced skipping of method Windows.Graphics.DisplayAdapterId.DisplayAdapterId(uint, int)
+		// Forced skipping of method Windows.Graphics.DisplayAdapterId.operator ==(Windows.Graphics.DisplayAdapterId, Windows.Graphics.DisplayAdapterId)
+		// Forced skipping of method Windows.Graphics.DisplayAdapterId.operator !=(Windows.Graphics.DisplayAdapterId, Windows.Graphics.DisplayAdapterId)
+		// Forced skipping of method Windows.Graphics.DisplayAdapterId.Equals(Windows.Graphics.DisplayAdapterId)
+		// Forced skipping of method Windows.Graphics.DisplayAdapterId.Equals(object)
+		// Forced skipping of method Windows.Graphics.DisplayAdapterId.GetHashCode()
 		// Skipping already declared field Windows.Graphics.DisplayAdapterId.LowPart
 		// Skipping already declared field Windows.Graphics.DisplayAdapterId.HighPart
 	}

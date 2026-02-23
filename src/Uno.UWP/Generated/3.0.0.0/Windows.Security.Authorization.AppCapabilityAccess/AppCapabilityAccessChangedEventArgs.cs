@@ -13,5 +13,16 @@ namespace Windows.Security.Authorization.AppCapabilityAccess
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessChangedEventArgs.operator ==(Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessChangedEventArgs, Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessChangedEventArgs)
+		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessChangedEventArgs.operator !=(Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessChangedEventArgs, Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessChangedEventArgs)
+		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessChangedEventArgs.Equals(Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessChangedEventArgs)
+		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

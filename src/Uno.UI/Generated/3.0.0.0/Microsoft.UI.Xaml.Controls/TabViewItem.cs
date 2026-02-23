@@ -8,18 +8,36 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class TabViewItem : global::Microsoft.UI.Xaml.Controls.ListViewItem
 	{
-		// Skipping already declared property IsClosable
-		// Skipping already declared property IconSource
-		// Skipping already declared property HeaderTemplate
-		// Skipping already declared property Header
-		// Skipping already declared property TabViewTemplateSettings
 		// Skipping already declared property HeaderProperty
 		// Skipping already declared property HeaderTemplateProperty
 		// Skipping already declared property IconSourceProperty
 		// Skipping already declared property IsClosableProperty
 		// Skipping already declared property TabViewTemplateSettingsProperty
+		// Skipping already declared property Header
+		// Skipping already declared property HeaderTemplate
+		// Skipping already declared property IconSource
+		// Skipping already declared property IsClosable
+		// Skipping already declared property TabViewTemplateSettings
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TabViewItem.TabViewItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.TabViewItem()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.HeaderProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.HeaderTemplateProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.IconSourceProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.IsClosableProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.TabViewTemplateSettingsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.TabViewItem(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.operator ==(Microsoft.UI.Xaml.Controls.TabViewItem, Microsoft.UI.Xaml.Controls.TabViewItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.operator !=(Microsoft.UI.Xaml.Controls.TabViewItem, Microsoft.UI.Xaml.Controls.TabViewItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.Equals(Microsoft.UI.Xaml.Controls.TabViewItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.TabViewItem(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.CloseRequested.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.CloseRequested.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.Header.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.Header.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.HeaderTemplate.get
@@ -29,13 +47,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.IsClosable.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.IsClosable.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.TabViewTemplateSettings.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.CloseRequested.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.CloseRequested.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.HeaderProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.HeaderTemplateProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.IconSourceProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.IsClosableProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.TabViewTemplateSettingsProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TabViewItem.CloseRequested
 	}
 }

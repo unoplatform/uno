@@ -11,8 +11,18 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared property Handled
 		// Skipping already declared method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.ContextRequestedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.ContextRequestedEventArgs()
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.operator ==(Microsoft.UI.Xaml.Input.ContextRequestedEventArgs, Microsoft.UI.Xaml.Input.ContextRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.operator !=(Microsoft.UI.Xaml.Input.ContextRequestedEventArgs, Microsoft.UI.Xaml.Input.ContextRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.Equals(Microsoft.UI.Xaml.Input.ContextRequestedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Skipping already declared method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.TryGetPosition(Microsoft.UI.Xaml.UIElement, out Windows.Foundation.Point)
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.Handled.set
-		// Skipping already declared method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.TryGetPosition(Microsoft.UI.Xaml.UIElement, out Windows.Foundation.Point)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

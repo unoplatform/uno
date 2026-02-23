@@ -10,6 +10,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty TargetNameProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(TargetName), typeof(string),
+			typeof(global::Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(string)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string TargetName
 		{
 			get
@@ -24,22 +32,25 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty TargetNameProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(TargetName), typeof(string),
-			typeof(global::Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(string)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PopOutThemeAnimation() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation", "PopOutThemeAnimation.PopOutThemeAnimation()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.PopOutThemeAnimation()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.TargetNameProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.operator ==(Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation, Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.operator !=(Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation, Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.Equals(Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.TargetName.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.TargetName.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.TargetNameProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopOutThemeAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -11,9 +11,21 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property ExpandCollapseState
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer.DropDownButtonAutomationPeer(Microsoft.UI.Xaml.Controls.DropDownButton)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer.DropDownButtonAutomationPeer(Microsoft.UI.Xaml.Controls.DropDownButton)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer.ExpandCollapseState.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer.DropDownButtonAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer.DropDownButtonAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer.Collapse()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer.Expand()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer.ExpandCollapseState.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider
 	}
 }

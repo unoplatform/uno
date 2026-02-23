@@ -55,20 +55,20 @@ namespace Windows.Web.Syndication
 			set;
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		global::Windows.Data.Xml.Dom.XmlDocument GetXmlDocument(global::Windows.Web.Syndication.SyndicationFormat format);
+#endif
+		// Forced skipping of method Windows.Web.Syndication.ISyndicationNode.AttributeExtensions.get
+		// Forced skipping of method Windows.Web.Syndication.ISyndicationNode.BaseUri.get
+		// Forced skipping of method Windows.Web.Syndication.ISyndicationNode.BaseUri.set
+		// Forced skipping of method Windows.Web.Syndication.ISyndicationNode.ElementExtensions.get
+		// Forced skipping of method Windows.Web.Syndication.ISyndicationNode.Language.get
+		// Forced skipping of method Windows.Web.Syndication.ISyndicationNode.Language.set
 		// Forced skipping of method Windows.Web.Syndication.ISyndicationNode.NodeName.get
 		// Forced skipping of method Windows.Web.Syndication.ISyndicationNode.NodeName.set
 		// Forced skipping of method Windows.Web.Syndication.ISyndicationNode.NodeNamespace.get
 		// Forced skipping of method Windows.Web.Syndication.ISyndicationNode.NodeNamespace.set
 		// Forced skipping of method Windows.Web.Syndication.ISyndicationNode.NodeValue.get
 		// Forced skipping of method Windows.Web.Syndication.ISyndicationNode.NodeValue.set
-		// Forced skipping of method Windows.Web.Syndication.ISyndicationNode.Language.get
-		// Forced skipping of method Windows.Web.Syndication.ISyndicationNode.Language.set
-		// Forced skipping of method Windows.Web.Syndication.ISyndicationNode.BaseUri.get
-		// Forced skipping of method Windows.Web.Syndication.ISyndicationNode.BaseUri.set
-		// Forced skipping of method Windows.Web.Syndication.ISyndicationNode.AttributeExtensions.get
-		// Forced skipping of method Windows.Web.Syndication.ISyndicationNode.ElementExtensions.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		global::Windows.Data.Xml.Dom.XmlDocument GetXmlDocument(global::Windows.Web.Syndication.SyndicationFormat format);
-#endif
 	}
 }

@@ -10,8 +10,8 @@ namespace Microsoft.UI.Xaml.Automation.Provider
 	{
 		// Skipping already declared property CanSelectMultiple
 		// Skipping already declared property IsSelectionRequired
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.ISelectionProvider.GetSelection()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.ISelectionProvider.CanSelectMultiple.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.ISelectionProvider.IsSelectionRequired.get
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.Provider.ISelectionProvider.GetSelection()
 	}
 }

@@ -8,12 +8,25 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class ImageIconSource : global::Microsoft.UI.Xaml.Controls.IconSource
 	{
-		// Skipping already declared property ImageSource
 		// Skipping already declared property ImageSourceProperty
+		// Skipping already declared property ImageSource
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ImageIconSource.ImageIconSource()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ImageIconSource.ImageIconSource()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ImageIconSource.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ImageIconSource.ImageSourceProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ImageIconSource.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ImageIconSource.ImageIconSource(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ImageIconSource.operator ==(Microsoft.UI.Xaml.Controls.ImageIconSource, Microsoft.UI.Xaml.Controls.ImageIconSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ImageIconSource.operator !=(Microsoft.UI.Xaml.Controls.ImageIconSource, Microsoft.UI.Xaml.Controls.ImageIconSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ImageIconSource.Equals(Microsoft.UI.Xaml.Controls.ImageIconSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ImageIconSource.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ImageIconSource.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ImageIconSource.ImageIconSource(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ImageIconSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ImageIconSource.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ImageIconSource.ImageSource.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ImageIconSource.ImageSource.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ImageIconSource.ImageSourceProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ImageIconSource.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ImageIconSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -9,6 +9,17 @@ namespace Windows.Devices.Sensors
 	public partial class BarometerReadingChangedEventArgs
 	{
 		// Skipping already declared property Reading
+		// Forced skipping of method Windows.Devices.Sensors.BarometerReadingChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Sensors.BarometerReadingChangedEventArgs.operator ==(Windows.Devices.Sensors.BarometerReadingChangedEventArgs, Windows.Devices.Sensors.BarometerReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.BarometerReadingChangedEventArgs.operator !=(Windows.Devices.Sensors.BarometerReadingChangedEventArgs, Windows.Devices.Sensors.BarometerReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.BarometerReadingChangedEventArgs.Equals(Windows.Devices.Sensors.BarometerReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.BarometerReadingChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.Sensors.BarometerReadingChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.Sensors.BarometerReadingChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.BarometerReadingChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.BarometerReadingChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Sensors.BarometerReadingChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.BarometerReadingChangedEventArgs.Reading.get
+		// Forced skipping of method Windows.Devices.Sensors.BarometerReadingChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

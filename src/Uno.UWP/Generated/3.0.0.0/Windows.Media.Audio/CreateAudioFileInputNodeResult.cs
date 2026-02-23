@@ -15,6 +15,16 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Exception ExtendedError
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Exception CreateAudioFileInputNodeResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20CreateAudioFileInputNodeResult.ExtendedError");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Audio.AudioFileInputNode FileInputNode
 		{
 			get
@@ -33,18 +43,19 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Exception ExtendedError
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Exception CreateAudioFileInputNodeResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20CreateAudioFileInputNodeResult.ExtendedError");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Media.Audio.CreateAudioFileInputNodeResult.Status.get
-		// Forced skipping of method Windows.Media.Audio.CreateAudioFileInputNodeResult.FileInputNode.get
+		// Forced skipping of method Windows.Media.Audio.CreateAudioFileInputNodeResult.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Audio.CreateAudioFileInputNodeResult.operator ==(Windows.Media.Audio.CreateAudioFileInputNodeResult, Windows.Media.Audio.CreateAudioFileInputNodeResult)
+		// Forced skipping of method Windows.Media.Audio.CreateAudioFileInputNodeResult.operator !=(Windows.Media.Audio.CreateAudioFileInputNodeResult, Windows.Media.Audio.CreateAudioFileInputNodeResult)
+		// Forced skipping of method Windows.Media.Audio.CreateAudioFileInputNodeResult.Equals(Windows.Media.Audio.CreateAudioFileInputNodeResult)
+		// Forced skipping of method Windows.Media.Audio.CreateAudioFileInputNodeResult.Equals(object)
+		// Forced skipping of method Windows.Media.Audio.CreateAudioFileInputNodeResult.GetHashCode()
+		// Forced skipping of method Windows.Media.Audio.CreateAudioFileInputNodeResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Audio.CreateAudioFileInputNodeResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Audio.CreateAudioFileInputNodeResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Audio.CreateAudioFileInputNodeResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Audio.CreateAudioFileInputNodeResult.ExtendedError.get
+		// Forced skipping of method Windows.Media.Audio.CreateAudioFileInputNodeResult.FileInputNode.get
+		// Forced skipping of method Windows.Media.Audio.CreateAudioFileInputNodeResult.Status.get
+		// Forced skipping of method Windows.Media.Audio.CreateAudioFileInputNodeResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

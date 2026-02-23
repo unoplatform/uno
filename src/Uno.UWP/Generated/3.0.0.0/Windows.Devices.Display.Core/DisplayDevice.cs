@@ -13,6 +13,16 @@ namespace Windows.Devices.Display.Core
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayDevice.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayDevice.operator ==(Windows.Devices.Display.Core.DisplayDevice, Windows.Devices.Display.Core.DisplayDevice)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayDevice.operator !=(Windows.Devices.Display.Core.DisplayDevice, Windows.Devices.Display.Core.DisplayDevice)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayDevice.Equals(Windows.Devices.Display.Core.DisplayDevice)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayDevice.Equals(object)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayDevice.GetHashCode()
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayDevice.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayDevice.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayDevice.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Display.Core.DisplaySource CreateScanoutSource(global::Windows.Devices.Display.Core.DisplayTarget target)
@@ -62,12 +72,6 @@ namespace Windows.Devices.Display.Core
 			throw new global::System.NotImplementedException("The member bool DisplayDevice.IsCapabilitySupported(DisplayDeviceCapability capability) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DisplayDevice.IsCapabilitySupported%28DisplayDeviceCapability%20capability%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Display.Core.DisplayScanout CreateSimpleScanoutWithDirtyRectsAndOptions(global::Windows.Devices.Display.Core.DisplaySource source, global::Windows.Devices.Display.Core.DisplaySurface surface, uint subresourceIndex, uint syncInterval, global::System.Collections.Generic.IEnumerable<global::Windows.Graphics.RectInt32> dirtyRects, global::Windows.Devices.Display.Core.DisplayScanoutOptions options)
-		{
-			throw new global::System.NotImplementedException("The member DisplayScanout DisplayDevice.CreateSimpleScanoutWithDirtyRectsAndOptions(DisplaySource source, DisplaySurface surface, uint subresourceIndex, uint syncInterval, IEnumerable<RectInt32> dirtyRects, DisplayScanoutOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayScanout%20DisplayDevice.CreateSimpleScanoutWithDirtyRectsAndOptions%28DisplaySource%20source%2C%20DisplaySurface%20surface%2C%20uint%20subresourceIndex%2C%20uint%20syncInterval%2C%20IEnumerable%3CRectInt32%3E%20dirtyRects%2C%20DisplayScanoutOptions%20options%29");
-		}
-#endif
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayDevice.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

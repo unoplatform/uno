@@ -47,9 +47,20 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.Supported.get
-		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.SupportedModes.get
+		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.operator ==(Windows.Media.Devices.OpticalImageStabilizationControl, Windows.Media.Devices.OpticalImageStabilizationControl)
+		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.operator !=(Windows.Media.Devices.OpticalImageStabilizationControl, Windows.Media.Devices.OpticalImageStabilizationControl)
+		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.Equals(Windows.Media.Devices.OpticalImageStabilizationControl)
+		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.Equals(object)
+		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.GetHashCode()
+		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.Mode.get
 		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.Mode.set
+		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.Supported.get
+		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.SupportedModes.get
+		// Forced skipping of method Windows.Media.Devices.OpticalImageStabilizationControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

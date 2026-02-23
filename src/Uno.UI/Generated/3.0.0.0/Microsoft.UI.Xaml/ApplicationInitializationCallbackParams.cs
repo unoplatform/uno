@@ -8,5 +8,16 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class ApplicationInitializationCallbackParams
 	{
+		// Forced skipping of method Microsoft.UI.Xaml.ApplicationInitializationCallbackParams.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.ApplicationInitializationCallbackParams.operator ==(Microsoft.UI.Xaml.ApplicationInitializationCallbackParams, Microsoft.UI.Xaml.ApplicationInitializationCallbackParams)
+		// Forced skipping of method Microsoft.UI.Xaml.ApplicationInitializationCallbackParams.operator !=(Microsoft.UI.Xaml.ApplicationInitializationCallbackParams, Microsoft.UI.Xaml.ApplicationInitializationCallbackParams)
+		// Forced skipping of method Microsoft.UI.Xaml.ApplicationInitializationCallbackParams.Equals(Microsoft.UI.Xaml.ApplicationInitializationCallbackParams)
+		// Forced skipping of method Microsoft.UI.Xaml.ApplicationInitializationCallbackParams.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.ApplicationInitializationCallbackParams.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.ApplicationInitializationCallbackParams.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.ApplicationInitializationCallbackParams.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.ApplicationInitializationCallbackParams.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.ApplicationInitializationCallbackParams.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.ApplicationInitializationCallbackParams.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

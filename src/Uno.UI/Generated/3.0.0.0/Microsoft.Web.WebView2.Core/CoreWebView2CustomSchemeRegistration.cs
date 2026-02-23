@@ -10,15 +10,11 @@ namespace Microsoft.Web.WebView2.Core
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int TreatAsSecure
+		public global::System.Collections.Generic.IList<string> AllowedOrigins
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CoreWebView2CustomSchemeRegistration.TreatAsSecure is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreWebView2CustomSchemeRegistration.TreatAsSecure");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration", "int CoreWebView2CustomSchemeRegistration.TreatAsSecure");
+				throw new global::System.NotImplementedException("The member IList<string> CoreWebView2CustomSchemeRegistration.AllowedOrigins is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20CoreWebView2CustomSchemeRegistration.AllowedOrigins");
 			}
 		}
 #endif
@@ -38,21 +34,25 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<string> AllowedOrigins
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<string> CoreWebView2CustomSchemeRegistration.AllowedOrigins is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20CoreWebView2CustomSchemeRegistration.AllowedOrigins");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string SchemeName
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member string CoreWebView2CustomSchemeRegistration.SchemeName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2CustomSchemeRegistration.SchemeName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int TreatAsSecure
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int CoreWebView2CustomSchemeRegistration.TreatAsSecure is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreWebView2CustomSchemeRegistration.TreatAsSecure");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration", "int CoreWebView2CustomSchemeRegistration.TreatAsSecure");
 			}
 		}
 #endif
@@ -64,11 +64,22 @@ namespace Microsoft.Web.WebView2.Core
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.CoreWebView2CustomSchemeRegistration(string)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.SchemeName.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration, Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration, Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.Equals(Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.AllowedOrigins.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.TreatAsSecure.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.TreatAsSecure.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.HasAuthorityComponent.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.HasAuthorityComponent.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.SchemeName.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.TreatAsSecure.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.TreatAsSecure.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -33,7 +33,18 @@ namespace Windows.Services.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StorePurchaseResult.Status.get
+		// Forced skipping of method Windows.Services.Store.StorePurchaseResult.FromAbi(nint)
+		// Forced skipping of method Windows.Services.Store.StorePurchaseResult.operator ==(Windows.Services.Store.StorePurchaseResult, Windows.Services.Store.StorePurchaseResult)
+		// Forced skipping of method Windows.Services.Store.StorePurchaseResult.operator !=(Windows.Services.Store.StorePurchaseResult, Windows.Services.Store.StorePurchaseResult)
+		// Forced skipping of method Windows.Services.Store.StorePurchaseResult.Equals(Windows.Services.Store.StorePurchaseResult)
+		// Forced skipping of method Windows.Services.Store.StorePurchaseResult.Equals(object)
+		// Forced skipping of method Windows.Services.Store.StorePurchaseResult.GetHashCode()
+		// Forced skipping of method Windows.Services.Store.StorePurchaseResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Services.Store.StorePurchaseResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Services.Store.StorePurchaseResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Services.Store.StorePurchaseResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Store.StorePurchaseResult.ExtendedError.get
+		// Forced skipping of method Windows.Services.Store.StorePurchaseResult.Status.get
+		// Forced skipping of method Windows.Services.Store.StorePurchaseResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -15,6 +15,16 @@ namespace Windows.ApplicationModel.Activation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.Provider.CachedFileUpdaterUI CachedFileUpdaterUI
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CachedFileUpdaterUI CachedFileUpdaterActivatedEventArgs.CachedFileUpdaterUI is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CachedFileUpdaterUI%20CachedFileUpdaterActivatedEventArgs.CachedFileUpdaterUI");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.ActivationKind Kind
 		{
 			get
@@ -53,21 +63,22 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Provider.CachedFileUpdaterUI CachedFileUpdaterUI
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CachedFileUpdaterUI CachedFileUpdaterActivatedEventArgs.CachedFileUpdaterUI is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CachedFileUpdaterUI%20CachedFileUpdaterActivatedEventArgs.CachedFileUpdaterUI");
-			}
-		}
-#endif
+		// Forced skipping of method Windows.ApplicationModel.Activation.CachedFileUpdaterActivatedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Activation.CachedFileUpdaterActivatedEventArgs.operator ==(Windows.ApplicationModel.Activation.CachedFileUpdaterActivatedEventArgs, Windows.ApplicationModel.Activation.CachedFileUpdaterActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.CachedFileUpdaterActivatedEventArgs.operator !=(Windows.ApplicationModel.Activation.CachedFileUpdaterActivatedEventArgs, Windows.ApplicationModel.Activation.CachedFileUpdaterActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.CachedFileUpdaterActivatedEventArgs.Equals(Windows.ApplicationModel.Activation.CachedFileUpdaterActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.CachedFileUpdaterActivatedEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Activation.CachedFileUpdaterActivatedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Activation.CachedFileUpdaterActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.CachedFileUpdaterActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.CachedFileUpdaterActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.CachedFileUpdaterActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.CachedFileUpdaterActivatedEventArgs.CachedFileUpdaterUI.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.CachedFileUpdaterActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.CachedFileUpdaterActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.CachedFileUpdaterActivatedEventArgs.SplashScreen.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.CachedFileUpdaterActivatedEventArgs.User.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.CachedFileUpdaterActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.ICachedFileUpdaterActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgsWithUser

@@ -10,6 +10,19 @@ namespace Windows.UI.Text.Core
 	{
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextRange.CoreTextRange()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public CoreTextRange(int _StartCaretPosition, int _EndCaretPosition)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextRange", "CoreTextRange.CoreTextRange(int _StartCaretPosition, int _EndCaretPosition)");
+		}
+#endif
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextRange.CoreTextRange(int, int)
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextRange.operator ==(Windows.UI.Text.Core.CoreTextRange, Windows.UI.Text.Core.CoreTextRange)
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextRange.operator !=(Windows.UI.Text.Core.CoreTextRange, Windows.UI.Text.Core.CoreTextRange)
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextRange.Equals(Windows.UI.Text.Core.CoreTextRange)
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextRange.Equals(object)
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextRange.GetHashCode()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public int StartCaretPosition;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

@@ -8,20 +8,7 @@ namespace Windows.UI.Notifications
 #endif
 	public partial class TileNotification
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Tag
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string TileNotification.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20TileNotification.Tag");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileNotification", "string TileNotification.Tag");
-			}
-		}
-#endif
+		// Skipping already declared property Content
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.DateTimeOffset? ExpirationTime
@@ -36,13 +23,37 @@ namespace Windows.UI.Notifications
 			}
 		}
 #endif
-		// Skipping already declared property Content
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Tag
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string TileNotification.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20TileNotification.Tag");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileNotification", "string TileNotification.Tag");
+			}
+		}
+#endif
 		// Skipping already declared method Windows.UI.Notifications.TileNotification.TileNotification(Windows.Data.Xml.Dom.XmlDocument)
 		// Forced skipping of method Windows.UI.Notifications.TileNotification.TileNotification(Windows.Data.Xml.Dom.XmlDocument)
+		// Forced skipping of method Windows.UI.Notifications.TileNotification.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Notifications.TileNotification.operator ==(Windows.UI.Notifications.TileNotification, Windows.UI.Notifications.TileNotification)
+		// Forced skipping of method Windows.UI.Notifications.TileNotification.operator !=(Windows.UI.Notifications.TileNotification, Windows.UI.Notifications.TileNotification)
+		// Forced skipping of method Windows.UI.Notifications.TileNotification.Equals(Windows.UI.Notifications.TileNotification)
+		// Forced skipping of method Windows.UI.Notifications.TileNotification.Equals(object)
+		// Forced skipping of method Windows.UI.Notifications.TileNotification.GetHashCode()
+		// Forced skipping of method Windows.UI.Notifications.TileNotification.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.TileNotification.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.TileNotification.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Notifications.TileNotification.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Notifications.TileNotification.Content.get
-		// Forced skipping of method Windows.UI.Notifications.TileNotification.ExpirationTime.set
 		// Forced skipping of method Windows.UI.Notifications.TileNotification.ExpirationTime.get
-		// Forced skipping of method Windows.UI.Notifications.TileNotification.Tag.set
+		// Forced skipping of method Windows.UI.Notifications.TileNotification.ExpirationTime.set
 		// Forced skipping of method Windows.UI.Notifications.TileNotification.Tag.get
+		// Forced skipping of method Windows.UI.Notifications.TileNotification.Tag.set
+		// Forced skipping of method Windows.UI.Notifications.TileNotification.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

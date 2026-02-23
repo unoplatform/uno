@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception.Provider
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -27,6 +26,17 @@ namespace Windows.Devices.Perception.Provider
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelationGroup.PerceptionCorrelationGroup(System.Collections.Generic.IEnumerable<Windows.Devices.Perception.Provider.PerceptionCorrelation>)
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelationGroup.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelationGroup.operator ==(Windows.Devices.Perception.Provider.PerceptionCorrelationGroup, Windows.Devices.Perception.Provider.PerceptionCorrelationGroup)
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelationGroup.operator !=(Windows.Devices.Perception.Provider.PerceptionCorrelationGroup, Windows.Devices.Perception.Provider.PerceptionCorrelationGroup)
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelationGroup.Equals(Windows.Devices.Perception.Provider.PerceptionCorrelationGroup)
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelationGroup.Equals(object)
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelationGroup.GetHashCode()
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelationGroup.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelationGroup.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelationGroup.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelationGroup.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelationGroup.RelativeLocations.get
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelationGroup.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

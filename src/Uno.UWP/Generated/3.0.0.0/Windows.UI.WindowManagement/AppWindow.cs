@@ -15,34 +15,6 @@ namespace Windows.UI.WindowManagement
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Title
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AppWindow.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppWindow.Title");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WindowManagement.AppWindow", "string AppWindow.Title");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string PersistedStateId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AppWindow.PersistedStateId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppWindow.PersistedStateId");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WindowManagement.AppWindow", "string AppWindow.PersistedStateId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.UIContentRoot Content
 		{
 			get
@@ -83,11 +55,39 @@ namespace Windows.UI.WindowManagement
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string PersistedStateId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string AppWindow.PersistedStateId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppWindow.PersistedStateId");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WindowManagement.AppWindow", "string AppWindow.PersistedStateId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.WindowManagement.AppWindowPresenter Presenter
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member AppWindowPresenter AppWindow.Presenter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppWindowPresenter%20AppWindow.Presenter");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Title
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string AppWindow.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppWindow.Title");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WindowManagement.AppWindow", "string AppWindow.Title");
 			}
 		}
 #endif
@@ -121,18 +121,38 @@ namespace Windows.UI.WindowManagement
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.Content.get
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.DispatcherQueue.get
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.Frame.get
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.IsVisible.get
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.PersistedStateId.get
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.PersistedStateId.set
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.Presenter.get
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.Title.get
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.Title.set
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.TitleBar.get
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.UIContext.get
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.WindowingEnvironment.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.UI.WindowManagement.AppWindow> TryCreateAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<AppWindow> AppWindow.TryCreateAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAppWindow%3E%20AppWindow.TryCreateAsync%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void ClearAllPersistedState()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WindowManagement.AppWindow", "void AppWindow.ClearAllPersistedState()");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void ClearPersistedState(string key)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WindowManagement.AppWindow", "void AppWindow.ClearPersistedState(string key)");
+		}
+#endif
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.FromAbi(nint)
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.operator ==(Windows.UI.WindowManagement.AppWindow, Windows.UI.WindowManagement.AppWindow)
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.operator !=(Windows.UI.WindowManagement.AppWindow, Windows.UI.WindowManagement.AppWindow)
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.Equals(Windows.UI.WindowManagement.AppWindow)
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.Equals(object)
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.GetHashCode()
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction CloseAsync()
@@ -212,31 +232,23 @@ namespace Windows.UI.WindowManagement
 #endif
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.Changed.add
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.Changed.remove
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.Closed.add
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.Closed.remove
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.CloseRequested.add
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.CloseRequested.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.UI.WindowManagement.AppWindow> TryCreateAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<AppWindow> AppWindow.TryCreateAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAppWindow%3E%20AppWindow.TryCreateAsync%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void ClearAllPersistedState()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WindowManagement.AppWindow", "void AppWindow.ClearAllPersistedState()");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void ClearPersistedState(string key)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WindowManagement.AppWindow", "void AppWindow.ClearPersistedState(string key)");
-		}
-#endif
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.Closed.add
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.Closed.remove
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.Content.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.DispatcherQueue.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.Frame.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.IsVisible.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.PersistedStateId.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.PersistedStateId.set
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.Presenter.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.Title.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.Title.set
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.TitleBar.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.UIContext.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.WindowingEnvironment.get
+		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.WindowManagement.AppWindow, global::Windows.UI.WindowManagement.AppWindowChangedEventArgs> Changed

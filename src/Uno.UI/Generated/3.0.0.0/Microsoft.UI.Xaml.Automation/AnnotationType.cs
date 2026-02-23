@@ -3,78 +3,32 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation
 {
-#if false
+#if false || false || false || false || false || false || false
 	public enum AnnotationType
 	{
-#if false
-		Unknown = 60000,
-#endif
-#if false
-		SpellingError = 60001,
-#endif
-#if false
-		GrammarError = 60002,
-#endif
-#if false
-		Comment = 60003,
-#endif
-#if false
-		FormulaError = 60004,
-#endif
-#if false
-		TrackChanges = 60005,
-#endif
-#if false
-		Header = 60006,
-#endif
-#if false
-		Footer = 60007,
-#endif
-#if false
-		Highlighted = 60008,
-#endif
-#if false
-		Endnote = 60009,
-#endif
-#if false
-		Footnote = 60010,
-#endif
-#if false
-		InsertionChange = 60011,
-#endif
-#if false
-		DeletionChange = 60012,
-#endif
-#if false
-		MoveChange = 60013,
-#endif
-#if false
-		FormatChange = 60014,
-#endif
-#if false
-		UnsyncedChange = 60015,
-#endif
-#if false
-		EditingLockedChange = 60016,
-#endif
-#if false
-		ExternalChange = 60017,
-#endif
-#if false
-		ConflictingChange = 60018,
-#endif
-#if false
-		Author = 60019,
-#endif
-#if false
-		AdvancedProofingIssue = 60020,
-#endif
-#if false
-		DataValidationError = 60021,
-#endif
-#if false
-		CircularReferenceError = 60022,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.Unknown
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.SpellingError
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.GrammarError
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.Comment
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.FormulaError
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.TrackChanges
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.Header
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.Footer
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.Highlighted
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.Endnote
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.Footnote
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.InsertionChange
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.DeletionChange
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.MoveChange
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.FormatChange
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.UnsyncedChange
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.EditingLockedChange
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.ExternalChange
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.ConflictingChange
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.Author
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.AdvancedProofingIssue
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.DataValidationError
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.CircularReferenceError
 	}
 #endif
 }

@@ -15,6 +15,16 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public ushort BytesSent
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ushort GattClientNotificationResult.BytesSent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20GattClientNotificationResult.BytesSent");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public byte? ProtocolError
 		{
 			get
@@ -43,19 +53,20 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ushort BytesSent
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort GattClientNotificationResult.BytesSent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20GattClientNotificationResult.BytesSent");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.SubscribedClient.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.Status.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.ProtocolError.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.operator ==(Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult, Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.operator !=(Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult, Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.Equals(Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.Equals(object)
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.GetHashCode()
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.BytesSent.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.ProtocolError.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.Status.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.SubscribedClient.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

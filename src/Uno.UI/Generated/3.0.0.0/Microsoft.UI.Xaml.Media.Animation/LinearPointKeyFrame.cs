@@ -16,5 +16,15 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.LinearPointKeyFrame.LinearPointKeyFrame()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.LinearPointKeyFrame.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.LinearPointKeyFrame.operator ==(Microsoft.UI.Xaml.Media.Animation.LinearPointKeyFrame, Microsoft.UI.Xaml.Media.Animation.LinearPointKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.LinearPointKeyFrame.operator !=(Microsoft.UI.Xaml.Media.Animation.LinearPointKeyFrame, Microsoft.UI.Xaml.Media.Animation.LinearPointKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.LinearPointKeyFrame.Equals(Microsoft.UI.Xaml.Media.Animation.LinearPointKeyFrame)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.LinearPointKeyFrame.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.LinearPointKeyFrame.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.LinearPointKeyFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.LinearPointKeyFrame.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.LinearPointKeyFrame.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.LinearPointKeyFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

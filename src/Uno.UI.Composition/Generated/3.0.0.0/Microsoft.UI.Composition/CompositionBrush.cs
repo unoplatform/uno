@@ -8,5 +8,17 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionBrush : global::Microsoft.UI.Composition.CompositionObject
 	{
+		// Forced skipping of method Microsoft.UI.Composition.CompositionBrush.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionBrush.CompositionBrush(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionBrush.operator ==(Microsoft.UI.Composition.CompositionBrush, Microsoft.UI.Composition.CompositionBrush)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionBrush.operator !=(Microsoft.UI.Composition.CompositionBrush, Microsoft.UI.Composition.CompositionBrush)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionBrush.Equals(Microsoft.UI.Composition.CompositionBrush)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionBrush.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionBrush.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionBrush.CompositionBrush(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionBrush.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionBrush.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,5 +10,15 @@ namespace Microsoft.UI.Xaml.Documents
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Documents.Bold.Bold()
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Bold.Bold()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Bold.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Bold.operator ==(Microsoft.UI.Xaml.Documents.Bold, Microsoft.UI.Xaml.Documents.Bold)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Bold.operator !=(Microsoft.UI.Xaml.Documents.Bold, Microsoft.UI.Xaml.Documents.Bold)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Bold.Equals(Microsoft.UI.Xaml.Documents.Bold)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Bold.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Bold.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Bold.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Bold.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Bold.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Bold.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

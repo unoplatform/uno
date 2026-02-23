@@ -43,8 +43,19 @@ namespace Windows.Perception.Spatial
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExportSufficiency.FromAbi(nint)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExportSufficiency.operator ==(Windows.Perception.Spatial.SpatialAnchorExportSufficiency, Windows.Perception.Spatial.SpatialAnchorExportSufficiency)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExportSufficiency.operator !=(Windows.Perception.Spatial.SpatialAnchorExportSufficiency, Windows.Perception.Spatial.SpatialAnchorExportSufficiency)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExportSufficiency.Equals(Windows.Perception.Spatial.SpatialAnchorExportSufficiency)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExportSufficiency.Equals(object)
+		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExportSufficiency.GetHashCode()
+		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExportSufficiency.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExportSufficiency.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExportSufficiency.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExportSufficiency.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExportSufficiency.IsMinimallySufficient.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExportSufficiency.SufficiencyLevel.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExportSufficiency.RecommendedSufficiencyLevel.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExportSufficiency.SufficiencyLevel.get
+		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExportSufficiency.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,15 +10,15 @@ namespace Windows.Devices.Lights
 	{
 #if false || false || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsEnabled
+		public float BrightnessLevel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool Lamp.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20Lamp.IsEnabled");
+				throw new global::System.NotImplementedException("The member float Lamp.BrightnessLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20Lamp.BrightnessLevel");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Lamp", "bool Lamp.IsEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Lamp", "float Lamp.BrightnessLevel");
 			}
 		}
 #endif
@@ -33,20 +33,6 @@ namespace Windows.Devices.Lights
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Lamp", "Color Lamp.Color");
-			}
-		}
-#endif
-#if false || false || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float BrightnessLevel
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float Lamp.BrightnessLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20Lamp.BrightnessLevel");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Lamp", "float Lamp.BrightnessLevel");
 			}
 		}
 #endif
@@ -70,23 +56,21 @@ namespace Windows.Devices.Lights
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Lights.Lamp.DeviceId.get
-		// Forced skipping of method Windows.Devices.Lights.Lamp.IsEnabled.get
-		// Forced skipping of method Windows.Devices.Lights.Lamp.IsEnabled.set
-		// Forced skipping of method Windows.Devices.Lights.Lamp.BrightnessLevel.get
-		// Forced skipping of method Windows.Devices.Lights.Lamp.BrightnessLevel.set
-		// Forced skipping of method Windows.Devices.Lights.Lamp.IsColorSettable.get
-		// Forced skipping of method Windows.Devices.Lights.Lamp.Color.get
-		// Forced skipping of method Windows.Devices.Lights.Lamp.Color.set
-		// Forced skipping of method Windows.Devices.Lights.Lamp.AvailabilityChanged.add
-		// Forced skipping of method Windows.Devices.Lights.Lamp.AvailabilityChanged.remove
 #if false || false || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Dispose()
+		public bool IsEnabled
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Lamp", "void Lamp.Dispose()");
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool Lamp.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20Lamp.IsEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Lamp", "bool Lamp.IsEnabled");
+			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Lights.Lamp.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
@@ -102,6 +86,34 @@ namespace Windows.Devices.Lights
 		}
 #endif
 		// Skipping already declared method Windows.Devices.Lights.Lamp.GetDefaultAsync()
+		// Forced skipping of method Windows.Devices.Lights.Lamp.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Lights.Lamp.operator ==(Windows.Devices.Lights.Lamp, Windows.Devices.Lights.Lamp)
+		// Forced skipping of method Windows.Devices.Lights.Lamp.operator !=(Windows.Devices.Lights.Lamp, Windows.Devices.Lights.Lamp)
+		// Forced skipping of method Windows.Devices.Lights.Lamp.Equals(Windows.Devices.Lights.Lamp)
+		// Forced skipping of method Windows.Devices.Lights.Lamp.Equals(object)
+		// Forced skipping of method Windows.Devices.Lights.Lamp.GetHashCode()
+		// Forced skipping of method Windows.Devices.Lights.Lamp.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Lights.Lamp.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Lights.Lamp.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Lights.Lamp.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.Lights.Lamp.AvailabilityChanged.add
+		// Forced skipping of method Windows.Devices.Lights.Lamp.AvailabilityChanged.remove
+#if false || false || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Lamp", "void Lamp.Dispose()");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Lights.Lamp.BrightnessLevel.get
+		// Forced skipping of method Windows.Devices.Lights.Lamp.BrightnessLevel.set
+		// Forced skipping of method Windows.Devices.Lights.Lamp.Color.get
+		// Forced skipping of method Windows.Devices.Lights.Lamp.Color.set
+		// Forced skipping of method Windows.Devices.Lights.Lamp.DeviceId.get
+		// Forced skipping of method Windows.Devices.Lights.Lamp.IsColorSettable.get
+		// Forced skipping of method Windows.Devices.Lights.Lamp.IsEnabled.get
+		// Forced skipping of method Windows.Devices.Lights.Lamp.IsEnabled.set
+		// Forced skipping of method Windows.Devices.Lights.Lamp.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Lights.Lamp, global::Windows.Devices.Lights.LampAvailabilityChangedEventArgs> AvailabilityChanged

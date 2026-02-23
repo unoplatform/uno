@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ListBoxItemAutomationPeer.ListBoxItemAutomationPeer(Microsoft.UI.Xaml.Controls.ListBoxItem)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxItemAutomationPeer.ListBoxItemAutomationPeer(Microsoft.UI.Xaml.Controls.ListBoxItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxItemAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxItemAutomationPeer.ListBoxItemAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxItemAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.ListBoxItemAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ListBoxItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxItemAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.ListBoxItemAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ListBoxItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxItemAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.ListBoxItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxItemAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxItemAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxItemAutomationPeer.ListBoxItemAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxItemAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxItemAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxItemAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxItemAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -11,9 +11,20 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Cancel
 		// Skipping already declared property Data
 		// Skipping already declared property Items
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewDragItemsStartingEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewDragItemsStartingEventArgs.operator ==(Microsoft.UI.Xaml.Controls.TreeViewDragItemsStartingEventArgs, Microsoft.UI.Xaml.Controls.TreeViewDragItemsStartingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewDragItemsStartingEventArgs.operator !=(Microsoft.UI.Xaml.Controls.TreeViewDragItemsStartingEventArgs, Microsoft.UI.Xaml.Controls.TreeViewDragItemsStartingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewDragItemsStartingEventArgs.Equals(Microsoft.UI.Xaml.Controls.TreeViewDragItemsStartingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewDragItemsStartingEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewDragItemsStartingEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewDragItemsStartingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewDragItemsStartingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewDragItemsStartingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewDragItemsStartingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewDragItemsStartingEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewDragItemsStartingEventArgs.Cancel.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewDragItemsStartingEventArgs.Data.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewDragItemsStartingEventArgs.Items.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewDragItemsStartingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

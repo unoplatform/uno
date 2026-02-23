@@ -27,7 +27,17 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.RedirectVisual.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.RedirectVisual.operator ==(Windows.UI.Composition.RedirectVisual, Windows.UI.Composition.RedirectVisual)
+		// Forced skipping of method Windows.UI.Composition.RedirectVisual.operator !=(Windows.UI.Composition.RedirectVisual, Windows.UI.Composition.RedirectVisual)
+		// Forced skipping of method Windows.UI.Composition.RedirectVisual.Equals(Windows.UI.Composition.RedirectVisual)
+		// Forced skipping of method Windows.UI.Composition.RedirectVisual.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.RedirectVisual.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.RedirectVisual.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.RedirectVisual.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.RedirectVisual.Source.get
 		// Forced skipping of method Windows.UI.Composition.RedirectVisual.Source.set
+		// Forced skipping of method Windows.UI.Composition.RedirectVisual.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.RedirectVisual.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

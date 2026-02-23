@@ -8,20 +8,30 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class StepEasingFunction : global::Microsoft.UI.Composition.CompositionEasingFunction
 	{
-		// Skipping already declared property StepCount
-		// Skipping already declared property IsInitialStepSingleFrame
-		// Skipping already declared property IsFinalStepSingleFrame
-		// Skipping already declared property InitialStep
 		// Skipping already declared property FinalStep
-		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.StepCount.set
-		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.IsInitialStepSingleFrame.get
-		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.IsInitialStepSingleFrame.set
-		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.StepCount.get
-		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.InitialStep.get
-		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.FinalStep.set
+		// Skipping already declared property InitialStep
+		// Skipping already declared property IsFinalStepSingleFrame
+		// Skipping already declared property IsInitialStepSingleFrame
+		// Skipping already declared property StepCount
+		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.operator ==(Microsoft.UI.Composition.StepEasingFunction, Microsoft.UI.Composition.StepEasingFunction)
+		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.operator !=(Microsoft.UI.Composition.StepEasingFunction, Microsoft.UI.Composition.StepEasingFunction)
+		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.Equals(Microsoft.UI.Composition.StepEasingFunction)
+		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.FinalStep.get
+		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.FinalStep.set
+		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.InitialStep.get
 		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.InitialStep.set
 		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.IsFinalStepSingleFrame.get
 		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.IsFinalStepSingleFrame.set
+		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.IsInitialStepSingleFrame.get
+		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.IsInitialStepSingleFrame.set
+		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.StepCount.get
+		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.StepCount.set
+		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

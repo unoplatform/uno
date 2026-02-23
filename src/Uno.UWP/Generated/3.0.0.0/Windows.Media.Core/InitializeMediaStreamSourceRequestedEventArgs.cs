@@ -33,8 +33,16 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs.Source.get
-		// Forced skipping of method Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs.RandomAccessStream.get
+		// Forced skipping of method Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs.operator ==(Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs, Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs)
+		// Forced skipping of method Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs.operator !=(Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs, Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs)
+		// Forced skipping of method Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs.Equals(Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs)
+		// Forced skipping of method Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -42,5 +50,8 @@ namespace Windows.Media.Core
 			throw new global::System.NotImplementedException("The member Deferral InitializeMediaStreamSourceRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20InitializeMediaStreamSourceRequestedEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs.RandomAccessStream.get
+		// Forced skipping of method Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs.Source.get
+		// Forced skipping of method Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

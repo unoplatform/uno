@@ -15,6 +15,26 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsAppxInstallSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool PackageVolume.IsAppxInstallSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PackageVolume.IsAppxInstallSupported");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsFullTrustPackageSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool PackageVolume.IsFullTrustPackageSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PackageVolume.IsFullTrustPackageSupported");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsOffline
 		{
 			get
@@ -73,32 +93,16 @@ namespace Windows.Management.Deployment
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsAppxInstallSupported
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool PackageVolume.IsAppxInstallSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PackageVolume.IsAppxInstallSupported");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsFullTrustPackageSupported
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool PackageVolume.IsFullTrustPackageSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PackageVolume.IsFullTrustPackageSupported");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Management.Deployment.PackageVolume.IsOffline.get
-		// Forced skipping of method Windows.Management.Deployment.PackageVolume.IsSystemVolume.get
-		// Forced skipping of method Windows.Management.Deployment.PackageVolume.MountPoint.get
-		// Forced skipping of method Windows.Management.Deployment.PackageVolume.Name.get
-		// Forced skipping of method Windows.Management.Deployment.PackageVolume.PackageStorePath.get
-		// Forced skipping of method Windows.Management.Deployment.PackageVolume.SupportsHardLinks.get
+		// Forced skipping of method Windows.Management.Deployment.PackageVolume.FromAbi(nint)
+		// Forced skipping of method Windows.Management.Deployment.PackageVolume.operator ==(Windows.Management.Deployment.PackageVolume, Windows.Management.Deployment.PackageVolume)
+		// Forced skipping of method Windows.Management.Deployment.PackageVolume.operator !=(Windows.Management.Deployment.PackageVolume, Windows.Management.Deployment.PackageVolume)
+		// Forced skipping of method Windows.Management.Deployment.PackageVolume.Equals(Windows.Management.Deployment.PackageVolume)
+		// Forced skipping of method Windows.Management.Deployment.PackageVolume.Equals(object)
+		// Forced skipping of method Windows.Management.Deployment.PackageVolume.GetHashCode()
+		// Forced skipping of method Windows.Management.Deployment.PackageVolume.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Management.Deployment.PackageVolume.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Management.Deployment.PackageVolume.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Management.Deployment.PackageVolume.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Package> FindPackages()
@@ -197,8 +201,6 @@ namespace Windows.Management.Deployment
 			throw new global::System.NotImplementedException("The member IList<Package> PackageVolume.FindPackageForUser(string userSecurityId, string packageFullName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CPackage%3E%20PackageVolume.FindPackageForUser%28string%20userSecurityId%2C%20string%20packageFullName%29");
 		}
 #endif
-		// Forced skipping of method Windows.Management.Deployment.PackageVolume.IsFullTrustPackageSupported.get
-		// Forced skipping of method Windows.Management.Deployment.PackageVolume.IsAppxInstallSupported.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<ulong> GetAvailableSpaceAsync()
@@ -206,5 +208,14 @@ namespace Windows.Management.Deployment
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ulong> PackageVolume.GetAvailableSpaceAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Culong%3E%20PackageVolume.GetAvailableSpaceAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Management.Deployment.PackageVolume.IsAppxInstallSupported.get
+		// Forced skipping of method Windows.Management.Deployment.PackageVolume.IsFullTrustPackageSupported.get
+		// Forced skipping of method Windows.Management.Deployment.PackageVolume.IsOffline.get
+		// Forced skipping of method Windows.Management.Deployment.PackageVolume.IsSystemVolume.get
+		// Forced skipping of method Windows.Management.Deployment.PackageVolume.MountPoint.get
+		// Forced skipping of method Windows.Management.Deployment.PackageVolume.Name.get
+		// Forced skipping of method Windows.Management.Deployment.PackageVolume.PackageStorePath.get
+		// Forced skipping of method Windows.Management.Deployment.PackageVolume.SupportsHardLinks.get
+		// Forced skipping of method Windows.Management.Deployment.PackageVolume.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

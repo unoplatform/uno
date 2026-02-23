@@ -23,11 +23,22 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.Core.MseSourceBufferList.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Core.MseSourceBufferList.operator ==(Windows.Media.Core.MseSourceBufferList, Windows.Media.Core.MseSourceBufferList)
+		// Forced skipping of method Windows.Media.Core.MseSourceBufferList.operator !=(Windows.Media.Core.MseSourceBufferList, Windows.Media.Core.MseSourceBufferList)
+		// Forced skipping of method Windows.Media.Core.MseSourceBufferList.Equals(Windows.Media.Core.MseSourceBufferList)
+		// Forced skipping of method Windows.Media.Core.MseSourceBufferList.Equals(object)
+		// Forced skipping of method Windows.Media.Core.MseSourceBufferList.GetHashCode()
+		// Forced skipping of method Windows.Media.Core.MseSourceBufferList.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Core.MseSourceBufferList.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Core.MseSourceBufferList.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Core.MseSourceBufferList.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Core.MseSourceBufferList.SourceBufferAdded.add
 		// Forced skipping of method Windows.Media.Core.MseSourceBufferList.SourceBufferAdded.remove
 		// Forced skipping of method Windows.Media.Core.MseSourceBufferList.SourceBufferRemoved.add
 		// Forced skipping of method Windows.Media.Core.MseSourceBufferList.SourceBufferRemoved.remove
 		// Forced skipping of method Windows.Media.Core.MseSourceBufferList.Buffers.get
+		// Forced skipping of method Windows.Media.Core.MseSourceBufferList.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.MseSourceBufferList, object> SourceBufferAdded

@@ -33,8 +33,24 @@ namespace Windows.UI.Shell
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Shell.TaskbarManager.IsSupported.get
-		// Forced skipping of method Windows.UI.Shell.TaskbarManager.IsPinningAllowed.get
+		// Forced skipping of method Windows.UI.Shell.TaskbarManager.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.UI.Shell.TaskbarManager GetDefault()
+		{
+			throw new global::System.NotImplementedException("The member TaskbarManager TaskbarManager.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TaskbarManager%20TaskbarManager.GetDefault%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.UI.Shell.TaskbarManager.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Shell.TaskbarManager.operator ==(Windows.UI.Shell.TaskbarManager, Windows.UI.Shell.TaskbarManager)
+		// Forced skipping of method Windows.UI.Shell.TaskbarManager.operator !=(Windows.UI.Shell.TaskbarManager, Windows.UI.Shell.TaskbarManager)
+		// Forced skipping of method Windows.UI.Shell.TaskbarManager.Equals(Windows.UI.Shell.TaskbarManager)
+		// Forced skipping of method Windows.UI.Shell.TaskbarManager.Equals(object)
+		// Forced skipping of method Windows.UI.Shell.TaskbarManager.GetHashCode()
+		// Forced skipping of method Windows.UI.Shell.TaskbarManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Shell.TaskbarManager.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Shell.TaskbarManager.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Shell.TaskbarManager.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> IsCurrentAppPinnedAsync()
@@ -84,12 +100,8 @@ namespace Windows.UI.Shell
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> TaskbarManager.TryUnpinSecondaryTileAsync(string tileId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20TaskbarManager.TryUnpinSecondaryTileAsync%28string%20tileId%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Shell.TaskbarManager GetDefault()
-		{
-			throw new global::System.NotImplementedException("The member TaskbarManager TaskbarManager.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TaskbarManager%20TaskbarManager.GetDefault%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.UI.Shell.TaskbarManager.IsPinningAllowed.get
+		// Forced skipping of method Windows.UI.Shell.TaskbarManager.IsSupported.get
+		// Forced skipping of method Windows.UI.Shell.TaskbarManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

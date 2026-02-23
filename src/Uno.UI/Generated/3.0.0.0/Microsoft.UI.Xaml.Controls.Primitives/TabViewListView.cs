@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.TabViewListView.TabViewListView()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.TabViewListView.TabViewListView()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.TabViewListView.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.TabViewListView.TabViewListView(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.TabViewListView.operator ==(Microsoft.UI.Xaml.Controls.Primitives.TabViewListView, Microsoft.UI.Xaml.Controls.Primitives.TabViewListView)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.TabViewListView.operator !=(Microsoft.UI.Xaml.Controls.Primitives.TabViewListView, Microsoft.UI.Xaml.Controls.Primitives.TabViewListView)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.TabViewListView.Equals(Microsoft.UI.Xaml.Controls.Primitives.TabViewListView)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.TabViewListView.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.TabViewListView.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.TabViewListView.TabViewListView(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.TabViewListView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.TabViewListView.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.TabViewListView.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.TabViewListView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -9,6 +9,17 @@ namespace Windows.Devices.Geolocation
 	public partial class StatusChangedEventArgs
 	{
 		// Skipping already declared property Status
+		// Forced skipping of method Windows.Devices.Geolocation.StatusChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Geolocation.StatusChangedEventArgs.operator ==(Windows.Devices.Geolocation.StatusChangedEventArgs, Windows.Devices.Geolocation.StatusChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Geolocation.StatusChangedEventArgs.operator !=(Windows.Devices.Geolocation.StatusChangedEventArgs, Windows.Devices.Geolocation.StatusChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Geolocation.StatusChangedEventArgs.Equals(Windows.Devices.Geolocation.StatusChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Geolocation.StatusChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.Geolocation.StatusChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.Geolocation.StatusChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Geolocation.StatusChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Geolocation.StatusChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Geolocation.StatusChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Geolocation.StatusChangedEventArgs.Status.get
+		// Forced skipping of method Windows.Devices.Geolocation.StatusChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

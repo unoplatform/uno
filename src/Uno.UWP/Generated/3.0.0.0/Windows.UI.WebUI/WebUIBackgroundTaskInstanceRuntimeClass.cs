@@ -15,6 +15,16 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Guid InstanceId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid WebUIBackgroundTaskInstanceRuntimeClass.InstanceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20WebUIBackgroundTaskInstanceRuntimeClass.InstanceId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint Progress
 		{
 			get
@@ -29,11 +39,15 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Guid InstanceId
+		public bool Succeeded
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid WebUIBackgroundTaskInstanceRuntimeClass.InstanceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20WebUIBackgroundTaskInstanceRuntimeClass.InstanceId");
+				throw new global::System.NotImplementedException("The member bool WebUIBackgroundTaskInstanceRuntimeClass.Succeeded is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WebUIBackgroundTaskInstanceRuntimeClass.Succeeded");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass", "bool WebUIBackgroundTaskInstanceRuntimeClass.Succeeded");
 			}
 		}
 #endif
@@ -67,30 +81,16 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Succeeded
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool WebUIBackgroundTaskInstanceRuntimeClass.Succeeded is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WebUIBackgroundTaskInstanceRuntimeClass.Succeeded");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass", "bool WebUIBackgroundTaskInstanceRuntimeClass.Succeeded");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.Succeeded.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.Succeeded.set
-		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.InstanceId.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.Task.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.Progress.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.Progress.set
-		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.TriggerDetails.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.Canceled.add
-		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.Canceled.remove
-		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.SuspendedCount.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.FromAbi(nint)
+		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.operator ==(Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass, Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass)
+		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.operator !=(Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass, Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass)
+		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.Equals(Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass)
+		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.Equals(object)
+		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.GetHashCode()
+		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Background.BackgroundTaskDeferral GetDeferral()
@@ -98,6 +98,17 @@ namespace Windows.UI.WebUI
 			throw new global::System.NotImplementedException("The member BackgroundTaskDeferral WebUIBackgroundTaskInstanceRuntimeClass.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BackgroundTaskDeferral%20WebUIBackgroundTaskInstanceRuntimeClass.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.Canceled.add
+		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.Canceled.remove
+		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.InstanceId.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.Progress.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.Progress.set
+		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.Succeeded.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.Succeeded.set
+		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.SuspendedCount.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.Task.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.TriggerDetails.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIBackgroundTaskInstanceRuntimeClass.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.ApplicationModel.Background.BackgroundTaskCanceledEventHandler Canceled

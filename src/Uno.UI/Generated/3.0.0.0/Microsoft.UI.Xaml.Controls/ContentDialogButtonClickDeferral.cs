@@ -8,6 +8,17 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class ContentDialogButtonClickDeferral
 	{
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral.operator ==(Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral, Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral.operator !=(Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral, Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral.Equals(Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral.Complete()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

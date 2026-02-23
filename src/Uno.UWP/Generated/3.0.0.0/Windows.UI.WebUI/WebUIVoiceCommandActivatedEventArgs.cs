@@ -15,6 +15,16 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIVoiceCommandActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUIVoiceCommandActivatedEventArgs.ActivatedOperation");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.ActivationKind Kind
 		{
 			get
@@ -30,6 +40,16 @@ namespace Windows.UI.WebUI
 			get
 			{
 				throw new global::System.NotImplementedException("The member ApplicationExecutionState WebUIVoiceCommandActivatedEventArgs.PreviousExecutionState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ApplicationExecutionState%20WebUIVoiceCommandActivatedEventArgs.PreviousExecutionState");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.SpeechRecognition.SpeechRecognitionResult Result
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SpeechRecognitionResult WebUIVoiceCommandActivatedEventArgs.Result is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechRecognitionResult%20WebUIVoiceCommandActivatedEventArgs.Result");
 			}
 		}
 #endif
@@ -53,32 +73,23 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.SpeechRecognition.SpeechRecognitionResult Result
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SpeechRecognitionResult WebUIVoiceCommandActivatedEventArgs.Result is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechRecognitionResult%20WebUIVoiceCommandActivatedEventArgs.Result");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIVoiceCommandActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUIVoiceCommandActivatedEventArgs.ActivatedOperation");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.Result.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.operator ==(Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs, Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.operator !=(Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs, Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.Equals(Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.ActivatedOperation.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.PreviousExecutionState.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.Result.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.SplashScreen.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.ActivatedOperation.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.User.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IVoiceCommandActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 		// Processing: Windows.UI.WebUI.IActivatedEventArgsDeferral

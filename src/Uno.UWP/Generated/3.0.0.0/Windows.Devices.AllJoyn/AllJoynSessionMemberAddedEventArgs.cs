@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.AllJoyn
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -27,6 +26,17 @@ namespace Windows.Devices.AllJoyn
 		}
 #endif
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionMemberAddedEventArgs.AllJoynSessionMemberAddedEventArgs(string)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionMemberAddedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionMemberAddedEventArgs.operator ==(Windows.Devices.AllJoyn.AllJoynSessionMemberAddedEventArgs, Windows.Devices.AllJoyn.AllJoynSessionMemberAddedEventArgs)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionMemberAddedEventArgs.operator !=(Windows.Devices.AllJoyn.AllJoynSessionMemberAddedEventArgs, Windows.Devices.AllJoyn.AllJoynSessionMemberAddedEventArgs)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionMemberAddedEventArgs.Equals(Windows.Devices.AllJoyn.AllJoynSessionMemberAddedEventArgs)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionMemberAddedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionMemberAddedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionMemberAddedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionMemberAddedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionMemberAddedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionMemberAddedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionMemberAddedEventArgs.UniqueName.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionMemberAddedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

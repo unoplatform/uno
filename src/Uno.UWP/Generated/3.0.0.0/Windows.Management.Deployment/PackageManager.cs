@@ -26,6 +26,16 @@ namespace Windows.Management.Deployment
 		}
 #endif
 		// Forced skipping of method Windows.Management.Deployment.PackageManager.PackageManager()
+		// Forced skipping of method Windows.Management.Deployment.PackageManager.FromAbi(nint)
+		// Forced skipping of method Windows.Management.Deployment.PackageManager.operator ==(Windows.Management.Deployment.PackageManager, Windows.Management.Deployment.PackageManager)
+		// Forced skipping of method Windows.Management.Deployment.PackageManager.operator !=(Windows.Management.Deployment.PackageManager, Windows.Management.Deployment.PackageManager)
+		// Forced skipping of method Windows.Management.Deployment.PackageManager.Equals(Windows.Management.Deployment.PackageManager)
+		// Forced skipping of method Windows.Management.Deployment.PackageManager.Equals(object)
+		// Forced skipping of method Windows.Management.Deployment.PackageManager.GetHashCode()
+		// Forced skipping of method Windows.Management.Deployment.PackageManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Management.Deployment.PackageManager.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Management.Deployment.PackageManager.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Management.Deployment.PackageManager.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Management.Deployment.DeploymentResult, global::Windows.Management.Deployment.DeploymentProgress> AddPackageAsync(global::System.Uri packageUri, global::System.Collections.Generic.IEnumerable<global::System.Uri> dependencyPackageUris, global::Windows.Management.Deployment.DeploymentOptions deploymentOptions)
@@ -341,7 +351,6 @@ namespace Windows.Management.Deployment
 			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<DeploymentResult, DeploymentProgress> PackageManager.RegisterPackageByFamilyNameAsync(string mainPackageFamilyName, IEnumerable<string> dependencyPackageFamilyNames, DeploymentOptions deploymentOptions, PackageVolume appDataVolume, IEnumerable<string> optionalPackageFamilyNames) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CDeploymentResult%2C%20DeploymentProgress%3E%20PackageManager.RegisterPackageByFamilyNameAsync%28string%20mainPackageFamilyName%2C%20IEnumerable%3Cstring%3E%20dependencyPackageFamilyNames%2C%20DeploymentOptions%20deploymentOptions%2C%20PackageVolume%20appDataVolume%2C%20IEnumerable%3Cstring%3E%20optionalPackageFamilyNames%29");
 		}
 #endif
-		// Forced skipping of method Windows.Management.Deployment.PackageManager.DebugSettings.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Management.Deployment.DeploymentResult, global::Windows.Management.Deployment.DeploymentProgress> ProvisionPackageForAllUsersAsync(string packageFamilyName)
@@ -447,12 +456,7 @@ namespace Windows.Management.Deployment
 			throw new global::System.NotImplementedException("The member PackageStubPreference PackageManager.GetPackageStubPreference(string packageFamilyName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PackageStubPreference%20PackageManager.GetPackageStubPreference%28string%20packageFamilyName%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Management.Deployment.DeploymentResult, global::Windows.Management.Deployment.DeploymentProgress> ProvisionPackageForAllUsersAsync(string mainPackageFamilyName, global::Windows.Management.Deployment.PackageAllUserProvisioningOptions options)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<DeploymentResult, DeploymentProgress> PackageManager.ProvisionPackageForAllUsersAsync(string mainPackageFamilyName, PackageAllUserProvisioningOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CDeploymentResult%2C%20DeploymentProgress%3E%20PackageManager.ProvisionPackageForAllUsersAsync%28string%20mainPackageFamilyName%2C%20PackageAllUserProvisioningOptions%20options%29");
-		}
-#endif
+		// Forced skipping of method Windows.Management.Deployment.PackageManager.DebugSettings.get
+		// Forced skipping of method Windows.Management.Deployment.PackageManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

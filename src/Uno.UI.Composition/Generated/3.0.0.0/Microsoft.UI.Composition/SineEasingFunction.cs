@@ -9,6 +9,16 @@ namespace Microsoft.UI.Composition
 	public partial class SineEasingFunction : global::Microsoft.UI.Composition.CompositionEasingFunction
 	{
 		// Skipping already declared property Mode
+		// Forced skipping of method Microsoft.UI.Composition.SineEasingFunction.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.SineEasingFunction.operator ==(Microsoft.UI.Composition.SineEasingFunction, Microsoft.UI.Composition.SineEasingFunction)
+		// Forced skipping of method Microsoft.UI.Composition.SineEasingFunction.operator !=(Microsoft.UI.Composition.SineEasingFunction, Microsoft.UI.Composition.SineEasingFunction)
+		// Forced skipping of method Microsoft.UI.Composition.SineEasingFunction.Equals(Microsoft.UI.Composition.SineEasingFunction)
+		// Forced skipping of method Microsoft.UI.Composition.SineEasingFunction.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.SineEasingFunction.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.SineEasingFunction.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.SineEasingFunction.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.SineEasingFunction.Mode.get
+		// Forced skipping of method Microsoft.UI.Composition.SineEasingFunction.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.SineEasingFunction.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Contacts
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -49,10 +48,7 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.KnownContactField.Email.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.KnownContactField.PhoneNumber.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.KnownContactField.Location.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.KnownContactField.InstantMessage.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.KnownContactField.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Contacts.ContactFieldType ConvertNameToType(string name)
@@ -67,5 +63,9 @@ namespace Windows.ApplicationModel.Contacts
 			throw new global::System.NotImplementedException("The member string KnownContactField.ConvertTypeToName(ContactFieldType type) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownContactField.ConvertTypeToName%28ContactFieldType%20type%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Contacts.KnownContactField.Email.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.KnownContactField.InstantMessage.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.KnownContactField.Location.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.KnownContactField.PhoneNumber.get
 	}
 }

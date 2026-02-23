@@ -10,6 +10,18 @@ namespace Microsoft.UI.Xaml
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.StateTriggerBase.StateTriggerBase()
 		// Forced skipping of method Microsoft.UI.Xaml.StateTriggerBase.StateTriggerBase()
+		// Forced skipping of method Microsoft.UI.Xaml.StateTriggerBase.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.StateTriggerBase.StateTriggerBase(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.StateTriggerBase.operator ==(Microsoft.UI.Xaml.StateTriggerBase, Microsoft.UI.Xaml.StateTriggerBase)
+		// Forced skipping of method Microsoft.UI.Xaml.StateTriggerBase.operator !=(Microsoft.UI.Xaml.StateTriggerBase, Microsoft.UI.Xaml.StateTriggerBase)
+		// Forced skipping of method Microsoft.UI.Xaml.StateTriggerBase.Equals(Microsoft.UI.Xaml.StateTriggerBase)
+		// Forced skipping of method Microsoft.UI.Xaml.StateTriggerBase.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.StateTriggerBase.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.StateTriggerBase.StateTriggerBase(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.StateTriggerBase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.StateTriggerBase.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.StateTriggerBase.SetActive(bool)
+		// Forced skipping of method Microsoft.UI.Xaml.StateTriggerBase.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.StateTriggerBase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,29 +10,15 @@ namespace Windows.Devices.Usb
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Usb.UsbControlRecipient Recipient
+		public byte AsByte
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbControlRecipient UsbControlRequestType.Recipient is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UsbControlRecipient%20UsbControlRequestType.Recipient");
+				throw new global::System.NotImplementedException("The member byte UsbControlRequestType.AsByte is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20UsbControlRequestType.AsByte");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbControlRequestType", "UsbControlRecipient UsbControlRequestType.Recipient");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Usb.UsbTransferDirection Direction
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member UsbTransferDirection UsbControlRequestType.Direction is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UsbTransferDirection%20UsbControlRequestType.Direction");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbControlRequestType", "UsbTransferDirection UsbControlRequestType.Direction");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbControlRequestType", "byte UsbControlRequestType.AsByte");
 			}
 		}
 #endif
@@ -52,15 +38,29 @@ namespace Windows.Devices.Usb
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public byte AsByte
+		public global::Windows.Devices.Usb.UsbTransferDirection Direction
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte UsbControlRequestType.AsByte is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20UsbControlRequestType.AsByte");
+				throw new global::System.NotImplementedException("The member UsbTransferDirection UsbControlRequestType.Direction is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UsbTransferDirection%20UsbControlRequestType.Direction");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbControlRequestType", "byte UsbControlRequestType.AsByte");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbControlRequestType", "UsbTransferDirection UsbControlRequestType.Direction");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Usb.UsbControlRecipient Recipient
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member UsbControlRecipient UsbControlRequestType.Recipient is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UsbControlRecipient%20UsbControlRequestType.Recipient");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbControlRequestType", "UsbControlRecipient UsbControlRequestType.Recipient");
 			}
 		}
 #endif
@@ -72,13 +72,24 @@ namespace Windows.Devices.Usb
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.UsbControlRequestType()
-		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.Direction.get
-		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.Direction.set
-		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.ControlTransferType.get
-		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.ControlTransferType.set
-		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.Recipient.get
-		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.Recipient.set
+		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.operator ==(Windows.Devices.Usb.UsbControlRequestType, Windows.Devices.Usb.UsbControlRequestType)
+		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.operator !=(Windows.Devices.Usb.UsbControlRequestType, Windows.Devices.Usb.UsbControlRequestType)
+		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.Equals(Windows.Devices.Usb.UsbControlRequestType)
+		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.Equals(object)
+		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.GetHashCode()
+		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.AsByte.get
 		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.AsByte.set
+		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.ControlTransferType.get
+		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.ControlTransferType.set
+		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.Direction.get
+		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.Direction.set
+		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.Recipient.get
+		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.Recipient.set
+		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

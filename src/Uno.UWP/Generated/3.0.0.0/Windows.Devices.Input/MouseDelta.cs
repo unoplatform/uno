@@ -10,6 +10,19 @@ namespace Windows.Devices.Input
 	{
 		// Forced skipping of method Windows.Devices.Input.MouseDelta.MouseDelta()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public MouseDelta(int _X, int _Y)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.MouseDelta", "MouseDelta.MouseDelta(int _X, int _Y)");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Input.MouseDelta.MouseDelta(int, int)
+		// Forced skipping of method Windows.Devices.Input.MouseDelta.operator ==(Windows.Devices.Input.MouseDelta, Windows.Devices.Input.MouseDelta)
+		// Forced skipping of method Windows.Devices.Input.MouseDelta.operator !=(Windows.Devices.Input.MouseDelta, Windows.Devices.Input.MouseDelta)
+		// Forced skipping of method Windows.Devices.Input.MouseDelta.Equals(Windows.Devices.Input.MouseDelta)
+		// Forced skipping of method Windows.Devices.Input.MouseDelta.Equals(object)
+		// Forced skipping of method Windows.Devices.Input.MouseDelta.GetHashCode()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public int X;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

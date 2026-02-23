@@ -13,6 +13,16 @@ namespace Windows.Media.Capture.Frames
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReference.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReference.operator ==(Windows.Media.Capture.Frames.MultiSourceMediaFrameReference, Windows.Media.Capture.Frames.MultiSourceMediaFrameReference)
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReference.operator !=(Windows.Media.Capture.Frames.MultiSourceMediaFrameReference, Windows.Media.Capture.Frames.MultiSourceMediaFrameReference)
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReference.Equals(Windows.Media.Capture.Frames.MultiSourceMediaFrameReference)
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReference.Equals(object)
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReference.GetHashCode()
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReference.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReference.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReference.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReference.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Capture.Frames.MediaFrameReference TryGetFrameReferenceBySourceId(string sourceId)
@@ -27,6 +37,7 @@ namespace Windows.Media.Capture.Frames
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.Frames.MultiSourceMediaFrameReference", "void MultiSourceMediaFrameReference.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReference.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

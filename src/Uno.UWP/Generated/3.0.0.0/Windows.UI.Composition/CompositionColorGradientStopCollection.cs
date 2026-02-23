@@ -6,7 +6,7 @@ namespace Windows.UI.Composition
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CompositionColorGradientStopCollection : global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.CompositionColorGradientStop>, global::System.Collections.Generic.IList<global::Windows.UI.Composition.CompositionColorGradientStop>
+	public partial class CompositionColorGradientStopCollection : global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.CompositionColorGradientStop>, global::System.Collections.IEnumerable, global::System.Collections.Generic.IList<global::Windows.UI.Composition.CompositionColorGradientStop>, global::System.Collections.Generic.ICollection<global::Windows.UI.Composition.CompositionColorGradientStop>
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal CompositionColorGradientStopCollection()
@@ -15,36 +15,120 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
+		public int Count
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CompositionColorGradientStopCollection.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CompositionColorGradientStopCollection.Size");
+				throw new global::System.NotImplementedException("The member int CompositionColorGradientStopCollection.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CompositionColorGradientStopCollection.Count");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.First()
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.GetAt(uint)
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.Size.get
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.GetView()
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.IndexOf(Windows.UI.Composition.CompositionColorGradientStop, out uint)
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.SetAt(uint, Windows.UI.Composition.CompositionColorGradientStop)
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.InsertAt(uint, Windows.UI.Composition.CompositionColorGradientStop)
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.RemoveAt(uint)
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.Append(Windows.UI.Composition.CompositionColorGradientStop)
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.RemoveAtEnd()
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.Clear()
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.GetMany(uint, Windows.UI.Composition.CompositionColorGradientStop[])
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.ReplaceAll(Windows.UI.Composition.CompositionColorGradientStop[])
-		// Processing: System.Collections.Generic.IEnumerable<Windows.UI.Composition.CompositionColorGradientStop>
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.UI.Composition.CompositionColorGradientStop>
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsReadOnly
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool CompositionColorGradientStopCollection.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CompositionColorGradientStopCollection.IsReadOnly");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Composition.CompositionColorGradientStop this[int index]
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CompositionColorGradientStop CompositionColorGradientStopCollection.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionColorGradientStop%20CompositionColorGradientStopCollection.this%5Bint%20index%5D");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionColorGradientStopCollection", "CompositionColorGradientStop CompositionColorGradientStopCollection.this[int index]");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.operator ==(Windows.UI.Composition.CompositionColorGradientStopCollection, Windows.UI.Composition.CompositionColorGradientStopCollection)
+		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.operator !=(Windows.UI.Composition.CompositionColorGradientStopCollection, Windows.UI.Composition.CompositionColorGradientStopCollection)
+		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.Equals(Windows.UI.Composition.CompositionColorGradientStopCollection)
+		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.UI.Composition.CompositionColorGradientStop> GetEnumerator()
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member IEnumerator<CompositionColorGradientStop> CompositionColorGradientStopCollection.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CCompositionColorGradientStop%3E%20CompositionColorGradientStopCollection.GetEnumerator%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.Count.get
+		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.IsReadOnly.get
+		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.this[int].get
+		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.this[int].set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int IndexOf(global::Windows.UI.Composition.CompositionColorGradientStop item)
+		{
+			throw new global::System.NotImplementedException("The member int CompositionColorGradientStopCollection.IndexOf(CompositionColorGradientStop item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CompositionColorGradientStopCollection.IndexOf%28CompositionColorGradientStop%20item%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Insert(int index, global::Windows.UI.Composition.CompositionColorGradientStop item)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionColorGradientStopCollection", "void CompositionColorGradientStopCollection.Insert(int index, CompositionColorGradientStop item)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void RemoveAt(int index)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionColorGradientStopCollection", "void CompositionColorGradientStopCollection.RemoveAt(int index)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Add(global::Windows.UI.Composition.CompositionColorGradientStop item)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionColorGradientStopCollection", "void CompositionColorGradientStopCollection.Add(CompositionColorGradientStop item)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Clear()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionColorGradientStopCollection", "void CompositionColorGradientStopCollection.Clear()");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Contains(global::Windows.UI.Composition.CompositionColorGradientStop item)
+		{
+			throw new global::System.NotImplementedException("The member bool CompositionColorGradientStopCollection.Contains(CompositionColorGradientStop item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CompositionColorGradientStopCollection.Contains%28CompositionColorGradientStop%20item%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void CopyTo(global::Windows.UI.Composition.CompositionColorGradientStop[] array, int arrayIndex)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionColorGradientStopCollection", "void CompositionColorGradientStopCollection.CopyTo(CompositionColorGradientStop[] array, int arrayIndex)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Remove(global::Windows.UI.Composition.CompositionColorGradientStop item)
+		{
+			throw new global::System.NotImplementedException("The member bool CompositionColorGradientStopCollection.Remove(CompositionColorGradientStop item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CompositionColorGradientStopCollection.Remove%28CompositionColorGradientStop%20item%29");
+		}
+#endif
+		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.System.Collections.Generic.IList<Windows.UI.Composition.CompositionColorGradientStop>.get_Item(int)
+		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.System.Collections.Generic.IList<Windows.UI.Composition.CompositionColorGradientStop>.set_Item(int, Windows.UI.Composition.CompositionColorGradientStop)
+		// Processing: System.Collections.Generic.IEnumerable<Windows.UI.Composition.CompositionColorGradientStop>
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable
@@ -55,104 +139,6 @@ namespace Windows.UI.Composition
 		}
 #endif
 		// Processing: System.Collections.Generic.IList<Windows.UI.Composition.CompositionColorGradientStop>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IList<Windows.UI.Composition.CompositionColorGradientStop>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int IndexOf(global::Windows.UI.Composition.CompositionColorGradientStop item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IList<Windows.UI.Composition.CompositionColorGradientStop>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Insert(int index, global::Windows.UI.Composition.CompositionColorGradientStop item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IList<Windows.UI.Composition.CompositionColorGradientStop>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void RemoveAt(int index)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Composition.CompositionColorGradientStop this[int index]
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
 		// Processing: System.Collections.Generic.ICollection<Windows.UI.Composition.CompositionColorGradientStop>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Composition.CompositionColorGradientStop>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Add(global::Windows.UI.Composition.CompositionColorGradientStop item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Composition.CompositionColorGradientStop>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Clear()
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Composition.CompositionColorGradientStop>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Contains(global::Windows.UI.Composition.CompositionColorGradientStop item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Composition.CompositionColorGradientStop>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void CopyTo(global::Windows.UI.Composition.CompositionColorGradientStop[] array, int arrayIndex)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Composition.CompositionColorGradientStop>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Remove(global::Windows.UI.Composition.CompositionColorGradientStop item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Count
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsReadOnly
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
 	}
 }

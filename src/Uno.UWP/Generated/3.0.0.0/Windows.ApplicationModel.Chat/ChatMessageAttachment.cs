@@ -10,29 +10,15 @@ namespace Windows.ApplicationModel.Chat
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Text
+		public global::Windows.Storage.Streams.IRandomAccessStreamReference DataStreamReference
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ChatMessageAttachment.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatMessageAttachment.Text");
+				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference ChatMessageAttachment.DataStreamReference is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20ChatMessageAttachment.DataStreamReference");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessageAttachment", "string ChatMessageAttachment.Text");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string MimeType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ChatMessageAttachment.MimeType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatMessageAttachment.MimeType");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessageAttachment", "string ChatMessageAttachment.MimeType");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessageAttachment", "IRandomAccessStreamReference ChatMessageAttachment.DataStreamReference");
 			}
 		}
 #endif
@@ -52,43 +38,15 @@ namespace Windows.ApplicationModel.Chat
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Streams.IRandomAccessStreamReference DataStreamReference
+		public string MimeType
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference ChatMessageAttachment.DataStreamReference is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20ChatMessageAttachment.DataStreamReference");
+				throw new global::System.NotImplementedException("The member string ChatMessageAttachment.MimeType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatMessageAttachment.MimeType");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessageAttachment", "IRandomAccessStreamReference ChatMessageAttachment.DataStreamReference");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double TransferProgress
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double ChatMessageAttachment.TransferProgress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ChatMessageAttachment.TransferProgress");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessageAttachment", "double ChatMessageAttachment.TransferProgress");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Streams.IRandomAccessStreamReference Thumbnail
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference ChatMessageAttachment.Thumbnail is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20ChatMessageAttachment.Thumbnail");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessageAttachment", "IRandomAccessStreamReference ChatMessageAttachment.Thumbnail");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessageAttachment", "string ChatMessageAttachment.MimeType");
 			}
 		}
 #endif
@@ -108,25 +66,78 @@ namespace Windows.ApplicationModel.Chat
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Text
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string ChatMessageAttachment.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatMessageAttachment.Text");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessageAttachment", "string ChatMessageAttachment.Text");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.Streams.IRandomAccessStreamReference Thumbnail
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference ChatMessageAttachment.Thumbnail is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20ChatMessageAttachment.Thumbnail");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessageAttachment", "IRandomAccessStreamReference ChatMessageAttachment.Thumbnail");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double TransferProgress
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double ChatMessageAttachment.TransferProgress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ChatMessageAttachment.TransferProgress");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessageAttachment", "double ChatMessageAttachment.TransferProgress");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ChatMessageAttachment(string mimeType, global::Windows.Storage.Streams.IRandomAccessStreamReference dataStreamReference)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessageAttachment", "ChatMessageAttachment.ChatMessageAttachment(string mimeType, IRandomAccessStreamReference dataStreamReference)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.ChatMessageAttachment(string, Windows.Storage.Streams.IRandomAccessStreamReference)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.operator ==(Windows.ApplicationModel.Chat.ChatMessageAttachment, Windows.ApplicationModel.Chat.ChatMessageAttachment)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.operator !=(Windows.ApplicationModel.Chat.ChatMessageAttachment, Windows.ApplicationModel.Chat.ChatMessageAttachment)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.Equals(Windows.ApplicationModel.Chat.ChatMessageAttachment)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.DataStreamReference.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.DataStreamReference.set
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.GroupId.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.GroupId.set
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.MimeType.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.MimeType.set
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.OriginalFileName.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.OriginalFileName.set
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.Text.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.Text.set
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.Thumbnail.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.Thumbnail.set
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.TransferProgress.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.TransferProgress.set
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.OriginalFileName.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.OriginalFileName.set
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

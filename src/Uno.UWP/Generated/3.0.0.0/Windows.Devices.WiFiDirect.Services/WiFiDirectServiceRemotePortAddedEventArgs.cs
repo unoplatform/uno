@@ -33,7 +33,18 @@ namespace Windows.Devices.WiFiDirect.Services
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceRemotePortAddedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceRemotePortAddedEventArgs.operator ==(Windows.Devices.WiFiDirect.Services.WiFiDirectServiceRemotePortAddedEventArgs, Windows.Devices.WiFiDirect.Services.WiFiDirectServiceRemotePortAddedEventArgs)
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceRemotePortAddedEventArgs.operator !=(Windows.Devices.WiFiDirect.Services.WiFiDirectServiceRemotePortAddedEventArgs, Windows.Devices.WiFiDirect.Services.WiFiDirectServiceRemotePortAddedEventArgs)
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceRemotePortAddedEventArgs.Equals(Windows.Devices.WiFiDirect.Services.WiFiDirectServiceRemotePortAddedEventArgs)
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceRemotePortAddedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceRemotePortAddedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceRemotePortAddedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceRemotePortAddedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceRemotePortAddedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceRemotePortAddedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceRemotePortAddedEventArgs.EndpointPairs.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceRemotePortAddedEventArgs.Protocol.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceRemotePortAddedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

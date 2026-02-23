@@ -63,13 +63,24 @@ namespace Windows.UI.WindowManagement
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.DisplayMonitorDeviceId.get
-		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.IsVisible.get
-		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.WorkAreaOffset.get
-		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.WorkAreaSize.get
-		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.WindowingEnvironment.get
+		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.FromAbi(nint)
+		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.operator ==(Windows.UI.WindowManagement.DisplayRegion, Windows.UI.WindowManagement.DisplayRegion)
+		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.operator !=(Windows.UI.WindowManagement.DisplayRegion, Windows.UI.WindowManagement.DisplayRegion)
+		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.Equals(Windows.UI.WindowManagement.DisplayRegion)
+		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.Equals(object)
+		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.GetHashCode()
+		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.Changed.add
 		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.Changed.remove
+		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.DisplayMonitorDeviceId.get
+		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.IsVisible.get
+		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.WindowingEnvironment.get
+		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.WorkAreaOffset.get
+		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.WorkAreaSize.get
+		// Forced skipping of method Windows.UI.WindowManagement.DisplayRegion.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.WindowManagement.DisplayRegion, object> Changed

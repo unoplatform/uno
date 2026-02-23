@@ -23,6 +23,17 @@ namespace Windows.Graphics.Printing
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskProgressingEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskProgressingEventArgs.operator ==(Windows.Graphics.Printing.PrintTaskProgressingEventArgs, Windows.Graphics.Printing.PrintTaskProgressingEventArgs)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskProgressingEventArgs.operator !=(Windows.Graphics.Printing.PrintTaskProgressingEventArgs, Windows.Graphics.Printing.PrintTaskProgressingEventArgs)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskProgressingEventArgs.Equals(Windows.Graphics.Printing.PrintTaskProgressingEventArgs)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskProgressingEventArgs.Equals(object)
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskProgressingEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskProgressingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskProgressingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskProgressingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskProgressingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintTaskProgressingEventArgs.DocumentPageCount.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTaskProgressingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

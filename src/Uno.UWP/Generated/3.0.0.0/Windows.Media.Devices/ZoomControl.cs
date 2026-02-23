@@ -15,20 +15,6 @@ namespace Windows.Media.Devices
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float Value
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float ZoomControl.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ZoomControl.Value");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.ZoomControl", "float ZoomControl.Value");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public float Max
 		{
 			get
@@ -44,6 +30,16 @@ namespace Windows.Media.Devices
 			get
 			{
 				throw new global::System.NotImplementedException("The member float ZoomControl.Min is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ZoomControl.Min");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Devices.ZoomTransitionMode Mode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ZoomTransitionMode ZoomControl.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ZoomTransitionMode%20ZoomControl.Mode");
 			}
 		}
 #endif
@@ -69,16 +65,6 @@ namespace Windows.Media.Devices
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Devices.ZoomTransitionMode Mode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ZoomTransitionMode ZoomControl.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ZoomTransitionMode%20ZoomControl.Mode");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Devices.ZoomTransitionMode> SupportedModes
 		{
 			get
@@ -87,14 +73,30 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.ZoomControl.Supported.get
-		// Forced skipping of method Windows.Media.Devices.ZoomControl.Min.get
-		// Forced skipping of method Windows.Media.Devices.ZoomControl.Max.get
-		// Forced skipping of method Windows.Media.Devices.ZoomControl.Step.get
-		// Forced skipping of method Windows.Media.Devices.ZoomControl.Value.get
-		// Forced skipping of method Windows.Media.Devices.ZoomControl.Value.set
-		// Forced skipping of method Windows.Media.Devices.ZoomControl.SupportedModes.get
-		// Forced skipping of method Windows.Media.Devices.ZoomControl.Mode.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float Value
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float ZoomControl.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ZoomControl.Value");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.ZoomControl", "float ZoomControl.Value");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Media.Devices.ZoomControl.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Devices.ZoomControl.operator ==(Windows.Media.Devices.ZoomControl, Windows.Media.Devices.ZoomControl)
+		// Forced skipping of method Windows.Media.Devices.ZoomControl.operator !=(Windows.Media.Devices.ZoomControl, Windows.Media.Devices.ZoomControl)
+		// Forced skipping of method Windows.Media.Devices.ZoomControl.Equals(Windows.Media.Devices.ZoomControl)
+		// Forced skipping of method Windows.Media.Devices.ZoomControl.Equals(object)
+		// Forced skipping of method Windows.Media.Devices.ZoomControl.GetHashCode()
+		// Forced skipping of method Windows.Media.Devices.ZoomControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Devices.ZoomControl.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Devices.ZoomControl.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Devices.ZoomControl.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Configure(global::Windows.Media.Devices.ZoomSettings settings)
@@ -102,5 +104,14 @@ namespace Windows.Media.Devices
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.ZoomControl", "void ZoomControl.Configure(ZoomSettings settings)");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Devices.ZoomControl.Max.get
+		// Forced skipping of method Windows.Media.Devices.ZoomControl.Min.get
+		// Forced skipping of method Windows.Media.Devices.ZoomControl.Mode.get
+		// Forced skipping of method Windows.Media.Devices.ZoomControl.Step.get
+		// Forced skipping of method Windows.Media.Devices.ZoomControl.Supported.get
+		// Forced skipping of method Windows.Media.Devices.ZoomControl.SupportedModes.get
+		// Forced skipping of method Windows.Media.Devices.ZoomControl.Value.get
+		// Forced skipping of method Windows.Media.Devices.ZoomControl.Value.set
+		// Forced skipping of method Windows.Media.Devices.ZoomControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

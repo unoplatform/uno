@@ -53,10 +53,16 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest.SessionId.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest.ContactListId.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest.Options.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest.SuggestedBatchSize.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest.operator ==(Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest, Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest.operator !=(Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest, Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest.Equals(Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SaveContactAsync(global::Windows.ApplicationModel.Contacts.Contact contact)
@@ -78,5 +84,10 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 			throw new global::System.NotImplementedException("The member IAsyncAction ContactListServerSearchReadBatchRequest.ReportFailedAsync(ContactBatchStatus batchStatus) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ContactListServerSearchReadBatchRequest.ReportFailedAsync%28ContactBatchStatus%20batchStatus%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest.ContactListId.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest.Options.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest.SessionId.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest.SuggestedBatchSize.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,6 +10,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty TargetNameProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(TargetName), typeof(string),
+			typeof(global::Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(string)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string TargetName
 		{
 			get
@@ -24,22 +32,25 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty TargetNameProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(TargetName), typeof(string),
-			typeof(global::Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(string)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PointerDownThemeAnimation() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation", "PointerDownThemeAnimation.PointerDownThemeAnimation()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.PointerDownThemeAnimation()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.TargetNameProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.operator ==(Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation, Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.operator !=(Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation, Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.Equals(Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.TargetName.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.TargetName.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.TargetNameProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointerDownThemeAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

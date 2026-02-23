@@ -11,8 +11,19 @@ namespace Windows.Devices.Geolocation
 		// Skipping already declared property CivicAddress
 		// Skipping already declared property Coordinate
 		// Skipping already declared property VenueData
-		// Forced skipping of method Windows.Devices.Geolocation.Geoposition.Coordinate.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geoposition.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Geolocation.Geoposition.operator ==(Windows.Devices.Geolocation.Geoposition, Windows.Devices.Geolocation.Geoposition)
+		// Forced skipping of method Windows.Devices.Geolocation.Geoposition.operator !=(Windows.Devices.Geolocation.Geoposition, Windows.Devices.Geolocation.Geoposition)
+		// Forced skipping of method Windows.Devices.Geolocation.Geoposition.Equals(Windows.Devices.Geolocation.Geoposition)
+		// Forced skipping of method Windows.Devices.Geolocation.Geoposition.Equals(object)
+		// Forced skipping of method Windows.Devices.Geolocation.Geoposition.GetHashCode()
+		// Forced skipping of method Windows.Devices.Geolocation.Geoposition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geoposition.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geoposition.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geoposition.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geoposition.CivicAddress.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geoposition.Coordinate.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geoposition.VenueData.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geoposition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

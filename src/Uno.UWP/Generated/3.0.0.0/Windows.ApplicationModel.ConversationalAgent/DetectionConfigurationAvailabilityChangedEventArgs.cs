@@ -23,6 +23,17 @@ namespace Windows.ApplicationModel.ConversationalAgent
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityChangedEventArgs.operator ==(Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityChangedEventArgs, Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityChangedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityChangedEventArgs.operator !=(Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityChangedEventArgs, Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityChangedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityChangedEventArgs.Equals(Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityChangedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityChangedEventArgs.Kind.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

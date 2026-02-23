@@ -8,71 +8,6 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class FrameworkElement
 	{
-		// Skipping already declared property Width
-		// Skipping already declared property VerticalAlignment
-		// Skipping already declared property Tag
-		// Skipping already declared property Style
-		// Skipping already declared property Resources
-		// Skipping already declared property RequestedTheme
-		// Skipping already declared property Name
-		// Skipping already declared property MinWidth
-		// Skipping already declared property MinHeight
-		// Skipping already declared property MaxWidth
-		// Skipping already declared property MaxHeight
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public global::Microsoft.UI.Xaml.Thickness Margin
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Thickness)this.GetValue(MarginProperty);
-			}
-			set
-			{
-				this.SetValue(MarginProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Language
-		{
-			get
-			{
-				return (string)this.GetValue(LanguageProperty);
-			}
-			set
-			{
-				this.SetValue(LanguageProperty, value);
-			}
-		}
-#endif
-		// Skipping already declared property HorizontalAlignment
-		// Skipping already declared property Height
-		// Skipping already declared property FocusVisualSecondaryThickness
-		// Skipping already declared property FocusVisualSecondaryBrush
-		// Skipping already declared property FocusVisualPrimaryThickness
-		// Skipping already declared property FocusVisualPrimaryBrush
-		// Skipping already declared property FocusVisualMargin
-		// Skipping already declared property FlowDirection
-		// Skipping already declared property AllowFocusWhenDisabled
-		// Skipping already declared property AllowFocusOnInteraction
-		// Skipping already declared property ActualHeight
-		// Skipping already declared property ActualTheme
-		// Skipping already declared property ActualWidth
-		// Skipping already declared property BaseUri
-		// Skipping already declared property IsLoaded
-		// Skipping already declared property Parent
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.TriggerCollection Triggers
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TriggerCollection FrameworkElement.Triggers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TriggerCollection%20FrameworkElement.Triggers");
-			}
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ActualHeightProperty { get; } =
@@ -140,113 +75,74 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property TagProperty
 		// Skipping already declared property VerticalAlignmentProperty
 		// Skipping already declared property WidthProperty
+		// Skipping already declared property ActualHeight
+		// Skipping already declared property ActualTheme
+		// Skipping already declared property ActualWidth
+		// Skipping already declared property AllowFocusOnInteraction
+		// Skipping already declared property AllowFocusWhenDisabled
+		// Skipping already declared property BaseUri
+		// Skipping already declared property FlowDirection
+		// Skipping already declared property FocusVisualMargin
+		// Skipping already declared property FocusVisualPrimaryBrush
+		// Skipping already declared property FocusVisualPrimaryThickness
+		// Skipping already declared property FocusVisualSecondaryBrush
+		// Skipping already declared property FocusVisualSecondaryThickness
+		// Skipping already declared property Height
+		// Skipping already declared property HorizontalAlignment
+		// Skipping already declared property IsLoaded
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Language
+		{
+			get
+			{
+				return (string)this.GetValue(LanguageProperty);
+			}
+			set
+			{
+				this.SetValue(LanguageProperty, value);
+			}
+		}
+#endif
+#if false || false || false || IS_UNIT_TESTS || false || false || false
+		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
+		public global::Microsoft.UI.Xaml.Thickness Margin
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Thickness)this.GetValue(MarginProperty);
+			}
+			set
+			{
+				this.SetValue(MarginProperty, value);
+			}
+		}
+#endif
+		// Skipping already declared property MaxHeight
+		// Skipping already declared property MaxWidth
+		// Skipping already declared property MinHeight
+		// Skipping already declared property MinWidth
+		// Skipping already declared property Name
+		// Skipping already declared property Parent
+		// Skipping already declared property RequestedTheme
+		// Skipping already declared property Resources
+		// Skipping already declared property Style
+		// Skipping already declared property Tag
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.TriggerCollection Triggers
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TriggerCollection FrameworkElement.Triggers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TriggerCollection%20FrameworkElement.Triggers");
+			}
+		}
+#endif
+		// Skipping already declared property VerticalAlignment
+		// Skipping already declared property Width
 		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.FrameworkElement()
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FrameworkElement()
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Triggers.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Resources.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Resources.set
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Tag.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Tag.set
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Language.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Language.set
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.ActualWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.ActualHeight.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Width.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Width.set
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Height.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Height.set
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.MinWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.MinWidth.set
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.MaxWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.MaxWidth.set
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.MinHeight.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.MinHeight.set
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.MaxHeight.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.MaxHeight.set
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.HorizontalAlignment.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.HorizontalAlignment.set
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.VerticalAlignment.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.VerticalAlignment.set
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Margin.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Margin.set
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Name.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Name.set
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.BaseUri.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.DataContext.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.DataContext.set
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.AllowFocusOnInteraction.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.AllowFocusOnInteraction.set
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualMargin.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualMargin.set
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualSecondaryThickness.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualSecondaryThickness.set
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualPrimaryThickness.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualPrimaryThickness.set
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualSecondaryBrush.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualSecondaryBrush.set
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualPrimaryBrush.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualPrimaryBrush.set
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.AllowFocusWhenDisabled.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.AllowFocusWhenDisabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Style.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Style.set
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Parent.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FlowDirection.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FlowDirection.set
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.RequestedTheme.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.RequestedTheme.set
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.IsLoaded.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.ActualTheme.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Loaded.add
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Loaded.remove
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Unloaded.add
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Unloaded.remove
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.DataContextChanged.add
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.DataContextChanged.remove
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.SizeChanged.add
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.SizeChanged.remove
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.LayoutUpdated.add
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.LayoutUpdated.remove
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Loading.add
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Loading.remove
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.ActualThemeChanged.add
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.ActualThemeChanged.remove
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.EffectiveViewportChanged.add
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.EffectiveViewportChanged.remove
-		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.FindName(string)
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.SetBinding(Microsoft.UI.Xaml.DependencyProperty, Microsoft.UI.Xaml.Data.BindingBase)
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.GetBindingExpression(Microsoft.UI.Xaml.DependencyProperty)
-		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.InvalidateViewport()
-		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.MeasureOverride(Windows.Foundation.Size)
-		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.ArrangeOverride(Windows.Foundation.Size)
-		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.OnApplyTemplate()
-		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.GoToElementStateCore(string, bool)
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.TagProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.LanguageProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.ActualWidthProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.ActualHeightProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.WidthProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.HeightProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.MinWidthProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.MaxWidthProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.MinHeightProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.MaxHeightProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.HorizontalAlignmentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.VerticalAlignmentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.MarginProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.NameProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.DataContextProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.AllowFocusOnInteractionProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualMarginProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualSecondaryThicknessProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualPrimaryThicknessProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualSecondaryBrushProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualPrimaryBrushProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.AllowFocusWhenDisabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.StyleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FlowDirectionProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.RequestedThemeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.ActualThemeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void DeferTree(global::Microsoft.UI.Xaml.DependencyObject element)
@@ -254,6 +150,127 @@ namespace Microsoft.UI.Xaml
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.FrameworkElement", "void FrameworkElement.DeferTree(DependencyObject element)");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.ActualHeightProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.ActualThemeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.ActualWidthProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.AllowFocusOnInteractionProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.AllowFocusWhenDisabledProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.DataContextProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FlowDirectionProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualMarginProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualPrimaryBrushProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualPrimaryThicknessProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualSecondaryBrushProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualSecondaryThicknessProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.HeightProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.HorizontalAlignmentProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.LanguageProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.MarginProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.MaxHeightProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.MaxWidthProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.MinHeightProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.MinWidthProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.NameProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.RequestedThemeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.StyleProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.TagProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.VerticalAlignmentProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.WidthProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FrameworkElement(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.operator ==(Microsoft.UI.Xaml.FrameworkElement, Microsoft.UI.Xaml.FrameworkElement)
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.operator !=(Microsoft.UI.Xaml.FrameworkElement, Microsoft.UI.Xaml.FrameworkElement)
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Equals(Microsoft.UI.Xaml.FrameworkElement)
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FrameworkElement(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.WinRT.IWinRTObject.NativeObject.get
+		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.FindName(string)
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.SetBinding(Microsoft.UI.Xaml.DependencyProperty, Microsoft.UI.Xaml.Data.BindingBase)
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.GetBindingExpression(Microsoft.UI.Xaml.DependencyProperty)
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.ActualThemeChanged.add
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.ActualThemeChanged.remove
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.DataContextChanged.add
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.DataContextChanged.remove
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.EffectiveViewportChanged.add
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.EffectiveViewportChanged.remove
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.LayoutUpdated.add
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.LayoutUpdated.remove
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Loaded.add
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Loaded.remove
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Loading.add
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Loading.remove
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.SizeChanged.add
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.SizeChanged.remove
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Unloaded.add
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Unloaded.remove
+		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.InvalidateViewport()
+		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.MeasureOverride(Windows.Foundation.Size)
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Microsoft.UI.Xaml.IFrameworkElementOverrides.MeasureOverride(Windows.Foundation.Size)
+		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.ArrangeOverride(Windows.Foundation.Size)
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Microsoft.UI.Xaml.IFrameworkElementOverrides.ArrangeOverride(Windows.Foundation.Size)
+		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.OnApplyTemplate()
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Microsoft.UI.Xaml.IFrameworkElementOverrides.OnApplyTemplate()
+		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.GoToElementStateCore(string, bool)
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Microsoft.UI.Xaml.IFrameworkElementOverrides.GoToElementStateCore(string, bool)
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.ActualHeight.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.ActualTheme.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.ActualWidth.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.AllowFocusOnInteraction.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.AllowFocusOnInteraction.set
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.AllowFocusWhenDisabled.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.AllowFocusWhenDisabled.set
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.BaseUri.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.DataContext.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.DataContext.set
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FlowDirection.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FlowDirection.set
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualMargin.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualMargin.set
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualPrimaryBrush.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualPrimaryBrush.set
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualPrimaryThickness.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualPrimaryThickness.set
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualSecondaryBrush.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualSecondaryBrush.set
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualSecondaryThickness.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FocusVisualSecondaryThickness.set
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Height.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Height.set
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.HorizontalAlignment.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.HorizontalAlignment.set
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.IsLoaded.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Language.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Language.set
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Margin.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Margin.set
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.MaxHeight.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.MaxHeight.set
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.MaxWidth.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.MaxWidth.set
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.MinHeight.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.MinHeight.set
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.MinWidth.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.MinWidth.set
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Name.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Name.set
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Parent.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.RequestedTheme.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.RequestedTheme.set
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Resources.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Resources.set
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Style.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Style.set
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Tag.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Tag.set
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Triggers.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.VerticalAlignment.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.VerticalAlignment.set
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Width.get
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Width.set
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.ActualThemeChanged
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.EffectiveViewportChanged
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.LayoutUpdated

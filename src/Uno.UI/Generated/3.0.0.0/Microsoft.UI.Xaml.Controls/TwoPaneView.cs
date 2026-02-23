@@ -8,16 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class TwoPaneView : global::Microsoft.UI.Xaml.Controls.Control
 	{
-		// Skipping already declared property WideModeConfiguration
-		// Skipping already declared property TallModeConfiguration
-		// Skipping already declared property PanePriority
-		// Skipping already declared property Pane2Length
-		// Skipping already declared property Pane2
-		// Skipping already declared property Pane1Length
-		// Skipping already declared property Pane1
-		// Skipping already declared property MinWideModeWidth
-		// Skipping already declared property MinTallModeHeight
-		// Skipping already declared property Mode
 		// Skipping already declared property MinTallModeHeightProperty
 		// Skipping already declared property MinWideModeWidthProperty
 		// Skipping already declared property ModeProperty
@@ -28,39 +18,62 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property PanePriorityProperty
 		// Skipping already declared property TallModeConfigurationProperty
 		// Skipping already declared property WideModeConfigurationProperty
+		// Skipping already declared property MinTallModeHeight
+		// Skipping already declared property MinWideModeWidth
+		// Skipping already declared property Mode
+		// Skipping already declared property Pane1
+		// Skipping already declared property Pane1Length
+		// Skipping already declared property Pane2
+		// Skipping already declared property Pane2Length
+		// Skipping already declared property PanePriority
+		// Skipping already declared property TallModeConfiguration
+		// Skipping already declared property WideModeConfiguration
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TwoPaneView.TwoPaneView()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.TwoPaneView()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.MinTallModeHeightProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.MinWideModeWidthProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.ModeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.Pane1LengthProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.Pane1Property.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.Pane2LengthProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.Pane2Property.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.PanePriorityProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.TallModeConfigurationProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.WideModeConfigurationProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.TwoPaneView(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.operator ==(Microsoft.UI.Xaml.Controls.TwoPaneView, Microsoft.UI.Xaml.Controls.TwoPaneView)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.operator !=(Microsoft.UI.Xaml.Controls.TwoPaneView, Microsoft.UI.Xaml.Controls.TwoPaneView)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.Equals(Microsoft.UI.Xaml.Controls.TwoPaneView)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.TwoPaneView(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.ModeChanged.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.ModeChanged.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.MinTallModeHeight.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.MinTallModeHeight.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.MinWideModeWidth.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.MinWideModeWidth.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.Mode.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.Pane1.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.Pane1.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.Pane2.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.Pane2.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.Pane1Length.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.Pane1Length.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.Pane2.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.Pane2.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.Pane2Length.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.Pane2Length.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.PanePriority.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.PanePriority.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.Mode.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.WideModeConfiguration.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.WideModeConfiguration.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.TallModeConfiguration.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.TallModeConfiguration.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.MinWideModeWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.MinWideModeWidth.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.MinTallModeHeight.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.MinTallModeHeight.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.ModeChanged.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.ModeChanged.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.Pane1Property.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.Pane2Property.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.Pane1LengthProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.Pane2LengthProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.PanePriorityProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.ModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.WideModeConfigurationProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.TallModeConfigurationProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.MinWideModeWidthProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.MinTallModeHeightProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.WideModeConfiguration.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.WideModeConfiguration.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TwoPaneView.ModeChanged
 	}
 }

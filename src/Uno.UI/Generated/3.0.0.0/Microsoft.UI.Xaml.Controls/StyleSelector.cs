@@ -10,7 +10,22 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.StyleSelector.StyleSelector()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.StyleSelector.StyleSelector()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StyleSelector.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StyleSelector.StyleSelector(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StyleSelector.operator ==(Microsoft.UI.Xaml.Controls.StyleSelector, Microsoft.UI.Xaml.Controls.StyleSelector)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StyleSelector.operator !=(Microsoft.UI.Xaml.Controls.StyleSelector, Microsoft.UI.Xaml.Controls.StyleSelector)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StyleSelector.Equals(Microsoft.UI.Xaml.Controls.StyleSelector)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StyleSelector.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StyleSelector.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StyleSelector.StyleSelector(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StyleSelector.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StyleSelector.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StyleSelector.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StyleSelector.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.StyleSelector.SelectStyle(object, Microsoft.UI.Xaml.DependencyObject)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.StyleSelector.SelectStyleCore(object, Microsoft.UI.Xaml.DependencyObject)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StyleSelector.Microsoft.UI.Xaml.Controls.IStyleSelectorOverrides.SelectStyleCore(object, Microsoft.UI.Xaml.DependencyObject)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StyleSelector.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.StyleSelector.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

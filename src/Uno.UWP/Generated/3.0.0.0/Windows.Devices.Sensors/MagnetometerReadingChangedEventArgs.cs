@@ -9,6 +9,17 @@ namespace Windows.Devices.Sensors
 	public partial class MagnetometerReadingChangedEventArgs
 	{
 		// Skipping already declared property Reading
+		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReadingChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReadingChangedEventArgs.operator ==(Windows.Devices.Sensors.MagnetometerReadingChangedEventArgs, Windows.Devices.Sensors.MagnetometerReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReadingChangedEventArgs.operator !=(Windows.Devices.Sensors.MagnetometerReadingChangedEventArgs, Windows.Devices.Sensors.MagnetometerReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReadingChangedEventArgs.Equals(Windows.Devices.Sensors.MagnetometerReadingChangedEventArgs)
+		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReadingChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReadingChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReadingChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReadingChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReadingChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReadingChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReadingChangedEventArgs.Reading.get
+		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReadingChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

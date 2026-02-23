@@ -10,21 +10,15 @@ namespace Windows.Media.Protection.PlayReady
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Guid ProtectionSystem
+		public string ChallengeCustomData
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyMeteringReportServiceRequest.ProtectionSystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlayReadyMeteringReportServiceRequest.ProtectionSystem");
+				throw new global::System.NotImplementedException("The member string PlayReadyMeteringReportServiceRequest.ChallengeCustomData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PlayReadyMeteringReportServiceRequest.ChallengeCustomData");
 			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Guid Type
-		{
-			get
+			set
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyMeteringReportServiceRequest.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlayReadyMeteringReportServiceRequest.Type");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "string PlayReadyMeteringReportServiceRequest.ChallengeCustomData");
 			}
 		}
 #endif
@@ -44,29 +38,11 @@ namespace Windows.Media.Protection.PlayReady
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri Uri
+		public global::System.Guid ProtectionSystem
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri PlayReadyMeteringReportServiceRequest.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20PlayReadyMeteringReportServiceRequest.Uri");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "Uri PlayReadyMeteringReportServiceRequest.Uri");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ChallengeCustomData
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PlayReadyMeteringReportServiceRequest.ChallengeCustomData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PlayReadyMeteringReportServiceRequest.ChallengeCustomData");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "string PlayReadyMeteringReportServiceRequest.ChallengeCustomData");
+				throw new global::System.NotImplementedException("The member Guid PlayReadyMeteringReportServiceRequest.ProtectionSystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlayReadyMeteringReportServiceRequest.ProtectionSystem");
 			}
 		}
 #endif
@@ -82,19 +58,46 @@ namespace Windows.Media.Protection.PlayReady
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Guid Type
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid PlayReadyMeteringReportServiceRequest.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlayReadyMeteringReportServiceRequest.Type");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Uri Uri
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Uri PlayReadyMeteringReportServiceRequest.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20PlayReadyMeteringReportServiceRequest.Uri");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "Uri PlayReadyMeteringReportServiceRequest.Uri");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PlayReadyMeteringReportServiceRequest()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest", "PlayReadyMeteringReportServiceRequest.PlayReadyMeteringReportServiceRequest()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.PlayReadyMeteringReportServiceRequest()
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.MeteringCertificate.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.MeteringCertificate.set
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.Uri.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.Uri.set
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.ResponseCustomData.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.ChallengeCustomData.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.ChallengeCustomData.set
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.operator ==(Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest, Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.operator !=(Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest, Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.Equals(Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.Equals(object)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.GetHashCode()
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction BeginServiceRequest()
@@ -123,8 +126,16 @@ namespace Windows.Media.Protection.PlayReady
 			throw new global::System.NotImplementedException("The member Exception PlayReadyMeteringReportServiceRequest.ProcessManualEnablingResponse(byte[] responseBytes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20PlayReadyMeteringReportServiceRequest.ProcessManualEnablingResponse%28byte%5B%5D%20responseBytes%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.ChallengeCustomData.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.ChallengeCustomData.set
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.MeteringCertificate.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.MeteringCertificate.set
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.ProtectionSystem.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.ResponseCustomData.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.Type.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.Uri.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.Uri.set
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyMeteringReportServiceRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Protection.PlayReady.IPlayReadyServiceRequest
 		// Processing: Windows.Media.Protection.IMediaProtectionServiceRequest
 	}

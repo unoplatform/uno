@@ -8,22 +8,35 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class AnimatedIconSource : global::Microsoft.UI.Xaml.Controls.IconSource
 	{
-		// Skipping already declared property Source
-		// Skipping already declared property MirroredWhenRightToLeft
-		// Skipping already declared property FallbackIconSource
 		// Skipping already declared property FallbackIconSourceProperty
 		// Skipping already declared property MirroredWhenRightToLeftProperty
 		// Skipping already declared property SourceProperty
+		// Skipping already declared property FallbackIconSource
+		// Skipping already declared property MirroredWhenRightToLeft
+		// Skipping already declared property Source
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.AnimatedIconSource.AnimatedIconSource()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIconSource.AnimatedIconSource()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIconSource.Source.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIconSource.Source.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIconSource.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIconSource.FallbackIconSourceProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIconSource.MirroredWhenRightToLeftProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIconSource.SourceProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIconSource.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIconSource.AnimatedIconSource(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIconSource.operator ==(Microsoft.UI.Xaml.Controls.AnimatedIconSource, Microsoft.UI.Xaml.Controls.AnimatedIconSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIconSource.operator !=(Microsoft.UI.Xaml.Controls.AnimatedIconSource, Microsoft.UI.Xaml.Controls.AnimatedIconSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIconSource.Equals(Microsoft.UI.Xaml.Controls.AnimatedIconSource)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIconSource.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIconSource.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIconSource.AnimatedIconSource(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIconSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIconSource.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIconSource.FallbackIconSource.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIconSource.FallbackIconSource.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIconSource.MirroredWhenRightToLeft.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIconSource.MirroredWhenRightToLeft.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIconSource.SourceProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIconSource.FallbackIconSourceProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIconSource.MirroredWhenRightToLeftProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIconSource.Source.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIconSource.Source.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIconSource.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIconSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

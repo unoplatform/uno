@@ -36,7 +36,18 @@ namespace Microsoft.UI.Xaml.Printing
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Printing.PaginateEventArgs.PaginateEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Printing.PaginateEventArgs.PrintTaskOptions.get
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.PaginateEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.PaginateEventArgs.operator ==(Microsoft.UI.Xaml.Printing.PaginateEventArgs, Microsoft.UI.Xaml.Printing.PaginateEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.PaginateEventArgs.operator !=(Microsoft.UI.Xaml.Printing.PaginateEventArgs, Microsoft.UI.Xaml.Printing.PaginateEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.PaginateEventArgs.Equals(Microsoft.UI.Xaml.Printing.PaginateEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.PaginateEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.PaginateEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.PaginateEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.PaginateEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.PaginateEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.PaginateEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Printing.PaginateEventArgs.CurrentPreviewPageNumber.get
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.PaginateEventArgs.PrintTaskOptions.get
+		// Forced skipping of method Microsoft.UI.Xaml.Printing.PaginateEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -33,8 +33,19 @@ namespace Windows.Security.Authentication.Web.Provider
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderTriggerDetails.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderTriggerDetails.operator ==(Windows.Security.Authentication.Web.Provider.WebAccountProviderTriggerDetails, Windows.Security.Authentication.Web.Provider.WebAccountProviderTriggerDetails)
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderTriggerDetails.operator !=(Windows.Security.Authentication.Web.Provider.WebAccountProviderTriggerDetails, Windows.Security.Authentication.Web.Provider.WebAccountProviderTriggerDetails)
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderTriggerDetails.Equals(Windows.Security.Authentication.Web.Provider.WebAccountProviderTriggerDetails)
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderTriggerDetails.Equals(object)
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderTriggerDetails.GetHashCode()
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderTriggerDetails.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderTriggerDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderTriggerDetails.Operation.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderTriggerDetails.User.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountProviderTriggerDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Security.Authentication.Web.Provider.IWebAccountProviderTokenObjects
 		// Processing: Windows.Security.Authentication.Web.Provider.IWebAccountProviderTokenObjects2
 	}

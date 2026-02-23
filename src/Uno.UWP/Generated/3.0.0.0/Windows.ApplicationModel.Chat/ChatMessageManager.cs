@@ -8,13 +8,7 @@ namespace Windows.ApplicationModel.Chat
 #endif
 	public static partial class ChatMessageManager
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Chat.ChatSyncManager> RequestSyncManagerAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ChatSyncManager> ChatMessageManager.RequestSyncManagerAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CChatSyncManager%3E%20ChatMessageManager.RequestSyncManagerAsync%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<string> RegisterTransportAsync()
@@ -55,6 +49,13 @@ namespace Windows.ApplicationModel.Chat
 		public static void ShowSmsSettings()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatMessageManager", "void ChatMessageManager.ShowSmsSettings()");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Chat.ChatSyncManager> RequestSyncManagerAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ChatSyncManager> ChatMessageManager.RequestSyncManagerAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CChatSyncManager%3E%20ChatMessageManager.RequestSyncManagerAsync%28%29");
 		}
 #endif
 	}

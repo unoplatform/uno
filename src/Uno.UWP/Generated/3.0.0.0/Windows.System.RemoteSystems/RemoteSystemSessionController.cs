@@ -24,8 +24,16 @@ namespace Windows.System.RemoteSystems
 		}
 #endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionController.RemoteSystemSessionController(string, Windows.System.RemoteSystems.RemoteSystemSessionOptions)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionController.JoinRequested.add
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionController.JoinRequested.remove
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionController.FromAbi(nint)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionController.operator ==(Windows.System.RemoteSystems.RemoteSystemSessionController, Windows.System.RemoteSystems.RemoteSystemSessionController)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionController.operator !=(Windows.System.RemoteSystems.RemoteSystemSessionController, Windows.System.RemoteSystems.RemoteSystemSessionController)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionController.Equals(Windows.System.RemoteSystems.RemoteSystemSessionController)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionController.Equals(object)
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionController.GetHashCode()
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionController.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionController.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionController.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> RemoveParticipantAsync(global::Windows.System.RemoteSystems.RemoteSystemSessionParticipant pParticipant)
@@ -40,6 +48,9 @@ namespace Windows.System.RemoteSystems
 			throw new global::System.NotImplementedException("The member IAsyncOperation<RemoteSystemSessionCreationResult> RemoteSystemSessionController.CreateSessionAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CRemoteSystemSessionCreationResult%3E%20RemoteSystemSessionController.CreateSessionAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionController.JoinRequested.add
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionController.JoinRequested.remove
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionController.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.System.RemoteSystems.RemoteSystemSessionController, global::Windows.System.RemoteSystems.RemoteSystemSessionJoinRequestedEventArgs> JoinRequested

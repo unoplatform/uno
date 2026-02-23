@@ -15,16 +15,6 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Input.Spatial.SpatialInteractionSourceState State
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SpatialInteractionSourceState SpatialInteractionSourceEventArgs.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialInteractionSourceState%20SpatialInteractionSourceEventArgs.State");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Input.Spatial.SpatialInteractionPressKind PressKind
 		{
 			get
@@ -33,7 +23,28 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs.State.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Input.Spatial.SpatialInteractionSourceState State
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SpatialInteractionSourceState SpatialInteractionSourceEventArgs.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialInteractionSourceState%20SpatialInteractionSourceEventArgs.State");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs.operator ==(Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs, Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs.operator !=(Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs, Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs.Equals(Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs.PressKind.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs.State.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

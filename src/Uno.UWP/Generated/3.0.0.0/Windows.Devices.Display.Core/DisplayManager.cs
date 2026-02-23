@@ -13,6 +13,24 @@ namespace Windows.Devices.Display.Core
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Devices.Display.Core.DisplayManager Create(global::Windows.Devices.Display.Core.DisplayManagerOptions options)
+		{
+			throw new global::System.NotImplementedException("The member DisplayManager DisplayManager.Create(DisplayManagerOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayManager%20DisplayManager.Create%28DisplayManagerOptions%20options%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.operator ==(Windows.Devices.Display.Core.DisplayManager, Windows.Devices.Display.Core.DisplayManager)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.operator !=(Windows.Devices.Display.Core.DisplayManager, Windows.Devices.Display.Core.DisplayManager)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.Equals(Windows.Devices.Display.Core.DisplayManager)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.Equals(object)
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.GetHashCode()
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Display.Core.DisplayTarget> GetCurrentTargets()
@@ -76,14 +94,6 @@ namespace Windows.Devices.Display.Core
 			throw new global::System.NotImplementedException("The member DisplayDevice DisplayManager.CreateDisplayDevice(DisplayAdapter adapter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayDevice%20DisplayManager.CreateDisplayDevice%28DisplayAdapter%20adapter%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.Enabled.add
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.Enabled.remove
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.Disabled.add
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.Disabled.remove
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.Changed.add
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.Changed.remove
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.PathsFailedOrInvalidated.add
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.PathsFailedOrInvalidated.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -98,6 +108,14 @@ namespace Windows.Devices.Display.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayManager", "void DisplayManager.Stop()");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.Changed.add
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.Changed.remove
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.Disabled.add
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.Disabled.remove
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.Enabled.add
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.Enabled.remove
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.PathsFailedOrInvalidated.add
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.PathsFailedOrInvalidated.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -105,13 +123,7 @@ namespace Windows.Devices.Display.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayManager", "void DisplayManager.Dispose()");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Devices.Display.Core.DisplayManager Create(global::Windows.Devices.Display.Core.DisplayManagerOptions options)
-		{
-			throw new global::System.NotImplementedException("The member DisplayManager DisplayManager.Create(DisplayManagerOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayManager%20DisplayManager.Create%28DisplayManagerOptions%20options%29");
-		}
-#endif
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Display.Core.DisplayManager, global::Windows.Devices.Display.Core.DisplayManagerChangedEventArgs> Changed

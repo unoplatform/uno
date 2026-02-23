@@ -15,16 +15,6 @@ namespace Windows.Networking.Proximity
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DisplayName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PeerInformation.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PeerInformation.DisplayName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IBuffer DiscoveryData
 		{
 			get
@@ -35,11 +25,11 @@ namespace Windows.Networking.Proximity
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Id
+		public string DisplayName
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PeerInformation.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PeerInformation.Id");
+				throw new global::System.NotImplementedException("The member string PeerInformation.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PeerInformation.DisplayName");
 			}
 		}
 #endif
@@ -55,6 +45,16 @@ namespace Windows.Networking.Proximity
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Id
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string PeerInformation.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PeerInformation.Id");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string ServiceName
 		{
 			get
@@ -63,10 +63,21 @@ namespace Windows.Networking.Proximity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.DisplayName.get
-		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.Id.get
+		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.operator ==(Windows.Networking.Proximity.PeerInformation, Windows.Networking.Proximity.PeerInformation)
+		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.operator !=(Windows.Networking.Proximity.PeerInformation, Windows.Networking.Proximity.PeerInformation)
+		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.Equals(Windows.Networking.Proximity.PeerInformation)
+		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.Equals(object)
+		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.GetHashCode()
+		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.DiscoveryData.get
+		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.DisplayName.get
 		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.HostName.get
+		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.Id.get
 		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.ServiceName.get
+		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

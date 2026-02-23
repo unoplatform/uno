@@ -10,7 +10,19 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ListBoxItemDataAutomationPeer.ListBoxItemDataAutomationPeer(object, Microsoft.UI.Xaml.Automation.Peers.ListBoxAutomationPeer)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxItemDataAutomationPeer.ListBoxItemDataAutomationPeer(object, Microsoft.UI.Xaml.Automation.Peers.ListBoxAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxItemDataAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxItemDataAutomationPeer.ListBoxItemDataAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxItemDataAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.ListBoxItemDataAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ListBoxItemDataAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxItemDataAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.ListBoxItemDataAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ListBoxItemDataAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxItemDataAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.ListBoxItemDataAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxItemDataAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxItemDataAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxItemDataAutomationPeer.ListBoxItemDataAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxItemDataAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxItemDataAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ListBoxItemDataAutomationPeer.ScrollIntoView()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxItemDataAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListBoxItemDataAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IScrollItemProvider
 	}
 }

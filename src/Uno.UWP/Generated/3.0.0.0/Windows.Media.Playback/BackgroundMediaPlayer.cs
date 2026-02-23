@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Playback
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -19,11 +18,7 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.BackgroundMediaPlayer.Current.get
-		// Forced skipping of method Windows.Media.Playback.BackgroundMediaPlayer.MessageReceivedFromBackground.add
-		// Forced skipping of method Windows.Media.Playback.BackgroundMediaPlayer.MessageReceivedFromBackground.remove
-		// Forced skipping of method Windows.Media.Playback.BackgroundMediaPlayer.MessageReceivedFromForeground.add
-		// Forced skipping of method Windows.Media.Playback.BackgroundMediaPlayer.MessageReceivedFromForeground.remove
+		// Forced skipping of method Windows.Media.Playback.BackgroundMediaPlayer.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void SendMessageToBackground(global::Windows.Foundation.Collections.ValueSet value)
@@ -52,6 +47,11 @@ namespace Windows.Media.Playback
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.BackgroundMediaPlayer", "void BackgroundMediaPlayer.Shutdown()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Playback.BackgroundMediaPlayer.MessageReceivedFromBackground.add
+		// Forced skipping of method Windows.Media.Playback.BackgroundMediaPlayer.MessageReceivedFromBackground.remove
+		// Forced skipping of method Windows.Media.Playback.BackgroundMediaPlayer.MessageReceivedFromForeground.add
+		// Forced skipping of method Windows.Media.Playback.BackgroundMediaPlayer.MessageReceivedFromForeground.remove
+		// Forced skipping of method Windows.Media.Playback.BackgroundMediaPlayer.Current.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static event global::System.EventHandler<global::Windows.Media.Playback.MediaPlayerDataReceivedEventArgs> MessageReceivedFromBackground

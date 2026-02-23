@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewHeaderItem.ListViewHeaderItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewHeaderItem.ListViewHeaderItem()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewHeaderItem.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewHeaderItem.ListViewHeaderItem(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewHeaderItem.operator ==(Microsoft.UI.Xaml.Controls.ListViewHeaderItem, Microsoft.UI.Xaml.Controls.ListViewHeaderItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewHeaderItem.operator !=(Microsoft.UI.Xaml.Controls.ListViewHeaderItem, Microsoft.UI.Xaml.Controls.ListViewHeaderItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewHeaderItem.Equals(Microsoft.UI.Xaml.Controls.ListViewHeaderItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewHeaderItem.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewHeaderItem.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewHeaderItem.ListViewHeaderItem(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewHeaderItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewHeaderItem.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewHeaderItem.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewHeaderItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

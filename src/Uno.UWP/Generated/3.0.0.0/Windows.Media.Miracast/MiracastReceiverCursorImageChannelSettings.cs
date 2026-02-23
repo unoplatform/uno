@@ -15,20 +15,6 @@ namespace Windows.Media.Miracast
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.SizeInt32 MaxImageSize
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SizeInt32 MiracastReceiverCursorImageChannelSettings.MaxImageSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SizeInt32%20MiracastReceiverCursorImageChannelSettings.MaxImageSize");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings", "SizeInt32 MiracastReceiverCursorImageChannelSettings.MaxImageSize");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsEnabled
 		{
 			get
@@ -41,9 +27,34 @@ namespace Windows.Media.Miracast
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.SizeInt32 MaxImageSize
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SizeInt32 MiracastReceiverCursorImageChannelSettings.MaxImageSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SizeInt32%20MiracastReceiverCursorImageChannelSettings.MaxImageSize");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings", "SizeInt32 MiracastReceiverCursorImageChannelSettings.MaxImageSize");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings.operator ==(Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings, Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings.operator !=(Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings, Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings.Equals(Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings.Equals(object)
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings.GetHashCode()
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings.IsEnabled.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings.IsEnabled.set
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings.MaxImageSize.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings.MaxImageSize.set
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

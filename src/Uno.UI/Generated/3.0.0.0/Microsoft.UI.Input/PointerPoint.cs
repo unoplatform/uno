@@ -15,13 +15,16 @@ namespace Microsoft.UI.Input
 		// Skipping already declared property Position
 		// Skipping already declared property Properties
 		// Skipping already declared property Timestamp
-		// Forced skipping of method Microsoft.UI.Input.PointerPoint.IsInContact.get
-		// Forced skipping of method Microsoft.UI.Input.PointerPoint.FrameId.get
-		// Forced skipping of method Microsoft.UI.Input.PointerPoint.PointerDeviceType.get
-		// Forced skipping of method Microsoft.UI.Input.PointerPoint.PointerId.get
-		// Forced skipping of method Microsoft.UI.Input.PointerPoint.Position.get
-		// Forced skipping of method Microsoft.UI.Input.PointerPoint.Properties.get
-		// Forced skipping of method Microsoft.UI.Input.PointerPoint.Timestamp.get
+		// Forced skipping of method Microsoft.UI.Input.PointerPoint.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Input.PointerPoint.operator ==(Microsoft.UI.Input.PointerPoint, Microsoft.UI.Input.PointerPoint)
+		// Forced skipping of method Microsoft.UI.Input.PointerPoint.operator !=(Microsoft.UI.Input.PointerPoint, Microsoft.UI.Input.PointerPoint)
+		// Forced skipping of method Microsoft.UI.Input.PointerPoint.Equals(Microsoft.UI.Input.PointerPoint)
+		// Forced skipping of method Microsoft.UI.Input.PointerPoint.Equals(object)
+		// Forced skipping of method Microsoft.UI.Input.PointerPoint.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Input.PointerPoint.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.PointerPoint.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.PointerPoint.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Input.PointerPoint.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Input.PointerPoint GetTransformedPoint(global::Microsoft.UI.Input.IPointerPointTransform transform)
@@ -29,5 +32,13 @@ namespace Microsoft.UI.Input
 			throw new global::System.NotImplementedException("The member PointerPoint PointerPoint.GetTransformedPoint(IPointerPointTransform transform) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PointerPoint%20PointerPoint.GetTransformedPoint%28IPointerPointTransform%20transform%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Input.PointerPoint.FrameId.get
+		// Forced skipping of method Microsoft.UI.Input.PointerPoint.IsInContact.get
+		// Forced skipping of method Microsoft.UI.Input.PointerPoint.PointerDeviceType.get
+		// Forced skipping of method Microsoft.UI.Input.PointerPoint.PointerId.get
+		// Forced skipping of method Microsoft.UI.Input.PointerPoint.Position.get
+		// Forced skipping of method Microsoft.UI.Input.PointerPoint.Properties.get
+		// Forced skipping of method Microsoft.UI.Input.PointerPoint.Timestamp.get
+		// Forced skipping of method Microsoft.UI.Input.PointerPoint.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

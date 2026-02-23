@@ -6,7 +6,7 @@ namespace Windows.Media.Protection.PlayReady
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class PlayReadyDomainIterator : global::Windows.Foundation.Collections.IIterator<global::Windows.Media.Protection.PlayReady.IPlayReadyDomain>
+	public partial class PlayReadyDomainIterator : global::System.Collections.Generic.IEnumerator<global::Windows.Media.Protection.PlayReady.IPlayReadyDomain>, global::System.Collections.IEnumerator, global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal PlayReadyDomainIterator()
@@ -25,16 +25,24 @@ namespace Windows.Media.Protection.PlayReady
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool HasCurrent
+		object global::System.Collections.IEnumerator.Current
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PlayReadyDomainIterator.HasCurrent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PlayReadyDomainIterator.HasCurrent");
+				throw new global::System.NotImplementedException("The member object PlayReadyDomainIterator.Current is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20PlayReadyDomainIterator.Current");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainIterator.Current.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainIterator.HasCurrent.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainIterator.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainIterator.operator ==(Windows.Media.Protection.PlayReady.PlayReadyDomainIterator, Windows.Media.Protection.PlayReady.PlayReadyDomainIterator)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainIterator.operator !=(Windows.Media.Protection.PlayReady.PlayReadyDomainIterator, Windows.Media.Protection.PlayReady.PlayReadyDomainIterator)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainIterator.Equals(Windows.Media.Protection.PlayReady.PlayReadyDomainIterator)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainIterator.Equals(object)
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainIterator.GetHashCode()
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainIterator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainIterator.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainIterator.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainIterator.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool MoveNext()
@@ -44,11 +52,23 @@ namespace Windows.Media.Protection.PlayReady
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint GetMany(global::Windows.Media.Protection.PlayReady.IPlayReadyDomain[] items)
+		public void Reset()
 		{
-			throw new global::System.NotImplementedException("The member uint PlayReadyDomainIterator.GetMany(IPlayReadyDomain[] items) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PlayReadyDomainIterator.GetMany%28IPlayReadyDomain%5B%5D%20items%29");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyDomainIterator", "void PlayReadyDomainIterator.Reset()");
 		}
 #endif
-		// Processing: Windows.Foundation.Collections.IIterator<Windows.Media.Protection.PlayReady.IPlayReadyDomain>
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyDomainIterator", "void PlayReadyDomainIterator.Dispose()");
+		}
+#endif
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainIterator.Current.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainIterator.System.Collections.IEnumerator.Current.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainIterator.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Processing: System.Collections.Generic.IEnumerator<Windows.Media.Protection.PlayReady.IPlayReadyDomain>
+		// Processing: System.Collections.IEnumerator
+		// Processing: System.IDisposable
 	}
 }

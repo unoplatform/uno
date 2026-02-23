@@ -10,29 +10,11 @@ namespace Windows.ApplicationModel.Contacts
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Contacts.ContactAnnotationOperations SupportedOperations
+		public string AnnotationListId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactAnnotationOperations ContactAnnotation.SupportedOperations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactAnnotationOperations%20ContactAnnotation.SupportedOperations");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactAnnotation", "ContactAnnotationOperations ContactAnnotation.SupportedOperations");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string RemoteId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ContactAnnotation.RemoteId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactAnnotation.RemoteId");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactAnnotation", "string ContactAnnotation.RemoteId");
+				throw new global::System.NotImplementedException("The member string ContactAnnotation.AnnotationListId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactAnnotation.AnnotationListId");
 			}
 		}
 #endif
@@ -52,11 +34,15 @@ namespace Windows.ApplicationModel.Contacts
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string AnnotationListId
+		public string ContactListId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactAnnotation.AnnotationListId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactAnnotation.AnnotationListId");
+				throw new global::System.NotImplementedException("The member string ContactAnnotation.ContactListId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactAnnotation.ContactListId");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactAnnotation", "string ContactAnnotation.ContactListId");
 			}
 		}
 #endif
@@ -92,15 +78,29 @@ namespace Windows.ApplicationModel.Contacts
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ContactListId
+		public string RemoteId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactAnnotation.ContactListId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactAnnotation.ContactListId");
+				throw new global::System.NotImplementedException("The member string ContactAnnotation.RemoteId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactAnnotation.RemoteId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactAnnotation", "string ContactAnnotation.ContactListId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactAnnotation", "string ContactAnnotation.RemoteId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Contacts.ContactAnnotationOperations SupportedOperations
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ContactAnnotationOperations ContactAnnotation.SupportedOperations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactAnnotationOperations%20ContactAnnotation.SupportedOperations");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactAnnotation", "ContactAnnotationOperations ContactAnnotation.SupportedOperations");
 			}
 		}
 #endif
@@ -112,17 +112,28 @@ namespace Windows.ApplicationModel.Contacts
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.ContactAnnotation()
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.Id.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.operator ==(Windows.ApplicationModel.Contacts.ContactAnnotation, Windows.ApplicationModel.Contacts.ContactAnnotation)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.operator !=(Windows.ApplicationModel.Contacts.ContactAnnotation, Windows.ApplicationModel.Contacts.ContactAnnotation)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.Equals(Windows.ApplicationModel.Contacts.ContactAnnotation)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.AnnotationListId.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.ContactId.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.ContactId.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.ContactListId.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.ContactListId.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.Id.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.IsDisabled.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.ProviderProperties.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.RemoteId.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.RemoteId.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.SupportedOperations.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.SupportedOperations.set
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.IsDisabled.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.ProviderProperties.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.ContactListId.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.ContactListId.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

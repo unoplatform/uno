@@ -15,20 +15,6 @@ namespace Windows.Media.Miracast
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Name
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string MiracastTransmitter.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MiracastTransmitter.Name");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastTransmitter", "string MiracastTransmitter.Name");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Miracast.MiracastTransmitterAuthorizationStatus AuthorizationStatus
 		{
 			get
@@ -61,10 +47,30 @@ namespace Windows.Media.Miracast
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.Name.get
-		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.Name.set
-		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.AuthorizationStatus.get
-		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.AuthorizationStatus.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Name
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string MiracastTransmitter.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MiracastTransmitter.Name");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastTransmitter", "string MiracastTransmitter.Name");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.operator ==(Windows.Media.Miracast.MiracastTransmitter, Windows.Media.Miracast.MiracastTransmitter)
+		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.operator !=(Windows.Media.Miracast.MiracastTransmitter, Windows.Media.Miracast.MiracastTransmitter)
+		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.Equals(Windows.Media.Miracast.MiracastTransmitter)
+		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.Equals(object)
+		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.GetHashCode()
+		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Miracast.MiracastReceiverConnection> GetConnections()
@@ -72,7 +78,12 @@ namespace Windows.Media.Miracast
 			throw new global::System.NotImplementedException("The member IReadOnlyList<MiracastReceiverConnection> MiracastTransmitter.GetConnections() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMiracastReceiverConnection%3E%20MiracastTransmitter.GetConnections%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.MacAddress.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.AuthorizationStatus.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.AuthorizationStatus.set
 		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.LastConnectionTime.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.MacAddress.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.Name.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.Name.set
+		// Forced skipping of method Windows.Media.Miracast.MiracastTransmitter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

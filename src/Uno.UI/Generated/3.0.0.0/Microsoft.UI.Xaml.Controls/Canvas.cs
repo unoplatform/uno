@@ -13,14 +13,27 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property ZIndexProperty
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Canvas.Canvas()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.Canvas()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.LeftProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.As<I>()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Canvas.GetLeft(Microsoft.UI.Xaml.UIElement)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Canvas.SetLeft(Microsoft.UI.Xaml.UIElement, double)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.TopProperty.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Canvas.GetTop(Microsoft.UI.Xaml.UIElement)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Canvas.SetTop(Microsoft.UI.Xaml.UIElement, double)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.ZIndexProperty.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Canvas.GetZIndex(Microsoft.UI.Xaml.UIElement)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Canvas.SetZIndex(Microsoft.UI.Xaml.UIElement, int)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.LeftProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.TopProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.ZIndexProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.Canvas(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.operator ==(Microsoft.UI.Xaml.Controls.Canvas, Microsoft.UI.Xaml.Controls.Canvas)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.operator !=(Microsoft.UI.Xaml.Controls.Canvas, Microsoft.UI.Xaml.Controls.Canvas)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.Equals(Microsoft.UI.Xaml.Controls.Canvas)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.Canvas(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

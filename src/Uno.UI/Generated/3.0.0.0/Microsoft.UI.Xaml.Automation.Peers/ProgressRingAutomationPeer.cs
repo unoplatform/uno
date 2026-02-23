@@ -16,13 +16,25 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property Value
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer.ProgressRingAutomationPeer(Microsoft.UI.Xaml.Controls.ProgressRing)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer.ProgressRingAutomationPeer(Microsoft.UI.Xaml.Controls.ProgressRing)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer.ProgressRingAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer.ProgressRingAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer.SetValue(double)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer.LargeChange.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer.Maximum.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer.Minimum.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer.SmallChange.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer.Value.get
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer.SetValue(double)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IRangeValueProvider
 	}
 }

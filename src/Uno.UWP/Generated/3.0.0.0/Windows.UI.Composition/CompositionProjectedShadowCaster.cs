@@ -15,20 +15,6 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Composition.Visual CastingVisual
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Visual CompositionProjectedShadowCaster.CastingVisual is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Visual%20CompositionProjectedShadowCaster.CastingVisual");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionProjectedShadowCaster", "Visual CompositionProjectedShadowCaster.CastingVisual");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Composition.CompositionBrush Brush
 		{
 			get
@@ -41,9 +27,33 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Composition.Visual CastingVisual
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Visual CompositionProjectedShadowCaster.CastingVisual is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Visual%20CompositionProjectedShadowCaster.CastingVisual");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionProjectedShadowCaster", "Visual CompositionProjectedShadowCaster.CastingVisual");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowCaster.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowCaster.operator ==(Windows.UI.Composition.CompositionProjectedShadowCaster, Windows.UI.Composition.CompositionProjectedShadowCaster)
+		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowCaster.operator !=(Windows.UI.Composition.CompositionProjectedShadowCaster, Windows.UI.Composition.CompositionProjectedShadowCaster)
+		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowCaster.Equals(Windows.UI.Composition.CompositionProjectedShadowCaster)
+		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowCaster.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowCaster.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowCaster.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowCaster.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowCaster.Brush.get
 		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowCaster.Brush.set
 		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowCaster.CastingVisual.get
 		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowCaster.CastingVisual.set
+		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowCaster.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowCaster.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

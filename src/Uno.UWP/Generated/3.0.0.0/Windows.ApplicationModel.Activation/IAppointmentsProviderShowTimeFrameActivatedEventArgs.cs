@@ -20,7 +20,7 @@ namespace Windows.ApplicationModel.Activation
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.IAppointmentsProviderShowTimeFrameActivatedEventArgs.TimeToShow.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.IAppointmentsProviderShowTimeFrameActivatedEventArgs.Duration.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.IAppointmentsProviderShowTimeFrameActivatedEventArgs.TimeToShow.get
 	}
 }

@@ -19,6 +19,7 @@ namespace Microsoft.UI.Text
 		// Skipping already declared property SemiBold
 		// Skipping already declared property SemiLight
 		// Skipping already declared property Thin
+		// Forced skipping of method Microsoft.UI.Text.FontWeights.As<I>()
 		// Forced skipping of method Microsoft.UI.Text.FontWeights.Black.get
 		// Forced skipping of method Microsoft.UI.Text.FontWeights.Bold.get
 		// Forced skipping of method Microsoft.UI.Text.FontWeights.ExtraBlack.get
@@ -30,5 +31,16 @@ namespace Microsoft.UI.Text
 		// Forced skipping of method Microsoft.UI.Text.FontWeights.SemiBold.get
 		// Forced skipping of method Microsoft.UI.Text.FontWeights.SemiLight.get
 		// Forced skipping of method Microsoft.UI.Text.FontWeights.Thin.get
+		// Forced skipping of method Microsoft.UI.Text.FontWeights.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Text.FontWeights.operator ==(Microsoft.UI.Text.FontWeights, Microsoft.UI.Text.FontWeights)
+		// Forced skipping of method Microsoft.UI.Text.FontWeights.operator !=(Microsoft.UI.Text.FontWeights, Microsoft.UI.Text.FontWeights)
+		// Forced skipping of method Microsoft.UI.Text.FontWeights.Equals(Microsoft.UI.Text.FontWeights)
+		// Forced skipping of method Microsoft.UI.Text.FontWeights.Equals(object)
+		// Forced skipping of method Microsoft.UI.Text.FontWeights.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Text.FontWeights.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Text.FontWeights.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Text.FontWeights.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Text.FontWeights.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Text.FontWeights.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

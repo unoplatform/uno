@@ -8,18 +8,29 @@ namespace Microsoft.UI.Dispatching
 #endif
 	public partial class DispatcherQueueTimer
 	{
-		// Skipping already declared property IsRepeating
 		// Skipping already declared property Interval
+		// Skipping already declared property IsRepeating
 		// Skipping already declared property IsRunning
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.IsRepeating.set
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.Interval.set
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.IsRunning.get
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.IsRepeating.get
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.Interval.get
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.operator ==(Microsoft.UI.Dispatching.DispatcherQueueTimer, Microsoft.UI.Dispatching.DispatcherQueueTimer)
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.operator !=(Microsoft.UI.Dispatching.DispatcherQueueTimer, Microsoft.UI.Dispatching.DispatcherQueueTimer)
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.Equals(Microsoft.UI.Dispatching.DispatcherQueueTimer)
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Microsoft.UI.Dispatching.DispatcherQueueTimer.Start()
 		// Skipping already declared method Microsoft.UI.Dispatching.DispatcherQueueTimer.Stop()
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.Tick.add
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.Tick.remove
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.Interval.get
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.Interval.set
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.IsRepeating.get
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.IsRepeating.set
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.IsRunning.get
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Dispatching.DispatcherQueueTimer.Tick
 	}
 }

@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.GridViewItemAutomationPeer.GridViewItemAutomationPeer(Microsoft.UI.Xaml.Controls.GridViewItem)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.GridViewItemAutomationPeer.GridViewItemAutomationPeer(Microsoft.UI.Xaml.Controls.GridViewItem)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.GridViewItemAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.GridViewItemAutomationPeer.GridViewItemAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.GridViewItemAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.GridViewItemAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.GridViewItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.GridViewItemAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.GridViewItemAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.GridViewItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.GridViewItemAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.GridViewItemAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.GridViewItemAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.GridViewItemAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.GridViewItemAutomationPeer.GridViewItemAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.GridViewItemAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.GridViewItemAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.GridViewItemAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.GridViewItemAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

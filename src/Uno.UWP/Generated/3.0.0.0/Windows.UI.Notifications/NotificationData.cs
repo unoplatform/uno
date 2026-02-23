@@ -34,6 +34,14 @@ namespace Windows.UI.Notifications
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public NotificationData()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.NotificationData", "NotificationData.NotificationData()");
+		}
+#endif
+		// Forced skipping of method Windows.UI.Notifications.NotificationData.NotificationData()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public NotificationData(global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>> initialValues, uint sequenceNumber)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.NotificationData", "NotificationData.NotificationData(IEnumerable<KeyValuePair<string, string>> initialValues, uint sequenceNumber)");
@@ -48,16 +56,19 @@ namespace Windows.UI.Notifications
 		}
 #endif
 		// Forced skipping of method Windows.UI.Notifications.NotificationData.NotificationData(System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>>)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public NotificationData()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.NotificationData", "NotificationData.NotificationData()");
-		}
-#endif
-		// Forced skipping of method Windows.UI.Notifications.NotificationData.NotificationData()
-		// Forced skipping of method Windows.UI.Notifications.NotificationData.Values.get
+		// Forced skipping of method Windows.UI.Notifications.NotificationData.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Notifications.NotificationData.operator ==(Windows.UI.Notifications.NotificationData, Windows.UI.Notifications.NotificationData)
+		// Forced skipping of method Windows.UI.Notifications.NotificationData.operator !=(Windows.UI.Notifications.NotificationData, Windows.UI.Notifications.NotificationData)
+		// Forced skipping of method Windows.UI.Notifications.NotificationData.Equals(Windows.UI.Notifications.NotificationData)
+		// Forced skipping of method Windows.UI.Notifications.NotificationData.Equals(object)
+		// Forced skipping of method Windows.UI.Notifications.NotificationData.GetHashCode()
+		// Forced skipping of method Windows.UI.Notifications.NotificationData.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.NotificationData.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.NotificationData.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Notifications.NotificationData.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Notifications.NotificationData.SequenceNumber.get
 		// Forced skipping of method Windows.UI.Notifications.NotificationData.SequenceNumber.set
+		// Forced skipping of method Windows.UI.Notifications.NotificationData.Values.get
+		// Forced skipping of method Windows.UI.Notifications.NotificationData.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

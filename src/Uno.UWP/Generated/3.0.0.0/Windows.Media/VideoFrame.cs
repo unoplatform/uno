@@ -10,43 +10,11 @@ namespace Windows.Media
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan? SystemRelativeTime
+		public global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface Direct3DSurface
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? VideoFrame.SystemRelativeTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20VideoFrame.SystemRelativeTime");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoFrame", "TimeSpan? VideoFrame.SystemRelativeTime");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan? RelativeTime
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan? VideoFrame.RelativeTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20VideoFrame.RelativeTime");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoFrame", "TimeSpan? VideoFrame.RelativeTime");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsDiscontinuous
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool VideoFrame.IsDiscontinuous is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VideoFrame.IsDiscontinuous");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoFrame", "bool VideoFrame.IsDiscontinuous");
+				throw new global::System.NotImplementedException("The member IDirect3DSurface VideoFrame.Direct3DSurface is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDirect3DSurface%20VideoFrame.Direct3DSurface");
 			}
 		}
 #endif
@@ -76,6 +44,20 @@ namespace Windows.Media
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsDiscontinuous
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool VideoFrame.IsDiscontinuous is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VideoFrame.IsDiscontinuous");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoFrame", "bool VideoFrame.IsDiscontinuous");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsReadOnly
 		{
 			get
@@ -86,21 +68,15 @@ namespace Windows.Media
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Type
+		public global::System.TimeSpan? RelativeTime
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VideoFrame.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VideoFrame.Type");
+				throw new global::System.NotImplementedException("The member TimeSpan? VideoFrame.RelativeTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20VideoFrame.RelativeTime");
 			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface Direct3DSurface
-		{
-			get
+			set
 			{
-				throw new global::System.NotImplementedException("The member IDirect3DSurface VideoFrame.Direct3DSurface is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDirect3DSurface%20VideoFrame.Direct3DSurface");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoFrame", "TimeSpan? VideoFrame.RelativeTime");
 			}
 		}
 #endif
@@ -111,6 +87,30 @@ namespace Windows.Media
 			get
 			{
 				throw new global::System.NotImplementedException("The member SoftwareBitmap VideoFrame.SoftwareBitmap is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SoftwareBitmap%20VideoFrame.SoftwareBitmap");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan? SystemRelativeTime
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan? VideoFrame.SystemRelativeTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20VideoFrame.SystemRelativeTime");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoFrame", "TimeSpan? VideoFrame.SystemRelativeTime");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Type
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string VideoFrame.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VideoFrame.Type");
 			}
 		}
 #endif
@@ -130,40 +130,7 @@ namespace Windows.Media
 		}
 #endif
 		// Forced skipping of method Windows.Media.VideoFrame.VideoFrame(Windows.Graphics.Imaging.BitmapPixelFormat, int, int, Windows.Graphics.Imaging.BitmapAlphaMode)
-		// Forced skipping of method Windows.Media.VideoFrame.SoftwareBitmap.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncAction CopyToAsync(global::Windows.Media.VideoFrame frame)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction VideoFrame.CopyToAsync(VideoFrame frame) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20VideoFrame.CopyToAsync%28VideoFrame%20frame%29");
-		}
-#endif
-		// Forced skipping of method Windows.Media.VideoFrame.Direct3DSurface.get
-		// Forced skipping of method Windows.Media.VideoFrame.Type.get
-		// Forced skipping of method Windows.Media.VideoFrame.IsReadOnly.get
-		// Forced skipping of method Windows.Media.VideoFrame.RelativeTime.set
-		// Forced skipping of method Windows.Media.VideoFrame.RelativeTime.get
-		// Forced skipping of method Windows.Media.VideoFrame.SystemRelativeTime.set
-		// Forced skipping of method Windows.Media.VideoFrame.SystemRelativeTime.get
-		// Forced skipping of method Windows.Media.VideoFrame.Duration.set
-		// Forced skipping of method Windows.Media.VideoFrame.Duration.get
-		// Forced skipping of method Windows.Media.VideoFrame.IsDiscontinuous.set
-		// Forced skipping of method Windows.Media.VideoFrame.IsDiscontinuous.get
-		// Forced skipping of method Windows.Media.VideoFrame.ExtendedProperties.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoFrame", "void VideoFrame.Dispose()");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncAction CopyToAsync(global::Windows.Media.VideoFrame frame, global::Windows.Graphics.Imaging.BitmapBounds? sourceBounds, global::Windows.Graphics.Imaging.BitmapBounds? destinationBounds)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction VideoFrame.CopyToAsync(VideoFrame frame, BitmapBounds? sourceBounds, BitmapBounds? destinationBounds) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20VideoFrame.CopyToAsync%28VideoFrame%20frame%2C%20BitmapBounds%3F%20sourceBounds%2C%20BitmapBounds%3F%20destinationBounds%29");
-		}
-#endif
+		// Forced skipping of method Windows.Media.VideoFrame.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.VideoFrame CreateAsDirect3D11SurfaceBacked(global::Windows.Graphics.DirectX.DirectXPixelFormat format, int width, int height)
@@ -192,6 +159,52 @@ namespace Windows.Media
 			throw new global::System.NotImplementedException("The member VideoFrame VideoFrame.CreateWithDirect3D11Surface(IDirect3DSurface surface) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoFrame%20VideoFrame.CreateWithDirect3D11Surface%28IDirect3DSurface%20surface%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.VideoFrame.FromAbi(nint)
+		// Forced skipping of method Windows.Media.VideoFrame.~VideoFrame()
+		// Forced skipping of method Windows.Media.VideoFrame.operator ==(Windows.Media.VideoFrame, Windows.Media.VideoFrame)
+		// Forced skipping of method Windows.Media.VideoFrame.operator !=(Windows.Media.VideoFrame, Windows.Media.VideoFrame)
+		// Forced skipping of method Windows.Media.VideoFrame.Equals(Windows.Media.VideoFrame)
+		// Forced skipping of method Windows.Media.VideoFrame.Equals(object)
+		// Forced skipping of method Windows.Media.VideoFrame.GetHashCode()
+		// Forced skipping of method Windows.Media.VideoFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.VideoFrame.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.VideoFrame.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.VideoFrame.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncAction CopyToAsync(global::Windows.Media.VideoFrame frame)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncAction VideoFrame.CopyToAsync(VideoFrame frame) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20VideoFrame.CopyToAsync%28VideoFrame%20frame%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoFrame", "void VideoFrame.Dispose()");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncAction CopyToAsync(global::Windows.Media.VideoFrame frame, global::Windows.Graphics.Imaging.BitmapBounds? sourceBounds, global::Windows.Graphics.Imaging.BitmapBounds? destinationBounds)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncAction VideoFrame.CopyToAsync(VideoFrame frame, BitmapBounds? sourceBounds, BitmapBounds? destinationBounds) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20VideoFrame.CopyToAsync%28VideoFrame%20frame%2C%20BitmapBounds%3F%20sourceBounds%2C%20BitmapBounds%3F%20destinationBounds%29");
+		}
+#endif
+		// Forced skipping of method Windows.Media.VideoFrame.Direct3DSurface.get
+		// Forced skipping of method Windows.Media.VideoFrame.Duration.get
+		// Forced skipping of method Windows.Media.VideoFrame.Duration.set
+		// Forced skipping of method Windows.Media.VideoFrame.ExtendedProperties.get
+		// Forced skipping of method Windows.Media.VideoFrame.IsDiscontinuous.get
+		// Forced skipping of method Windows.Media.VideoFrame.IsDiscontinuous.set
+		// Forced skipping of method Windows.Media.VideoFrame.IsReadOnly.get
+		// Forced skipping of method Windows.Media.VideoFrame.RelativeTime.get
+		// Forced skipping of method Windows.Media.VideoFrame.RelativeTime.set
+		// Forced skipping of method Windows.Media.VideoFrame.SoftwareBitmap.get
+		// Forced skipping of method Windows.Media.VideoFrame.SystemRelativeTime.get
+		// Forced skipping of method Windows.Media.VideoFrame.SystemRelativeTime.set
+		// Forced skipping of method Windows.Media.VideoFrame.Type.get
+		// Forced skipping of method Windows.Media.VideoFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.IMediaFrame
 		// Processing: System.IDisposable
 	}

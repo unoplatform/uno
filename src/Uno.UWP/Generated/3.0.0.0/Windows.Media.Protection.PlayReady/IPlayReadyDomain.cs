@@ -39,9 +39,9 @@ namespace Windows.Media.Protection.PlayReady
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyDomain.AccountId.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyDomain.ServiceId.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyDomain.Revision.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyDomain.FriendlyName.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyDomain.DomainJoinUrl.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyDomain.FriendlyName.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyDomain.Revision.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.IPlayReadyDomain.ServiceId.get
 	}
 }

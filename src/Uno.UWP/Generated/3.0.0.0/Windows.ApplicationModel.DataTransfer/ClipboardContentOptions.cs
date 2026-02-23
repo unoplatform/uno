@@ -10,15 +10,11 @@ namespace Windows.ApplicationModel.DataTransfer
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsRoamable
+		public global::System.Collections.Generic.IList<string> HistoryFormats
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ClipboardContentOptions.IsRoamable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ClipboardContentOptions.IsRoamable");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ClipboardContentOptions", "bool ClipboardContentOptions.IsRoamable");
+				throw new global::System.NotImplementedException("The member IList<string> ClipboardContentOptions.HistoryFormats is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20ClipboardContentOptions.HistoryFormats");
 			}
 		}
 #endif
@@ -38,11 +34,15 @@ namespace Windows.ApplicationModel.DataTransfer
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<string> HistoryFormats
+		public bool IsRoamable
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> ClipboardContentOptions.HistoryFormats is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20ClipboardContentOptions.HistoryFormats");
+				throw new global::System.NotImplementedException("The member bool ClipboardContentOptions.IsRoamable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ClipboardContentOptions.IsRoamable");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ClipboardContentOptions", "bool ClipboardContentOptions.IsRoamable");
 			}
 		}
 #endif
@@ -64,11 +64,22 @@ namespace Windows.ApplicationModel.DataTransfer
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.ClipboardContentOptions()
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.IsRoamable.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.IsRoamable.set
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.operator ==(Windows.ApplicationModel.DataTransfer.ClipboardContentOptions, Windows.ApplicationModel.DataTransfer.ClipboardContentOptions)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.operator !=(Windows.ApplicationModel.DataTransfer.ClipboardContentOptions, Windows.ApplicationModel.DataTransfer.ClipboardContentOptions)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.Equals(Windows.ApplicationModel.DataTransfer.ClipboardContentOptions)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.HistoryFormats.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.IsAllowedInHistory.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.IsAllowedInHistory.set
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.IsRoamable.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.IsRoamable.set
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.RoamingFormats.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.HistoryFormats.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

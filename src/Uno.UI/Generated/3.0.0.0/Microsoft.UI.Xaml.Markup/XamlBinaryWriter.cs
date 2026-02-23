@@ -13,6 +13,7 @@ namespace Microsoft.UI.Xaml.Markup
 		{
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBinaryWriter.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation Write(global::System.Collections.Generic.IList<global::Windows.Storage.Streams.IRandomAccessStream> inputStreams, global::System.Collections.Generic.IList<global::Windows.Storage.Streams.IRandomAccessStream> outputStreams, global::Microsoft.UI.Xaml.Markup.IXamlMetadataProvider xamlMetadataProvider)
@@ -20,5 +21,16 @@ namespace Microsoft.UI.Xaml.Markup
 			throw new global::System.NotImplementedException("The member XamlBinaryWriterErrorInformation XamlBinaryWriter.Write(IList<IRandomAccessStream> inputStreams, IList<IRandomAccessStream> outputStreams, IXamlMetadataProvider xamlMetadataProvider) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=XamlBinaryWriterErrorInformation%20XamlBinaryWriter.Write%28IList%3CIRandomAccessStream%3E%20inputStreams%2C%20IList%3CIRandomAccessStream%3E%20outputStreams%2C%20IXamlMetadataProvider%20xamlMetadataProvider%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBinaryWriter.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBinaryWriter.operator ==(Microsoft.UI.Xaml.Markup.XamlBinaryWriter, Microsoft.UI.Xaml.Markup.XamlBinaryWriter)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBinaryWriter.operator !=(Microsoft.UI.Xaml.Markup.XamlBinaryWriter, Microsoft.UI.Xaml.Markup.XamlBinaryWriter)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBinaryWriter.Equals(Microsoft.UI.Xaml.Markup.XamlBinaryWriter)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBinaryWriter.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBinaryWriter.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBinaryWriter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBinaryWriter.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBinaryWriter.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBinaryWriter.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBinaryWriter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

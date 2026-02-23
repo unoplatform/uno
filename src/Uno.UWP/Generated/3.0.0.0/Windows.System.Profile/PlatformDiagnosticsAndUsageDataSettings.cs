@@ -18,9 +18,7 @@ namespace Windows.System.Profile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Profile.PlatformDiagnosticsAndUsageDataSettings.CollectionLevel.get
-		// Forced skipping of method Windows.System.Profile.PlatformDiagnosticsAndUsageDataSettings.CollectionLevelChanged.add
-		// Forced skipping of method Windows.System.Profile.PlatformDiagnosticsAndUsageDataSettings.CollectionLevelChanged.remove
+		// Forced skipping of method Windows.System.Profile.PlatformDiagnosticsAndUsageDataSettings.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool CanCollectDiagnostics(global::Windows.System.Profile.PlatformDataCollectionLevel level)
@@ -28,6 +26,9 @@ namespace Windows.System.Profile
 			throw new global::System.NotImplementedException("The member bool PlatformDiagnosticsAndUsageDataSettings.CanCollectDiagnostics(PlatformDataCollectionLevel level) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PlatformDiagnosticsAndUsageDataSettings.CanCollectDiagnostics%28PlatformDataCollectionLevel%20level%29");
 		}
 #endif
+		// Forced skipping of method Windows.System.Profile.PlatformDiagnosticsAndUsageDataSettings.CollectionLevelChanged.add
+		// Forced skipping of method Windows.System.Profile.PlatformDiagnosticsAndUsageDataSettings.CollectionLevelChanged.remove
+		// Forced skipping of method Windows.System.Profile.PlatformDiagnosticsAndUsageDataSettings.CollectionLevel.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static event global::System.EventHandler<object> CollectionLevelChanged

@@ -57,11 +57,16 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.Uri.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.Challenge.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.Response.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.Cancel.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.Cancel.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.Equals(Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -69,5 +74,11 @@ namespace Microsoft.Web.WebView2.Core
 			throw new global::System.NotImplementedException("The member Deferral CoreWebView2BasicAuthenticationRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20CoreWebView2BasicAuthenticationRequestedEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.Cancel.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.Cancel.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.Challenge.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.Response.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.Uri.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

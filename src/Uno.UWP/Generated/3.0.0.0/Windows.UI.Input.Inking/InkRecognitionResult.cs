@@ -23,7 +23,16 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.InkRecognitionResult.BoundingRect.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognitionResult.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognitionResult.operator ==(Windows.UI.Input.Inking.InkRecognitionResult, Windows.UI.Input.Inking.InkRecognitionResult)
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognitionResult.operator !=(Windows.UI.Input.Inking.InkRecognitionResult, Windows.UI.Input.Inking.InkRecognitionResult)
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognitionResult.Equals(Windows.UI.Input.Inking.InkRecognitionResult)
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognitionResult.Equals(object)
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognitionResult.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognitionResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognitionResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognitionResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognitionResult.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<string> GetTextCandidates()
@@ -38,5 +47,7 @@ namespace Windows.UI.Input.Inking
 			throw new global::System.NotImplementedException("The member IReadOnlyList<InkStroke> InkRecognitionResult.GetStrokes() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CInkStroke%3E%20InkRecognitionResult.GetStrokes%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognitionResult.BoundingRect.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognitionResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -15,15 +15,15 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan ScrollWaitInterval
+		public global::Windows.Devices.PointOfService.LineDisplayMarqueeFormat Format
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LineDisplayMarquee.ScrollWaitInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LineDisplayMarquee.ScrollWaitInterval");
+				throw new global::System.NotImplementedException("The member LineDisplayMarqueeFormat LineDisplayMarquee.Format is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LineDisplayMarqueeFormat%20LineDisplayMarquee.Format");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayMarquee", "TimeSpan LineDisplayMarquee.ScrollWaitInterval");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayMarquee", "LineDisplayMarqueeFormat LineDisplayMarquee.Format");
 			}
 		}
 #endif
@@ -43,24 +43,28 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.PointOfService.LineDisplayMarqueeFormat Format
+		public global::System.TimeSpan ScrollWaitInterval
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LineDisplayMarqueeFormat LineDisplayMarquee.Format is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LineDisplayMarqueeFormat%20LineDisplayMarquee.Format");
+				throw new global::System.NotImplementedException("The member TimeSpan LineDisplayMarquee.ScrollWaitInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LineDisplayMarquee.ScrollWaitInterval");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayMarquee", "LineDisplayMarqueeFormat LineDisplayMarquee.Format");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplayMarquee", "TimeSpan LineDisplayMarquee.ScrollWaitInterval");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.Format.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.Format.set
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.RepeatWaitInterval.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.RepeatWaitInterval.set
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.ScrollWaitInterval.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.ScrollWaitInterval.set
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.operator ==(Windows.Devices.PointOfService.LineDisplayMarquee, Windows.Devices.PointOfService.LineDisplayMarquee)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.operator !=(Windows.Devices.PointOfService.LineDisplayMarquee, Windows.Devices.PointOfService.LineDisplayMarquee)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.Equals(Windows.Devices.PointOfService.LineDisplayMarquee)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.Equals(object)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.GetHashCode()
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryStartScrollingAsync(global::Windows.Devices.PointOfService.LineDisplayScrollDirection direction)
@@ -75,5 +79,12 @@ namespace Windows.Devices.PointOfService
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> LineDisplayMarquee.TryStopScrollingAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20LineDisplayMarquee.TryStopScrollingAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.Format.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.Format.set
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.RepeatWaitInterval.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.RepeatWaitInterval.set
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.ScrollWaitInterval.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.ScrollWaitInterval.set
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

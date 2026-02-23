@@ -58,21 +58,22 @@ namespace Windows.System.Power
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Power.PowerManager.EnergySaverStatus.get
-		// Forced skipping of method Windows.System.Power.PowerManager.EnergySaverStatusChanged.add
-		// Forced skipping of method Windows.System.Power.PowerManager.EnergySaverStatusChanged.remove
-		// Forced skipping of method Windows.System.Power.PowerManager.BatteryStatus.get
+		// Forced skipping of method Windows.System.Power.PowerManager.As<I>()
 		// Forced skipping of method Windows.System.Power.PowerManager.BatteryStatusChanged.add
 		// Forced skipping of method Windows.System.Power.PowerManager.BatteryStatusChanged.remove
-		// Forced skipping of method Windows.System.Power.PowerManager.PowerSupplyStatus.get
+		// Forced skipping of method Windows.System.Power.PowerManager.EnergySaverStatusChanged.add
+		// Forced skipping of method Windows.System.Power.PowerManager.EnergySaverStatusChanged.remove
 		// Forced skipping of method Windows.System.Power.PowerManager.PowerSupplyStatusChanged.add
 		// Forced skipping of method Windows.System.Power.PowerManager.PowerSupplyStatusChanged.remove
-		// Forced skipping of method Windows.System.Power.PowerManager.RemainingChargePercent.get
 		// Forced skipping of method Windows.System.Power.PowerManager.RemainingChargePercentChanged.add
 		// Forced skipping of method Windows.System.Power.PowerManager.RemainingChargePercentChanged.remove
-		// Forced skipping of method Windows.System.Power.PowerManager.RemainingDischargeTime.get
 		// Forced skipping of method Windows.System.Power.PowerManager.RemainingDischargeTimeChanged.add
 		// Forced skipping of method Windows.System.Power.PowerManager.RemainingDischargeTimeChanged.remove
+		// Forced skipping of method Windows.System.Power.PowerManager.BatteryStatus.get
+		// Forced skipping of method Windows.System.Power.PowerManager.EnergySaverStatus.get
+		// Forced skipping of method Windows.System.Power.PowerManager.PowerSupplyStatus.get
+		// Forced skipping of method Windows.System.Power.PowerManager.RemainingChargePercent.get
+		// Forced skipping of method Windows.System.Power.PowerManager.RemainingDischargeTime.get
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static event global::System.EventHandler<object> BatteryStatusChanged

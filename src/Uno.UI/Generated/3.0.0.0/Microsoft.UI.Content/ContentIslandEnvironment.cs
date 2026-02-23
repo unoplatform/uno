@@ -9,11 +9,6 @@ namespace Microsoft.UI.Content
 	public partial class ContentIslandEnvironment
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal ContentIslandEnvironment()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.WindowId AppWindowId
 		{
@@ -43,13 +38,27 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.DisplayId.get
-		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.StateChanged.remove
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.ContentIslandEnvironment(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.operator ==(Microsoft.UI.Content.ContentIslandEnvironment, Microsoft.UI.Content.ContentIslandEnvironment)
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.operator !=(Microsoft.UI.Content.ContentIslandEnvironment, Microsoft.UI.Content.ContentIslandEnvironment)
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.Equals(Microsoft.UI.Content.ContentIslandEnvironment)
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.Equals(object)
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.ContentIslandEnvironment(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.SettingChanged.add
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.SettingChanged.remove
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.StateChanged.add
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.StateChanged.remove
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.AppWindowId.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.DisplayId.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.DisplayScale.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Content.ContentIslandEnvironment, global::Microsoft.UI.Content.ContentEnvironmentSettingChangedEventArgs> SettingChanged

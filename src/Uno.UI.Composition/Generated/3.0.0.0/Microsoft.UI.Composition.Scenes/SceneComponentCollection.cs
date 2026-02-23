@@ -6,7 +6,7 @@ namespace Microsoft.UI.Composition.Scenes
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class SceneComponentCollection : global::Microsoft.UI.Composition.Scenes.SceneObject, global::System.Collections.Generic.IList<global::Microsoft.UI.Composition.Scenes.SceneComponent>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Composition.Scenes.SceneComponent>
+	public partial class SceneComponentCollection : global::Microsoft.UI.Composition.Scenes.SceneObject, global::System.Collections.Generic.IList<global::Microsoft.UI.Composition.Scenes.SceneComponent>, global::System.Collections.Generic.ICollection<global::Microsoft.UI.Composition.Scenes.SceneComponent>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Composition.Scenes.SceneComponent>, global::System.Collections.IEnumerable
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal SceneComponentCollection()
@@ -15,114 +15,11 @@ namespace Microsoft.UI.Composition.Scenes
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint SceneComponentCollection.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20SceneComponentCollection.Size");
-			}
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.RemoveAtEnd()
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.SetAt(uint, Microsoft.UI.Composition.Scenes.SceneComponent)
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.Append(Microsoft.UI.Composition.Scenes.SceneComponent)
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.RemoveAt(uint)
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.Clear()
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.GetMany(uint, Microsoft.UI.Composition.Scenes.SceneComponent[])
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.ReplaceAll(Microsoft.UI.Composition.Scenes.SceneComponent[])
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.First()
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.InsertAt(uint, Microsoft.UI.Composition.Scenes.SceneComponent)
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.IndexOf(Microsoft.UI.Composition.Scenes.SceneComponent, out uint)
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.Size.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.GetView()
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.GetAt(uint)
-		// Processing: System.Collections.Generic.IList<Microsoft.UI.Composition.Scenes.SceneComponent>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IList<Microsoft.UI.Composition.Scenes.SceneComponent>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int IndexOf(global::Microsoft.UI.Composition.Scenes.SceneComponent item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IList<Microsoft.UI.Composition.Scenes.SceneComponent>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Insert(int index, global::Microsoft.UI.Composition.Scenes.SceneComponent item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IList<Microsoft.UI.Composition.Scenes.SceneComponent>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void RemoveAt(int index)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Composition.Scenes.SceneComponent this[int index]
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Composition.Scenes.SceneComponent>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Microsoft.UI.Composition.Scenes.SceneComponent>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Add(global::Microsoft.UI.Composition.Scenes.SceneComponent item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Microsoft.UI.Composition.Scenes.SceneComponent>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Clear()
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Microsoft.UI.Composition.Scenes.SceneComponent>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Contains(global::Microsoft.UI.Composition.Scenes.SceneComponent item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Microsoft.UI.Composition.Scenes.SceneComponent>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void CopyTo(global::Microsoft.UI.Composition.Scenes.SceneComponent[] array, int arrayIndex)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Microsoft.UI.Composition.Scenes.SceneComponent>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Remove(global::Microsoft.UI.Composition.Scenes.SceneComponent item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int Count
 		{
 			get
 			{
-				throw new global::System.NotSupportedException();
+				throw new global::System.NotImplementedException("The member int SceneComponentCollection.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SceneComponentCollection.Count");
 			}
 		}
 #endif
@@ -132,19 +29,107 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotSupportedException();
+				throw new global::System.NotImplementedException("The member bool SceneComponentCollection.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SceneComponentCollection.IsReadOnly");
 			}
 		}
 #endif
-		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Composition.Scenes.SceneComponent>
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<Microsoft.UI.Composition.Scenes.SceneComponent>
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Composition.Scenes.SceneComponent this[int index]
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SceneComponent SceneComponentCollection.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneComponent%20SceneComponentCollection.this%5Bint%20index%5D");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneComponentCollection", "SceneComponent SceneComponentCollection.this[int index]");
+			}
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.operator ==(Microsoft.UI.Composition.Scenes.SceneComponentCollection, Microsoft.UI.Composition.Scenes.SceneComponentCollection)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.operator !=(Microsoft.UI.Composition.Scenes.SceneComponentCollection, Microsoft.UI.Composition.Scenes.SceneComponentCollection)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.Equals(Microsoft.UI.Composition.Scenes.SceneComponentCollection)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.Count.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.IsReadOnly.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.this[int].get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.this[int].set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int IndexOf(global::Microsoft.UI.Composition.Scenes.SceneComponent item)
+		{
+			throw new global::System.NotImplementedException("The member int SceneComponentCollection.IndexOf(SceneComponent item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SceneComponentCollection.IndexOf%28SceneComponent%20item%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Insert(int index, global::Microsoft.UI.Composition.Scenes.SceneComponent item)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneComponentCollection", "void SceneComponentCollection.Insert(int index, SceneComponent item)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void RemoveAt(int index)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneComponentCollection", "void SceneComponentCollection.RemoveAt(int index)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Add(global::Microsoft.UI.Composition.Scenes.SceneComponent item)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneComponentCollection", "void SceneComponentCollection.Add(SceneComponent item)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Clear()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneComponentCollection", "void SceneComponentCollection.Clear()");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Contains(global::Microsoft.UI.Composition.Scenes.SceneComponent item)
+		{
+			throw new global::System.NotImplementedException("The member bool SceneComponentCollection.Contains(SceneComponent item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SceneComponentCollection.Contains%28SceneComponent%20item%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void CopyTo(global::Microsoft.UI.Composition.Scenes.SceneComponent[] array, int arrayIndex)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneComponentCollection", "void SceneComponentCollection.CopyTo(SceneComponent[] array, int arrayIndex)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Remove(global::Microsoft.UI.Composition.Scenes.SceneComponent item)
+		{
+			throw new global::System.NotImplementedException("The member bool SceneComponentCollection.Remove(SceneComponent item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SceneComponentCollection.Remove%28SceneComponent%20item%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Microsoft.UI.Composition.Scenes.SceneComponent> GetEnumerator()
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member IEnumerator<SceneComponent> SceneComponentCollection.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CSceneComponent%3E%20SceneComponentCollection.GetEnumerator%28%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.System.Collections.Generic.IList<Microsoft.UI.Composition.Scenes.SceneComponent>.get_Item(int)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneComponentCollection.System.Collections.Generic.IList<Microsoft.UI.Composition.Scenes.SceneComponent>.set_Item(int, Microsoft.UI.Composition.Scenes.SceneComponent)
+		// Processing: System.Collections.Generic.IList<Microsoft.UI.Composition.Scenes.SceneComponent>
+		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Composition.Scenes.SceneComponent>
+		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Composition.Scenes.SceneComponent>
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable

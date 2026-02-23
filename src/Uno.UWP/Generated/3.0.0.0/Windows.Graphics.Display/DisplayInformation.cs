@@ -8,31 +8,34 @@ namespace Windows.Graphics.Display
 #endif
 	public partial class DisplayInformation
 	{
+		// Skipping already declared property AutoRotationPreferences
 		// Skipping already declared property CurrentOrientation
+		// Skipping already declared property DiagonalSizeInInches
 		// Skipping already declared property LogicalDpi
 		// Skipping already declared property NativeOrientation
 		// Skipping already declared property RawDpiX
 		// Skipping already declared property RawDpiY
-		// Skipping already declared property ResolutionScale
-		// Skipping already declared property StereoEnabled
 		// Skipping already declared property RawPixelsPerViewPixel
-		// Skipping already declared property DiagonalSizeInInches
+		// Skipping already declared property ResolutionScale
 		// Skipping already declared property ScreenHeightInRawPixels
 		// Skipping already declared property ScreenWidthInRawPixels
-		// Skipping already declared property AutoRotationPreferences
-		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.CurrentOrientation.get
-		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.NativeOrientation.get
-		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.OrientationChanged.add
-		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.OrientationChanged.remove
-		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.ResolutionScale.get
-		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.LogicalDpi.get
-		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.RawDpiX.get
-		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.RawDpiY.get
-		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.DpiChanged.add
-		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.DpiChanged.remove
-		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.StereoEnabled.get
-		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.StereoEnabledChanged.add
-		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.StereoEnabledChanged.remove
+		// Skipping already declared property StereoEnabled
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.As<I>()
+		// Skipping already declared method Windows.Graphics.Display.DisplayInformation.GetForCurrentView()
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.DisplayContentsInvalidated.add
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.DisplayContentsInvalidated.remove
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.AutoRotationPreferences.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.AutoRotationPreferences.set
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.operator ==(Windows.Graphics.Display.DisplayInformation, Windows.Graphics.Display.DisplayInformation)
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.operator !=(Windows.Graphics.Display.DisplayInformation, Windows.Graphics.Display.DisplayInformation)
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.Equals(Windows.Graphics.Display.DisplayInformation)
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.Equals(object)
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> GetColorProfileAsync()
@@ -42,10 +45,12 @@ namespace Windows.Graphics.Display
 #endif
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.ColorProfileChanged.add
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.ColorProfileChanged.remove
-		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.RawPixelsPerViewPixel.get
-		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.DiagonalSizeInInches.get
-		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.ScreenWidthInRawPixels.get
-		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.ScreenHeightInRawPixels.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.DpiChanged.add
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.DpiChanged.remove
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.OrientationChanged.add
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.OrientationChanged.remove
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.StereoEnabledChanged.add
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.StereoEnabledChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Display.AdvancedColorInfo GetAdvancedColorInfo()
@@ -55,11 +60,34 @@ namespace Windows.Graphics.Display
 #endif
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.AdvancedColorInfoChanged.add
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.AdvancedColorInfoChanged.remove
-		// Skipping already declared method Windows.Graphics.Display.DisplayInformation.GetForCurrentView()
-		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.AutoRotationPreferences.get
-		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.AutoRotationPreferences.set
-		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.DisplayContentsInvalidated.add
-		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.DisplayContentsInvalidated.remove
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.CurrentOrientation.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.DiagonalSizeInInches.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.LogicalDpi.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.NativeOrientation.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.RawDpiX.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.RawDpiY.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.RawPixelsPerViewPixel.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.ResolutionScale.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.ScreenHeightInRawPixels.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.ScreenWidthInRawPixels.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.StereoEnabled.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Display.DisplayInformation, object> DisplayContentsInvalidated
+		{
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayInformation", "event TypedEventHandler<DisplayInformation, object> DisplayInformation.DisplayContentsInvalidated");
+			}
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayInformation", "event TypedEventHandler<DisplayInformation, object> DisplayInformation.DisplayContentsInvalidated");
+			}
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Display.DisplayInformation, object> ColorProfileChanged
@@ -107,22 +135,6 @@ namespace Windows.Graphics.Display
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayInformation", "event TypedEventHandler<DisplayInformation, object> DisplayInformation.AdvancedColorInfoChanged");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Display.DisplayInformation, object> DisplayContentsInvalidated
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayInformation", "event TypedEventHandler<DisplayInformation, object> DisplayInformation.DisplayContentsInvalidated");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayInformation", "event TypedEventHandler<DisplayInformation, object> DisplayInformation.DisplayContentsInvalidated");
 			}
 		}
 #endif

@@ -8,27 +8,38 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class SkewTransform : global::Microsoft.UI.Xaml.Media.Transform
 	{
-		// Skipping already declared property CenterY
-		// Skipping already declared property CenterX
-		// Skipping already declared property AngleY
-		// Skipping already declared property AngleX
 		// Skipping already declared property AngleXProperty
 		// Skipping already declared property AngleYProperty
 		// Skipping already declared property CenterXProperty
 		// Skipping already declared property CenterYProperty
+		// Skipping already declared property AngleX
+		// Skipping already declared property AngleY
+		// Skipping already declared property CenterX
+		// Skipping already declared property CenterY
 		// Skipping already declared method Microsoft.UI.Xaml.Media.SkewTransform.SkewTransform()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.SkewTransform()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.CenterX.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.CenterX.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.CenterY.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.CenterY.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.AngleXProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.AngleYProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.CenterXProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.CenterYProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.operator ==(Microsoft.UI.Xaml.Media.SkewTransform, Microsoft.UI.Xaml.Media.SkewTransform)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.operator !=(Microsoft.UI.Xaml.Media.SkewTransform, Microsoft.UI.Xaml.Media.SkewTransform)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.Equals(Microsoft.UI.Xaml.Media.SkewTransform)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.AngleX.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.AngleX.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.AngleY.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.AngleY.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.CenterXProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.CenterYProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.AngleXProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.AngleYProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.CenterX.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.CenterX.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.CenterY.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.CenterY.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

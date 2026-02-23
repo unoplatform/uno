@@ -36,7 +36,18 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel.AnnotatedScrollBarLabel(object, double)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel.operator ==(Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel, Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel.operator !=(Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel, Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel.Equals(Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel.Content.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel.ScrollOffset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

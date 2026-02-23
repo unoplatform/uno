@@ -15,43 +15,15 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float VerticalAlignmentRatio
+		public float HorizontalAlignmentRatio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionViewBox.VerticalAlignmentRatio is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionViewBox.VerticalAlignmentRatio");
+				throw new global::System.NotImplementedException("The member float CompositionViewBox.HorizontalAlignmentRatio is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionViewBox.HorizontalAlignmentRatio");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionViewBox", "float CompositionViewBox.VerticalAlignmentRatio");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Composition.CompositionStretch Stretch
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CompositionStretch CompositionViewBox.Stretch is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionStretch%20CompositionViewBox.Stretch");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionViewBox", "CompositionStretch CompositionViewBox.Stretch");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector2 Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionViewBox.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionViewBox.Size");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionViewBox", "Vector2 CompositionViewBox.Size");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionViewBox", "float CompositionViewBox.HorizontalAlignmentRatio");
 			}
 		}
 #endif
@@ -71,18 +43,54 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float HorizontalAlignmentRatio
+		public global::System.Numerics.Vector2 Size
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionViewBox.HorizontalAlignmentRatio is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionViewBox.HorizontalAlignmentRatio");
+				throw new global::System.NotImplementedException("The member Vector2 CompositionViewBox.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionViewBox.Size");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionViewBox", "float CompositionViewBox.HorizontalAlignmentRatio");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionViewBox", "Vector2 CompositionViewBox.Size");
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Composition.CompositionStretch Stretch
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CompositionStretch CompositionViewBox.Stretch is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionStretch%20CompositionViewBox.Stretch");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionViewBox", "CompositionStretch CompositionViewBox.Stretch");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float VerticalAlignmentRatio
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float CompositionViewBox.VerticalAlignmentRatio is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionViewBox.VerticalAlignmentRatio");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionViewBox", "float CompositionViewBox.VerticalAlignmentRatio");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.operator ==(Windows.UI.Composition.CompositionViewBox, Windows.UI.Composition.CompositionViewBox)
+		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.operator !=(Windows.UI.Composition.CompositionViewBox, Windows.UI.Composition.CompositionViewBox)
+		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.Equals(Windows.UI.Composition.CompositionViewBox)
+		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.HorizontalAlignmentRatio.get
 		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.HorizontalAlignmentRatio.set
 		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.Offset.get
@@ -93,5 +101,7 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.Stretch.set
 		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.VerticalAlignmentRatio.get
 		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.VerticalAlignmentRatio.set
+		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

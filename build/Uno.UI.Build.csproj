@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net462</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<UpdateAssemblyInfo>false</UpdateAssemblyInfo>
 	</PropertyGroup>
 
@@ -101,15 +101,9 @@
 		<!-- These filters contain Uno.UI project and its dependencies, which are what needs to be restored -->
 		<!-- In addition, the reference project needs to be restored as well. -->
 		<Exec Command="dotnet restore filters\Uno.UI-top-projects-for-sync-gen.slnf -p:Configuration=Release -p:InformationalVersion=$(NBGV_AssemblyInformationalVersion) -p:CI_Build=true -p:_IsCIBuild=true -p:SyncGeneratorRunning=true" />
-		<MSBuild
-			Properties="Configuration=Release;InformationalVersion=$(NBGV_AssemblyInformationalVersion);CI_Build=true;_IsCIBuild=true;SyncGeneratorRunning=true"
-			Projects="..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj;..\src\Uno.UWPSyncGenerator.Reference\Uno.UWPSyncGenerator.Reference.csproj"
-			Targets="Restore;Clean"
-			RebaseOutputs="false"
-			BuildInParallel="true" />
 
-		<MSBuild Properties="Configuration=Release" Projects="..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj" Targets="Build" />
-		<MSBuild Properties="Configuration=Release" Projects="..\src\Uno.UWPSyncGenerator.Reference\Uno.UWPSyncGenerator.Reference.csproj" Targets="Build" />
+		<MSBuild Properties="Configuration=Release" Projects="..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj" Targets="Restore;Build" />
+		<MSBuild Properties="Configuration=Release" Projects="..\src\Uno.UWPSyncGenerator.Reference.WinUI\Uno.UWPSyncGenerator.Reference.WinUI.csproj" Targets="Restore;Build" />
 
 		<ItemGroup>
 			<MixinTargetFrameworks Include="net9.0-ios18.0" />

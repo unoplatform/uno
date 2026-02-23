@@ -9,8 +9,8 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 	public partial interface IResourceManager
 	{
 		// Skipping already declared property MainResourceMap
-		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.IResourceManager.MainResourceMap.get
 		// Skipping already declared method Microsoft.Windows.ApplicationModel.Resources.IResourceManager.CreateResourceContext()
+		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.IResourceManager.MainResourceMap.get
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.IResourceManager.ResourceNotFound.add
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.IResourceManager.ResourceNotFound.remove
 		// Skipping already declared event Microsoft.Windows.ApplicationModel.Resources.IResourceManager.ResourceNotFound

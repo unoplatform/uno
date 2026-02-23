@@ -8,34 +8,6 @@ namespace Windows.Graphics.Imaging
 #endif
 	public partial class SoftwareBitmap : global::System.IDisposable
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double DpiY
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double SoftwareBitmap.DpiY is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20SoftwareBitmap.DpiY");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "double SoftwareBitmap.DpiY");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double DpiX
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double SoftwareBitmap.DpiX is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20SoftwareBitmap.DpiX");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "double SoftwareBitmap.DpiX");
-			}
-		}
-#endif
 #if false || false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Imaging.BitmapAlphaMode BitmapAlphaMode
@@ -53,6 +25,34 @@ namespace Windows.Graphics.Imaging
 			get
 			{
 				throw new global::System.NotImplementedException("The member BitmapPixelFormat SoftwareBitmap.BitmapPixelFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BitmapPixelFormat%20SoftwareBitmap.BitmapPixelFormat");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double DpiX
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double SoftwareBitmap.DpiX is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20SoftwareBitmap.DpiX");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "double SoftwareBitmap.DpiX");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double DpiY
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double SoftwareBitmap.DpiY is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20SoftwareBitmap.DpiY");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "double SoftwareBitmap.DpiY");
 			}
 		}
 #endif
@@ -102,57 +102,7 @@ namespace Windows.Graphics.Imaging
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.SoftwareBitmap(Windows.Graphics.Imaging.BitmapPixelFormat, int, int, Windows.Graphics.Imaging.BitmapAlphaMode)
-		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.BitmapPixelFormat.get
-		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.BitmapAlphaMode.get
-		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.PixelWidth.get
-		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.PixelHeight.get
-		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.IsReadOnly.get
-		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.DpiX.set
-		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.DpiX.get
-		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.DpiY.set
-		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.DpiY.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.Imaging.BitmapBuffer LockBuffer(global::Windows.Graphics.Imaging.BitmapBufferAccessMode mode)
-		{
-			throw new global::System.NotImplementedException("The member BitmapBuffer SoftwareBitmap.LockBuffer(BitmapBufferAccessMode mode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BitmapBuffer%20SoftwareBitmap.LockBuffer%28BitmapBufferAccessMode%20mode%29");
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public void CopyTo(global::Windows.Graphics.Imaging.SoftwareBitmap bitmap)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "void SoftwareBitmap.CopyTo(SoftwareBitmap bitmap)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void CopyFromBuffer(global::Windows.Storage.Streams.IBuffer buffer)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "void SoftwareBitmap.CopyFromBuffer(IBuffer buffer)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void CopyToBuffer(global::Windows.Storage.Streams.IBuffer buffer)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "void SoftwareBitmap.CopyToBuffer(IBuffer buffer)");
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.Imaging.SoftwareBitmap GetReadOnlyView()
-		{
-			throw new global::System.NotImplementedException("The member SoftwareBitmap SoftwareBitmap.GetReadOnlyView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SoftwareBitmap%20SoftwareBitmap.GetReadOnlyView%28%29");
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "void SoftwareBitmap.Dispose()");
-		}
-#endif
+		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.As<I>()
 #if false || false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Imaging.SoftwareBitmap Copy(global::Windows.Graphics.Imaging.SoftwareBitmap source)
@@ -202,6 +152,69 @@ namespace Windows.Graphics.Imaging
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SoftwareBitmap> SoftwareBitmap.CreateCopyFromSurfaceAsync(IDirect3DSurface surface, BitmapAlphaMode alpha) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSoftwareBitmap%3E%20SoftwareBitmap.CreateCopyFromSurfaceAsync%28IDirect3DSurface%20surface%2C%20BitmapAlphaMode%20alpha%29");
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.~SoftwareBitmap()
+		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.operator ==(Windows.Graphics.Imaging.SoftwareBitmap, Windows.Graphics.Imaging.SoftwareBitmap)
+		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.operator !=(Windows.Graphics.Imaging.SoftwareBitmap, Windows.Graphics.Imaging.SoftwareBitmap)
+		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.Equals(Windows.Graphics.Imaging.SoftwareBitmap)
+		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.Equals(object)
+		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.Imaging.BitmapBuffer LockBuffer(global::Windows.Graphics.Imaging.BitmapBufferAccessMode mode)
+		{
+			throw new global::System.NotImplementedException("The member BitmapBuffer SoftwareBitmap.LockBuffer(BitmapBufferAccessMode mode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BitmapBuffer%20SoftwareBitmap.LockBuffer%28BitmapBufferAccessMode%20mode%29");
+		}
+#endif
+#if false || false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+		public void CopyTo(global::Windows.Graphics.Imaging.SoftwareBitmap bitmap)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "void SoftwareBitmap.CopyTo(SoftwareBitmap bitmap)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void CopyFromBuffer(global::Windows.Storage.Streams.IBuffer buffer)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "void SoftwareBitmap.CopyFromBuffer(IBuffer buffer)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void CopyToBuffer(global::Windows.Storage.Streams.IBuffer buffer)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "void SoftwareBitmap.CopyToBuffer(IBuffer buffer)");
+		}
+#endif
+#if false || false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.Imaging.SoftwareBitmap GetReadOnlyView()
+		{
+			throw new global::System.NotImplementedException("The member SoftwareBitmap SoftwareBitmap.GetReadOnlyView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SoftwareBitmap%20SoftwareBitmap.GetReadOnlyView%28%29");
+		}
+#endif
+#if false || false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+		public void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "void SoftwareBitmap.Dispose()");
+		}
+#endif
+		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.BitmapAlphaMode.get
+		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.BitmapPixelFormat.get
+		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.DpiX.get
+		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.DpiX.set
+		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.DpiY.get
+		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.DpiY.set
+		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.IsReadOnly.get
+		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.PixelHeight.get
+		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.PixelWidth.get
+		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

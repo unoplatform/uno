@@ -9,8 +9,19 @@ namespace Windows.UI.Core
 	public partial class CoreWindowEventArgs : global::Windows.UI.Core.ICoreWindowEventArgs
 	{
 		// Skipping already declared property Handled
+		// Forced skipping of method Windows.UI.Core.CoreWindowEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Core.CoreWindowEventArgs.operator ==(Windows.UI.Core.CoreWindowEventArgs, Windows.UI.Core.CoreWindowEventArgs)
+		// Forced skipping of method Windows.UI.Core.CoreWindowEventArgs.operator !=(Windows.UI.Core.CoreWindowEventArgs, Windows.UI.Core.CoreWindowEventArgs)
+		// Forced skipping of method Windows.UI.Core.CoreWindowEventArgs.Equals(Windows.UI.Core.CoreWindowEventArgs)
+		// Forced skipping of method Windows.UI.Core.CoreWindowEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.Core.CoreWindowEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.Core.CoreWindowEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Core.CoreWindowEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Core.CoreWindowEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Core.CoreWindowEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Core.CoreWindowEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Core.CoreWindowEventArgs.Handled.set
+		// Forced skipping of method Windows.UI.Core.CoreWindowEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.UI.Core.ICoreWindowEventArgs
 	}
 }

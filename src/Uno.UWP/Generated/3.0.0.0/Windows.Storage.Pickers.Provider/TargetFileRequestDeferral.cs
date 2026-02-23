@@ -13,6 +13,16 @@ namespace Windows.Storage.Pickers.Provider
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequestDeferral.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequestDeferral.operator ==(Windows.Storage.Pickers.Provider.TargetFileRequestDeferral, Windows.Storage.Pickers.Provider.TargetFileRequestDeferral)
+		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequestDeferral.operator !=(Windows.Storage.Pickers.Provider.TargetFileRequestDeferral, Windows.Storage.Pickers.Provider.TargetFileRequestDeferral)
+		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequestDeferral.Equals(Windows.Storage.Pickers.Provider.TargetFileRequestDeferral)
+		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequestDeferral.Equals(object)
+		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequestDeferral.GetHashCode()
+		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequestDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequestDeferral.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequestDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequestDeferral.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Complete()
@@ -20,5 +30,6 @@ namespace Windows.Storage.Pickers.Provider
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.Provider.TargetFileRequestDeferral", "void TargetFileRequestDeferral.Complete()");
 		}
 #endif
+		// Forced skipping of method Windows.Storage.Pickers.Provider.TargetFileRequestDeferral.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

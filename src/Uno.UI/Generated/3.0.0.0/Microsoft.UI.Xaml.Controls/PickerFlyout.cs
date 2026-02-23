@@ -10,17 +10,19 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.UIElement Content
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.UIElement)this.GetValue(ContentProperty);
-			}
-			set
-			{
-				this.SetValue(ContentProperty, value);
-			}
-		}
+		public static global::Microsoft.UI.Xaml.DependencyProperty ConfirmationButtonsVisibleProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(ConfirmationButtonsVisible), typeof(bool),
+			typeof(global::Microsoft.UI.Xaml.Controls.PickerFlyout),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty ContentProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(Content), typeof(global::Microsoft.UI.Xaml.UIElement),
+			typeof(global::Microsoft.UI.Xaml.Controls.PickerFlyout),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.UIElement)));
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -38,28 +40,31 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ConfirmationButtonsVisibleProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(ConfirmationButtonsVisible), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.PickerFlyout),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ContentProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Content), typeof(global::Microsoft.UI.Xaml.UIElement),
-			typeof(global::Microsoft.UI.Xaml.Controls.PickerFlyout),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.UIElement)));
+		public global::Microsoft.UI.Xaml.UIElement Content
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.UIElement)this.GetValue(ContentProperty);
+			}
+			set
+			{
+				this.SetValue(ContentProperty, value);
+			}
+		}
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.PickerFlyout.PickerFlyout()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.PickerFlyout()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.Content.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.Content.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.ConfirmationButtonsVisible.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.ConfirmationButtonsVisible.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.Confirmed.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.Confirmed.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.ConfirmationButtonsVisibleProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.ContentProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.operator ==(Microsoft.UI.Xaml.Controls.PickerFlyout, Microsoft.UI.Xaml.Controls.PickerFlyout)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.operator !=(Microsoft.UI.Xaml.Controls.PickerFlyout, Microsoft.UI.Xaml.Controls.PickerFlyout)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.Equals(Microsoft.UI.Xaml.Controls.PickerFlyout)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> ShowAtAsync(global::Microsoft.UI.Xaml.FrameworkElement target)
@@ -67,8 +72,14 @@ namespace Microsoft.UI.Xaml.Controls
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> PickerFlyout.ShowAtAsync(FrameworkElement target) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20PickerFlyout.ShowAtAsync%28FrameworkElement%20target%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.ContentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.ConfirmationButtonsVisibleProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.Confirmed.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.Confirmed.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.ConfirmationButtonsVisible.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.ConfirmationButtonsVisible.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.Content.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.Content.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PickerFlyout.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.PickerFlyout, global::Microsoft.UI.Xaml.Controls.PickerConfirmedEventArgs> Confirmed

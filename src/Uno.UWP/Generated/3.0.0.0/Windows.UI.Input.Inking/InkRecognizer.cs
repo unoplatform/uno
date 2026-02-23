@@ -23,6 +23,17 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognizer.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognizer.operator ==(Windows.UI.Input.Inking.InkRecognizer, Windows.UI.Input.Inking.InkRecognizer)
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognizer.operator !=(Windows.UI.Input.Inking.InkRecognizer, Windows.UI.Input.Inking.InkRecognizer)
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognizer.Equals(Windows.UI.Input.Inking.InkRecognizer)
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognizer.Equals(object)
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognizer.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognizer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognizer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognizer.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognizer.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkRecognizer.Name.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognizer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

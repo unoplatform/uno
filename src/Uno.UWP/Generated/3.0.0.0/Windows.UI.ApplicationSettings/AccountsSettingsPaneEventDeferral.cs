@@ -13,6 +13,16 @@ namespace Windows.UI.ApplicationSettings
 		{
 		}
 #endif
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneEventDeferral.FromAbi(nint)
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneEventDeferral.operator ==(Windows.UI.ApplicationSettings.AccountsSettingsPaneEventDeferral, Windows.UI.ApplicationSettings.AccountsSettingsPaneEventDeferral)
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneEventDeferral.operator !=(Windows.UI.ApplicationSettings.AccountsSettingsPaneEventDeferral, Windows.UI.ApplicationSettings.AccountsSettingsPaneEventDeferral)
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneEventDeferral.Equals(Windows.UI.ApplicationSettings.AccountsSettingsPaneEventDeferral)
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneEventDeferral.Equals(object)
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneEventDeferral.GetHashCode()
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneEventDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneEventDeferral.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneEventDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneEventDeferral.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Complete()
@@ -20,5 +30,6 @@ namespace Windows.UI.ApplicationSettings
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.AccountsSettingsPaneEventDeferral", "void AccountsSettingsPaneEventDeferral.Complete()");
 		}
 #endif
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneEventDeferral.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

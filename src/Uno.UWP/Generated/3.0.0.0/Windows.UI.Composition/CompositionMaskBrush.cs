@@ -15,20 +15,6 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Composition.CompositionBrush Source
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CompositionBrush CompositionMaskBrush.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBrush%20CompositionMaskBrush.Source");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionMaskBrush", "CompositionBrush CompositionMaskBrush.Source");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Composition.CompositionBrush Mask
 		{
 			get
@@ -41,9 +27,33 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Composition.CompositionBrush Source
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CompositionBrush CompositionMaskBrush.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBrush%20CompositionMaskBrush.Source");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionMaskBrush", "CompositionBrush CompositionMaskBrush.Source");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.UI.Composition.CompositionMaskBrush.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.CompositionMaskBrush.operator ==(Windows.UI.Composition.CompositionMaskBrush, Windows.UI.Composition.CompositionMaskBrush)
+		// Forced skipping of method Windows.UI.Composition.CompositionMaskBrush.operator !=(Windows.UI.Composition.CompositionMaskBrush, Windows.UI.Composition.CompositionMaskBrush)
+		// Forced skipping of method Windows.UI.Composition.CompositionMaskBrush.Equals(Windows.UI.Composition.CompositionMaskBrush)
+		// Forced skipping of method Windows.UI.Composition.CompositionMaskBrush.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.CompositionMaskBrush.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.CompositionMaskBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.CompositionMaskBrush.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionMaskBrush.Mask.get
 		// Forced skipping of method Windows.UI.Composition.CompositionMaskBrush.Mask.set
 		// Forced skipping of method Windows.UI.Composition.CompositionMaskBrush.Source.get
 		// Forced skipping of method Windows.UI.Composition.CompositionMaskBrush.Source.set
+		// Forced skipping of method Windows.UI.Composition.CompositionMaskBrush.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.CompositionMaskBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -15,20 +15,6 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector2 Radius
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionEllipseGeometry.Radius is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionEllipseGeometry.Radius");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionEllipseGeometry", "Vector2 CompositionEllipseGeometry.Radius");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Numerics.Vector2 Center
 		{
 			get
@@ -41,9 +27,33 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector2 Radius
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector2 CompositionEllipseGeometry.Radius is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionEllipseGeometry.Radius");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionEllipseGeometry", "Vector2 CompositionEllipseGeometry.Radius");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.UI.Composition.CompositionEllipseGeometry.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.CompositionEllipseGeometry.operator ==(Windows.UI.Composition.CompositionEllipseGeometry, Windows.UI.Composition.CompositionEllipseGeometry)
+		// Forced skipping of method Windows.UI.Composition.CompositionEllipseGeometry.operator !=(Windows.UI.Composition.CompositionEllipseGeometry, Windows.UI.Composition.CompositionEllipseGeometry)
+		// Forced skipping of method Windows.UI.Composition.CompositionEllipseGeometry.Equals(Windows.UI.Composition.CompositionEllipseGeometry)
+		// Forced skipping of method Windows.UI.Composition.CompositionEllipseGeometry.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.CompositionEllipseGeometry.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.CompositionEllipseGeometry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.CompositionEllipseGeometry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionEllipseGeometry.Center.get
 		// Forced skipping of method Windows.UI.Composition.CompositionEllipseGeometry.Center.set
 		// Forced skipping of method Windows.UI.Composition.CompositionEllipseGeometry.Radius.get
 		// Forced skipping of method Windows.UI.Composition.CompositionEllipseGeometry.Radius.set
+		// Forced skipping of method Windows.UI.Composition.CompositionEllipseGeometry.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.CompositionEllipseGeometry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

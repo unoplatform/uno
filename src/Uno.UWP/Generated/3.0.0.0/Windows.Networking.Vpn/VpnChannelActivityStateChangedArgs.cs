@@ -23,6 +23,17 @@ namespace Windows.Networking.Vpn
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannelActivityStateChangedArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannelActivityStateChangedArgs.operator ==(Windows.Networking.Vpn.VpnChannelActivityStateChangedArgs, Windows.Networking.Vpn.VpnChannelActivityStateChangedArgs)
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannelActivityStateChangedArgs.operator !=(Windows.Networking.Vpn.VpnChannelActivityStateChangedArgs, Windows.Networking.Vpn.VpnChannelActivityStateChangedArgs)
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannelActivityStateChangedArgs.Equals(Windows.Networking.Vpn.VpnChannelActivityStateChangedArgs)
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannelActivityStateChangedArgs.Equals(object)
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannelActivityStateChangedArgs.GetHashCode()
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannelActivityStateChangedArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannelActivityStateChangedArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannelActivityStateChangedArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannelActivityStateChangedArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnChannelActivityStateChangedArgs.ActivityState.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnChannelActivityStateChangedArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

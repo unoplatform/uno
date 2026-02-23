@@ -10,15 +10,35 @@ namespace Windows.Networking.Vpn
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string VpnPluginPackageFamilyName
+		public bool AlwaysOn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnPlugInProfile.VpnPluginPackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VpnPlugInProfile.VpnPluginPackageFamilyName");
+				throw new global::System.NotImplementedException("The member bool VpnPlugInProfile.AlwaysOn is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnPlugInProfile.AlwaysOn");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPlugInProfile", "string VpnPlugInProfile.VpnPluginPackageFamilyName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPlugInProfile", "bool VpnPlugInProfile.AlwaysOn");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IList<global::Windows.Networking.Vpn.VpnAppId> AppTriggers
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IList<VpnAppId> VpnPlugInProfile.AppTriggers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CVpnAppId%3E%20VpnPlugInProfile.AppTriggers");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Networking.Vpn.VpnManagementConnectionStatus ConnectionStatus
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member VpnManagementConnectionStatus VpnPlugInProfile.ConnectionStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnManagementConnectionStatus%20VpnPlugInProfile.ConnectionStatus");
 			}
 		}
 #endif
@@ -38,35 +58,11 @@ namespace Windows.Networking.Vpn
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::System.Uri> ServerUris
+		public global::System.Collections.Generic.IList<global::Windows.Networking.Vpn.VpnDomainNameInfo> DomainNameInfoList
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<Uri> VpnPlugInProfile.ServerUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CUri%3E%20VpnPlugInProfile.ServerUris");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool RequireVpnClientAppUI
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool VpnPlugInProfile.RequireVpnClientAppUI is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnPlugInProfile.RequireVpnClientAppUI");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPlugInProfile", "bool VpnPlugInProfile.RequireVpnClientAppUI");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Networking.Vpn.VpnManagementConnectionStatus ConnectionStatus
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member VpnManagementConnectionStatus VpnPlugInProfile.ConnectionStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnManagementConnectionStatus%20VpnPlugInProfile.ConnectionStatus");
+				throw new global::System.NotImplementedException("The member IList<VpnDomainNameInfo> VpnPlugInProfile.DomainNameInfoList is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CVpnDomainNameInfo%3E%20VpnPlugInProfile.DomainNameInfoList");
 			}
 		}
 #endif
@@ -100,35 +96,15 @@ namespace Windows.Networking.Vpn
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AlwaysOn
+		public bool RequireVpnClientAppUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnPlugInProfile.AlwaysOn is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnPlugInProfile.AlwaysOn");
+				throw new global::System.NotImplementedException("The member bool VpnPlugInProfile.RequireVpnClientAppUI is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnPlugInProfile.RequireVpnClientAppUI");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPlugInProfile", "bool VpnPlugInProfile.AlwaysOn");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.Networking.Vpn.VpnAppId> AppTriggers
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<VpnAppId> VpnPlugInProfile.AppTriggers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CVpnAppId%3E%20VpnPlugInProfile.AppTriggers");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.Networking.Vpn.VpnDomainNameInfo> DomainNameInfoList
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<VpnDomainNameInfo> VpnPlugInProfile.DomainNameInfoList is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CVpnDomainNameInfo%3E%20VpnPlugInProfile.DomainNameInfoList");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPlugInProfile", "bool VpnPlugInProfile.RequireVpnClientAppUI");
 			}
 		}
 #endif
@@ -144,11 +120,35 @@ namespace Windows.Networking.Vpn
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IList<global::System.Uri> ServerUris
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IList<Uri> VpnPlugInProfile.ServerUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CUri%3E%20VpnPlugInProfile.ServerUris");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.Networking.Vpn.VpnTrafficFilter> TrafficFilters
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member IList<VpnTrafficFilter> VpnPlugInProfile.TrafficFilters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CVpnTrafficFilter%3E%20VpnPlugInProfile.TrafficFilters");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string VpnPluginPackageFamilyName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string VpnPlugInProfile.VpnPluginPackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VpnPlugInProfile.VpnPluginPackageFamilyName");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPlugInProfile", "string VpnPlugInProfile.VpnPluginPackageFamilyName");
 			}
 		}
 #endif
@@ -160,24 +160,35 @@ namespace Windows.Networking.Vpn
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.VpnPlugInProfile()
-		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.ServerUris.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.CustomConfiguration.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.CustomConfiguration.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.VpnPluginPackageFamilyName.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.VpnPluginPackageFamilyName.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.ProfileName.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.ProfileName.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.AppTriggers.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.Routes.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.DomainNameInfoList.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.TrafficFilters.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.RememberCredentials.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.RememberCredentials.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.operator ==(Windows.Networking.Vpn.VpnPlugInProfile, Windows.Networking.Vpn.VpnPlugInProfile)
+		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.operator !=(Windows.Networking.Vpn.VpnPlugInProfile, Windows.Networking.Vpn.VpnPlugInProfile)
+		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.Equals(Windows.Networking.Vpn.VpnPlugInProfile)
+		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.Equals(object)
+		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.GetHashCode()
+		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.AlwaysOn.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.AlwaysOn.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.AppTriggers.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.ConnectionStatus.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.CustomConfiguration.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.CustomConfiguration.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.DomainNameInfoList.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.ProfileName.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.ProfileName.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.RememberCredentials.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.RememberCredentials.set
 		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.RequireVpnClientAppUI.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.RequireVpnClientAppUI.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.ConnectionStatus.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.Routes.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.ServerUris.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.TrafficFilters.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.VpnPluginPackageFamilyName.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.VpnPluginPackageFamilyName.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnPlugInProfile.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Networking.Vpn.IVpnProfile
 	}
 }

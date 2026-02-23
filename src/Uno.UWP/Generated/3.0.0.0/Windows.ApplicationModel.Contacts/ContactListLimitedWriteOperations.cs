@@ -13,6 +13,16 @@ namespace Windows.ApplicationModel.Contacts
 		{
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations.operator ==(Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations, Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations.operator !=(Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations, Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations.Equals(Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryCreateOrUpdateContactAsync(global::Windows.ApplicationModel.Contacts.Contact contact)
@@ -27,5 +37,6 @@ namespace Windows.ApplicationModel.Contacts
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ContactListLimitedWriteOperations.TryDeleteContactAsync(string contactId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20ContactListLimitedWriteOperations.TryDeleteContactAsync%28string%20contactId%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListLimitedWriteOperations.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

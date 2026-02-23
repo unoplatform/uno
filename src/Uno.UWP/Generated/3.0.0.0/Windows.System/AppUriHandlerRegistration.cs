@@ -33,18 +33,16 @@ namespace Windows.System
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string PackageFamilyName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AppUriHandlerRegistration.PackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppUriHandlerRegistration.PackageFamilyName");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.System.AppUriHandlerRegistration.Name.get
-		// Forced skipping of method Windows.System.AppUriHandlerRegistration.User.get
+		// Forced skipping of method Windows.System.AppUriHandlerRegistration.FromAbi(nint)
+		// Forced skipping of method Windows.System.AppUriHandlerRegistration.operator ==(Windows.System.AppUriHandlerRegistration, Windows.System.AppUriHandlerRegistration)
+		// Forced skipping of method Windows.System.AppUriHandlerRegistration.operator !=(Windows.System.AppUriHandlerRegistration, Windows.System.AppUriHandlerRegistration)
+		// Forced skipping of method Windows.System.AppUriHandlerRegistration.Equals(Windows.System.AppUriHandlerRegistration)
+		// Forced skipping of method Windows.System.AppUriHandlerRegistration.Equals(object)
+		// Forced skipping of method Windows.System.AppUriHandlerRegistration.GetHashCode()
+		// Forced skipping of method Windows.System.AppUriHandlerRegistration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.System.AppUriHandlerRegistration.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.System.AppUriHandlerRegistration.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.System.AppUriHandlerRegistration.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<global::Windows.System.AppUriHandlerHost>> GetAppAddedHostsAsync()
@@ -59,20 +57,8 @@ namespace Windows.System
 			throw new global::System.NotImplementedException("The member IAsyncAction AppUriHandlerRegistration.SetAppAddedHostsAsync(IEnumerable<AppUriHandlerHost> hosts) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20AppUriHandlerRegistration.SetAppAddedHostsAsync%28IEnumerable%3CAppUriHandlerHost%3E%20hosts%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.System.AppUriHandlerHost> GetAllHosts()
-		{
-			throw new global::System.NotImplementedException("The member IList<AppUriHandlerHost> AppUriHandlerRegistration.GetAllHosts() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CAppUriHandlerHost%3E%20AppUriHandlerRegistration.GetAllHosts%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void UpdateHosts(global::System.Collections.Generic.IEnumerable<global::Windows.System.AppUriHandlerHost> hosts)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppUriHandlerRegistration", "void AppUriHandlerRegistration.UpdateHosts(IEnumerable<AppUriHandlerHost> hosts)");
-		}
-#endif
-		// Forced skipping of method Windows.System.AppUriHandlerRegistration.PackageFamilyName.get
+		// Forced skipping of method Windows.System.AppUriHandlerRegistration.Name.get
+		// Forced skipping of method Windows.System.AppUriHandlerRegistration.User.get
+		// Forced skipping of method Windows.System.AppUriHandlerRegistration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

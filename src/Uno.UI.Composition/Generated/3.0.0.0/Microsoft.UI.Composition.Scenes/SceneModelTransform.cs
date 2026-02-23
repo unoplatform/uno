@@ -15,57 +15,15 @@ namespace Microsoft.UI.Composition.Scenes
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 Translation
+		public global::System.Numerics.Quaternion Orientation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 SceneModelTransform.Translation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SceneModelTransform.Translation");
+				throw new global::System.NotImplementedException("The member Quaternion SceneModelTransform.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Quaternion%20SceneModelTransform.Orientation");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneModelTransform", "Vector3 SceneModelTransform.Translation");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 Scale
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector3 SceneModelTransform.Scale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SceneModelTransform.Scale");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneModelTransform", "Vector3 SceneModelTransform.Scale");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 RotationAxis
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector3 SceneModelTransform.RotationAxis is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SceneModelTransform.RotationAxis");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneModelTransform", "Vector3 SceneModelTransform.RotationAxis");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float RotationAngleInDegrees
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float SceneModelTransform.RotationAngleInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SceneModelTransform.RotationAngleInDegrees");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneModelTransform", "float SceneModelTransform.RotationAngleInDegrees");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneModelTransform", "Quaternion SceneModelTransform.Orientation");
 			}
 		}
 #endif
@@ -85,29 +43,81 @@ namespace Microsoft.UI.Composition.Scenes
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Quaternion Orientation
+		public float RotationAngleInDegrees
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Quaternion SceneModelTransform.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Quaternion%20SceneModelTransform.Orientation");
+				throw new global::System.NotImplementedException("The member float SceneModelTransform.RotationAngleInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SceneModelTransform.RotationAngleInDegrees");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneModelTransform", "Quaternion SceneModelTransform.Orientation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneModelTransform", "float SceneModelTransform.RotationAngleInDegrees");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.Translation.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.RotationAngle.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector3 RotationAxis
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector3 SceneModelTransform.RotationAxis is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SceneModelTransform.RotationAxis");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneModelTransform", "Vector3 SceneModelTransform.RotationAxis");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector3 Scale
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector3 SceneModelTransform.Scale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SceneModelTransform.Scale");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneModelTransform", "Vector3 SceneModelTransform.Scale");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector3 Translation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector3 SceneModelTransform.Translation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SceneModelTransform.Translation");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneModelTransform", "Vector3 SceneModelTransform.Translation");
+			}
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.operator ==(Microsoft.UI.Composition.Scenes.SceneModelTransform, Microsoft.UI.Composition.Scenes.SceneModelTransform)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.operator !=(Microsoft.UI.Composition.Scenes.SceneModelTransform, Microsoft.UI.Composition.Scenes.SceneModelTransform)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.Equals(Microsoft.UI.Composition.Scenes.SceneModelTransform)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.Orientation.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.Orientation.set
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.RotationAngle.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.RotationAngle.set
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.RotationAngleInDegrees.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.RotationAngleInDegrees.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.RotationAxis.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.RotationAxis.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.Scale.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.Scale.set
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.Translation.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.Translation.set
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.Orientation.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.RotationAngle.set
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.RotationAngleInDegrees.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

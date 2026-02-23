@@ -9,7 +9,18 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class NavigationViewPaneClosingEventArgs
 	{
 		// Skipping already declared property Cancel
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewPaneClosingEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewPaneClosingEventArgs.operator ==(Microsoft.UI.Xaml.Controls.NavigationViewPaneClosingEventArgs, Microsoft.UI.Xaml.Controls.NavigationViewPaneClosingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewPaneClosingEventArgs.operator !=(Microsoft.UI.Xaml.Controls.NavigationViewPaneClosingEventArgs, Microsoft.UI.Xaml.Controls.NavigationViewPaneClosingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewPaneClosingEventArgs.Equals(Microsoft.UI.Xaml.Controls.NavigationViewPaneClosingEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewPaneClosingEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewPaneClosingEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewPaneClosingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewPaneClosingEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewPaneClosingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewPaneClosingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewPaneClosingEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewPaneClosingEventArgs.Cancel.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewPaneClosingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

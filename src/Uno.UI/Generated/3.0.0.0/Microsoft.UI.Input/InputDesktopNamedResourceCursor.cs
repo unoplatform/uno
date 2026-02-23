@@ -33,8 +33,7 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.InputDesktopNamedResourceCursor.ModuleName.get
-		// Forced skipping of method Microsoft.UI.Input.InputDesktopNamedResourceCursor.ResourceName.get
+		// Forced skipping of method Microsoft.UI.Input.InputDesktopNamedResourceCursor.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Input.InputDesktopNamedResourceCursor Create(string resourceName)
@@ -49,5 +48,17 @@ namespace Microsoft.UI.Input
 			throw new global::System.NotImplementedException("The member InputDesktopNamedResourceCursor InputDesktopNamedResourceCursor.CreateFromModule(string moduleName, string resourceName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputDesktopNamedResourceCursor%20InputDesktopNamedResourceCursor.CreateFromModule%28string%20moduleName%2C%20string%20resourceName%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Input.InputDesktopNamedResourceCursor.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Input.InputDesktopNamedResourceCursor.operator ==(Microsoft.UI.Input.InputDesktopNamedResourceCursor, Microsoft.UI.Input.InputDesktopNamedResourceCursor)
+		// Forced skipping of method Microsoft.UI.Input.InputDesktopNamedResourceCursor.operator !=(Microsoft.UI.Input.InputDesktopNamedResourceCursor, Microsoft.UI.Input.InputDesktopNamedResourceCursor)
+		// Forced skipping of method Microsoft.UI.Input.InputDesktopNamedResourceCursor.Equals(Microsoft.UI.Input.InputDesktopNamedResourceCursor)
+		// Forced skipping of method Microsoft.UI.Input.InputDesktopNamedResourceCursor.Equals(object)
+		// Forced skipping of method Microsoft.UI.Input.InputDesktopNamedResourceCursor.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Input.InputDesktopNamedResourceCursor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.InputDesktopNamedResourceCursor.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.InputDesktopNamedResourceCursor.ModuleName.get
+		// Forced skipping of method Microsoft.UI.Input.InputDesktopNamedResourceCursor.ResourceName.get
+		// Forced skipping of method Microsoft.UI.Input.InputDesktopNamedResourceCursor.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Input.InputDesktopNamedResourceCursor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

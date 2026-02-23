@@ -9,6 +9,17 @@ namespace Windows.ApplicationModel.DataTransfer
 	public partial class ShareCompletedEventArgs
 	{
 		// Skipping already declared property ShareTarget
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareCompletedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareCompletedEventArgs.operator ==(Windows.ApplicationModel.DataTransfer.ShareCompletedEventArgs, Windows.ApplicationModel.DataTransfer.ShareCompletedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareCompletedEventArgs.operator !=(Windows.ApplicationModel.DataTransfer.ShareCompletedEventArgs, Windows.ApplicationModel.DataTransfer.ShareCompletedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareCompletedEventArgs.Equals(Windows.ApplicationModel.DataTransfer.ShareCompletedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareCompletedEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareCompletedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareCompletedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareCompletedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareCompletedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareCompletedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareCompletedEventArgs.ShareTarget.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareCompletedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

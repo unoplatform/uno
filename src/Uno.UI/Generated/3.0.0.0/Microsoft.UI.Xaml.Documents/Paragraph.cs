@@ -8,14 +8,25 @@ namespace Microsoft.UI.Xaml.Documents
 #endif
 	public partial class Paragraph : global::Microsoft.UI.Xaml.Documents.Block
 	{
-		// Skipping already declared property TextIndent
-		// Skipping already declared property Inlines
 		// Skipping already declared property TextIndentProperty
+		// Skipping already declared property Inlines
+		// Skipping already declared property TextIndent
 		// Skipping already declared method Microsoft.UI.Xaml.Documents.Paragraph.Paragraph()
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Paragraph.Paragraph()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Paragraph.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Paragraph.TextIndentProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Paragraph.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Paragraph.operator ==(Microsoft.UI.Xaml.Documents.Paragraph, Microsoft.UI.Xaml.Documents.Paragraph)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Paragraph.operator !=(Microsoft.UI.Xaml.Documents.Paragraph, Microsoft.UI.Xaml.Documents.Paragraph)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Paragraph.Equals(Microsoft.UI.Xaml.Documents.Paragraph)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Paragraph.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Paragraph.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Paragraph.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Paragraph.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Paragraph.Inlines.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Paragraph.TextIndent.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Paragraph.TextIndent.set
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Paragraph.TextIndentProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Paragraph.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.Paragraph.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

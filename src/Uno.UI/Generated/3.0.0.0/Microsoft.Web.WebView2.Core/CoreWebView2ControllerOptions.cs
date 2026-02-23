@@ -15,20 +15,6 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ProfileName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2ControllerOptions.ProfileName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2ControllerOptions.ProfileName");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions", "string CoreWebView2ControllerOptions.ProfileName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsInPrivateModeEnabled
 		{
 			get
@@ -38,6 +24,20 @@ namespace Microsoft.Web.WebView2.Core
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions", "bool CoreWebView2ControllerOptions.IsInPrivateModeEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ProfileName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string CoreWebView2ControllerOptions.ProfileName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2ControllerOptions.ProfileName");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions", "string CoreWebView2ControllerOptions.ProfileName");
 			}
 		}
 #endif
@@ -55,11 +55,22 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.ScriptLocale.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.ScriptLocale.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.ProfileName.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.ProfileName.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions, Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions, Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.Equals(Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.IsInPrivateModeEnabled.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.IsInPrivateModeEnabled.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.ProfileName.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.ProfileName.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.ScriptLocale.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.ScriptLocale.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

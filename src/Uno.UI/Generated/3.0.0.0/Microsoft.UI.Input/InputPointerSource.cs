@@ -10,11 +10,25 @@ namespace Microsoft.UI.Input
 	{
 		// Skipping already declared property Cursor
 		// Skipping already declared property DeviceKinds
-		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.PointerEntered.add
-		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.DeviceKinds.get
+		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Input.InputPointerSource GetForIsland(global::Microsoft.UI.Content.ContentIsland island)
+		{
+			throw new global::System.NotImplementedException("The member InputPointerSource InputPointerSource.GetForIsland(ContentIsland island) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputPointerSource%20InputPointerSource.GetForIsland%28ContentIsland%20island%29");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.operator ==(Microsoft.UI.Input.InputPointerSource, Microsoft.UI.Input.InputPointerSource)
+		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.operator !=(Microsoft.UI.Input.InputPointerSource, Microsoft.UI.Input.InputPointerSource)
+		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.Equals(Microsoft.UI.Input.InputPointerSource)
+		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.Equals(object)
+		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.PointerCaptureLost.add
 		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.PointerCaptureLost.remove
-		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.Cursor.set
+		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.PointerEntered.add
 		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.PointerEntered.remove
 		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.PointerExited.add
 		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.PointerExited.remove
@@ -33,13 +47,10 @@ namespace Microsoft.UI.Input
 		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.PointerWheelChanged.add
 		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.PointerWheelChanged.remove
 		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.Cursor.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Input.InputPointerSource GetForIsland(global::Microsoft.UI.Content.ContentIsland island)
-		{
-			throw new global::System.NotImplementedException("The member InputPointerSource InputPointerSource.GetForIsland(ContentIsland island) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputPointerSource%20InputPointerSource.GetForIsland%28ContentIsland%20island%29");
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.Cursor.set
+		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.DeviceKinds.get
+		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Input.InputPointerSource.PointerCaptureLost
 		// Skipping already declared event Microsoft.UI.Input.InputPointerSource.PointerEntered
 		// Skipping already declared event Microsoft.UI.Input.InputPointerSource.PointerExited

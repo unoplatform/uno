@@ -63,11 +63,16 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.OutboundMaxBitsPerSecond.get
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.InboundMaxBitsPerSecond.get
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.IanaInterfaceType.get
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.NetworkItem.get
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.NetworkAdapterId.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.operator ==(Windows.Networking.Connectivity.NetworkAdapter, Windows.Networking.Connectivity.NetworkAdapter)
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.operator !=(Windows.Networking.Connectivity.NetworkAdapter, Windows.Networking.Connectivity.NetworkAdapter)
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.Equals(Windows.Networking.Connectivity.NetworkAdapter)
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.Equals(object)
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.GetHashCode()
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.Connectivity.ConnectionProfile> GetConnectedProfileAsync()
@@ -75,5 +80,11 @@ namespace Windows.Networking.Connectivity
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ConnectionProfile> NetworkAdapter.GetConnectedProfileAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CConnectionProfile%3E%20NetworkAdapter.GetConnectedProfileAsync%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.IanaInterfaceType.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.InboundMaxBitsPerSecond.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.NetworkAdapterId.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.NetworkItem.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.OutboundMaxBitsPerSecond.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.AllJoyn
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -34,21 +33,7 @@ namespace Windows.Devices.AllJoyn
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.Id.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.Status.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<int> RemoveMemberAsync(string uniqueName)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<int> AllJoynSession.RemoveMemberAsync(string uniqueName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cint%3E%20AllJoynSession.RemoveMemberAsync%28string%20uniqueName%29");
-		}
-#endif
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.MemberAdded.add
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.MemberAdded.remove
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.MemberRemoved.add
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.MemberRemoved.remove
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.Lost.add
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.Lost.remove
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.AllJoyn.AllJoynSession> GetFromServiceInfoAsync(global::Windows.Devices.AllJoyn.AllJoynServiceInfo serviceInfo)
@@ -63,6 +48,32 @@ namespace Windows.Devices.AllJoyn
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AllJoynSession> AllJoynSession.GetFromServiceInfoAsync(AllJoynServiceInfo serviceInfo, AllJoynBusAttachment busAttachment) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAllJoynSession%3E%20AllJoynSession.GetFromServiceInfoAsync%28AllJoynServiceInfo%20serviceInfo%2C%20AllJoynBusAttachment%20busAttachment%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.operator ==(Windows.Devices.AllJoyn.AllJoynSession, Windows.Devices.AllJoyn.AllJoynSession)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.operator !=(Windows.Devices.AllJoyn.AllJoynSession, Windows.Devices.AllJoyn.AllJoynSession)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.Equals(Windows.Devices.AllJoyn.AllJoynSession)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.Equals(object)
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.GetHashCode()
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<int> RemoveMemberAsync(string uniqueName)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<int> AllJoynSession.RemoveMemberAsync(string uniqueName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cint%3E%20AllJoynSession.RemoveMemberAsync%28string%20uniqueName%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.Lost.add
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.Lost.remove
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.MemberAdded.add
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.MemberAdded.remove
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.MemberRemoved.add
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.MemberRemoved.remove
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.Id.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.Status.get
+		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.AllJoyn.AllJoynSession, global::Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs> Lost

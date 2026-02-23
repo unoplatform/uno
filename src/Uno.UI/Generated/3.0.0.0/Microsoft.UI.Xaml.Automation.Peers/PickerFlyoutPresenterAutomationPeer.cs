@@ -13,5 +13,15 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		{
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PickerFlyoutPresenterAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PickerFlyoutPresenterAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.PickerFlyoutPresenterAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.PickerFlyoutPresenterAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PickerFlyoutPresenterAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.PickerFlyoutPresenterAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.PickerFlyoutPresenterAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PickerFlyoutPresenterAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.PickerFlyoutPresenterAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PickerFlyoutPresenterAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PickerFlyoutPresenterAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PickerFlyoutPresenterAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PickerFlyoutPresenterAutomationPeer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PickerFlyoutPresenterAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PickerFlyoutPresenterAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

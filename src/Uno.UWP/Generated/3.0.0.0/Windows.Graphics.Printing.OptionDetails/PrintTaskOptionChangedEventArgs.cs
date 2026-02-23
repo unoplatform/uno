@@ -23,6 +23,17 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintTaskOptionChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintTaskOptionChangedEventArgs.operator ==(Windows.Graphics.Printing.OptionDetails.PrintTaskOptionChangedEventArgs, Windows.Graphics.Printing.OptionDetails.PrintTaskOptionChangedEventArgs)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintTaskOptionChangedEventArgs.operator !=(Windows.Graphics.Printing.OptionDetails.PrintTaskOptionChangedEventArgs, Windows.Graphics.Printing.OptionDetails.PrintTaskOptionChangedEventArgs)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintTaskOptionChangedEventArgs.Equals(Windows.Graphics.Printing.OptionDetails.PrintTaskOptionChangedEventArgs)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintTaskOptionChangedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintTaskOptionChangedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintTaskOptionChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintTaskOptionChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintTaskOptionChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintTaskOptionChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintTaskOptionChangedEventArgs.OptionId.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintTaskOptionChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

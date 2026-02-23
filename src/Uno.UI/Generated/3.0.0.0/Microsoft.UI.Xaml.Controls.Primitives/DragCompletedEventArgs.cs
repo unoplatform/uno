@@ -13,8 +13,20 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property VerticalChange
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs.DragCompletedEventArgs(double, double, bool)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs.DragCompletedEventArgs(double, double, bool)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs.DragCompletedEventArgs(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs, Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs, Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs.Equals(Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs.DragCompletedEventArgs(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs.Canceled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs.HorizontalChange.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs.VerticalChange.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs.Canceled.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

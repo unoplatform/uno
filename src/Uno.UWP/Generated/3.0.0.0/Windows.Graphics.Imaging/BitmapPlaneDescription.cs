@@ -10,6 +10,19 @@ namespace Windows.Graphics.Imaging
 	{
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapPlaneDescription.BitmapPlaneDescription()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public BitmapPlaneDescription(int _StartIndex, int _Width, int _Height, int _Stride)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapPlaneDescription", "BitmapPlaneDescription.BitmapPlaneDescription(int _StartIndex, int _Width, int _Height, int _Stride)");
+		}
+#endif
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPlaneDescription.BitmapPlaneDescription(int, int, int, int)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPlaneDescription.operator ==(Windows.Graphics.Imaging.BitmapPlaneDescription, Windows.Graphics.Imaging.BitmapPlaneDescription)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPlaneDescription.operator !=(Windows.Graphics.Imaging.BitmapPlaneDescription, Windows.Graphics.Imaging.BitmapPlaneDescription)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPlaneDescription.Equals(Windows.Graphics.Imaging.BitmapPlaneDescription)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPlaneDescription.Equals(object)
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapPlaneDescription.GetHashCode()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public int StartIndex;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

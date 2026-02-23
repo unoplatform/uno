@@ -18,16 +18,7 @@ namespace Windows.Devices.Midi
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Midi.MidiInPort.MessageReceived.add
-		// Forced skipping of method Windows.Devices.Midi.MidiInPort.MessageReceived.remove
-		// Forced skipping of method Windows.Devices.Midi.MidiInPort.DeviceId.get
-#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiInPort", "void MidiInPort.Dispose()");
-		}
-#endif
+		// Forced skipping of method Windows.Devices.Midi.MidiInPort.As<I>()
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Midi.MidiInPort> FromIdAsync(string deviceId)
@@ -42,6 +33,27 @@ namespace Windows.Devices.Midi
 			throw new global::System.NotImplementedException("The member string MidiInPort.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MidiInPort.GetDeviceSelector%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Midi.MidiInPort.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Midi.MidiInPort.operator ==(Windows.Devices.Midi.MidiInPort, Windows.Devices.Midi.MidiInPort)
+		// Forced skipping of method Windows.Devices.Midi.MidiInPort.operator !=(Windows.Devices.Midi.MidiInPort, Windows.Devices.Midi.MidiInPort)
+		// Forced skipping of method Windows.Devices.Midi.MidiInPort.Equals(Windows.Devices.Midi.MidiInPort)
+		// Forced skipping of method Windows.Devices.Midi.MidiInPort.Equals(object)
+		// Forced skipping of method Windows.Devices.Midi.MidiInPort.GetHashCode()
+		// Forced skipping of method Windows.Devices.Midi.MidiInPort.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Midi.MidiInPort.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Midi.MidiInPort.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Midi.MidiInPort.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.Midi.MidiInPort.MessageReceived.add
+		// Forced skipping of method Windows.Devices.Midi.MidiInPort.MessageReceived.remove
+#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiInPort", "void MidiInPort.Dispose()");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Midi.MidiInPort.DeviceId.get
+		// Forced skipping of method Windows.Devices.Midi.MidiInPort.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Midi.MidiInPort, global::Windows.Devices.Midi.MidiMessageReceivedEventArgs> MessageReceived

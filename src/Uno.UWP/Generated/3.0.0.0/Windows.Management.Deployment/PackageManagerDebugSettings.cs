@@ -13,6 +13,16 @@ namespace Windows.Management.Deployment
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Management.Deployment.PackageManagerDebugSettings.FromAbi(nint)
+		// Forced skipping of method Windows.Management.Deployment.PackageManagerDebugSettings.operator ==(Windows.Management.Deployment.PackageManagerDebugSettings, Windows.Management.Deployment.PackageManagerDebugSettings)
+		// Forced skipping of method Windows.Management.Deployment.PackageManagerDebugSettings.operator !=(Windows.Management.Deployment.PackageManagerDebugSettings, Windows.Management.Deployment.PackageManagerDebugSettings)
+		// Forced skipping of method Windows.Management.Deployment.PackageManagerDebugSettings.Equals(Windows.Management.Deployment.PackageManagerDebugSettings)
+		// Forced skipping of method Windows.Management.Deployment.PackageManagerDebugSettings.Equals(object)
+		// Forced skipping of method Windows.Management.Deployment.PackageManagerDebugSettings.GetHashCode()
+		// Forced skipping of method Windows.Management.Deployment.PackageManagerDebugSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Management.Deployment.PackageManagerDebugSettings.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Management.Deployment.PackageManagerDebugSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Management.Deployment.PackageManagerDebugSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetContentGroupStateAsync(global::Windows.ApplicationModel.Package package, string contentGroupName, global::Windows.ApplicationModel.PackageContentGroupState state)
@@ -27,5 +37,6 @@ namespace Windows.Management.Deployment
 			throw new global::System.NotImplementedException("The member IAsyncAction PackageManagerDebugSettings.SetContentGroupStateAsync(Package package, string contentGroupName, PackageContentGroupState state, double completionPercentage) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20PackageManagerDebugSettings.SetContentGroupStateAsync%28Package%20package%2C%20string%20contentGroupName%2C%20PackageContentGroupState%20state%2C%20double%20completionPercentage%29");
 		}
 #endif
+		// Forced skipping of method Windows.Management.Deployment.PackageManagerDebugSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

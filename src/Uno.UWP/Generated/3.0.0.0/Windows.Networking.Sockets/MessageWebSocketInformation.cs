@@ -83,13 +83,24 @@ namespace Windows.Networking.Sockets
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocketInformation.LocalAddress.get
+		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocketInformation.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocketInformation.operator ==(Windows.Networking.Sockets.MessageWebSocketInformation, Windows.Networking.Sockets.MessageWebSocketInformation)
+		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocketInformation.operator !=(Windows.Networking.Sockets.MessageWebSocketInformation, Windows.Networking.Sockets.MessageWebSocketInformation)
+		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocketInformation.Equals(Windows.Networking.Sockets.MessageWebSocketInformation)
+		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocketInformation.Equals(object)
+		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocketInformation.GetHashCode()
+		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocketInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocketInformation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocketInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocketInformation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocketInformation.BandwidthStatistics.get
+		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocketInformation.LocalAddress.get
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocketInformation.Protocol.get
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocketInformation.ServerCertificate.get
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocketInformation.ServerCertificateErrorSeverity.get
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocketInformation.ServerCertificateErrors.get
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocketInformation.ServerIntermediateCertificates.get
+		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocketInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Networking.Sockets.IWebSocketInformation
 		// Processing: Windows.Networking.Sockets.IWebSocketInformation2
 	}

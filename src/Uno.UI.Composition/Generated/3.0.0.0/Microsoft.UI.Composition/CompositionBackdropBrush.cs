@@ -8,5 +8,15 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionBackdropBrush : global::Microsoft.UI.Composition.CompositionBrush
 	{
+		// Forced skipping of method Microsoft.UI.Composition.CompositionBackdropBrush.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionBackdropBrush.operator ==(Microsoft.UI.Composition.CompositionBackdropBrush, Microsoft.UI.Composition.CompositionBackdropBrush)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionBackdropBrush.operator !=(Microsoft.UI.Composition.CompositionBackdropBrush, Microsoft.UI.Composition.CompositionBackdropBrush)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionBackdropBrush.Equals(Microsoft.UI.Composition.CompositionBackdropBrush)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionBackdropBrush.Equals(object)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionBackdropBrush.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionBackdropBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionBackdropBrush.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionBackdropBrush.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionBackdropBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

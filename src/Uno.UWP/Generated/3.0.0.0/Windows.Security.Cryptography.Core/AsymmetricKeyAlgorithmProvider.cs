@@ -23,7 +23,24 @@ namespace Windows.Security.Cryptography.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider.AlgorithmName.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider OpenAlgorithm(string algorithm)
+		{
+			throw new global::System.NotImplementedException("The member AsymmetricKeyAlgorithmProvider AsymmetricKeyAlgorithmProvider.OpenAlgorithm(string algorithm) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AsymmetricKeyAlgorithmProvider%20AsymmetricKeyAlgorithmProvider.OpenAlgorithm%28string%20algorithm%29");
+		}
+#endif
+		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider.FromAbi(nint)
+		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider.operator ==(Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider, Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider)
+		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider.operator !=(Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider, Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider)
+		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider.Equals(Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider)
+		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider.Equals(object)
+		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider.GetHashCode()
+		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Cryptography.Core.CryptographicKey CreateKeyPair(uint keySize)
@@ -73,12 +90,7 @@ namespace Windows.Security.Cryptography.Core
 			throw new global::System.NotImplementedException("The member CryptographicKey AsymmetricKeyAlgorithmProvider.CreateKeyPairWithCurveParameters(byte[] parameters) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CryptographicKey%20AsymmetricKeyAlgorithmProvider.CreateKeyPairWithCurveParameters%28byte%5B%5D%20parameters%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider OpenAlgorithm(string algorithm)
-		{
-			throw new global::System.NotImplementedException("The member AsymmetricKeyAlgorithmProvider AsymmetricKeyAlgorithmProvider.OpenAlgorithm(string algorithm) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AsymmetricKeyAlgorithmProvider%20AsymmetricKeyAlgorithmProvider.OpenAlgorithm%28string%20algorithm%29");
-		}
-#endif
+		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider.AlgorithmName.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

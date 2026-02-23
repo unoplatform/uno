@@ -10,7 +10,18 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property NewTime
 		// Skipping already declared property OldTime
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerSelectedValueChangedEventArgs.OldTime.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerSelectedValueChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerSelectedValueChangedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.TimePickerSelectedValueChangedEventArgs, Microsoft.UI.Xaml.Controls.TimePickerSelectedValueChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerSelectedValueChangedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.TimePickerSelectedValueChangedEventArgs, Microsoft.UI.Xaml.Controls.TimePickerSelectedValueChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerSelectedValueChangedEventArgs.Equals(Microsoft.UI.Xaml.Controls.TimePickerSelectedValueChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerSelectedValueChangedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerSelectedValueChangedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerSelectedValueChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerSelectedValueChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerSelectedValueChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerSelectedValueChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerSelectedValueChangedEventArgs.NewTime.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerSelectedValueChangedEventArgs.OldTime.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePickerSelectedValueChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

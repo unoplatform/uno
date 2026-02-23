@@ -8,72 +8,6 @@ namespace Windows.Devices.Geolocation
 #endif
 	public partial class Geolocator
 	{
-#if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint ReportInterval
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint Geolocator.ReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Geolocator.ReportInterval");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "uint Geolocator.ReportInterval");
-			}
-		}
-#endif
-#if false || false || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double MovementThreshold
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double Geolocator.MovementThreshold is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20Geolocator.MovementThreshold");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "double Geolocator.MovementThreshold");
-			}
-		}
-#endif
-#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Geolocation.PositionAccuracy DesiredAccuracy
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PositionAccuracy Geolocator.DesiredAccuracy is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PositionAccuracy%20Geolocator.DesiredAccuracy");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "PositionAccuracy Geolocator.DesiredAccuracy");
-			}
-		}
-#endif
-#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Geolocation.PositionStatus LocationStatus
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PositionStatus Geolocator.LocationStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PositionStatus%20Geolocator.LocationStatus");
-			}
-		}
-#endif
-#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint? DesiredAccuracyInMeters
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint? Geolocator.DesiredAccuracyInMeters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20Geolocator.DesiredAccuracyInMeters");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "uint? Geolocator.DesiredAccuracyInMeters");
-			}
-		}
-#endif
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Geolocation.BasicGeoposition? DefaultGeoposition
@@ -100,49 +34,79 @@ namespace Windows.Devices.Geolocation
 #endif
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Geolocation.PositionAccuracy DesiredAccuracy
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member PositionAccuracy Geolocator.DesiredAccuracy is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PositionAccuracy%20Geolocator.DesiredAccuracy");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "PositionAccuracy Geolocator.DesiredAccuracy");
+			}
+		}
+#endif
+#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint? DesiredAccuracyInMeters
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint? Geolocator.DesiredAccuracyInMeters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20Geolocator.DesiredAccuracyInMeters");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "uint? Geolocator.DesiredAccuracyInMeters");
+			}
+		}
+#endif
+#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Geolocation.PositionStatus LocationStatus
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member PositionStatus Geolocator.LocationStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PositionStatus%20Geolocator.LocationStatus");
+			}
+		}
+#endif
+#if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double MovementThreshold
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double Geolocator.MovementThreshold is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20Geolocator.MovementThreshold");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "double Geolocator.MovementThreshold");
+			}
+		}
+#endif
+#if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint ReportInterval
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint Geolocator.ReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Geolocator.ReportInterval");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "uint Geolocator.ReportInterval");
+			}
+		}
+#endif
+#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public Geolocator()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "Geolocator.Geolocator()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.Geolocator()
-		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.DesiredAccuracy.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.DesiredAccuracy.set
-		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.MovementThreshold.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.MovementThreshold.set
-		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.ReportInterval.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.ReportInterval.set
-		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.LocationStatus.get
-#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.Geoposition> GetGeopositionAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Geoposition> Geolocator.GetGeopositionAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGeoposition%3E%20Geolocator.GetGeopositionAsync%28%29");
-		}
-#endif
-#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.Geoposition> GetGeopositionAsync(global::System.TimeSpan maximumAge, global::System.TimeSpan timeout)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Geoposition> Geolocator.GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGeoposition%3E%20Geolocator.GetGeopositionAsync%28TimeSpan%20maximumAge%2C%20TimeSpan%20timeout%29");
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.PositionChanged.add
-		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.PositionChanged.remove
-		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.StatusChanged.add
-		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.StatusChanged.remove
-		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.DesiredAccuracyInMeters.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.DesiredAccuracyInMeters.set
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void AllowFallbackToConsentlessPositions()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "void Geolocator.AllowFallbackToConsentlessPositions()");
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.IsDefaultGeopositionRecommended.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.DefaultGeoposition.set
-		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.DefaultGeoposition.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.As<I>()
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.GeolocationAccessStatus> RequestAccessAsync()
@@ -164,6 +128,54 @@ namespace Windows.Devices.Geolocation
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<Geoposition>> Geolocator.GetGeopositionHistoryAsync(DateTimeOffset startTime, TimeSpan duration) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CGeoposition%3E%3E%20Geolocator.GetGeopositionHistoryAsync%28DateTimeOffset%20startTime%2C%20TimeSpan%20duration%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.DefaultGeoposition.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.DefaultGeoposition.set
+		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.IsDefaultGeopositionRecommended.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.operator ==(Windows.Devices.Geolocation.Geolocator, Windows.Devices.Geolocation.Geolocator)
+		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.operator !=(Windows.Devices.Geolocation.Geolocator, Windows.Devices.Geolocation.Geolocator)
+		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.Equals(Windows.Devices.Geolocation.Geolocator)
+		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.Equals(object)
+		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.GetHashCode()
+		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.WinRT.IWinRTObject.AdditionalTypeData.get
+#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.Geoposition> GetGeopositionAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<Geoposition> Geolocator.GetGeopositionAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGeoposition%3E%20Geolocator.GetGeopositionAsync%28%29");
+		}
+#endif
+#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.Geoposition> GetGeopositionAsync(global::System.TimeSpan maximumAge, global::System.TimeSpan timeout)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<Geoposition> Geolocator.GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGeoposition%3E%20Geolocator.GetGeopositionAsync%28TimeSpan%20maximumAge%2C%20TimeSpan%20timeout%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.PositionChanged.add
+		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.PositionChanged.remove
+		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.StatusChanged.add
+		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.StatusChanged.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void AllowFallbackToConsentlessPositions()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geolocator", "void Geolocator.AllowFallbackToConsentlessPositions()");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.DesiredAccuracy.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.DesiredAccuracy.set
+		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.DesiredAccuracyInMeters.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.DesiredAccuracyInMeters.set
+		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.LocationStatus.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.MovementThreshold.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.MovementThreshold.set
+		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.ReportInterval.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.ReportInterval.set
+		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Geolocation.Geolocator, global::Windows.Devices.Geolocation.PositionChangedEventArgs> PositionChanged

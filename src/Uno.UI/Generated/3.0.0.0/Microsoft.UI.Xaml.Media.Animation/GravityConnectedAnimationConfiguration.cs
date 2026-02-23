@@ -30,7 +30,19 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.GravityConnectedAnimationConfiguration.GravityConnectedAnimationConfiguration()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.GravityConnectedAnimationConfiguration.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.GravityConnectedAnimationConfiguration.GravityConnectedAnimationConfiguration(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.GravityConnectedAnimationConfiguration.operator ==(Microsoft.UI.Xaml.Media.Animation.GravityConnectedAnimationConfiguration, Microsoft.UI.Xaml.Media.Animation.GravityConnectedAnimationConfiguration)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.GravityConnectedAnimationConfiguration.operator !=(Microsoft.UI.Xaml.Media.Animation.GravityConnectedAnimationConfiguration, Microsoft.UI.Xaml.Media.Animation.GravityConnectedAnimationConfiguration)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.GravityConnectedAnimationConfiguration.Equals(Microsoft.UI.Xaml.Media.Animation.GravityConnectedAnimationConfiguration)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.GravityConnectedAnimationConfiguration.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.GravityConnectedAnimationConfiguration.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.GravityConnectedAnimationConfiguration.GravityConnectedAnimationConfiguration(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.GravityConnectedAnimationConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.GravityConnectedAnimationConfiguration.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.GravityConnectedAnimationConfiguration.IsShadowEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.GravityConnectedAnimationConfiguration.IsShadowEnabled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.GravityConnectedAnimationConfiguration.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.GravityConnectedAnimationConfiguration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

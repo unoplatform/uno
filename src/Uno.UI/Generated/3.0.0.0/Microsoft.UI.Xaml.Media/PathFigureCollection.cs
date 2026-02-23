@@ -6,29 +6,42 @@ namespace Microsoft.UI.Xaml.Media
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class PathFigureCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Media.PathFigure>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Media.PathFigure>
+	public partial class PathFigureCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Media.PathFigure>, global::System.Collections.Generic.ICollection<global::Microsoft.UI.Xaml.Media.PathFigure>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Media.PathFigure>, global::System.Collections.IEnumerable
 	{
-		// Skipping already declared property Size
+		// Skipping already declared property Count
+		// Skipping already declared property IsReadOnly
+		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.PathFigureCollection.PathFigureCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.PathFigureCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.GetAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.Size.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.GetView()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.IndexOf(Microsoft.UI.Xaml.Media.PathFigure, out uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.SetAt(uint, Microsoft.UI.Xaml.Media.PathFigure)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.InsertAt(uint, Microsoft.UI.Xaml.Media.PathFigure)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.RemoveAt(uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.Append(Microsoft.UI.Xaml.Media.PathFigure)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.RemoveAtEnd()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.Clear()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.GetMany(uint, Microsoft.UI.Xaml.Media.PathFigure[])
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.ReplaceAll(Microsoft.UI.Xaml.Media.PathFigure[])
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.First()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.operator ==(Microsoft.UI.Xaml.Media.PathFigureCollection, Microsoft.UI.Xaml.Media.PathFigureCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.operator !=(Microsoft.UI.Xaml.Media.PathFigureCollection, Microsoft.UI.Xaml.Media.PathFigureCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.Equals(Microsoft.UI.Xaml.Media.PathFigureCollection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.Count.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.IsReadOnly.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.this[int].get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.this[int].set
+		// Skipping already declared method Microsoft.UI.Xaml.Media.PathFigureCollection.IndexOf(Microsoft.UI.Xaml.Media.PathFigure)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.PathFigureCollection.Insert(int, Microsoft.UI.Xaml.Media.PathFigure)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.PathFigureCollection.RemoveAt(int)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.PathFigureCollection.Add(Microsoft.UI.Xaml.Media.PathFigure)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.PathFigureCollection.Clear()
+		// Skipping already declared method Microsoft.UI.Xaml.Media.PathFigureCollection.Contains(Microsoft.UI.Xaml.Media.PathFigure)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.PathFigureCollection.CopyTo(Microsoft.UI.Xaml.Media.PathFigure[], int)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.PathFigureCollection.Remove(Microsoft.UI.Xaml.Media.PathFigure)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.PathFigureCollection.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.PathFigure>.get_Item(int)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.PathFigure>.set_Item(int, Microsoft.UI.Xaml.Media.PathFigure)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.PathFigure>
-		// Skipping already implement System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.PathFigure>.this[int]
 		// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.PathFigure>
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.PathFigure>.Count
-		// Skipping already implement System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.PathFigure>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.PathFigure>
 		// Processing: System.Collections.IEnumerable
 	}

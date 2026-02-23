@@ -6,11 +6,51 @@ namespace Windows.ApplicationModel.Resources.Core
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ResourceMap : global::System.Collections.Generic.IReadOnlyDictionary<string, global::Windows.ApplicationModel.Resources.Core.NamedResource>, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, global::Windows.ApplicationModel.Resources.Core.NamedResource>>
+	public partial class ResourceMap : global::System.Collections.Generic.IReadOnlyDictionary<string, global::Windows.ApplicationModel.Resources.Core.NamedResource>, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, global::Windows.ApplicationModel.Resources.Core.NamedResource>>, global::System.Collections.IEnumerable, global::System.Collections.Generic.IReadOnlyCollection<global::System.Collections.Generic.KeyValuePair<string, global::Windows.ApplicationModel.Resources.Core.NamedResource>>
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal ResourceMap()
 		{
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IEnumerable<string> Keys
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IEnumerable<string> ResourceMap.Keys is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerable%3Cstring%3E%20ResourceMap.Keys");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.Resources.Core.NamedResource> Values
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IEnumerable<NamedResource> ResourceMap.Values is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerable%3CNamedResource%3E%20ResourceMap.Values");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int Count
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member int ResourceMap.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ResourceMap.Count");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Resources.Core.NamedResource this[string key]
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member NamedResource ResourceMap.this[string key] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NamedResource%20ResourceMap.this%5Bstring%20key%5D");
+			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -23,17 +63,16 @@ namespace Windows.ApplicationModel.Resources.Core
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint ResourceMap.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ResourceMap.Size");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMap.Uri.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMap.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMap.operator ==(Windows.ApplicationModel.Resources.Core.ResourceMap, Windows.ApplicationModel.Resources.Core.ResourceMap)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMap.operator !=(Windows.ApplicationModel.Resources.Core.ResourceMap, Windows.ApplicationModel.Resources.Core.ResourceMap)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMap.Equals(Windows.ApplicationModel.Resources.Core.ResourceMap)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMap.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMap.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMap.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMap.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMap.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMap.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Resources.Core.ResourceCandidate GetValue(string resource)
@@ -55,67 +94,36 @@ namespace Windows.ApplicationModel.Resources.Core
 			throw new global::System.NotImplementedException("The member ResourceMap ResourceMap.GetSubtree(string reference) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResourceMap%20ResourceMap.GetSubtree%28string%20reference%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMap.Lookup(string)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMap.Size.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMap.HasKey(string)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMap.Split(out System.Collections.Generic.IReadOnlyDictionary<string, Windows.ApplicationModel.Resources.Core.NamedResource>, out System.Collections.Generic.IReadOnlyDictionary<string, Windows.ApplicationModel.Resources.Core.NamedResource>)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMap.First()
-		// Processing: System.Collections.Generic.IReadOnlyDictionary<string, Windows.ApplicationModel.Resources.Core.NamedResource>
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMap.Keys.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMap.Values.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMap.Count.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMap.this[string].get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IReadOnlyDictionary<string, Windows.ApplicationModel.Resources.Core.NamedResource>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool ContainsKey(string key)
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member bool ResourceMap.ContainsKey(string key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ResourceMap.ContainsKey%28string%20key%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IReadOnlyDictionary<string, Windows.ApplicationModel.Resources.Core.NamedResource>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryGetValue(string key, out global::Windows.ApplicationModel.Resources.Core.NamedResource value)
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member bool ResourceMap.TryGetValue(string key, out NamedResource value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ResourceMap.TryGetValue%28string%20key%2C%20out%20NamedResource%20value%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Resources.Core.NamedResource this[string key]
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IEnumerable<string> Keys
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.Resources.Core.NamedResource> Values
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Windows.ApplicationModel.Resources.Core.NamedResource>>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Windows.ApplicationModel.Resources.Core.NamedResource>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, global::Windows.ApplicationModel.Resources.Core.NamedResource>> GetEnumerator()
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member IEnumerator<KeyValuePair<string, NamedResource>> ResourceMap.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CKeyValuePair%3Cstring%2C%20NamedResource%3E%3E%20ResourceMap.GetEnumerator%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMap.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMap.Uri.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMap.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Processing: System.Collections.Generic.IReadOnlyDictionary<string, Windows.ApplicationModel.Resources.Core.NamedResource>
+		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Windows.ApplicationModel.Resources.Core.NamedResource>>
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable
@@ -126,15 +134,5 @@ namespace Windows.ApplicationModel.Resources.Core
 		}
 #endif
 		// Processing: System.Collections.Generic.IReadOnlyCollection<System.Collections.Generic.KeyValuePair<string, Windows.ApplicationModel.Resources.Core.NamedResource>>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Count
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
 	}
 }

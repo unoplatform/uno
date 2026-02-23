@@ -10,6 +10,16 @@ namespace Windows.ApplicationModel.DataTransfer
 	{
 #if false || false || false || IS_UNIT_TESTS || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
+		public static string ApplicationLink
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string StandardDataFormats.ApplicationLink is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardDataFormats.ApplicationLink");
+			}
+		}
+#endif
+#if false || false || false || IS_UNIT_TESTS || false || false || false
+		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public static string Bitmap
 		{
 			get
@@ -70,11 +80,11 @@ namespace Windows.ApplicationModel.DataTransfer
 #endif
 #if false || false || false || IS_UNIT_TESTS || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public static string ApplicationLink
+		public static string UserActivityJsonArray
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardDataFormats.ApplicationLink is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardDataFormats.ApplicationLink");
+				throw new global::System.NotImplementedException("The member string StandardDataFormats.UserActivityJsonArray is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardDataFormats.UserActivityJsonArray");
 			}
 		}
 #endif
@@ -88,24 +98,15 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 #endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public static string UserActivityJsonArray
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string StandardDataFormats.UserActivityJsonArray is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardDataFormats.UserActivityJsonArray");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.UserActivityJsonArray.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.WebLink.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.As<I>()
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.ApplicationLink.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.Text.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.Uri.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.Bitmap.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.Html.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.Rtf.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.Bitmap.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.StorageItems.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.Text.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.Uri.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.UserActivityJsonArray.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.WebLink.get
 	}
 }

@@ -10,184 +10,6 @@ namespace Microsoft.UI.Xaml.Media
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double RotationZ
-		{
-			get
-			{
-				return (double)this.GetValue(RotationZProperty);
-			}
-			set
-			{
-				this.SetValue(RotationZProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double RotationY
-		{
-			get
-			{
-				return (double)this.GetValue(RotationYProperty);
-			}
-			set
-			{
-				this.SetValue(RotationYProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double RotationX
-		{
-			get
-			{
-				return (double)this.GetValue(RotationXProperty);
-			}
-			set
-			{
-				this.SetValue(RotationXProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double LocalOffsetZ
-		{
-			get
-			{
-				return (double)this.GetValue(LocalOffsetZProperty);
-			}
-			set
-			{
-				this.SetValue(LocalOffsetZProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double LocalOffsetY
-		{
-			get
-			{
-				return (double)this.GetValue(LocalOffsetYProperty);
-			}
-			set
-			{
-				this.SetValue(LocalOffsetYProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double LocalOffsetX
-		{
-			get
-			{
-				return (double)this.GetValue(LocalOffsetXProperty);
-			}
-			set
-			{
-				this.SetValue(LocalOffsetXProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double GlobalOffsetZ
-		{
-			get
-			{
-				return (double)this.GetValue(GlobalOffsetZProperty);
-			}
-			set
-			{
-				this.SetValue(GlobalOffsetZProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double GlobalOffsetY
-		{
-			get
-			{
-				return (double)this.GetValue(GlobalOffsetYProperty);
-			}
-			set
-			{
-				this.SetValue(GlobalOffsetYProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double GlobalOffsetX
-		{
-			get
-			{
-				return (double)this.GetValue(GlobalOffsetXProperty);
-			}
-			set
-			{
-				this.SetValue(GlobalOffsetXProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double CenterOfRotationZ
-		{
-			get
-			{
-				return (double)this.GetValue(CenterOfRotationZProperty);
-			}
-			set
-			{
-				this.SetValue(CenterOfRotationZProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double CenterOfRotationY
-		{
-			get
-			{
-				return (double)this.GetValue(CenterOfRotationYProperty);
-			}
-			set
-			{
-				this.SetValue(CenterOfRotationYProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double CenterOfRotationX
-		{
-			get
-			{
-				return (double)this.GetValue(CenterOfRotationXProperty);
-			}
-			set
-			{
-				this.SetValue(CenterOfRotationXProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.Media3D.Matrix3D ProjectionMatrix
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.Media3D.Matrix3D)this.GetValue(ProjectionMatrixProperty);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty CenterOfRotationXProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(CenterOfRotationX), typeof(double),
@@ -292,24 +114,212 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double CenterOfRotationX
+		{
+			get
+			{
+				return (double)this.GetValue(CenterOfRotationXProperty);
+			}
+			set
+			{
+				this.SetValue(CenterOfRotationXProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double CenterOfRotationY
+		{
+			get
+			{
+				return (double)this.GetValue(CenterOfRotationYProperty);
+			}
+			set
+			{
+				this.SetValue(CenterOfRotationYProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double CenterOfRotationZ
+		{
+			get
+			{
+				return (double)this.GetValue(CenterOfRotationZProperty);
+			}
+			set
+			{
+				this.SetValue(CenterOfRotationZProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double GlobalOffsetX
+		{
+			get
+			{
+				return (double)this.GetValue(GlobalOffsetXProperty);
+			}
+			set
+			{
+				this.SetValue(GlobalOffsetXProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double GlobalOffsetY
+		{
+			get
+			{
+				return (double)this.GetValue(GlobalOffsetYProperty);
+			}
+			set
+			{
+				this.SetValue(GlobalOffsetYProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double GlobalOffsetZ
+		{
+			get
+			{
+				return (double)this.GetValue(GlobalOffsetZProperty);
+			}
+			set
+			{
+				this.SetValue(GlobalOffsetZProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double LocalOffsetX
+		{
+			get
+			{
+				return (double)this.GetValue(LocalOffsetXProperty);
+			}
+			set
+			{
+				this.SetValue(LocalOffsetXProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double LocalOffsetY
+		{
+			get
+			{
+				return (double)this.GetValue(LocalOffsetYProperty);
+			}
+			set
+			{
+				this.SetValue(LocalOffsetYProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double LocalOffsetZ
+		{
+			get
+			{
+				return (double)this.GetValue(LocalOffsetZProperty);
+			}
+			set
+			{
+				this.SetValue(LocalOffsetZProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.Media.Media3D.Matrix3D ProjectionMatrix
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Media.Media3D.Matrix3D)this.GetValue(ProjectionMatrixProperty);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double RotationX
+		{
+			get
+			{
+				return (double)this.GetValue(RotationXProperty);
+			}
+			set
+			{
+				this.SetValue(RotationXProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double RotationY
+		{
+			get
+			{
+				return (double)this.GetValue(RotationYProperty);
+			}
+			set
+			{
+				this.SetValue(RotationYProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double RotationZ
+		{
+			get
+			{
+				return (double)this.GetValue(RotationZProperty);
+			}
+			set
+			{
+				this.SetValue(RotationZProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PlaneProjection() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.PlaneProjection", "PlaneProjection.PlaneProjection()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.PlaneProjection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.LocalOffsetX.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.LocalOffsetX.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.LocalOffsetY.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.LocalOffsetY.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.LocalOffsetZ.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.LocalOffsetZ.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationX.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationX.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationY.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationY.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationZ.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationZ.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.CenterOfRotationXProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.CenterOfRotationYProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.CenterOfRotationZProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.GlobalOffsetXProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.GlobalOffsetYProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.GlobalOffsetZProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.LocalOffsetXProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.LocalOffsetYProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.LocalOffsetZProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.ProjectionMatrixProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationXProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationYProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationZProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.operator ==(Microsoft.UI.Xaml.Media.PlaneProjection, Microsoft.UI.Xaml.Media.PlaneProjection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.operator !=(Microsoft.UI.Xaml.Media.PlaneProjection, Microsoft.UI.Xaml.Media.PlaneProjection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.Equals(Microsoft.UI.Xaml.Media.PlaneProjection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.CenterOfRotationX.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.CenterOfRotationX.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.CenterOfRotationY.get
@@ -322,19 +332,20 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.GlobalOffsetY.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.GlobalOffsetZ.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.GlobalOffsetZ.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.LocalOffsetX.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.LocalOffsetX.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.LocalOffsetY.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.LocalOffsetY.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.LocalOffsetZ.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.LocalOffsetZ.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.ProjectionMatrix.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.LocalOffsetXProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.LocalOffsetYProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.LocalOffsetZProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationXProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationYProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationZProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.CenterOfRotationXProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.CenterOfRotationYProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.CenterOfRotationZProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.GlobalOffsetXProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.GlobalOffsetYProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.GlobalOffsetZProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.ProjectionMatrixProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationX.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationX.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationY.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationY.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationZ.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationZ.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

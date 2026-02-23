@@ -15,6 +15,16 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIPrintWorkflowForegroundTaskActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUIPrintWorkflowForegroundTaskActivatedEventArgs.ActivatedOperation");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.ActivationKind Kind
 		{
 			get
@@ -43,20 +53,21 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIPrintWorkflowForegroundTaskActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUIPrintWorkflowForegroundTaskActivatedEventArgs.ActivatedOperation");
-			}
-		}
-#endif
+		// Forced skipping of method Windows.UI.WebUI.WebUIPrintWorkflowForegroundTaskActivatedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.UI.WebUI.WebUIPrintWorkflowForegroundTaskActivatedEventArgs.operator ==(Windows.UI.WebUI.WebUIPrintWorkflowForegroundTaskActivatedEventArgs, Windows.UI.WebUI.WebUIPrintWorkflowForegroundTaskActivatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIPrintWorkflowForegroundTaskActivatedEventArgs.operator !=(Windows.UI.WebUI.WebUIPrintWorkflowForegroundTaskActivatedEventArgs, Windows.UI.WebUI.WebUIPrintWorkflowForegroundTaskActivatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIPrintWorkflowForegroundTaskActivatedEventArgs.Equals(Windows.UI.WebUI.WebUIPrintWorkflowForegroundTaskActivatedEventArgs)
+		// Forced skipping of method Windows.UI.WebUI.WebUIPrintWorkflowForegroundTaskActivatedEventArgs.Equals(object)
+		// Forced skipping of method Windows.UI.WebUI.WebUIPrintWorkflowForegroundTaskActivatedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.UI.WebUI.WebUIPrintWorkflowForegroundTaskActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIPrintWorkflowForegroundTaskActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIPrintWorkflowForegroundTaskActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIPrintWorkflowForegroundTaskActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIPrintWorkflowForegroundTaskActivatedEventArgs.ActivatedOperation.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIPrintWorkflowForegroundTaskActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIPrintWorkflowForegroundTaskActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIPrintWorkflowForegroundTaskActivatedEventArgs.SplashScreen.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIPrintWorkflowForegroundTaskActivatedEventArgs.ActivatedOperation.get
+		// Forced skipping of method Windows.UI.WebUI.WebUIPrintWorkflowForegroundTaskActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 		// Processing: Windows.UI.WebUI.IActivatedEventArgsDeferral
 	}

@@ -23,6 +23,16 @@ namespace Windows.ApplicationModel.Calls
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryManagerForUser.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryManagerForUser.operator ==(Windows.ApplicationModel.Calls.PhoneCallHistoryManagerForUser, Windows.ApplicationModel.Calls.PhoneCallHistoryManagerForUser)
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryManagerForUser.operator !=(Windows.ApplicationModel.Calls.PhoneCallHistoryManagerForUser, Windows.ApplicationModel.Calls.PhoneCallHistoryManagerForUser)
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryManagerForUser.Equals(Windows.ApplicationModel.Calls.PhoneCallHistoryManagerForUser)
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryManagerForUser.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryManagerForUser.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryManagerForUser.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryManagerForUser.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryManagerForUser.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryManagerForUser.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneCallHistoryStore> RequestStoreAsync(global::Windows.ApplicationModel.Calls.PhoneCallHistoryStoreAccessType accessType)
@@ -31,5 +41,6 @@ namespace Windows.ApplicationModel.Calls
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryManagerForUser.User.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryManagerForUser.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

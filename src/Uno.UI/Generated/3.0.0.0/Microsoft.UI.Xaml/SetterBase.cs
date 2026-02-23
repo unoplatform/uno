@@ -9,6 +9,18 @@ namespace Microsoft.UI.Xaml
 	public partial class SetterBase : global::Microsoft.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property IsSealed
+		// Forced skipping of method Microsoft.UI.Xaml.SetterBase.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.SetterBase.SetterBase(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.SetterBase.operator ==(Microsoft.UI.Xaml.SetterBase, Microsoft.UI.Xaml.SetterBase)
+		// Forced skipping of method Microsoft.UI.Xaml.SetterBase.operator !=(Microsoft.UI.Xaml.SetterBase, Microsoft.UI.Xaml.SetterBase)
+		// Forced skipping of method Microsoft.UI.Xaml.SetterBase.Equals(Microsoft.UI.Xaml.SetterBase)
+		// Forced skipping of method Microsoft.UI.Xaml.SetterBase.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.SetterBase.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.SetterBase.SetterBase(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.SetterBase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.SetterBase.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.SetterBase.IsSealed.get
+		// Forced skipping of method Microsoft.UI.Xaml.SetterBase.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.SetterBase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

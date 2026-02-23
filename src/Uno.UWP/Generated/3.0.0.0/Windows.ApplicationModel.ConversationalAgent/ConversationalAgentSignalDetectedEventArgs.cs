@@ -13,5 +13,16 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignalDetectedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignalDetectedEventArgs.operator ==(Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignalDetectedEventArgs, Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignalDetectedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignalDetectedEventArgs.operator !=(Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignalDetectedEventArgs, Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignalDetectedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignalDetectedEventArgs.Equals(Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignalDetectedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignalDetectedEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignalDetectedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignalDetectedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignalDetectedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignalDetectedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignalDetectedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignalDetectedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

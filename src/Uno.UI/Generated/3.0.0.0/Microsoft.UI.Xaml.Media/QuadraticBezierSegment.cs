@@ -8,17 +8,28 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class QuadraticBezierSegment : global::Microsoft.UI.Xaml.Media.PathSegment
 	{
-		// Skipping already declared property Point2
-		// Skipping already declared property Point1
 		// Skipping already declared property Point1Property
 		// Skipping already declared property Point2Property
+		// Skipping already declared property Point1
+		// Skipping already declared property Point2
 		// Skipping already declared method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.QuadraticBezierSegment()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.QuadraticBezierSegment()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.Point1Property.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.Point2Property.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.operator ==(Microsoft.UI.Xaml.Media.QuadraticBezierSegment, Microsoft.UI.Xaml.Media.QuadraticBezierSegment)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.operator !=(Microsoft.UI.Xaml.Media.QuadraticBezierSegment, Microsoft.UI.Xaml.Media.QuadraticBezierSegment)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.Equals(Microsoft.UI.Xaml.Media.QuadraticBezierSegment)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.Point1.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.Point1.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.Point2.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.Point2.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.Point1Property.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.Point2Property.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

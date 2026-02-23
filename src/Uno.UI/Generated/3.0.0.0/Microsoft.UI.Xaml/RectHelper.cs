@@ -9,7 +9,7 @@ namespace Microsoft.UI.Xaml
 	public partial class RectHelper
 	{
 		// Skipping already declared property Empty
-		// Forced skipping of method Microsoft.UI.Xaml.RectHelper.Empty.get
+		// Forced skipping of method Microsoft.UI.Xaml.RectHelper.As<I>()
 		// Skipping already declared method Microsoft.UI.Xaml.RectHelper.FromCoordinatesAndDimensions(float, float, float, float)
 		// Skipping already declared method Microsoft.UI.Xaml.RectHelper.FromPoints(Windows.Foundation.Point, Windows.Foundation.Point)
 		// Skipping already declared method Microsoft.UI.Xaml.RectHelper.FromLocationAndSize(Windows.Foundation.Point, Windows.Foundation.Size)
@@ -19,9 +19,21 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared method Microsoft.UI.Xaml.RectHelper.GetRight(Windows.Foundation.Rect)
 		// Skipping already declared method Microsoft.UI.Xaml.RectHelper.GetTop(Windows.Foundation.Rect)
 		// Skipping already declared method Microsoft.UI.Xaml.RectHelper.Contains(Windows.Foundation.Rect, Windows.Foundation.Point)
-		// Skipping already declared method Microsoft.UI.Xaml.RectHelper.Equals(Windows.Foundation.Rect, Windows.Foundation.Rect)
+		// Forced skipping of method Microsoft.UI.Xaml.RectHelper.Equals(Windows.Foundation.Rect, Windows.Foundation.Rect)
 		// Skipping already declared method Microsoft.UI.Xaml.RectHelper.Intersect(Windows.Foundation.Rect, Windows.Foundation.Rect)
 		// Skipping already declared method Microsoft.UI.Xaml.RectHelper.Union(Windows.Foundation.Rect, Windows.Foundation.Point)
 		// Skipping already declared method Microsoft.UI.Xaml.RectHelper.Union(Windows.Foundation.Rect, Windows.Foundation.Rect)
+		// Forced skipping of method Microsoft.UI.Xaml.RectHelper.Empty.get
+		// Forced skipping of method Microsoft.UI.Xaml.RectHelper.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.RectHelper.operator ==(Microsoft.UI.Xaml.RectHelper, Microsoft.UI.Xaml.RectHelper)
+		// Forced skipping of method Microsoft.UI.Xaml.RectHelper.operator !=(Microsoft.UI.Xaml.RectHelper, Microsoft.UI.Xaml.RectHelper)
+		// Forced skipping of method Microsoft.UI.Xaml.RectHelper.Equals(Microsoft.UI.Xaml.RectHelper)
+		// Forced skipping of method Microsoft.UI.Xaml.RectHelper.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.RectHelper.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.RectHelper.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.RectHelper.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.RectHelper.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.RectHelper.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.RectHelper.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

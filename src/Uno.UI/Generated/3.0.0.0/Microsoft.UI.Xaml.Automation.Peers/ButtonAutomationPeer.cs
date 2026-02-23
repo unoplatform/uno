@@ -10,7 +10,19 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ButtonAutomationPeer.ButtonAutomationPeer(Microsoft.UI.Xaml.Controls.Button)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonAutomationPeer.ButtonAutomationPeer(Microsoft.UI.Xaml.Controls.Button)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonAutomationPeer.ButtonAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.ButtonAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ButtonAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.ButtonAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.ButtonAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.ButtonAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonAutomationPeer.ButtonAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ButtonAutomationPeer.Invoke()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IInvokeProvider
 	}
 }

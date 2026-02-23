@@ -10,10 +10,10 @@ namespace Windows.UI.Core
 	{
 		// Forced skipping of method Windows.UI.Core.ICorePointerRedirector.PointerRoutedAway.add
 		// Forced skipping of method Windows.UI.Core.ICorePointerRedirector.PointerRoutedAway.remove
-		// Forced skipping of method Windows.UI.Core.ICorePointerRedirector.PointerRoutedTo.add
-		// Forced skipping of method Windows.UI.Core.ICorePointerRedirector.PointerRoutedTo.remove
 		// Forced skipping of method Windows.UI.Core.ICorePointerRedirector.PointerRoutedReleased.add
 		// Forced skipping of method Windows.UI.Core.ICorePointerRedirector.PointerRoutedReleased.remove
+		// Forced skipping of method Windows.UI.Core.ICorePointerRedirector.PointerRoutedTo.add
+		// Forced skipping of method Windows.UI.Core.ICorePointerRedirector.PointerRoutedTo.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Core.ICorePointerRedirector, global::Windows.UI.Core.PointerEventArgs> PointerRoutedAway;
 #endif

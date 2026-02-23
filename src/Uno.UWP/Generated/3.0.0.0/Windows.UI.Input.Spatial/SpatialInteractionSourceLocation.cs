@@ -15,21 +15,11 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3? Position
+		public global::System.Numerics.Vector3? AngularVelocity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3? SpatialInteractionSourceLocation.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%3F%20SpatialInteractionSourceLocation.Position");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3? Velocity
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector3? SpatialInteractionSourceLocation.Velocity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%3F%20SpatialInteractionSourceLocation.Velocity");
+				throw new global::System.NotImplementedException("The member Vector3? SpatialInteractionSourceLocation.AngularVelocity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%3F%20SpatialInteractionSourceLocation.AngularVelocity");
 			}
 		}
 #endif
@@ -45,11 +35,11 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3? AngularVelocity
+		public global::System.Numerics.Vector3? Position
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3? SpatialInteractionSourceLocation.AngularVelocity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%3F%20SpatialInteractionSourceLocation.AngularVelocity");
+				throw new global::System.NotImplementedException("The member Vector3? SpatialInteractionSourceLocation.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%3F%20SpatialInteractionSourceLocation.Position");
 			}
 		}
 #endif
@@ -73,11 +63,32 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.Position.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.Velocity.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.Orientation.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.PositionAccuracy.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector3? Velocity
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector3? SpatialInteractionSourceLocation.Velocity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%3F%20SpatialInteractionSourceLocation.Velocity");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.operator ==(Windows.UI.Input.Spatial.SpatialInteractionSourceLocation, Windows.UI.Input.Spatial.SpatialInteractionSourceLocation)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.operator !=(Windows.UI.Input.Spatial.SpatialInteractionSourceLocation, Windows.UI.Input.Spatial.SpatialInteractionSourceLocation)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.Equals(Windows.UI.Input.Spatial.SpatialInteractionSourceLocation)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.Equals(object)
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.AngularVelocity.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.Orientation.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.Position.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.PositionAccuracy.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.SourcePointerPose.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.Velocity.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

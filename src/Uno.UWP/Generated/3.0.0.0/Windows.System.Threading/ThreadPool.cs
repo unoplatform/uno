@@ -8,6 +8,7 @@ namespace Windows.System.Threading
 #endif
 	public static partial class ThreadPool
 	{
+		// Forced skipping of method Windows.System.Threading.ThreadPool.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction RunAsync(global::Windows.System.Threading.WorkItemHandler handler)

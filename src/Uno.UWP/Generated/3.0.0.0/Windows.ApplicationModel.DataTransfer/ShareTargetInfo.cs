@@ -10,7 +10,18 @@ namespace Windows.ApplicationModel.DataTransfer
 	{
 		// Skipping already declared property AppUserModelId
 		// Skipping already declared property ShareProvider
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTargetInfo.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTargetInfo.operator ==(Windows.ApplicationModel.DataTransfer.ShareTargetInfo, Windows.ApplicationModel.DataTransfer.ShareTargetInfo)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTargetInfo.operator !=(Windows.ApplicationModel.DataTransfer.ShareTargetInfo, Windows.ApplicationModel.DataTransfer.ShareTargetInfo)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTargetInfo.Equals(Windows.ApplicationModel.DataTransfer.ShareTargetInfo)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTargetInfo.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTargetInfo.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTargetInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTargetInfo.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTargetInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTargetInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTargetInfo.AppUserModelId.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTargetInfo.ShareProvider.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTargetInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

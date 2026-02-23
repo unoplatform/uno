@@ -15,20 +15,6 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string UserName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2BasicAuthenticationResponse.UserName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2BasicAuthenticationResponse.UserName");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse", "string CoreWebView2BasicAuthenticationResponse.UserName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Password
 		{
 			get
@@ -41,9 +27,34 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse.UserName.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse.UserName.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string UserName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string CoreWebView2BasicAuthenticationResponse.UserName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2BasicAuthenticationResponse.UserName");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse", "string CoreWebView2BasicAuthenticationResponse.UserName");
+			}
+		}
+#endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse, Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse, Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse.Equals(Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse.Password.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse.Password.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse.UserName.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse.UserName.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

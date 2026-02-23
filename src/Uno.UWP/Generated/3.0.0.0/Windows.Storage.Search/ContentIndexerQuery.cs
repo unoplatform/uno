@@ -23,6 +23,16 @@ namespace Windows.Storage.Search
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Storage.Search.ContentIndexerQuery.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.Search.ContentIndexerQuery.operator ==(Windows.Storage.Search.ContentIndexerQuery, Windows.Storage.Search.ContentIndexerQuery)
+		// Forced skipping of method Windows.Storage.Search.ContentIndexerQuery.operator !=(Windows.Storage.Search.ContentIndexerQuery, Windows.Storage.Search.ContentIndexerQuery)
+		// Forced skipping of method Windows.Storage.Search.ContentIndexerQuery.Equals(Windows.Storage.Search.ContentIndexerQuery)
+		// Forced skipping of method Windows.Storage.Search.ContentIndexerQuery.Equals(object)
+		// Forced skipping of method Windows.Storage.Search.ContentIndexerQuery.GetHashCode()
+		// Forced skipping of method Windows.Storage.Search.ContentIndexerQuery.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.Search.ContentIndexerQuery.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.Search.ContentIndexerQuery.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.Search.ContentIndexerQuery.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<uint> GetCountAsync()
@@ -59,5 +69,6 @@ namespace Windows.Storage.Search
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Search.ContentIndexerQuery.QueryFolder.get
+		// Forced skipping of method Windows.Storage.Search.ContentIndexerQuery.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

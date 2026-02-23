@@ -8,8 +8,21 @@ namespace Windows.ApplicationModel.Activation
 #endif
 	public partial class SearchActivatedEventArgs : global::Windows.ApplicationModel.Activation.ISearchActivatedEventArgs, global::Windows.ApplicationModel.Activation.IActivatedEventArgs, global::Windows.ApplicationModel.Activation.IApplicationViewActivatedEventArgs, global::Windows.ApplicationModel.Activation.ISearchActivatedEventArgsWithLinguisticDetails, global::Windows.ApplicationModel.Activation.IViewSwitcherProvider, global::Windows.ApplicationModel.Activation.IActivatedEventArgsWithUser
 	{
+		// Skipping already declared property CurrentlyShownApplicationViewId
 		// Skipping already declared property Kind
+		// Skipping already declared property Language
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Search.SearchPaneQueryLinguisticDetails LinguisticDetails
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SearchPaneQueryLinguisticDetails SearchActivatedEventArgs.LinguisticDetails is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SearchPaneQueryLinguisticDetails%20SearchActivatedEventArgs.LinguisticDetails");
+			}
+		}
+#endif
 		// Skipping already declared property PreviousExecutionState
+		// Skipping already declared property QueryText
 		// Skipping already declared property SplashScreen
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -18,19 +31,6 @@ namespace Windows.ApplicationModel.Activation
 			get
 			{
 				throw new global::System.NotImplementedException("The member User SearchActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20SearchActivatedEventArgs.User");
-			}
-		}
-#endif
-		// Skipping already declared property CurrentlyShownApplicationViewId
-		// Skipping already declared property Language
-		// Skipping already declared property QueryText
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Search.SearchPaneQueryLinguisticDetails LinguisticDetails
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SearchPaneQueryLinguisticDetails SearchActivatedEventArgs.LinguisticDetails is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SearchPaneQueryLinguisticDetails%20SearchActivatedEventArgs.LinguisticDetails");
 			}
 		}
 #endif
@@ -44,15 +44,26 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.SearchActivatedEventArgs.QueryText.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.SearchActivatedEventArgs.Language.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.SearchActivatedEventArgs.Kind.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.SearchActivatedEventArgs.PreviousExecutionState.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.SearchActivatedEventArgs.SplashScreen.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.SearchActivatedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Activation.SearchActivatedEventArgs.operator ==(Windows.ApplicationModel.Activation.SearchActivatedEventArgs, Windows.ApplicationModel.Activation.SearchActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.SearchActivatedEventArgs.operator !=(Windows.ApplicationModel.Activation.SearchActivatedEventArgs, Windows.ApplicationModel.Activation.SearchActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.SearchActivatedEventArgs.Equals(Windows.ApplicationModel.Activation.SearchActivatedEventArgs)
+		// Forced skipping of method Windows.ApplicationModel.Activation.SearchActivatedEventArgs.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Activation.SearchActivatedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Activation.SearchActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.SearchActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.SearchActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.SearchActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.SearchActivatedEventArgs.CurrentlyShownApplicationViewId.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.SearchActivatedEventArgs.Kind.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.SearchActivatedEventArgs.Language.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.SearchActivatedEventArgs.LinguisticDetails.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.SearchActivatedEventArgs.ViewSwitcher.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.SearchActivatedEventArgs.PreviousExecutionState.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.SearchActivatedEventArgs.QueryText.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.SearchActivatedEventArgs.SplashScreen.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.SearchActivatedEventArgs.User.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.SearchActivatedEventArgs.ViewSwitcher.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.SearchActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.ISearchActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IApplicationViewActivatedEventArgs

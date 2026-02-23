@@ -16,6 +16,16 @@ namespace Windows.UI.Input.Inking
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.InkRecognizerContainer.InkRecognizerContainer()
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognizerContainer.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognizerContainer.operator ==(Windows.UI.Input.Inking.InkRecognizerContainer, Windows.UI.Input.Inking.InkRecognizerContainer)
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognizerContainer.operator !=(Windows.UI.Input.Inking.InkRecognizerContainer, Windows.UI.Input.Inking.InkRecognizerContainer)
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognizerContainer.Equals(Windows.UI.Input.Inking.InkRecognizerContainer)
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognizerContainer.Equals(object)
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognizerContainer.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognizerContainer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognizerContainer.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognizerContainer.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognizerContainer.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetDefaultRecognizer(global::Windows.UI.Input.Inking.InkRecognizer recognizer)
@@ -37,6 +47,7 @@ namespace Windows.UI.Input.Inking
 			throw new global::System.NotImplementedException("The member IReadOnlyList<InkRecognizer> InkRecognizerContainer.GetRecognizers() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CInkRecognizer%3E%20InkRecognizerContainer.GetRecognizers%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.Inking.InkRecognizerContainer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.UI.Input.Inking.IInkRecognizerContainer
 	}
 }

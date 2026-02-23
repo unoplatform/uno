@@ -8,40 +8,52 @@ namespace Microsoft.UI.Xaml.Data
 #endif
 	public partial class Binding : global::Microsoft.UI.Xaml.Data.BindingBase
 	{
-		// Skipping already declared property UpdateSourceTrigger
-		// Skipping already declared property TargetNullValue
-		// Skipping already declared property Source
-		// Skipping already declared property RelativeSource
-		// Skipping already declared property Path
-		// Skipping already declared property Mode
-		// Skipping already declared property FallbackValue
-		// Skipping already declared property ElementName
-		// Skipping already declared property ConverterParameter
-		// Skipping already declared property ConverterLanguage
 		// Skipping already declared property Converter
+		// Skipping already declared property ConverterLanguage
+		// Skipping already declared property ConverterParameter
+		// Skipping already declared property ElementName
+		// Skipping already declared property FallbackValue
+		// Skipping already declared property Mode
+		// Skipping already declared property Path
+		// Skipping already declared property RelativeSource
+		// Skipping already declared property Source
+		// Skipping already declared property TargetNullValue
+		// Skipping already declared property UpdateSourceTrigger
 		// Skipping already declared method Microsoft.UI.Xaml.Data.Binding.Binding()
 		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.Binding()
-		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.Path.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.Path.set
-		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.Mode.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.Mode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.Source.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.Source.set
-		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.RelativeSource.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.RelativeSource.set
-		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.ElementName.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.ElementName.set
+		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.Binding(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.operator ==(Microsoft.UI.Xaml.Data.Binding, Microsoft.UI.Xaml.Data.Binding)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.operator !=(Microsoft.UI.Xaml.Data.Binding, Microsoft.UI.Xaml.Data.Binding)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.Equals(Microsoft.UI.Xaml.Data.Binding)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.Binding(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.Converter.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.Converter.set
-		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.ConverterParameter.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.ConverterParameter.set
 		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.ConverterLanguage.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.ConverterLanguage.set
+		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.ConverterParameter.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.ConverterParameter.set
+		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.ElementName.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.ElementName.set
 		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.FallbackValue.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.FallbackValue.set
+		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.Mode.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.Mode.set
+		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.Path.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.Path.set
+		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.RelativeSource.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.RelativeSource.set
+		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.Source.get
+		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.Source.set
 		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.TargetNullValue.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.TargetNullValue.set
 		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.UpdateSourceTrigger.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.UpdateSourceTrigger.set
+		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -13,8 +13,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestManager.UserActivityRequested.add
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestManager.UserActivityRequested.remove
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.UserActivities.UserActivityRequestManager GetForCurrentView()
@@ -22,6 +21,19 @@ namespace Windows.ApplicationModel.UserActivities
 			throw new global::System.NotImplementedException("The member UserActivityRequestManager UserActivityRequestManager.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserActivityRequestManager%20UserActivityRequestManager.GetForCurrentView%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestManager.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestManager.operator ==(Windows.ApplicationModel.UserActivities.UserActivityRequestManager, Windows.ApplicationModel.UserActivities.UserActivityRequestManager)
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestManager.operator !=(Windows.ApplicationModel.UserActivities.UserActivityRequestManager, Windows.ApplicationModel.UserActivities.UserActivityRequestManager)
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestManager.Equals(Windows.ApplicationModel.UserActivities.UserActivityRequestManager)
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestManager.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestManager.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestManager.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestManager.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestManager.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestManager.UserActivityRequested.add
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestManager.UserActivityRequested.remove
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.UserActivities.UserActivityRequestManager, global::Windows.ApplicationModel.UserActivities.UserActivityRequestedEventArgs> UserActivityRequested

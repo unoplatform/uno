@@ -37,8 +37,19 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.Supported.get
+		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.operator ==(Windows.Media.Devices.ExposurePriorityVideoControl, Windows.Media.Devices.ExposurePriorityVideoControl)
+		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.operator !=(Windows.Media.Devices.ExposurePriorityVideoControl, Windows.Media.Devices.ExposurePriorityVideoControl)
+		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.Equals(Windows.Media.Devices.ExposurePriorityVideoControl)
+		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.Equals(object)
+		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.GetHashCode()
+		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.Enabled.get
 		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.Enabled.set
+		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.Supported.get
+		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -15,15 +15,11 @@ namespace Windows.Media.FaceAnalysis
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.Imaging.BitmapSize MinDetectableFaceSize
+		public static bool IsSupported
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BitmapSize FaceTracker.MinDetectableFaceSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BitmapSize%20FaceTracker.MinDetectableFaceSize");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.FaceAnalysis.FaceTracker", "BitmapSize FaceTracker.MinDetectableFaceSize");
+				throw new global::System.NotImplementedException("The member bool FaceTracker.IsSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FaceTracker.IsSupported");
 			}
 		}
 #endif
@@ -43,25 +39,19 @@ namespace Windows.Media.FaceAnalysis
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool IsSupported
+		public global::Windows.Graphics.Imaging.BitmapSize MinDetectableFaceSize
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FaceTracker.IsSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FaceTracker.IsSupported");
+				throw new global::System.NotImplementedException("The member BitmapSize FaceTracker.MinDetectableFaceSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BitmapSize%20FaceTracker.MinDetectableFaceSize");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.FaceAnalysis.FaceTracker", "BitmapSize FaceTracker.MinDetectableFaceSize");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<global::Windows.Media.FaceAnalysis.DetectedFace>> ProcessNextFrameAsync(global::Windows.Media.VideoFrame videoFrame)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IList<DetectedFace>> FaceTracker.ProcessNextFrameAsync(VideoFrame videoFrame) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIList%3CDetectedFace%3E%3E%20FaceTracker.ProcessNextFrameAsync%28VideoFrame%20videoFrame%29");
-		}
-#endif
-		// Forced skipping of method Windows.Media.FaceAnalysis.FaceTracker.MinDetectableFaceSize.get
-		// Forced skipping of method Windows.Media.FaceAnalysis.FaceTracker.MinDetectableFaceSize.set
-		// Forced skipping of method Windows.Media.FaceAnalysis.FaceTracker.MaxDetectableFaceSize.get
-		// Forced skipping of method Windows.Media.FaceAnalysis.FaceTracker.MaxDetectableFaceSize.set
+		// Forced skipping of method Windows.Media.FaceAnalysis.FaceTracker.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.FaceAnalysis.FaceTracker> CreateAsync()
@@ -84,5 +74,27 @@ namespace Windows.Media.FaceAnalysis
 		}
 #endif
 		// Forced skipping of method Windows.Media.FaceAnalysis.FaceTracker.IsSupported.get
+		// Forced skipping of method Windows.Media.FaceAnalysis.FaceTracker.FromAbi(nint)
+		// Forced skipping of method Windows.Media.FaceAnalysis.FaceTracker.operator ==(Windows.Media.FaceAnalysis.FaceTracker, Windows.Media.FaceAnalysis.FaceTracker)
+		// Forced skipping of method Windows.Media.FaceAnalysis.FaceTracker.operator !=(Windows.Media.FaceAnalysis.FaceTracker, Windows.Media.FaceAnalysis.FaceTracker)
+		// Forced skipping of method Windows.Media.FaceAnalysis.FaceTracker.Equals(Windows.Media.FaceAnalysis.FaceTracker)
+		// Forced skipping of method Windows.Media.FaceAnalysis.FaceTracker.Equals(object)
+		// Forced skipping of method Windows.Media.FaceAnalysis.FaceTracker.GetHashCode()
+		// Forced skipping of method Windows.Media.FaceAnalysis.FaceTracker.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.FaceAnalysis.FaceTracker.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.FaceAnalysis.FaceTracker.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.FaceAnalysis.FaceTracker.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<global::Windows.Media.FaceAnalysis.DetectedFace>> ProcessNextFrameAsync(global::Windows.Media.VideoFrame videoFrame)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IList<DetectedFace>> FaceTracker.ProcessNextFrameAsync(VideoFrame videoFrame) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIList%3CDetectedFace%3E%3E%20FaceTracker.ProcessNextFrameAsync%28VideoFrame%20videoFrame%29");
+		}
+#endif
+		// Forced skipping of method Windows.Media.FaceAnalysis.FaceTracker.MaxDetectableFaceSize.get
+		// Forced skipping of method Windows.Media.FaceAnalysis.FaceTracker.MaxDetectableFaceSize.set
+		// Forced skipping of method Windows.Media.FaceAnalysis.FaceTracker.MinDetectableFaceSize.get
+		// Forced skipping of method Windows.Media.FaceAnalysis.FaceTracker.MinDetectableFaceSize.set
+		// Forced skipping of method Windows.Media.FaceAnalysis.FaceTracker.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

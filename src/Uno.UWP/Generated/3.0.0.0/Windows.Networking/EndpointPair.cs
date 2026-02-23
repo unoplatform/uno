@@ -10,29 +10,15 @@ namespace Windows.Networking
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string RemoteServiceName
+		public global::Windows.Networking.HostName LocalHostName
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EndpointPair.RemoteServiceName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EndpointPair.RemoteServiceName");
+				throw new global::System.NotImplementedException("The member HostName EndpointPair.LocalHostName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HostName%20EndpointPair.LocalHostName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.EndpointPair", "string EndpointPair.RemoteServiceName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Networking.HostName RemoteHostName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member HostName EndpointPair.RemoteHostName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HostName%20EndpointPair.RemoteHostName");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.EndpointPair", "HostName EndpointPair.RemoteHostName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.EndpointPair", "HostName EndpointPair.LocalHostName");
 			}
 		}
 #endif
@@ -52,15 +38,29 @@ namespace Windows.Networking
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Networking.HostName LocalHostName
+		public global::Windows.Networking.HostName RemoteHostName
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName EndpointPair.LocalHostName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HostName%20EndpointPair.LocalHostName");
+				throw new global::System.NotImplementedException("The member HostName EndpointPair.RemoteHostName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HostName%20EndpointPair.RemoteHostName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.EndpointPair", "HostName EndpointPair.LocalHostName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.EndpointPair", "HostName EndpointPair.RemoteHostName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string RemoteServiceName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string EndpointPair.RemoteServiceName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EndpointPair.RemoteServiceName");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.EndpointPair", "string EndpointPair.RemoteServiceName");
 			}
 		}
 #endif
@@ -72,6 +72,16 @@ namespace Windows.Networking
 		}
 #endif
 		// Forced skipping of method Windows.Networking.EndpointPair.EndpointPair(Windows.Networking.HostName, string, Windows.Networking.HostName, string)
+		// Forced skipping of method Windows.Networking.EndpointPair.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.EndpointPair.operator ==(Windows.Networking.EndpointPair, Windows.Networking.EndpointPair)
+		// Forced skipping of method Windows.Networking.EndpointPair.operator !=(Windows.Networking.EndpointPair, Windows.Networking.EndpointPair)
+		// Forced skipping of method Windows.Networking.EndpointPair.Equals(Windows.Networking.EndpointPair)
+		// Forced skipping of method Windows.Networking.EndpointPair.Equals(object)
+		// Forced skipping of method Windows.Networking.EndpointPair.GetHashCode()
+		// Forced skipping of method Windows.Networking.EndpointPair.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.EndpointPair.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.EndpointPair.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.EndpointPair.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.EndpointPair.LocalHostName.get
 		// Forced skipping of method Windows.Networking.EndpointPair.LocalHostName.set
 		// Forced skipping of method Windows.Networking.EndpointPair.LocalServiceName.get
@@ -80,5 +90,6 @@ namespace Windows.Networking
 		// Forced skipping of method Windows.Networking.EndpointPair.RemoteHostName.set
 		// Forced skipping of method Windows.Networking.EndpointPair.RemoteServiceName.get
 		// Forced skipping of method Windows.Networking.EndpointPair.RemoteServiceName.set
+		// Forced skipping of method Windows.Networking.EndpointPair.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

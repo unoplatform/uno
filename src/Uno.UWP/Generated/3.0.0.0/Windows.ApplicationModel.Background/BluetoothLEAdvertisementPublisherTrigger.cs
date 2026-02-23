@@ -20,29 +20,15 @@ namespace Windows.ApplicationModel.Background
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool UseExtendedFormat
+		public bool IncludeTransmitPowerLevel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BluetoothLEAdvertisementPublisherTrigger.UseExtendedFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BluetoothLEAdvertisementPublisherTrigger.UseExtendedFormat");
+				throw new global::System.NotImplementedException("The member bool BluetoothLEAdvertisementPublisherTrigger.IncludeTransmitPowerLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BluetoothLEAdvertisementPublisherTrigger.IncludeTransmitPowerLevel");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger", "bool BluetoothLEAdvertisementPublisherTrigger.UseExtendedFormat");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public short? PreferredTransmitPowerLevelInDBm
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member short? BluetoothLEAdvertisementPublisherTrigger.PreferredTransmitPowerLevelInDBm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=short%3F%20BluetoothLEAdvertisementPublisherTrigger.PreferredTransmitPowerLevelInDBm");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger", "short? BluetoothLEAdvertisementPublisherTrigger.PreferredTransmitPowerLevelInDBm");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger", "bool BluetoothLEAdvertisementPublisherTrigger.IncludeTransmitPowerLevel");
 			}
 		}
 #endif
@@ -62,15 +48,29 @@ namespace Windows.ApplicationModel.Background
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IncludeTransmitPowerLevel
+		public short? PreferredTransmitPowerLevelInDBm
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BluetoothLEAdvertisementPublisherTrigger.IncludeTransmitPowerLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BluetoothLEAdvertisementPublisherTrigger.IncludeTransmitPowerLevel");
+				throw new global::System.NotImplementedException("The member short? BluetoothLEAdvertisementPublisherTrigger.PreferredTransmitPowerLevelInDBm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=short%3F%20BluetoothLEAdvertisementPublisherTrigger.PreferredTransmitPowerLevelInDBm");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger", "bool BluetoothLEAdvertisementPublisherTrigger.IncludeTransmitPowerLevel");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger", "short? BluetoothLEAdvertisementPublisherTrigger.PreferredTransmitPowerLevelInDBm");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool UseExtendedFormat
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool BluetoothLEAdvertisementPublisherTrigger.UseExtendedFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BluetoothLEAdvertisementPublisherTrigger.UseExtendedFormat");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger", "bool BluetoothLEAdvertisementPublisherTrigger.UseExtendedFormat");
 			}
 		}
 #endif
@@ -82,15 +82,26 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.BluetoothLEAdvertisementPublisherTrigger()
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.operator ==(Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger, Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.operator !=(Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger, Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.Equals(Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.Advertisement.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.IncludeTransmitPowerLevel.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.IncludeTransmitPowerLevel.set
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.IsAnonymous.get
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.IsAnonymous.set
 		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.PreferredTransmitPowerLevelInDBm.get
 		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.PreferredTransmitPowerLevelInDBm.set
 		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.UseExtendedFormat.get
 		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.UseExtendedFormat.set
-		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.IsAnonymous.get
-		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.IsAnonymous.set
-		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.IncludeTransmitPowerLevel.get
-		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.IncludeTransmitPowerLevel.set
+		// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger
 	}
 }

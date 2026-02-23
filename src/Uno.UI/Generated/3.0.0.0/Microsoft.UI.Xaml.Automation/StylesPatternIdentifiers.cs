@@ -15,6 +15,7 @@ namespace Microsoft.UI.Xaml.Automation
 		// Skipping already declared property ShapeProperty
 		// Skipping already declared property StyleIdProperty
 		// Skipping already declared property StyleNameProperty
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers.ExtendedPropertiesProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers.FillColorProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers.FillPatternColorProperty.get
@@ -22,5 +23,16 @@ namespace Microsoft.UI.Xaml.Automation
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers.ShapeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers.StyleIdProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers.StyleNameProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers.operator ==(Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers, Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers.operator !=(Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers, Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers.Equals(Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

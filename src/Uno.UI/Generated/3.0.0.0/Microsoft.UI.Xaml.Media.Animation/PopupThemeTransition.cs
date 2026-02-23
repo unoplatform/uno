@@ -10,17 +10,19 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double FromVerticalOffset
-		{
-			get
-			{
-				return (double)this.GetValue(FromVerticalOffsetProperty);
-			}
-			set
-			{
-				this.SetValue(FromVerticalOffsetProperty, value);
-			}
-		}
+		public static global::Microsoft.UI.Xaml.DependencyProperty FromHorizontalOffsetProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(FromHorizontalOffset), typeof(double),
+			typeof(global::Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty FromVerticalOffsetProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(FromVerticalOffset), typeof(double),
+			typeof(global::Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -38,19 +40,17 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty FromHorizontalOffsetProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(FromHorizontalOffset), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty FromVerticalOffsetProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(FromVerticalOffset), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+		public double FromVerticalOffset
+		{
+			get
+			{
+				return (double)this.GetValue(FromVerticalOffsetProperty);
+			}
+			set
+			{
+				this.SetValue(FromVerticalOffsetProperty, value);
+			}
+		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -60,11 +60,22 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.PopupThemeTransition()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.FromHorizontalOffsetProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.FromVerticalOffsetProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.operator ==(Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition, Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.operator !=(Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition, Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.Equals(Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.FromHorizontalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.FromHorizontalOffset.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.FromVerticalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.FromVerticalOffset.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.FromHorizontalOffsetProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.FromVerticalOffsetProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PopupThemeTransition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

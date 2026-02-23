@@ -10,20 +10,6 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string CatalogId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AppUpdateOptions.CatalogId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppUpdateOptions.CatalogId");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions", "string AppUpdateOptions.CatalogId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool AllowForcedAppRestart
 		{
 			get
@@ -52,17 +38,42 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string CatalogId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string AppUpdateOptions.CatalogId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppUpdateOptions.CatalogId");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions", "string AppUpdateOptions.CatalogId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AppUpdateOptions()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions", "AppUpdateOptions.AppUpdateOptions()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.AppUpdateOptions()
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.CatalogId.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.CatalogId.set
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.operator ==(Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions, Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.operator !=(Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions, Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.Equals(Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.AllowForcedAppRestart.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.AllowForcedAppRestart.set
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.AutomaticallyDownloadAndInstallUpdateIfFound.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.AutomaticallyDownloadAndInstallUpdateIfFound.set
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.CatalogId.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.CatalogId.set
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

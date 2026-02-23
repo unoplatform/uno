@@ -8,17 +8,32 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class XamlCompositionBrushBase : global::Microsoft.UI.Xaml.Media.Brush
 	{
-		// Skipping already declared property FallbackColor
-		// Skipping already declared property CompositionBrush
 		// Skipping already declared property FallbackColorProperty
+		// Skipping already declared property CompositionBrush
+		// Skipping already declared property FallbackColor
 		// Skipping already declared method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.XamlCompositionBrushBase()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.XamlCompositionBrushBase()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.FallbackColor.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.FallbackColor.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.FallbackColorProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.XamlCompositionBrushBase(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.operator ==(Microsoft.UI.Xaml.Media.XamlCompositionBrushBase, Microsoft.UI.Xaml.Media.XamlCompositionBrushBase)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.operator !=(Microsoft.UI.Xaml.Media.XamlCompositionBrushBase, Microsoft.UI.Xaml.Media.XamlCompositionBrushBase)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.Equals(Microsoft.UI.Xaml.Media.XamlCompositionBrushBase)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.XamlCompositionBrushBase(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.WinRT.IWinRTObject.NativeObject.get
+		// Skipping already declared method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.OnConnected()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.Microsoft.UI.Xaml.Media.IXamlCompositionBrushBaseOverrides.OnConnected()
+		// Skipping already declared method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.OnDisconnected()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.Microsoft.UI.Xaml.Media.IXamlCompositionBrushBaseOverrides.OnDisconnected()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.CompositionBrush.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.CompositionBrush.set
-		// Skipping already declared method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.OnConnected()
-		// Skipping already declared method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.OnDisconnected()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.FallbackColorProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.FallbackColor.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.FallbackColor.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -23,7 +23,16 @@ namespace Windows.Devices.Usb
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Usb.UsbInterruptInPipe.EndpointDescriptor.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterruptInPipe.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Usb.UsbInterruptInPipe.operator ==(Windows.Devices.Usb.UsbInterruptInPipe, Windows.Devices.Usb.UsbInterruptInPipe)
+		// Forced skipping of method Windows.Devices.Usb.UsbInterruptInPipe.operator !=(Windows.Devices.Usb.UsbInterruptInPipe, Windows.Devices.Usb.UsbInterruptInPipe)
+		// Forced skipping of method Windows.Devices.Usb.UsbInterruptInPipe.Equals(Windows.Devices.Usb.UsbInterruptInPipe)
+		// Forced skipping of method Windows.Devices.Usb.UsbInterruptInPipe.Equals(object)
+		// Forced skipping of method Windows.Devices.Usb.UsbInterruptInPipe.GetHashCode()
+		// Forced skipping of method Windows.Devices.Usb.UsbInterruptInPipe.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterruptInPipe.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterruptInPipe.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterruptInPipe.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ClearStallAsync()
@@ -33,6 +42,8 @@ namespace Windows.Devices.Usb
 #endif
 		// Forced skipping of method Windows.Devices.Usb.UsbInterruptInPipe.DataReceived.add
 		// Forced skipping of method Windows.Devices.Usb.UsbInterruptInPipe.DataReceived.remove
+		// Forced skipping of method Windows.Devices.Usb.UsbInterruptInPipe.EndpointDescriptor.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterruptInPipe.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Usb.UsbInterruptInPipe, global::Windows.Devices.Usb.UsbInterruptInEventArgs> DataReceived

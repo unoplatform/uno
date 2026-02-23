@@ -15,15 +15,15 @@ namespace Windows.Devices.WiFiDirect
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.WiFiDirect.WiFiDirectAdvertisementListenStateDiscoverability ListenStateDiscoverability
+		public global::System.Collections.Generic.IList<global::Windows.Devices.WiFiDirect.WiFiDirectInformationElement> InformationElements
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WiFiDirectAdvertisementListenStateDiscoverability WiFiDirectAdvertisement.ListenStateDiscoverability is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WiFiDirectAdvertisementListenStateDiscoverability%20WiFiDirectAdvertisement.ListenStateDiscoverability");
+				throw new global::System.NotImplementedException("The member IList<WiFiDirectInformationElement> WiFiDirectAdvertisement.InformationElements is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CWiFiDirectInformationElement%3E%20WiFiDirectAdvertisement.InformationElements");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectAdvertisement", "WiFiDirectAdvertisementListenStateDiscoverability WiFiDirectAdvertisement.ListenStateDiscoverability");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectAdvertisement", "IList<WiFiDirectInformationElement> WiFiDirectAdvertisement.InformationElements");
 			}
 		}
 #endif
@@ -43,25 +43,25 @@ namespace Windows.Devices.WiFiDirect
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.Devices.WiFiDirect.WiFiDirectInformationElement> InformationElements
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<WiFiDirectInformationElement> WiFiDirectAdvertisement.InformationElements is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CWiFiDirectInformationElement%3E%20WiFiDirectAdvertisement.InformationElements");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectAdvertisement", "IList<WiFiDirectInformationElement> WiFiDirectAdvertisement.InformationElements");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.WiFiDirect.WiFiDirectLegacySettings LegacySettings
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member WiFiDirectLegacySettings WiFiDirectAdvertisement.LegacySettings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WiFiDirectLegacySettings%20WiFiDirectAdvertisement.LegacySettings");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.WiFiDirect.WiFiDirectAdvertisementListenStateDiscoverability ListenStateDiscoverability
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member WiFiDirectAdvertisementListenStateDiscoverability WiFiDirectAdvertisement.ListenStateDiscoverability is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WiFiDirectAdvertisementListenStateDiscoverability%20WiFiDirectAdvertisement.ListenStateDiscoverability");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectAdvertisement", "WiFiDirectAdvertisementListenStateDiscoverability WiFiDirectAdvertisement.ListenStateDiscoverability");
 			}
 		}
 #endif
@@ -75,13 +75,24 @@ namespace Windows.Devices.WiFiDirect
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.operator ==(Windows.Devices.WiFiDirect.WiFiDirectAdvertisement, Windows.Devices.WiFiDirect.WiFiDirectAdvertisement)
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.operator !=(Windows.Devices.WiFiDirect.WiFiDirectAdvertisement, Windows.Devices.WiFiDirect.WiFiDirectAdvertisement)
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.Equals(Windows.Devices.WiFiDirect.WiFiDirectAdvertisement)
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.Equals(object)
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.GetHashCode()
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.InformationElements.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.InformationElements.set
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.ListenStateDiscoverability.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.ListenStateDiscoverability.set
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.IsAutonomousGroupOwnerEnabled.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.IsAutonomousGroupOwnerEnabled.set
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.LegacySettings.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.ListenStateDiscoverability.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.ListenStateDiscoverability.set
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.SupportedConfigurationMethods.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

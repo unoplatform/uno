@@ -38,7 +38,18 @@ namespace Windows.Foundation.Diagnostics
 		}
 #endif
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingChannelOptions.LoggingChannelOptions(System.Guid)
+		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingChannelOptions.FromAbi(nint)
+		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingChannelOptions.operator ==(Windows.Foundation.Diagnostics.LoggingChannelOptions, Windows.Foundation.Diagnostics.LoggingChannelOptions)
+		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingChannelOptions.operator !=(Windows.Foundation.Diagnostics.LoggingChannelOptions, Windows.Foundation.Diagnostics.LoggingChannelOptions)
+		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingChannelOptions.Equals(Windows.Foundation.Diagnostics.LoggingChannelOptions)
+		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingChannelOptions.Equals(object)
+		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingChannelOptions.GetHashCode()
+		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingChannelOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingChannelOptions.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingChannelOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingChannelOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingChannelOptions.Group.get
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingChannelOptions.Group.set
+		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingChannelOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

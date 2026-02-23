@@ -6,7 +6,7 @@ namespace Windows.Devices.Enumeration.Pnp
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class PnpObjectCollection : global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Enumeration.Pnp.PnpObject>, global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Enumeration.Pnp.PnpObject>
+	public partial class PnpObjectCollection : global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Enumeration.Pnp.PnpObject>, global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Enumeration.Pnp.PnpObject>, global::System.Collections.IEnumerable, global::System.Collections.Generic.IReadOnlyCollection<global::Windows.Devices.Enumeration.Pnp.PnpObject>
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal PnpObjectCollection()
@@ -15,39 +15,48 @@ namespace Windows.Devices.Enumeration.Pnp
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
+		public int Count
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PnpObjectCollection.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PnpObjectCollection.Size");
+				throw new global::System.NotImplementedException("The member int PnpObjectCollection.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20PnpObjectCollection.Count");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.GetAt(uint)
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.Size.get
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.IndexOf(Windows.Devices.Enumeration.Pnp.PnpObject, out uint)
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.GetMany(uint, Windows.Devices.Enumeration.Pnp.PnpObject[])
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.First()
-		// Processing: System.Collections.Generic.IReadOnlyList<Windows.Devices.Enumeration.Pnp.PnpObject>
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Enumeration.Pnp.PnpObject this[int index]
 		{
 			get
 			{
-				throw new global::System.NotSupportedException();
+				throw new global::System.NotImplementedException("The member PnpObject PnpObjectCollection.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PnpObject%20PnpObjectCollection.this%5Bint%20index%5D");
 			}
 		}
 #endif
-		// Processing: System.Collections.Generic.IEnumerable<Windows.Devices.Enumeration.Pnp.PnpObject>
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.operator ==(Windows.Devices.Enumeration.Pnp.PnpObjectCollection, Windows.Devices.Enumeration.Pnp.PnpObjectCollection)
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.operator !=(Windows.Devices.Enumeration.Pnp.PnpObjectCollection, Windows.Devices.Enumeration.Pnp.PnpObjectCollection)
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.Equals(Windows.Devices.Enumeration.Pnp.PnpObjectCollection)
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.Equals(object)
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.GetHashCode()
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.Count.get
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.this[int].get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.Devices.Enumeration.Pnp.PnpObject>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Devices.Enumeration.Pnp.PnpObject> GetEnumerator()
 		{
-			throw new global::System.NotSupportedException();
+			throw new global::System.NotImplementedException("The member IEnumerator<PnpObject> PnpObjectCollection.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CPnpObject%3E%20PnpObjectCollection.GetEnumerator%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.System.Collections.Generic.IReadOnlyList<Windows.Devices.Enumeration.Pnp.PnpObject>.get_Item(int)
+		// Processing: System.Collections.Generic.IReadOnlyList<Windows.Devices.Enumeration.Pnp.PnpObject>
+		// Processing: System.Collections.Generic.IEnumerable<Windows.Devices.Enumeration.Pnp.PnpObject>
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable
@@ -58,15 +67,5 @@ namespace Windows.Devices.Enumeration.Pnp
 		}
 #endif
 		// Processing: System.Collections.Generic.IReadOnlyCollection<Windows.Devices.Enumeration.Pnp.PnpObject>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Count
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
 	}
 }

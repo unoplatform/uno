@@ -16,5 +16,17 @@ namespace Microsoft.UI.Xaml.Media
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Projection.Projection()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Projection.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Projection.Projection(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Projection.operator ==(Microsoft.UI.Xaml.Media.Projection, Microsoft.UI.Xaml.Media.Projection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Projection.operator !=(Microsoft.UI.Xaml.Media.Projection, Microsoft.UI.Xaml.Media.Projection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Projection.Equals(Microsoft.UI.Xaml.Media.Projection)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Projection.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Projection.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Projection.Projection(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Projection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Projection.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Projection.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Projection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

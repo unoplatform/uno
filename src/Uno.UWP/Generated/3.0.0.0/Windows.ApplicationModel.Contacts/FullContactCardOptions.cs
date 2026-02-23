@@ -30,7 +30,18 @@ namespace Windows.ApplicationModel.Contacts
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.FullContactCardOptions.FullContactCardOptions()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.FullContactCardOptions.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.FullContactCardOptions.operator ==(Windows.ApplicationModel.Contacts.FullContactCardOptions, Windows.ApplicationModel.Contacts.FullContactCardOptions)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.FullContactCardOptions.operator !=(Windows.ApplicationModel.Contacts.FullContactCardOptions, Windows.ApplicationModel.Contacts.FullContactCardOptions)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.FullContactCardOptions.Equals(Windows.ApplicationModel.Contacts.FullContactCardOptions)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.FullContactCardOptions.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Contacts.FullContactCardOptions.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Contacts.FullContactCardOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.FullContactCardOptions.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.FullContactCardOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.FullContactCardOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.FullContactCardOptions.DesiredRemainingView.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.FullContactCardOptions.DesiredRemainingView.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.FullContactCardOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

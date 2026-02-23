@@ -8,6 +8,22 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class AcrylicBrush : global::Microsoft.UI.Xaml.Media.XamlCompositionBrushBase
 	{
+		// Skipping already declared property AlwaysUseFallbackProperty
+		// Skipping already declared property TintColorProperty
+		// Skipping already declared property TintLuminosityOpacityProperty
+		// Skipping already declared property TintOpacityProperty
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty TintTransitionDurationProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(TintTransitionDuration), typeof(global::System.TimeSpan),
+			typeof(global::Microsoft.UI.Xaml.Media.AcrylicBrush),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::System.TimeSpan)));
+#endif
+		// Skipping already declared property AlwaysUseFallback
+		// Skipping already declared property TintColor
+		// Skipping already declared property TintLuminosityOpacity
+		// Skipping already declared property TintOpacity
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.TimeSpan TintTransitionDuration
@@ -22,38 +38,35 @@ namespace Microsoft.UI.Xaml.Media
 			}
 		}
 #endif
-		// Skipping already declared property TintOpacity
-		// Skipping already declared property TintColor
-		// Skipping already declared property AlwaysUseFallback
-		// Skipping already declared property TintLuminosityOpacity
-		// Skipping already declared property AlwaysUseFallbackProperty
-		// Skipping already declared property TintColorProperty
-		// Skipping already declared property TintOpacityProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty TintTransitionDurationProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(TintTransitionDuration), typeof(global::System.TimeSpan),
-			typeof(global::Microsoft.UI.Xaml.Media.AcrylicBrush),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::System.TimeSpan)));
-#endif
-		// Skipping already declared property TintLuminosityOpacityProperty
 		// Skipping already declared method Microsoft.UI.Xaml.Media.AcrylicBrush.AcrylicBrush()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.AcrylicBrush()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.AlwaysUseFallbackProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintColorProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintLuminosityOpacityProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintOpacityProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintTransitionDurationProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.AcrylicBrush(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.operator ==(Microsoft.UI.Xaml.Media.AcrylicBrush, Microsoft.UI.Xaml.Media.AcrylicBrush)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.operator !=(Microsoft.UI.Xaml.Media.AcrylicBrush, Microsoft.UI.Xaml.Media.AcrylicBrush)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.Equals(Microsoft.UI.Xaml.Media.AcrylicBrush)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.AcrylicBrush(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.AlwaysUseFallback.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.AlwaysUseFallback.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintColor.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintColor.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintLuminosityOpacity.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintLuminosityOpacity.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintOpacity.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintOpacity.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintTransitionDuration.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintTransitionDuration.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.AlwaysUseFallback.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.AlwaysUseFallback.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintLuminosityOpacity.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintLuminosityOpacity.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintLuminosityOpacityProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintColorProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintOpacityProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.TintTransitionDurationProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.AlwaysUseFallbackProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.AcrylicBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

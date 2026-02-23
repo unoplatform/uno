@@ -9,203 +9,16 @@ namespace Windows.UI.Composition
 	public partial class Visual : global::Windows.UI.Composition.CompositionObject
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal Visual()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Matrix4x4 TransformMatrix
+		public global::System.Numerics.Vector2 AnchorPoint
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Matrix4x4 Visual.TransformMatrix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix4x4%20Visual.TransformMatrix");
+				throw new global::System.NotImplementedException("The member Vector2 Visual.AnchorPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20Visual.AnchorPoint");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "Matrix4x4 Visual.TransformMatrix");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector2 Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector2 Visual.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20Visual.Size");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "Vector2 Visual.Size");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 Scale
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector3 Visual.Scale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20Visual.Scale");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "Vector3 Visual.Scale");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 RotationAxis
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector3 Visual.RotationAxis is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20Visual.RotationAxis");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "Vector3 Visual.RotationAxis");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float RotationAngleInDegrees
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float Visual.RotationAngleInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20Visual.RotationAngleInDegrees");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "float Visual.RotationAngleInDegrees");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float RotationAngle
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float Visual.RotationAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20Visual.RotationAngle");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "float Visual.RotationAngle");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Quaternion Orientation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Quaternion Visual.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Quaternion%20Visual.Orientation");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "Quaternion Visual.Orientation");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float Opacity
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float Visual.Opacity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20Visual.Opacity");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "float Visual.Opacity");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 Offset
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector3 Visual.Offset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20Visual.Offset");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "Vector3 Visual.Offset");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsVisible
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool Visual.IsVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20Visual.IsVisible");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "bool Visual.IsVisible");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Composition.CompositionCompositeMode CompositeMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CompositionCompositeMode Visual.CompositeMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionCompositeMode%20Visual.CompositeMode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "CompositionCompositeMode Visual.CompositeMode");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Composition.CompositionClip Clip
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CompositionClip Visual.Clip is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionClip%20Visual.Clip");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "CompositionClip Visual.Clip");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 CenterPoint
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector3 Visual.CenterPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20Visual.CenterPoint");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "Vector3 Visual.CenterPoint");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Composition.CompositionBorderMode BorderMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CompositionBorderMode Visual.BorderMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBorderMode%20Visual.BorderMode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "CompositionBorderMode Visual.BorderMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "Vector2 Visual.AnchorPoint");
 			}
 		}
 #endif
@@ -225,15 +38,113 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector2 AnchorPoint
+		public global::Windows.UI.Composition.CompositionBorderMode BorderMode
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 Visual.AnchorPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20Visual.AnchorPoint");
+				throw new global::System.NotImplementedException("The member CompositionBorderMode Visual.BorderMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBorderMode%20Visual.BorderMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "Vector2 Visual.AnchorPoint");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "CompositionBorderMode Visual.BorderMode");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector3 CenterPoint
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector3 Visual.CenterPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20Visual.CenterPoint");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "Vector3 Visual.CenterPoint");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Composition.CompositionClip Clip
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CompositionClip Visual.Clip is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionClip%20Visual.Clip");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "CompositionClip Visual.Clip");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Composition.CompositionCompositeMode CompositeMode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CompositionCompositeMode Visual.CompositeMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionCompositeMode%20Visual.CompositeMode");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "CompositionCompositeMode Visual.CompositeMode");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsVisible
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool Visual.IsVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20Visual.IsVisible");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "bool Visual.IsVisible");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector3 Offset
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector3 Visual.Offset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20Visual.Offset");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "Vector3 Visual.Offset");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float Opacity
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float Visual.Opacity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20Visual.Opacity");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "float Visual.Opacity");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Quaternion Orientation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Quaternion Visual.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Quaternion%20Visual.Orientation");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "Quaternion Visual.Orientation");
 			}
 		}
 #endif
@@ -244,34 +155,6 @@ namespace Windows.UI.Composition
 			get
 			{
 				throw new global::System.NotImplementedException("The member ContainerVisual Visual.Parent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContainerVisual%20Visual.Parent");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector2 RelativeSizeAdjustment
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector2 Visual.RelativeSizeAdjustment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20Visual.RelativeSizeAdjustment");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "Vector2 Visual.RelativeSizeAdjustment");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 RelativeOffsetAdjustment
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector3 Visual.RelativeOffsetAdjustment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20Visual.RelativeOffsetAdjustment");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "Vector3 Visual.RelativeOffsetAdjustment");
 			}
 		}
 #endif
@@ -291,32 +174,126 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsHitTestVisible
+		public global::System.Numerics.Vector3 RelativeOffsetAdjustment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool Visual.IsHitTestVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20Visual.IsHitTestVisible");
+				throw new global::System.NotImplementedException("The member Vector3 Visual.RelativeOffsetAdjustment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20Visual.RelativeOffsetAdjustment");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "bool Visual.IsHitTestVisible");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "Vector3 Visual.RelativeOffsetAdjustment");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsPixelSnappingEnabled
+		public global::System.Numerics.Vector2 RelativeSizeAdjustment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool Visual.IsPixelSnappingEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20Visual.IsPixelSnappingEnabled");
+				throw new global::System.NotImplementedException("The member Vector2 Visual.RelativeSizeAdjustment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20Visual.RelativeSizeAdjustment");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "bool Visual.IsPixelSnappingEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "Vector2 Visual.RelativeSizeAdjustment");
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float RotationAngle
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float Visual.RotationAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20Visual.RotationAngle");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "float Visual.RotationAngle");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float RotationAngleInDegrees
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float Visual.RotationAngleInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20Visual.RotationAngleInDegrees");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "float Visual.RotationAngleInDegrees");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector3 RotationAxis
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector3 Visual.RotationAxis is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20Visual.RotationAxis");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "Vector3 Visual.RotationAxis");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector3 Scale
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector3 Visual.Scale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20Visual.Scale");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "Vector3 Visual.Scale");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector2 Size
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector2 Visual.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20Visual.Size");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "Vector2 Visual.Size");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Matrix4x4 TransformMatrix
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Matrix4x4 Visual.TransformMatrix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix4x4%20Visual.TransformMatrix");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "Matrix4x4 Visual.TransformMatrix");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.UI.Composition.Visual.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Composition.Visual.Visual(WinRT.IObjectReference)
+		// Forced skipping of method Windows.UI.Composition.Visual.operator ==(Windows.UI.Composition.Visual, Windows.UI.Composition.Visual)
+		// Forced skipping of method Windows.UI.Composition.Visual.operator !=(Windows.UI.Composition.Visual, Windows.UI.Composition.Visual)
+		// Forced skipping of method Windows.UI.Composition.Visual.Equals(Windows.UI.Composition.Visual)
+		// Forced skipping of method Windows.UI.Composition.Visual.Equals(object)
+		// Forced skipping of method Windows.UI.Composition.Visual.GetHashCode()
+		// Forced skipping of method Windows.UI.Composition.Visual.Visual(WinRT.DerivedComposed)
+		// Forced skipping of method Windows.UI.Composition.Visual.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Composition.Visual.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.Visual.AnchorPoint.get
 		// Forced skipping of method Windows.UI.Composition.Visual.AnchorPoint.set
 		// Forced skipping of method Windows.UI.Composition.Visual.BackfaceVisibility.get
@@ -338,6 +315,12 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.Visual.Orientation.get
 		// Forced skipping of method Windows.UI.Composition.Visual.Orientation.set
 		// Forced skipping of method Windows.UI.Composition.Visual.Parent.get
+		// Forced skipping of method Windows.UI.Composition.Visual.ParentForTransform.get
+		// Forced skipping of method Windows.UI.Composition.Visual.ParentForTransform.set
+		// Forced skipping of method Windows.UI.Composition.Visual.RelativeOffsetAdjustment.get
+		// Forced skipping of method Windows.UI.Composition.Visual.RelativeOffsetAdjustment.set
+		// Forced skipping of method Windows.UI.Composition.Visual.RelativeSizeAdjustment.get
+		// Forced skipping of method Windows.UI.Composition.Visual.RelativeSizeAdjustment.set
 		// Forced skipping of method Windows.UI.Composition.Visual.RotationAngle.get
 		// Forced skipping of method Windows.UI.Composition.Visual.RotationAngle.set
 		// Forced skipping of method Windows.UI.Composition.Visual.RotationAngleInDegrees.get
@@ -350,15 +333,7 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.Visual.Size.set
 		// Forced skipping of method Windows.UI.Composition.Visual.TransformMatrix.get
 		// Forced skipping of method Windows.UI.Composition.Visual.TransformMatrix.set
-		// Forced skipping of method Windows.UI.Composition.Visual.ParentForTransform.get
-		// Forced skipping of method Windows.UI.Composition.Visual.ParentForTransform.set
-		// Forced skipping of method Windows.UI.Composition.Visual.RelativeOffsetAdjustment.get
-		// Forced skipping of method Windows.UI.Composition.Visual.RelativeOffsetAdjustment.set
-		// Forced skipping of method Windows.UI.Composition.Visual.RelativeSizeAdjustment.get
-		// Forced skipping of method Windows.UI.Composition.Visual.RelativeSizeAdjustment.set
-		// Forced skipping of method Windows.UI.Composition.Visual.IsHitTestVisible.get
-		// Forced skipping of method Windows.UI.Composition.Visual.IsHitTestVisible.set
-		// Forced skipping of method Windows.UI.Composition.Visual.IsPixelSnappingEnabled.get
-		// Forced skipping of method Windows.UI.Composition.Visual.IsPixelSnappingEnabled.set
+		// Forced skipping of method Windows.UI.Composition.Visual.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Windows.UI.Composition.Visual.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

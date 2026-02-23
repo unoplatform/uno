@@ -33,7 +33,18 @@ namespace Windows.Networking.Sockets
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Sockets.SocketActivityTriggerDetails.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Sockets.SocketActivityTriggerDetails.operator ==(Windows.Networking.Sockets.SocketActivityTriggerDetails, Windows.Networking.Sockets.SocketActivityTriggerDetails)
+		// Forced skipping of method Windows.Networking.Sockets.SocketActivityTriggerDetails.operator !=(Windows.Networking.Sockets.SocketActivityTriggerDetails, Windows.Networking.Sockets.SocketActivityTriggerDetails)
+		// Forced skipping of method Windows.Networking.Sockets.SocketActivityTriggerDetails.Equals(Windows.Networking.Sockets.SocketActivityTriggerDetails)
+		// Forced skipping of method Windows.Networking.Sockets.SocketActivityTriggerDetails.Equals(object)
+		// Forced skipping of method Windows.Networking.Sockets.SocketActivityTriggerDetails.GetHashCode()
+		// Forced skipping of method Windows.Networking.Sockets.SocketActivityTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Sockets.SocketActivityTriggerDetails.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Sockets.SocketActivityTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Sockets.SocketActivityTriggerDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Sockets.SocketActivityTriggerDetails.Reason.get
 		// Forced skipping of method Windows.Networking.Sockets.SocketActivityTriggerDetails.SocketInformation.get
+		// Forced skipping of method Windows.Networking.Sockets.SocketActivityTriggerDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

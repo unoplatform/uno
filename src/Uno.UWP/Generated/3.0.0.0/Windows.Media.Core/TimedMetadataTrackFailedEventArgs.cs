@@ -23,6 +23,17 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.Core.TimedMetadataTrackFailedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Core.TimedMetadataTrackFailedEventArgs.operator ==(Windows.Media.Core.TimedMetadataTrackFailedEventArgs, Windows.Media.Core.TimedMetadataTrackFailedEventArgs)
+		// Forced skipping of method Windows.Media.Core.TimedMetadataTrackFailedEventArgs.operator !=(Windows.Media.Core.TimedMetadataTrackFailedEventArgs, Windows.Media.Core.TimedMetadataTrackFailedEventArgs)
+		// Forced skipping of method Windows.Media.Core.TimedMetadataTrackFailedEventArgs.Equals(Windows.Media.Core.TimedMetadataTrackFailedEventArgs)
+		// Forced skipping of method Windows.Media.Core.TimedMetadataTrackFailedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.Core.TimedMetadataTrackFailedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.Core.TimedMetadataTrackFailedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Core.TimedMetadataTrackFailedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Core.TimedMetadataTrackFailedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Core.TimedMetadataTrackFailedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Core.TimedMetadataTrackFailedEventArgs.Error.get
+		// Forced skipping of method Windows.Media.Core.TimedMetadataTrackFailedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

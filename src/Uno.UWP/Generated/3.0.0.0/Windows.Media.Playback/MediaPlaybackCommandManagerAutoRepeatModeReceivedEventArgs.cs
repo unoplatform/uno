@@ -15,6 +15,16 @@ namespace Windows.Media.Playback
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.MediaPlaybackAutoRepeatMode AutoRepeatMode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member MediaPlaybackAutoRepeatMode MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.AutoRepeatMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackAutoRepeatMode%20MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.AutoRepeatMode");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Handled
 		{
 			get
@@ -27,19 +37,16 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.MediaPlaybackAutoRepeatMode AutoRepeatMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackAutoRepeatMode MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.AutoRepeatMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackAutoRepeatMode%20MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.AutoRepeatMode");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.Handled.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.Handled.set
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.AutoRepeatMode.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.operator ==(Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs, Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.operator !=(Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs, Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.Equals(Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
@@ -47,5 +54,9 @@ namespace Windows.Media.Playback
 			throw new global::System.NotImplementedException("The member Deferral MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.AutoRepeatMode.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.Handled.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.Handled.set
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

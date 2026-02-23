@@ -53,9 +53,20 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Enumeration.EnclosureLocation.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Enumeration.EnclosureLocation.operator ==(Windows.Devices.Enumeration.EnclosureLocation, Windows.Devices.Enumeration.EnclosureLocation)
+		// Forced skipping of method Windows.Devices.Enumeration.EnclosureLocation.operator !=(Windows.Devices.Enumeration.EnclosureLocation, Windows.Devices.Enumeration.EnclosureLocation)
+		// Forced skipping of method Windows.Devices.Enumeration.EnclosureLocation.Equals(Windows.Devices.Enumeration.EnclosureLocation)
+		// Forced skipping of method Windows.Devices.Enumeration.EnclosureLocation.Equals(object)
+		// Forced skipping of method Windows.Devices.Enumeration.EnclosureLocation.GetHashCode()
+		// Forced skipping of method Windows.Devices.Enumeration.EnclosureLocation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Enumeration.EnclosureLocation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Enumeration.EnclosureLocation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Enumeration.EnclosureLocation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Enumeration.EnclosureLocation.InDock.get
 		// Forced skipping of method Windows.Devices.Enumeration.EnclosureLocation.InLid.get
 		// Forced skipping of method Windows.Devices.Enumeration.EnclosureLocation.Panel.get
 		// Forced skipping of method Windows.Devices.Enumeration.EnclosureLocation.RotationAngleInDegreesClockwise.get
+		// Forced skipping of method Windows.Devices.Enumeration.EnclosureLocation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

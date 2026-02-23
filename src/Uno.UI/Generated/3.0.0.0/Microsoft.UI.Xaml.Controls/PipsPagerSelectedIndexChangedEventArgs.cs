@@ -8,5 +8,16 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class PipsPagerSelectedIndexChangedEventArgs
 	{
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPagerSelectedIndexChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPagerSelectedIndexChangedEventArgs.operator ==(Microsoft.UI.Xaml.Controls.PipsPagerSelectedIndexChangedEventArgs, Microsoft.UI.Xaml.Controls.PipsPagerSelectedIndexChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPagerSelectedIndexChangedEventArgs.operator !=(Microsoft.UI.Xaml.Controls.PipsPagerSelectedIndexChangedEventArgs, Microsoft.UI.Xaml.Controls.PipsPagerSelectedIndexChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPagerSelectedIndexChangedEventArgs.Equals(Microsoft.UI.Xaml.Controls.PipsPagerSelectedIndexChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPagerSelectedIndexChangedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPagerSelectedIndexChangedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPagerSelectedIndexChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPagerSelectedIndexChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPagerSelectedIndexChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPagerSelectedIndexChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPagerSelectedIndexChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

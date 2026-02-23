@@ -33,7 +33,18 @@ namespace Windows.Devices.WiFi
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.WiFi.WiFiNetworkReport.Timestamp.get
+		// Forced skipping of method Windows.Devices.WiFi.WiFiNetworkReport.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.WiFi.WiFiNetworkReport.operator ==(Windows.Devices.WiFi.WiFiNetworkReport, Windows.Devices.WiFi.WiFiNetworkReport)
+		// Forced skipping of method Windows.Devices.WiFi.WiFiNetworkReport.operator !=(Windows.Devices.WiFi.WiFiNetworkReport, Windows.Devices.WiFi.WiFiNetworkReport)
+		// Forced skipping of method Windows.Devices.WiFi.WiFiNetworkReport.Equals(Windows.Devices.WiFi.WiFiNetworkReport)
+		// Forced skipping of method Windows.Devices.WiFi.WiFiNetworkReport.Equals(object)
+		// Forced skipping of method Windows.Devices.WiFi.WiFiNetworkReport.GetHashCode()
+		// Forced skipping of method Windows.Devices.WiFi.WiFiNetworkReport.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.WiFi.WiFiNetworkReport.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.WiFi.WiFiNetworkReport.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.WiFi.WiFiNetworkReport.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.WiFi.WiFiNetworkReport.AvailableNetworks.get
+		// Forced skipping of method Windows.Devices.WiFi.WiFiNetworkReport.Timestamp.get
+		// Forced skipping of method Windows.Devices.WiFi.WiFiNetworkReport.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

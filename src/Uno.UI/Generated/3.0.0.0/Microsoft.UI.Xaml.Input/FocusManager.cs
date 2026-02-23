@@ -8,14 +8,7 @@ namespace Microsoft.UI.Xaml.Input
 #endif
 	public partial class FocusManager
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.GotFocus.add
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.GotFocus.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.LostFocus.add
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.LostFocus.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.GettingFocus.add
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.GettingFocus.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.LosingFocus.add
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.LosingFocus.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.As<I>()
 		// Skipping already declared method Microsoft.UI.Xaml.Input.FocusManager.TryFocusAsync(Microsoft.UI.Xaml.DependencyObject, Microsoft.UI.Xaml.FocusState)
 		// Skipping already declared method Microsoft.UI.Xaml.Input.FocusManager.TryMoveFocusAsync(Microsoft.UI.Xaml.Input.FocusNavigationDirection)
 		// Skipping already declared method Microsoft.UI.Xaml.Input.FocusManager.TryMoveFocusAsync(Microsoft.UI.Xaml.Input.FocusNavigationDirection, Microsoft.UI.Xaml.Input.FindNextElementOptions)
@@ -29,6 +22,25 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared method Microsoft.UI.Xaml.Input.FocusManager.TryMoveFocus(Microsoft.UI.Xaml.Input.FocusNavigationDirection)
 		// Skipping already declared method Microsoft.UI.Xaml.Input.FocusManager.GetFocusedElement()
 		// Skipping already declared method Microsoft.UI.Xaml.Input.FocusManager.GetFocusedElement(Microsoft.UI.Xaml.XamlRoot)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.GettingFocus.add
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.GettingFocus.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.GotFocus.add
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.GotFocus.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.LosingFocus.add
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.LosingFocus.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.LostFocus.add
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.LostFocus.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.operator ==(Microsoft.UI.Xaml.Input.FocusManager, Microsoft.UI.Xaml.Input.FocusManager)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.operator !=(Microsoft.UI.Xaml.Input.FocusManager, Microsoft.UI.Xaml.Input.FocusManager)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.Equals(Microsoft.UI.Xaml.Input.FocusManager)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Input.FocusManager.GettingFocus
 		// Skipping already declared event Microsoft.UI.Xaml.Input.FocusManager.GotFocus
 		// Skipping already declared event Microsoft.UI.Xaml.Input.FocusManager.LosingFocus

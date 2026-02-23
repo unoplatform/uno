@@ -15,20 +15,6 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ResultText
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2ScriptDialogOpeningEventArgs.ResultText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2ScriptDialogOpeningEventArgs.ResultText");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs", "string CoreWebView2ScriptDialogOpeningEventArgs.ResultText");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string DefaultText
 		{
 			get
@@ -59,6 +45,20 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ResultText
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string CoreWebView2ScriptDialogOpeningEventArgs.ResultText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2ScriptDialogOpeningEventArgs.ResultText");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs", "string CoreWebView2ScriptDialogOpeningEventArgs.ResultText");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Uri
 		{
 			get
@@ -67,12 +67,16 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.Uri.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.Kind.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.Message.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.DefaultText.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.ResultText.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.ResultText.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs, Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.Equals(Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Accept()
@@ -87,5 +91,12 @@ namespace Microsoft.Web.WebView2.Core
 			throw new global::System.NotImplementedException("The member Deferral CoreWebView2ScriptDialogOpeningEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20CoreWebView2ScriptDialogOpeningEventArgs.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.DefaultText.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.Kind.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.Message.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.ResultText.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.ResultText.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.Uri.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

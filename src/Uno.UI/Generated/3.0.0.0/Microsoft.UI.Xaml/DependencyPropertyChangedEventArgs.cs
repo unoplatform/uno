@@ -11,8 +11,19 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property NewValue
 		// Skipping already declared property OldValue
 		// Skipping already declared property Property
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs.Property.get
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs.OldValue.get
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs.operator ==(Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs, Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs.operator !=(Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs, Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs.Equals(Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs.NewValue.get
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs.OldValue.get
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs.Property.get
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

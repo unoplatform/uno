@@ -33,8 +33,7 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference.WindowHandle.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference.CoreWindow.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference CreateFromWindowHandle(ulong windowHandle)
@@ -49,5 +48,18 @@ namespace Microsoft.Web.WebView2.Core
 			throw new global::System.NotImplementedException("The member CoreWebView2ControllerWindowReference CoreWebView2ControllerWindowReference.CreateFromCoreWindow(CoreWindow coreWindow) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2ControllerWindowReference%20CoreWebView2ControllerWindowReference.CreateFromCoreWindow%28CoreWindow%20coreWindow%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference.FromAbi(nint)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference.operator ==(Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference, Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference.operator !=(Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference, Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference.Equals(Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference.Equals(object)
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference.GetHashCode()
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference.CoreWindow.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference.WindowHandle.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

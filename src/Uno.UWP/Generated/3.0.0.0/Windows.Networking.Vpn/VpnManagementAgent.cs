@@ -16,6 +16,16 @@ namespace Windows.Networking.Vpn
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnManagementAgent.VpnManagementAgent()
+		// Forced skipping of method Windows.Networking.Vpn.VpnManagementAgent.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Vpn.VpnManagementAgent.operator ==(Windows.Networking.Vpn.VpnManagementAgent, Windows.Networking.Vpn.VpnManagementAgent)
+		// Forced skipping of method Windows.Networking.Vpn.VpnManagementAgent.operator !=(Windows.Networking.Vpn.VpnManagementAgent, Windows.Networking.Vpn.VpnManagementAgent)
+		// Forced skipping of method Windows.Networking.Vpn.VpnManagementAgent.Equals(Windows.Networking.Vpn.VpnManagementAgent)
+		// Forced skipping of method Windows.Networking.Vpn.VpnManagementAgent.Equals(object)
+		// Forced skipping of method Windows.Networking.Vpn.VpnManagementAgent.GetHashCode()
+		// Forced skipping of method Windows.Networking.Vpn.VpnManagementAgent.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnManagementAgent.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnManagementAgent.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnManagementAgent.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.Vpn.VpnManagementErrorStatus> AddProfileFromXmlAsync(string xml)
@@ -79,5 +89,6 @@ namespace Windows.Networking.Vpn
 			throw new global::System.NotImplementedException("The member IAsyncOperation<VpnManagementErrorStatus> VpnManagementAgent.DisconnectProfileAsync(IVpnProfile profile) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CVpnManagementErrorStatus%3E%20VpnManagementAgent.DisconnectProfileAsync%28IVpnProfile%20profile%29");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Vpn.VpnManagementAgent.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

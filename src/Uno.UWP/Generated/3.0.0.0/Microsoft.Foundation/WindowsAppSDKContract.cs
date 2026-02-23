@@ -4,10 +4,8 @@
 namespace Microsoft.Foundation
 {
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented]
-#endif
-	public partial struct WindowsAppSDKContract
+	public enum WindowsAppSDKContract
 	{
-		// Forced skipping of method Microsoft.Foundation.WindowsAppSDKContract.WindowsAppSDKContract()
 	}
+#endif
 }

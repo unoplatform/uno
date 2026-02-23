@@ -10,7 +10,7 @@ using Windows.UI.Core;
 
 namespace System
 {
-	public static class WindowsRuntimeSystemExtensions
+	public static partial class WindowsRuntimeSystemExtensions
 	{
 		public static IAsyncAction AsAsyncAction(this Task source)
 			=> AsyncAction.FromTask(_ => source);

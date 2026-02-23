@@ -8,19 +8,30 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class ScrollingBringingIntoViewEventArgs
 	{
-		// Skipping already declared property SnapPointsMode
 		// Skipping already declared property Cancel
 		// Skipping already declared property CorrelationId
 		// Skipping already declared property RequestEventArgs
+		// Skipping already declared property SnapPointsMode
 		// Skipping already declared property TargetHorizontalOffset
 		// Skipping already declared property TargetVerticalOffset
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.SnapPointsMode.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.SnapPointsMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.RequestEventArgs.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.TargetHorizontalOffset.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.TargetVerticalOffset.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.CorrelationId.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.operator ==(Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs, Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.operator !=(Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs, Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.Equals(Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.Cancel.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.CorrelationId.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.RequestEventArgs.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.SnapPointsMode.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.SnapPointsMode.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.TargetHorizontalOffset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.TargetVerticalOffset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

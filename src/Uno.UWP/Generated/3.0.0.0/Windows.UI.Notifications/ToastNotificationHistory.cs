@@ -13,6 +13,16 @@ namespace Windows.UI.Notifications
 		{
 		}
 #endif
+		// Forced skipping of method Windows.UI.Notifications.ToastNotificationHistory.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Notifications.ToastNotificationHistory.operator ==(Windows.UI.Notifications.ToastNotificationHistory, Windows.UI.Notifications.ToastNotificationHistory)
+		// Forced skipping of method Windows.UI.Notifications.ToastNotificationHistory.operator !=(Windows.UI.Notifications.ToastNotificationHistory, Windows.UI.Notifications.ToastNotificationHistory)
+		// Forced skipping of method Windows.UI.Notifications.ToastNotificationHistory.Equals(Windows.UI.Notifications.ToastNotificationHistory)
+		// Forced skipping of method Windows.UI.Notifications.ToastNotificationHistory.Equals(object)
+		// Forced skipping of method Windows.UI.Notifications.ToastNotificationHistory.GetHashCode()
+		// Forced skipping of method Windows.UI.Notifications.ToastNotificationHistory.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.ToastNotificationHistory.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Notifications.ToastNotificationHistory.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Notifications.ToastNotificationHistory.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Notifications.ToastNotification> GetHistory()
@@ -76,5 +86,6 @@ namespace Windows.UI.Notifications
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastNotificationHistory", "void ToastNotificationHistory.Clear(string applicationId)");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Notifications.ToastNotificationHistory.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

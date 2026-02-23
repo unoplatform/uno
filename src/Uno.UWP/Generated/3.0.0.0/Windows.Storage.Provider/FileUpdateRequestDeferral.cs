@@ -13,6 +13,16 @@ namespace Windows.Storage.Provider
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequestDeferral.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequestDeferral.operator ==(Windows.Storage.Provider.FileUpdateRequestDeferral, Windows.Storage.Provider.FileUpdateRequestDeferral)
+		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequestDeferral.operator !=(Windows.Storage.Provider.FileUpdateRequestDeferral, Windows.Storage.Provider.FileUpdateRequestDeferral)
+		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequestDeferral.Equals(Windows.Storage.Provider.FileUpdateRequestDeferral)
+		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequestDeferral.Equals(object)
+		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequestDeferral.GetHashCode()
+		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequestDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequestDeferral.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequestDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequestDeferral.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Complete()
@@ -20,5 +30,6 @@ namespace Windows.Storage.Provider
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.FileUpdateRequestDeferral", "void FileUpdateRequestDeferral.Complete()");
 		}
 #endif
+		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequestDeferral.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

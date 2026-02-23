@@ -20,41 +20,11 @@ namespace Windows.Media.Capture
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Capture.MediaCaptureSettings MediaCaptureSettings
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MediaCaptureSettings MediaCapture.MediaCaptureSettings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaCaptureSettings%20MediaCapture.MediaCaptureSettings");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Devices.VideoDeviceController VideoDeviceController
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member VideoDeviceController MediaCapture.VideoDeviceController is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoDeviceController%20MediaCapture.VideoDeviceController");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Devices.CameraStreamState CameraStreamState
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member CameraStreamState MediaCapture.CameraStreamState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CameraStreamState%20MediaCapture.CameraStreamState");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Capture.MediaCaptureThermalStatus ThermalStatus
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MediaCaptureThermalStatus MediaCapture.ThermalStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaCaptureThermalStatus%20MediaCapture.ThermalStatus");
 			}
 		}
 #endif
@@ -70,12 +40,81 @@ namespace Windows.Media.Capture
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Capture.MediaCaptureSettings MediaCaptureSettings
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member MediaCaptureSettings MediaCapture.MediaCaptureSettings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaCaptureSettings%20MediaCapture.MediaCaptureSettings");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Capture.MediaCaptureThermalStatus ThermalStatus
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member MediaCaptureThermalStatus MediaCapture.ThermalStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaCaptureThermalStatus%20MediaCapture.ThermalStatus");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Devices.VideoDeviceController VideoDeviceController
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member VideoDeviceController MediaCapture.VideoDeviceController is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoDeviceController%20MediaCapture.VideoDeviceController");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MediaCapture()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCapture", "MediaCapture.MediaCapture()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.MediaCapture.MediaCapture()
+		// Forced skipping of method Windows.Media.Capture.MediaCapture.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static bool IsVideoProfileSupported(string videoDeviceId)
+		{
+			throw new global::System.NotImplementedException("The member bool MediaCapture.IsVideoProfileSupported(string videoDeviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaCapture.IsVideoProfileSupported%28string%20videoDeviceId%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Capture.MediaCaptureVideoProfile> FindAllVideoProfiles(string videoDeviceId)
+		{
+			throw new global::System.NotImplementedException("The member IReadOnlyList<MediaCaptureVideoProfile> MediaCapture.FindAllVideoProfiles(string videoDeviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMediaCaptureVideoProfile%3E%20MediaCapture.FindAllVideoProfiles%28string%20videoDeviceId%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Capture.MediaCaptureVideoProfile> FindConcurrentProfiles(string videoDeviceId)
+		{
+			throw new global::System.NotImplementedException("The member IReadOnlyList<MediaCaptureVideoProfile> MediaCapture.FindConcurrentProfiles(string videoDeviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMediaCaptureVideoProfile%3E%20MediaCapture.FindConcurrentProfiles%28string%20videoDeviceId%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Capture.MediaCaptureVideoProfile> FindKnownVideoProfiles(string videoDeviceId, global::Windows.Media.Capture.KnownVideoProfile name)
+		{
+			throw new global::System.NotImplementedException("The member IReadOnlyList<MediaCaptureVideoProfile> MediaCapture.FindKnownVideoProfiles(string videoDeviceId, KnownVideoProfile name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMediaCaptureVideoProfile%3E%20MediaCapture.FindKnownVideoProfiles%28string%20videoDeviceId%2C%20KnownVideoProfile%20name%29");
+		}
+#endif
+		// Forced skipping of method Windows.Media.Capture.MediaCapture.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Capture.MediaCapture.operator ==(Windows.Media.Capture.MediaCapture, Windows.Media.Capture.MediaCapture)
+		// Forced skipping of method Windows.Media.Capture.MediaCapture.operator !=(Windows.Media.Capture.MediaCapture, Windows.Media.Capture.MediaCapture)
+		// Forced skipping of method Windows.Media.Capture.MediaCapture.Equals(Windows.Media.Capture.MediaCapture)
+		// Forced skipping of method Windows.Media.Capture.MediaCapture.Equals(object)
+		// Forced skipping of method Windows.Media.Capture.MediaCapture.GetHashCode()
+		// Forced skipping of method Windows.Media.Capture.MediaCapture.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Capture.MediaCapture.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Capture.MediaCapture.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Capture.MediaCapture.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction InitializeAsync()
@@ -167,13 +206,6 @@ namespace Windows.Media.Capture
 			throw new global::System.NotImplementedException("The member object MediaCapture.GetEncoderProperty(MediaStreamType mediaStreamType, Guid propertyId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20MediaCapture.GetEncoderProperty%28MediaStreamType%20mediaStreamType%2C%20Guid%20propertyId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.MediaCapture.Failed.add
-		// Forced skipping of method Windows.Media.Capture.MediaCapture.Failed.remove
-		// Forced skipping of method Windows.Media.Capture.MediaCapture.RecordLimitationExceeded.add
-		// Forced skipping of method Windows.Media.Capture.MediaCapture.RecordLimitationExceeded.remove
-		// Forced skipping of method Windows.Media.Capture.MediaCapture.MediaCaptureSettings.get
-		// Forced skipping of method Windows.Media.Capture.MediaCapture.AudioDeviceController.get
-		// Forced skipping of method Windows.Media.Capture.MediaCapture.VideoDeviceController.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetPreviewMirroring(bool value)
@@ -216,6 +248,10 @@ namespace Windows.Media.Capture
 			throw new global::System.NotImplementedException("The member VideoRotation MediaCapture.GetRecordRotation() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoRotation%20MediaCapture.GetRecordRotation%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Capture.MediaCapture.Failed.add
+		// Forced skipping of method Windows.Media.Capture.MediaCapture.Failed.remove
+		// Forced skipping of method Windows.Media.Capture.MediaCapture.RecordLimitationExceeded.add
+		// Forced skipping of method Windows.Media.Capture.MediaCapture.RecordLimitationExceeded.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction StartPreviewAsync()
@@ -339,9 +375,6 @@ namespace Windows.Media.Capture
 			throw new global::System.NotImplementedException("The member IAsyncAction MediaCapture.ResumeRecordAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20MediaCapture.ResumeRecordAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.MediaCapture.CameraStreamStateChanged.add
-		// Forced skipping of method Windows.Media.Capture.MediaCapture.CameraStreamStateChanged.remove
-		// Forced skipping of method Windows.Media.Capture.MediaCapture.CameraStreamState.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.VideoFrame> GetPreviewFrameAsync()
@@ -356,9 +389,6 @@ namespace Windows.Media.Capture
 			throw new global::System.NotImplementedException("The member IAsyncOperation<VideoFrame> MediaCapture.GetPreviewFrameAsync(VideoFrame destination) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CVideoFrame%3E%20MediaCapture.GetPreviewFrameAsync%28VideoFrame%20destination%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.MediaCapture.ThermalStatusChanged.add
-		// Forced skipping of method Windows.Media.Capture.MediaCapture.ThermalStatusChanged.remove
-		// Forced skipping of method Windows.Media.Capture.MediaCapture.ThermalStatus.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Capture.AdvancedPhotoCapture> PrepareAdvancedPhotoCaptureAsync(global::Windows.Media.MediaProperties.ImageEncodingProperties encodingProperties)
@@ -366,6 +396,10 @@ namespace Windows.Media.Capture
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AdvancedPhotoCapture> MediaCapture.PrepareAdvancedPhotoCaptureAsync(ImageEncodingProperties encodingProperties) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAdvancedPhotoCapture%3E%20MediaCapture.PrepareAdvancedPhotoCaptureAsync%28ImageEncodingProperties%20encodingProperties%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Capture.MediaCapture.CameraStreamStateChanged.add
+		// Forced skipping of method Windows.Media.Capture.MediaCapture.CameraStreamStateChanged.remove
+		// Forced skipping of method Windows.Media.Capture.MediaCapture.ThermalStatusChanged.add
+		// Forced skipping of method Windows.Media.Capture.MediaCapture.ThermalStatusChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction RemoveEffectAsync(global::Windows.Media.IMediaExtension effect)
@@ -387,7 +421,6 @@ namespace Windows.Media.Capture
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MediaCaptureStopResult> MediaCapture.StopRecordWithResultAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMediaCaptureStopResult%3E%20MediaCapture.StopRecordWithResultAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.MediaCapture.FrameSources.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Capture.Frames.MediaFrameReader> CreateFrameReaderAsync(global::Windows.Media.Capture.Frames.MediaFrameSource inputSource)
@@ -409,8 +442,6 @@ namespace Windows.Media.Capture
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MediaFrameReader> MediaCapture.CreateFrameReaderAsync(MediaFrameSource inputSource, string outputSubtype, BitmapSize outputSize) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMediaFrameReader%3E%20MediaCapture.CreateFrameReaderAsync%28MediaFrameSource%20inputSource%2C%20string%20outputSubtype%2C%20BitmapSize%20outputSize%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.MediaCapture.CaptureDeviceExclusiveControlStatusChanged.add
-		// Forced skipping of method Windows.Media.Capture.MediaCapture.CaptureDeviceExclusiveControlStatusChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Capture.Frames.MultiSourceMediaFrameReader> CreateMultiSourceFrameReaderAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Media.Capture.Frames.MediaFrameSource> inputSources)
@@ -418,6 +449,8 @@ namespace Windows.Media.Capture
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MultiSourceMediaFrameReader> MediaCapture.CreateMultiSourceFrameReaderAsync(IEnumerable<MediaFrameSource> inputSources) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMultiSourceMediaFrameReader%3E%20MediaCapture.CreateMultiSourceFrameReaderAsync%28IEnumerable%3CMediaFrameSource%3E%20inputSources%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Capture.MediaCapture.CaptureDeviceExclusiveControlStatusChanged.add
+		// Forced skipping of method Windows.Media.Capture.MediaCapture.CaptureDeviceExclusiveControlStatusChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Capture.MediaCaptureRelativePanelWatcher CreateRelativePanelWatcher(global::Windows.Media.Capture.StreamingCaptureMode captureMode, global::Windows.UI.WindowManagement.DisplayRegion displayRegion)
@@ -425,34 +458,13 @@ namespace Windows.Media.Capture
 			throw new global::System.NotImplementedException("The member MediaCaptureRelativePanelWatcher MediaCapture.CreateRelativePanelWatcher(StreamingCaptureMode captureMode, DisplayRegion displayRegion) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaCaptureRelativePanelWatcher%20MediaCapture.CreateRelativePanelWatcher%28StreamingCaptureMode%20captureMode%2C%20DisplayRegion%20displayRegion%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool IsVideoProfileSupported(string videoDeviceId)
-		{
-			throw new global::System.NotImplementedException("The member bool MediaCapture.IsVideoProfileSupported(string videoDeviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaCapture.IsVideoProfileSupported%28string%20videoDeviceId%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Capture.MediaCaptureVideoProfile> FindAllVideoProfiles(string videoDeviceId)
-		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<MediaCaptureVideoProfile> MediaCapture.FindAllVideoProfiles(string videoDeviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMediaCaptureVideoProfile%3E%20MediaCapture.FindAllVideoProfiles%28string%20videoDeviceId%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Capture.MediaCaptureVideoProfile> FindConcurrentProfiles(string videoDeviceId)
-		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<MediaCaptureVideoProfile> MediaCapture.FindConcurrentProfiles(string videoDeviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMediaCaptureVideoProfile%3E%20MediaCapture.FindConcurrentProfiles%28string%20videoDeviceId%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Capture.MediaCaptureVideoProfile> FindKnownVideoProfiles(string videoDeviceId, global::Windows.Media.Capture.KnownVideoProfile name)
-		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<MediaCaptureVideoProfile> MediaCapture.FindKnownVideoProfiles(string videoDeviceId, KnownVideoProfile name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMediaCaptureVideoProfile%3E%20MediaCapture.FindKnownVideoProfiles%28string%20videoDeviceId%2C%20KnownVideoProfile%20name%29");
-		}
-#endif
+		// Forced skipping of method Windows.Media.Capture.MediaCapture.AudioDeviceController.get
+		// Forced skipping of method Windows.Media.Capture.MediaCapture.CameraStreamState.get
+		// Forced skipping of method Windows.Media.Capture.MediaCapture.FrameSources.get
+		// Forced skipping of method Windows.Media.Capture.MediaCapture.MediaCaptureSettings.get
+		// Forced skipping of method Windows.Media.Capture.MediaCapture.ThermalStatus.get
+		// Forced skipping of method Windows.Media.Capture.MediaCapture.VideoDeviceController.get
+		// Forced skipping of method Windows.Media.Capture.MediaCapture.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Media.Capture.MediaCaptureFailedEventHandler Failed

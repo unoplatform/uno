@@ -10,5 +10,15 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.CircleEase.CircleEase()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.CircleEase.CircleEase()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.CircleEase.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.CircleEase.operator ==(Microsoft.UI.Xaml.Media.Animation.CircleEase, Microsoft.UI.Xaml.Media.Animation.CircleEase)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.CircleEase.operator !=(Microsoft.UI.Xaml.Media.Animation.CircleEase, Microsoft.UI.Xaml.Media.Animation.CircleEase)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.CircleEase.Equals(Microsoft.UI.Xaml.Media.Animation.CircleEase)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.CircleEase.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.CircleEase.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.CircleEase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.CircleEase.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.CircleEase.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.CircleEase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

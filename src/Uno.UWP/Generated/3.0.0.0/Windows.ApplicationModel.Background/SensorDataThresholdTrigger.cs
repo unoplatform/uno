@@ -16,6 +16,17 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.SensorDataThresholdTrigger.SensorDataThresholdTrigger(Windows.Devices.Sensors.ISensorDataThreshold)
+		// Forced skipping of method Windows.ApplicationModel.Background.SensorDataThresholdTrigger.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Background.SensorDataThresholdTrigger.operator ==(Windows.ApplicationModel.Background.SensorDataThresholdTrigger, Windows.ApplicationModel.Background.SensorDataThresholdTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.SensorDataThresholdTrigger.operator !=(Windows.ApplicationModel.Background.SensorDataThresholdTrigger, Windows.ApplicationModel.Background.SensorDataThresholdTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.SensorDataThresholdTrigger.Equals(Windows.ApplicationModel.Background.SensorDataThresholdTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.SensorDataThresholdTrigger.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Background.SensorDataThresholdTrigger.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Background.SensorDataThresholdTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.SensorDataThresholdTrigger.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.SensorDataThresholdTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Background.SensorDataThresholdTrigger.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.ApplicationModel.Background.SensorDataThresholdTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger
 	}
 }

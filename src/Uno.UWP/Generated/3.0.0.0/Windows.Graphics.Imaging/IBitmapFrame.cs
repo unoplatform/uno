@@ -65,20 +65,20 @@ namespace Windows.Graphics.Imaging
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.ImageStream> GetThumbnailAsync();
 #endif
-		// Forced skipping of method Windows.Graphics.Imaging.IBitmapFrame.BitmapProperties.get
-		// Forced skipping of method Windows.Graphics.Imaging.IBitmapFrame.BitmapPixelFormat.get
-		// Forced skipping of method Windows.Graphics.Imaging.IBitmapFrame.BitmapAlphaMode.get
-		// Forced skipping of method Windows.Graphics.Imaging.IBitmapFrame.DpiX.get
-		// Forced skipping of method Windows.Graphics.Imaging.IBitmapFrame.DpiY.get
-		// Forced skipping of method Windows.Graphics.Imaging.IBitmapFrame.PixelWidth.get
-		// Forced skipping of method Windows.Graphics.Imaging.IBitmapFrame.PixelHeight.get
-		// Forced skipping of method Windows.Graphics.Imaging.IBitmapFrame.OrientedPixelWidth.get
-		// Forced skipping of method Windows.Graphics.Imaging.IBitmapFrame.OrientedPixelHeight.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.PixelDataProvider> GetPixelDataAsync();
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.PixelDataProvider> GetPixelDataAsync(global::Windows.Graphics.Imaging.BitmapPixelFormat pixelFormat, global::Windows.Graphics.Imaging.BitmapAlphaMode alphaMode, global::Windows.Graphics.Imaging.BitmapTransform transform, global::Windows.Graphics.Imaging.ExifOrientationMode exifOrientationMode, global::Windows.Graphics.Imaging.ColorManagementMode colorManagementMode);
 #endif
+		// Forced skipping of method Windows.Graphics.Imaging.IBitmapFrame.BitmapAlphaMode.get
+		// Forced skipping of method Windows.Graphics.Imaging.IBitmapFrame.BitmapPixelFormat.get
+		// Forced skipping of method Windows.Graphics.Imaging.IBitmapFrame.BitmapProperties.get
+		// Forced skipping of method Windows.Graphics.Imaging.IBitmapFrame.DpiX.get
+		// Forced skipping of method Windows.Graphics.Imaging.IBitmapFrame.DpiY.get
+		// Forced skipping of method Windows.Graphics.Imaging.IBitmapFrame.OrientedPixelHeight.get
+		// Forced skipping of method Windows.Graphics.Imaging.IBitmapFrame.OrientedPixelWidth.get
+		// Forced skipping of method Windows.Graphics.Imaging.IBitmapFrame.PixelHeight.get
+		// Forced skipping of method Windows.Graphics.Imaging.IBitmapFrame.PixelWidth.get
 	}
 }

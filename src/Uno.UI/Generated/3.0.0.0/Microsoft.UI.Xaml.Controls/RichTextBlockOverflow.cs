@@ -10,45 +10,43 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Thickness Padding
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Thickness)this.GetValue(PaddingProperty);
-			}
-			set
-			{
-				this.SetValue(PaddingProperty, value);
-			}
-		}
+		public static global::Microsoft.UI.Xaml.DependencyProperty HasOverflowContentProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(HasOverflowContent), typeof(bool),
+			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow OverflowContentTarget
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow)this.GetValue(OverflowContentTargetProperty);
-			}
-			set
-			{
-				this.SetValue(OverflowContentTargetProperty, value);
-			}
-		}
+		public static global::Microsoft.UI.Xaml.DependencyProperty IsTextTrimmedProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(IsTextTrimmed), typeof(bool),
+			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int MaxLines
-		{
-			get
-			{
-				return (int)this.GetValue(MaxLinesProperty);
-			}
-			set
-			{
-				this.SetValue(MaxLinesProperty, value);
-			}
-		}
+		public static global::Microsoft.UI.Xaml.DependencyProperty MaxLinesProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(MaxLines), typeof(int),
+			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(int)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty OverflowContentTargetProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(OverflowContentTarget), typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow),
+			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty PaddingProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(Padding), typeof(global::Microsoft.UI.Xaml.Thickness),
+			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Thickness)));
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -112,60 +110,62 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty HasOverflowContentProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(HasOverflowContent), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+		public int MaxLines
+		{
+			get
+			{
+				return (int)this.GetValue(MaxLinesProperty);
+			}
+			set
+			{
+				this.SetValue(MaxLinesProperty, value);
+			}
+		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsTextTrimmedProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(IsTextTrimmed), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+		public global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow OverflowContentTarget
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow)this.GetValue(OverflowContentTargetProperty);
+			}
+			set
+			{
+				this.SetValue(OverflowContentTargetProperty, value);
+			}
+		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty MaxLinesProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(MaxLines), typeof(int),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(int)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty OverflowContentTargetProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(OverflowContentTarget), typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty PaddingProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Padding), typeof(global::Microsoft.UI.Xaml.Thickness),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Thickness)));
+		public global::Microsoft.UI.Xaml.Thickness Padding
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Thickness)this.GetValue(PaddingProperty);
+			}
+			set
+			{
+				this.SetValue(PaddingProperty, value);
+			}
+		}
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.RichTextBlockOverflow()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.RichTextBlockOverflow()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.OverflowContentTarget.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.OverflowContentTarget.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.Padding.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.Padding.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.ContentSource.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.HasOverflowContent.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.ContentStart.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.ContentEnd.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.BaselineOffset.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.MaxLines.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.MaxLines.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.IsTextTrimmed.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.IsTextTrimmedChanged.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.IsTextTrimmedChanged.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.HasOverflowContentProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.IsTextTrimmedProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.MaxLinesProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.OverflowContentTargetProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.PaddingProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.operator ==(Microsoft.UI.Xaml.Controls.RichTextBlockOverflow, Microsoft.UI.Xaml.Controls.RichTextBlockOverflow)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.operator !=(Microsoft.UI.Xaml.Controls.RichTextBlockOverflow, Microsoft.UI.Xaml.Controls.RichTextBlockOverflow)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.Equals(Microsoft.UI.Xaml.Controls.RichTextBlockOverflow)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Documents.TextPointer GetPositionFromPoint(global::Windows.Foundation.Point point)
@@ -173,11 +173,22 @@ namespace Microsoft.UI.Xaml.Controls
 			throw new global::System.NotImplementedException("The member TextPointer RichTextBlockOverflow.GetPositionFromPoint(Point point) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextPointer%20RichTextBlockOverflow.GetPositionFromPoint%28Point%20point%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.OverflowContentTargetProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.PaddingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.HasOverflowContentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.MaxLinesProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.IsTextTrimmedProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.IsTextTrimmedChanged.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.IsTextTrimmedChanged.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.BaselineOffset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.ContentEnd.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.ContentSource.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.ContentStart.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.HasOverflowContent.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.IsTextTrimmed.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.MaxLines.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.MaxLines.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.OverflowContentTarget.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.OverflowContentTarget.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.Padding.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.Padding.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow, global::Microsoft.UI.Xaml.Controls.IsTextTrimmedChangedEventArgs> IsTextTrimmedChanged

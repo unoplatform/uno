@@ -23,6 +23,17 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerImagePreviewReceivedEventArgs.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerImagePreviewReceivedEventArgs.operator ==(Windows.Devices.PointOfService.BarcodeScannerImagePreviewReceivedEventArgs, Windows.Devices.PointOfService.BarcodeScannerImagePreviewReceivedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerImagePreviewReceivedEventArgs.operator !=(Windows.Devices.PointOfService.BarcodeScannerImagePreviewReceivedEventArgs, Windows.Devices.PointOfService.BarcodeScannerImagePreviewReceivedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerImagePreviewReceivedEventArgs.Equals(Windows.Devices.PointOfService.BarcodeScannerImagePreviewReceivedEventArgs)
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerImagePreviewReceivedEventArgs.Equals(object)
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerImagePreviewReceivedEventArgs.GetHashCode()
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerImagePreviewReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerImagePreviewReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerImagePreviewReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerImagePreviewReceivedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerImagePreviewReceivedEventArgs.Preview.get
+		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerImagePreviewReceivedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,20 +10,6 @@ namespace Windows.Storage.Search
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object Value
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member object ValueAndLanguage.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20ValueAndLanguage.Value");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.ValueAndLanguage", "object ValueAndLanguage.Value");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Language
 		{
 			get
@@ -38,15 +24,40 @@ namespace Windows.Storage.Search
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public object Value
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member object ValueAndLanguage.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20ValueAndLanguage.Value");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.ValueAndLanguage", "object ValueAndLanguage.Value");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ValueAndLanguage()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.ValueAndLanguage", "ValueAndLanguage.ValueAndLanguage()");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.ValueAndLanguage()
+		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.operator ==(Windows.Storage.Search.ValueAndLanguage, Windows.Storage.Search.ValueAndLanguage)
+		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.operator !=(Windows.Storage.Search.ValueAndLanguage, Windows.Storage.Search.ValueAndLanguage)
+		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.Equals(Windows.Storage.Search.ValueAndLanguage)
+		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.Equals(object)
+		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.GetHashCode()
+		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.Language.get
 		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.Language.set
 		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.Value.get
 		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.Value.set
+		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

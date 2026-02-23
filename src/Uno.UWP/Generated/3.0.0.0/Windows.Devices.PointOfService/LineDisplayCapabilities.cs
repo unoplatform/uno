@@ -193,23 +193,34 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.IsStatisticsReportingSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.IsStatisticsUpdatingSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.PowerReportingType.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanChangeScreenSize.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanDisplayBitmaps.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanReadCharacterAtCursor.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanMapCharacterSets.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanDisplayCustomGlyphs.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanReverse.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.operator ==(Windows.Devices.PointOfService.LineDisplayCapabilities, Windows.Devices.PointOfService.LineDisplayCapabilities)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.operator !=(Windows.Devices.PointOfService.LineDisplayCapabilities, Windows.Devices.PointOfService.LineDisplayCapabilities)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.Equals(Windows.Devices.PointOfService.LineDisplayCapabilities)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.Equals(object)
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.GetHashCode()
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanBlink.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanChangeBlinkRate.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanChangeScreenSize.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanDisplayBitmaps.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanDisplayCustomGlyphs.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanMapCharacterSets.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanReadCharacterAtCursor.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanReverse.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.IsBrightnessSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.IsCursorSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.IsHorizontalMarqueeSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.IsVerticalMarqueeSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.IsInterCharacterWaitSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.IsStatisticsReportingSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.IsStatisticsUpdatingSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.IsVerticalMarqueeSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.PowerReportingType.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.SupportedDescriptors.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.SupportedWindows.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

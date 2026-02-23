@@ -15,6 +15,16 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Exception ExtendedError
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Exception CreateAudioGraphResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20CreateAudioGraphResult.ExtendedError");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Audio.AudioGraph Graph
 		{
 			get
@@ -33,18 +43,19 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Exception ExtendedError
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Exception CreateAudioGraphResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20CreateAudioGraphResult.ExtendedError");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Media.Audio.CreateAudioGraphResult.Status.get
-		// Forced skipping of method Windows.Media.Audio.CreateAudioGraphResult.Graph.get
+		// Forced skipping of method Windows.Media.Audio.CreateAudioGraphResult.FromAbi(nint)
+		// Forced skipping of method Windows.Media.Audio.CreateAudioGraphResult.operator ==(Windows.Media.Audio.CreateAudioGraphResult, Windows.Media.Audio.CreateAudioGraphResult)
+		// Forced skipping of method Windows.Media.Audio.CreateAudioGraphResult.operator !=(Windows.Media.Audio.CreateAudioGraphResult, Windows.Media.Audio.CreateAudioGraphResult)
+		// Forced skipping of method Windows.Media.Audio.CreateAudioGraphResult.Equals(Windows.Media.Audio.CreateAudioGraphResult)
+		// Forced skipping of method Windows.Media.Audio.CreateAudioGraphResult.Equals(object)
+		// Forced skipping of method Windows.Media.Audio.CreateAudioGraphResult.GetHashCode()
+		// Forced skipping of method Windows.Media.Audio.CreateAudioGraphResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Media.Audio.CreateAudioGraphResult.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Media.Audio.CreateAudioGraphResult.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Media.Audio.CreateAudioGraphResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Audio.CreateAudioGraphResult.ExtendedError.get
+		// Forced skipping of method Windows.Media.Audio.CreateAudioGraphResult.Graph.get
+		// Forced skipping of method Windows.Media.Audio.CreateAudioGraphResult.Status.get
+		// Forced skipping of method Windows.Media.Audio.CreateAudioGraphResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

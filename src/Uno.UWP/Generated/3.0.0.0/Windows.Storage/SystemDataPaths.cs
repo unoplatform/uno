@@ -173,6 +173,24 @@ namespace Windows.Storage
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Storage.SystemDataPaths.As<I>()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Storage.SystemDataPaths GetDefault()
+		{
+			throw new global::System.NotImplementedException("The member SystemDataPaths SystemDataPaths.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemDataPaths%20SystemDataPaths.GetDefault%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Storage.SystemDataPaths.FromAbi(nint)
+		// Forced skipping of method Windows.Storage.SystemDataPaths.operator ==(Windows.Storage.SystemDataPaths, Windows.Storage.SystemDataPaths)
+		// Forced skipping of method Windows.Storage.SystemDataPaths.operator !=(Windows.Storage.SystemDataPaths, Windows.Storage.SystemDataPaths)
+		// Forced skipping of method Windows.Storage.SystemDataPaths.Equals(Windows.Storage.SystemDataPaths)
+		// Forced skipping of method Windows.Storage.SystemDataPaths.Equals(object)
+		// Forced skipping of method Windows.Storage.SystemDataPaths.GetHashCode()
+		// Forced skipping of method Windows.Storage.SystemDataPaths.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Storage.SystemDataPaths.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Storage.SystemDataPaths.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Storage.SystemDataPaths.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.SystemDataPaths.Fonts.get
 		// Forced skipping of method Windows.Storage.SystemDataPaths.ProgramData.get
 		// Forced skipping of method Windows.Storage.SystemDataPaths.Public.get
@@ -183,18 +201,12 @@ namespace Windows.Storage
 		// Forced skipping of method Windows.Storage.SystemDataPaths.PublicPictures.get
 		// Forced skipping of method Windows.Storage.SystemDataPaths.PublicVideos.get
 		// Forced skipping of method Windows.Storage.SystemDataPaths.System.get
-		// Forced skipping of method Windows.Storage.SystemDataPaths.SystemHost.get
-		// Forced skipping of method Windows.Storage.SystemDataPaths.SystemX86.get
-		// Forced skipping of method Windows.Storage.SystemDataPaths.SystemX64.get
 		// Forced skipping of method Windows.Storage.SystemDataPaths.SystemArm.get
+		// Forced skipping of method Windows.Storage.SystemDataPaths.SystemHost.get
+		// Forced skipping of method Windows.Storage.SystemDataPaths.SystemX64.get
+		// Forced skipping of method Windows.Storage.SystemDataPaths.SystemX86.get
 		// Forced skipping of method Windows.Storage.SystemDataPaths.UserProfiles.get
 		// Forced skipping of method Windows.Storage.SystemDataPaths.Windows.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Storage.SystemDataPaths GetDefault()
-		{
-			throw new global::System.NotImplementedException("The member SystemDataPaths SystemDataPaths.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemDataPaths%20SystemDataPaths.GetDefault%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.Storage.SystemDataPaths.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

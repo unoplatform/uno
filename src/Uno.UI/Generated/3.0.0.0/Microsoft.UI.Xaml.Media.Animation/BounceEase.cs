@@ -8,17 +8,28 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class BounceEase : global::Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase
 	{
-		// Skipping already declared property Bounciness
-		// Skipping already declared property Bounces
 		// Skipping already declared property BouncesProperty
 		// Skipping already declared property BouncinessProperty
+		// Skipping already declared property Bounces
+		// Skipping already declared property Bounciness
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.BounceEase.BounceEase()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.BounceEase()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.As<I>()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.BouncesProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.BouncinessProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.operator ==(Microsoft.UI.Xaml.Media.Animation.BounceEase, Microsoft.UI.Xaml.Media.Animation.BounceEase)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.operator !=(Microsoft.UI.Xaml.Media.Animation.BounceEase, Microsoft.UI.Xaml.Media.Animation.BounceEase)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.Equals(Microsoft.UI.Xaml.Media.Animation.BounceEase)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.Bounces.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.Bounces.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.Bounciness.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.Bounciness.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.BouncesProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.BouncinessProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

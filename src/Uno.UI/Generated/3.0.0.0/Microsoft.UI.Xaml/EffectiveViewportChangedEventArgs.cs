@@ -39,9 +39,20 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs.EffectiveViewport.get
-		// Forced skipping of method Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs.MaxViewport.get
+		// Forced skipping of method Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs.operator ==(Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs, Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs.operator !=(Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs, Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs.Equals(Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs)
+		// Forced skipping of method Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs.BringIntoViewDistanceX.get
 		// Forced skipping of method Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs.BringIntoViewDistanceY.get
+		// Forced skipping of method Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs.EffectiveViewport.get
+		// Forced skipping of method Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs.MaxViewport.get
+		// Forced skipping of method Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

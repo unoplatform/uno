@@ -10,15 +10,15 @@ namespace Windows.Devices.Bluetooth.Advertisement
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public short Offset
+		public global::Windows.Storage.Streams.IBuffer Data
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member short BluetoothLEAdvertisementBytePattern.Offset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=short%20BluetoothLEAdvertisementBytePattern.Offset");
+				throw new global::System.NotImplementedException("The member IBuffer BluetoothLEAdvertisementBytePattern.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20BluetoothLEAdvertisementBytePattern.Data");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern", "short BluetoothLEAdvertisementBytePattern.Offset");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern", "IBuffer BluetoothLEAdvertisementBytePattern.Data");
 			}
 		}
 #endif
@@ -38,15 +38,15 @@ namespace Windows.Devices.Bluetooth.Advertisement
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Streams.IBuffer Data
+		public short Offset
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer BluetoothLEAdvertisementBytePattern.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20BluetoothLEAdvertisementBytePattern.Data");
+				throw new global::System.NotImplementedException("The member short BluetoothLEAdvertisementBytePattern.Offset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=short%20BluetoothLEAdvertisementBytePattern.Offset");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern", "IBuffer BluetoothLEAdvertisementBytePattern.Data");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern", "short BluetoothLEAdvertisementBytePattern.Offset");
 			}
 		}
 #endif
@@ -66,11 +66,22 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern.BluetoothLEAdvertisementBytePattern(byte, short, Windows.Storage.Streams.IBuffer)
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern.FromAbi(nint)
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern.operator ==(Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern, Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern)
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern.operator !=(Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern, Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern)
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern.Equals(Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern)
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern.Equals(object)
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern.GetHashCode()
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern.WinRT.IWinRTObject.AdditionalTypeData.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern.Data.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern.Data.set
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern.DataType.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern.DataType.set
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern.Offset.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern.Offset.set
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern.Data.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern.Data.set
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

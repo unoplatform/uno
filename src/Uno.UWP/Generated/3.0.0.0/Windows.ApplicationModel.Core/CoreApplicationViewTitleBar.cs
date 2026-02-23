@@ -13,16 +13,27 @@ namespace Windows.ApplicationModel.Core
 		// Skipping already declared property IsVisible
 		// Skipping already declared property SystemOverlayLeftInset
 		// Skipping already declared property SystemOverlayRightInset
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.ExtendViewIntoTitleBar.set
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.ExtendViewIntoTitleBar.get
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.SystemOverlayLeftInset.get
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.SystemOverlayRightInset.get
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.Height.get
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.LayoutMetricsChanged.add
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.LayoutMetricsChanged.remove
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.IsVisible.get
+		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.operator ==(Windows.ApplicationModel.Core.CoreApplicationViewTitleBar, Windows.ApplicationModel.Core.CoreApplicationViewTitleBar)
+		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.operator !=(Windows.ApplicationModel.Core.CoreApplicationViewTitleBar, Windows.ApplicationModel.Core.CoreApplicationViewTitleBar)
+		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.Equals(Windows.ApplicationModel.Core.CoreApplicationViewTitleBar)
+		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.IsVisibleChanged.add
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.IsVisibleChanged.remove
+		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.LayoutMetricsChanged.add
+		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.LayoutMetricsChanged.remove
+		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.ExtendViewIntoTitleBar.get
+		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.ExtendViewIntoTitleBar.set
+		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.Height.get
+		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.IsVisible.get
+		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.SystemOverlayLeftInset.get
+		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.SystemOverlayRightInset.get
+		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.IsVisibleChanged
 		// Skipping already declared event Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.LayoutMetricsChanged
 	}

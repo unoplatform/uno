@@ -8,6 +8,17 @@ namespace Windows.Data.Xml.Dom
 #endif
 	public partial class XmlDomImplementation
 	{
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDomImplementation.FromAbi(nint)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDomImplementation.operator ==(Windows.Data.Xml.Dom.XmlDomImplementation, Windows.Data.Xml.Dom.XmlDomImplementation)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDomImplementation.operator !=(Windows.Data.Xml.Dom.XmlDomImplementation, Windows.Data.Xml.Dom.XmlDomImplementation)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDomImplementation.Equals(Windows.Data.Xml.Dom.XmlDomImplementation)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDomImplementation.Equals(object)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDomImplementation.GetHashCode()
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDomImplementation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDomImplementation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDomImplementation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDomImplementation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDomImplementation.HasFeature(string, object)
+		// Forced skipping of method Windows.Data.Xml.Dom.XmlDomImplementation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

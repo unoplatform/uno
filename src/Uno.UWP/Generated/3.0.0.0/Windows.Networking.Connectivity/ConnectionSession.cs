@@ -23,7 +23,16 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionSession.ConnectionProfile.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionSession.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionSession.operator ==(Windows.Networking.Connectivity.ConnectionSession, Windows.Networking.Connectivity.ConnectionSession)
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionSession.operator !=(Windows.Networking.Connectivity.ConnectionSession, Windows.Networking.Connectivity.ConnectionSession)
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionSession.Equals(Windows.Networking.Connectivity.ConnectionSession)
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionSession.Equals(object)
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionSession.GetHashCode()
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionSession.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionSession.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionSession.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionSession.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -31,6 +40,8 @@ namespace Windows.Networking.Connectivity
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.ConnectionSession", "void ConnectionSession.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionSession.ConnectionProfile.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectionSession.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

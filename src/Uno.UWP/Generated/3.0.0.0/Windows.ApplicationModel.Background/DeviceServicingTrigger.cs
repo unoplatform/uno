@@ -16,6 +16,16 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.DeviceServicingTrigger.DeviceServicingTrigger()
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceServicingTrigger.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceServicingTrigger.operator ==(Windows.ApplicationModel.Background.DeviceServicingTrigger, Windows.ApplicationModel.Background.DeviceServicingTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceServicingTrigger.operator !=(Windows.ApplicationModel.Background.DeviceServicingTrigger, Windows.ApplicationModel.Background.DeviceServicingTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceServicingTrigger.Equals(Windows.ApplicationModel.Background.DeviceServicingTrigger)
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceServicingTrigger.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceServicingTrigger.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceServicingTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceServicingTrigger.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceServicingTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceServicingTrigger.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Background.DeviceTriggerResult> RequestAsync(string deviceId, global::System.TimeSpan expectedDuration)
@@ -30,6 +40,7 @@ namespace Windows.ApplicationModel.Background
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceTriggerResult> DeviceServicingTrigger.RequestAsync(string deviceId, TimeSpan expectedDuration, string arguments) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDeviceTriggerResult%3E%20DeviceServicingTrigger.RequestAsync%28string%20deviceId%2C%20TimeSpan%20expectedDuration%2C%20string%20arguments%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Background.DeviceServicingTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger
 	}
 }

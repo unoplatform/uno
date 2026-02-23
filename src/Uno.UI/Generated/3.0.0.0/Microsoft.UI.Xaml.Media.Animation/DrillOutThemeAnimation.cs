@@ -10,62 +10,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ExitTargetName
-		{
-			get
-			{
-				return (string)this.GetValue(ExitTargetNameProperty);
-			}
-			set
-			{
-				this.SetValue(ExitTargetNameProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.DependencyObject ExitTarget
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.DependencyObject)this.GetValue(ExitTargetProperty);
-			}
-			set
-			{
-				this.SetValue(ExitTargetProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string EntranceTargetName
-		{
-			get
-			{
-				return (string)this.GetValue(EntranceTargetNameProperty);
-			}
-			set
-			{
-				this.SetValue(EntranceTargetNameProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.DependencyObject EntranceTarget
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.DependencyObject)this.GetValue(EntranceTargetProperty);
-			}
-			set
-			{
-				this.SetValue(EntranceTargetProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty EntranceTargetNameProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(EntranceTargetName), typeof(string),
@@ -98,23 +42,90 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.DependencyObject EntranceTarget
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.DependencyObject)this.GetValue(EntranceTargetProperty);
+			}
+			set
+			{
+				this.SetValue(EntranceTargetProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string EntranceTargetName
+		{
+			get
+			{
+				return (string)this.GetValue(EntranceTargetNameProperty);
+			}
+			set
+			{
+				this.SetValue(EntranceTargetNameProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.DependencyObject ExitTarget
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.DependencyObject)this.GetValue(ExitTargetProperty);
+			}
+			set
+			{
+				this.SetValue(ExitTargetProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ExitTargetName
+		{
+			get
+			{
+				return (string)this.GetValue(ExitTargetNameProperty);
+			}
+			set
+			{
+				this.SetValue(ExitTargetNameProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public DrillOutThemeAnimation() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation", "DrillOutThemeAnimation.DrillOutThemeAnimation()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.DrillOutThemeAnimation()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.EntranceTargetName.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.EntranceTargetName.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.EntranceTarget.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.EntranceTarget.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.ExitTargetName.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.ExitTargetName.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.ExitTarget.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.ExitTarget.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.As<I>()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.EntranceTargetNameProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.EntranceTargetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.ExitTargetNameProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.ExitTargetProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.operator ==(Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation, Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.operator !=(Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation, Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.Equals(Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.EntranceTarget.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.EntranceTarget.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.EntranceTargetName.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.EntranceTargetName.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.ExitTarget.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.ExitTarget.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.ExitTargetName.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.ExitTargetName.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

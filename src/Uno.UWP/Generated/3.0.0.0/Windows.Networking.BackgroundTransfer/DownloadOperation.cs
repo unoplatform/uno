@@ -29,25 +29,11 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri RequestedUri
+		public global::Windows.Web.WebErrorStatus? CurrentWebErrorStatus
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri DownloadOperation.RequestedUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20DownloadOperation.RequestedUri");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.DownloadOperation", "Uri DownloadOperation.RequestedUri");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Method
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string DownloadOperation.Method is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DownloadOperation.Method");
+				throw new global::System.NotImplementedException("The member WebErrorStatus? DownloadOperation.CurrentWebErrorStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebErrorStatus%3F%20DownloadOperation.CurrentWebErrorStatus");
 			}
 		}
 #endif
@@ -68,6 +54,30 @@ namespace Windows.Networking.BackgroundTransfer
 			get
 			{
 				throw new global::System.NotImplementedException("The member Guid DownloadOperation.Guid is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20DownloadOperation.Guid");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsRandomAccessRequired
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool DownloadOperation.IsRandomAccessRequired is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DownloadOperation.IsRandomAccessRequired");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.DownloadOperation", "bool DownloadOperation.IsRandomAccessRequired");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Method
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string DownloadOperation.Method is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DownloadOperation.Method");
 			}
 		}
 #endif
@@ -97,6 +107,30 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IList<global::Windows.Web.WebErrorStatus> RecoverableWebErrorStatuses
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IList<WebErrorStatus> DownloadOperation.RecoverableWebErrorStatuses is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CWebErrorStatus%3E%20DownloadOperation.RecoverableWebErrorStatuses");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Uri RequestedUri
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Uri DownloadOperation.RequestedUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20DownloadOperation.RequestedUri");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.DownloadOperation", "Uri DownloadOperation.RequestedUri");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.IStorageFile ResultFile
 		{
 			get
@@ -115,42 +149,16 @@ namespace Windows.Networking.BackgroundTransfer
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsRandomAccessRequired
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool DownloadOperation.IsRandomAccessRequired is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DownloadOperation.IsRandomAccessRequired");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.DownloadOperation", "bool DownloadOperation.IsRandomAccessRequired");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Web.WebErrorStatus? CurrentWebErrorStatus
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member WebErrorStatus? DownloadOperation.CurrentWebErrorStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebErrorStatus%3F%20DownloadOperation.CurrentWebErrorStatus");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.Web.WebErrorStatus> RecoverableWebErrorStatuses
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<WebErrorStatus> DownloadOperation.RecoverableWebErrorStatuses is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CWebErrorStatus%3E%20DownloadOperation.RecoverableWebErrorStatuses");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.ResultFile.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.Progress.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.operator ==(Windows.Networking.BackgroundTransfer.DownloadOperation, Windows.Networking.BackgroundTransfer.DownloadOperation)
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.operator !=(Windows.Networking.BackgroundTransfer.DownloadOperation, Windows.Networking.BackgroundTransfer.DownloadOperation)
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.Equals(Windows.Networking.BackgroundTransfer.DownloadOperation)
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.Equals(object)
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.GetHashCode()
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Networking.BackgroundTransfer.DownloadOperation, global::Windows.Networking.BackgroundTransfer.DownloadOperation> StartAsync()
@@ -179,12 +187,6 @@ namespace Windows.Networking.BackgroundTransfer
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.DownloadOperation", "void DownloadOperation.Resume()");
 		}
 #endif
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.Guid.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.RequestedUri.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.Method.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.Group.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.CostPolicy.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.CostPolicy.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IInputStream GetResultStreamAt(ulong position)
@@ -199,11 +201,6 @@ namespace Windows.Networking.BackgroundTransfer
 			throw new global::System.NotImplementedException("The member ResponseInformation DownloadOperation.GetResponseInformation() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResponseInformation%20DownloadOperation.GetResponseInformation%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.Priority.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.Priority.set
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.TransferGroup.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.IsRandomAccessRequired.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.IsRandomAccessRequired.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IRandomAccessStreamReference GetResultRandomAccessStreamReference()
@@ -220,9 +217,6 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.RangesDownloaded.add
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.RangesDownloaded.remove
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.RequestedUri.set
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.RecoverableWebErrorStatuses.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.CurrentWebErrorStatus.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void MakeCurrentInTransferGroup()
@@ -244,6 +238,23 @@ namespace Windows.Networking.BackgroundTransfer
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.DownloadOperation", "void DownloadOperation.RemoveRequestHeader(string headerName)");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.CostPolicy.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.CostPolicy.set
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.CurrentWebErrorStatus.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.Group.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.Guid.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.IsRandomAccessRequired.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.IsRandomAccessRequired.set
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.Method.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.Priority.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.Priority.set
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.Progress.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.RecoverableWebErrorStatuses.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.RequestedUri.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.RequestedUri.set
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.ResultFile.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.TransferGroup.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.BackgroundTransfer.DownloadOperation, global::Windows.Networking.BackgroundTransfer.BackgroundTransferRangesDownloadedEventArgs> RangesDownloaded

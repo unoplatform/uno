@@ -63,10 +63,21 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.BytesSent.get
-		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.BytesReceived.get
+		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.FromAbi(nint)
+		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.operator ==(Windows.Networking.Connectivity.AttributedNetworkUsage, Windows.Networking.Connectivity.AttributedNetworkUsage)
+		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.operator !=(Windows.Networking.Connectivity.AttributedNetworkUsage, Windows.Networking.Connectivity.AttributedNetworkUsage)
+		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.Equals(Windows.Networking.Connectivity.AttributedNetworkUsage)
+		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.Equals(object)
+		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.GetHashCode()
+		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.AttributionId.get
 		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.AttributionName.get
 		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.AttributionThumbnail.get
+		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.BytesReceived.get
+		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.BytesSent.get
+		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

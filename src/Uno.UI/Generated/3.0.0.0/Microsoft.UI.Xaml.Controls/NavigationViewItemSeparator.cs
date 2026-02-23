@@ -10,5 +10,17 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.NavigationViewItemSeparator.NavigationViewItemSeparator()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemSeparator.NavigationViewItemSeparator()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemSeparator.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemSeparator.NavigationViewItemSeparator(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemSeparator.operator ==(Microsoft.UI.Xaml.Controls.NavigationViewItemSeparator, Microsoft.UI.Xaml.Controls.NavigationViewItemSeparator)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemSeparator.operator !=(Microsoft.UI.Xaml.Controls.NavigationViewItemSeparator, Microsoft.UI.Xaml.Controls.NavigationViewItemSeparator)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemSeparator.Equals(Microsoft.UI.Xaml.Controls.NavigationViewItemSeparator)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemSeparator.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemSeparator.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemSeparator.NavigationViewItemSeparator(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemSeparator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemSeparator.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemSeparator.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemSeparator.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

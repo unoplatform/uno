@@ -23,14 +23,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserDataTasks.UserDataTaskStore> RequestStoreAsync(global::Windows.ApplicationModel.UserDataTasks.UserDataTaskStoreAccessType accessType)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<UserDataTaskStore> UserDataTaskManager.RequestStoreAsync(UserDataTaskStoreAccessType accessType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUserDataTaskStore%3E%20UserDataTaskManager.RequestStoreAsync%28UserDataTaskStoreAccessType%20accessType%29");
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskManager.User.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskManager.As<I>()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.UserDataTasks.UserDataTaskManager GetDefault()
@@ -45,5 +38,24 @@ namespace Windows.ApplicationModel.UserDataTasks
 			throw new global::System.NotImplementedException("The member UserDataTaskManager UserDataTaskManager.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskManager%20UserDataTaskManager.GetForUser%28User%20user%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskManager.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskManager.operator ==(Windows.ApplicationModel.UserDataTasks.UserDataTaskManager, Windows.ApplicationModel.UserDataTasks.UserDataTaskManager)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskManager.operator !=(Windows.ApplicationModel.UserDataTasks.UserDataTaskManager, Windows.ApplicationModel.UserDataTasks.UserDataTaskManager)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskManager.Equals(Windows.ApplicationModel.UserDataTasks.UserDataTaskManager)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskManager.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskManager.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskManager.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskManager.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskManager.WinRT.IWinRTObject.AdditionalTypeData.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserDataTasks.UserDataTaskStore> RequestStoreAsync(global::Windows.ApplicationModel.UserDataTasks.UserDataTaskStoreAccessType accessType)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<UserDataTaskStore> UserDataTaskManager.RequestStoreAsync(UserDataTaskStoreAccessType accessType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUserDataTaskStore%3E%20UserDataTaskManager.RequestStoreAsync%28UserDataTaskStoreAccessType%20accessType%29");
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskManager.User.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

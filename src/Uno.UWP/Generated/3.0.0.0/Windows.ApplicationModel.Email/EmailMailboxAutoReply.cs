@@ -15,20 +15,6 @@ namespace Windows.ApplicationModel.Email
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Response
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string EmailMailboxAutoReply.Response is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailMailboxAutoReply.Response");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxAutoReply", "string EmailMailboxAutoReply.Response");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsEnabled
 		{
 			get
@@ -41,9 +27,34 @@ namespace Windows.ApplicationModel.Email
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Response
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string EmailMailboxAutoReply.Response is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailMailboxAutoReply.Response");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMailboxAutoReply", "string EmailMailboxAutoReply.Response");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReply.FromAbi(nint)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReply.operator ==(Windows.ApplicationModel.Email.EmailMailboxAutoReply, Windows.ApplicationModel.Email.EmailMailboxAutoReply)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReply.operator !=(Windows.ApplicationModel.Email.EmailMailboxAutoReply, Windows.ApplicationModel.Email.EmailMailboxAutoReply)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReply.Equals(Windows.ApplicationModel.Email.EmailMailboxAutoReply)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReply.Equals(object)
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReply.GetHashCode()
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReply.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReply.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReply.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReply.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReply.IsEnabled.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReply.IsEnabled.set
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReply.Response.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReply.Response.set
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReply.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

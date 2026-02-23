@@ -12,10 +12,22 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property Value
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.CalendarDatePickerAutomationPeer(Microsoft.UI.Xaml.Controls.CalendarDatePicker)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.CalendarDatePickerAutomationPeer(Microsoft.UI.Xaml.Controls.CalendarDatePicker)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.FromAbi(nint)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.CalendarDatePickerAutomationPeer(WinRT.IObjectReference)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.operator ==(Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.operator !=(Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer, Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.Equals(Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.Equals(object)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.GetHashCode()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.CalendarDatePickerAutomationPeer(WinRT.DerivedComposed)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.Invoke()
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.SetValue(string)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.Value.get
-		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.SetValue(string)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.IsOverridableInterface(System.Guid)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IInvokeProvider
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IValueProvider
 	}
