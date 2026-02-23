@@ -171,6 +171,114 @@ namespace Microsoft.UI.Xaml.Shapes
 		);
 		#endregion
 
+		#region StrokeStartLineCap Dependency Property
+		public Media.PenLineCap StrokeStartLineCap
+		{
+			get => (Media.PenLineCap)this.GetValue(StrokeStartLineCapProperty);
+			set => this.SetValue(StrokeStartLineCapProperty, value);
+		}
+
+		public static DependencyProperty StrokeStartLineCapProperty { get; } = DependencyProperty.Register(
+			nameof(StrokeStartLineCap),
+			typeof(Media.PenLineCap),
+			typeof(Shape),
+			new FrameworkPropertyMetadata(
+				defaultValue: Media.PenLineCap.Flat,
+				options: FrameworkPropertyMetadataOptions.AffectsArrange
+			)
+		);
+		#endregion
+
+		#region StrokeEndLineCap Dependency Property
+		public Media.PenLineCap StrokeEndLineCap
+		{
+			get => (Media.PenLineCap)this.GetValue(StrokeEndLineCapProperty);
+			set => this.SetValue(StrokeEndLineCapProperty, value);
+		}
+
+		public static DependencyProperty StrokeEndLineCapProperty { get; } = DependencyProperty.Register(
+			nameof(StrokeEndLineCap),
+			typeof(Media.PenLineCap),
+			typeof(Shape),
+			new FrameworkPropertyMetadata(
+				defaultValue: Media.PenLineCap.Flat,
+				options: FrameworkPropertyMetadataOptions.AffectsArrange
+			)
+		);
+		#endregion
+
+		#region StrokeLineJoin Dependency Property
+		public Media.PenLineJoin StrokeLineJoin
+		{
+			get => (Media.PenLineJoin)this.GetValue(StrokeLineJoinProperty);
+			set => this.SetValue(StrokeLineJoinProperty, value);
+		}
+
+		public static DependencyProperty StrokeLineJoinProperty { get; } = DependencyProperty.Register(
+			nameof(StrokeLineJoin),
+			typeof(Media.PenLineJoin),
+			typeof(Shape),
+			new FrameworkPropertyMetadata(
+				defaultValue: Media.PenLineJoin.Miter,
+				options: FrameworkPropertyMetadataOptions.AffectsArrange
+			)
+		);
+		#endregion
+
+		#region StrokeMiterLimit Dependency Property
+		public double StrokeMiterLimit
+		{
+			get => (double)this.GetValue(StrokeMiterLimitProperty);
+			set => this.SetValue(StrokeMiterLimitProperty, value);
+		}
+
+		public static DependencyProperty StrokeMiterLimitProperty { get; } = DependencyProperty.Register(
+			nameof(StrokeMiterLimit),
+			typeof(double),
+			typeof(Shape),
+			new FrameworkPropertyMetadata(
+				defaultValue: 10.0,
+				options: FrameworkPropertyMetadataOptions.AffectsArrange
+			)
+		);
+		#endregion
+
+		#region StrokeDashCap Dependency Property
+		public Media.PenLineCap StrokeDashCap
+		{
+			get => (Media.PenLineCap)this.GetValue(StrokeDashCapProperty);
+			set => this.SetValue(StrokeDashCapProperty, value);
+		}
+
+		public static DependencyProperty StrokeDashCapProperty { get; } = DependencyProperty.Register(
+			nameof(StrokeDashCap),
+			typeof(Media.PenLineCap),
+			typeof(Shape),
+			new FrameworkPropertyMetadata(
+				defaultValue: Media.PenLineCap.Flat,
+				options: FrameworkPropertyMetadataOptions.AffectsArrange
+			)
+		);
+		#endregion
+
+		#region StrokeDashOffset Dependency Property
+		public double StrokeDashOffset
+		{
+			get => (double)this.GetValue(StrokeDashOffsetProperty);
+			set => this.SetValue(StrokeDashOffsetProperty, value);
+		}
+
+		public static DependencyProperty StrokeDashOffsetProperty { get; } = DependencyProperty.Register(
+			nameof(StrokeDashOffset),
+			typeof(double),
+			typeof(Shape),
+			new FrameworkPropertyMetadata(
+				defaultValue: 0.0,
+				options: FrameworkPropertyMetadataOptions.AffectsArrange
+			)
+		);
+		#endregion
+
 		// Do not invoke base.IsViewHit(): We don't have to have de FrameworkElement.Background to be hit testable!
 		internal override bool IsViewHit()
 			=> Fill != null
