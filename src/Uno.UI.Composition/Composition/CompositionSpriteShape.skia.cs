@@ -91,11 +91,12 @@ namespace Microsoft.UI.Composition
 					bool needsCustomCaps = StrokeStartCap != StrokeEndCap
 						|| StrokeStartCap == CompositionStrokeCap.Triangle;
 
+					float[]? dashValues = null;
 					if (StrokeDashArray is { Count: > 0 } strokeDashArray)
 					{
 						strokePaint.StrokeCap = ToSKStrokeCap(StrokeDashCap);
 						// WinUI dash values are in multiples of StrokeThickness; Skia expects pixels
-						var dashValues = strokeDashArray.ToEvenArray();
+						dashValues = strokeDashArray.ToEvenArray();
 						for (int i = 0; i < dashValues.Length; i++)
 						{
 							dashValues[i] *= StrokeThickness;
@@ -146,6 +147,16 @@ namespace Microsoft.UI.Composition
 					if (needsCustomCaps && StrokeDashArray is not { Count: > 0 })
 					{
 						AddCustomCaps(strokeFillPath, geometryWithTransformations.Geometry, StrokeThickness, StrokeStartCap, StrokeEndCap);
+					}
+
+					// Fix endpoint caps for dashed strokes: WinUI uses StartCap/EndCap at path
+					// endpoints but DashCap at internal dash boundaries. Skia applies DashCap uniformly.
+					if (dashValues is not null
+						&& (StrokeDashCap != StrokeStartCap || StrokeDashCap != StrokeEndCap))
+					{
+						FixDashEndpointCaps(strokeFillPath, geometryWithTransformations.Geometry,
+							StrokeThickness, StrokeDashCap, StrokeStartCap, StrokeEndCap,
+							dashValues, StrokeDashOffset * StrokeThickness);
 					}
 
 					session.Canvas.Save();
@@ -220,11 +231,12 @@ namespace Microsoft.UI.Composition
 					bool needsCustomCaps = StrokeStartCap != StrokeEndCap
 						|| StrokeStartCap == CompositionStrokeCap.Triangle;
 
+					float[]? dashValues = null;
 					if (StrokeDashArray is { Count: > 0 } strokeDashArray)
 					{
 						strokePaint.StrokeCap = ToSKStrokeCap(StrokeDashCap);
 						// WinUI dash values are in multiples of StrokeThickness; Skia expects pixels
-						var dashValues = strokeDashArray.ToEvenArray();
+						dashValues = strokeDashArray.ToEvenArray();
 						for (int i = 0; i < dashValues.Length; i++)
 						{
 							dashValues[i] *= StrokeThickness;
@@ -245,6 +257,15 @@ namespace Microsoft.UI.Composition
 					if (needsCustomCaps && StrokeDashArray is not { Count: > 0 })
 					{
 						AddCustomCaps(hitTestStrokeFillPath, geometryWithTransformations.Geometry, StrokeThickness, StrokeStartCap, StrokeEndCap);
+					}
+
+					// Fix endpoint caps for dashed strokes (mirror of Paint logic)
+					if (dashValues is not null
+						&& (StrokeDashCap != StrokeStartCap || StrokeDashCap != StrokeEndCap))
+					{
+						FixDashEndpointCaps(hitTestStrokeFillPath, geometryWithTransformations.Geometry,
+							StrokeThickness, StrokeDashCap, StrokeStartCap, StrokeEndCap,
+							dashValues, StrokeDashOffset * StrokeThickness);
 					}
 
 					if (hitTestStrokeFillPath.Contains((float)point.X, (float)point.Y))
@@ -316,6 +337,156 @@ namespace Microsoft.UI.Composition
 					}
 				}
 			} while (measure.NextContour());
+		}
+
+		/// <summary>
+		/// Fixes endpoint caps on dashed strokes. WinUI applies StrokeStartCap at path start and
+		/// StrokeEndCap at path end, but StrokeDashCap at internal dash boundaries. Skia's
+		/// GetFillPath with a dash effect applies DashCap uniformly. This method corrects the
+		/// endpoints by removing the incorrect DashCap protrusion and adding the correct cap.
+		/// </summary>
+		private static void FixDashEndpointCaps(
+			SKPath fillPath,
+			SKPath originalGeometry,
+			float strokeWidth,
+			CompositionStrokeCap dashCap,
+			CompositionStrokeCap startCap,
+			CompositionStrokeCap endCap,
+			float[] dashValues,
+			float dashOffset)
+		{
+			using var measure = new SKPathMeasure(originalGeometry, false);
+			do
+			{
+				if (measure.IsClosed)
+				{
+					continue;
+				}
+
+				var length = measure.Length;
+				if (length <= 0)
+				{
+					continue;
+				}
+
+				// Fix start cap
+				if (dashCap != startCap
+					&& measure.GetPositionAndTangent(0, out var startPos, out var startTan)
+					&& IsPositionInDash(0, dashValues, dashOffset))
+				{
+					var backDir = new SKPoint(-startTan.X, -startTan.Y);
+
+					// Remove the incorrect DashCap protrusion at start
+					if (dashCap != CompositionStrokeCap.Flat)
+					{
+						using var cutter = BuildHalfPlaneCutter(startPos, backDir, strokeWidth);
+						using var result = new SKPath();
+						if (fillPath.Op(cutter, SKPathOp.Difference, result))
+						{
+							fillPath.Rewind();
+							fillPath.AddPath(result);
+						}
+					}
+
+					// Add the correct StartCap
+					if (startCap != CompositionStrokeCap.Flat)
+					{
+						using var capPath = BuildCapPath(startPos, backDir, strokeWidth, startCap);
+						if (capPath != null)
+						{
+							fillPath.AddPath(capPath);
+						}
+					}
+				}
+
+				// Fix end cap
+				if (dashCap != endCap
+					&& measure.GetPositionAndTangent(length, out var endPos, out var endTan)
+					&& IsPositionInDash(length, dashValues, dashOffset))
+				{
+					// Remove the incorrect DashCap protrusion at end
+					if (dashCap != CompositionStrokeCap.Flat)
+					{
+						using var cutter = BuildHalfPlaneCutter(endPos, endTan, strokeWidth);
+						using var result = new SKPath();
+						if (fillPath.Op(cutter, SKPathOp.Difference, result))
+						{
+							fillPath.Rewind();
+							fillPath.AddPath(result);
+						}
+					}
+
+					// Add the correct EndCap
+					if (endCap != CompositionStrokeCap.Flat)
+					{
+						using var capPath = BuildCapPath(endPos, endTan, strokeWidth, endCap);
+						if (capPath != null)
+						{
+							fillPath.AddPath(capPath);
+						}
+					}
+				}
+			} while (measure.NextContour());
+		}
+
+		/// <summary>
+		/// Builds a half-plane rectangle extending from an endpoint in the cap direction.
+		/// Used to cut away incorrect DashCap protrusions at path endpoints.
+		/// </summary>
+		private static SKPath BuildHalfPlaneCutter(SKPoint position, SKPoint direction, float strokeWidth)
+		{
+			var size = strokeWidth * 2;
+			var normal = new SKPoint(-direction.Y, direction.X);
+
+			var p1 = new SKPoint(position.X + normal.X * size, position.Y + normal.Y * size);
+			var p2 = new SKPoint(p1.X + direction.X * size, p1.Y + direction.Y * size);
+			var p3 = new SKPoint(position.X - normal.X * size + direction.X * size, position.Y - normal.Y * size + direction.Y * size);
+			var p4 = new SKPoint(position.X - normal.X * size, position.Y - normal.Y * size);
+
+			var path = new SKPath();
+			path.AddPoly(new[] { p1, p2, p3, p4 }, close: true);
+			return path;
+		}
+
+		/// <summary>
+		/// Determines whether a given position along a path falls within a dash (true) or a gap (false)
+		/// in the dash pattern.
+		/// </summary>
+		private static bool IsPositionInDash(float position, float[] dashValues, float dashOffset)
+		{
+			// Compute total dash pattern length
+			var totalLength = 0f;
+			for (int i = 0; i < dashValues.Length; i++)
+			{
+				totalLength += dashValues[i];
+			}
+
+			if (totalLength <= 0)
+			{
+				return true;
+			}
+
+			// Normalize position within pattern, accounting for offset
+			var patternPos = (position + dashOffset) % totalLength;
+			if (patternPos < 0)
+			{
+				patternPos += totalLength;
+			}
+
+			// Walk through dash values to find which segment the position falls in.
+			// Even indices are dashes, odd indices are gaps.
+			var accumulated = 0f;
+			for (int i = 0; i < dashValues.Length; i++)
+			{
+				accumulated += dashValues[i];
+				if (patternPos < accumulated)
+				{
+					return i % 2 == 0; // Even = dash, odd = gap
+				}
+			}
+
+			// Edge case: position exactly at pattern boundary - treat as start of dash
+			return true;
 		}
 
 		/// <summary>
