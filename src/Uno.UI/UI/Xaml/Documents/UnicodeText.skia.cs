@@ -731,10 +731,9 @@ internal readonly partial struct UnicodeText : IParsedText
 		var possibleTrimPoints = new Stack<LinkedListNode<Cluster>>();
 		var currentCluster = line.clusterStart;
 		for (var currentlineBreakOpportunity = lineBreakOpportunities[lineBreakOpportunitiesLookupStart];
-			 lineBreakOpportunitiesLookupStart < lineBreakOpportunities.Count && currentlineBreakOpportunity <= line.end;
+			 lineBreakOpportunitiesLookupStart < lineBreakOpportunities.Count && (currentlineBreakOpportunity = lineBreakOpportunities[lineBreakOpportunitiesLookupStart]) <= line.end;
 			 lineBreakOpportunitiesLookupStart++)
 		{
-			currentlineBreakOpportunity = lineBreakOpportunities[lineBreakOpportunitiesLookupStart];
 			while (currentCluster.Value.end < currentlineBreakOpportunity)
 			{
 				currentCluster = currentCluster.Next!;
