@@ -14,6 +14,14 @@
 
 	<ItemGroup>
 		<Compile Include="..\Uno.UI.RemoteControl\HotReload\Messages\**\*.cs" Link="HotReload/Messages/%(Filename)%(Extension)" />
+		<Compile Remove="..\Uno.UI.RemoteControl\HotReload\Messages\IUpdateFileRequest.cs" />
+		<Compile Remove="..\Uno.UI.RemoteControl\HotReload\Messages\FileEdit.cs" />
+		<Compile Remove="..\Uno.UI.RemoteControl\HotReload\Messages\FileEditResult.cs" />
+		<Compile Remove="..\Uno.UI.RemoteControl\HotReload\Messages\FileUpdateResult.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Using Include="Uno.HotReload.IO" />
 	</ItemGroup>
 
 	<ItemGroup>

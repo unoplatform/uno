@@ -188,10 +188,21 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 
 		if (options.SetAsDefaultInstance)
 		{
+			var previous = Instance;
 			Instance = client;
+			if (previous is not null && !ReferenceEquals(previous, client))
+			{
+				_ = DisposePreviousInstanceAsync(previous);
+			}
 		}
 
 		return client;
+	}
+
+	private static async Task DisposePreviousInstanceAsync(RemoteControlClient client)
+	{
+		try { await client.DisposeAsync(); }
+		catch { /* Best effort cleanup */ }
 	}
 
 	public event RemoteControlFrameReceivedEventHandler? FrameReceived;

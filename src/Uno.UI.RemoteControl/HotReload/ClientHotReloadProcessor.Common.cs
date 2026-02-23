@@ -130,7 +130,6 @@ namespace Uno.UI.RemoteControl.HotReload
 				// In the case of Page, swapping the actual page is not supported, so we
 				// need to swap the content of the page instead. This can happen if the Frame
 				// is using a native presenter which does not use the `Frame.Content` property.
-
 				oldPage.Content = newPage;
 #if !WINUI
 				newPage.Frame = oldPage.Frame;

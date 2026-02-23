@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 using Uno.Extensions;
@@ -55,6 +56,9 @@ public class UpdateSingleFileRequest : IMessage, IUpdateFileRequest
 	/// <inheritdoc />
 	[JsonProperty]
 	public int? ForceHotReloadAttempts { get; set; }
+
+	[JsonIgnore]
+	public ImmutableArray<FileEdit> Edits => [new(FilePath, OldText, NewText, IsCreateDeleteAllowed)];
 
 	[JsonIgnore]
 	public string Scope => WellKnownScopes.HotReload;
