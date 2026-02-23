@@ -444,6 +444,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_GetFile_File_Does_Not_Exist()
 		{
 			var rootFolder = await GetRootFolderAsync();
