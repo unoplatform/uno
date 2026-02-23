@@ -152,6 +152,27 @@ public class Given_Matrix3DProjection
 #endif
 
 	[TestMethod]
+	public async Task When_ProjectionMatrix_Not_Set_Element_Still_Renders()
+	{
+		var border = new Border
+		{
+			Width = 100,
+			Height = 100,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Red)
+		};
+
+		// Assign Matrix3DProjection without setting ProjectionMatrix.
+		// On WinUI the unset backing pointer causes identity to be used,
+		// so the element must remain visible.
+		border.Projection = new Matrix3DProjection();
+
+		await UITestHelper.Load(border);
+
+		var bitmap = await UITestHelper.ScreenShot(border);
+		ImageAssert.HasColorAt(bitmap, bitmap.Width / 2, bitmap.Height / 2, Microsoft.UI.Colors.Red, tolerance: 25);
+	}
+
+	[TestMethod]
 	public async Task When_Projection_Set_To_Null()
 	{
 		var border = new Border
