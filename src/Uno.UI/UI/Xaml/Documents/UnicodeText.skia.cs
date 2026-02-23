@@ -593,7 +593,8 @@ internal readonly partial struct UnicodeText : IParsedText
 		totalHeight += _endingNewLineLineHeight ?? 0;
 
 		float maxLineWidthWithoutTrailingSpaces = 0;
-		_indexToCluster = new List<(int start, int end, LinkedListNode<Cluster> cluster)>(clusterBreaks.Count);
+		_indexToCluster = new List<(int start, int end, LinkedListNode<Cluster> cluster)>();
+		_clustersInLogicalOrder = new();
 		for (var lineIndex = 0; lineIndex < lines.Count; lineIndex++)
 		{
 			var line = lines[lineIndex];
@@ -602,20 +603,11 @@ internal readonly partial struct UnicodeText : IParsedText
 			{
 				node.Value = node.Value with { lineIndex = lineIndex };
 				_indexToCluster.Add((node.Value.start, node.Value.end, node));
+				_clustersInLogicalOrder.Add(node);
 				if (node == line.clusterLast)
 				{
 					break;
 				}
-			}
-		}
-
-		_clustersInLogicalOrder = new(clusterBreaks.Count);
-		for (var node = clusterBreaks.First; ; node = node!.Next)
-		{
-			_clustersInLogicalOrder.Add(node!);
-			if (node == clusterBreaks.Last)
-			{
-				break;
 			}
 		}
 
@@ -739,10 +731,9 @@ internal readonly partial struct UnicodeText : IParsedText
 		var possibleTrimPoints = new Stack<LinkedListNode<Cluster>>();
 		var currentCluster = line.clusterStart;
 		for (var currentlineBreakOpportunity = lineBreakOpportunities[lineBreakOpportunitiesLookupStart];
-			 lineBreakOpportunitiesLookupStart < lineBreakOpportunities.Count && currentlineBreakOpportunity <= line.end;
+			 lineBreakOpportunitiesLookupStart < lineBreakOpportunities.Count && (currentlineBreakOpportunity = lineBreakOpportunities[lineBreakOpportunitiesLookupStart]) <= line.end;
 			 lineBreakOpportunitiesLookupStart++)
 		{
-			currentlineBreakOpportunity = lineBreakOpportunities[lineBreakOpportunitiesLookupStart];
 			while (currentCluster.Value.end < currentlineBreakOpportunity)
 			{
 				currentCluster = currentCluster.Next!;
