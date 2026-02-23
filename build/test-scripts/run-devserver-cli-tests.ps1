@@ -248,21 +248,61 @@ function Invoke-CodexToolEnumerationTest {
     param([string]$WorkingDirectory)
 
     $toolsFile = Join-Path $WorkingDirectory "codex-tools.json"
-    if (Test-Path $toolsFile) {
-        Remove-Item $toolsFile -Force
+    $toolsFileName = Split-Path $toolsFile -Leaf
+
+    $maxAttempts = 2
+    $lastError = $null
+
+    for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
+        $lastError = $null
+
+        if (Test-Path $toolsFile) {
+            Remove-Item $toolsFile -Force
+        }
+
+        try {
+            Invoke-SingleCodexToolEnumeration -WorkingDirectory $WorkingDirectory -ToolsFile $toolsFile -ToolsFileName $toolsFileName
+            return # success
+        }
+        catch {
+            $lastError = $_
+            if ($attempt -lt $maxAttempts) {
+                Write-Log "Codex tool enumeration attempt $attempt failed: $($_.Exception.Message). Retrying..."
+                # Clean up stale DevServer before retry
+                Stop-DevserverInDirectory -Directory $WorkingDirectory
+            }
+        }
     }
 
-    $toolsFileName = Split-Path $toolsFile -Leaf
+    throw "Codex tool enumeration failed after $maxAttempts attempts. Last error: $($lastError.Exception.Message)"
+}
+
+function Invoke-SingleCodexToolEnumeration {
+    param(
+        [string]$WorkingDirectory,
+        [string]$ToolsFile,
+        [string]$ToolsFileName
+    )
+
     $instructions = @"
 You are running inside an automated CI validation for the Uno Platform devserver CLI.
 
-Tasks:
-1. Create a list of all MCP tools available to you
-2. Create or overwrite a JSON file named '$toolsFileName' in the current working directory.
-    The JSON must be an object that contains a property ``"tools"`` whose value is an alphabetically sorted array listing every tool identifier you discovered.
-3. Confirm completion and exit when finished.
+Your ONLY task: enumerate every MCP **tool** (callable function) and write the list to a JSON file.
 
-Begin now.
+Steps:
+1. Look at the functions available to you whose names start with ``mcp__``.
+   These are MCP tools. Each one has the form ``mcp__<server>__<tool_name>``.
+   Extract just the ``<tool_name>`` part (e.g. ``mcp__uno-app__uno_app_get_screenshot`` → ``uno_app_get_screenshot``).
+   IMPORTANT: Do NOT list MCP resources or resource URIs (like ``uno://health``). Only list callable tool function names.
+2. Write a JSON file named ``$ToolsFileName`` in the current directory.
+   The file must contain ONLY this JSON object, nothing else:
+   ``{"tools":["tool_a","tool_b","tool_c"]}``
+   where the array is alphabetically sorted. Example with real names:
+   ``{"tools":["uno_app_get_screenshot","uno_get_build_output","uno_health"]}``
+   Write raw JSON only — no markdown fences, no trailing newline, no extra text.
+3. Confirm done and exit.
+
+Begin.
 "@
 
     $stdOutFile = [System.IO.Path]::GetTempFileName()
@@ -329,20 +369,28 @@ Begin now.
         }
     }
 
-    if (-not (Test-Path $toolsFile)) {
-        throw "Codex CLI did not create $toolsFile.`nSTDOUT:`n$stdout`nSTDERR:`n$stderr"
+    if (-not (Test-Path $ToolsFile)) {
+        throw "Codex CLI did not create $ToolsFile.`nSTDOUT:`n$stdout`nSTDERR:`n$stderr"
     }
 
-    $jsonText = Get-Content $toolsFile -Raw -ErrorAction Stop
+    $jsonText = (Get-Content $ToolsFile -Raw -ErrorAction Stop).Trim()
+    # LLMs sometimes emit a literal \n after the JSON object — strip it
+    $jsonText = $jsonText -replace '\\n$', ''
     try {
         $json = $jsonText | ConvertFrom-Json -ErrorAction Stop
     }
     catch {
-        throw "codex-tools.json is not valid JSON: $($_.Exception.Message)"
+        throw "codex-tools.json is not valid JSON (raw content: $jsonText): $($_.Exception.Message)"
     }
 
     if (-not $json.tools -or $json.tools.Count -eq 0) {
         throw "codex-tools.json does not contain a non-empty 'tools' array."
+    }
+
+    # The upstream DevServer + add-ins expose at least 10 tools; a much smaller
+    # count means the model listed resources or only built-in tools.
+    if ($json.tools.Count -lt 5) {
+        throw "codex-tools.json contains only $($json.tools.Count) tool(s), expected at least 5. The model may have listed MCP resources instead of tools. Tools found: $($json.tools -join ', ')"
     }
 
     Write-Log "Codex CLI reported $($json.tools.Count) tools via codex-tools.json:"
@@ -352,7 +400,7 @@ Begin now.
 
     $screenshotTool = $json.tools | Where-Object { $_ -like '*uno_app_get_screenshot*' } | Select-Object -First 1
     if (-not $screenshotTool) {
-        throw "Codex CLI did not report the required 'uno_app_get_screenshot' tool."
+        throw "Codex CLI did not report the required 'uno_app_get_screenshot' tool. Tools found: $($json.tools -join ', ')"
     }
 }
 
@@ -1152,6 +1200,9 @@ try {
     # +1 accounts for the port used internally by Test-McpModeWithoutSolutionDir
     $maxAllocatedPort = [Math]::Max($primaryPort, $solutionDirTestPort) + 1
     Test-McpModeWithRootsFallback -SlnDir $slnDir -DefaultPort $defaultPort -MaxAllocatedPort $maxAllocatedPort
+    # Ensure a clean state before the Codex test — previous MCP tests may leave
+    # behind a stale DevServer registration or lingering host process.
+    Stop-DevserverInDirectory -Directory $slnDir
     Test-CodexIntegration -SlnDir $slnDir
 
     $finalExitCode = 0
