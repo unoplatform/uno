@@ -6,8 +6,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
+
 using Mono.Cecil;
 
 namespace Uno.UI.Tasks.LinkerHintsGenerator
@@ -25,8 +27,6 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			= MessageImportance.Low;
 #endif
 
-		private DefaultAssemblyResolver? _assemblyResolver;
-
 		[Required]
 		public string AssemblyPath { get; set; } = "";
 
@@ -40,268 +40,260 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 		{
 			try
 			{
-				Log.LogMessage(DefaultLogMessageLevel, $"BindableTypeLinkerGenerator: Processing assembly {AssemblyPath}");
+				Log.LogMessage(DefaultLogMessageLevel, $"Processing assembly: {AssemblyPath}");
 
-				BuildAssemblyResolver();
+				using var resolver = BuildAssemblyResolver();
 
-				var assemblyList = BuildAssemblyList();
+				var assemblyList = BuildAssemblyList(resolver);
 				var bindableTypes = FindBindableTypes(assemblyList);
-				var referencedTypes = FindReferencedTypes(bindableTypes);
+				var typeCache = new TypeDefinitionCache();
+				var typesToProperties = FindReferencedPropertyTypes(bindableTypes, typeCache);
 
-				if (referencedTypes.Count > 0)
+				if (typesToProperties.Count > 0)
 				{
-					GenerateLinkerDescriptor(referencedTypes);
-					Log.LogMessage(MessageImportance.High, $"BindableTypeLinkerGenerator: Generated descriptor with {referencedTypes.Count} types");
+					GenerateLinkerDescriptor(typesToProperties);
+					Log.LogMessage(DefaultLogMessageLevel, $"Generated descriptor with {typesToProperties.Count} types.");
 				}
 				else
 				{
-					Log.LogMessage(DefaultLogMessageLevel, $"BindableTypeLinkerGenerator: No types to preserve found");
-				}
-
-				// Dispose assemblies
-				foreach (var asm in assemblyList)
-				{
-					asm.Dispose();
+					Log.LogMessage(DefaultLogMessageLevel, $"No types to preserve found.");
 				}
 
 				return true;
 			}
 			catch (Exception ex)
 			{
-				Log.LogError($"BindableTypeLinkerGenerator failed: {ex}");
+				Log.LogError($"BindableTypeLinkerGenerator failed: {ex.Message}");
+				Log.LogMessage(DefaultLogMessageLevel, ex.ToString());
 				return false;
 			}
 		}
 
-		private void BuildAssemblyResolver()
+		private DefaultAssemblyResolver BuildAssemblyResolver()
 		{
-			if (ReferencePath != null)
+			var resolver = new DefaultAssemblyResolver();
+
+			var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+			var assemblyPathDirectory = GetSearchDirectory(AssemblyPath);
+			if (assemblyPathDirectory != null)
 			{
-				var searchPaths = ReferencePath
-					.Select(p => Path.GetDirectoryName(p.ItemSpec))
-					.Where(p => !string.IsNullOrEmpty(p))
-					.Distinct()
-					.ToArray();
+				resolver.AddSearchDirectory(assemblyPathDirectory);
+				seen.Add(assemblyPathDirectory);
+			}
 
-				_assemblyResolver = new DefaultAssemblyResolver();
-
-				foreach (var path in searchPaths)
+			foreach (var reference in ReferencePath ?? [])
+			{
+				var path = GetSearchDirectory(reference.ItemSpec);
+				if (path == null || seen.Contains(path))
 				{
-					_assemblyResolver.AddSearchDirectory(path!);
+					continue;
 				}
+				resolver.AddSearchDirectory(path);
+				seen.Add(path);
+			}
+
+			return resolver;
+
+			static string? GetSearchDirectory(string path)
+			{
+				var directory = Path.GetDirectoryName(path);
+				if (string.IsNullOrEmpty(directory))
+				{
+					return null;
+				}
+				return directory;
 			}
 		}
 
-		private List<AssemblyDefinition> BuildAssemblyList()
+		private HashSet<AssemblyDefinition> BuildAssemblyList(DefaultAssemblyResolver resolver)
 		{
-			var assemblies = new List<AssemblyDefinition>();
-			var visitedAssemblies = new HashSet<string>();
-			var assembliesToProcess = new Queue<string>();
+			var rootAssembly = resolver.Resolve(AssemblyNameReference.Parse(Path.GetFileNameWithoutExtension(AssemblyPath)));
+			Log.LogMessage(DefaultLogMessageLevel, $"Resolved Root Assembly reference `{rootAssembly.FullName}`.");
 
-			// Start with the main assembly
-			assembliesToProcess.Enqueue(AssemblyPath);
+			var assemblies = new HashSet<AssemblyDefinition>()
+			{
+				rootAssembly,
+			};
+
+			var assembliesToProcess = new Queue<AssemblyDefinition>();
+			assembliesToProcess.Enqueue(rootAssembly);
 
 			while (assembliesToProcess.Count > 0)
 			{
-				var asmPath = assembliesToProcess.Dequeue();
-
-				if (visitedAssemblies.Contains(asmPath))
+				var assembly = assembliesToProcess.Dequeue();
+				foreach (var reference in assembly.MainModule.AssemblyReferences)
 				{
-					continue;
-				}
-
-				visitedAssemblies.Add(asmPath);
-
-				var asm = ReadAssembly(asmPath);
-				if (asm == null)
-				{
-					continue;
-				}
-
-				assemblies.Add(asm);
-
-				// Add referenced assemblies
-				foreach (var reference in asm.MainModule.AssemblyReferences)
-				{
-					try
+					var referencedAssembly = TryResolveAssembly(resolver, reference);
+					if (referencedAssembly != null && !assemblies.Contains(referencedAssembly))
 					{
-						var resolvedAsm = _assemblyResolver?.Resolve(reference);
-						if (resolvedAsm != null && !visitedAssemblies.Contains(resolvedAsm.MainModule.FileName))
-						{
-							assembliesToProcess.Enqueue(resolvedAsm.MainModule.FileName);
-						}
-					}
-					catch (Exception ex)
-					{
-						Log.LogMessage(MessageImportance.Low, $"Failed to resolve {reference.FullName}: {ex.Message}");
+						Log.LogMessage(DefaultLogMessageLevel, $"Resolved Assembly reference `{referencedAssembly.FullName}` via `{assembly.MainModule.FileName}`.");
+						assembliesToProcess.Enqueue(referencedAssembly);
+						assemblies.Add(referencedAssembly);
 					}
 				}
 			}
 
-			Log.LogMessage(DefaultLogMessageLevel, $"BindableTypeLinkerGenerator: Loaded {assemblies.Count} assemblies");
+			Log.LogMessage(DefaultLogMessageLevel, $"Loaded {assemblies.Count} assemblies.");
 			return assemblies;
 		}
 
-		private AssemblyDefinition? ReadAssembly(string asmPath)
+		private AssemblyDefinition? TryResolveAssembly(DefaultAssemblyResolver resolver, AssemblyNameReference assemblyName)
 		{
 			try
 			{
-				return AssemblyDefinition.ReadAssembly(asmPath, new ReaderParameters { AssemblyResolver = _assemblyResolver });
+				return resolver.Resolve(assemblyName);
 			}
 			catch (Exception ex)
 			{
-				Log.LogMessage(MessageImportance.Low, $"Failed to read assembly {asmPath}: {ex}");
+				Log.LogWarning($"Failed to resolve assembly `{assemblyName.FullName}`: {ex.Message}");
+				Log.LogMessage(MessageImportance.Low, ex.ToString());
 				return null;
 			}
 		}
 
-		private List<TypeDefinition> FindBindableTypes(List<AssemblyDefinition> assemblies)
+		private List<TypeDefinition> FindBindableTypes(IEnumerable<AssemblyDefinition> assemblies)
 		{
 			var bindableTypes = new List<TypeDefinition>();
 
-			foreach (var asm in assemblies)
+			foreach (var assembly in assemblies)
 			{
-				foreach (var type in asm.MainModule.Types)
+				foreach (var type in assembly.MainModule.Types.SelectMany(t => GetAllTypes(t)))
 				{
 					if (HasBindableAttribute(type))
 					{
 						bindableTypes.Add(type);
-						Log.LogMessage(DefaultLogMessageLevel, $"BindableTypeLinkerGenerator: Found bindable type {type.FullName}");
+						Log.LogMessage(DefaultLogMessageLevel, $"Found bindable type: {type.FullName}");
 					}
 				}
 			}
 
-			Log.LogMessage(DefaultLogMessageLevel, $"BindableTypeLinkerGenerator: Found {bindableTypes.Count} bindable types");
+			Log.LogMessage(DefaultLogMessageLevel, $"Found {bindableTypes.Count} bindable types.");
 			return bindableTypes;
+		}
+
+		private IEnumerable<TypeDefinition> GetAllTypes(TypeDefinition type)
+		{
+			yield return type;
+			foreach (var nested in type.NestedTypes)
+			{
+				foreach (var t in GetAllTypes(nested))
+				{
+					yield return t;
+				}
+			}
 		}
 
 		private bool HasBindableAttribute(TypeDefinition type)
 		{
 			return type.CustomAttributes.Any(attr =>
-				attr.AttributeType.FullName == "Microsoft.UI.Xaml.Data.BindableAttribute" ||
-				attr.AttributeType.FullName == "Uno.Extensions.Reactive.Bindings.BindableAttribute");
+				attr.AttributeType.FullName == "BindableAttribute" ||
+				attr.AttributeType.FullName.EndsWith(".BindableAttribute", StringComparison.Ordinal));
 		}
 
-		private Dictionary<TypeDefinition, HashSet<string>> FindReferencedTypes(List<TypeDefinition> bindableTypes)
+		private Dictionary<PreserveTypeDefinition, HashSet<PreservePropertyInfo>> FindReferencedPropertyTypes(IEnumerable<TypeDefinition> bindableTypes, TypeDefinitionCache typeCache)
 		{
-			var referencedTypes = new Dictionary<TypeDefinition, HashSet<string>>();
+			var typesToProperties = new Dictionary<PreserveTypeDefinition, HashSet<PreservePropertyInfo>>();
 
 			foreach (var bindableType in bindableTypes)
 			{
-				// Iterate over all public properties
-				foreach (var property in bindableType.Properties.Where(p => p.GetMethod?.IsPublic == true))
+				if (!bindableType.HasProperties)
 				{
-					ProcessPropertyType(property.PropertyType, referencedTypes);
+					continue;
+				}
+
+				// Iterate over all public properties
+				foreach (var property in bindableType.Properties.Where(ShouldProcessPropertyType))
+				{
+					AddDeclaredPropertyTypes(typeCache, property.PropertyType, typesToProperties);
 				}
 			}
 
-			Log.LogMessage(DefaultLogMessageLevel, $"BindableTypeLinkerGenerator: Found {referencedTypes.Count} referenced types to preserve");
-			return referencedTypes;
+			Log.LogMessage(DefaultLogMessageLevel, $"Found {typesToProperties.Count} implicitly referenced types.");
+			return typesToProperties;
 		}
 
-		private void ProcessPropertyType(TypeReference propertyType, Dictionary<TypeDefinition, HashSet<string>> referencedTypes)
+		static readonly HashSet<PreservePropertyInfo> EmptyPreservedPropertyInfo = [];
+
+		private void AddDeclaredPropertyTypes(TypeDefinitionCache typeCache, TypeReference typeReference, Dictionary<PreserveTypeDefinition, HashSet<PreservePropertyInfo>> typesToProperties)
 		{
-			// Resolve the type
-			TypeDefinition? resolvedType = null;
-			try
-			{
-				resolvedType = propertyType.Resolve();
-			}
-			catch (Exception ex)
-			{
-				Log.LogMessage(MessageImportance.Low, $"Failed to resolve type {propertyType.FullName}: {ex.Message}");
-				return;
-			}
-
-			if (resolvedType == null)
+			var typeDefinition = TryResolveTypeDefinition(typeCache, typeReference);
+			if (typeDefinition == null)
 			{
 				return;
 			}
 
-			// Process the main type
-			AddTypeIfNeeded(resolvedType, referencedTypes);
+			var key = new PreserveTypeDefinition(typeDefinition.FullName, typeDefinition);
+
+			if (typesToProperties.ContainsKey(key) ||
+					HasBindableAttribute(typeDefinition))
+			{
+				return;
+			}
+
+			if (!typeDefinition.HasProperties)
+			{
+				typesToProperties[key] = EmptyPreservedPropertyInfo;
+				return;
+			}
+
+			var declaredProperties = new HashSet<PreservePropertyInfo>();
+
+			foreach (var property in typeDefinition.Properties.Where(ShouldProcessPropertyType))
+			{
+				declaredProperties.Add(new PreservePropertyInfo(property.Name, property.PropertyType));
+			}
+			typesToProperties[key] = declaredProperties;
+
+			foreach (var property in declaredProperties)
+			{
+				AddDeclaredPropertyTypes(typeCache, property.PropertyType, typesToProperties);
+			}
 
 			// Process generic arguments (e.g., List<Entity> should also process Entity)
-			if (propertyType is GenericInstanceType genericType)
+			if (typeReference is GenericInstanceType genericType)
 			{
 				foreach (var genericArg in genericType.GenericArguments)
 				{
-					ProcessPropertyType(genericArg, referencedTypes);
+					AddDeclaredPropertyTypes(typeCache, genericArg, typesToProperties);
 				}
 			}
 		}
 
-		private void AddTypeIfNeeded(TypeDefinition resolvedType, Dictionary<TypeDefinition, HashSet<string>> referencedTypes)
+		static bool ShouldProcessPropertyType(PropertyDefinition property)
 		{
-			// Skip if type already has Bindable attribute
-			if (HasBindableAttribute(resolvedType))
+			var get = property.GetMethod;
+			if (get == null)
 			{
-				Log.LogMessage(MessageImportance.Low, $"Skipping {resolvedType.FullName} - already has Bindable attribute");
-				return;
+				return false;
 			}
+			return !get.IsStatic && get.IsPublic;
+		}
 
-			// Get all public properties with getters
-			var publicProperties = resolvedType.Properties
-				.Where(p => p.GetMethod?.IsPublic == true)
-				.Select(p => p.Name)
-				.ToList();
-
-			// Skip if type has no public properties
-			if (!publicProperties.Any())
+		private TypeDefinition? TryResolveTypeDefinition(TypeDefinitionCache typeCache, TypeReference typeReference)
+		{
+			try
 			{
-				Log.LogMessage(MessageImportance.Low, $"Skipping {resolvedType.FullName} - has no public properties");
-				return;
+				return typeCache.Resolve(typeReference);
 			}
-
-			// Add or update the type with its properties
-			if (!referencedTypes.ContainsKey(resolvedType))
+			catch (Exception ex)
 			{
-				referencedTypes[resolvedType] = new HashSet<string>();
-				Log.LogMessage(DefaultLogMessageLevel, $"BindableTypeLinkerGenerator: Adding referenced type {resolvedType.FullName}");
-			}
-
-			// Add all public properties to the set
-			foreach (var propName in publicProperties)
-			{
-				referencedTypes[resolvedType].Add(propName);
+				Log.LogWarning($"Failed to resolve type {typeReference.FullName}: {ex.Message}");
+				Log.LogMessage(MessageImportance.Low, ex.ToString());
+				return null;
 			}
 		}
 
-		private void GenerateLinkerDescriptor(Dictionary<TypeDefinition, HashSet<string>> referencedTypes)
+		private void GenerateLinkerDescriptor(Dictionary<PreserveTypeDefinition, HashSet<PreservePropertyInfo>> referencedTypes)
 		{
 			// Group types by assembly
 			var typesByAssembly = referencedTypes
-				.GroupBy(kvp => kvp.Key.Module.Assembly.Name.Name)
+				.GroupBy(kvp => kvp.Key.TypeDefinition.Module.Assembly.Name.Name)
 				.OrderBy(g => g.Key);
 
-			var linkerElement = new XElement("linker");
-
-			foreach (var assemblyGroup in typesByAssembly)
-			{
-				var assemblyElement = new XElement("assembly",
-					new XAttribute("fullname", assemblyGroup.Key));
-
-				foreach (var typeEntry in assemblyGroup.OrderBy(t => t.Key.FullName))
-				{
-					var type = typeEntry.Key;
-					var properties = typeEntry.Value;
-
-					var typeElement = new XElement("type",
-						new XAttribute("fullname", type.FullName),
-						new XAttribute("required", "false"));
-
-					// Add property elements for each public property
-					foreach (var propName in properties.OrderBy(p => p))
-					{
-						typeElement.Add(new XElement("property",
-							new XAttribute("name", propName)));
-					}
-
-					assemblyElement.Add(typeElement);
-				}
-
-				linkerElement.Add(assemblyElement);
-			}
+			var linkerElement = new XElement("linker",
+				typesByAssembly.Select(assemblyGroup =>
+					CreateAssemblyElement(assemblyGroup.Key, assemblyGroup)));
 
 			// Ensure output directory exists
 			var outputDir = Path.GetDirectoryName(OutputDescriptorPath);
@@ -315,7 +307,122 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				linkerElement);
 
 			doc.Save(OutputDescriptorPath);
-			Log.LogMessage(MessageImportance.High, $"BindableTypeLinkerGenerator: Saved descriptor to {OutputDescriptorPath}");
+			Log.LogMessage(MessageImportance.High, $"Saved descriptor to {OutputDescriptorPath}");
+
+			static XElement? CreateAssemblyElement(string assemblyName, IEnumerable<KeyValuePair<PreserveTypeDefinition, HashSet<PreservePropertyInfo>>> types)
+			{
+				if (!types.Any() || types.All(t => t.Value.Count == 0))
+				{
+					return null; // Skip assemblies with no types
+				}
+
+				return new XElement("assembly",
+					new XAttribute("fullname", assemblyName),
+					types.OrderBy(t => t.Key.FullName).Select(typeEntry =>
+						CreateTypeElement(typeEntry.Key.FullName, typeEntry.Value)));
+			}
+
+			static XElement? CreateTypeElement(string typeFullName, HashSet<PreservePropertyInfo> properties)
+			{
+				if (properties.Count == 0)
+				{
+					return null; // Skip types with no public properties
+				}
+
+				return new XElement("type",
+					new XAttribute("fullname", typeFullName),
+					new XAttribute("required", "false"),
+					properties.OrderBy(p => p.PropertyName)
+						.Select(p =>
+							new XElement("property",
+								new XAttribute("name", p.PropertyName),
+								new XComment($" {p.PropertyType.FullName ?? "<<unresolved>>"} {p.PropertyName} {{get;}} "))));
+			}
+		}
+	}
+
+	internal sealed class PreserveTypeDefinition : IEquatable<PreserveTypeDefinition>
+	{
+		public string FullName { get; }
+		public TypeDefinition TypeDefinition { get; set; }
+
+		public PreserveTypeDefinition(string fullName, TypeDefinition typeDefinition)
+		{
+			FullName = fullName;
+			TypeDefinition = typeDefinition;
+		}
+
+		public override bool Equals(object? obj)
+		{
+			return Equals(obj as PreserveTypeDefinition);
+		}
+
+		public bool Equals(PreserveTypeDefinition? other)
+		{
+			return other != null &&
+				   FullName == other.FullName;
+		}
+
+		public override int GetHashCode()
+		{
+			return FullName.GetHashCode();
+		}
+	}
+
+	internal sealed class PreservePropertyInfo : IEquatable<PreservePropertyInfo>
+	{
+		public string PropertyName { get; }
+		public TypeReference PropertyType { get; }
+
+		public PreservePropertyInfo(string propertyName, TypeReference propertyType)
+		{
+			PropertyName = propertyName;
+			PropertyType = propertyType;
+		}
+
+		public override bool Equals(object? obj)
+		{
+			return Equals(obj as PreservePropertyInfo);
+		}
+
+		public bool Equals(PreservePropertyInfo? other)
+		{
+			return other != null &&
+				   PropertyName == other.PropertyName &&
+				   PropertyType.FullName == other.PropertyType.FullName;
+		}
+
+		public override int GetHashCode()
+		{
+			return PropertyName.GetHashCode() ^ PropertyType.FullName.GetHashCode();
+		}
+	}
+
+	internal class TypeDefinitionCache : IMetadataResolver
+	{
+		readonly Dictionary<TypeReference, TypeDefinition> types = new Dictionary<TypeReference, TypeDefinition>();
+		readonly Dictionary<FieldReference, FieldDefinition> fields = new Dictionary<FieldReference, FieldDefinition>();
+		readonly Dictionary<MethodReference, MethodDefinition> methods = new Dictionary<MethodReference, MethodDefinition>();
+
+		public virtual TypeDefinition Resolve(TypeReference typeReference)
+		{
+			if (types.TryGetValue(typeReference, out var typeDefinition))
+				return typeDefinition;
+			return types[typeReference] = typeReference.Resolve();
+		}
+
+		public virtual FieldDefinition Resolve(FieldReference field)
+		{
+			if (fields.TryGetValue(field, out var fieldDefinition))
+				return fieldDefinition;
+			return fields[field] = field.Resolve();
+		}
+
+		public virtual MethodDefinition Resolve(MethodReference method)
+		{
+			if (methods.TryGetValue(method, out var methodDefinition))
+				return methodDefinition;
+			return methods[method] = method.Resolve();
 		}
 	}
 }
