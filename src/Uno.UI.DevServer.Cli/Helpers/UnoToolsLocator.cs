@@ -379,16 +379,29 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 
 	private async Task<string?> EnsureNugetPackage(string packageId, string version, bool tryInstall = true)
 	{
-		var possiblePaths = GetNuGetCachePaths(_workDirectory)
-			.Select(p => Path.Combine(p, packageId.ToLowerInvariant(), version))
-			.ToArray();
-
-		foreach (var path in possiblePaths)
+		// NuGet normalizes 2-part versions to 3-part (e.g. "1.8-dev.19" → "1.8.0-dev.19").
+		// Try both the original version string and the normalized form.
+		var versions = new List<string> { version };
+		var normalized = NuGetCacheHelper.NormalizeNuGetVersion(version);
+		if (normalized != version)
 		{
-			if (Directory.Exists(path))
+			versions.Add(normalized);
+		}
+
+		var cachePaths = GetNuGetCachePaths(_workDirectory);
+		foreach (var v in versions)
+		{
+			var possiblePaths = cachePaths
+				.Select(p => Path.Combine(p, packageId.ToLowerInvariant(), v))
+				.ToArray();
+
+			foreach (var path in possiblePaths)
 			{
-				_logger.LogDebug("Found package {SdkPackage} version {Version} at {Path}", packageId, version, path);
-				return path;
+				if (Directory.Exists(path))
+				{
+					_logger.LogDebug("Found package {SdkPackage} version {Version} at {Path}", packageId, v, path);
+					return path;
+				}
 			}
 		}
 

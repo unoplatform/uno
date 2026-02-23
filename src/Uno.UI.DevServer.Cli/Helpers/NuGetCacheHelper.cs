@@ -127,4 +127,22 @@ internal static class NuGetCacheHelper
 
 		return null;
 	}
+
+	/// <summary>
+	/// NuGet normalizes 2-part versions to 3-part in the cache folder name
+	/// (e.g. "1.8-dev.19" becomes "1.8.0-dev.19"). This method applies the same normalization.
+	/// </summary>
+	internal static string NormalizeNuGetVersion(string version)
+	{
+		var dashIndex = version.IndexOf('-');
+		var versionPart = dashIndex >= 0 ? version[..dashIndex] : version;
+		var suffix = dashIndex >= 0 ? version[dashIndex..] : "";
+
+		if (versionPart.Count(c => c == '.') == 1)
+		{
+			return versionPart + ".0" + suffix;
+		}
+
+		return version;
+	}
 }

@@ -171,12 +171,19 @@ internal partial class TargetsAddInResolver(ILogger<TargetsAddInResolver> logger
 		// NuGet cache stores package directories in lowercase
 		var loweredPackageName = packageName.ToLowerInvariant();
 
-		foreach (var cachePath in nugetCachePaths)
+		// NuGet normalizes 2-part versions to 3-part (e.g. "1.8-dev.19" → "1.8.0-dev.19")
+		var normalized = NuGetCacheHelper.NormalizeNuGetVersion(version);
+		var versions = normalized != version ? new[] { version, normalized } : new[] { version };
+
+		foreach (var v in versions)
 		{
-			var packageDir = Path.Combine(cachePath, loweredPackageName, version);
-			if (Directory.Exists(packageDir))
+			foreach (var cachePath in nugetCachePaths)
 			{
-				return packageDir;
+				var packageDir = Path.Combine(cachePath, loweredPackageName, v);
+				if (Directory.Exists(packageDir))
+				{
+					return packageDir;
+				}
 			}
 		}
 
