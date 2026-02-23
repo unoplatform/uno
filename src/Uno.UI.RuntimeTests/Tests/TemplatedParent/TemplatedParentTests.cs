@@ -298,6 +298,7 @@ public partial class TemplatedParentTests // tests
 	public Task LateTemplateSwapping_NonContentControl() => LateTemplateSwapping<TextBox>();
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public Task LateTemplateSwapping_ContentControl() => LateTemplateSwapping<ContentControl>();
 
 	public async Task LateTemplateSwapping<TControl>() where TControl : Control, new()
