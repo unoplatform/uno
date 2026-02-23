@@ -47,11 +47,24 @@ public class DotNetVersionCacheTests
 		return new DotNetVersionCache(logger, actualProvider, cachePathOverride: _cachePath);
 	}
 
-	private void WriteGlobalJson(string? sdkVersion = null)
+	private void WriteGlobalJson(string? sdkVersion = null, string? rollForward = null, bool? allowPrerelease = null)
 	{
-		var content = sdkVersion is not null
-			? $$$"""{"sdk": {"version": "{{{sdkVersion}}}"}, "msbuild-sdks": {"Uno.Sdk": "5.6.100"}}"""
-			: """{"msbuild-sdks": {"Uno.Sdk": "5.6.100"}}""";
+		if (sdkVersion is null)
+		{
+			File.WriteAllText(_globalJsonPath, "{\"msbuild-sdks\": {\"Uno.Sdk\": \"5.6.100\"}}");
+			return;
+		}
+
+		var sdkProps = "\"version\": \"" + sdkVersion + "\"";
+		if (rollForward is not null)
+		{
+			sdkProps += ", \"rollForward\": \"" + rollForward + "\"";
+		}
+		if (allowPrerelease is not null)
+		{
+			sdkProps += ", \"allowPrerelease\": " + (allowPrerelease.Value ? "true" : "false");
+		}
+		var content = "{\"sdk\": {" + sdkProps + "}, \"msbuild-sdks\": {\"Uno.Sdk\": \"5.6.100\"}}";
 		File.WriteAllText(_globalJsonPath, content);
 	}
 
@@ -110,7 +123,7 @@ public class DotNetVersionCacheTests
 	public async Task CacheInvalidBySdkVersionKey_Refreshes()
 	{
 		WriteGlobalJson("10.0.100");
-		WriteCacheFile("9.0.100", "net9.0", "9.0.100");
+		WriteCacheFile("9.0.100", "net9.0", "9.0.100||");
 
 		var cache = CreateCache(provider: () =>
 			Task.FromResult<(string?, string?)>(("10.0.100", "net10.0")));
@@ -186,7 +199,43 @@ public class DotNetVersionCacheTests
 
 		var result = DotNetVersionCache.TryGetSdkVersionFromGlobalJson(_globalJsonPath);
 
-		result.Should().Be("10.0.100");
+		result.Should().Be("10.0.100||");
+	}
+
+	[TestMethod]
+	public void TryGetSdkVersionFromGlobalJson_IncludesRollForward()
+	{
+		WriteGlobalJson("10.0.100", rollForward: "latestFeature");
+
+		var result = DotNetVersionCache.TryGetSdkVersionFromGlobalJson(_globalJsonPath);
+
+		result.Should().Be("10.0.100|latestFeature|");
+	}
+
+	[TestMethod]
+	public void TryGetSdkVersionFromGlobalJson_IncludesAllowPrerelease()
+	{
+		WriteGlobalJson("10.0.100", rollForward: "latestMajor", allowPrerelease: true);
+
+		var result = DotNetVersionCache.TryGetSdkVersionFromGlobalJson(_globalJsonPath);
+
+		result.Should().Be("10.0.100|latestMajor|True");
+	}
+
+	[TestMethod]
+	public async Task CacheInvalidByRollForwardChange_Refreshes()
+	{
+		WriteGlobalJson("10.0.100", rollForward: "latestFeature");
+		// Cache was written with no rollForward policy
+		WriteCacheFile("10.0.100", "net10.0", "10.0.100||");
+
+		var cache = CreateCache(provider: () =>
+			Task.FromResult<(string?, string?)>(("10.0.200", "net10.0")));
+
+		var result = await cache.GetOrRefreshAsync(globalJsonPath: _globalJsonPath);
+
+		// Provider should be called because the sdkVersionKey changed
+		result.rawVersion.Should().Be("10.0.200");
 	}
 
 	[TestMethod]

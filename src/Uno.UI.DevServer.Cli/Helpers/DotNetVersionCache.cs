@@ -164,6 +164,12 @@ internal class DotNetVersionCache
 		return Path.Combine(basePath, "Uno Platform", "uno.devserver", "dotnet-version-cache.json");
 	}
 
+	/// <summary>
+	/// Extracts a cache key from global.json that captures all SDK-selection properties.
+	/// The key includes sdk.version, sdk.rollForward, and sdk.allowPrerelease so the cache
+	/// is invalidated when the user changes the roll-forward policy (e.g., from "latestPatch"
+	/// to "latestFeature") or installs a new SDK that the policy now resolves to.
+	/// </summary>
 	internal static string? TryGetSdkVersionFromGlobalJson(string? globalJsonPath)
 	{
 		if (string.IsNullOrWhiteSpace(globalJsonPath) || !File.Exists(globalJsonPath))
@@ -185,7 +191,13 @@ internal class DotNetVersionCache
 			if (doc.RootElement.TryGetProperty("sdk", out var sdkElement)
 				&& sdkElement.TryGetProperty("version", out var versionElement))
 			{
-				return versionElement.GetString();
+				var version = versionElement.GetString();
+				var rollForward = sdkElement.TryGetProperty("rollForward", out var rfElement)
+					? rfElement.GetString() : null;
+				var allowPrerelease = sdkElement.TryGetProperty("allowPrerelease", out var apElement)
+					? apElement.GetBoolean().ToString() : null;
+
+				return $"{version}|{rollForward}|{allowPrerelease}";
 			}
 		}
 		catch
