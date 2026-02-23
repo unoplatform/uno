@@ -1,4 +1,4 @@
-#if __SKIA__
+#if __SKIA__ || WINAPPSDK
 using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -127,6 +127,7 @@ public class Given_Matrix3DProjection
 		Assert.IsNotNull(border.Projection);
 	}
 
+#if __SKIA__
 	[TestMethod]
 	public void When_GetProjectionMatrix()
 	{
@@ -148,6 +149,7 @@ public class Given_Matrix3DProjection
 		Assert.AreEqual(60, matrix4x4.M42, 1e-5);
 		Assert.AreEqual(70, matrix4x4.M43, 1e-5);
 	}
+#endif
 
 	[TestMethod]
 	public async Task When_Projection_Set_To_Null()

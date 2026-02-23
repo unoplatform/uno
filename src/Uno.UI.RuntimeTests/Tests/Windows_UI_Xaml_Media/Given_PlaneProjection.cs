@@ -1,4 +1,4 @@
-#if __SKIA__
+#if __SKIA__ || WINAPPSDK
 using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -169,6 +169,7 @@ public class Given_PlaneProjection
 		Assert.AreEqual(45, ((PlaneProjection)border.Projection).RotationY);
 	}
 
+#if __SKIA__
 	[TestMethod]
 	public void When_ProjectionMatrix_Is_Computed()
 	{
@@ -195,6 +196,7 @@ public class Given_PlaneProjection
 
 		Assert.IsTrue(matrix.IsIdentity);
 	}
+#endif
 
 	[TestMethod]
 	public async Task When_Projection_Set_To_Null()

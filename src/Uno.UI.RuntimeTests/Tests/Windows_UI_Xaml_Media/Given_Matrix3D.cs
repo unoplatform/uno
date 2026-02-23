@@ -225,7 +225,7 @@ public class Given_Matrix3D
 		var str = identity.ToString();
 
 		Assert.IsNotNull(str);
-		Assert.IsTrue(str.Contains("1"));
+		Assert.AreEqual(nameof(Matrix3D.Identity), str);
 	}
 
 #if HAS_UNO
