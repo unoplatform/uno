@@ -1022,19 +1022,37 @@ function Test-HostAddInsFlag {
         return
     }
 
-    # Step 2: Resolve Host DLL path from Uno SDK
+    # Step 2: Resolve Host path from Uno SDK (mirrors DevServerProcessHelper logic)
     $discoJson = (Invoke-DevserverCli -Arguments @('disco', '--json', '--solution-dir', $SlnDir) 2>&1 | Out-String) | ConvertFrom-Json
-    $hostDll = $discoJson.hostPath
-    if (-not $hostDll -or -not (Test-Path $hostDll)) {
-        Write-Log "Host DLL not found at '$hostDll' — skipping --addins flag test"
+    $hostPath = $discoJson.hostPath
+    if (-not $hostPath -or -not (Test-Path $hostPath)) {
+        Write-Log "Host not found at '$hostPath' — skipping --addins flag test"
         return
     }
 
     # Step 3: Launch Host with --addins, verify it starts (port 0 = auto-assign)
+    # On non-Windows or when hostPath is a .dll, run via "dotnet <dll>".
+    # On Windows with an .exe, run the .exe directly (it's a native AppHost).
     $stderrFile = [System.IO.Path]::GetTempFileName()
-    $hostProcess = Start-Process -FilePath "dotnet" -ArgumentList @(
-        $hostDll, '--httpPort', '0', '--addins', $addInsOutput
-    ) -PassThru -NoNewWindow -RedirectStandardError $stderrFile
+    $isExe = $hostPath.EndsWith('.exe', [System.StringComparison]::OrdinalIgnoreCase)
+    $useDotnet = (-not [System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Windows)) -or (-not $isExe)
+    if ($useDotnet -and $isExe) {
+        # Swap .exe for .dll so dotnet can load it as a managed assembly
+        $hostPath = [System.IO.Path]::ChangeExtension($hostPath, '.dll')
+        if (-not (Test-Path $hostPath)) {
+            Write-Log "Host DLL not found at '$hostPath' — skipping --addins flag test"
+            return
+        }
+    }
+    if ($useDotnet) {
+        $hostProcess = Start-Process -FilePath "dotnet" -ArgumentList @(
+            $hostPath, '--httpPort', '0', '--addins', $addInsOutput
+        ) -PassThru -NoNewWindow -RedirectStandardError $stderrFile
+    } else {
+        $hostProcess = Start-Process -FilePath $hostPath -ArgumentList @(
+            '--httpPort', '0', '--addins', $addInsOutput
+        ) -PassThru -NoNewWindow -RedirectStandardError $stderrFile
+    }
 
     Start-Sleep -Seconds 5
 
