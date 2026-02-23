@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System;
 using Windows.Foundation;
 using SkiaSharp;
 using Uno;
@@ -81,10 +82,27 @@ namespace Microsoft.UI.Composition
 
 					// Set stroke thickness
 					strokePaint.StrokeWidth = StrokeThickness;
+
+					// Set stroke join and miter limit
+					strokePaint.StrokeJoin = ToSKStrokeJoin(StrokeLineJoin);
+					strokePaint.StrokeMiter = StrokeMiterLimit;
+
+					// Determine if we need custom cap rendering (different start/end caps, or Triangle caps)
+					bool needsCustomCaps = StrokeStartCap != StrokeEndCap
+						|| StrokeStartCap == CompositionStrokeCap.Triangle;
+
 					if (StrokeDashArray is { Count: > 0 } strokeDashArray)
 					{
-						strokePaint.PathEffect = SKPathEffect.CreateDash(strokeDashArray.ToEvenArray(), 0);
+						strokePaint.StrokeCap = ToSKStrokeCap(StrokeDashCap);
+						strokePaint.PathEffect = SKPathEffect.CreateDash(strokeDashArray.ToEvenArray(), StrokeDashOffset);
 					}
+					else if (!needsCustomCaps)
+					{
+						// Fast path: same start/end cap, not Triangle - use native SKPaint.StrokeCap
+						strokePaint.StrokeCap = ToSKStrokeCap(StrokeEndCap);
+					}
+					// else: needsCustomCaps without dashes - keep Butt cap (default after Reset),
+					// custom caps are added as geometry below.
 
 					if (Geometry is not null && (Geometry.TrimStart != default || Geometry.TrimEnd != default))
 					{
@@ -117,6 +135,12 @@ namespace Microsoft.UI.Composition
 					strokeFillPath.Rewind();
 					// Get the stroke geometry, after scaling has been applied.
 					geometryWithTransformations.GetFillPath(strokePaint, strokeFillPath);
+
+					// Add custom cap geometry for Triangle caps or different start/end caps
+					if (needsCustomCaps && StrokeDashArray is not { Count: > 0 })
+					{
+						AddCustomCaps(strokeFillPath, geometryWithTransformations.Geometry, StrokeThickness, StrokeStartCap, StrokeEndCap);
+					}
 
 					session.Canvas.ClipPath(strokeFillPath, antialias: true);
 					stroke.Paint(session.Canvas, session.Opacity, strokeFillPath.Bounds);
@@ -183,12 +207,33 @@ namespace Microsoft.UI.Composition
 					PrepareTempPaint(strokePaint, isStroke: true);
 
 					strokePaint.StrokeWidth = StrokeThickness;
+					strokePaint.StrokeJoin = ToSKStrokeJoin(StrokeLineJoin);
+					strokePaint.StrokeMiter = StrokeMiterLimit;
+
+					bool needsCustomCaps = StrokeStartCap != StrokeEndCap
+						|| StrokeStartCap == CompositionStrokeCap.Triangle;
+
+					if (StrokeDashArray is { Count: > 0 } strokeDashArray)
+					{
+						strokePaint.StrokeCap = ToSKStrokeCap(StrokeDashCap);
+						strokePaint.PathEffect = SKPathEffect.CreateDash(strokeDashArray.ToEvenArray(), StrokeDashOffset);
+					}
+					else if (!needsCustomCaps)
+					{
+						strokePaint.StrokeCap = ToSKStrokeCap(StrokeEndCap);
+					}
 
 					var hitTestStrokeFillPath = _spareHitTestPath;
 
 					hitTestStrokeFillPath.Rewind();
 
 					geometryWithTransformations.GetFillPath(strokePaint, hitTestStrokeFillPath);
+
+					if (needsCustomCaps && StrokeDashArray is not { Count: > 0 })
+					{
+						AddCustomCaps(hitTestStrokeFillPath, geometryWithTransformations.Geometry, StrokeThickness, StrokeStartCap, StrokeEndCap);
+					}
+
 					if (hitTestStrokeFillPath.Contains((float)point.X, (float)point.Y))
 					{
 						return true;
@@ -196,6 +241,116 @@ namespace Microsoft.UI.Composition
 				}
 			}
 			return false;
+		}
+
+		private static SKStrokeCap ToSKStrokeCap(CompositionStrokeCap cap) => cap switch
+		{
+			CompositionStrokeCap.Flat => SKStrokeCap.Butt,
+			CompositionStrokeCap.Square => SKStrokeCap.Square,
+			CompositionStrokeCap.Round => SKStrokeCap.Round,
+			CompositionStrokeCap.Triangle => SKStrokeCap.Butt, // Simulated via custom geometry
+			_ => SKStrokeCap.Butt,
+		};
+
+		private static SKStrokeJoin ToSKStrokeJoin(CompositionStrokeLineJoin join) => join switch
+		{
+			CompositionStrokeLineJoin.Miter => SKStrokeJoin.Miter,
+			CompositionStrokeLineJoin.Bevel => SKStrokeJoin.Bevel,
+			CompositionStrokeLineJoin.Round => SKStrokeJoin.Round,
+			CompositionStrokeLineJoin.MiterOrBevel => SKStrokeJoin.Miter, // Skia's miter limit provides bevel fallback
+			_ => SKStrokeJoin.Miter,
+		};
+
+		/// <summary>
+		/// Adds custom cap geometry to the stroke fill path for cases where native SKPaint.StrokeCap
+		/// is insufficient (different start/end caps, or Triangle cap type).
+		/// </summary>
+		private static void AddCustomCaps(SKPath fillPath, SKPath originalGeometry, float strokeWidth, CompositionStrokeCap startCap, CompositionStrokeCap endCap)
+		{
+			using var measure = new SKPathMeasure(originalGeometry, false);
+			do
+			{
+				if (measure.IsClosed)
+				{
+					continue;
+				}
+
+				var length = measure.Length;
+				if (length <= 0)
+				{
+					continue;
+				}
+
+				// Start cap: tangent direction is negated (cap extends backward from start)
+				if (startCap != CompositionStrokeCap.Flat
+					&& measure.GetPositionAndTangent(0, out var startPos, out var startTan))
+				{
+					using var capPath = BuildCapPath(startPos, new SKPoint(-startTan.X, -startTan.Y), strokeWidth, startCap);
+					if (capPath != null)
+					{
+						fillPath.AddPath(capPath);
+					}
+				}
+
+				// End cap: tangent direction as-is (cap extends forward from end)
+				if (endCap != CompositionStrokeCap.Flat
+					&& measure.GetPositionAndTangent(length, out var endPos, out var endTan))
+				{
+					using var capPath = BuildCapPath(endPos, endTan, strokeWidth, endCap);
+					if (capPath != null)
+					{
+						fillPath.AddPath(capPath);
+					}
+				}
+			} while (measure.NextContour());
+		}
+
+		/// <summary>
+		/// Builds a cap shape at the given position extending in the given direction.
+		/// </summary>
+		private static SKPath? BuildCapPath(SKPoint position, SKPoint direction, float strokeWidth, CompositionStrokeCap capType)
+		{
+			var halfWidth = strokeWidth / 2;
+			// Normal perpendicular to direction
+			var normal = new SKPoint(-direction.Y, direction.X);
+
+			if (capType == CompositionStrokeCap.Round)
+			{
+				var path = new SKPath();
+				// Build a semicircle oriented in the cap direction
+				var startAngle = (float)(Math.Atan2(normal.Y, normal.X) * 180 / Math.PI);
+				var rect = new SKRect(
+					position.X - halfWidth,
+					position.Y - halfWidth,
+					position.X + halfWidth,
+					position.Y + halfWidth);
+				path.AddArc(rect, startAngle, 180);
+				path.Close();
+				return path;
+			}
+			else if (capType == CompositionStrokeCap.Square)
+			{
+				var path = new SKPath();
+				// Rectangle extending halfWidth beyond endpoint in direction
+				var p1 = new SKPoint(position.X + normal.X * halfWidth, position.Y + normal.Y * halfWidth);
+				var p2 = new SKPoint(p1.X + direction.X * halfWidth, p1.Y + direction.Y * halfWidth);
+				var p3 = new SKPoint(p2.X - normal.X * strokeWidth, p2.Y - normal.Y * strokeWidth);
+				var p4 = new SKPoint(position.X - normal.X * halfWidth, position.Y - normal.Y * halfWidth);
+				path.AddPoly(new[] { p1, p2, p3, p4 }, close: true);
+				return path;
+			}
+			else if (capType == CompositionStrokeCap.Triangle)
+			{
+				var path = new SKPath();
+				// Isoceles triangle: base perpendicular to direction at endpoint, apex at halfWidth in direction
+				var base1 = new SKPoint(position.X + normal.X * halfWidth, position.Y + normal.Y * halfWidth);
+				var apex = new SKPoint(position.X + direction.X * halfWidth, position.Y + direction.Y * halfWidth);
+				var base2 = new SKPoint(position.X - normal.X * halfWidth, position.Y - normal.Y * halfWidth);
+				path.AddPoly(new[] { base1, apex, base2 }, close: true);
+				return path;
+			}
+
+			return null;
 		}
 	}
 }
