@@ -300,12 +300,14 @@ public partial class PlaneProjection : Projection
 
 		if (width == 0 || height == 0)
 		{
+			ProjectionMatrix = Matrix3D.Identity;
 			return Matrix4x4.Identity;
 		}
 
 		// Check if we have any 3D effect at all - if not, return identity
 		if (Is2DAligned())
 		{
+			ProjectionMatrix = Matrix3D.Identity;
 			return Matrix4x4.Identity;
 		}
 
