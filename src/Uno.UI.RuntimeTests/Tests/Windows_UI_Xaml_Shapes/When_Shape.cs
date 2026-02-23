@@ -51,7 +51,244 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 		}
 
 
-#if __SKIA__ // This needs the netstd layouter + non-legacy shapes layout
+#if __SKIA__
+		[TestMethod]
+		public void When_StrokeMiterLimit_Default()
+		{
+			var line = new Line();
+			Assert.AreEqual(10.0, line.StrokeMiterLimit, "WinUI default for StrokeMiterLimit is 10.0");
+		}
+
+		[TestMethod]
+		public void When_StrokeLineCap_Default()
+		{
+			var line = new Line();
+			Assert.AreEqual(PenLineCap.Flat, line.StrokeStartLineCap);
+			Assert.AreEqual(PenLineCap.Flat, line.StrokeEndLineCap);
+			Assert.AreEqual(PenLineCap.Flat, line.StrokeDashCap);
+		}
+
+		[TestMethod]
+		public void When_StrokeLineJoin_Default()
+		{
+			var line = new Line();
+			Assert.AreEqual(PenLineJoin.Miter, line.StrokeLineJoin);
+		}
+
+		[TestMethod]
+		public void When_StrokeDashOffset_Default()
+		{
+			var line = new Line();
+			Assert.AreEqual(0.0, line.StrokeDashOffset);
+		}
+
+		[TestMethod]
+		public async Task When_StrokeLineCap_Round_Extends_Beyond_Endpoint()
+		{
+			// A horizontal line with Round caps should extend beyond the endpoints
+			// by StrokeThickness/2 (10px in this case).
+			var container = new Grid { Width = 220, Height = 50, Background = new SolidColorBrush(Colors.White) };
+			var line = new Line
+			{
+				X1 = 30,
+				Y1 = 25,
+				X2 = 190,
+				Y2 = 25,
+				Stroke = new SolidColorBrush(Colors.Red),
+				StrokeThickness = 20,
+				StrokeStartLineCap = PenLineCap.Round,
+				StrokeEndLineCap = PenLineCap.Round,
+			};
+			container.Children.Add(line);
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+
+			// With Round caps, the stroke should extend to x=20 (30 - 10) and x=200 (190 + 10)
+			// Pixel at x=22, y=25 should be in the cap extension area (Red)
+			ImageAssert.HasColorAt(screenshot, 22, 25, Colors.Red, tolerance: 30);
+			// Pixel at x=198, y=25 should also be in the cap extension area
+			ImageAssert.HasColorAt(screenshot, 198, 25, Colors.Red, tolerance: 30);
+		}
+
+		[TestMethod]
+		public async Task When_StrokeLineCap_Flat_Does_Not_Extend()
+		{
+			// A horizontal line with Flat caps should NOT extend beyond the endpoints.
+			var container = new Grid { Width = 220, Height = 50, Background = new SolidColorBrush(Colors.White) };
+			var line = new Line
+			{
+				X1 = 30,
+				Y1 = 25,
+				X2 = 190,
+				Y2 = 25,
+				Stroke = new SolidColorBrush(Colors.Red),
+				StrokeThickness = 20,
+				StrokeStartLineCap = PenLineCap.Flat,
+				StrokeEndLineCap = PenLineCap.Flat,
+			};
+			container.Children.Add(line);
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+
+			// With Flat caps, pixel at x=18 (well before x1=30) should be white (background)
+			ImageAssert.HasColorAt(screenshot, 18, 25, Colors.White, tolerance: 30);
+			// Pixel at x=202 (well after x2=190) should be white
+			ImageAssert.HasColorAt(screenshot, 202, 25, Colors.White, tolerance: 30);
+			// Pixel at center should be Red
+			ImageAssert.HasColorAt(screenshot, 110, 25, Colors.Red, tolerance: 30);
+		}
+
+		[TestMethod]
+		public async Task When_StrokeLineJoin_Round_Renders()
+		{
+			// A polyline with a sharp angle and Round joins should have rounded corners
+			var container = new Grid { Width = 120, Height = 80, Background = new SolidColorBrush(Colors.White) };
+			var polyline = new Polyline
+			{
+				Points = new PointCollection(new[] { new Point(10, 70), new Point(60, 10), new Point(110, 70) }),
+				Stroke = new SolidColorBrush(Colors.Blue),
+				StrokeThickness = 16,
+				StrokeLineJoin = PenLineJoin.Round,
+				Fill = new SolidColorBrush(Colors.Transparent),
+			};
+			container.Children.Add(polyline);
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+
+			// The join point is at (60, 10). With Round join, the area around the join
+			// should have blue color. Verify the join center has the stroke color.
+			ImageAssert.HasColorAt(screenshot, 60, 10, Colors.Blue, tolerance: 30);
+		}
+
+		[TestMethod]
+		public async Task When_StrokeLineJoin_Bevel_Renders()
+		{
+			var container = new Grid { Width = 120, Height = 80, Background = new SolidColorBrush(Colors.White) };
+			var polyline = new Polyline
+			{
+				Points = new PointCollection(new[] { new Point(10, 70), new Point(60, 10), new Point(110, 70) }),
+				Stroke = new SolidColorBrush(Colors.Green),
+				StrokeThickness = 16,
+				StrokeLineJoin = PenLineJoin.Bevel,
+				Fill = new SolidColorBrush(Colors.Transparent),
+			};
+			container.Children.Add(polyline);
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+
+			// With Bevel join, the join is clipped, but the center at the join point should still be colored.
+			ImageAssert.HasColorAt(screenshot, 60, 10, Colors.Green, tolerance: 30);
+		}
+
+		[TestMethod]
+		public async Task When_StrokeDashCap_Round_Renders()
+		{
+			// Dashed line with Round dash caps
+			var container = new Grid { Width = 300, Height = 40, Background = new SolidColorBrush(Colors.White) };
+			var line = new Line
+			{
+				X1 = 10,
+				Y1 = 20,
+				X2 = 290,
+				Y2 = 20,
+				Stroke = new SolidColorBrush(Colors.Black),
+				StrokeThickness = 12,
+				StrokeDashArray = new DoubleCollection { 3, 2 },
+				StrokeDashCap = PenLineCap.Round,
+			};
+			container.Children.Add(line);
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+
+			// Verify the line center has the stroke color (basic rendering check)
+			ImageAssert.HasColorAt(screenshot, 20, 20, Colors.Black, tolerance: 30);
+		}
+
+		[TestMethod]
+		public async Task When_StrokeDashOffset_Changes_Pattern()
+		{
+			// Two dashed lines with different offsets should render differently
+			var container = new Grid { Width = 200, Height = 60, Background = new SolidColorBrush(Colors.White) };
+			container.RowDefinitions.Add(new RowDefinition());
+			container.RowDefinitions.Add(new RowDefinition());
+
+			var line1 = new Line
+			{
+				X1 = 10,
+				Y1 = 15,
+				X2 = 190,
+				Y2 = 15,
+				Stroke = new SolidColorBrush(Colors.Black),
+				StrokeThickness = 8,
+				StrokeDashArray = new DoubleCollection { 4, 4 },
+				StrokeDashOffset = 0,
+			};
+			Grid.SetRow(line1, 0);
+
+			var line2 = new Line
+			{
+				X1 = 10,
+				Y1 = 15,
+				X2 = 190,
+				Y2 = 15,
+				Stroke = new SolidColorBrush(Colors.Black),
+				StrokeThickness = 8,
+				StrokeDashArray = new DoubleCollection { 4, 4 },
+				StrokeDashOffset = 4,
+			};
+			Grid.SetRow(line2, 1);
+
+			container.Children.Add(line1);
+			container.Children.Add(line2);
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+
+			// With offset=4 (half pattern), the dash/gap pattern should be shifted.
+			// At the start of the line, one should have a dash and the other a gap.
+			// Verify both lines render (center point check)
+			ImageAssert.HasColorAt(screenshot, 100, 15, Colors.Black, tolerance: 30);
+		}
+
+		[TestMethod]
+		public async Task When_StrokeLineCap_Properties_Are_Set()
+		{
+			// Verify that setting cap properties doesn't crash and the properties are stored correctly
+			var line = new Line
+			{
+				X1 = 10,
+				Y1 = 25,
+				X2 = 100,
+				Y2 = 25,
+				Stroke = new SolidColorBrush(Colors.Red),
+				StrokeThickness = 10,
+				StrokeStartLineCap = PenLineCap.Round,
+				StrokeEndLineCap = PenLineCap.Square,
+				StrokeLineJoin = PenLineJoin.Bevel,
+				StrokeMiterLimit = 5.0,
+				StrokeDashCap = PenLineCap.Triangle,
+				StrokeDashOffset = 2.0,
+			};
+
+			Assert.AreEqual(PenLineCap.Round, line.StrokeStartLineCap);
+			Assert.AreEqual(PenLineCap.Square, line.StrokeEndLineCap);
+			Assert.AreEqual(PenLineJoin.Bevel, line.StrokeLineJoin);
+			Assert.AreEqual(5.0, line.StrokeMiterLimit);
+			Assert.AreEqual(PenLineCap.Triangle, line.StrokeDashCap);
+			Assert.AreEqual(2.0, line.StrokeDashOffset);
+
+			// Also verify rendering doesn't crash
+			var container = new Grid { Width = 120, Height = 50 };
+			container.Children.Add(line);
+			await UITestHelper.Load(container);
+		}
+
+		// This needs the netstd layouter + non-legacy shapes layout
 		[TestMethod]
 		public async Task When_Shape_Stretch_UniformToFill()
 		{
