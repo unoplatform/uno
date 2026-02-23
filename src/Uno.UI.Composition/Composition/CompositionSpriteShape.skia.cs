@@ -13,6 +13,7 @@ namespace Microsoft.UI.Composition
 	{
 		private static readonly SKPaint _spareHitTestPaint = new();
 		private static readonly SKPath _spareHitTestPath = new();
+		private static readonly SKPoint[] _spareMiterPoints = new SKPoint[4];
 		// We don't call SKPaint.Reset() after usage, so make sure
 		// that only SKPaint.Color is being set
 		private static readonly SKPaint _spareColorPaint = new();
@@ -666,7 +667,7 @@ namespace Microsoft.UI.Composition
 			float hw = strokeWidth / 2;
 
 			using var iter = originalGeometry.CreateIterator(false);
-			var points = new SKPoint[4];
+			var points = _spareMiterPoints;
 
 			// Per-contour tracking
 			SKPoint contourStart = default;
