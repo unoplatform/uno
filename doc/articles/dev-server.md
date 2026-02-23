@@ -37,7 +37,7 @@ You can manage the Dev Server from the command line using the dotnet tool `Uno.D
 - `uno-devserver start`: Start the Dev Server for the current solution directory
 - `uno-devserver stop`: Stop the Dev Server attached to the current directory
 - `uno-devserver list`: List running Dev Server instances
-- `uno-devserver disco`: Inspect the environment without invoking MSBuild — see [Diagnostics (disco)](xref:Uno.Features.DevServerDisco)
+- `uno-devserver disco`: Inspect the environment — see [Diagnostics (disco)](xref:Uno.Features.DevServerDisco)
 - `uno-devserver cleanup`: Terminate stale Dev Server processes
 - `uno-devserver login`: Open the Uno Platform settings application
 - `--mcp-app`: Run an MCP proxy mode for integration with MCP-based tooling

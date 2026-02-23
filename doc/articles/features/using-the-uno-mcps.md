@@ -73,10 +73,6 @@ The Pro license App MCP app tools are:
 - `uno_app_element_peer_action`, used to invoke a specific element automation peer action
 - `uno_app_get_element_datacontext`, used to get a textual representation of the DataContext on a FrameworkElement
 
-The Business license App MCP app tools are:
-
-- `uno_app_get_memory_counters`, used to get memory usage counters for the running app
-
 ## Troubleshooting MCP Servers
 
 You can find additional information about [troubleshooting AI Agents](xref:Uno.UI.CommonIssues.AIAgents) in our docs.
