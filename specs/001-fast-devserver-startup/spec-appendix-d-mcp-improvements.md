@@ -25,17 +25,7 @@ The CLI MCP server currently declares no capabilities. It should declare:
 
 This tells clients exactly what the server supports, enabling better client behavior (e.g., resource subscriptions for health updates).
 
-### Tool Annotations
-
-MCP tool annotations provide metadata that helps AI models make better decisions:
-
-```csharp
-[McpServerTool(Annotations = new { readOnlyHint = true })]    // uno_app_get_screenshot
-[McpServerTool(Annotations = new { destructiveHint = true })]  // uno_app_close
-[McpServerTool(Annotations = new { openWorldHint = false })]   // all tools operate on connected app only
-```
-
-These annotations help the model avoid destructive operations without confirmation and understand which tools are safe to call speculatively.
+> **Note**: The C# MCP SDK automatically infers capabilities from registered handlers (e.g., `.WithCallToolHandler()` implies `Tools` capability). Explicit declaration is only needed to override defaults (e.g., advertising `ListChanged = true`).
 
 ### Structured Logging
 

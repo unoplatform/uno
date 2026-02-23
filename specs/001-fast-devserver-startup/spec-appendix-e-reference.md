@@ -23,9 +23,8 @@
 | `uno_app_element_peer_default_action` | Default automation action | Community |
 | `uno_app_element_peer_action` | Advanced automation action | Pro |
 | `uno_app_get_element_datacontext` | Element data context | Pro |
-| `uno_app_get_memory_counters` | Memory diagnostics | Business |
 
-**Visible tools by tier**: Community 9, Pro 11, Business 12 (verified against `MCPToolsObserverService`). Counts may change as tools are added.
+**Visible tools by tier**: Community 9, Pro 11 (verified against `MCPToolsObserverService`). Counts may change as tools are added.
 
 ---
 
@@ -59,47 +58,6 @@ Per-IDE discovery      CLI-centralized                 CLI-centralized
 
 ---
 
-## E.4 IDE Extension Behavior (Backward Compatibility Context)
+## E.4 IDE Extension Behavior
 
-Analysis of how each IDE extension currently discovers and launches the DevServer. This documents the **constraints** that this spec's changes must respect.
-
-> **Adoption paths** for IDE extensions are documented in their respective subdirectories:
-> `uno.studio/`, `uno.rider/`, `uno.vscode/` (alongside this spec). Those files are
-> intended to be moved to their respective repos when adoption work begins.
-
-### Visual Studio (`uno.studio`)
-
-**Current flow** (`DevServerLauncher.cs:269,302`, `EntryPoint.cs:488`):
-1. Finds `uno.winui.devserver` (or `uno.ui.devserver`, fallback `remotecontrol`) package in project references
-2. Resolves `tools/rc/host/net{major}.0/Uno.UI.RemoteControl.Host.dll` from package install path
-3. Loads an intermediate assembly via `DevServerLauncher`, then launches Host **directly** (not via `--command start`) with `--httpPort {port} --ppid {pid} --solution {sln}`
-4. Host performs MSBuild add-in discovery internally (10-30s)
-5. Uses `EntryPoint` API v3/RPC for IDE channel communication
-6. **No AmbientRegistry duplicate check** — VS manages its own instance lifecycle
-
-### Rider (`uno.rider`)
-
-**Current flow** (`DevServerService.cs:138`, `HostFolderPathResolver.cs`):
-1. **Fast path**: Inspect project references, find `uno.winui.devserver` NuGet package, derive `host/net{major}.{minor}/...` from `dotnet --version`
-2. **Fallback**: `dotnet build /t:GetRemoteControlHostPath "{project}" -f {tfm}` (slow, same as current)
-3. Launches Host **directly** with `--httpPort {port} --ppid {pid} --solution {sln}` (no `--command start`)
-4. Port managed via `CsprojUserGenerator` writing to `.csproj.user`
-5. Auto-restart on host process exit
-6. **No AmbientRegistry duplicate check**
-
-### VS Code (`uno.vscode`)
-
-**Current flow** (`extension.ts:603,607`):
-1. Always uses MSBuild: `dotnet build /t:GetRemoteControlHostPath "{startup project}" [-f {tfm}]`
-2. Reads `RemoteControlHostPath` from build output
-3. Launches Host **directly** with `--httpPort {port}` (no `--command start`), persists port to `.csproj.user`
-4. External-host debug mode via `.uno.vscode.remote-control` marker file
-5. **No AmbientRegistry duplicate check**
-
-### Common Pattern (backward compatibility constraint)
-
-**All three IDE extensions launch the Host directly** — none use `--command start` (the controller path). The controller is only used by CLI `start`. This means:
-- AmbientRegistry duplicate protection **does not exist** for IDE-launched instances
-- Each IDE manages its own DevServer lifecycle independently
-- **Multiple instances for the same solution** are possible today (IDE + CLI, or IDE + MCP)
-- The `--addins` flag MUST be opt-in: absence = MSBuild discovery unchanged
+Moved to [`.github/agents/devserver-agent.md` § 10](../../.github/agents/devserver-agent.md) (IDE Compatibility Constraints).

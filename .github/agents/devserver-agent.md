@@ -216,13 +216,29 @@ The MCP proxy (`McpStdioServer.cs` / `ProxyLifecycleManager.cs`) runs in STDIO m
 
 ## 10. IDE Compatibility Constraints
 
-### VS Extension Backward Compatibility
+**All three IDE extensions launch the Host directly** — none use `--command start` (the controller path). The controller is only used by CLI `start`. This means:
+- AmbientRegistry duplicate protection **does not exist** for IDE-launched instances
+- Each IDE manages its own DevServer lifecycle independently
+- **Multiple instances for the same solution** are possible today (IDE + CLI, or IDE + MCP)
+- The `--addins` flag MUST be opt-in: absence = MSBuild discovery unchanged
 
-The Visual Studio extension (`src/Uno.UI.RemoteControl.VS/EntryPoint.cs`) uses **reflection** to probe:
+### Visual Studio (`uno.studio`)
+
+The VS extension (`DevServerLauncher.cs`, `EntryPoint.cs`) uses **reflection** to probe:
 - `Uno.UI.RemoteControl.VS.EntryPoint` (namespace + class name)
 - Constructor signatures v2 and v3
 
 **Never rename or change constructor signatures** without coordinating with the VS extension team. Regression tests in `EntryPointRegressionTests.cs` verify these contracts.
+
+Launch flow: finds `uno.winui.devserver` package in project references → resolves `tools/rc/host/net{major}.0/Uno.UI.RemoteControl.Host.dll` → launches Host directly with `--httpPort {port} --ppid {pid} --solution {sln}`.
+
+### Rider (`uno.rider`)
+
+Fast path: inspect project references, find `uno.winui.devserver` NuGet package, derive host path from `dotnet --version`. Fallback: `dotnet build /t:GetRemoteControlHostPath`. Launches Host directly (no `--command start`). Port managed via `CsprojUserGenerator`.
+
+### VS Code (`uno.vscode`)
+
+Always uses MSBuild: `dotnet build /t:GetRemoteControlHostPath`. Launches Host directly with `--httpPort {port}`. Supports external-host debug mode via `.uno.vscode.remote-control` marker file.
 
 ### Host Command-Line Contract
 
