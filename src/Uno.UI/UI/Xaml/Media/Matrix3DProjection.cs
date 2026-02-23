@@ -36,7 +36,7 @@ public partial class Matrix3DProjection : Projection
 			nameof(ProjectionMatrix),
 			typeof(Matrix3D),
 			typeof(Matrix3DProjection),
-			new FrameworkPropertyMetadata(Matrix3D.Identity, OnProjectionMatrixChanged));
+			new FrameworkPropertyMetadata(default(Matrix3D), OnProjectionMatrixChanged));
 
 	private static void OnProjectionMatrixChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 	{
