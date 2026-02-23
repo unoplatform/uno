@@ -16,6 +16,26 @@ internal sealed record HealthReport
 	public long DiscoveryDurationMs { get; init; }
 	public ConnectionState? ConnectionState { get; init; }
 	public required IReadOnlyList<ValidationIssue> Issues { get; init; }
+	public DiscoverySummary? Discovery { get; init; }
+}
+
+internal sealed record DiscoverySummary
+{
+	public string? WorkingDirectory { get; init; }
+	public string? DotNetVersion { get; init; }
+	public string? UnoSdkVersion { get; init; }
+	public string? UnoSdkPath { get; init; }
+	public string? HostPath { get; init; }
+	public string? SettingsPath { get; init; }
+	public IReadOnlyList<AddInSummary>? AddIns { get; init; }
+}
+
+internal sealed record AddInSummary
+{
+	public required string PackageName { get; init; }
+	public required string PackageVersion { get; init; }
+	public required string EntryPointDll { get; init; }
+	public required string DiscoverySource { get; init; }
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]

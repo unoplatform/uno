@@ -23,6 +23,7 @@ using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.Services;
 using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.Server.AppLaunch;
+using Uno.UI.RemoteControl.Host.Mcp;
 
 namespace Uno.UI.RemoteControl.Host
 {
@@ -197,6 +198,10 @@ namespace Uno.UI.RemoteControl.Host
 					builder.Services.AddSingleton(AddInsStatus.Empty);
 				}
 #pragma warning restore ASPDEPR004
+
+				// Register Host-level MCP health tool and resource.
+				// AddMcpServer() uses TryAdd* internally, safe even if add-ins already called it.
+				HostHealthTool.Configure(builder.Services);
 
 #pragma warning disable ASPDEPR008
 				// Ditto: https://github.com/aspnet/Announcements/issues/526

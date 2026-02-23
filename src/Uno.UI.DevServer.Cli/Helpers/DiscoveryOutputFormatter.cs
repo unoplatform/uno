@@ -47,8 +47,8 @@ internal static class DiscoveryOutputFormatter
 			foreach (var addIn in info.AddIns)
 			{
 				table.AddRow(
-					new Markup($"  [white]{Escape(addIn.PackageName)}[/]"),
-					new Markup($"[grey]{Escape(addIn.EntryPointDll)}[/]"));
+					new Markup($"  [white]{Escape(addIn.PackageName)}[/] [grey]{Escape(addIn.PackageVersion)}[/]"),
+					new Markup($"[grey]{Escape(addIn.EntryPointDll)}[/] [dim]({Escape(addIn.DiscoverySource)})[/]"));
 			}
 		}
 		else

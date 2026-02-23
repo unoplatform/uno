@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using ModelContextProtocol.Protocol;
+using Uno.UI.DevServer.Cli.Helpers;
 
 namespace Uno.UI.DevServer.Cli.Mcp;
 
@@ -120,6 +121,32 @@ internal class HealthService(
 			DiscoveryDurationMs = devServerMonitor.DiscoveryDurationMs,
 			ConnectionState = ConnectionState,
 			Issues = issues,
+			Discovery = MapDiscovery(devServerMonitor.LastDiscoveryInfo),
+		};
+	}
+
+	private static DiscoverySummary? MapDiscovery(DiscoveryInfo? info)
+	{
+		if (info is null)
+		{
+			return null;
+		}
+
+		return new DiscoverySummary
+		{
+			WorkingDirectory = info.WorkingDirectory,
+			DotNetVersion = info.DotNetVersion,
+			UnoSdkVersion = info.UnoSdkVersion,
+			UnoSdkPath = info.UnoSdkPath,
+			HostPath = info.HostPath,
+			SettingsPath = info.SettingsPath,
+			AddIns = info.AddIns.Select(a => new AddInSummary
+			{
+				PackageName = a.PackageName,
+				PackageVersion = a.PackageVersion,
+				EntryPointDll = a.EntryPointDll,
+				DiscoverySource = a.DiscoverySource,
+			}).ToList(),
 		};
 	}
 }
