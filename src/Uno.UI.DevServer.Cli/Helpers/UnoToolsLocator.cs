@@ -14,9 +14,11 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 	private readonly ILogger<UnoToolsLocator> _logger = logger;
 	private readonly TargetsAddInResolver? _addInResolver = addInResolver;
 	private readonly DotNetVersionCache? _dotNetVersionCache = dotNetVersionCache;
+	private string? _workDirectory;
 
 	public async Task<DiscoveryInfo> DiscoverAsync(string workDirectory)
 	{
+		_workDirectory = workDirectory;
 		string? globalJsonPath = null;
 		string? unoSdkSource = null;
 		string? unoSdkSourcePath = null;
@@ -158,7 +160,7 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 			try
 			{
 				var projectAssetsFiles = ProjectAssetsParser.FindProjectAssetsFiles(workDirectory, _logger);
-				resolvedAddIns = _addInResolver.ResolveAddIns(packagesJsonPath, projectAssetsFiles);
+				resolvedAddIns = _addInResolver.ResolveAddIns(packagesJsonPath, projectAssetsFiles, NuGetCacheHelper.GetNuGetCachePaths(workDirectory));
 				addInsDiscoveryMethod = resolvedAddIns.Count > 0
 					? string.Join("+", resolvedAddIns.Select(a => a.DiscoverySource).Distinct())
 					: null;
@@ -372,12 +374,12 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 		}
 	}
 
-	internal static IReadOnlyList<string> GetNuGetCachePaths()
-		=> NuGetCacheHelper.GetNuGetCachePaths();
+	internal static IReadOnlyList<string> GetNuGetCachePaths(string? workingDirectory = null)
+		=> NuGetCacheHelper.GetNuGetCachePaths(workingDirectory);
 
 	private async Task<string?> EnsureNugetPackage(string packageId, string version, bool tryInstall = true)
 	{
-		var possiblePaths = GetNuGetCachePaths()
+		var possiblePaths = GetNuGetCachePaths(_workDirectory)
 			.Select(p => Path.Combine(p, packageId.ToLowerInvariant(), version))
 			.ToArray();
 
