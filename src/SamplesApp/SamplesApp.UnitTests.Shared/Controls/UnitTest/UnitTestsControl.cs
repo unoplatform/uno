@@ -53,6 +53,8 @@ namespace Uno.UI.Samples.Tests
 		private const StringComparison StrComp = StringComparison.InvariantCultureIgnoreCase;
 		private Task _runner;
 		private CancellationTokenSource _cts = new CancellationTokenSource();
+		private bool _testResultsAutoScroll = true;
+		private double _lastTestResultsScrollableHeight;
 #if DEBUG
 		private readonly TimeSpan DefaultUnitTestTimeout = TimeSpan.FromSeconds(300);
 #else
@@ -86,6 +88,11 @@ namespace Uno.UI.Samples.Tests
 
 			this.InitializeComponent();
 			this.Loaded += OnLoaded;
+
+			testResultsScroller.RegisterPropertyChangedCallback(
+				ScrollViewer.ScrollableHeightProperty,
+				OnTestResultsScrollableHeightChanged);
+			testResultsScroller.ViewChanged += OnTestResultsScrollerViewChanged;
 
 			Private.Infrastructure.TestServices.WindowHelper.EmbeddedTestRoot =
 			(
@@ -363,20 +370,33 @@ namespace Uno.UI.Samples.Tests
 						};
 
 						testResults.Children.Add(testResultBlock);
-						ScrollTestResultsToBottomIfNeeded();
 					}
 				}
 			);
 		}
 
-		private void ScrollTestResultsToBottomIfNeeded()
+		private void OnTestResultsScrollableHeightChanged(DependencyObject sender, DependencyProperty dp)
 		{
-			var sv = testResultsScroller;
-			// Consider "near bottom" if within 50px of the end
-			var isNearBottom = sv.VerticalOffset >= sv.ScrollableHeight - 50;
-			if (isNearBottom)
+			var sv = (ScrollViewer)sender;
+			// When content is cleared/reset, re-enable auto-scroll
+			if (sv.ScrollableHeight < _lastTestResultsScrollableHeight)
+			{
+				_testResultsAutoScroll = true;
+			}
+			_lastTestResultsScrollableHeight = sv.ScrollableHeight;
+
+			if (_testResultsAutoScroll)
 			{
 				sv.ChangeView(null, sv.ScrollableHeight, null, disableAnimation: true);
+			}
+		}
+
+		private void OnTestResultsScrollerViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+		{
+			if (!e.IsIntermediate)
+			{
+				var sv = (ScrollViewer)sender;
+				_testResultsAutoScroll = sv.VerticalOffset >= sv.ScrollableHeight - 50;
 			}
 		}
 
@@ -452,7 +472,6 @@ namespace Uno.UI.Samples.Tests
 				if (!IsRunningOnCI)
 				{
 					testResults.Children.Add(testResultBlock);
-					ScrollTestResultsToBottomIfNeeded();
 				}
 
 				if (testResult == TestResult.Error || testResult == TestResult.Failed)
