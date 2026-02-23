@@ -94,7 +94,13 @@ namespace Microsoft.UI.Composition
 					if (StrokeDashArray is { Count: > 0 } strokeDashArray)
 					{
 						strokePaint.StrokeCap = ToSKStrokeCap(StrokeDashCap);
-						strokePaint.PathEffect = SKPathEffect.CreateDash(strokeDashArray.ToEvenArray(), StrokeDashOffset);
+						// WinUI dash values are in multiples of StrokeThickness; Skia expects pixels
+						var dashValues = strokeDashArray.ToEvenArray();
+						for (int i = 0; i < dashValues.Length; i++)
+						{
+							dashValues[i] *= StrokeThickness;
+						}
+						strokePaint.PathEffect = SKPathEffect.CreateDash(dashValues, StrokeDashOffset * StrokeThickness);
 					}
 					else if (!needsCustomCaps)
 					{
@@ -142,6 +148,7 @@ namespace Microsoft.UI.Composition
 						AddCustomCaps(strokeFillPath, geometryWithTransformations.Geometry, StrokeThickness, StrokeStartCap, StrokeEndCap);
 					}
 
+					session.Canvas.Save();
 					session.Canvas.ClipPath(strokeFillPath, antialias: true);
 					stroke.Paint(session.Canvas, session.Opacity, strokeFillPath.Bounds);
 					session.Canvas.Restore();
@@ -216,7 +223,13 @@ namespace Microsoft.UI.Composition
 					if (StrokeDashArray is { Count: > 0 } strokeDashArray)
 					{
 						strokePaint.StrokeCap = ToSKStrokeCap(StrokeDashCap);
-						strokePaint.PathEffect = SKPathEffect.CreateDash(strokeDashArray.ToEvenArray(), StrokeDashOffset);
+						// WinUI dash values are in multiples of StrokeThickness; Skia expects pixels
+						var dashValues = strokeDashArray.ToEvenArray();
+						for (int i = 0; i < dashValues.Length; i++)
+						{
+							dashValues[i] *= StrokeThickness;
+						}
+						strokePaint.PathEffect = SKPathEffect.CreateDash(dashValues, StrokeDashOffset * StrokeThickness);
 					}
 					else if (!needsCustomCaps)
 					{
@@ -324,7 +337,7 @@ namespace Microsoft.UI.Composition
 					position.Y - halfWidth,
 					position.X + halfWidth,
 					position.Y + halfWidth);
-				path.AddArc(rect, startAngle, 180);
+				path.AddArc(rect, startAngle, -180);
 				path.Close();
 				return path;
 			}
