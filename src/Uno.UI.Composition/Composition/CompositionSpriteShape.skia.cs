@@ -151,8 +151,11 @@ namespace Microsoft.UI.Composition
 
 					// Fix endpoint caps for dashed strokes: WinUI uses StartCap/EndCap at path
 					// endpoints but DashCap at internal dash boundaries. Skia applies DashCap uniformly.
+					// Also handles zero-length dashes at endpoints when the endpoint falls in a gap.
 					if (dashValues is not null
-						&& (StrokeDashCap != StrokeStartCap || StrokeDashCap != StrokeEndCap))
+						&& (StrokeDashCap != CompositionStrokeCap.Flat
+							|| StrokeStartCap != CompositionStrokeCap.Flat
+							|| StrokeEndCap != CompositionStrokeCap.Flat))
 					{
 						FixDashEndpointCaps(strokeFillPath, geometryWithTransformations.Geometry,
 							StrokeThickness, StrokeDashCap, StrokeStartCap, StrokeEndCap,
@@ -270,7 +273,9 @@ namespace Microsoft.UI.Composition
 
 					// Fix endpoint caps for dashed strokes (mirror of Paint logic)
 					if (dashValues is not null
-						&& (StrokeDashCap != StrokeStartCap || StrokeDashCap != StrokeEndCap))
+						&& (StrokeDashCap != CompositionStrokeCap.Flat
+							|| StrokeStartCap != CompositionStrokeCap.Flat
+							|| StrokeEndCap != CompositionStrokeCap.Flat))
 					{
 						FixDashEndpointCaps(hitTestStrokeFillPath, geometryWithTransformations.Geometry,
 							StrokeThickness, StrokeDashCap, StrokeStartCap, StrokeEndCap,
@@ -416,29 +421,57 @@ namespace Microsoft.UI.Composition
 				}
 
 				// Fix end cap
-				if (dashCap != endCap
-					&& measure.GetPositionAndTangent(length, out var endPos, out var endTan)
-					&& IsPositionInDash(length, dashValues, dashOffset))
+				if (measure.GetPositionAndTangent(length, out var endPos, out var endTan))
 				{
-					// Remove the incorrect DashCap protrusion at end
-					if (dashCap != CompositionStrokeCap.Flat)
+					if (IsEndpointInRenderedDash(length, dashValues, dashOffset))
 					{
-						using var cutter = BuildHalfPlaneCutter(endPos, endTan, strokeWidth);
-						using var result = new SKPath();
-						if (fillPath.Op(cutter, SKPathOp.Difference, result))
+						// There IS a rendered dash at the endpoint.
+						// Swap DashCap → EndCap if they differ.
+						if (dashCap != endCap)
 						{
-							fillPath.Rewind();
-							fillPath.AddPath(result);
+							// Remove the incorrect DashCap protrusion at end
+							if (dashCap != CompositionStrokeCap.Flat)
+							{
+								using var cutter = BuildHalfPlaneCutter(endPos, endTan, strokeWidth);
+								using var result = new SKPath();
+								if (fillPath.Op(cutter, SKPathOp.Difference, result))
+								{
+									fillPath.Rewind();
+									fillPath.AddPath(result);
+								}
+							}
+
+							// Add the correct EndCap
+							if (endCap != CompositionStrokeCap.Flat)
+							{
+								using var capPath = BuildCapPath(endPos, endTan, strokeWidth, endCap);
+								if (capPath != null)
+								{
+									fillPath.AddPath(capPath);
+								}
+							}
 						}
 					}
-
-					// Add the correct EndCap
-					if (endCap != CompositionStrokeCap.Flat)
+					else
 					{
-						using var capPath = BuildCapPath(endPos, endTan, strokeWidth, endCap);
-						if (capPath != null)
+						// Endpoint is NOT in a rendered dash (in a gap or at gap/dash boundary).
+						// WinUI creates a zero-length dash: DashCap facing backward + EndCap facing forward.
+						var backDir = new SKPoint(-endTan.X, -endTan.Y);
+						if (dashCap != CompositionStrokeCap.Flat)
 						{
-							fillPath.AddPath(capPath);
+							using var capPath = BuildCapPath(endPos, backDir, strokeWidth, dashCap);
+							if (capPath != null)
+							{
+								fillPath.AddPath(capPath);
+							}
+						}
+						if (endCap != CompositionStrokeCap.Flat)
+						{
+							using var capPath = BuildCapPath(endPos, endTan, strokeWidth, endCap);
+							if (capPath != null)
+							{
+								fillPath.AddPath(capPath);
+							}
 						}
 					}
 				}
@@ -503,6 +536,60 @@ namespace Microsoft.UI.Composition
 
 			// Edge case: position exactly at pattern boundary - treat as start of dash
 			return true;
+		}
+
+		/// <summary>
+		/// Determines whether the endpoint of a path falls within a dash that was actually
+		/// rendered by Skia's dash effect. Unlike IsPositionInDash (which uses modulo and can
+		/// incorrectly report boundaries), this walks the pattern cumulatively.
+		/// Returns true only if a dash with nonzero length covers the endpoint position.
+		/// </summary>
+		private static bool IsEndpointInRenderedDash(
+			float pathLength, float[] dashValues, float dashOffset)
+		{
+			var totalPattern = 0f;
+			for (int i = 0; i < dashValues.Length; i++)
+			{
+				totalPattern += dashValues[i];
+			}
+
+			if (totalPattern <= 0)
+			{
+				return true;
+			}
+
+			// Compute where the pattern starts relative to the path.
+			// Positive dashOffset shifts the pattern forward (earlier in path).
+			var patternStart = -(dashOffset % totalPattern);
+			if (patternStart > 0)
+			{
+				patternStart -= totalPattern;
+			}
+			// patternStart is now in (-totalPattern, 0]
+
+			var pos = patternStart;
+			var idx = 0;
+
+			while (pos < pathLength)
+			{
+				var segLen = dashValues[idx % dashValues.Length];
+				var segEnd = pos + segLen;
+				var isDash = (idx % 2) == 0; // Even = dash, odd = gap
+
+				if (segEnd >= pathLength)
+				{
+					// This segment contains or reaches the endpoint.
+					// The endpoint is in a rendered dash only if:
+					// - This is a dash segment
+					// - The dash started strictly before the endpoint (nonzero length in path)
+					return isDash && pos < pathLength;
+				}
+
+				pos = segEnd;
+				idx++;
+			}
+
+			return false;
 		}
 
 		/// <summary>
