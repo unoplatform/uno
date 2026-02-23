@@ -162,6 +162,152 @@
 				</Grid>
 			</StackPanel>
 
+			<!-- Zero-Length Dash at Endpoint Edge Cases -->
+			<!-- When a dashed line's endpoint falls in a gap (or at a gap/dash boundary), -->
+			<!-- WinUI creates a zero-length dash: DashCap facing backward + EndCap facing forward. -->
+			<!-- Line length=240, pattern [48,32] (StrokeDashArray="3 2", Thickness=16): -->
+			<!-- 240/80=3 exactly. Dashes at [0-48],[80-128],[160-208]. Gap ends at 240=endpoint. -->
+			<TextBlock Text="Zero-Length Dash at Endpoint (gap boundary)" FontWeight="Bold" Margin="0,16,0,0" />
+
+			<StackPanel Spacing="8">
+				<!-- Case 1: All caps Round — endpoint at gap end -->
+				<!-- Previously broken: calling condition skipped when all caps matched -->
+				<TextBlock Text="All Round caps, endpoint in gap — full circle at end (backward+forward)" />
+				<Grid Height="40" Background="LightGray">
+					<Line X1="30" Y1="20" X2="270" Y2="20"
+						  Stroke="DarkRed" StrokeThickness="16"
+						  StrokeDashArray="3 2"
+						  StrokeDashCap="Round"
+						  StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
+				</Grid>
+
+				<!-- Case 2: DashCap=Round, EndCap=Flat — only backward semicircle at end -->
+				<TextBlock Text="DashCap=Round, EndCap=Flat, endpoint in gap — semicircle at end (backward only)" />
+				<Grid Height="40" Background="LightGray">
+					<Line X1="30" Y1="20" X2="270" Y2="20"
+						  Stroke="DarkBlue" StrokeThickness="16"
+						  StrokeDashArray="3 2"
+						  StrokeDashCap="Round" />
+				</Grid>
+
+				<!-- Case 3: DashCap=Square, EndCap=Round — Square backward + Round forward -->
+				<TextBlock Text="DashCap=Square, EndCap=Round, endpoint in gap — square back + round fwd" />
+				<Grid Height="40" Background="LightGray">
+					<Line X1="30" Y1="20" X2="270" Y2="20"
+						  Stroke="DarkGreen" StrokeThickness="16"
+						  StrokeDashArray="3 2"
+						  StrokeDashCap="Square"
+						  StrokeEndLineCap="Round" />
+				</Grid>
+
+				<!-- Case 4: DashCap=Flat, EndCap=Round — only forward semicircle at end -->
+				<TextBlock Text="DashCap=Flat, EndCap=Round, endpoint in gap — semicircle at end (forward only)" />
+				<Grid Height="40" Background="LightGray">
+					<Line X1="30" Y1="20" X2="270" Y2="20"
+						  Stroke="Teal" StrokeThickness="16"
+						  StrokeDashArray="3 2"
+						  StrokeDashCap="Flat"
+						  StrokeEndLineCap="Round" />
+				</Grid>
+
+				<!-- Case 5: All Flat — nothing extra at endpoint (optimization: skip entirely) -->
+				<TextBlock Text="All Flat caps, endpoint in gap — no protrusion at end" />
+				<Grid Height="40" Background="LightGray">
+					<Line X1="30" Y1="20" X2="270" Y2="20"
+						  Stroke="Gray" StrokeThickness="16"
+						  StrokeDashArray="3 2"
+						  StrokeDashCap="Flat" />
+				</Grid>
+			</StackPanel>
+
+			<!-- Endpoint at exact dash end — IsEndpointInRenderedDash should return true -->
+			<!-- Line length=208, pattern [48,32]: dashes at [0-48],[80-128],[160-208]. Endpoint at 208 = dash end. -->
+			<TextBlock Text="Endpoint at Exact Dash End (no zero-length dash)" FontWeight="Bold" Margin="0,16,0,0" />
+
+			<StackPanel Spacing="8">
+				<!-- Case 6: Endpoint at dash end, DashCap=Round, EndCap=Flat — swap to Flat -->
+				<TextBlock Text="DashCap=Round, EndCap=Flat, endpoint at dash end — flat end (cap swap)" />
+				<Grid Height="40" Background="LightGray">
+					<Line X1="30" Y1="20" X2="238" Y2="20"
+						  Stroke="DarkRed" StrokeThickness="16"
+						  StrokeDashArray="3 2"
+						  StrokeDashCap="Round" />
+				</Grid>
+
+				<!-- Case 7: Endpoint at dash end, all Round — no swap needed, just Round -->
+				<TextBlock Text="All Round, endpoint at dash end — round end (no change needed)" />
+				<Grid Height="40" Background="LightGray">
+					<Line X1="30" Y1="20" X2="238" Y2="20"
+						  Stroke="DarkBlue" StrokeThickness="16"
+						  StrokeDashArray="3 2"
+						  StrokeDashCap="Round"
+						  StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
+				</Grid>
+			</StackPanel>
+
+			<!-- Short line where endpoint lands in gap -->
+			<!-- Line length=60, pattern [48,32]: one dash [0-48], gap [48-60]. Endpoint in gap. -->
+			<TextBlock Text="Short Line — Endpoint in Gap" FontWeight="Bold" Margin="0,16,0,0" />
+
+			<StackPanel Spacing="8">
+				<TextBlock Text="Short line (60px), DashCap=Round — no extra at end (mid-gap)" />
+				<Grid Height="40" Background="LightGray">
+					<Line X1="30" Y1="20" X2="90" Y2="20"
+						  Stroke="Purple" StrokeThickness="16"
+						  StrokeDashArray="3 2"
+						  StrokeDashCap="Round" />
+				</Grid>
+
+				<TextBlock Text="Short line (60px), all Round — no extra at end (mid-gap)" />
+				<Grid Height="40" Background="LightGray">
+					<Line X1="30" Y1="20" X2="90" Y2="20"
+						  Stroke="Crimson" StrokeThickness="16"
+						  StrokeDashArray="3 2"
+						  StrokeDashCap="Round"
+						  StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
+				</Grid>
+			</StackPanel>
+
+			<!-- Dash offset shifting endpoint into gap -->
+			<!-- Line length=208, pattern [48,32], offset=1.5 (24px). -->
+			<!-- Shifted pattern starts at -24: dash[-24,24], gap[24,56], dash[56,104], gap[104,136], dash[136,184], gap[184,216]. -->
+			<!-- Endpoint 208 is in gap [184,216] — zero-length dash needed. -->
+			<TextBlock Text="Dash Offset Shifting Endpoint into Gap" FontWeight="Bold" Margin="0,16,0,0" />
+
+			<StackPanel Spacing="8">
+				<TextBlock Text="Length=208, offset=1.5 — endpoint in mid-gap (no extra at end)" />
+				<Grid Height="40" Background="LightGray">
+					<Line X1="30" Y1="20" X2="238" Y2="20"
+						  Stroke="DarkOrange" StrokeThickness="16"
+						  StrokeDashArray="3 2"
+						  StrokeDashCap="Round"
+						  StrokeDashOffset="1.5" />
+				</Grid>
+			</StackPanel>
+
+			<!-- Multi-segment path endpoint in gap -->
+			<TextBlock Text="Path Endpoint in Gap" FontWeight="Bold" Margin="0,16,0,0" />
+
+			<StackPanel Spacing="8">
+				<TextBlock Text="Path, DashCap=Round — zero-length dash at path endpoint" />
+				<Grid Height="100" Background="LightGray">
+					<Path Stroke="DarkViolet" StrokeThickness="12"
+						  StrokeDashArray="3 2"
+						  StrokeDashCap="Round"
+						  StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+						  Data="M 30,50 L 150,20 L 270,50" />
+				</Grid>
+
+				<TextBlock Text="Path, DashCap=Square, EndCap=Round — square back + round fwd at end" />
+				<Grid Height="100" Background="LightGray">
+					<Path Stroke="Maroon" StrokeThickness="12"
+						  StrokeDashArray="3 2"
+						  StrokeDashCap="Square"
+						  StrokeEndLineCap="Round"
+						  Data="M 30,50 L 150,20 L 270,50" />
+				</Grid>
+			</StackPanel>
+
 			<!-- Issue #5426 repro: Path with round caps and joins -->
 			<TextBlock Text="Issue #5426 repro: Path with Round caps and joins" FontWeight="Bold" Margin="0,16,0,0" />
 			<Path Stroke="DarkBlue" StrokeThickness="8"
