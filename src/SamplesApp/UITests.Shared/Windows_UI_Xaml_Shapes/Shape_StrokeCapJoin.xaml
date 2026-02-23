@@ -106,6 +106,62 @@
 					  StrokeDashOffset="4" />
 			</StackPanel>
 
+			<!-- Dashed Endpoint Caps: WinUI uses StartCap/EndCap at path endpoints, DashCap only at internal boundaries -->
+			<TextBlock Text="Dashed Endpoint Caps (DashCap vs StartCap/EndCap)" FontWeight="Bold" Margin="0,16,0,0" />
+
+			<StackPanel Spacing="8">
+				<TextBlock Text="DashCap=Round, Start/EndCap=Flat (default) — endpoints should be FLAT" />
+				<Grid Height="40" Background="LightGray">
+					<Line X1="30" Y1="20" X2="270" Y2="20"
+						  Stroke="DarkRed" StrokeThickness="16"
+						  StrokeDashArray="3 2"
+						  StrokeDashCap="Round" />
+				</Grid>
+
+				<TextBlock Text="DashCap=Round, StartCap=Round, EndCap=Round — all caps round (reference)" />
+				<Grid Height="40" Background="LightGray">
+					<Line X1="30" Y1="20" X2="270" Y2="20"
+						  Stroke="DarkBlue" StrokeThickness="16"
+						  StrokeDashArray="3 2"
+						  StrokeDashCap="Round"
+						  StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
+				</Grid>
+
+				<TextBlock Text="DashCap=Round, StartCap=Square, EndCap=Flat — start=square, end=flat" />
+				<Grid Height="40" Background="LightGray">
+					<Line X1="30" Y1="20" X2="270" Y2="20"
+						  Stroke="DarkGreen" StrokeThickness="16"
+						  StrokeDashArray="3 2"
+						  StrokeDashCap="Round"
+						  StrokeStartLineCap="Square" StrokeEndLineCap="Flat" />
+				</Grid>
+
+				<TextBlock Text="DashCap=Square, Start/EndCap=Flat — endpoints should be FLAT" />
+				<Grid Height="40" Background="LightGray">
+					<Line X1="30" Y1="20" X2="270" Y2="20"
+						  Stroke="Purple" StrokeThickness="16"
+						  StrokeDashArray="3 2"
+						  StrokeDashCap="Square" />
+				</Grid>
+
+				<TextBlock Text="DashCap=Flat, StartCap=Round, EndCap=Round — endpoints round, internal flat" />
+				<Grid Height="40" Background="LightGray">
+					<Line X1="30" Y1="20" X2="270" Y2="20"
+						  Stroke="Teal" StrokeThickness="16"
+						  StrokeDashArray="3 2"
+						  StrokeDashCap="Flat"
+						  StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
+				</Grid>
+
+				<TextBlock Text="Path: DashCap=Round, Start/EndCap=Flat — endpoints should be FLAT" />
+				<Grid Height="100" Background="LightGray">
+					<Path Stroke="Crimson" StrokeThickness="12"
+						  StrokeDashArray="2 1"
+						  StrokeDashCap="Round"
+						  Data="M 30,50 L 120,20 L 220,80" />
+				</Grid>
+			</StackPanel>
+
 			<!-- Issue #5426 repro: Path with round caps and joins -->
 			<TextBlock Text="Issue #5426 repro: Path with Round caps and joins" FontWeight="Bold" Margin="0,16,0,0" />
 			<Path Stroke="DarkBlue" StrokeThickness="8"
@@ -117,15 +173,253 @@
 			<TextBlock Text="StrokeMiterLimit" FontWeight="Bold" Margin="0,16,0,0" />
 
 			<StackPanel Spacing="8">
-				<TextBlock Text="MiterLimit=10 (default)" />
-				<Polyline Points="20,50 50,10 80,50"
-						  Stroke="Black" StrokeThickness="10"
-						  StrokeLineJoin="Miter" StrokeMiterLimit="10" Fill="Transparent" />
+				<!-- Sharp angle (V shape ~53°) -->
+				<TextBlock Text="Sharp V (53°) — MiterLimit=10 (default)" />
+				<Grid Height="70" Background="LightGray">
+					<Polyline Points="20,60 50,10 80,60"
+							  Stroke="Black" StrokeThickness="10"
+							  StrokeLineJoin="Miter" StrokeMiterLimit="10" Fill="Transparent" />
+				</Grid>
 
-				<TextBlock Text="MiterLimit=1 (bevel fallback)" />
-				<Polyline Points="20,50 50,10 80,50"
-						  Stroke="Black" StrokeThickness="10"
-						  StrokeLineJoin="Miter" StrokeMiterLimit="1" Fill="Transparent" />
+				<TextBlock Text="Sharp V (53°) — MiterLimit=4" />
+				<Grid Height="70" Background="LightGray">
+					<Polyline Points="20,60 50,10 80,60"
+							  Stroke="Black" StrokeThickness="10"
+							  StrokeLineJoin="Miter" StrokeMiterLimit="4" Fill="Transparent" />
+				</Grid>
+
+				<TextBlock Text="Sharp V (53°) — MiterLimit=2" />
+				<Grid Height="70" Background="LightGray">
+					<Polyline Points="20,60 50,10 80,60"
+							  Stroke="Black" StrokeThickness="10"
+							  StrokeLineJoin="Miter" StrokeMiterLimit="2" Fill="Transparent" />
+				</Grid>
+
+				<TextBlock Text="Sharp V (53°) — MiterLimit=1 (bevel fallback)" />
+				<Grid Height="70" Background="LightGray">
+					<Polyline Points="20,60 50,10 80,60"
+							  Stroke="Black" StrokeThickness="10"
+							  StrokeLineJoin="Miter" StrokeMiterLimit="1" Fill="Transparent" />
+				</Grid>
+
+				<!-- Very sharp angle (~15°) — miter extends far -->
+				<TextBlock Text="Very sharp (~15°) — MiterLimit=10 (default)" />
+				<Grid Height="90" Background="LightGray">
+					<Polyline Points="20,80 50,10 80,80"
+							  Stroke="Red" StrokeThickness="14"
+							  StrokeLineJoin="Miter" StrokeMiterLimit="10" Fill="Transparent" />
+				</Grid>
+
+				<TextBlock Text="Very sharp (~15°) — MiterLimit=4" />
+				<Grid Height="90" Background="LightGray">
+					<Polyline Points="20,80 50,10 80,80"
+							  Stroke="Red" StrokeThickness="14"
+							  StrokeLineJoin="Miter" StrokeMiterLimit="4" Fill="Transparent" />
+				</Grid>
+
+				<TextBlock Text="Very sharp (~15°) — MiterLimit=2" />
+				<Grid Height="90" Background="LightGray">
+					<Polyline Points="20,80 50,10 80,80"
+							  Stroke="Red" StrokeThickness="14"
+							  StrokeLineJoin="Miter" StrokeMiterLimit="2" Fill="Transparent" />
+				</Grid>
+
+				<TextBlock Text="Very sharp (~15°) — MiterLimit=1" />
+				<Grid Height="90" Background="LightGray">
+					<Polyline Points="20,80 50,10 80,80"
+							  Stroke="Red" StrokeThickness="14"
+							  StrokeLineJoin="Miter" StrokeMiterLimit="1" Fill="Transparent" />
+				</Grid>
+
+				<!-- Wide angle (~120°) — miter is short -->
+				<TextBlock Text="Wide angle (~120°) — MiterLimit=10 (default)" />
+				<Grid Height="60" Background="LightGray">
+					<Polyline Points="20,20 100,50 180,20"
+							  Stroke="Blue" StrokeThickness="10"
+							  StrokeLineJoin="Miter" StrokeMiterLimit="10" Fill="Transparent" />
+				</Grid>
+
+				<TextBlock Text="Wide angle (~120°) — MiterLimit=1" />
+				<Grid Height="60" Background="LightGray">
+					<Polyline Points="20,20 100,50 180,20"
+							  Stroke="Blue" StrokeThickness="10"
+							  StrokeLineJoin="Miter" StrokeMiterLimit="1" Fill="Transparent" />
+				</Grid>
+
+				<!-- Multiple joins with different angles -->
+				<TextBlock Text="Zigzag (mixed angles) — MiterLimit=10 (default)" />
+				<Grid Height="80" Background="LightGray">
+					<Polyline Points="10,60 40,10 70,60 100,10 130,60 160,10 190,60"
+							  Stroke="DarkGreen" StrokeThickness="8"
+							  StrokeLineJoin="Miter" StrokeMiterLimit="10" Fill="Transparent" />
+				</Grid>
+
+				<TextBlock Text="Zigzag (mixed angles) — MiterLimit=2" />
+				<Grid Height="80" Background="LightGray">
+					<Polyline Points="10,60 40,10 70,60 100,10 130,60 160,10 190,60"
+							  Stroke="DarkGreen" StrokeThickness="8"
+							  StrokeLineJoin="Miter" StrokeMiterLimit="2" Fill="Transparent" />
+				</Grid>
+
+				<!-- Thick stroke to exaggerate miter differences -->
+				<TextBlock Text="Thick stroke (20px), sharp angle — MiterLimit=10" />
+				<Grid Height="100" Background="LightGray">
+					<Polyline Points="30,80 80,15 130,80"
+							  Stroke="Crimson" StrokeThickness="20"
+							  StrokeLineJoin="Miter" StrokeMiterLimit="10" Fill="Transparent" />
+				</Grid>
+
+				<TextBlock Text="Thick stroke (20px), sharp angle — MiterLimit=4" />
+				<Grid Height="100" Background="LightGray">
+					<Polyline Points="30,80 80,15 130,80"
+							  Stroke="Crimson" StrokeThickness="20"
+							  StrokeLineJoin="Miter" StrokeMiterLimit="4" Fill="Transparent" />
+				</Grid>
+
+				<TextBlock Text="Thick stroke (20px), sharp angle — MiterLimit=2" />
+				<Grid Height="100" Background="LightGray">
+					<Polyline Points="30,80 80,15 130,80"
+							  Stroke="Crimson" StrokeThickness="20"
+							  StrokeLineJoin="Miter" StrokeMiterLimit="2" Fill="Transparent" />
+				</Grid>
+
+				<!-- Right angle (90°) -->
+				<TextBlock Text="Right angle (90°) — MiterLimit=10" />
+				<Grid Height="80" Background="LightGray">
+					<Polyline Points="20,20 20,60 80,60"
+							  Stroke="Teal" StrokeThickness="12"
+							  StrokeLineJoin="Miter" StrokeMiterLimit="10" Fill="Transparent" />
+				</Grid>
+
+				<TextBlock Text="Right angle (90°) — MiterLimit=1" />
+				<Grid Height="80" Background="LightGray">
+					<Polyline Points="20,20 20,60 80,60"
+							  Stroke="Teal" StrokeThickness="12"
+							  StrokeLineJoin="Miter" StrokeMiterLimit="1" Fill="Transparent" />
+				</Grid>
+
+				<!-- Path with MiterLimit -->
+				<TextBlock Text="Path zigzag — Miter, MiterLimit=10" />
+				<Grid Height="100" Background="LightGray">
+					<Path Stroke="DarkBlue" StrokeThickness="10"
+						  StrokeLineJoin="Miter" StrokeMiterLimit="10"
+						  Data="M 20,80 L 60,15 L 100,80 L 140,15 L 180,80" />
+				</Grid>
+
+				<TextBlock Text="Path zigzag — Miter, MiterLimit=2" />
+				<Grid Height="100" Background="LightGray">
+					<Path Stroke="DarkBlue" StrokeThickness="10"
+						  StrokeLineJoin="Miter" StrokeMiterLimit="2"
+						  Data="M 20,80 L 60,15 L 100,80 L 140,15 L 180,80" />
+				</Grid>
+			</StackPanel>
+
+			<!-- Round Join comparison -->
+			<TextBlock Text="StrokeLineJoin=Round (comparison)" FontWeight="Bold" Margin="0,16,0,0" />
+
+			<StackPanel Spacing="8">
+				<TextBlock Text="Sharp V (53°) — Round" />
+				<Grid Height="70" Background="LightGray">
+					<Polyline Points="20,60 50,10 80,60"
+							  Stroke="Black" StrokeThickness="10"
+							  StrokeLineJoin="Round" Fill="Transparent" />
+				</Grid>
+
+				<TextBlock Text="Very sharp (~15°) — Round" />
+				<Grid Height="90" Background="LightGray">
+					<Polyline Points="20,80 50,10 80,80"
+							  Stroke="Red" StrokeThickness="14"
+							  StrokeLineJoin="Round" Fill="Transparent" />
+				</Grid>
+
+				<TextBlock Text="Wide angle (~120°) — Round" />
+				<Grid Height="60" Background="LightGray">
+					<Polyline Points="20,20 100,50 180,20"
+							  Stroke="Blue" StrokeThickness="10"
+							  StrokeLineJoin="Round" Fill="Transparent" />
+				</Grid>
+
+				<TextBlock Text="Zigzag — Round" />
+				<Grid Height="80" Background="LightGray">
+					<Polyline Points="10,60 40,10 70,60 100,10 130,60 160,10 190,60"
+							  Stroke="DarkGreen" StrokeThickness="8"
+							  StrokeLineJoin="Round" Fill="Transparent" />
+				</Grid>
+
+				<TextBlock Text="Thick stroke (20px), sharp angle — Round" />
+				<Grid Height="100" Background="LightGray">
+					<Polyline Points="30,80 80,15 130,80"
+							  Stroke="Crimson" StrokeThickness="20"
+							  StrokeLineJoin="Round" Fill="Transparent" />
+				</Grid>
+
+				<TextBlock Text="Right angle (90°) — Round" />
+				<Grid Height="80" Background="LightGray">
+					<Polyline Points="20,20 20,60 80,60"
+							  Stroke="Teal" StrokeThickness="12"
+							  StrokeLineJoin="Round" Fill="Transparent" />
+				</Grid>
+
+				<TextBlock Text="Path zigzag — Round" />
+				<Grid Height="100" Background="LightGray">
+					<Path Stroke="DarkBlue" StrokeThickness="10"
+						  StrokeLineJoin="Round"
+						  Data="M 20,80 L 60,15 L 100,80 L 140,15 L 180,80" />
+				</Grid>
+			</StackPanel>
+
+			<!-- Bevel Join comparison -->
+			<TextBlock Text="StrokeLineJoin=Bevel (comparison)" FontWeight="Bold" Margin="0,16,0,0" />
+
+			<StackPanel Spacing="8">
+				<TextBlock Text="Sharp V (53°) — Bevel" />
+				<Grid Height="70" Background="LightGray">
+					<Polyline Points="20,60 50,10 80,60"
+							  Stroke="Black" StrokeThickness="10"
+							  StrokeLineJoin="Bevel" Fill="Transparent" />
+				</Grid>
+
+				<TextBlock Text="Very sharp (~15°) — Bevel" />
+				<Grid Height="90" Background="LightGray">
+					<Polyline Points="20,80 50,10 80,80"
+							  Stroke="Red" StrokeThickness="14"
+							  StrokeLineJoin="Bevel" Fill="Transparent" />
+				</Grid>
+
+				<TextBlock Text="Wide angle (~120°) — Bevel" />
+				<Grid Height="60" Background="LightGray">
+					<Polyline Points="20,20 100,50 180,20"
+							  Stroke="Blue" StrokeThickness="10"
+							  StrokeLineJoin="Bevel" Fill="Transparent" />
+				</Grid>
+
+				<TextBlock Text="Zigzag — Bevel" />
+				<Grid Height="80" Background="LightGray">
+					<Polyline Points="10,60 40,10 70,60 100,10 130,60 160,10 190,60"
+							  Stroke="DarkGreen" StrokeThickness="8"
+							  StrokeLineJoin="Bevel" Fill="Transparent" />
+				</Grid>
+
+				<TextBlock Text="Thick stroke (20px), sharp angle — Bevel" />
+				<Grid Height="100" Background="LightGray">
+					<Polyline Points="30,80 80,15 130,80"
+							  Stroke="Crimson" StrokeThickness="20"
+							  StrokeLineJoin="Bevel" Fill="Transparent" />
+				</Grid>
+
+				<TextBlock Text="Right angle (90°) — Bevel" />
+				<Grid Height="80" Background="LightGray">
+					<Polyline Points="20,20 20,60 80,60"
+							  Stroke="Teal" StrokeThickness="12"
+							  StrokeLineJoin="Bevel" Fill="Transparent" />
+				</Grid>
+
+				<TextBlock Text="Path zigzag — Bevel" />
+				<Grid Height="100" Background="LightGray">
+					<Path Stroke="DarkBlue" StrokeThickness="10"
+						  StrokeLineJoin="Bevel"
+						  Data="M 20,80 L 60,15 L 100,80 L 140,15 L 180,80" />
+				</Grid>
 			</StackPanel>
 
 		</StackPanel>
