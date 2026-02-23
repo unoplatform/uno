@@ -1,4 +1,4 @@
-﻿#if __APPLE_UIKIT__ || __SKIA__
+﻿#if __APPLE_UIKIT__ || __SKIA__ || WINAPPSDK
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Private.Infrastructure;
@@ -9,8 +9,11 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
-using Uno.UI.Controls.Legacy;
 using Uno.UI.RuntimeTests.Helpers;
+
+#if HAS_UNO
+using Uno.UI.Controls.Legacy;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 {
@@ -18,6 +21,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 	[RunsOnUIThread]
 	public class When_Shape
 	{
+#if HAS_UNO
 		[TestMethod]
 		public async Task When_Shape_Stretch_None()
 		{
@@ -49,9 +53,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 
 			Assert.AreEqual(new Rect(0, 0, 200, 200), SUT.LayoutSlotWithMarginsAndAlignments);
 		}
+#endif
 
-
-#if __SKIA__
+#if __SKIA__ || WINAPPSDK
 		[TestMethod]
 		public void When_StrokeMiterLimit_Default()
 		{
@@ -140,6 +144,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			ImageAssert.HasColorAt(screenshot, 110, 25, Colors.Red, tolerance: 30);
 		}
 
+		private PointCollection CreatePointCollection(Point[] points)
+		{
+			var collection = new PointCollection();
+			foreach (var point in points)
+			{
+				collection.Add(point);
+			}
+			return collection;
+		}
+
 		[TestMethod]
 		public async Task When_StrokeLineJoin_Round_Renders()
 		{
@@ -147,7 +161,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			var container = new Grid { Width = 120, Height = 80, Background = new SolidColorBrush(Colors.White) };
 			var polyline = new Polyline
 			{
-				Points = new PointCollection(new[] { new Point(10, 70), new Point(60, 10), new Point(110, 70) }),
+				Points = CreatePointCollection(new[] { new Point(10, 70), new Point(60, 10), new Point(110, 70) }),
 				Stroke = new SolidColorBrush(Colors.Blue),
 				StrokeThickness = 16,
 				StrokeLineJoin = PenLineJoin.Round,
@@ -169,7 +183,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			var container = new Grid { Width = 120, Height = 80, Background = new SolidColorBrush(Colors.White) };
 			var polyline = new Polyline
 			{
-				Points = new PointCollection(new[] { new Point(10, 70), new Point(60, 10), new Point(110, 70) }),
+				Points = CreatePointCollection(new[] { new Point(10, 70), new Point(60, 10), new Point(110, 70) }),
 				Stroke = new SolidColorBrush(Colors.Green),
 				StrokeThickness = 16,
 				StrokeLineJoin = PenLineJoin.Bevel,
@@ -385,16 +399,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 		}
 
 		[TestMethod]
-		public async Task When_DashCap_Round_Endpoint_In_Gap_No_Cap()
+		public async Task When_DashCap_Round_Endpoint_In_Gap_EndCap_Flat()
 		{
-			// When the path endpoint falls in a gap, no cap should be rendered at all.
-			// Use a dash offset so the end of the path lands in a gap.
+			// When the path endpoint falls in a gap with DashCap=Round and EndCap=Flat (default),
+			// WinUI creates a zero-length dash at the endpoint: DashCap backward + EndCap forward.
+			// Since EndCap is Flat, there should be no forward protrusion beyond the endpoint.
+			// The backward DashCap=Round semicircle fills part of the gap near the endpoint.
 			var container = new Grid { Width = 300, Height = 50, Background = new SolidColorBrush(Colors.White) };
-			// Line length = 240 (270-30). DashArray = "3 2" → pixel values: 60,40 (total=100).
-			// With offset=1 → pixel offset=20. patternPos at end (240+20)%100 = 60 → index 1 (gap starts at 60).
-			// So end falls exactly at the start of the gap.
-			// Try offset=1.5 → pixel offset=30. (240+30)%100 = 70 → accumulated: 60(dash), then 100(gap).
-			// 70 < 100, index 1 = gap. End is in a gap.
+			// Line length = 240 (270-30). DashArray = "3 2" with thickness 20 → [60,40], total=100.
+			// With offset=1.5 → pixel offset=30. Pattern walk ends with a gap containing the endpoint.
 			var line = new Line
 			{
 				X1 = 30,
@@ -412,8 +425,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			await UITestHelper.Load(container);
 			var screenshot = await UITestHelper.ScreenShot(container);
 
-			// End falls on a gap, so there should be no stroke at the end at all.
-			// Pixel well after the endpoint should be white.
+			// EndCap=Flat: no forward protrusion beyond x=270
 			ImageAssert.HasColorAt(screenshot, 278, 25, Colors.White, tolerance: 30);
 		}
 
@@ -453,6 +465,225 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 		}
 
 		[TestMethod]
+		public async Task When_Endpoint_In_Gap_AllRound_Shows_ZeroLengthDash()
+		{
+			// When the endpoint falls in a gap and all caps are Round, WinUI creates a
+			// zero-length dash: DashCap(Round) facing backward + EndCap(Round) facing forward.
+			// This produces a full circle at the endpoint position.
+			// Line X1=30, X2=270, length=240. Thickness=16, DashArray="3 2" → [48,32], total=80.
+			// 240/80=3. Dashes at [0,48],[80,128],[160,208]. Gap at [208,240]. Endpoint in gap.
+			// halfWidth=8. Backward cap: x=262-270. Forward cap: x=270-278.
+			var container = new Grid { Width = 300, Height = 50, Background = new SolidColorBrush(Colors.White) };
+			var line = new Line
+			{
+				X1 = 30,
+				Y1 = 25,
+				X2 = 270,
+				Y2 = 25,
+				Stroke = new SolidColorBrush(Colors.Red),
+				StrokeThickness = 16,
+				StrokeDashArray = new DoubleCollection { 3, 2 },
+				StrokeDashCap = PenLineCap.Round,
+				StrokeStartLineCap = PenLineCap.Round,
+				StrokeEndLineCap = PenLineCap.Round,
+			};
+			container.Children.Add(line);
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+
+			// Backward DashCap semicircle center at x=266 should be Red
+			ImageAssert.HasColorAt(screenshot, 266, 25, Colors.Red, tolerance: 30);
+			// Forward EndCap semicircle center at x=274 should be Red
+			ImageAssert.HasColorAt(screenshot, 274, 25, Colors.Red, tolerance: 30);
+			// Gap interior (x=250, between last dash end at 238 and backward cap start at 262) → White
+			ImageAssert.HasColorAt(screenshot, 250, 25, Colors.White, tolerance: 30);
+		}
+
+		[TestMethod]
+		public async Task When_Endpoint_In_Gap_DashRound_EndFlat_Shows_BackwardCapOnly()
+		{
+			// DashCap=Round, EndCap=Flat. Endpoint in gap → only backward DashCap semicircle.
+			// Same geometry as AllRound test: line length=240, pattern [48,32], endpoint in gap.
+			var container = new Grid { Width = 300, Height = 50, Background = new SolidColorBrush(Colors.White) };
+			var line = new Line
+			{
+				X1 = 30,
+				Y1 = 25,
+				X2 = 270,
+				Y2 = 25,
+				Stroke = new SolidColorBrush(Colors.Red),
+				StrokeThickness = 16,
+				StrokeDashArray = new DoubleCollection { 3, 2 },
+				StrokeDashCap = PenLineCap.Round,
+				// StartCap and EndCap default to Flat
+			};
+			container.Children.Add(line);
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+
+			// Backward DashCap semicircle at x=266 → Red
+			ImageAssert.HasColorAt(screenshot, 266, 25, Colors.Red, tolerance: 30);
+			// No forward cap (Flat): x=274 → White
+			ImageAssert.HasColorAt(screenshot, 274, 25, Colors.White, tolerance: 30);
+		}
+
+		[TestMethod]
+		public async Task When_Endpoint_In_Gap_DashFlat_EndRound_Shows_ForwardCapOnly()
+		{
+			// DashCap=Flat, EndCap=Round. Endpoint in gap → only forward EndCap semicircle.
+			// Same geometry: line length=240, pattern [48,32], endpoint in gap.
+			var container = new Grid { Width = 300, Height = 50, Background = new SolidColorBrush(Colors.White) };
+			var line = new Line
+			{
+				X1 = 30,
+				Y1 = 25,
+				X2 = 270,
+				Y2 = 25,
+				Stroke = new SolidColorBrush(Colors.Red),
+				StrokeThickness = 16,
+				StrokeDashArray = new DoubleCollection { 3, 2 },
+				StrokeDashCap = PenLineCap.Flat,
+				StrokeEndLineCap = PenLineCap.Round,
+			};
+			container.Children.Add(line);
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+
+			// No backward cap (DashCap=Flat): x=266 (in gap near endpoint) → White
+			ImageAssert.HasColorAt(screenshot, 266, 25, Colors.White, tolerance: 30);
+			// Forward EndCap semicircle at x=274 → Red
+			ImageAssert.HasColorAt(screenshot, 274, 25, Colors.Red, tolerance: 30);
+		}
+
+		[TestMethod]
+		public async Task When_Endpoint_In_Gap_AllFlat_No_ZeroLengthDash()
+		{
+			// All caps Flat. Endpoint in gap → zero-length dash is invisible.
+			// Same geometry: line length=240, pattern [48,32], endpoint in gap.
+			var container = new Grid { Width = 300, Height = 50, Background = new SolidColorBrush(Colors.White) };
+			var line = new Line
+			{
+				X1 = 30,
+				Y1 = 25,
+				X2 = 270,
+				Y2 = 25,
+				Stroke = new SolidColorBrush(Colors.Red),
+				StrokeThickness = 16,
+				StrokeDashArray = new DoubleCollection { 3, 2 },
+				StrokeDashCap = PenLineCap.Flat,
+				// StartCap and EndCap default to Flat
+			};
+			container.Children.Add(line);
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+
+			// No visible cap at endpoint: gap area and beyond should be White
+			ImageAssert.HasColorAt(screenshot, 266, 25, Colors.White, tolerance: 30);
+			ImageAssert.HasColorAt(screenshot, 274, 25, Colors.White, tolerance: 30);
+		}
+
+		[TestMethod]
+		public async Task When_Endpoint_At_DashEnd_DashRound_EndFlat_Swaps_Cap()
+		{
+			// Endpoint exactly at dash end (not in a gap). DashCap=Round, EndCap=Flat.
+			// The round cap protrusion should be swapped for flat (no protrusion beyond endpoint).
+			// Line X1=30, X2=238, length=208. Pattern [48,32], total=80.
+			// Dashes: [0,48],[80,128],[160,208]. Endpoint at 208 = end of dash 3.
+			// halfWidth=8. Without swap, Round cap would extend to x=246.
+			var container = new Grid { Width = 260, Height = 50, Background = new SolidColorBrush(Colors.White) };
+			var line = new Line
+			{
+				X1 = 30,
+				Y1 = 25,
+				X2 = 238,
+				Y2 = 25,
+				Stroke = new SolidColorBrush(Colors.Red),
+				StrokeThickness = 16,
+				StrokeDashArray = new DoubleCollection { 3, 2 },
+				StrokeDashCap = PenLineCap.Round,
+				// EndCap defaults to Flat
+			};
+			container.Children.Add(line);
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+
+			// EndCap=Flat: no protrusion beyond x=238. At x=244 (inside where Round would extend) → White
+			ImageAssert.HasColorAt(screenshot, 244, 25, Colors.White, tolerance: 30);
+			// Last dash is present: x=234 → Red
+			ImageAssert.HasColorAt(screenshot, 234, 25, Colors.Red, tolerance: 30);
+		}
+
+		[TestMethod]
+		public async Task When_Endpoint_In_Gap_DashSquare_EndRound_Shows_MixedCaps()
+		{
+			// DashCap=Square, EndCap=Round. Endpoint in gap → Square backward + Round forward.
+			// Tests that the two different cap shapes are correctly composed.
+			// Same geometry: line length=240, pattern [48,32], endpoint in gap.
+			var container = new Grid { Width = 300, Height = 50, Background = new SolidColorBrush(Colors.White) };
+			var line = new Line
+			{
+				X1 = 30,
+				Y1 = 25,
+				X2 = 270,
+				Y2 = 25,
+				Stroke = new SolidColorBrush(Colors.Red),
+				StrokeThickness = 16,
+				StrokeDashArray = new DoubleCollection { 3, 2 },
+				StrokeDashCap = PenLineCap.Square,
+				StrokeEndLineCap = PenLineCap.Round,
+			};
+			container.Children.Add(line);
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+
+			// Square backward cap (rectangle from x=262 to x=270): x=266 → Red
+			ImageAssert.HasColorAt(screenshot, 266, 25, Colors.Red, tolerance: 30);
+			// Round forward cap (semicircle from x=270 to x=278): x=274 → Red
+			ImageAssert.HasColorAt(screenshot, 274, 25, Colors.Red, tolerance: 30);
+			// Square cap extends to stroke edge vertically: check corner area at y=17 (top)
+			// Square cap is a full rectangle, so at y=18 (near top edge at y=17) → Red
+			ImageAssert.HasColorAt(screenshot, 266, 18, Colors.Red, tolerance: 30);
+		}
+
+		[TestMethod]
+		public async Task When_Endpoint_In_Gap_Short_Line_No_ZeroLengthDash()
+		{
+			// Very short line where endpoint lands in the middle of a gap.
+			// Line X1=30, X2=90, length=60. Thickness=16, pattern [48,32], total=80.
+			// One dash [0,48], gap [48,80]. Endpoint at 60 is mid-gap (not at boundary).
+			// WinUI does NOT create a zero-length dash when the endpoint is in the
+			// middle of a gap — only when it coincides with a gap/dash boundary.
+			var container = new Grid { Width = 120, Height = 50, Background = new SolidColorBrush(Colors.White) };
+			var line = new Line
+			{
+				X1 = 30,
+				Y1 = 25,
+				X2 = 90,
+				Y2 = 25,
+				Stroke = new SolidColorBrush(Colors.Red),
+				StrokeThickness = 16,
+				StrokeDashArray = new DoubleCollection { 3, 2 },
+				StrokeDashCap = PenLineCap.Round,
+				StrokeStartLineCap = PenLineCap.Round,
+				StrokeEndLineCap = PenLineCap.Round,
+			};
+			container.Children.Add(line);
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+
+			// Endpoint area should be White (no cap geometry) since endpoint is mid-gap
+			ImageAssert.HasColorAt(screenshot, 86, 25, Colors.White, tolerance: 30);
+			ImageAssert.HasColorAt(screenshot, 94, 25, Colors.White, tolerance: 30);
+		}
+
+		[TestMethod]
 		public async Task When_StrokeLineJoin_Miter_SharpAngle_ShowsClippedProtrusion()
 		{
 			// A sharp V-shape with MiterLimit=3. The miter ratio at the vertex (~3.36)
@@ -461,7 +692,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			var container = new Grid { Width = 200, Height = 200, Background = new SolidColorBrush(Colors.White) };
 			var polyline = new Polyline
 			{
-				Points = new PointCollection(new[] { new Point(50, 180), new Point(100, 20), new Point(150, 180) }),
+				Points = CreatePointCollection(new[] { new Point(50, 180), new Point(100, 20), new Point(150, 180) }),
 				Stroke = new SolidColorBrush(Colors.Red),
 				StrokeThickness = 20,
 				StrokeLineJoin = PenLineJoin.Miter,
@@ -489,7 +720,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			var container = new Grid { Width = 200, Height = 200, Background = new SolidColorBrush(Colors.White) };
 			var polyline = new Polyline
 			{
-				Points = new PointCollection(new[] { new Point(50, 180), new Point(100, 20), new Point(150, 180) }),
+				Points = CreatePointCollection(new[] { new Point(50, 180), new Point(100, 20), new Point(150, 180) }),
 				Stroke = new SolidColorBrush(Colors.Green),
 				StrokeThickness = 20,
 				StrokeLineJoin = PenLineJoin.Bevel,
@@ -515,7 +746,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			var container = new Grid { Width = 200, Height = 200, Background = new SolidColorBrush(Colors.White) };
 			var polygon = new Polygon
 			{
-				Points = new PointCollection(new[] { new Point(50, 180), new Point(100, 20), new Point(150, 180) }),
+				Points = CreatePointCollection(new[] { new Point(50, 180), new Point(100, 20), new Point(150, 180) }),
 				Stroke = new SolidColorBrush(Colors.Blue),
 				StrokeThickness = 20,
 				StrokeLineJoin = PenLineJoin.Miter,
@@ -544,7 +775,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			var container = new Grid { Width = 200, Height = 200, Background = new SolidColorBrush(Colors.White) };
 			var polyline = new Polyline
 			{
-				Points = new PointCollection(new[] { new Point(20, 150), new Point(100, 30), new Point(180, 150) }),
+				Points = CreatePointCollection(new[] { new Point(20, 150), new Point(100, 30), new Point(180, 150) }),
 				Stroke = new SolidColorBrush(Colors.Red),
 				StrokeThickness = 20,
 				StrokeLineJoin = PenLineJoin.Miter,
@@ -561,6 +792,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			ImageAssert.HasColorAt(screenshot, 100, 20, Colors.Red, tolerance: 30);
 		}
 
+#if HAS_UNO
 		// This needs the netstd layouter + non-legacy shapes layout
 		[TestMethod]
 		public async Task When_Shape_Stretch_UniformToFill()
@@ -596,6 +828,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			Assert.IsTrue(MathEx.ApproxEqual(100, SUT.LayoutSlotWithMarginsAndAlignments.Width, 1E-3));
 			Assert.IsTrue(MathEx.ApproxEqual(100, SUT.LayoutSlotWithMarginsAndAlignments.Height, 1E-3));
 		}
+#endif
 #endif
 
 #if HAS_UNO
