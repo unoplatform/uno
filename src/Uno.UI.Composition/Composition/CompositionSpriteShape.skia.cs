@@ -423,13 +423,13 @@ namespace Microsoft.UI.Composition
 				// Fix end cap
 				if (measure.GetPositionAndTangent(length, out var endPos, out var endTan))
 				{
-					if (IsEndpointInRenderedDash(length, dashValues, dashOffset))
+					var endState = GetEndpointDashState(length, dashValues, dashOffset);
+
+					if (endState == EndpointDashState.InRenderedDash)
 					{
-						// There IS a rendered dash at the endpoint.
-						// Swap DashCap → EndCap if they differ.
+						// Rendered dash at endpoint → swap DashCap → EndCap if they differ.
 						if (dashCap != endCap)
 						{
-							// Remove the incorrect DashCap protrusion at end
 							if (dashCap != CompositionStrokeCap.Flat)
 							{
 								using var cutter = BuildHalfPlaneCutter(endPos, endTan, strokeWidth);
@@ -440,8 +440,6 @@ namespace Microsoft.UI.Composition
 									fillPath.AddPath(result);
 								}
 							}
-
-							// Add the correct EndCap
 							if (endCap != CompositionStrokeCap.Flat)
 							{
 								using var capPath = BuildCapPath(endPos, endTan, strokeWidth, endCap);
@@ -452,10 +450,10 @@ namespace Microsoft.UI.Composition
 							}
 						}
 					}
-					else
+					else if (endState == EndpointDashState.AtGapBoundary)
 					{
-						// Endpoint is NOT in a rendered dash (in a gap or at gap/dash boundary).
-						// WinUI creates a zero-length dash: DashCap facing backward + EndCap facing forward.
+						// Endpoint at gap/dash boundary → zero-length dash.
+						// DashCap facing backward + EndCap facing forward.
 						var backDir = new SKPoint(-endTan.X, -endTan.Y);
 						if (dashCap != CompositionStrokeCap.Flat)
 						{
@@ -474,6 +472,7 @@ namespace Microsoft.UI.Composition
 							}
 						}
 					}
+					// else: InGap — endpoint in middle of a gap, nothing to render
 				}
 			} while (measure.NextContour());
 		}
@@ -538,15 +537,24 @@ namespace Microsoft.UI.Composition
 			return true;
 		}
 
+		private enum EndpointDashState
+		{
+			InRenderedDash, // Endpoint within a dash Skia rendered (nonzero length)
+			AtGapBoundary,  // Endpoint at/near end of a gap (within tolerance)
+			InGap           // Endpoint in middle of a gap (no action needed)
+		}
+
 		/// <summary>
-		/// Determines whether the endpoint of a path falls within a dash that was actually
-		/// rendered by Skia's dash effect. Unlike IsPositionInDash (which uses modulo and can
-		/// incorrectly report boundaries), this walks the pattern cumulatively.
-		/// Returns true only if a dash with nonzero length covers the endpoint position.
+		/// Determines the dash state at the path endpoint by walking the pattern cumulatively.
+		/// WinUI only creates a zero-length dash when the endpoint coincides with a gap/dash
+		/// boundary (within MIN_DASH_ARRAY_LENGTH = 0.1px tolerance). When the endpoint is
+		/// in the middle of a gap, nothing is rendered.
 		/// </summary>
-		private static bool IsEndpointInRenderedDash(
+		private static EndpointDashState GetEndpointDashState(
 			float pathLength, float[] dashValues, float dashOffset)
 		{
+			const float tolerance = 0.1f; // MIN_DASH_ARRAY_LENGTH from WinUI
+
 			var totalPattern = 0f;
 			for (int i = 0; i < dashValues.Length; i++)
 			{
@@ -555,17 +563,14 @@ namespace Microsoft.UI.Composition
 
 			if (totalPattern <= 0)
 			{
-				return true;
+				return EndpointDashState.InRenderedDash;
 			}
 
-			// Compute where the pattern starts relative to the path.
-			// Positive dashOffset shifts the pattern forward (earlier in path).
 			var patternStart = -(dashOffset % totalPattern);
 			if (patternStart > 0)
 			{
 				patternStart -= totalPattern;
 			}
-			// patternStart is now in (-totalPattern, 0]
 
 			var pos = patternStart;
 			var idx = 0;
@@ -574,22 +579,28 @@ namespace Microsoft.UI.Composition
 			{
 				var segLen = dashValues[idx % dashValues.Length];
 				var segEnd = pos + segLen;
-				var isDash = (idx % 2) == 0; // Even = dash, odd = gap
+				var isDash = (idx % 2) == 0;
 
-				if (segEnd >= pathLength)
+				if (segEnd >= pathLength - tolerance)
 				{
-					// This segment contains or reaches the endpoint.
-					// The endpoint is in a rendered dash only if:
-					// - This is a dash segment
-					// - The dash started strictly before the endpoint (nonzero length in path)
-					return isDash && pos < pathLength;
+					if (isDash && pos < pathLength)
+					{
+						return EndpointDashState.InRenderedDash;
+					}
+
+					if (!isDash && MathF.Abs(segEnd - pathLength) < tolerance)
+					{
+						return EndpointDashState.AtGapBoundary;
+					}
+
+					return EndpointDashState.InGap;
 				}
 
 				pos = segEnd;
 				idx++;
 			}
 
-			return false;
+			return EndpointDashState.InGap;
 		}
 
 		/// <summary>
