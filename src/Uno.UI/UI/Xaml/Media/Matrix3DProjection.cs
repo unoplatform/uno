@@ -51,6 +51,11 @@ public partial class Matrix3DProjection : Projection
 	/// </summary>
 	internal override Matrix4x4 GetProjectionMatrix(Size elementSize)
 	{
+		if (ReadLocalValue(ProjectionMatrixProperty) == DependencyProperty.UnsetValue)
+		{
+			return Matrix4x4.Identity;
+		}
+
 		return ProjectionMatrix.ToMatrix4x4();
 	}
 }
