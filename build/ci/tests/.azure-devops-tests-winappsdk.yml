@@ -90,25 +90,13 @@ jobs:
 ## See: doc/articles/uno-development/creating-runtime-tests.md
 ##
 - job: WinUI_Runtime_Tests
-  displayName: ' ' ## Name is concatenated with the matrix group name
+  displayName: 'Runtime Tests'
   dependsOn: WASDK_Build
-  timeoutInMinutes: 90
+  timeoutInMinutes: 30
   cancelTimeoutInMinutes: 1
 
   pool:
     vmImage: 'windows-latest'
-
-  strategy:
-    matrix:
-      'Runtime Tests 0':
-        UITEST_RUNTIME_TEST_GROUP: 0
-        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
-      'Runtime Tests 1':
-        UITEST_RUNTIME_TEST_GROUP: 1
-        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
-      'Runtime Tests 2':
-        UITEST_RUNTIME_TEST_GROUP: 2
-        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
   variables:
     SamplesAppArtifactName: WinAppSDK-Package
@@ -180,7 +168,7 @@ jobs:
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'WinUI Runtime Tests $(UITEST_RUNTIME_TEST_GROUP)'
+      testRunTitle: 'WinUI Runtime Tests'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/winui-runtime-tests-results.xml'
       failTaskOnFailedTests: true
