@@ -159,6 +159,15 @@ namespace Microsoft.UI.Composition
 							dashValues, StrokeDashOffset * StrokeThickness);
 					}
 
+					// WinUI's Miter join uses miter-clip (truncates the miter protrusion at
+					// the limit), while Skia's Miter uses miter-or-bevel (full bevel fallback).
+					// Add clipped miter trapezoids for vertices where Skia produced a bevel.
+					if (StrokeLineJoin == CompositionStrokeLineJoin.Miter)
+					{
+						AddClippedMiterJoints(strokeFillPath, geometryWithTransformations.Geometry,
+							StrokeThickness, StrokeMiterLimit);
+					}
+
 					session.Canvas.Save();
 					session.Canvas.ClipPath(strokeFillPath, antialias: true);
 					stroke.Paint(session.Canvas, session.Opacity, strokeFillPath.Bounds);
@@ -266,6 +275,13 @@ namespace Microsoft.UI.Composition
 						FixDashEndpointCaps(hitTestStrokeFillPath, geometryWithTransformations.Geometry,
 							StrokeThickness, StrokeDashCap, StrokeStartCap, StrokeEndCap,
 							dashValues, StrokeDashOffset * StrokeThickness);
+					}
+
+					// WinUI's Miter join uses miter-clip (see Paint() comment).
+					if (StrokeLineJoin == CompositionStrokeLineJoin.Miter)
+					{
+						AddClippedMiterJoints(hitTestStrokeFillPath, geometryWithTransformations.Geometry,
+							StrokeThickness, StrokeMiterLimit);
 					}
 
 					if (hitTestStrokeFillPath.Contains((float)point.X, (float)point.Y))
@@ -535,6 +551,295 @@ namespace Microsoft.UI.Composition
 			}
 
 			return null;
+		}
+
+		/// <summary>
+		/// Adds clipped miter trapezoids to the stroke fill path for WinUI miter-clip behavior.
+		/// WinUI truncates the miter protrusion at the miter limit distance, while Skia falls
+		/// back to a full bevel. This method walks the original geometry to find vertices where
+		/// the miter exceeded the limit and adds the clipped miter geometry.
+		/// </summary>
+		private static void AddClippedMiterJoints(
+			SKPath fillPath,
+			SKPath originalGeometry,
+			float strokeWidth,
+			float miterLimit)
+		{
+			float hw = strokeWidth / 2;
+
+			using var iter = originalGeometry.CreateIterator(false);
+			var points = new SKPoint[4];
+
+			// Per-contour tracking
+			SKPoint contourStart = default;
+			SKPoint contourFirstOutDir = default;
+			bool hasContourFirstOutDir = false;
+
+			// Previous segment's incoming tangent at its endpoint
+			SKPoint prevIncoming = default;
+			bool hasPrevIncoming = false;
+			SKPoint prevEndPoint = default;
+
+			SKPathVerb verb;
+			while ((verb = iter.Next(points)) != SKPathVerb.Done)
+			{
+				switch (verb)
+				{
+					case SKPathVerb.Move:
+						{
+							contourStart = points[0];
+							prevEndPoint = points[0];
+							hasPrevIncoming = false;
+							hasContourFirstOutDir = false;
+							break;
+						}
+					case SKPathVerb.Line:
+						{
+							var start = points[0];
+							var end = points[1];
+							var dir = NormalizeVector(end.X - start.X, end.Y - start.Y);
+							if (dir == default)
+							{
+								break;
+							}
+
+							if (hasPrevIncoming)
+							{
+								TryAddMiterClipTrapezoid(fillPath, start, prevIncoming, dir, hw, miterLimit);
+							}
+
+							if (!hasContourFirstOutDir)
+							{
+								contourFirstOutDir = dir;
+								hasContourFirstOutDir = true;
+							}
+
+							prevIncoming = dir;
+							hasPrevIncoming = true;
+							prevEndPoint = end;
+							break;
+						}
+					case SKPathVerb.Quad:
+					case SKPathVerb.Conic:
+						{
+							var start = points[0];
+							var control = points[1];
+							var end = points[2];
+
+							var outDir = NormalizeVector(control.X - start.X, control.Y - start.Y);
+							if (outDir == default)
+							{
+								outDir = NormalizeVector(end.X - start.X, end.Y - start.Y);
+							}
+
+							if (outDir == default)
+							{
+								break;
+							}
+
+							if (hasPrevIncoming)
+							{
+								TryAddMiterClipTrapezoid(fillPath, start, prevIncoming, outDir, hw, miterLimit);
+							}
+
+							if (!hasContourFirstOutDir)
+							{
+								contourFirstOutDir = outDir;
+								hasContourFirstOutDir = true;
+							}
+
+							var inDir = NormalizeVector(end.X - control.X, end.Y - control.Y);
+							if (inDir == default)
+							{
+								inDir = NormalizeVector(end.X - start.X, end.Y - start.Y);
+							}
+
+							if (inDir == default)
+							{
+								break;
+							}
+
+							prevIncoming = inDir;
+							hasPrevIncoming = true;
+							prevEndPoint = end;
+							break;
+						}
+					case SKPathVerb.Cubic:
+						{
+							var start = points[0];
+							var c1 = points[1];
+							var c2 = points[2];
+							var end = points[3];
+
+							var outDir = NormalizeVector(c1.X - start.X, c1.Y - start.Y);
+							if (outDir == default)
+							{
+								outDir = NormalizeVector(c2.X - start.X, c2.Y - start.Y);
+							}
+
+							if (outDir == default)
+							{
+								outDir = NormalizeVector(end.X - start.X, end.Y - start.Y);
+							}
+
+							if (outDir == default)
+							{
+								break;
+							}
+
+							if (hasPrevIncoming)
+							{
+								TryAddMiterClipTrapezoid(fillPath, start, prevIncoming, outDir, hw, miterLimit);
+							}
+
+							if (!hasContourFirstOutDir)
+							{
+								contourFirstOutDir = outDir;
+								hasContourFirstOutDir = true;
+							}
+
+							var inDir = NormalizeVector(end.X - c2.X, end.Y - c2.Y);
+							if (inDir == default)
+							{
+								inDir = NormalizeVector(end.X - c1.X, end.Y - c1.Y);
+							}
+
+							if (inDir == default)
+							{
+								inDir = NormalizeVector(end.X - start.X, end.Y - start.Y);
+							}
+
+							if (inDir == default)
+							{
+								break;
+							}
+
+							prevIncoming = inDir;
+							hasPrevIncoming = true;
+							prevEndPoint = end;
+							break;
+						}
+					case SKPathVerb.Close:
+						{
+							if (hasPrevIncoming && hasContourFirstOutDir)
+							{
+								float dx = contourStart.X - prevEndPoint.X;
+								float dy = contourStart.Y - prevEndPoint.Y;
+								float dist = MathF.Sqrt(dx * dx + dy * dy);
+
+								if (dist > 1e-6f)
+								{
+									// Implicit closing line from prevEndPoint to contourStart
+									var closeDir = new SKPoint(dx / dist, dy / dist);
+
+									// Junction at prevEndPoint
+									TryAddMiterClipTrapezoid(fillPath, prevEndPoint, prevIncoming, closeDir, hw, miterLimit);
+
+									// Junction at contourStart
+									TryAddMiterClipTrapezoid(fillPath, contourStart, closeDir, contourFirstOutDir, hw, miterLimit);
+								}
+								else
+								{
+									// Already at contour start, just process the closing junction
+									TryAddMiterClipTrapezoid(fillPath, contourStart, prevIncoming, contourFirstOutDir, hw, miterLimit);
+								}
+							}
+
+							hasPrevIncoming = false;
+							hasContourFirstOutDir = false;
+							break;
+						}
+				}
+			}
+		}
+
+		/// <summary>
+		/// For a single vertex, checks if the miter exceeds the limit and adds a clipped
+		/// miter trapezoid. Matches WinUI's DoLimitedMiter() algorithm from strokefigure.cpp.
+		/// </summary>
+		private static void TryAddMiterClipTrapezoid(
+			SKPath fillPath,
+			SKPoint vertex,
+			SKPoint dIn,
+			SKPoint dOut,
+			float halfWidth,
+			float miterLimit)
+		{
+			float dot = dIn.X * dOut.X + dIn.Y * dOut.Y;
+
+			// sin(alpha/2) where alpha is the vertex angle
+			float sinHalfSq = (1 + dot) / 2;
+			if (sinHalfSq <= 0)
+			{
+				return; // Collinear or reflex
+			}
+
+			float sinHalf = MathF.Sqrt(sinHalfSq);
+
+			// Check if miter exceeds limit: 1/sin(a/2) > miterLimit
+			if (sinHalf >= 1f / miterLimit)
+			{
+				return; // Within limit, Skia's full miter is correct
+			}
+
+			float cosHalfSq = (1 - dot) / 2;
+			if (cosHalfSq <= 1e-12f)
+			{
+				return; // Nearly straight or degenerate
+			}
+
+			float cosHalf = MathF.Sqrt(cosHalfSq);
+
+			// rRatio = (L - sin(a/2)) / cos(a/2) where L is the miter limit
+			float rRatio = (miterLimit - sinHalf) / cosHalf;
+			if (rRatio <= 0)
+			{
+				return;
+			}
+
+			// Determine which side the miter extends to
+			float cross = dIn.X * dOut.Y - dIn.Y * dOut.X;
+			if (MathF.Abs(cross) < 1e-6f)
+			{
+				return; // Nearly collinear
+			}
+
+			// Outward normals toward the miter side
+			SKPoint nIn, nOut;
+			if (cross > 0)
+			{
+				// Miter is on the right side
+				nIn = new SKPoint(dIn.Y, -dIn.X);
+				nOut = new SKPoint(dOut.Y, -dOut.X);
+			}
+			else
+			{
+				// Miter is on the left side
+				nIn = new SKPoint(-dIn.Y, dIn.X);
+				nOut = new SKPoint(-dOut.Y, dOut.X);
+			}
+
+			// Bevel endpoints (outer offset at vertex)
+			var bevelIn = new SKPoint(vertex.X + nIn.X * halfWidth, vertex.Y + nIn.Y * halfWidth);
+			var bevelOut = new SKPoint(vertex.X + nOut.X * halfWidth, vertex.Y + nOut.Y * halfWidth);
+
+			// Clip points (extend along offset edges toward would-be miter tip)
+			float ext = rRatio * halfWidth;
+			var clipIn = new SKPoint(bevelIn.X + dIn.X * ext, bevelIn.Y + dIn.Y * ext);
+			var clipOut = new SKPoint(bevelOut.X - dOut.X * ext, bevelOut.Y - dOut.Y * ext);
+
+			fillPath.AddPoly(new[] { bevelIn, clipIn, clipOut, bevelOut }, close: true);
+		}
+
+		private static SKPoint NormalizeVector(float x, float y)
+		{
+			float len = MathF.Sqrt(x * x + y * y);
+			if (len < 1e-6f)
+			{
+				return default;
+			}
+
+			return new SKPoint(x / len, y / len);
 		}
 	}
 }
