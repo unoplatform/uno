@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Numerics;
 
 namespace Microsoft.UI.Xaml.Media.Media3D;
