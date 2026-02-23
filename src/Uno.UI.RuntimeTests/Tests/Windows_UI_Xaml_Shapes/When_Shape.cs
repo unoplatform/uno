@@ -452,6 +452,115 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			ImageAssert.HasColorAt(screenshot, 125, 60, Colors.Blue, tolerance: 30);
 		}
 
+		[TestMethod]
+		public async Task When_StrokeLineJoin_Miter_SharpAngle_ShowsClippedProtrusion()
+		{
+			// A sharp V-shape with MiterLimit=3. The miter ratio at the vertex (~3.36)
+			// exceeds the limit, so Skia would normally produce a bevel. With miter-clip,
+			// a truncated protrusion should extend above the bevel line.
+			var container = new Grid { Width = 200, Height = 200, Background = new SolidColorBrush(Colors.White) };
+			var polyline = new Polyline
+			{
+				Points = new PointCollection(new[] { new Point(50, 180), new Point(100, 20), new Point(150, 180) }),
+				Stroke = new SolidColorBrush(Colors.Red),
+				StrokeThickness = 20,
+				StrokeLineJoin = PenLineJoin.Miter,
+				StrokeMiterLimit = 3,
+			};
+			container.Children.Add(polyline);
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+
+			// The bevel line is at approximately y=17. With miter-clip, the truncated
+			// protrusion extends above the bevel. At (100, 8), ~9px above the bevel,
+			// the pixel should be Red (inside the clipped miter trapezoid).
+			ImageAssert.HasColorAt(screenshot, 100, 8, Colors.Red, tolerance: 30);
+
+			// Verify the vertex center is also colored
+			ImageAssert.HasColorAt(screenshot, 100, 20, Colors.Red, tolerance: 30);
+		}
+
+		[TestMethod]
+		public async Task When_StrokeLineJoin_Bevel_SharpAngle_NoProtrusion()
+		{
+			// Same sharp V-shape but with Bevel join. No protrusion above the bevel line.
+			// This confirms the difference between Miter (miter-clip) and Bevel.
+			var container = new Grid { Width = 200, Height = 200, Background = new SolidColorBrush(Colors.White) };
+			var polyline = new Polyline
+			{
+				Points = new PointCollection(new[] { new Point(50, 180), new Point(100, 20), new Point(150, 180) }),
+				Stroke = new SolidColorBrush(Colors.Green),
+				StrokeThickness = 20,
+				StrokeLineJoin = PenLineJoin.Bevel,
+				StrokeMiterLimit = 3,
+			};
+			container.Children.Add(polyline);
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+
+			// With Bevel join, there is no protrusion above the bevel line.
+			// At (100, 8), the pixel should be White (background).
+			ImageAssert.HasColorAt(screenshot, 100, 8, Colors.White, tolerance: 30);
+
+			// But the vertex center should still be colored
+			ImageAssert.HasColorAt(screenshot, 100, 20, Colors.Green, tolerance: 30);
+		}
+
+		[TestMethod]
+		public async Task When_StrokeLineJoin_Miter_ClosedShape_ShowsClippedProtrusion()
+		{
+			// Closed polygon with a sharp vertex. Tests miter-clip at the closing junction.
+			var container = new Grid { Width = 200, Height = 200, Background = new SolidColorBrush(Colors.White) };
+			var polygon = new Polygon
+			{
+				Points = new PointCollection(new[] { new Point(50, 180), new Point(100, 20), new Point(150, 180) }),
+				Stroke = new SolidColorBrush(Colors.Blue),
+				StrokeThickness = 20,
+				StrokeLineJoin = PenLineJoin.Miter,
+				StrokeMiterLimit = 3,
+				Fill = new SolidColorBrush(Colors.Transparent),
+			};
+			container.Children.Add(polygon);
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+
+			// Same vertex as the polyline test: at (100, 8), the clipped miter
+			// protrusion should be visible (Blue stroke).
+			ImageAssert.HasColorAt(screenshot, 100, 8, Colors.Blue, tolerance: 30);
+
+			// Vertex center should be colored
+			ImageAssert.HasColorAt(screenshot, 100, 20, Colors.Blue, tolerance: 30);
+		}
+
+		[TestMethod]
+		public async Task When_StrokeLineJoin_Miter_WithinLimit_ShowsFullMiter()
+		{
+			// A 90-degree angle with high miter limit. The miter ratio at 90 degrees
+			// is sqrt(2) ~ 1.414, which is well within the default limit of 10.
+			// The full miter point should be visible (no clipping needed).
+			var container = new Grid { Width = 200, Height = 200, Background = new SolidColorBrush(Colors.White) };
+			var polyline = new Polyline
+			{
+				Points = new PointCollection(new[] { new Point(20, 150), new Point(100, 30), new Point(180, 150) }),
+				Stroke = new SolidColorBrush(Colors.Red),
+				StrokeThickness = 20,
+				StrokeLineJoin = PenLineJoin.Miter,
+				StrokeMiterLimit = 10,
+			};
+			container.Children.Add(polyline);
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+
+			// At 90 degrees, the miter tip extends about halfWidth/sin(45) ~ 14.14px
+			// above the vertex in the bisector direction. The full miter point at
+			// (100, ~16) should be colored.
+			ImageAssert.HasColorAt(screenshot, 100, 20, Colors.Red, tolerance: 30);
+		}
+
 		// This needs the netstd layouter + non-legacy shapes layout
 		[TestMethod]
 		public async Task When_Shape_Stretch_UniformToFill()
