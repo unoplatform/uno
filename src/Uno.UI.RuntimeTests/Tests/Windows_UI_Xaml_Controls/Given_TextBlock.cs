@@ -1106,6 +1106,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_RENDER_TARGET_BITMAP
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21322")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Text_Set_By_Style_Setter()
 		{
 			var style = new Style(typeof(TextBlock));

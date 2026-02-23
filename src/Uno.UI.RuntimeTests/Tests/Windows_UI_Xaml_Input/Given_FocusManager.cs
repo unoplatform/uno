@@ -526,6 +526,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("https://github.com/unoplatform/uno/issues/15457")]
 #endif

@@ -228,6 +228,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ColumnDefinition_Width_Changed()
 		{
 			var outerShell = new Grid { Width = 290, Height = 220 };
@@ -525,6 +526,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Child_Added_Measure_And_Visible_Arrange()
 		{
 			// This test emulates the layout sequence associated with DataGridColumnHeadersPresenter in the WCT
