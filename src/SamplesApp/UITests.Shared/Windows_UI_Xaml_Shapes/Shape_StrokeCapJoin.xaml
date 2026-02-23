@@ -1,0 +1,133 @@
+<Page
+	x:Class="SamplesApp.Windows_UI_Xaml_Shapes.Shape_StrokeCapJoin"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<ScrollViewer>
+		<StackPanel Spacing="16" Padding="16">
+
+			<!-- Line Caps -->
+			<TextBlock Text="StrokeStartLineCap / StrokeEndLineCap" FontWeight="Bold" />
+
+			<StackPanel Spacing="8">
+				<TextBlock Text="Flat (default)" />
+				<Line X1="20" Y1="20" X2="200" Y2="20"
+					  Stroke="Black" StrokeThickness="10"
+					  StrokeStartLineCap="Flat" StrokeEndLineCap="Flat" />
+
+				<TextBlock Text="Round" />
+				<Line X1="20" Y1="20" X2="200" Y2="20"
+					  Stroke="Blue" StrokeThickness="10"
+					  StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
+
+				<TextBlock Text="Square" />
+				<Line X1="20" Y1="20" X2="200" Y2="20"
+					  Stroke="Green" StrokeThickness="10"
+					  StrokeStartLineCap="Square" StrokeEndLineCap="Square" />
+
+				<TextBlock Text="Triangle" />
+				<Line X1="20" Y1="20" X2="200" Y2="20"
+					  Stroke="Red" StrokeThickness="10"
+					  StrokeStartLineCap="Triangle" StrokeEndLineCap="Triangle" />
+
+				<TextBlock Text="Different: Start=Round, End=Square" />
+				<Line X1="20" Y1="20" X2="200" Y2="20"
+					  Stroke="Purple" StrokeThickness="10"
+					  StrokeStartLineCap="Round" StrokeEndLineCap="Square" />
+			</StackPanel>
+
+			<!-- Line Joins -->
+			<TextBlock Text="StrokeLineJoin" FontWeight="Bold" Margin="0,16,0,0" />
+
+			<StackPanel Spacing="8">
+				<TextBlock Text="Miter (default)" />
+				<Polyline Points="20,50 60,10 100,50 140,10 180,50"
+						  Stroke="Black" StrokeThickness="8"
+						  StrokeLineJoin="Miter" Fill="Transparent" />
+
+				<TextBlock Text="Bevel" />
+				<Polyline Points="20,50 60,10 100,50 140,10 180,50"
+						  Stroke="Blue" StrokeThickness="8"
+						  StrokeLineJoin="Bevel" Fill="Transparent" />
+
+				<TextBlock Text="Round" />
+				<Polyline Points="20,50 60,10 100,50 140,10 180,50"
+						  Stroke="Green" StrokeThickness="8"
+						  StrokeLineJoin="Round" Fill="Transparent" />
+			</StackPanel>
+
+			<!-- Dash Caps -->
+			<TextBlock Text="StrokeDashCap" FontWeight="Bold" Margin="0,16,0,0" />
+
+			<StackPanel Spacing="8">
+				<TextBlock Text="Flat dash cap" />
+				<Line X1="20" Y1="20" X2="280" Y2="20"
+					  Stroke="Black" StrokeThickness="8"
+					  StrokeDashArray="3 2"
+					  StrokeDashCap="Flat" />
+
+				<TextBlock Text="Round dash cap" />
+				<Line X1="20" Y1="20" X2="280" Y2="20"
+					  Stroke="Blue" StrokeThickness="8"
+					  StrokeDashArray="3 2"
+					  StrokeDashCap="Round" />
+
+				<TextBlock Text="Square dash cap" />
+				<Line X1="20" Y1="20" X2="280" Y2="20"
+					  Stroke="Green" StrokeThickness="8"
+					  StrokeDashArray="3 2"
+					  StrokeDashCap="Square" />
+			</StackPanel>
+
+			<!-- Dash Offset -->
+			<TextBlock Text="StrokeDashOffset" FontWeight="Bold" Margin="0,16,0,0" />
+
+			<StackPanel Spacing="8">
+				<TextBlock Text="Offset=0" />
+				<Line X1="20" Y1="20" X2="280" Y2="20"
+					  Stroke="Black" StrokeThickness="6"
+					  StrokeDashArray="4 2"
+					  StrokeDashOffset="0" />
+
+				<TextBlock Text="Offset=2" />
+				<Line X1="20" Y1="20" X2="280" Y2="20"
+					  Stroke="Black" StrokeThickness="6"
+					  StrokeDashArray="4 2"
+					  StrokeDashOffset="2" />
+
+				<TextBlock Text="Offset=4" />
+				<Line X1="20" Y1="20" X2="280" Y2="20"
+					  Stroke="Black" StrokeThickness="6"
+					  StrokeDashArray="4 2"
+					  StrokeDashOffset="4" />
+			</StackPanel>
+
+			<!-- Issue #5426 repro: Path with round caps and joins -->
+			<TextBlock Text="Issue #5426 repro: Path with Round caps and joins" FontWeight="Bold" Margin="0,16,0,0" />
+			<Path Stroke="DarkBlue" StrokeThickness="8"
+				  StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+				  StrokeLineJoin="Round"
+				  Data="M 20,80 L 80,20 L 140,80 L 200,20" />
+
+			<!-- StrokeMiterLimit -->
+			<TextBlock Text="StrokeMiterLimit" FontWeight="Bold" Margin="0,16,0,0" />
+
+			<StackPanel Spacing="8">
+				<TextBlock Text="MiterLimit=10 (default)" />
+				<Polyline Points="20,50 50,10 80,50"
+						  Stroke="Black" StrokeThickness="10"
+						  StrokeLineJoin="Miter" StrokeMiterLimit="10" Fill="Transparent" />
+
+				<TextBlock Text="MiterLimit=1 (bevel fallback)" />
+				<Polyline Points="20,50 50,10 80,50"
+						  Stroke="Black" StrokeThickness="10"
+						  StrokeLineJoin="Miter" StrokeMiterLimit="1" Fill="Transparent" />
+			</StackPanel>
+
+		</StackPanel>
+	</ScrollViewer>
+</Page>
