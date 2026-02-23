@@ -54,4 +54,4 @@ When the CLI reuses an existing DevServer (i.e., `_serverProcess` is null), `Dev
 
 ## Known Limitation
 
-Reuse is limited to **MCP-alongside-IDE** scenarios. The Host's `IDEChannel` only supports a single IDE connection (`maxNumberOfServerInstances: 1`), so two full IDEs cannot share the same Host -- they would conflict on Hot Reload notifications and launch tracking.
+Reuse is limited to **MCP-alongside-IDE** scenarios. The Host's `IDEChannel` only supports a single IDE connection (`maxNumberOfServerInstances: 1`), so two full IDEs cannot share the same Host -- they would compete for the single IDEChannel connection slot (Hot Reload notifications and launch tracking).

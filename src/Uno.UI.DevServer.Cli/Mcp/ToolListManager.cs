@@ -179,10 +179,6 @@ internal class ToolListManager(
 		try
 		{
 			var upstreamClient = await mcpUpstreamClient.UpstreamClient;
-			if (upstreamClient is null)
-			{
-				return;
-			}
 
 			var list = await upstreamClient.ListToolsAsync();
 			Tool[] protocolTools = [.. list.Select(t => t.ProtocolTool)];

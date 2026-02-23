@@ -95,6 +95,7 @@ if ($fetchExitCode -ne 0) {
     Write-Warning ("Unable to fetch {0} (exit code {1}). Falling back to enabling all native test scopes." -f $targetRef, $fetchExitCode)
     Enable-AllScopes -Values $scopeVariables
     Publish-TestScopes -Values $scopeVariables
+    # Reset LASTEXITCODE so the Azure pipeline step does not fail due to git fetch's non-zero exit code.
     $global:LASTEXITCODE = 0
     return
 }

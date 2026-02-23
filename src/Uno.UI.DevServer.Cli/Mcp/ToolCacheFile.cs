@@ -168,7 +168,11 @@ internal static class ToolCacheFile
 			return string.Empty;
 		}
 
-		var normalized = solutionDirectory.Replace('\\', '/').ToLowerInvariant();
+		var normalized = solutionDirectory.Replace('\\', '/');
+		if (OperatingSystem.IsWindows())
+		{
+			normalized = normalized.ToLowerInvariant();
+		}
 		var bytes = Encoding.UTF8.GetBytes(normalized);
 		var hash = SHA256.HashData(bytes);
 		return Convert.ToHexString(hash)[..16];

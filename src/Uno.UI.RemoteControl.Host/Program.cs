@@ -58,7 +58,7 @@ namespace Uno.UI.RemoteControl.Host
 				var solution = globalConfiguration.GetOptionalString("solution");
 				if (!string.IsNullOrWhiteSpace(solution) && !File.Exists(solution))
 				{
-					throw new ArgumentException($"The provided solution path '{solution}' does not exists");
+					throw new ArgumentException($"The provided solution path '{solution}' does not exist");
 				}
 
 				// Read --addins: pre-resolved add-in DLL paths (semicolon-separated).

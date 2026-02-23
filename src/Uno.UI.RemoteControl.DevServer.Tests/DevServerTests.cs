@@ -80,7 +80,7 @@ public class DevServerTests
 	}
 
 	private readonly IReadOnlyDictionary<string, string>? _telemetryOptOutVariables =
-		new Dictionary<string, string>() { { "UNO_PLATFORM_TELEMETRY_OPTOUT ", "true" } };
+		new Dictionary<string, string>() { { "UNO_PLATFORM_TELEMETRY_OPTOUT", "true" } };
 
 	[TestMethod]
 	[Retry(2, MillisecondsDelayBetweenRetries = 1000)]

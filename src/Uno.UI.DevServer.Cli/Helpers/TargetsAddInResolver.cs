@@ -245,6 +245,12 @@ internal partial class TargetsAddInResolver(ILogger<TargetsAddInResolver> logger
 		// Collect properties from PropertyGroup elements
 		foreach (var propertyGroup in doc.Root.Elements(ns + "PropertyGroup"))
 		{
+			var groupCondition = propertyGroup.Attribute("Condition")?.Value;
+			if (!string.IsNullOrWhiteSpace(groupCondition) && !EvaluateCondition(groupCondition, properties))
+			{
+				continue;
+			}
+
 			foreach (var prop in propertyGroup.Elements())
 			{
 				var propName = prop.Name.LocalName;
@@ -264,6 +270,12 @@ internal partial class TargetsAddInResolver(ILogger<TargetsAddInResolver> logger
 		// Find UnoRemoteControlAddIns items
 		foreach (var itemGroup in doc.Root.Elements(ns + "ItemGroup"))
 		{
+			var groupCondition = itemGroup.Attribute("Condition")?.Value;
+			if (!string.IsNullOrWhiteSpace(groupCondition) && !EvaluateCondition(groupCondition, properties))
+			{
+				continue;
+			}
+
 			foreach (var item in itemGroup.Elements(ns + "UnoRemoteControlAddIns"))
 			{
 				var include = item.Attribute("Include")?.Value;
