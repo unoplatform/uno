@@ -90,6 +90,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 				_popup.Opened += OnPopupOpened;
 				_popup.Closed += OnPopupClosed;
+				_popup.LostFocus += OnPopupLostFocus;
 				child.Loaded += OnPresenterLoaded;
 
 				_popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayMode));
@@ -630,6 +631,47 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			Hide(canCancel: false);
 			_sizeChangedDisposable.Disposable = null;
+		}
+
+		// Ported from WinUI: FlyoutBase_partial.cpp OnPopupLostFocus (lines 2349-2434)
+		// When the popup loses focus, close the flyout unless focus moved to
+		// an element inside another light-dismiss popup (e.g. a child flyout).
+		private void OnPopupLostFocus(object sender, RoutedEventArgs args)
+		{
+			if (_popup is not { IsOpen: true })
+			{
+				return;
+			}
+
+			var contentRoot = VisualTree.GetContentRootForElement(this);
+			if (contentRoot?.FocusManager.FocusedElement is not UIElement focusedElement)
+			{
+				return;
+			}
+
+			// Walk up from the focused element to check if it's inside a light-dismiss popup.
+			// If it is, don't close — this allows child flyouts and related popups to work.
+			// If it's not in any popup (or only in non-light-dismiss popups), close.
+			// This matches WinUI: FlyoutBase_partial.cpp lines 2394-2429
+			var currentElement = focusedElement;
+			Popup popupAncestor = null;
+			bool popupAncestorIsLightDismiss = false;
+
+			while (currentElement != null)
+			{
+				if (currentElement is Popup popup)
+				{
+					popupAncestor = popup;
+					popupAncestorIsLightDismiss = popup.IsLightDismissEnabled;
+					break;
+				}
+				currentElement = currentElement.GetUIElementAdjustedParentInternal(false);
+			}
+
+			if (popupAncestor == null || !popupAncestorIsLightDismiss)
+			{
+				Hide();
+			}
 		}
 
 		protected internal virtual void Close()
