@@ -10,6 +10,6 @@ using UIKit;
 namespace SamplesApp.iOS;
 
 [Register("SceneDelegate")]
-public class SceneDelegate : UnoSceneDelegate
+public class SceneDelegate : UnoUISceneDelegate
 {
 }
