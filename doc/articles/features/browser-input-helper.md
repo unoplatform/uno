@@ -56,6 +56,23 @@ Some system-level keys (like <kbd>Escape</kbd>, <kbd>Alt</kbd>+<kbd>Tab</kbd>, o
 > [!IMPORTANT]
 > The Keyboard Lock API requires **HTTPS** and is only supported in **Chromium-based browsers** (Chrome, Edge). It does not work in Firefox or Safari. The app must also be in **fullscreen mode** for the lock to take effect.
 
+### Checking browser support
+
+Before calling `LockKeysAsync`, you can check whether the current browser supports the Keyboard Lock API:
+
+```csharp
+#if HAS_UNO_SKIA
+if (BrowserInputHelper.IsKeyboardLockSupported)
+{
+    await BrowserInputHelper.LockKeysAsync("Escape", "F11");
+}
+else
+{
+    // Fallback: Keyboard Lock API not available in this browser
+}
+#endif
+```
+
 ### Locking specific keys
 
 To lock specific keys so they are delivered to your app instead of the browser or OS:
@@ -99,6 +116,13 @@ BrowserInputHelper.UnlockKeys();
 | **Type** | `bool` |
 | **Default** | `true` |
 | **Description** | Gets or sets whether the browser's built-in <kbd>Ctrl</kbd>+mouse wheel zoom is enabled. When `false`, the Skia pointer handler calls `preventDefault()` on <kbd>Ctrl</kbd>+wheel events, blocking browser zoom while still delivering the event to the Uno pointer pipeline. |
+
+### `BrowserInputHelper.IsKeyboardLockSupported`
+
+| | |
+|-|-|
+| **Type** | `bool` |
+| **Description** | Gets a value indicating whether the browser supports the [Keyboard Lock API](https://developer.mozilla.org/en-US/docs/Web/API/Keyboard/lock) (`navigator.keyboard`). Returns `true` on Chromium-based browsers over HTTPS, `false` otherwise. Use this to conditionally show/hide UI or choose fallback behavior. |
 
 ### `BrowserInputHelper.LockKeysAsync(params string[] keyCodes)`
 

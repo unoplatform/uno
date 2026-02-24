@@ -34,6 +34,13 @@ public static partial class BrowserInputHelper
 	}
 
 	/// <summary>
+	/// Gets a value indicating whether the browser supports the Keyboard Lock API
+	/// (<c>navigator.keyboard</c>). Returns <c>true</c> on Chromium-based browsers
+	/// over HTTPS, <c>false</c> otherwise.
+	/// </summary>
+	public static bool IsKeyboardLockSupported => NativeMethods.IsKeyboardLockSupported();
+
+	/// <summary>
 	/// Locks the specified keyboard keys using the browser Keyboard Lock API.
 	/// When locked, these keys are delivered to the app instead of being
 	/// intercepted by the browser or OS.
