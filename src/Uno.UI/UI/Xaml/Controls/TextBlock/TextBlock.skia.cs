@@ -43,6 +43,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _renderSelection;
 		private (int index, CompositionBrush brush)? _caretPaint;
 
+		private (Size availableSize, Size outSize, TextAlignment? alignment) _lastParsedTextCreationValues = (Size.Empty, Size.Empty, TextAlignment.Left);
 		internal IParsedText ParsedText { get; private set; } = Microsoft.UI.Xaml.Documents.ParsedText.Empty;
 
 		internal event Action? DrawingFinished;
@@ -102,8 +103,10 @@ namespace Microsoft.UI.Xaml.Controls
 			return desiredSize;
 		}
 
-		private UnicodeText ParseText(Size availableSizeWithoutPadding, out Size size) =>
-			new UnicodeText(
+		private UnicodeText ParseText(Size availableSizeWithoutPadding, out Size size)
+		{
+			var adjustedTextAlignment = GetAdjustedTextAlignment();
+			var ret = new UnicodeText(
 				availableSizeWithoutPadding,
 				Inlines.TraversedTree.leafTree,
 				GetDefaultFontDetails(),
@@ -111,15 +114,22 @@ namespace Microsoft.UI.Xaml.Controls
 				(float)LineHeight,
 				LineStackingStrategy,
 				FlowDirection,
-				(OwningTextBox as IDependencyObjectStoreProvider)?.Store
-					.GetCurrentHighestValuePrecedence(TextBox.TextAlignmentProperty) is DependencyPropertyValuePrecedences.DefaultValue
-						? null
-						: TextAlignment,
+				adjustedTextAlignment,
 				TextWrapping,
 				TextTrimming,
 				IsSpellCheckEnabled,
 				this,
 				out size);
+			_lastParsedTextCreationValues = (availableSizeWithoutPadding, size, adjustedTextAlignment);
+			return ret;
+		}
+
+		private TextAlignment? GetAdjustedTextAlignment() =>
+			(OwningTextBox as IDependencyObjectStoreProvider)?.Store
+			.GetCurrentHighestValuePrecedence(TextBox.TextAlignmentProperty) is DependencyPropertyValuePrecedences
+				.DefaultValue
+				? null
+				: TextAlignment;
 
 		// the entire body of the text block is considered hit-testable
 		internal override bool HitTest(Point point)
@@ -149,7 +159,16 @@ namespace Microsoft.UI.Xaml.Controls
 			Visual.Compositor.InvalidateRender(Visual);
 			var padding = Padding;
 			var availableSizeWithoutPadding = finalSize.Subtract(padding);
-			ParsedText = ParseText(availableSizeWithoutPadding, out var arrangedSize);
+
+			// There's no reason to re-parse the text if the available size hasn't changed since the last measure/arrange.
+			// Note that MeasureOverride doesn't have these checks. If something in the text block has changed that would
+			// require a re-parse, the ParseText call during the measure pass will catch it. There are no changes that
+			// would require a re-parse that would invalidate arrange but not measure, except TextAlignment, which we explicitly check.
+			var arrangedSize = _lastParsedTextCreationValues.outSize;
+			if (_lastParsedTextCreationValues.availableSize != availableSizeWithoutPadding || _lastParsedTextCreationValues.alignment != GetAdjustedTextAlignment())
+			{
+				ParsedText = ParseText(availableSizeWithoutPadding, out arrangedSize);
+			}
 
 			_lastInlinesArrangeWithPadding = arrangedSize.Add(padding);
 
