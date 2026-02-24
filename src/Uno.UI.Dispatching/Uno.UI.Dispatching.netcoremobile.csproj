@@ -8,8 +8,10 @@
 
 	<PropertyGroup>
 		<!-- When building for the generic net target (e.g., via UnoTargetFrameworkOverride=net10.0),
-		     use the Skia runtime identifier so that NativeDispatcher.skia.cs is included. -->
-		<UnoRuntimeIdentifier Condition="'$(TargetPlatformIdentifier)' == ''">Skia</UnoRuntimeIdentifier>
+		     use the Skia runtime identifier so that NativeDispatcher.skia.cs is included.
+		     Use GetTargetPlatformIdentifier() instead of $(TargetPlatformIdentifier) because the latter
+		     is set in Sdk.targets (after project file evaluation) and would always be empty here. -->
+		<UnoRuntimeIdentifier Condition="'$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))' == ''">Skia</UnoRuntimeIdentifier>
 	</PropertyGroup>
 
 	<PropertyGroup>
