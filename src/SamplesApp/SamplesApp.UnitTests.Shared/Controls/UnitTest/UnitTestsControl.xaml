@@ -90,6 +90,7 @@
                                         <TextBlock Text="Unload test content" />
                                     </StackPanel>
                                 </ToggleButton>
+                                <TextBox x:Name="iterationCount" Header="Iterations" PlaceholderText="1" Width="140" />
                                 <StackPanel Orientation="Vertical" Spacing="8">
                                     <TextBlock Text="Run a specific test group:" />
                                     <TextBox x:Name="testGroupNumber" Header="Group ID" PlaceholderText="Group # (e.g. 0)" Width="140" />
