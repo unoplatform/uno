@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.Samples.Controls;
+using Windows.UI.ViewManagement;
 
 namespace UITests.Windows_UI_Input.BrowserInputTests
 {
@@ -18,7 +19,7 @@ namespace UITests.Windows_UI_Input.BrowserInputTests
 	{
 #if __SKIA__
 		private static readonly Type _helperType = Type.GetType(
-			"Uno.UI.Runtime.Skia.BrowserInputHelper, Uno.WinUI.Runtime.Skia.WebAssembly.Browser");
+			"Uno.UI.Runtime.Skia.BrowserInputHelper, Uno.UI.Runtime.Skia.WebAssembly.Browser");
 
 		private static readonly PropertyInfo _zoomProperty = _helperType?.GetProperty(
 			"IsBrowserZoomEnabled", BindingFlags.Public | BindingFlags.Static);
@@ -100,6 +101,34 @@ namespace UITests.Windows_UI_Input.BrowserInputTests
 			_zoomProperty.SetValue(null, true);
 			ZoomStatus.Text = "Zoom: enabled";
 			AppendLog("Browser zoom enabled. Ctrl+Wheel should zoom the page.");
+		}
+
+		// --- Full Screen ---
+
+		private void ToggleFullScreen_Click(object sender, RoutedEventArgs e)
+		{
+			var view = ApplicationView.GetForCurrentView();
+			if (view.IsFullScreenMode)
+			{
+				view.ExitFullScreenMode();
+				ToggleFullScreenButton.Content = "Enter Full Screen";
+				FullScreenStatus.Text = "Full screen: no";
+				AppendLog("Exited full-screen mode.");
+			}
+			else
+			{
+				var success = view.TryEnterFullScreenMode();
+				if (success)
+				{
+					ToggleFullScreenButton.Content = "Exit Full Screen";
+					FullScreenStatus.Text = "Full screen: yes";
+					AppendLog("Entered full-screen mode. Keyboard Lock should now work.");
+				}
+				else
+				{
+					AppendLog("ERROR: Failed to enter full-screen mode.");
+				}
+			}
 		}
 
 		// --- Keyboard Lock - Presets ---
@@ -188,6 +217,7 @@ namespace UITests.Windows_UI_Input.BrowserInputTests
 #else
 		private void DisableZoom_Click(object sender, RoutedEventArgs e) { }
 		private void EnableZoom_Click(object sender, RoutedEventArgs e) { }
+		private void ToggleFullScreen_Click(object sender, RoutedEventArgs e) { }
 		private void LockEscape_Click(object sender, RoutedEventArgs e) { }
 		private void LockFKeys_Click(object sender, RoutedEventArgs e) { }
 		private void LockAllKeys_Click(object sender, RoutedEventArgs e) { }
