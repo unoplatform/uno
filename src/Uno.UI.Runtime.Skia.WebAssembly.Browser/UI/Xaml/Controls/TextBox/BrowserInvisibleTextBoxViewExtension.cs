@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
+using Windows.System;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -50,6 +51,18 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		if (FocusManager.GetFocusedElement(xamlRoot!) is TextBox textBox)
 		{
 			textBox.SelectInternal(selectionStart, selectionLength);
+		}
+	}
+
+	[JSExport]
+	private static void OnEnterKeyPressed()
+	{
+		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
+
+		if (FocusManager.GetFocusedElement(xamlRoot!) is TextBox textBox)
+		{
+			var keyArgs = new KeyRoutedEventArgs(textBox, VirtualKey.Enter, VirtualKeyModifiers.None);
+			textBox.RaiseEvent(UIElement.KeyDownEvent, keyArgs);
 		}
 	}
 

@@ -80,6 +80,18 @@ void uno_set_webview_unsupported_scheme_identified_callback(uno_webview_unsuppor
     unsupported_scheme_identified = fn_ptr;
 }
 
+static uno_webview_resource_requested_fn_ptr resource_requested;
+
+inline uno_webview_resource_requested_fn_ptr uno_get_webview_resource_requested_callback(void)
+{
+    return resource_requested;
+}
+
+void uno_set_webview_resource_requested_callback(uno_webview_resource_requested_fn_ptr fn_ptr)
+{
+    resource_requested = fn_ptr;
+}
+
 
 NSView* uno_webview_create(NSWindow *window, const char *ok, const char *cancel)
 {
@@ -608,11 +620,67 @@ createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration
 #endif
             decisionHandler(cancelled ? WKNavigationActionPolicyCancel : WKNavigationActionPolicyAllow);
         } else {
+            uno_webview_resource_requested_fn_ptr resourceCallback = uno_get_webview_resource_requested_callback();
+            const char *headersJson = NULL;
 #if DEBUG
-            NSLog(@"decidePolicyForNavigationAction webView %p URL: %@ scheme %@ -> Allow", webView, requestUrl, requestUrl.scheme);
+            NSLog(@"decidePolicyForNavigationAction webView %p URL: %@ scheme %@ - checking WebResourceRequested", webView, requestUrl, requestUrl.scheme);
 #endif
-            decisionHandler(WKNavigationActionPolicyAllow);
-            ((UNOWebView*)webView).lastNavigationUrl = requestUrl;
+            if (resourceCallback != NULL) {
+                headersJson = resourceCallback(webView, requestUrl.absoluteString.UTF8String, navigationAction.request.HTTPMethod.UTF8String);
+            }
+
+            if (headersJson != NULL) {
+                // headersJson contains potentially sensitive header names and values (e.g. Authorization tokens).
+                // Avoid logging header values to prevent leaking secrets in debug output. Log only the header names.
+                
+#if DEBUG
+                @try {
+                    NSString *h = [NSString stringWithUTF8String:headersJson];
+                    NSData *d = [h dataUsingEncoding:NSUTF8StringEncoding];
+                    NSError *parseError = nil;
+                    NSDictionary *parsed = [NSJSONSerialization JSONObjectWithData:d options:0 error:&parseError];
+                    if (parsed && !parseError) {
+                        NSArray *keys = [parsed allKeys];
+                        NSLog(@"decidePolicyForNavigationAction webView %p - injecting headers (keys only): %@", webView, keys);
+                    } else {
+                        // Fallback: do not log the raw JSON
+                        NSLog(@"decidePolicyForNavigationAction webView %p - injecting headers (keys unavailable)", webView);
+                    }
+                } @catch (NSException *ex) {
+                    NSLog(@"decidePolicyForNavigationAction webView %p - injecting headers (parse error)", webView);
+                }
+#endif
+                decisionHandler(WKNavigationActionPolicyCancel);
+
+                NSMutableURLRequest *newRequest = [navigationAction.request mutableCopy];
+                NSString *h = [NSString stringWithUTF8String:headersJson];
+                NSData *d = [h dataUsingEncoding:NSUTF8StringEncoding];
+                NSError *e = nil;
+                NSDictionary *headers = [NSJSONSerialization JSONObjectWithData:d options:0 error:&e];
+                if (headers && !e) {
+                    for (NSString *key in headers) {
+                        NSString *value = headers[key];
+                        [newRequest setValue:value forHTTPHeaderField:key];
+#if DEBUG
+                        NSLog(@"decidePolicyForNavigationAction - adding header %@: %@", key, value);
+#endif
+                    }
+                }
+#if DEBUG
+                else if (e) {
+                    NSLog(@"decidePolicyForNavigationAction webView %p - JSON parse error: %@", webView, e);
+                }
+#endif
+
+                free((void*)headersJson);
+                [webView loadRequest:newRequest];
+            } else {
+#if DEBUG
+                NSLog(@"decidePolicyForNavigationAction webView %p URL: %@ scheme %@ -> Allow", webView, requestUrl, requestUrl.scheme);
+#endif
+                decisionHandler(WKNavigationActionPolicyAllow);
+                ((UNOWebView*)webView).lastNavigationUrl = requestUrl;
+            }
         }
     }
 }

@@ -10,9 +10,8 @@
 	xmlns:wasm="http://uno.ui/wasm"
 	xmlns:netstdref="http://uno.ui/netstdref"
 	xmlns:skia="http://uno.ui/skia"
-	xmlns:macos="http://uno.ui/macos"
 	xmlns:uBehaviors="using:Uno.UI.Behaviors"
-	mc:Ignorable="d ios android wasm netstdref macos skia">
+	mc:Ignorable="d ios android wasm netstdref skia">
 
 	<!-- Default style for Microsoft.UI.Xaml.Controls.Primitives.ScrollBar -->
 
@@ -1042,7 +1041,6 @@
 		</Setter>
 	</Style>
 
-	<macos:Style TargetType="ScrollBar" BasedOn="{StaticResource XamlNoAnimationScrollBar}" />
 	<netstdref:Style TargetType="ScrollBar" BasedOn="{StaticResource XamlNoAnimationScrollBar}" />
 	<ios:Style TargetType="ScrollBar" BasedOn="{StaticResource XamlDefaultScrollBar}" />
 	<android:Style TargetType="ScrollBar" BasedOn="{StaticResource XamlDefaultScrollBar}" />

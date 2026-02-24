@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -134,6 +135,17 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	}
 
 	public static IEnumerable<HWND> GetHwnds() => _hwndToWrapper.Keys;
+
+	public static void CloseAllWindows()
+	{
+		foreach (var hwnd in _hwndToWrapper.Keys.ToList())
+		{
+			if (_hwndToWrapper.TryGetValue(hwnd, out var wrapper))
+			{
+				wrapper.CloseCore();
+			}
+		}
+	}
 
 	private unsafe void OnSystemThemeChanged(object? _, EventArgs __)
 	{

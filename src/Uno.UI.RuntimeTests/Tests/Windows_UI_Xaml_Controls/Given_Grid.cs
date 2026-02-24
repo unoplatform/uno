@@ -708,7 +708,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// On first cycle, everything will be normal.
 			togglableBorder.Visibility = Visibility.Collapsed; // C = 1
 			await TestServices.WindowHelper.WaitForIdle();
-			Assert.IsTrue(lv.ActualHeight > initial, $"C1: SutLV should've expanded with the border collapsed: Lv.ActualHeight>initial --> ({lv.ActualHeight}>{initial})");
+			Assert.IsGreaterThan(initial, lv.ActualHeight, $"C1: SutLV should've expanded with the border collapsed: Lv.ActualHeight>initial --> ({lv.ActualHeight}>{initial})");
 			togglableBorder.Visibility = Visibility.Visible; // C = 2
 			await TestServices.WindowHelper.WaitForIdle();
 			Assert.IsTrue(DoubleUtil.AreWithinTolerance(lv.ActualHeight, initial, 0.1), $"C2: SutLV should've returned to initial size with the border visible: Lv.ActualHeight==initial --> ({lv.ActualHeight}=={initial})");
@@ -718,7 +718,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// due to measure caching of Android.Views.View.Measure inside the measure pass of Grid.
 			togglableBorder.Visibility = Visibility.Collapsed; // C = 3
 			await TestServices.WindowHelper.WaitForIdle();
-			Assert.IsTrue(lv.ActualHeight > initial, $"C3: SutLV should've expanded with the border collapsed: Lv.ActualHeight>initial --> ({lv.ActualHeight}>{initial})");
+			Assert.IsGreaterThan(initial, lv.ActualHeight, $"C3: SutLV should've expanded with the border collapsed: Lv.ActualHeight>initial --> ({lv.ActualHeight}>{initial})");
 			togglableBorder.Visibility = Visibility.Visible; // C = 4
 			await TestServices.WindowHelper.WaitForIdle();
 			Assert.IsTrue(DoubleUtil.AreWithinTolerance(lv.ActualHeight, initial, 0.1), $"C4: SutLV should've returned to initial size with the border visible: Lv.ActualHeight==initial --> ({lv.ActualHeight}=={initial})");

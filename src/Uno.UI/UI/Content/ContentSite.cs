@@ -6,9 +6,7 @@ namespace Microsoft.UI.Content;
 /// Provides a host environment for a ContentIsland.
 /// </summary>
 public partial class ContentSite
-#if HAS_UNO_WINUI // These interfaces are not currently implemented and the Generated partial does not exist in UWP build.
 	: IDisposable, IClosableNotifier
-#endif
 {
 	private float _parentScale = 1f;
 

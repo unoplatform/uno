@@ -22,6 +22,7 @@
       "AddIns\\Uno.UI.WebView.Skia.X11\\Uno.UI.WebView.Skia.X11.csproj",
       "AddIns\\Uno.WinUI.Graphics2DSK\\Uno.WinUI.Graphics2DSK.Crossruntime.csproj",
       "AddIns\\Uno.WinUI.Graphics2DSK\\Uno.WinUI.Graphics2DSK.netcoremobile.csproj",
+      "AddIns\\Uno.WinUI.SpellChecking\\Uno.WinUI.SpellChecking.csproj",
       "SourceGenerators\\SourceGeneratorHelpers\\SourceGeneratorHelpers.shproj",
       "SourceGenerators\\System.Xaml\\Uno.Xaml.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators.Internal\\Uno.UI.SourceGenerators.Internal.csproj",

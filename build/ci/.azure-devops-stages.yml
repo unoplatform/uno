@@ -46,6 +46,10 @@ stages:
   parameters:
     vmImage: '$(linuxVMImage)'
 
+- template: setup/.azure-devops-setup-font-fallback.yml
+  parameters:
+    vmImage: '$(linuxVMImage)'
+
 - stage: binaries_build_native_macos
   displayName: Build - Native Binaries
   dependsOn:

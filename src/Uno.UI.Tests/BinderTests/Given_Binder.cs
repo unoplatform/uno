@@ -1,4 +1,4 @@
-﻿using CommonServiceLocator;
+using CommonServiceLocator;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Extensions;
@@ -1082,17 +1082,17 @@ namespace Uno.UI.Tests.BinderTests
 			SUT.DataContext = 42;
 
 			Assert.AreEqual(42, SUT.MyProperty);
-			Assert.AreEqual(1, myPropertyHistory.Count);
+			Assert.HasCount(1, myPropertyHistory);
 			Assert.AreEqual(42, myPropertyHistory[0]);
 
 			SUT.ClearValue(MyControl.MyPropertyProperty);
 
-			Assert.AreEqual(2, myPropertyHistory.Count);
+			Assert.HasCount(2, myPropertyHistory);
 			Assert.AreEqual(0, myPropertyHistory[1]);
 
 			SUT.DataContext = 43;
 
-			Assert.AreEqual(2, myPropertyHistory.Count);
+			Assert.HasCount(2, myPropertyHistory);
 			Assert.AreEqual(0, SUT.MyProperty);
 		}
 

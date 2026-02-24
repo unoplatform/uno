@@ -13,112 +13,105 @@ using MUXControlsTestApp.Utilities;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 {
 	[TestClass]
+	[RunsOnUIThread]
 	public class Given_MatrixTranform
 	{
 		[TestMethod]
-		public Task When_Identity_And_TransformPoint() =>
-			RunOnUIThread.ExecuteAsync(() =>
-			{
-				var SUT = new MatrixTransform();
+		public void When_Identity_And_TransformPoint()
+		{
+			var SUT = new MatrixTransform();
 
-				Assert.AreEqual(new Point(0, 0), SUT.TransformPoint(new Point(0, 0)));
-			});
-
-		[TestMethod]
-		public Task When_Identity_And_TransformBounds() =>
-			RunOnUIThread.ExecuteAsync(() =>
-			{
-				var SUT = new MatrixTransform();
-
-				Assert.AreEqual(new Rect(0, 0, 0, 0), SUT.TransformBounds(new Rect(0, 0, 0, 0)));
-			});
+			Assert.AreEqual(new Point(0, 0), SUT.TransformPoint(new Point(0, 0)));
+		}
 
 		[TestMethod]
-		public Task When_Translate_And_TransformPoint() =>
-			RunOnUIThread.ExecuteAsync(() =>
-			{
-				var SUT = new MatrixTransform()
-				{
-					Matrix = MatrixHelper.Create(1, 0, 0, 1, 10, 20)
-				};
+		public void When_Identity_And_TransformBounds()
+		{
+			var SUT = new MatrixTransform();
 
-				Assert.AreEqual(new Point(10, 20), SUT.TransformPoint(new Point(0, 0)));
-			});
+			Assert.AreEqual(new Rect(0, 0, 0, 0), SUT.TransformBounds(new Rect(0, 0, 0, 0)));
+		}
 
 		[TestMethod]
-		public Task When_Translate_And_TransformBounds() =>
-			RunOnUIThread.ExecuteAsync(() =>
+		public void When_Translate_And_TransformPoint()
+		{
+			var SUT = new MatrixTransform()
 			{
-				var SUT = new MatrixTransform()
-				{
-					Matrix = MatrixHelper.Create(1, 0, 0, 1, 10, 20)
-				};
+				Matrix = MatrixHelper.Create(1, 0, 0, 1, 10, 20)
+			};
 
-				Assert.AreEqual(
-					new Rect(10, 20, 5, 6),
-					SUT.TransformBounds(new Rect(0, 0, 5, 6))
-				);
-			});
+			Assert.AreEqual(new Point(10, 20), SUT.TransformPoint(new Point(0, 0)));
+		}
 
 		[TestMethod]
-		public Task When_Rotate_And_TransformPoint() =>
-			RunOnUIThread.ExecuteAsync(() =>
+		public void When_Translate_And_TransformBounds()
+		{
+			var SUT = new MatrixTransform()
 			{
-				var SUT = new MatrixTransform()
-				{
-					Matrix = MatrixHelper.FromMatrix3x2(Matrix3x2.CreateRotation((float)Math.PI / 2))
-				};
+				Matrix = MatrixHelper.Create(1, 0, 0, 1, 10, 20)
+			};
 
-				Assert.AreEqual(new Point(-1, 1), SUT.TransformPoint(new Point(1, 1)));
-			});
+			Assert.AreEqual(
+				new Rect(10, 20, 5, 6),
+				SUT.TransformBounds(new Rect(0, 0, 5, 6))
+			);
+		}
 
 		[TestMethod]
-		public Task When_Rotate_And_TransformBounds() =>
-			RunOnUIThread.ExecuteAsync(() =>
+		public void When_Rotate_And_TransformPoint()
+		{
+			var SUT = new MatrixTransform()
 			{
-				var SUT = new MatrixTransform()
-				{
-					Matrix = MatrixHelper.FromMatrix3x2(Matrix3x2.CreateRotation((float)Math.PI / 2))
-				};
+				Matrix = MatrixHelper.FromMatrix3x2(Matrix3x2.CreateRotation((float)Math.PI / 2))
+			};
 
-				Assert.AreEqual(
-					new Rect(-7, 1, 6, 5),
-					SUT.TransformBounds(new Rect(1, 1, 5, 6))
-				);
-			});
+			Assert.AreEqual(new Point(-1, 1), SUT.TransformPoint(new Point(1, 1)));
+		}
 
 		[TestMethod]
-		public Task When_RotateQuarter_And_TransformPoint() =>
-			RunOnUIThread.ExecuteAsync(() =>
+		public void When_Rotate_And_TransformBounds()
+		{
+			var SUT = new MatrixTransform()
 			{
-				var SUT = new MatrixTransform()
-				{
-					Matrix = MatrixHelper.FromMatrix3x2(Matrix3x2.CreateRotation((float)Math.PI / 4))
-				};
+				Matrix = MatrixHelper.FromMatrix3x2(Matrix3x2.CreateRotation((float)Math.PI / 2))
+			};
 
-				var expected = new Point(0, 1.41421353816986);
-				var res = SUT.TransformPoint(new Point(1, 1));
-				Assert.AreEqual(expected.X, res.X, 1e-10, $"{expected} != {res}");
-				Assert.AreEqual(expected.Y, res.Y, 1e-10, $"{expected} != {res}");
-			});
+			Assert.AreEqual(
+				new Rect(-7, 1, 6, 5),
+				SUT.TransformBounds(new Rect(1, 1, 5, 6))
+			);
+		}
 
 		[TestMethod]
-		public Task When_RotateQuarter_And_TransformBounds() =>
-			RunOnUIThread.ExecuteAsync(() =>
+		public void When_RotateQuarter_And_TransformPoint()
+		{
+			var SUT = new MatrixTransform()
 			{
-				var SUT = new MatrixTransform()
-				{
-					Matrix = MatrixHelper.FromMatrix3x2(Matrix3x2.CreateRotation((float)Math.PI / 4))
-				};
+				Matrix = MatrixHelper.FromMatrix3x2(Matrix3x2.CreateRotation((float)Math.PI / 4))
+			};
 
-				var expected = new Rect(-4.242640495300293, 1.4142135381698608, 7.77817440032959, 7.7781739234924316);
-				var actual = SUT.TransformBounds(new Rect(1, 1, 5, 6));
+			var expected = new Point(0, 1.41421353816986);
+			var res = SUT.TransformPoint(new Point(1, 1));
+			Assert.AreEqual(expected.X, res.X, 1e-10, $"{expected} != {res}");
+			Assert.AreEqual(expected.Y, res.Y, 1e-10, $"{expected} != {res}");
+		}
 
-				Assert.AreEqual(expected.X, actual.X, 1e-5, $"X: {expected} != {actual}");
-				Assert.AreEqual(expected.Y, actual.Y, 1e-5, $"Y: {expected} != {actual}");
-				Assert.AreEqual(expected.Width, actual.Width, 1e-5, $"W: {expected} != {actual}");
-				Assert.AreEqual(expected.Height, actual.Height, 1e-5, $"H: {expected} != {actual}");
-			});
+		[TestMethod]
+		public void When_RotateQuarter_And_TransformBounds()
+		{
+			var SUT = new MatrixTransform()
+			{
+				Matrix = MatrixHelper.FromMatrix3x2(Matrix3x2.CreateRotation((float)Math.PI / 4))
+			};
+
+			var expected = new Rect(-4.242640495300293, 1.4142135381698608, 7.77817440032959, 7.7781739234924316);
+			var actual = SUT.TransformBounds(new Rect(1, 1, 5, 6));
+
+			Assert.AreEqual(expected.X, actual.X, 1e-5, $"X: {expected} != {actual}");
+			Assert.AreEqual(expected.Y, actual.Y, 1e-5, $"Y: {expected} != {actual}");
+			Assert.AreEqual(expected.Width, actual.Width, 1e-5, $"W: {expected} != {actual}");
+			Assert.AreEqual(expected.Height, actual.Height, 1e-5, $"H: {expected} != {actual}");
+		}
 	}
 
 	public class MatrixHelper

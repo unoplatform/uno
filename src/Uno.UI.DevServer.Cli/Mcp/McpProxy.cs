@@ -92,12 +92,9 @@ internal class McpProxy
 	[Description("This tool MUST be called before other uno app tools to initialize properly")]
 	private async Task SetRoots([Description("Fully qualified root folder path for the workspace")] string[] roots)
 	{
-		if (!IsToolCacheEnabled)
-		{
-			return;
-		}
-
-		_roots = roots;
+		var normalizedRoots = roots ?? Array.Empty<string>();
+		_logger.LogTrace("SetRoots invoked with {Count} roots: {Roots}", normalizedRoots.Length, string.Join(", ", normalizedRoots));
+		_roots = normalizedRoots;
 
 		await ProcessRoots();
 	}
@@ -115,7 +112,7 @@ internal class McpProxy
 
 	private async Task ProcessRoots()
 	{
-		_logger.LogTrace("MCP Client Roots: {Roots}", string.Join(", ", _roots));
+		_logger.LogTrace("Processing MCP Client Roots: {Roots}", string.Join(", ", _roots));
 
 		if (_devServerStarted)
 		{
@@ -128,7 +125,12 @@ internal class McpProxy
 			var rootPath = GetRootPath(rootUri);
 			if (!string.IsNullOrWhiteSpace(rootPath))
 			{
+				_logger.LogTrace("Resolved MCP root '{RootUri}' into path '{RootPath}'", rootUri, rootPath);
 				StartDevServerMonitor(rootPath);
+			}
+			else
+			{
+				_logger.LogWarning("Unable to resolve MCP root '{RootUri}' to a local path", rootUri);
 			}
 		}
 		else if (!_forceRootsFallback)
@@ -139,6 +141,8 @@ internal class McpProxy
 
 	private string? GetRootPath(string rootUri)
 	{
+		_logger.LogTrace("Attempting to resolve root URI '{RootUri}' using current directory '{CurrentDirectory}'", rootUri, _currentDirectory);
+
 		if (Uri.TryCreate(rootUri, UriKind.Absolute, out var absoluteUri) && absoluteUri.IsFile)
 		{
 			var normalizedPath = NormalizeLocalFilePath(absoluteUri.LocalPath);
@@ -184,18 +188,35 @@ internal class McpProxy
 
 	private void EnsureDevServerStartedFromSolutionDirectory()
 	{
-		if (!_forceGenerateToolCache || string.IsNullOrWhiteSpace(_solutionDirectory))
+		if (_forceRootsFallback)
 		{
+			_logger.LogTrace("Roots fallback is enabled; skipping initial DevServer start (waiting for roots)");
 			return;
 		}
 
-		StartDevServerMonitor(_solutionDirectory);
+		var directory = string.IsNullOrWhiteSpace(_solutionDirectory)
+			? _currentDirectory
+			: _solutionDirectory;
+
+		_logger.LogTrace(
+			"EnsureDevServerStartedFromSolutionDirectory (solutionDir: {SolutionDir}, currentDir: {CurrentDir})",
+			_solutionDirectory,
+			_currentDirectory);
+
+		if (string.IsNullOrWhiteSpace(directory))
+		{
+			_logger.LogTrace("No directory available to start the DevServer monitor; skipping initial start");
+			return;
+		}
+
+		StartDevServerMonitor(directory);
 	}
 
 	private void StartDevServerMonitor(string? directory)
 	{
 		if (_devServerStarted)
 		{
+			_logger.LogTrace("StartDevServerMonitor called but monitor already running");
 			return;
 		}
 
@@ -212,6 +233,7 @@ internal class McpProxy
 		{
 			_devServerMonitor.StartMonitoring(normalized, _devServerPort, _forwardedArgs);
 			_devServerStarted = true;
+			_logger.LogTrace("DevServer monitor started for {Directory} (port: {Port}, forwardedArgs: {Args})", normalized, _devServerPort, string.Join(" ", _forwardedArgs));
 		}
 		catch (Exception ex)
 		{
@@ -504,6 +526,8 @@ internal class McpProxy
 
 		if (!_forceRootsFallback)
 		{
+			var fallbackRoot = BuildFallbackRoot();
+
 			if (clientSupportsRoots)
 			{
 				var roots = await ctx.Server.RequestRootsAsync(new(), ct);
@@ -516,18 +540,14 @@ internal class McpProxy
 				}
 				else
 				{
-					// convert _currentDirectory to a file uri
-					if (Uri.TryCreate(_currentDirectory ?? Environment.CurrentDirectory, UriKind.RelativeOrAbsolute, out var root))
-					{
-						_roots = [root.ToString() ?? Environment.CurrentDirectory];
-					}
+					_logger.LogTrace("MCP client returned no roots; defaulting to {FallbackRoot}", fallbackRoot);
+					_roots = [fallbackRoot];
 				}
 			}
 			else
 			{
-				_logger.LogTrace("MCP Client does not support roots");
-
-				_roots = [Environment.CurrentDirectory];
+				_logger.LogTrace("MCP Client does not support roots; defaulting to {FallbackRoot}", fallbackRoot);
+				_roots = [fallbackRoot];
 			}
 
 			await ProcessRoots();
@@ -544,6 +564,27 @@ internal class McpProxy
 			_logger.LogTrace("Client without list_updated support detected, waiting for upstream server to start");
 
 			await tcs.Task;
+		}
+	}
+
+	private string BuildFallbackRoot()
+	{
+		var directory = _solutionDirectory ?? _currentDirectory ?? Environment.CurrentDirectory;
+
+		try
+		{
+			var fullPath = Path.GetFullPath(directory);
+			if (Uri.TryCreate(fullPath, UriKind.Absolute, out var uri) && uri.IsAbsoluteUri)
+			{
+				return uri.ToString();
+			}
+
+			return fullPath;
+		}
+		catch (Exception ex)
+		{
+			_logger.LogDebug(ex, "Unable to normalize fallback root '{Directory}'", directory);
+			return directory;
 		}
 	}
 

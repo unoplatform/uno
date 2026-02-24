@@ -22,11 +22,7 @@ using Microsoft.UI.Composition;
 using Windows.Storage;
 
 
-#if HAS_UNO_WINUI || WINAPPSDK
 using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
-#else
-using DispatcherQueue = Windows.System.DispatcherQueue;
-#endif
 
 namespace Microsoft.UI.Xaml
 {

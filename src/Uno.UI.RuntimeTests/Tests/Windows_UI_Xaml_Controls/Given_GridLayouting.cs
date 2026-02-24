@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.Linq;
 using System.Numerics;
@@ -2174,7 +2174,7 @@ public partial class Given_GridLayouting
 		Assert.AreEqual(new Rect(0, 0, 5, 20), LayoutInformation.GetLayoutSlot(c1));
 		Assert.AreEqual(new Rect(5, 0, 15, 20), LayoutInformation.GetLayoutSlot(c2));
 
-		Assert.AreEqual(2, SUT.Children.Count);
+		Assert.HasCount(2, SUT.Children);
 	}
 
 	[TestMethod]
@@ -2203,7 +2203,7 @@ public partial class Given_GridLayouting
 		Assert.AreEqual(new Rect(0, 0, 5, 20), LayoutInformation.GetLayoutSlot(c1));
 		Assert.AreEqual(new Rect(5, 0, 10, 20), LayoutInformation.GetLayoutSlot(c2));
 
-		Assert.AreEqual(2, SUT.Children.Count());
+		Assert.HasCount(2, SUT.Children);
 	}
 
 	[TestMethod]
@@ -2339,7 +2339,7 @@ public partial class Given_GridLayouting
 		Assert.AreEqual(new Rect(0, 5, 12, 15), LayoutInformation.GetLayoutSlot(c3));
 		Assert.AreEqual(new Rect(12, 5, 8, 15), LayoutInformation.GetLayoutSlot(c4));
 
-		Assert.AreEqual(4, SUT.Children.Count);
+		Assert.HasCount(4, SUT.Children);
 	}
 
 	[TestMethod]
@@ -2506,7 +2506,7 @@ public partial class Given_GridLayouting
 		Assert.AreEqual(new Rect(0, 0, 20, 20), LayoutInformation.GetLayoutSlot(c1));
 		Assert.AreEqual(new Size(20, 10), c1.RenderSize);
 
-		Assert.AreEqual(1, SUT.Children.Count);
+		Assert.HasCount(1, SUT.Children);
 	}
 
 	[TestMethod]
@@ -2534,7 +2534,7 @@ public partial class Given_GridLayouting
 		Assert.AreEqual(new Vector3(0, 10, 0), c1.ActualOffset);
 		Assert.AreEqual(new Size(20, 10), c1.RenderSize);
 
-		Assert.AreEqual(1, SUT.Children.Count);
+		Assert.HasCount(1, SUT.Children);
 	}
 
 	[TestMethod]
@@ -2563,7 +2563,7 @@ public partial class Given_GridLayouting
 		Assert.AreEqual(new Vector3(0, 5, 0), c1.ActualOffset);
 		Assert.AreEqual(new Size(20, 10), c1.RenderSize);
 
-		Assert.AreEqual(1, SUT.Children.Count);
+		Assert.HasCount(1, SUT.Children);
 	}
 
 	[TestMethod]
@@ -2591,7 +2591,7 @@ public partial class Given_GridLayouting
 		Assert.AreEqual(Vector3.Zero, c1.ActualOffset);
 		Assert.AreEqual(new Size(10, 20), c1.RenderSize);
 
-		Assert.AreEqual(1, SUT.Children.Count);
+		Assert.HasCount(1, SUT.Children);
 	}
 
 	[TestMethod]
@@ -2620,7 +2620,7 @@ public partial class Given_GridLayouting
 		Assert.AreEqual(new Vector3(10, 0, 0), c1.ActualOffset);
 		Assert.AreEqual(new Size(10, 20), c1.RenderSize);
 
-		Assert.AreEqual(1, SUT.Children.Count);
+		Assert.HasCount(1, SUT.Children);
 	}
 
 	[TestMethod]
@@ -2650,7 +2650,7 @@ public partial class Given_GridLayouting
 		Assert.AreEqual(new Size(10, 20), c1.RenderSize);
 
 
-		Assert.AreEqual(1, SUT.Children.Count);
+		Assert.HasCount(1, SUT.Children);
 	}
 
 	[TestMethod]
@@ -2677,7 +2677,7 @@ public partial class Given_GridLayouting
 		Assert.AreEqual(new Rect(0, 0, 20, 20), LayoutInformation.GetLayoutSlot(c1));
 		Assert.AreEqual(new Size(20, 10), c1.RenderSize);
 
-		Assert.AreEqual(1, SUT.Children.Count);
+		Assert.HasCount(1, SUT.Children);
 	}
 
 	[TestMethod]
@@ -2705,7 +2705,7 @@ public partial class Given_GridLayouting
 		Assert.AreEqual(new Vector3(0, 5, 0), c1.ActualOffset);
 		Assert.AreEqual(new Size(20, 10), c1.RenderSize);
 
-		Assert.AreEqual(1, SUT.Children.Count);
+		Assert.HasCount(1, SUT.Children);
 	}
 
 	[TestMethod]
@@ -2732,7 +2732,7 @@ public partial class Given_GridLayouting
 		Assert.AreEqual(new Vector3(5, 0, 0), c1.ActualOffset);
 		Assert.AreEqual(new Size(10, 20), c1.RenderSize);
 
-		Assert.AreEqual(1, SUT.Children.Count);
+		Assert.HasCount(1, SUT.Children);
 	}
 
 	[TestMethod]
@@ -2761,7 +2761,7 @@ public partial class Given_GridLayouting
 		Assert.AreEqual(new Vector3(0, 5, 0), c1.ActualOffset);
 		Assert.AreEqual(new Size(20, 10), c1.RenderSize);
 
-		Assert.AreEqual(1, SUT.Children.Count);
+		Assert.HasCount(1, SUT.Children);
 	}
 
 	[TestMethod]
@@ -2790,7 +2790,7 @@ public partial class Given_GridLayouting
 		Assert.AreEqual(new Vector3(5, 5, 0), c1.ActualOffset);
 		Assert.AreEqual(new Size(10, 10), c1.RenderSize);
 
-		Assert.AreEqual(1, SUT.Children.Count);
+		Assert.HasCount(1, SUT.Children);
 	}
 
 	[TestMethod]
@@ -2828,7 +2828,7 @@ public partial class Given_GridLayouting
 		Assert.AreEqual(new Vector3(5, 0, 0), c1.ActualOffset);
 		Assert.AreEqual(new Size(10, 10), c1.RenderSize);
 
-		Assert.AreEqual(1, SUT.Children.Count);
+		Assert.HasCount(1, SUT.Children);
 	}
 
 	[TestMethod]
@@ -2897,7 +2897,7 @@ public partial class Given_GridLayouting
 		Assert.AreEqual(1, c2.ArrangeCallCount, "c2.ArrangeCallCount");
 #endif
 
-		Assert.AreEqual(2, SUT.Children.Count);
+		Assert.HasCount(2, SUT.Children);
 	}
 
 	[DataRow("cc", 0d, "17,17,6,6", null)]
@@ -3018,6 +3018,6 @@ public partial class Given_GridLayouting
 
 		Assert.AreEqual(new Rect(0, 0, 100, 100), LayoutInformation.GetLayoutSlot(c1));
 
-		Assert.AreEqual(1, SUT.Children.Count);
+		Assert.HasCount(1, SUT.Children);
 	}
 }
