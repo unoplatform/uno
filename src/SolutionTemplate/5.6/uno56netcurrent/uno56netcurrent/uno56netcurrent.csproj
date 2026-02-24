@@ -38,4 +38,28 @@
                Condition=" '@(_FilteredRuntimeCopyLocalItems)' != '' " />
     </Target>
 
+    <Target Name="_UnoValidatePublishAotAndUnoBindableDescriptorXml"
+            Condition=" '$(PublishAot)' == 'true' "
+            AfterTargets="Build">
+        <PropertyGroup>
+            <_UnoBindableDescriptorXmlPath>$(IntermediateOutputPath)Uno.Bindable.Descriptor.xml</_UnoBindableDescriptorXmlPath>
+        </PropertyGroup>
+        <Error Text="The Uno.Bindable.Descriptor.xml was not generated!"
+                Condition="!Exists('$(_UnoBindableDescriptorXmlPath)')" />
+        <ReadLinesFromFile
+                File="$(_UnoBindableDescriptorXmlPath)">
+            <Output TaskParameter="Lines" ItemName="_UnoBindableDescriptorXmlLines" />
+        </ReadLinesFromFile>
+        <Message Text="# jonp: Uno.Bindable.Descriptor.xml contents:" Importance="High" />
+        <Message Text="@(_UnoBindableDescriptorXmlLines, '
+')" Importance="High" />
+        <XmlPeek
+                XmlInputPath="$(_UnoBindableDescriptorXmlPath)"
+                Query="/linker/assembly[@fullname='Uno']/type[@fullname='Windows.UI.Color']">
+            <Output TaskParameter="Result" ItemName="_UnoPreserveColor" />
+        </XmlPeek>
+        <Error Text="`Windows.UI.Color` not present within `Uno.Bindable.Descriptor.xml`!"
+                Condition=" @(_UnoPreserveColor->Count()) == 0 " />
+    </Target>
+
 </Project>
