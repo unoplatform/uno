@@ -860,6 +860,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Input\BrowserInputTests\BrowserInputHelper_Tests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Input\CaptureTests\OverlappedControls.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -10308,6 +10312,9 @@
     <Folder Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\RevealBrushes\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Input\BrowserInputTests\BrowserInputHelper_Tests.xaml.cs">
+      <DependentUpon>BrowserInputHelper_Tests.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Input\CaptureTests\OverlappedControls.xaml.cs">
       <DependentUpon>OverlappedControls.xaml</DependentUpon>
     </Compile>
