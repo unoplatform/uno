@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using CoreGraphics;
 using Foundation;
 using Microsoft.UI.Dispatching;
@@ -99,7 +101,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		}
 	}
 
-	public static Queue<NativeWindowWrapper> AwaitingScene { get; } = new();
+	public static ConcurrentQueue<NativeWindowWrapper> AwaitingScene { get; } = new();
 
 	private static int _visibleWindowCount;
 
@@ -119,7 +121,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		}
 
 		_isPendingShow = false;
-		_visibleWindowCount++;
+		Interlocked.Increment(ref _visibleWindowCount);
 
 		if (_xamlRoot.Content is FrameworkElement { IsLoaded: false } fe)
 		{
@@ -263,8 +265,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	{
 		OnNativeVisibilityChanged(false);
 
-		_visibleWindowCount--;
-		if (_visibleWindowCount == 0)
+		if (Interlocked.Decrement(ref _visibleWindowCount) == 0)
 		{
 			// Last window backgrounded - raise app-level events
 			Application.Current?.RaiseEnteredBackground(() => Application.Current?.RaiseSuspending());
@@ -284,7 +285,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 			OnNativeVisibilityChanged(true);
 		}
 
-		_visibleWindowCount++;
+		Interlocked.Increment(ref _visibleWindowCount);
 	}
 
 	private void OnActivated(NSNotification notification) => OnNativeActivated(CoreWindowActivationState.CodeActivated);
