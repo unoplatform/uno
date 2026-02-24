@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Diagnostics;
+using System.Globalization;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using Uno.UI.DevServer.Cli.Helpers;
 using Uno.UI.DevServer.Cli.Logging;
 using Uno.UI.DevServer.Cli.Mcp;
-using System.Globalization;
-using System.Diagnostics;
 
 namespace Uno.UI.DevServer.Cli;
 
@@ -17,20 +17,27 @@ internal class Program
 		{
 			Console.WriteLine("Usage: dnx -y uno.devserver [options] [command]");
 			Console.WriteLine();
-			Console.WriteLine("Options:");
+			Console.WriteLine("Global options:");
 			WriteOption("--help, -h", "Show this help message and exit");
 			WriteOption("--log-level, -l <level>", "Set the log level (Trace, Debug, Information, Warning, Error, Critical, None). Default is Information.");
 			WriteOption("--file-log, -fl <path>", "Enable file logging to the provided file path (supports {Date} token). Required path argument.");
+			WriteOption("--solution-dir <path>", "Explicit solution root when priming tools without client-provided roots");
+			Console.WriteLine();
+			Console.WriteLine("Disco options:");
+			WriteOption("--json", "Emit JSON output");
+			WriteOption("--addins-only", "Output only resolved add-in paths (semicolon-separated, or JSON array with --json)");
+			Console.WriteLine();
+			Console.WriteLine("MCP options:");
 			WriteOption("--mcp-app", "Start in App MCP STDIO mode");
 			WriteOption("--mcp-wait-tools-list", "Wait for upstream server tools before responding to list_tools (MCP mode only)");
 			WriteOption("--force-roots-fallback", "This mode can be used when the MCP client does not support the roots feature");
 			WriteOption("--force-generate-tool-cache", "Force tool discovery and persist the cache immediately (MCP mode only)");
-			WriteOption("--solution-dir <path>", "Explicit solution root when priming tools without client-provided roots");
 			Console.WriteLine();
 			Console.WriteLine("Commands:");
 			WriteCommand("start", "Start the DevServer for the current folder");
 			WriteCommand("stop", "Stop the DevServer for the current folder");
 			WriteCommand("list", "List active DevServer instances");
+			WriteCommand("disco", "Discover environment and SDK details");
 			Console.WriteLine();
 			return 0;
 		}
@@ -75,9 +82,17 @@ internal class Program
 		});
 		services.AddSingleton<CliManager>();
 		services.AddSingleton<UnoToolsLocator>();
+		services.AddSingleton(sp =>
+		new ManifestAddInResolver(
+			sp.GetRequiredService<ILogger<ManifestAddInResolver>>(),
+			McpStdioServer.GetAssemblyVersion()));
+		services.AddSingleton<TargetsAddInResolver>();
 		services.AddSingleton<DevServerMonitor>();
-		services.AddSingleton<McpProxy>();
-		services.AddSingleton<McpClientProxy>();
+		services.AddSingleton<McpUpstreamClient>();
+		services.AddSingleton<ToolListManager>();
+		services.AddSingleton<HealthService>();
+		services.AddSingleton<McpStdioServer>();
+		services.AddSingleton<ProxyLifecycleManager>();
 
 		using var sp = services.BuildServiceProvider();
 		var manager = sp.GetRequiredService<CliManager>();

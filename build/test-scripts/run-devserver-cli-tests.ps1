@@ -248,21 +248,61 @@ function Invoke-CodexToolEnumerationTest {
     param([string]$WorkingDirectory)
 
     $toolsFile = Join-Path $WorkingDirectory "codex-tools.json"
-    if (Test-Path $toolsFile) {
-        Remove-Item $toolsFile -Force
+    $toolsFileName = Split-Path $toolsFile -Leaf
+
+    $maxAttempts = 2
+    $lastError = $null
+
+    for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
+        $lastError = $null
+
+        if (Test-Path $toolsFile) {
+            Remove-Item $toolsFile -Force
+        }
+
+        try {
+            Invoke-SingleCodexToolEnumeration -WorkingDirectory $WorkingDirectory -ToolsFile $toolsFile -ToolsFileName $toolsFileName
+            return # success
+        }
+        catch {
+            $lastError = $_
+            if ($attempt -lt $maxAttempts) {
+                Write-Log "Codex tool enumeration attempt $attempt failed: $($_.Exception.Message). Retrying..."
+                # Clean up stale DevServer before retry
+                Stop-DevserverInDirectory -Directory $WorkingDirectory
+            }
+        }
     }
 
-    $toolsFileName = Split-Path $toolsFile -Leaf
+    throw "Codex tool enumeration failed after $maxAttempts attempts. Last error: $($lastError.Exception.Message)"
+}
+
+function Invoke-SingleCodexToolEnumeration {
+    param(
+        [string]$WorkingDirectory,
+        [string]$ToolsFile,
+        [string]$ToolsFileName
+    )
+
     $instructions = @"
 You are running inside an automated CI validation for the Uno Platform devserver CLI.
 
-Tasks:
-1. Create a list of all MCP tools available to you
-2. Create or overwrite a JSON file named '$toolsFileName' in the current working directory.
-    The JSON must be an object that contains a property ``"tools"`` whose value is an alphabetically sorted array listing every tool identifier you discovered.
-3. Confirm completion and exit when finished.
+Your ONLY task: enumerate every MCP **tool** (callable function) and write the list to a JSON file.
 
-Begin now.
+Steps:
+1. Look at the functions available to you whose names start with ``mcp__``.
+   These are MCP tools. Each one has the form ``mcp__<server>__<tool_name>``.
+   Extract just the ``<tool_name>`` part (e.g. ``mcp__uno-app__uno_app_get_screenshot`` → ``uno_app_get_screenshot``).
+   IMPORTANT: Do NOT list MCP resources or resource URIs (like ``uno://health``). Only list callable tool function names.
+2. Write a JSON file named ``$ToolsFileName`` in the current directory.
+   The file must contain ONLY this JSON object, nothing else:
+   ``{"tools":["tool_a","tool_b","tool_c"]}``
+   where the array is alphabetically sorted. Example with real names:
+   ``{"tools":["uno_app_get_screenshot","uno_get_build_output","uno_health"]}``
+   Write raw JSON only — no markdown fences, no trailing newline, no extra text.
+3. Confirm done and exit.
+
+Begin.
 "@
 
     $stdOutFile = [System.IO.Path]::GetTempFileName()
@@ -329,20 +369,28 @@ Begin now.
         }
     }
 
-    if (-not (Test-Path $toolsFile)) {
-        throw "Codex CLI did not create $toolsFile.`nSTDOUT:`n$stdout`nSTDERR:`n$stderr"
+    if (-not (Test-Path $ToolsFile)) {
+        throw "Codex CLI did not create $ToolsFile.`nSTDOUT:`n$stdout`nSTDERR:`n$stderr"
     }
 
-    $jsonText = Get-Content $toolsFile -Raw -ErrorAction Stop
+    $jsonText = (Get-Content $ToolsFile -Raw -ErrorAction Stop).Trim()
+    # LLMs sometimes emit a literal \n after the JSON object — strip it
+    $jsonText = $jsonText -replace '\\n$', ''
     try {
         $json = $jsonText | ConvertFrom-Json -ErrorAction Stop
     }
     catch {
-        throw "codex-tools.json is not valid JSON: $($_.Exception.Message)"
+        throw "codex-tools.json is not valid JSON (raw content: $jsonText): $($_.Exception.Message)"
     }
 
     if (-not $json.tools -or $json.tools.Count -eq 0) {
         throw "codex-tools.json does not contain a non-empty 'tools' array."
+    }
+
+    # The upstream DevServer + add-ins expose at least 10 tools; a much smaller
+    # count means the model listed resources or only built-in tools.
+    if ($json.tools.Count -lt 5) {
+        throw "codex-tools.json contains only $($json.tools.Count) tool(s), expected at least 5. The model may have listed MCP resources instead of tools. Tools found: $($json.tools -join ', ')"
     }
 
     Write-Log "Codex CLI reported $($json.tools.Count) tools via codex-tools.json:"
@@ -352,7 +400,7 @@ Begin now.
 
     $screenshotTool = $json.tools | Where-Object { $_ -like '*uno_app_get_screenshot*' } | Select-Object -First 1
     if (-not $screenshotTool) {
-        throw "Codex CLI did not report the required 'uno_app_get_screenshot' tool."
+        throw "Codex CLI did not report the required 'uno_app_get_screenshot' tool. Tools found: $($json.tools -join ', ')"
     }
 }
 
@@ -930,6 +978,176 @@ function Test-CodexIntegration {
     }
 }
 
+function Test-DiscoJsonOutput {
+    param([string]$SlnDir)
+
+    Write-Log "Validating disco --json output"
+
+    $output = Invoke-DevserverCli -Arguments @('disco', '--json', '--solution-dir', $SlnDir) 2>&1
+    if ($LASTEXITCODE -ne 0) { throw "disco --json exited with code $LASTEXITCODE" }
+
+    $json = ($output | Out-String) | ConvertFrom-Json -ErrorAction Stop
+
+    # Backward compat: existing fields must still be present
+    $requiredFields = @('globalJsonPath', 'unoSdkPackage')
+    foreach ($field in $requiredFields) {
+        if (-not $json.PSObject.Properties[$field]) {
+            throw "disco --json missing required field: $field"
+        }
+    }
+
+    # New field: addIns array
+    if (-not $json.PSObject.Properties['addIns']) {
+        throw "disco --json missing new 'addIns' field"
+    }
+
+    if ($json.addIns.Count -eq 0) {
+        Write-Log "WARNING: disco --json returned 0 add-ins (may be expected if no Uno project)"
+    }
+
+    foreach ($addIn in $json.addIns) {
+        if (-not $addIn.entryPointDll -or -not (Test-Path $addIn.entryPointDll)) {
+            throw "disco --json add-in entryPointDll does not exist: $($addIn.entryPointDll)"
+        }
+        if (-not $addIn.discoverySource) {
+            throw "disco --json add-in missing discoverySource field"
+        }
+        Write-Log " Add-in: $($addIn.entryPointDll) (source: $($addIn.discoverySource))"
+    }
+
+    Write-Log "disco --json output validated successfully"
+}
+
+function Test-DiscoAddInsOnly {
+    param([string]$SlnDir)
+
+    Write-Log "Validating disco --addins-only output"
+
+    # Text mode: semicolon-separated paths
+    $textOutput = (Invoke-DevserverCli -Arguments @('disco', '--addins-only', '--solution-dir', $SlnDir) 2>&1 | Out-String).Trim()
+    if ($LASTEXITCODE -ne 0) { throw "disco --addins-only exited with code $LASTEXITCODE" }
+
+    # Verify parseable as semicolon-separated paths
+    $paths = $textOutput -split ';' | Where-Object { $_ -ne '' }
+    foreach ($p in $paths) {
+        if (-not (Test-Path $p)) { throw "disco --addins-only path not found: $p" }
+    }
+
+    # JSON mode: JSON array of paths
+    $jsonOutput = (Invoke-DevserverCli -Arguments @('disco', '--addins-only', '--json', '--solution-dir', $SlnDir) 2>&1 | Out-String).Trim()
+    if ($LASTEXITCODE -ne 0) { throw "disco --addins-only --json exited with code $LASTEXITCODE" }
+
+    $jsonPaths = $jsonOutput | ConvertFrom-Json -ErrorAction Stop
+    if ($jsonPaths.Count -ne $paths.Count) {
+        throw "disco --addins-only text ($($paths.Count)) and JSON ($($jsonPaths.Count)) path counts differ"
+    }
+
+    Write-Log "disco --addins-only validated: $($paths.Count) paths"
+}
+
+function Test-CleanupCommand {
+    param([string]$SlnDir)
+
+    Write-Log "Validating cleanup command"
+
+    Invoke-DevserverCli -Arguments @('cleanup', '-l', 'trace')
+    if ($LASTEXITCODE -ne 0) {
+        throw "cleanup command exited with code $LASTEXITCODE"
+    }
+
+    Write-Log "cleanup command completed successfully (exit code 0)"
+}
+
+function Test-HostAddInsFlag {
+    param([string]$SlnDir)
+
+    Write-Log "Validating Host --addins flag"
+
+    # Step 1: Get add-in paths from disco
+    $addInsOutput = (Invoke-DevserverCli -Arguments @('disco', '--addins-only', '--solution-dir', $SlnDir) 2>&1 | Out-String).Trim()
+    if ([string]::IsNullOrWhiteSpace($addInsOutput)) {
+        Write-Log "No add-ins discovered — skipping --addins flag test"
+        return
+    }
+
+    # Step 2: Resolve Host path from Uno SDK (mirrors DevServerProcessHelper logic)
+    $discoJson = (Invoke-DevserverCli -Arguments @('disco', '--json', '--solution-dir', $SlnDir) 2>&1 | Out-String) | ConvertFrom-Json
+    $hostPath = $discoJson.hostPath
+    if (-not $hostPath -or -not (Test-Path $hostPath)) {
+        Write-Log "Host not found at '$hostPath' — skipping --addins flag test"
+        return
+    }
+
+    # Step 3: Launch Host with --addins, verify it starts (port 0 = auto-assign)
+    # On non-Windows or when hostPath is a .dll, run via "dotnet <dll>".
+    # On Windows with an .exe, run the .exe directly (it's a native AppHost).
+    $stderrFile = [System.IO.Path]::GetTempFileName()
+    $isExe = $hostPath.EndsWith('.exe', [System.StringComparison]::OrdinalIgnoreCase)
+    $useDotnet = (-not [System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Windows)) -or (-not $isExe)
+    if ($useDotnet -and $isExe) {
+        # Swap .exe for .dll so dotnet can load it as a managed assembly
+        $hostPath = [System.IO.Path]::ChangeExtension($hostPath, '.dll')
+        if (-not (Test-Path $hostPath)) {
+            Write-Log "Host DLL not found at '$hostPath' — skipping --addins flag test"
+            return
+        }
+    }
+    if ($useDotnet) {
+        $hostProcess = Start-Process -FilePath "dotnet" -ArgumentList @(
+            $hostPath, '--httpPort', '0', '--addins', $addInsOutput
+        ) -PassThru -NoNewWindow -RedirectStandardError $stderrFile
+    } else {
+        $hostProcess = Start-Process -FilePath $hostPath -ArgumentList @(
+            '--httpPort', '0', '--addins', $addInsOutput
+        ) -PassThru -NoNewWindow -RedirectStandardError $stderrFile
+    }
+
+    Start-Sleep -Seconds 5
+
+    if ($hostProcess.HasExited -and $hostProcess.ExitCode -ne 0) {
+        $stderrContent = Get-Content $stderrFile -Raw -ErrorAction SilentlyContinue
+        Remove-Item $stderrFile -ErrorAction SilentlyContinue
+        throw "Host with --addins exited with error code $($hostProcess.ExitCode)`nSTDERR:`n$stderrContent"
+    }
+
+    if (-not $hostProcess.HasExited) {
+        Stop-Process -Id $hostProcess.Id -Force -ErrorAction SilentlyContinue
+    }
+
+    Remove-Item $stderrFile -ErrorAction SilentlyContinue
+
+    Write-Log "Host --addins flag accepted successfully"
+}
+
+function Test-PackageContent {
+    param([string]$PackagesDir)  # CI artifact directory containing .nupkg files
+
+    Write-Log "Validating package contents"
+
+    # Find Uno.WinUI.DevServer nupkg
+    $devServerPkg = Get-ChildItem -Path $PackagesDir -Filter "Uno.WinUI.DevServer.*.nupkg" | Select-Object -First 1
+    if (-not $devServerPkg) {
+        Write-Log "Uno.WinUI.DevServer .nupkg not found in $PackagesDir — skipping package content test"
+        return
+    }
+
+    $extractDir = Join-Path ([System.IO.Path]::GetTempPath()) "devserver-pkg-verify"
+    if (Test-Path $extractDir) { Remove-Item $extractDir -Recurse -Force }
+    Expand-Archive -Path $devServerPkg.FullName -DestinationPath $extractDir
+
+    # Verify both TFM Host binaries are present
+    foreach ($tfm in @('net9.0', 'net10.0')) {
+        $hostDll = Join-Path $extractDir "tools/rc/host/$tfm/Uno.UI.RemoteControl.Host.dll"
+        if (-not (Test-Path $hostDll)) {
+            throw "Package missing Host binary for $tfm at tools/rc/host/$tfm/"
+        }
+        Write-Log " Host binary present: tools/rc/host/$tfm/ ($(((Get-Item $hostDll).Length / 1KB).ToString('N0')) KB)"
+    }
+
+    Remove-Item $extractDir -Recurse -Force -ErrorAction SilentlyContinue
+    Write-Log "Package content validated successfully"
+}
+
 $finalExitCode = 1
 $devserverCleanupDirectory = $null
 
@@ -968,11 +1186,23 @@ try {
     $defaultPort = 5042
     $maxAttempts = 30
 
+    # --- Phase 0 discovery tests ---
+    Test-DiscoJsonOutput -SlnDir $slnDir
+    Test-DiscoAddInsOnly -SlnDir $slnDir
+    Test-CleanupCommand -SlnDir $slnDir
+    Test-HostAddInsFlag -SlnDir $slnDir
+    if ($env:PACKAGES_DIR) { Test-PackageContent -PackagesDir $env:PACKAGES_DIR }
+
+    # --- Existing integration tests ---
     $primaryPort = Test-DevserverStartStop -SlnDir $slnDir -CsprojDir $csprojDir -CsprojPath $csprojPath -DefaultPort $defaultPort -MaxAttempts $maxAttempts
     $solutionDirTestPort = Test-DevserverSolutionDirSupport -SlnDir $slnDir -DefaultPort $defaultPort -BaselinePort $primaryPort -MaxAttempts $maxAttempts
     Test-McpModeWithoutSolutionDir -SlnDir $slnDir -DefaultPort $defaultPort -PrimaryPort $primaryPort -SolutionDirPort $solutionDirTestPort -MaxAttempts $maxAttempts
-    $maxAllocatedPort = [Math]::Max($primaryPort, $solutionDirTestPort)
+    # +1 accounts for the port used internally by Test-McpModeWithoutSolutionDir
+    $maxAllocatedPort = [Math]::Max($primaryPort, $solutionDirTestPort) + 1
     Test-McpModeWithRootsFallback -SlnDir $slnDir -DefaultPort $defaultPort -MaxAllocatedPort $maxAllocatedPort
+    # Ensure a clean state before the Codex test — previous MCP tests may leave
+    # behind a stale DevServer registration or lingering host process.
+    Stop-DevserverInDirectory -Directory $slnDir
     Test-CodexIntegration -SlnDir $slnDir
 
     $finalExitCode = 0

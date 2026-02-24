@@ -66,6 +66,7 @@ The Community license MCP app tools are:
 - `uno_app_visualtree_snapshot`, used to get a textual representation of the visual tree of the app
 - `uno_app_element_peer_default_action`, used to execute the default automation peer action on a UI element
 - `uno_app_close`, used to close the running app
+- `uno_app_start`, used to start the app with Hot Reload support
 
 The Pro license App MCP app tools are:
 
