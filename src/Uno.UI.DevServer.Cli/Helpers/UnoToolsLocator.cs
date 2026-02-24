@@ -11,11 +11,10 @@ using Uno.UI.RemoteControl.Host;
 
 namespace Uno.UI.DevServer.Cli.Helpers;
 
-internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInResolver? addInResolver = null, DotNetVersionCache? dotNetVersionCache = null)
+internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInResolver? addInResolver = null)
 {
 	private readonly ILogger<UnoToolsLocator> _logger = logger;
 	private readonly TargetsAddInResolver? _addInResolver = addInResolver;
-	private readonly DotNetVersionCache? _dotNetVersionCache = dotNetVersionCache;
 	private string? _workDirectory;
 
 	public async Task<DiscoveryInfo> DiscoverAsync(string workDirectory)
@@ -597,23 +596,8 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 		return result.tfm;
 	}
 
-	private async Task<(string? rawVersion, string? tfm)> TryGetDotNetVersionInfo(bool logErrors, string? globalJsonPath = null, bool force = false)
+	private async Task<(string? rawVersion, string? tfm)> TryGetDotNetVersionInfo(bool logErrors, string? globalJsonPath = null)
 	{
-		if (_dotNetVersionCache is not null)
-		{
-			try
-			{
-				return await _dotNetVersionCache.GetOrRefreshAsync(globalJsonPath, force);
-			}
-			catch (Exception ex)
-			{
-				if (logErrors)
-				{
-					_logger.LogWarning(ex, "DotNetVersionCache failed, falling back to direct subprocess");
-				}
-			}
-		}
-
 		try
 		{
 			var processInfo = new ProcessStartInfo

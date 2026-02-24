@@ -81,7 +81,6 @@ internal class Program
 			}
 		});
 		services.AddSingleton<CliManager>();
-		services.AddSingleton<DotNetVersionCache>();
 		services.AddSingleton<UnoToolsLocator>();
 		services.AddSingleton(sp =>
 		new ManifestAddInResolver(

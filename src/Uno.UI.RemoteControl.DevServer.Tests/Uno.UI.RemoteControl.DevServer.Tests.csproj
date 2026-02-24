@@ -41,9 +41,6 @@
 		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\ProjectAssetsParser.cs" Link="Helpers\ProjectAssetsParser.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\DiscoveryInfo.cs" Link="Helpers\DiscoveryInfo.cs" />
 
-		<!-- Link DotNetVersionCache source for unit testing -->
-		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\DotNetVersionCache.cs" Link="Helpers\DotNetVersionCache.cs" />
-
 		<!-- Link MCP sources for unit testing -->
 		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\MonitorDecisions.cs" Link="Mcp\MonitorDecisions.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\ConnectionState.cs" Link="Mcp\ConnectionState.cs" />
