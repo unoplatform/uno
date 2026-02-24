@@ -36,7 +36,7 @@ public class AmbientRegistry(ILogger logger)
 	/// <param name="solution">The full path to the solution file associated with the development server, or null if not applicable.</param>
 	/// <param name="ppid">The process ID of the parent process that launched the development server.</param>
 	/// <param name="httpPort">The HTTP port number on which the development server is listening.</param>
-	internal void Register(string? solution, int ppid, int httpPort)
+	internal void Register(string? solution, int ppid, int httpPort, string? ideChannelId = null)
 	{
 		try
 		{
@@ -58,7 +58,8 @@ public class AmbientRegistry(ILogger logger)
 				StartTime = DateTime.UtcNow,
 				Port = httpPort,
 				MachineName = Environment.MachineName,
-				UserName = Environment.UserName
+				UserName = Environment.UserName,
+				IdeChannelId = ideChannelId
 			};
 
 			// Serialize and write to file
@@ -230,5 +231,6 @@ public class AmbientRegistry(ILogger logger)
 		public int Port { get; set; }
 		public string MachineName { get; set; } = string.Empty;
 		public string UserName { get; set; } = string.Empty;
+		public string? IdeChannelId { get; set; }
 	}
 }

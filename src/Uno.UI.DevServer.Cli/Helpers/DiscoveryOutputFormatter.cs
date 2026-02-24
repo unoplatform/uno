@@ -64,6 +64,7 @@ internal static class DiscoveryOutputFormatter
 			AddRow(table, "mcpEndpoint", server.McpEndpoint);
 			AddRow(table, "parentProcessId", server.ParentProcessId.ToString(CultureInfo.InvariantCulture));
 			AddRow(table, "startTime", server.StartTime.ToString("yyyy-MM-dd HH:mm:ss UTC", CultureInfo.InvariantCulture));
+			AddRow(table, "ideChannelId", server.IdeChannelId);
 		}
 		else
 		{

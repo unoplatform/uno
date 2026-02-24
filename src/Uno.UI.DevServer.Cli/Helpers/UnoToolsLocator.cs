@@ -196,6 +196,7 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 						McpEndpoint = $"http://localhost:{existing.Port}/mcp",
 						ParentProcessId = existing.ParentProcessId,
 						StartTime = existing.StartTime,
+						IdeChannelId = existing.IdeChannelId,
 					};
 				}
 			}

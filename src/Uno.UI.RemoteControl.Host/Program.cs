@@ -66,6 +66,8 @@ namespace Uno.UI.RemoteControl.Host
 				// When present, MSBuild-based discovery is skipped entirely.
 				var addins = globalConfiguration.GetAddinsValue("addins");
 
+				var ideChannel = globalConfiguration.GetOptionalString("ideChannel");
+
 				// Controller mode
 				if (!string.IsNullOrWhiteSpace(command))
 				{
@@ -73,7 +75,7 @@ namespace Uno.UI.RemoteControl.Host
 					switch (verb)
 					{
 						case "start":
-							await StartCommandAsync(httpPort, parentPID, solution, workingDir, timeoutMs, addins);
+							await StartCommandAsync(httpPort, parentPID, solution, workingDir, timeoutMs, addins, ideChannel);
 							return;
 						case "stop":
 							await StopCommandAsync();
@@ -234,7 +236,7 @@ namespace Uno.UI.RemoteControl.Host
 				_ = ParentProcessObserver.ObserveAsync(parentPID, ct.Cancel, telemetry, ct.Token);
 
 				ambientRegistry = new AmbientRegistry(host.Services.GetRequiredService<ILogger<AmbientRegistry>>());
-				ambientRegistry.Register(solution, parentPID, httpPort);
+				ambientRegistry.Register(solution, parentPID, httpPort, ideChannelId);
 
 				await host.StartAsync(ct.Token);
 				try

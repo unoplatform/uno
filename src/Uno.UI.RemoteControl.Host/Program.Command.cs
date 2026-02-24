@@ -15,7 +15,7 @@ namespace Uno.UI.RemoteControl.Host;
 
 partial class Program
 {
-	private static async Task StartCommandAsync(int httpPort, int parentPID, string? solution, string? workingDir, int timeoutMs, string? addins = null)
+	private static async Task StartCommandAsync(int httpPort, int parentPID, string? solution, string? workingDir, int timeoutMs, string? addins = null, string? ideChannel = null)
 	{
 		try
 		{
@@ -102,6 +102,12 @@ partial class Program
 			{
 				psi.ArgumentList.Add("--addins");
 				psi.ArgumentList.Add(addins);
+			}
+
+			if (!string.IsNullOrWhiteSpace(ideChannel))
+			{
+				psi.ArgumentList.Add("--ideChannel");
+				psi.ArgumentList.Add(ideChannel);
 			}
 
 			await CsprojUserGenerator.SetCsprojUserPort(solution, httpPort);

@@ -155,6 +155,7 @@ internal class HealthService(
 					McpEndpoint = s.McpEndpoint,
 					ParentProcessId = s.ParentProcessId,
 					StartTime = s.StartTime,
+					IdeChannelId = s.IdeChannelId,
 				}
 				: null,
 		};

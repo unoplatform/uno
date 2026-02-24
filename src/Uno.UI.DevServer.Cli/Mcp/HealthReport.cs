@@ -38,6 +38,7 @@ internal sealed record ActiveServerSummary
 	public string McpEndpoint { get; init; } = "";
 	public int ParentProcessId { get; init; }
 	public DateTime StartTime { get; init; }
+	public string? IdeChannelId { get; init; }
 }
 
 internal sealed record AddInSummary
