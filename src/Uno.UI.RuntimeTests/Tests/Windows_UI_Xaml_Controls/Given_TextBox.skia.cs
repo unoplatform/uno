@@ -4836,6 +4836,59 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20988")]
+		public async Task When_Ctrl_Letter_Should_Not_Type()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Simulate pressing Ctrl+S (an unhandled Ctrl+letter shortcut)
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.S, VirtualKeyModifiers.Control, unicodeKey: 's'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(string.Empty, SUT.Text, "Ctrl+S should not insert any character.");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20988")]
+		public async Task When_Alt_Letter_Should_Not_Type()
+		{
+			if (DeviceTargetHelper.UsesAppleKeyboardLayout)
+			{
+				// On Apple platforms, Alt (Option) key is used for special character input,
+				// so it should not be suppressed.
+				Assert.Inconclusive("Alt (Option) key behavior differs on Apple platforms.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Simulate pressing Alt+S (an unhandled Alt+letter shortcut)
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.S, VirtualKeyModifiers.Menu, unicodeKey: 's'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(string.Empty, SUT.Text, "Alt+S should not insert any character.");
+		}
+
 		private double DistancePointToSegment(Point p, Point a, Point b)
 		{
 			var ax = a.X; var ay = a.Y;

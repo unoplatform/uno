@@ -669,7 +669,17 @@ public partial class TextBox
 				break;
 			default:
 				var isEnterKey = args.UnicodeKey is '\r' or '\n' || args.Key == VirtualKey.Enter;
-				if (!IsReadOnly && !HasPointerCapture && args.UnicodeKey is { } key && (!isEnterKey || AcceptsReturn))
+				// Don't insert characters when shortcut modifier keys are held down.
+				// On non-Apple platforms, AltGr (Ctrl+Alt together) produces valid characters (like @, €),
+				// so we must not suppress those. On Apple, Option (Menu/Alt) produces special characters.
+				var altHeld = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
+				var ctrlHeld = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Control);
+				var isAltGr = !DeviceTargetHelper.UsesAppleKeyboardLayout && ctrlHeld && altHeld;
+				var hasShortcutModifier = !isAltGr && (
+					ctrlHeld ||
+					args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Windows) ||
+					(!DeviceTargetHelper.UsesAppleKeyboardLayout && altHeld));
+				if (!IsReadOnly && !HasPointerCapture && !hasShortcutModifier && args.UnicodeKey is { } key && (!isEnterKey || AcceptsReturn))
 				{
 					TrySetCurrentlyTyping(true);
 					var start = Math.Min(selectionStart, selectionStart + selectionLength);
