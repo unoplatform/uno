@@ -524,7 +524,10 @@ public sealed partial class DiagnosticsOverlay : Control
 			XamlRoot = root,
 			Child = overlay,
 			IsLightDismissEnabled = false,
-			LightDismissOverlayMode = LightDismissOverlayMode.Off
+			LightDismissOverlayMode = LightDismissOverlayMode.Off,
+#if HAS_UNO_WINUI
+			IsSystemPopup = true,
+#endif
 		};
 
 		host.Opened += static (snd, e) => ((snd as Popup)?.Child as DiagnosticsOverlay)?.InitPlacement();

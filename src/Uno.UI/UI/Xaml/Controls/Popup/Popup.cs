@@ -22,6 +22,12 @@ public partial class Popup
 
 	internal bool IsSubMenu { get; set; }
 
+	/// <summary>
+	/// Gets or sets a value indicating whether this popup is used internally by the system and should not be
+	/// returned by public APIs such as <see cref="global::Microsoft.UI.Xaml.Media.VisualTreeHelper.GetOpenPopupsForXamlRoot"/>.
+	/// </summary>
+	internal bool IsSystemPopup { get; set; }
+
 	internal bool IsForFlyout => AssociatedFlyout != null;
 
 	private ManagedWeakReference _associatedFlyoutWeakRef;
