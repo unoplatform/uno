@@ -14,7 +14,9 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 {
 	public sealed partial class BitmapImage : BitmapSource
 	{
-		private static readonly LRUCache<Uri, Task<ImageData>> _bitmapImageCache = new(FeatureConfiguration.Image.MaxBitmapImageCacheCount);
+		private readonly record struct BitmapImageCacheKey(Uri Uri, int? DecodeWidth, int? DecodeHeight);
+
+		private static readonly LRUCache<BitmapImageCacheKey, Task<ImageData>> _bitmapImageCache = new(FeatureConfiguration.Image.MaxBitmapImageCacheCount);
 		// TODO: Introduce LRU caching if needed
 		private static readonly Dictionary<string, string> _scaledBitmapPathCache = new();
 
@@ -25,10 +27,37 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			return true;
 		}
 
+		private (int? targetWidth, int? targetHeight) GetDecodePixelSize()
+		{
+			var width = DecodePixelWidth;
+			var height = DecodePixelHeight;
+
+			if (width == 0 && height == 0)
+			{
+				return (null, null);
+			}
+
+			if (DecodePixelType == DecodePixelType.Logical)
+			{
+				var scale = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+				if (width > 0)
+				{
+					width = (int)Math.Round(width * scale);
+				}
+				if (height > 0)
+				{
+					height = (int)Math.Round(height * scale);
+				}
+			}
+
+			return (width > 0 ? width : null, height > 0 ? height : null);
+		}
+
 		private async Task<ImageData> TryOpenSourceAsync(CancellationToken ct)
 		{
 			try
 			{
+				var (decodeWidth, decodeHeight) = GetDecodePixelSize();
 				var uri = UriSource;
 				if (uri is null)
 				{
@@ -44,7 +73,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 						{
 							try
 							{
-								tcs.TrySetResult(await ImageSourceHelpers.ReadFromStreamAsCompositionSurface(clonedStream, ct));
+								tcs.TrySetResult(await ImageSourceHelpers.ReadFromStreamAsCompositionSurface(clonedStream, ct, targetWidth: decodeWidth, targetHeight: decodeHeight));
 							}
 							catch (Exception e)
 							{
@@ -68,15 +97,16 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 					}
 
 					var ignoreCache = CreateOptions.HasFlag(BitmapCreateOptions.IgnoreImageCache);
+					var cacheKey = new BitmapImageCacheKey(uri, decodeWidth, decodeHeight);
 
 					if (ignoreCache
-						|| !_bitmapImageCache.TryGetValue(uri, out var imageDataTask))
+						|| !_bitmapImageCache.TryGetValue(cacheKey, out var imageDataTask))
 					{
 						imageDataTask = Task.Run(async () =>
 						{
 							try
 							{
-								return await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, ct);
+								return await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, ct, decodeWidth, decodeHeight);
 							}
 							catch (Exception e)
 							{
@@ -86,11 +116,11 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 						if (FeatureConfiguration.Image.EnableBitmapImageCache)
 						{
-							_bitmapImageCache.Add(uri, imageDataTask);
+							_bitmapImageCache.Add(cacheKey, imageDataTask);
 							// if loading failed not because of an actual failure but because
 							// the task was canceled (usually because the Uri changed), we
 							// don't want to cache the failed task
-							ct.Register(() => _bitmapImageCache.Remove(uri));
+							ct.Register(() => _bitmapImageCache.Remove(cacheKey));
 						}
 					}
 
