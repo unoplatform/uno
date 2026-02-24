@@ -15,6 +15,11 @@ namespace Uno.UI.Runtime.Skia {
 			}
 		}
 
+		public static isKeyboardLockSupported(): boolean {
+			const kb = (navigator as any).keyboard;
+			return !!kb && typeof kb.lock === "function" && typeof kb.unlock === "function";
+		}
+
 		public static unlockKeys(): void {
 			(navigator as any).keyboard?.unlock();
 		}

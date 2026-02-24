@@ -12,6 +12,9 @@ public static partial class BrowserInputHelper
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInputHelper.setBrowserZoomEnabled")]
 		public static partial void SetBrowserZoomEnabled(bool enabled);
 
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInputHelper.isKeyboardLockSupported")]
+		public static partial bool IsKeyboardLockSupported();
+
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInputHelper.lockKeys")]
 		public static partial Task LockKeys(string[] keyCodes);
 

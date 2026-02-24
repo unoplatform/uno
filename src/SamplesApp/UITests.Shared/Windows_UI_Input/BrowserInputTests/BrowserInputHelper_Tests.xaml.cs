@@ -28,6 +28,9 @@ namespace UITests.Windows_UI_Input.BrowserInputTests
 
 		private static readonly MethodInfo _unlockMethod = _helperType?.GetMethod(
 			"UnlockKeys", BindingFlags.Public | BindingFlags.Static);
+
+		private static readonly PropertyInfo _lockSupportedProperty = _helperType?.GetProperty(
+			"IsKeyboardLockSupported", BindingFlags.Public | BindingFlags.Static);
 #endif
 
 		public BrowserInputHelper_Tests()
@@ -40,7 +43,10 @@ namespace UITests.Windows_UI_Input.BrowserInputTests
 			}
 			else
 			{
-				PlatformStatus.Text = "BrowserInputHelper loaded. Ready to test.";
+				var lockSupported = _lockSupportedProperty?.GetValue(null) as bool? ?? false;
+				PlatformStatus.Text = lockSupported
+					? "BrowserInputHelper loaded. Keyboard Lock API is supported."
+					: "BrowserInputHelper loaded. Keyboard Lock API is NOT supported (requires HTTPS + Chromium).";
 			}
 
 			KeyDown += OnKeyDown;
@@ -165,6 +171,9 @@ namespace UITests.Windows_UI_Input.BrowserInputTests
 				AppendLog("ERROR: LockKeysAsync method not found.");
 				return;
 			}
+
+			var lockSupported = _lockSupportedProperty?.GetValue(null) as bool? ?? false;
+			AppendLog($"IsKeyboardLockSupported: {lockSupported}");
 
 			try
 			{
