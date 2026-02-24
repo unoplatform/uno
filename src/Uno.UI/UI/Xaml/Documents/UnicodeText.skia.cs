@@ -519,7 +519,7 @@ internal readonly partial struct UnicodeText : IParsedText
 					while (trimPoint.Value is { containsOnlyWhitespace: true, containsTab: false } && trimPoint.Value.start > line.start)
 					{
 						trimPoint = trimPoint.Previous!;
-						if (enumerator.Current == trimPoint)
+						if (hasMore && enumerator.Current == trimPoint)
 						{
 							hasMore = enumerator.MoveNext();
 						}
