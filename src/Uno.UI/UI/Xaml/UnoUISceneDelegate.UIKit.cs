@@ -39,13 +39,16 @@ public class UnoUISceneDelegate : UISceneDelegate
 			this.Log().Debug($"WillConnect: Scene={scene.Session.PersistentIdentifier}, Role={session.Role}");
 		}
 
-		var windowScene = scene as UIWindowScene;
+		if (scene is not UIWindowScene windowScene)
+		{
+			throw new InvalidOperationException("WillConnect expected a UIWindowScene.");
+		}
 
 		// Always instantiate UIWindow within WillConnect
-		var window = new NativeWindow(windowScene!);
+		var window = new NativeWindow(windowScene);
 		Window = window;
 
-		if (NativeWindowWrapper.AwaitingScene.Count == 0)
+		if (!NativeWindowWrapper.AwaitingScene.TryDequeue(out var wrapper))
 		{
 			this.Log().Error(
 				$"No window wrapper available for scene. " +
@@ -55,8 +58,6 @@ public class UnoUISceneDelegate : UISceneDelegate
 				$"No window wrapper available for the scene (PersistentIdentifier={scene.Session.PersistentIdentifier}). " +
 				$"Ensure a Window is created before the scene connects.");
 		}
-
-		var wrapper = NativeWindowWrapper.AwaitingScene.Dequeue();
 		wrapper.SetNativeWindow(window);
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
@@ -75,20 +76,6 @@ public class UnoUISceneDelegate : UISceneDelegate
 		// Clear the window reference. The scene has already gone to background
 		// before disconnecting, so visibility count is already updated.
 		Window = null;
-	}
-
-	public override void WillEnterForeground(UIScene scene)
-	{
-
-	}
-
-	public override void DidBecomeActive(UIScene scene) { }
-
-	public override void WillResignActive(UIScene scene) { }
-
-	public override void DidEnterBackground(UIScene scene)
-	{
-
 	}
 
 	internal static bool HasSceneManifest() =>
