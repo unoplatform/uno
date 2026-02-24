@@ -183,24 +183,31 @@ namespace Uno.UI.RemoteControl.HotReload
 					}
 				}
 
-				if (assemblyDeltaReload.IsValid(_runningInsideVSCodeExtension))
+				var valid = assemblyDeltaReload.IsValid();
+				if (!valid && _runningInsideVSCodeExtension)
+				{
+					// if we're running inside the VS Code extension, we can still apply the updated types even if the IL/Metadata/PDB deltas are not present (e.g. when launched with a debugger attached)
+					valid = assemblyDeltaReload.UpdatedTypes is not null && assemblyDeltaReload.ModuleId is not null;
+				}
+
+				if (valid)
 				{
 					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
 						this.Log().Trace($"Applying IL Delta after {string.Join(",", assemblyDeltaReload.FilePaths)}, Guid:{assemblyDeltaReload.ModuleId}");
 					}
 
-					var changedTypesStreams = new MemoryStream(Convert.FromBase64String(assemblyDeltaReload.UpdatedTypes));
+					var changedTypesStreams = new MemoryStream(Convert.FromBase64String(assemblyDeltaReload.UpdatedTypes!));
 					var changedTypesReader = new BinaryReader(changedTypesStreams);
 
 					// when executing in VSCode extension / mono runtime the MetadataDelta, ILDelta and PdbBytes are processed thru the debugger
 					// however we still need to apply the updated types (e.g. for XAML HR to work properly)
 					var delta = new UpdateDelta
 					{
-						MetadataDelta = _runningInsideVSCodeExtension ? Array.Empty<byte>() : Convert.FromBase64String(assemblyDeltaReload.MetadataDelta),
-						ILDelta = _runningInsideVSCodeExtension ? Array.Empty<byte>() : Convert.FromBase64String(assemblyDeltaReload.ILDelta),
-						PdbBytes = _runningInsideVSCodeExtension ? Array.Empty<byte>() : Convert.FromBase64String(assemblyDeltaReload.PdbDelta),
-						ModuleId = Guid.Parse(assemblyDeltaReload.ModuleId),
+						MetadataDelta = _runningInsideVSCodeExtension ? Array.Empty<byte>() : Convert.FromBase64String(assemblyDeltaReload.MetadataDelta!),
+						ILDelta = _runningInsideVSCodeExtension ? Array.Empty<byte>() : Convert.FromBase64String(assemblyDeltaReload.ILDelta!),
+						PdbBytes = _runningInsideVSCodeExtension ? Array.Empty<byte>() : Convert.FromBase64String(assemblyDeltaReload.PdbDelta!),
+						ModuleId = Guid.Parse(assemblyDeltaReload.ModuleId!),
 						UpdatedTypes = ReadIntArray(changedTypesReader)
 					};
 
