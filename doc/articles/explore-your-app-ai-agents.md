@@ -4,9 +4,7 @@ uid: Uno.BuildYourApp.AI.Agents
 
 # Prompting in your App
 
-Once you have a running app, you're setup to have your agent help you develop features.
-
-In the agent chat, ask the following:
+Now that you've created your Uno Platform app, you're setup to have your agent help you develop features. In the agent chat, ask the following:
 
   > [!IMPORTANT]
   > The MCP tools are best used by agents when using premium models like Claude 4.5, GPT-5-Codex or GPT-5.
@@ -55,6 +53,8 @@ In your agent, there are some phrases that can be used to nudge the agent to use
 > Your agent will execute tools from our MCPs, you will need to approve them at your convenience.
 > [!NOTE]
 > In Visual Studio 2022/2026 MCPs might not be enabled automatically. Make sure to [click the "tools" icon](https://learn.microsoft.com/en-us/visualstudio/ide/mcp-servers?view=vs-2022#configuration-example-with-a-github-mcp-server) in the chat window to check both Uno Platform MCPs.
+>
+> If the Uno App MCP is missing, see [how to make the App MCP appear in Visual Studio](xref:Uno.UI.CommonIssues.AIAgents#the-app-mcp-does-not-appear-in-visual-studio).
 
 - To ask the agent to explain what MVUX is:
 

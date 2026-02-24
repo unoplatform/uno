@@ -61,14 +61,14 @@ internal class CliManager
 				return 1; // errors already logged
 			}
 
-			var isDirectOutputCommand = originalArgs.Length > 0 && (
+			var requiresHostOutputPassthrough = originalArgs.Length > 0 && (
 				string.Equals(originalArgs[0], "list", StringComparison.OrdinalIgnoreCase) ||
 				string.Equals(originalArgs[0], "cleanup", StringComparison.OrdinalIgnoreCase)
 			);
 
-			var startInfo = BuildHostArgs(hostPath, originalArgs, workingDirectory, redirectOutput: !isDirectOutputCommand);
+			var startInfo = BuildHostArgs(hostPath, originalArgs, workingDirectory, redirectOutput: true);
 
-			var result = await DevServerProcessHelper.RunConsoleProcessAsync(startInfo, _logger);
+			var result = await DevServerProcessHelper.RunConsoleProcessAsync(startInfo, _logger, forwardOutputToConsole: requiresHostOutputPassthrough);
 			return result.ExitCode;
 		}
 		catch (Exception ex)

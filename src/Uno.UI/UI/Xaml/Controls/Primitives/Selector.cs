@@ -864,7 +864,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			bool shouldScrollIntoView,
 			bool animateIfBringIntoView = false,
 			FocusNavigationDirection focusNavigationDirection = FocusNavigationDirection.None,
-			InputActivationBehavior inputActivationBehavior = InputActivationBehavior.RequestActivation) // default to request activation to match legacy behavior
+			Uno.UI.Xaml.Input.InputActivationBehavior inputActivationBehavior = Uno.UI.Xaml.Input.InputActivationBehavior.RequestActivation) // default to request activation to match legacy behavior
 		{
 
 			FocusState focusState = FocusState.Programmatic;
@@ -891,7 +891,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			FocusState focusState,
 			bool animateIfBringIntoView,
 			FocusNavigationDirection focusNavigationDirection = FocusNavigationDirection.None,
-			InputActivationBehavior inputActivationBehavior = InputActivationBehavior.RequestActivation) // default to request activation to match legacy behavior
+			Uno.UI.Xaml.Input.InputActivationBehavior inputActivationBehavior = Uno.UI.Xaml.Input.InputActivationBehavior.RequestActivation) // default to request activation to match legacy behavior
 		{
 
 			bool bFocused = false;

@@ -72,11 +72,11 @@
 	</Target>
 
 	<PropertyGroup>
-		<MSTestVersion>4.0.2</MSTestVersion>
-		<MicrosoftTestingPlatformVersion>2.0.2</MicrosoftTestingPlatformVersion>
+		<MSTestVersion>4.1.0</MSTestVersion>
+		<MicrosoftTestingPlatformVersion>2.1.0</MicrosoftTestingPlatformVersion>
 		<SkiaSharpVersion>3.119.0</SkiaSharpVersion>
 		<HarfbuzzSharpVersion>8.3.1.1</HarfbuzzSharpVersion>
-		<UnoICUVersion>77.1.2</UnoICUVersion>
+		<UnoICUVersion>77.2.0-dev.11</UnoICUVersion>
 	</PropertyGroup>
 
 	<ItemGroup>

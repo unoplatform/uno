@@ -1,10 +1,11 @@
 ﻿using System;
 using Foundation;
-using Microsoft.UI.Xaml.Controls;
 using ObjCRuntime;
 using UIKit;
 using Uno.Extensions;
 using Uno.UI.Extensions;
+using Microsoft.UI.Xaml.Controls;
+
 
 namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 
@@ -118,7 +119,7 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 		}
 		finally
 		{
-			_settingTextFromManaged = false;
+			_settingSelectionFromManaged = false;
 		}
 	}
 
@@ -138,7 +139,7 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 				NativeTextSelection.SetSelectedTextRange(SuperHandle, value);
 				if (!_settingSelectionFromManaged)
 				{
-					textBoxView.Owner.TextBox?.OnSelectionChanged();
+					textBoxView.SyncSelectionToTextBox();
 				}
 			}
 		}

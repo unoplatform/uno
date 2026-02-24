@@ -53,7 +53,7 @@ namespace Microsoft.UI.Xaml.Media
 		internal async Task<ImageData> OpenMsAppData(Uri uri, CancellationToken ct)
 		{
 			var file = await StorageFile.GetFileFromPathAsync(AppDataUriEvaluator.ToPath(uri));
-			var stream = await file.OpenAsync(FileAccessMode.Read);
+			using var stream = await file.OpenAsync(FileAccessMode.Read);
 
 			var streamWithContentType = ContentType is { } contentType
 				? stream.TrySetContentType(ContentType)

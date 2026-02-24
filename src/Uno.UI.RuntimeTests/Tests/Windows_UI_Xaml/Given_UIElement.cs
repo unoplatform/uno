@@ -1342,7 +1342,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			var matrix1 = ((MatrixTransform)sut.TransformToVisual(null)).Matrix;
 
-			Assert.IsTrue(matrix1.OffsetY > 0);
+			Assert.IsGreaterThan(0, matrix1.OffsetY);
 
 			visual.Offset = new Vector3(visual.Offset.X, visual.Offset.Y + (float)rect.Height * 2, visual.Offset.Z);
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -70,7 +70,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			SUT.ContentTemplate = null;
 
 			Assert.AreEqual(1, TemplateCreated);
-			Assert.AreEqual(1, _created.Count);
+			Assert.HasCount(1, _created);
 			Assert.AreEqual(1, _created[0].TemplateRecycled);
 		}
 
@@ -109,13 +109,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			// first load
 			SUT.Template = template;
 			Assert.AreEqual(1, templateCreatedCount);
-			Assert.AreEqual(1, flagValues.Count);
+			Assert.HasCount(1, flagValues);
 
 			// recycle & reload
 			SUT.Template = null;
 			SUT.Template = template;
 			Assert.AreEqual(1, templateCreatedCount);
-			Assert.AreEqual(2, flagValues.Count);
+			Assert.HasCount(2, flagValues);
 			Assert.IsFalse(flagValues[1]);
 		}
 
@@ -148,14 +148,14 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			SUT.ContentTemplate = null;
 
 			Assert.AreEqual(1, TemplateCreated);
-			Assert.AreEqual(1, _created.Count);
+			Assert.HasCount(1, _created);
 			Assert.AreEqual(1, _created[0].TemplateRecycled);
 			Assert.IsNull(SUT.ContentTemplateRoot);
 
 			SUT.ContentTemplate = dataTemplate;
 
 			Assert.AreEqual(1, TemplateCreated);
-			Assert.AreEqual(1, _created.Count);
+			Assert.HasCount(1, _created);
 			Assert.AreEqual(1, _created[0].TemplateRecycled);
 			Assert.IsNotNull(SUT.ContentTemplateRoot);
 		}
@@ -182,11 +182,11 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			root.ForceLoaded();
 			root.Children.Add(SUT);
 
-			Assert.AreEqual(1, _created.Count);
+			Assert.HasCount(1, _created);
 
 			SUT.ContentTemplate = null;
 
-			Assert.AreEqual(1, _created.Count);
+			Assert.HasCount(1, _created);
 			Assert.AreEqual(1, _created[0].TemplateRecycled);
 			Assert.IsNull(SUT.ContentTemplateRoot);
 
@@ -195,7 +195,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			SUT.ContentTemplate = dataTemplate;
 
-			Assert.AreEqual(2, _created.Count);
+			Assert.HasCount(2, _created);
 			Assert.AreEqual(1, _created[0].TemplateRecycled);
 			Assert.IsNotNull(SUT.ContentTemplateRoot);
 		}
@@ -223,13 +223,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			root.ForceLoaded();
 			root.Children.Add(SUT);
 
-			Assert.AreEqual(1, _created.Count);
+			Assert.HasCount(1, _created);
 
 			_mockProvider.AppMemoryUsage = 81;
 
 			SUT.ContentTemplate = null;
 
-			Assert.AreEqual(1, _created.Count);
+			Assert.HasCount(1, _created);
 			Assert.AreEqual(0, _created[0].TemplateRecycled);
 			Assert.IsNull(SUT.ContentTemplateRoot);
 
@@ -238,7 +238,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			SUT.ContentTemplate = dataTemplate;
 
-			Assert.AreEqual(2, _created.Count);
+			Assert.HasCount(2, _created);
 			Assert.AreEqual(0, _created[0].TemplateRecycled);
 			Assert.IsNotNull(SUT.ContentTemplateRoot);
 
@@ -246,7 +246,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			SUT.ContentTemplate = null;
 
-			Assert.AreEqual(2, _created.Count);
+			Assert.HasCount(2, _created);
 			Assert.AreEqual(0, _created[0].TemplateRecycled);
 			Assert.AreEqual(1, _created[1].TemplateRecycled);
 			Assert.IsNull(SUT.ContentTemplateRoot);

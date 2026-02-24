@@ -1,6 +1,6 @@
 name: "🚀 Enhancement Request"
 description: "Suggest an enhancement to Uno Platform ✨"
-labels: [kind/enhancement, triage/untriaged, difficulty/tbd]
+labels: [kind/enhancement, triage/untriaged]
 body:
   - type: textarea
     id: enhancement-description

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Combinatorial.MSTest;
 using Microsoft.UI.Xaml;
@@ -200,18 +200,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 
 			popup.IsOpen = true;
 
-			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+			Assert.HasCount(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
 
 			stackPanel.Children.Remove(popup);
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsFalse(popup.IsOpen);
-			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+			Assert.IsEmpty(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
 
 			popup.IsOpen = true;
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+			Assert.HasCount(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
 
 			popup.IsOpen = false;
 		}
@@ -286,7 +286,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 
 			popup.IsOpen = true;
 
-			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+			Assert.HasCount(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
 
 			await WindowHelper.WaitForIdle();
 
@@ -296,12 +296,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 
 			Assert.IsTrue(args.Handled);
 			Assert.IsFalse(popup.IsOpen);
-			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+			Assert.IsEmpty(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
 
 			popup.IsOpen = true;
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+			Assert.HasCount(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
 
 			popup.IsOpen = false;
 		}
@@ -316,11 +316,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			var trigger = new Button();
 			await UITestHelper.Load(trigger);
 
-			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+			Assert.IsEmpty(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
 
 			menu.ShowAt(trigger);
 
-			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+			Assert.HasCount(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
 			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)[0];
 
 			menu.Closing += (_, e) => e.Cancel = true;
@@ -404,7 +404,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 				var openPopups = VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot);
 
 				// Verify count
-				Assert.AreEqual(3, openPopups.Count, "Should have 3 open popups");
+				Assert.HasCount(3, openPopups, "Should have 3 open popups");
 
 				// Verify order: most recently opened (popup3) should be first
 				Assert.AreSame(popup3, openPopups[0], "Most recently opened popup should be at index 0");

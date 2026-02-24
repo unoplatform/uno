@@ -11,6 +11,7 @@ using Uno.Disposables;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Composition.Interactions;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -26,6 +27,9 @@ public partial class RefreshVisualizer
 
 	private SerialDisposable m_RefreshInfoProvider_InteractingForRefreshChangedToken = new SerialDisposable();
 	private SerialDisposable m_RefreshInfoProvider_InteractionRatioChangedToken = new SerialDisposable();
+#if HAS_UNO
+	private SerialDisposable m_RefreshInfoProvider_IdleEnteredToken = new SerialDisposable();
+#endif
 
 	///////////////////////////////////////////////
 	/////////	Internal Reference Vars   /////////
@@ -35,6 +39,11 @@ public partial class RefreshVisualizer
 	private double m_interactionRatio = 0.0;
 
 	private Compositor? m_compositor = null;
+
+#if HAS_UNO
+	internal ScrollViewer? ScrollViewer { get; set; }
+	internal InteractionTracker? InteractionTracker { get; set; }
+#endif
 
 	//private Panel? m_containerPanel = null;
 	private Panel? m_root = null;

@@ -158,7 +158,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     condition: always()
-    retryCountOnTaskFailure: 3
+    retryCountOnTaskFailure: 10
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uitests-results
@@ -169,7 +169,7 @@ jobs:
   # This is needed so that screenshot comparison doesn't unnecessarily download large files, which slows it down.
   - task: PublishBuildArtifacts@1
     condition: always()
-    retryCountOnTaskFailure: 3
+    retryCountOnTaskFailure: 10
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/ios-ui-tests-logs
       ArtifactName: uitests-results-ios-logs
@@ -178,7 +178,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     displayName: Publish Failed Tests Results List
     condition: always()
-    retryCountOnTaskFailure: 3
+    retryCountOnTaskFailure: 10
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
       ArtifactName: uitests-failure-results

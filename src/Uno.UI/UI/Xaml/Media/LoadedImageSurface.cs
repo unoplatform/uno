@@ -14,11 +14,7 @@ namespace Microsoft.UI.Xaml.Media
 		private Size _decodedSize;
 		private Size _naturalPhysicalSize;
 
-#if HAS_UNO_WINUI
 		internal LoadedImageSurface() { }
-#else
-		public LoadedImageSurface() { }
-#endif
 
 		public Size DecodedPhysicalSize { get => _decodedPhysicalSize; }
 		public Size DecodedSize { get => _decodedSize; }

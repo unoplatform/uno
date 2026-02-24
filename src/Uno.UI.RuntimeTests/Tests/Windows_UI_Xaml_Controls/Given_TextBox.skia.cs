@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -14,6 +14,7 @@ using MUXControlsTestApp.Utilities;
 using SamplesApp.UITests;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Toolkit.DevTools.Input;
 using Uno.UI.Xaml.Core;
@@ -38,8 +39,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	/// </summary>
 	public partial class Given_TextBox
 	{
-		// most macOS keyboard shortcuts uses Command (mapped as Window) and not Control (Ctrl)
-		private readonly VirtualKeyModifiers _platformCtrlKey = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
+		// Apple platforms (macOS, iOS, Mac Catalyst, tvOS) use Command key for standard shortcuts
+		private readonly VirtualKeyModifiers _platformCtrlKey = DeviceTargetHelper.PlatformCommandModifier;
 
 		[TestMethod]
 		public async Task When_Basic_Input()
@@ -369,10 +370,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(0, ((ScrollViewer)SUT.ContentElement).VerticalOffset);
 
-			// on macOS moving to the end of the document is done with `Command` + `Down`
-			var macOS = OperatingSystem.IsMacOS();
-			var key = macOS ? VirtualKey.Down : VirtualKey.End;
-			var mod = macOS ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
+			// on Apple platforms moving to the end of the document is done with `Command` + `Down`
+			var isAppleKeyboard = DeviceTargetHelper.UsesAppleKeyboardLayout;
+			var key = isAppleKeyboard ? VirtualKey.Down : VirtualKey.End;
+			var mod = isAppleKeyboard ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, mod));
 			await WindowHelper.WaitForIdle();
 
@@ -507,14 +508,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
-			var key = OperatingSystem.IsMacOS() ? VirtualKey.Down : VirtualKey.End;
+			var key = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKey.Down : VirtualKey.End;
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, _platformCtrlKey));
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(SUT.Text.Length, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
-			key = OperatingSystem.IsMacOS() ? VirtualKey.Up : VirtualKey.Home;
+			key = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKey.Up : VirtualKey.Home;
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, _platformCtrlKey));
 			await WindowHelper.WaitForIdle();
 
@@ -543,8 +544,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
-			// on macOS it's option (menu/alt) and backspace to delete a word
-			var mod = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
+			// on Apple platforms it's option (menu/alt) and backspace to delete a word
+			var mod = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Delete, mod));
 			await WindowHelper.WaitForIdle();
 
@@ -581,8 +582,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Select(SUT.Text.Length, 0);
 			await WindowHelper.WaitForIdle();
 
-			// on macOS it's option (menu/alt) and backspace to delete a word
-			var mod = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
+			// on Apple platforms it's option (menu/alt) and backspace to delete a word
+			var mod = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Back, mod));
 			await WindowHelper.WaitForIdle();
 
@@ -654,8 +655,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.None));
 			await WindowHelper.WaitForIdle();
 
-			// on macOS you use `option` (alt/menu) and `right` to move to the next work
-			var mod = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
+			// on Apple platforms you use `option` (alt/menu) and `right` to move to the next word
+			var mod = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(6, SUT.SelectionStart);
@@ -1047,8 +1048,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(svRight, LayoutInformation.GetLayoutSlot(SUT).Right);
 			}
 
-			// on macOS we use `option` (menu/alt) + `delete` to remove word at the left
-			var mod = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
+			// on Apple platforms we use `option` (menu/alt) + `delete` to remove word at the left
+			var mod = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
 			for (var i = 0; i < 10; i++)
 			{
 				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Back, mod));
@@ -1974,9 +1975,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[CombinatorialData]
 		public async Task When_Copy_Paste(bool useInsert)
 		{
-			if (useInsert && OperatingSystem.IsMacOS())
+			if (useInsert && DeviceTargetHelper.UsesAppleKeyboardLayout)
 			{
-				Assert.Inconclusive("There's no `Insert` key on Mac keyboards");
+				Assert.Inconclusive("There's no `Insert` key on Apple keyboards");
 				// it's replaced by the `fn` key, which is a modifier
 			}
 			if (OperatingSystem.IsBrowser())
@@ -2583,8 +2584,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
-			// on macOS selecting the next word is `shift` + `option` (alt/menu) + `right`
-			var mod = VirtualKeyModifiers.Shift | (OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control);
+			// on Apple platforms selecting the next word is `shift` + `option` (alt/menu) + `right`
+			var mod = VirtualKeyModifiers.Shift | (DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control);
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(0, SUT.SelectionStart);
@@ -3175,6 +3176,54 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[DataRow(false, null, true)]
+		[DataRow(true, null, false)]
+		[DataRow(false, TextAlignment.Left, true)]
+		[DataRow(true, TextAlignment.Left, true)]
+		[DataRow(false, TextAlignment.Right, false)]
+		[DataRow(true, TextAlignment.Right, false)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // no arabic font support until https://github.com/unoplatform/uno/pull/22240
+		public async Task When_TextAlignment(bool rtlText, TextAlignment? alignment, bool textShouldEndUpOnTheLeft)
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 250,
+				Foreground = new SolidColorBrush(Colors.Red),
+				Text = rtlText ? "تيست" : "Test",
+			};
+
+			if (alignment is not null)
+			{
+				SUT.TextAlignment = alignment.Value;
+			}
+
+			var bounds = await UITestHelper.Load(SUT);
+			var left = new Rectangle()
+			{
+				X = 0,
+				Width = (int)(bounds.Width / 2),
+				Y = 0,
+				Height = (int)bounds.Height
+			};
+			var right = left with { X = (int)(bounds.Width / 2) };
+
+			var screenshot1 = await UITestHelper.ScreenShot(SUT);
+
+			if (textShouldEndUpOnTheLeft)
+			{
+				ImageAssert.HasColorInRectangle(screenshot1, left, Colors.Red);
+				ImageAssert.DoesNotHaveColorInRectangle(screenshot1, right, Colors.Red);
+			}
+			else
+			{
+				ImageAssert.HasColorInRectangle(screenshot1, right, Colors.Red);
+				ImageAssert.DoesNotHaveColorInRectangle(screenshot1, left, Colors.Red);
+			}
+		}
+
+		[TestMethod]
 		public async Task When_Single_Letter_Selected()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -3403,7 +3452,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			var flyoutItems = (VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot)[0].Child as FrameworkElement).FindChildren<MenuFlyoutItem>().ToList();
-			Assert.AreEqual(3, flyoutItems.Count);
+			Assert.HasCount(3, flyoutItems);
 
 			mouse.MoveTo(flyoutItems[1].GetAbsoluteBounds().GetCenter());
 			mouse.Press();
@@ -3419,7 +3468,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			flyoutItems = (VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot)[0].Child as FrameworkElement).FindChildren<MenuFlyoutItem>().ToList();
-			Assert.AreEqual(3, flyoutItems.Count);
+			Assert.HasCount(3, flyoutItems);
 
 			mouse.MoveTo(flyoutItems[1].GetAbsoluteBounds().GetCenter());
 			mouse.Press();
@@ -4185,8 +4234,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
-			// on macOS it's option (menu/alt) and backspace to delete a word
-			var mod = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
+			// on Apple platforms it's option (menu/alt) and backspace to delete a word
+			var mod = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Delete, mod));
 			await WindowHelper.WaitForIdle();
 
@@ -4369,7 +4418,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 			}
 
-			Assert.IsTrue(i < 20);
+			Assert.IsLessThan(20, i);
 
 			using var _2 = ThemeHelper.UseDarkTheme();
 			await WindowHelper.WaitForIdle();
@@ -4385,7 +4434,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 			}
 
-			Assert.IsTrue(i < 20);
+			Assert.IsLessThan(20, i);
 		}
 
 		[TestMethod]
@@ -4800,7 +4849,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Get the caret popups
 			var caretPopups = VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Where(p => p.Child.FindFirstChild<Microsoft.UI.Xaml.Shapes.Ellipse>() is not null).ToList();
 			// We should have two caret popups (start and end)
-			Assert.AreEqual(2, caretPopups.Count);
+			Assert.HasCount(2, caretPopups);
 
 			// Validate the Ellipses of the carets are intersecting the bottom border of the TextBox
 			var textBoxTransform = textBox.TransformToVisual(null);
@@ -4827,7 +4876,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				double radius = Math.Sqrt(Math.Pow(boundary.X - ellipseCenter.X, 2) + Math.Pow(boundary.Y - ellipseCenter.Y, 2));
 				// Check that the line from bottomLeft to bottomRight intersects the ellipse using DistancePointToSegment
 				var distance = DistancePointToSegment(ellipseCenter, bottomLeft, bottomRight);
-				Assert.IsTrue(distance < radius, "Caret ellipse should intersect the bottom border of the TextBox");
+				Assert.IsLessThan(radius, distance, "Caret ellipse should intersect the bottom border of the TextBox");
 			}
 		}
 

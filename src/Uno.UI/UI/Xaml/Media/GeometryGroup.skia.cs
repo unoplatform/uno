@@ -11,7 +11,8 @@ namespace Microsoft.UI.Xaml.Media
 
 			foreach (var geometry in Children)
 			{
-				var geometryPath = geometry.GetSKPath();
+				// Use GetTransformedSKPath so each child's own Transform is applied
+				var geometryPath = geometry.GetTransformedSKPath();
 				path.AddPath(geometryPath);
 			}
 

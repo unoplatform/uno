@@ -5,11 +5,7 @@ using Windows.UI.Core;
 
 namespace Microsoft.UI.Input;
 
-#if HAS_UNO_WINUI
 public partial class InputCursor
-#else
-internal partial class InputCursor
-#endif
 {
 	private WeakEventHelper.WeakEventCollection _disposedHandlers = new();
 

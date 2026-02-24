@@ -42,6 +42,7 @@ typedef NS_ENUM(sint32, OverlappedPresenterState) {
 @property OverlappedPresenterState overlappedPresenterState;
 
 - (void)sendEvent:(NSEvent *)event;
+- (BOOL)performKeyEquivalent:(NSEvent *)event;
 
 - (void)windowWillMiniaturize:(NSNotification *)notification;
 - (void)windowDidMiniaturize:(NSNotification *)notification;

@@ -269,11 +269,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// CompleteReordering will remove the children and add them back on next measure.
 			// We defer ChangeSelectorItemsVisualState to the next measure so that the children are there and updated.
 			// An alternative could be to retrieve the children before CompleteReordering and then update the visual state here.
-#if HAS_UNO_WINUI
 			that.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () => that.ChangeSelectorItemsVisualState(true));
-#else
-			_ = that.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () => that.ChangeSelectorItemsVisualState(true));
-#endif
 
 			if (that.IsGrouping
 				|| !updatedIndex.HasValue

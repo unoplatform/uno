@@ -26,11 +26,6 @@ using _View = UIKit.UIView;
 using _View = Microsoft.UI.Xaml.FrameworkElement;
 #endif
 
-#if HAS_UNO_WINUI
-#else
-using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
-#endif
-
 namespace Microsoft.UI.Xaml.Controls;
 
 public partial class ComboBox : Selector
@@ -55,6 +50,8 @@ public partial class ComboBox : Selector
 	/// The 'inline' parent view of the selected item within the dropdown list. This is only set if SelectedItem is a view type.
 	/// </summary>
 	private ManagedWeakReference? _selectionParentInDropdown;
+
+	internal ContentPresenter? GetContentPresenterPart() => m_tpContentPresenterPart;
 
 	public ComboBox()
 	{

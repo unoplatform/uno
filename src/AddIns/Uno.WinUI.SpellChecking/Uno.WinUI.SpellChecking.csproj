@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<LangVersion>14.0</LangVersion>
+		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
+	</PropertyGroup>
+	
+	<Import Project="../../targetframework-override-noplatform.props" />
+	
+	<PropertyGroup>
+		<AssemblyName>Uno.WinUI.SpellChecking</AssemblyName>
+		<RootNamespace>Uno.WinUI.SpellChecking</RootNamespace>
+	
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+		<Description>This package provides support for spellchecking for Uno Platform apps</Description>
+	
+		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
+		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
+	</PropertyGroup>
+	
+	<PropertyGroup>
+		<Nullable>enable</Nullable>
+		<DefineConstants>$(DefineConstants);HAS_SEARCHVALUES;HAS_THROWNULL;HAS_THROWOOR;HAS_SPANCULTUREPARSE_INT;HAS_FROZENDICTIONARY</DefineConstants>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<!--	Until https://github.com/dotnet/runtime/issues/123833 is resolved, we include the source files directly
+			instead of reference the package to be able to patch it, see EncodingEx.cs -->
+		<!--		<PackageReference Include="WeCantSpell.Hunspell" Version="3.0.1" />-->
+
+		<PackageReference Include="Uno.Core.Extensions.Logging" />
+		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
+	
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!--	Hunspell dictionary from http://downloads.sourceforge.net/wordlist/hunspell-en_US-2020.12.07.zip	-->
+		<EmbeddedResource Include="Resources\en_US.aff" />
+		<EmbeddedResource Include="Resources\en_US.dic" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<None Include=".\..\..\Common\uno.png" Pack="true" PackagePath="\" Visible="false"/>
+	</ItemGroup>
+</Project>

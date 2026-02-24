@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,18 +18,18 @@ namespace Uno.UI.Tests.CollectionViewTests
 			var add = new VectorChangedEventArgs(CollectionChange.ItemInserted, 12);
 			var addC = add.ToNotifyCollectionChangedEventArgs();
 			Assert.AreEqual((int)add.Index, addC.NewStartingIndex);
-			Assert.AreEqual(1, addC.NewItems.Count);
+			Assert.HasCount(1, addC.NewItems);
 
 			var remove = new VectorChangedEventArgs(CollectionChange.ItemRemoved, 15);
 			var removeC = remove.ToNotifyCollectionChangedEventArgs();
 			Assert.AreEqual((int)remove.Index, removeC.OldStartingIndex);
-			Assert.AreEqual(1, removeC.OldItems.Count);
+			Assert.HasCount(1, removeC.OldItems);
 
 			var replace = new VectorChangedEventArgs(CollectionChange.ItemChanged, 3);
 			var replaceC = replace.ToNotifyCollectionChangedEventArgs();
 			Assert.AreEqual((int)replace.Index, replaceC.NewStartingIndex);
-			Assert.AreEqual(1, replaceC.NewItems.Count);
-			Assert.AreEqual(1, replaceC.OldItems.Count);
+			Assert.HasCount(1, replaceC.NewItems);
+			Assert.HasCount(1, replaceC.OldItems);
 
 			var reset = new VectorChangedEventArgs(CollectionChange.Reset, 0);
 			var resetC = reset.ToNotifyCollectionChangedEventArgs();

@@ -51,6 +51,9 @@ This MCP is running locally and provides agents with the ability to interact wit
 
 These tools give "eyes" and "hands" to Agents in order to validate their assumptions regarding the actions they take, and the code they generate.
 
+> [!NOTE]
+> If using Visual Studio 2022/2026, sometimes the Uno App MCP does not appear in the Visual Studio tools list. See [how to make the App MCP appear in Visual Studio](xref:Uno.UI.CommonIssues.AIAgents#the-app-mcp-does-not-appear-in-visual-studio).
+
 ### App MCP Tools
 
 The Community license MCP app tools are:

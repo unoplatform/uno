@@ -9,11 +9,7 @@ using Uno.UI.DataBinding;
 using Windows.Foundation;
 using Windows.System;
 
-#if HAS_UNO_WINUI
 using _WindowActivatedEventArgs = Microsoft.UI.Xaml.WindowActivatedEventArgs;
-#else
-using _WindowActivatedEventArgs = Windows.UI.Core.WindowActivatedEventArgs;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
