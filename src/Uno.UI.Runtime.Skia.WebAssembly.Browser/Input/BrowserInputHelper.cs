@@ -44,14 +44,16 @@ public static partial class BrowserInputHelper
 	/// Locks the specified keyboard keys using the browser Keyboard Lock API.
 	/// When locked, these keys are delivered to the app instead of being
 	/// intercepted by the browser or OS.
-	/// Requires HTTPS. Not supported in all browsers (Chrome/Edge).
+	/// Requires HTTPS and a supported browser (e.g. Chrome/Edge).
+	/// The page must be in fullscreen mode for the lock to take effect.
 	/// </summary>
 	/// <param name="keyCodes">
 	/// Browser key codes in <c>KeyboardEvent.code</c> format
 	/// (e.g. <c>"KeyW"</c>, <c>"F5"</c>, <c>"Escape"</c>).
 	/// If empty, all keys are locked.
 	/// </param>
-	/// <returns>A task that completes when the keys are locked.</returns>
+	/// <returns>A task that completes when the keys are locked, or faults if the browser
+	/// refuses the request.</returns>
 	public static Task LockKeysAsync(params string[] keyCodes)
 		=> NativeMethods.LockKeys(keyCodes);
 
