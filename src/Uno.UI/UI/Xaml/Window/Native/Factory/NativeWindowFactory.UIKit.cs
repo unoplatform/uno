@@ -25,7 +25,7 @@ internal partial class NativeWindowFactory
 		if (window != Window.InitialWindow)
 		{
 			// Request scene for the new window
-			var userActivity = new NSUserActivity(Microsoft.UI.Xaml.Application.UIApplicationSceneManifestKey);
+			var userActivity = new NSUserActivity(UnoUISceneDelegate.UIApplicationSceneManifestKey);
 			var request = UISceneSessionActivationRequest.Create();
 			request.UserActivity = userActivity;
 			Action<NSError> errorAction = err => typeof(NativeWindowFactory).LogError()?.LogError($"Failed to create new window: {err}");

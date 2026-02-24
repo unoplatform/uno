@@ -13,15 +13,14 @@ using Uno.Foundation.Logging;
 using Uno.UI.Controls;
 using Windows.Foundation;
 using Windows.Graphics;
-using Windows.Graphics;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using static Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem;
 using MUXWindow = Microsoft.UI.Xaml.Window;
 using NativeWindow = Uno.UI.Controls.Window;
-using System.Diagnostics.CodeAnalysis;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
+using System.Threading;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -38,7 +37,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	public NativeWindowWrapper(MUXWindow window, XamlRoot xamlRoot) : base(window, xamlRoot)
 	{
-		if (!Application.HasSceneManifest())
+		if (!UnoUISceneDelegate.HasSceneManifest())
 		{
 			SetNativeWindow(new NativeWindow());
 		}
@@ -55,13 +54,13 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
 		DispatchDpiChanged();
 
-		if (Application.HasSceneManifest())
+		if (UnoUISceneDelegate.HasSceneManifest())
 		{
 			AwaitingScene.Enqueue(this);
 		}
 	}
 
-	public static Queue<NativeWindowWrapper> AwaitingScene { get; } = new();
+	public static ConcurrentQueue<NativeWindowWrapper> AwaitingScene { get; } = new();
 
 	private static int _visibleWindowCount;
 
@@ -104,7 +103,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		}
 
 		_isPendingShow = false;
-		_visibleWindowCount++;
+		Interlocked.Increment(ref _visibleWindowCount);
 		NativeWindowHelpers.TransitionFromSplashScreen(_nativeWindow, _mainController);
 	}
 
@@ -215,7 +214,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 	{
 		// For non-scene-manifest apps, the app delegate handles lifecycle events.
 		// For scene-manifest apps, we handle per-window with visible count tracking.
-		if (!Application.HasSceneManifest())
+		if (!UnoUISceneDelegate.HasSceneManifest())
 		{
 			// Subscribe to app-level notifications for activation state only
 			NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidBecomeActiveNotification, OnActivated);
@@ -233,8 +232,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 	{
 		OnNativeVisibilityChanged(false);
 
-		_visibleWindowCount--;
-		if (_visibleWindowCount == 0)
+		if (Interlocked.Decrement(ref _visibleWindowCount) == 0)
 		{
 			// Last window backgrounded - raise app-level events
 			Application.Current?.RaiseEnteredBackground(() => Application.Current?.RaiseSuspending());
@@ -254,7 +252,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 			OnNativeVisibilityChanged(true);
 		}
 
-		_visibleWindowCount++;
+		Interlocked.Increment(ref _visibleWindowCount);
 	}
 
 	private void OnActivated(NSNotification notification) => ActivationState = CoreWindowActivationState.CodeActivated;

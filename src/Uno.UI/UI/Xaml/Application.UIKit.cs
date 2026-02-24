@@ -34,13 +34,12 @@ namespace Microsoft.UI.Xaml
 		}
 
 		internal static bool HasSceneManifest() =>
-			(OperatingSystem.IsIOSVersionAtLeast(13, 0) || OperatingSystem.IsTvOSVersionAtLeast(13, 0)) &&
-			NSBundle.MainBundle.InfoDictionary.ContainsKey(new NSString(UIApplicationSceneManifestKey));
+			UnoUISceneDelegate.HasSceneManifest();
 
 		public override bool RespondsToSelector(Selector sel)
 		{
 			// if the app is not a multi-window app, then we cannot override the GetConfiguration method
-			if (sel?.Name == GetConfigurationSelectorName && !HasSceneManifest())
+			if (sel?.Name == UnoUISceneDelegate.GetConfigurationSelectorName && !HasSceneManifest())
 			{
 				return false;
 			}
@@ -49,7 +48,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		public override UISceneConfiguration GetConfiguration(UIApplication application, UISceneSession connectingSceneSession, UISceneConnectionOptions options) =>
-			new(UIApplicationSceneManifestKey, connectingSceneSession.Role);
+			new(UnoUISceneDelegate.UnoSceneConfigurationKey, connectingSceneSession.Role);
 
 		/// <summary>
 		/// Used to handle application launch. Previously used <see cref="FinishedLaunching(UIApplication)" />

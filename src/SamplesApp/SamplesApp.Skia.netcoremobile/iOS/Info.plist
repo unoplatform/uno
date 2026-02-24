@@ -84,7 +84,7 @@
 			<array>
 				<dict>
 					<key>UISceneConfigurationName</key>
-					<string>__UNOPLATFORM_DEFAULT_CONFIGURATION</string>
+					<string>__UNO_DEFAULT_SCENE_CONFIGURATION__</string>
 					<key>UISceneDelegateClassName</key>
 					<string>SceneDelegate</string>
 				</dict>
