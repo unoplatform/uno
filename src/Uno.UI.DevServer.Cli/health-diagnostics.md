@@ -9,6 +9,7 @@ DevServerMonitor.LastDiscoveryInfo
   --> DiscoveryIssueMapper.MapDiscoveryIssues()   (discovery issues)
   --> HealthService.BuildHealthReport()            (+ runtime issues)
   --> HealthReport { Status, Issues[] }
+  --> DiscoverySummary { ..., ActiveServer? }
 ```
 
 ## Key Files

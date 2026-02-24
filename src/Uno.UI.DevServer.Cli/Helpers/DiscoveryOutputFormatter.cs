@@ -56,6 +56,20 @@ internal static class DiscoveryOutputFormatter
 			AddRow(table, "addIns", null);
 		}
 
+		AddSection(table, "Active Server");
+		if (info.ActiveServer is { } server)
+		{
+			AddRow(table, "processId", server.ProcessId.ToString(CultureInfo.InvariantCulture));
+			AddRow(table, "port", server.Port.ToString(CultureInfo.InvariantCulture));
+			AddRow(table, "mcpEndpoint", server.McpEndpoint);
+			AddRow(table, "parentProcessId", server.ParentProcessId.ToString(CultureInfo.InvariantCulture));
+			AddRow(table, "startTime", server.StartTime.ToString("yyyy-MM-dd HH:mm:ss UTC", CultureInfo.InvariantCulture));
+		}
+		else
+		{
+			AddRow(table, "status", "not running");
+		}
+
 		AnsiConsole.Write(table);
 
 		WriteList("warnings", info.Warnings, "yellow");

@@ -28,6 +28,16 @@ internal sealed record DiscoverySummary
 	public string? HostPath { get; init; }
 	public string? SettingsPath { get; init; }
 	public IReadOnlyList<AddInSummary>? AddIns { get; init; }
+	public ActiveServerSummary? ActiveServer { get; init; }
+}
+
+internal sealed record ActiveServerSummary
+{
+	public int ProcessId { get; init; }
+	public int Port { get; init; }
+	public string McpEndpoint { get; init; } = "";
+	public int ParentProcessId { get; init; }
+	public DateTime StartTime { get; init; }
 }
 
 internal sealed record AddInSummary

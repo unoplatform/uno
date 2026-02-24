@@ -46,7 +46,7 @@ The CLI can also run in **MCP mode** (`--mcp-app`), acting as a Model Context Pr
 | File | Role |
 |------|------|
 | `CliManager.cs` | CLI command router (start, stop, list, disco, login, MCP) |
-| `UnoToolsLocator.cs` | SDK and package discovery from global.json and NuGet cache |
+| `UnoToolsLocator.cs` | SDK and package discovery from global.json, NuGet cache, and AmbientRegistry |
 | `TargetsAddInResolver.cs` | Fast add-in discovery by parsing `.targets` XML files |
 | `ManifestAddInResolver.cs` | Manifest-first add-in discovery from `devserver-addin.json` |
 | `DotNetVersionCache.cs` | Caches `dotnet --version` result on disk |
@@ -108,7 +108,7 @@ The PowerShell script `build/test-scripts/run-devserver-cli-tests.ps1` provides 
 | `start` | Start the DevServer for the current folder |
 | `stop` | Stop the DevServer for the current folder |
 | `list` | List active DevServer instances |
-| `disco` | Discover environment and SDK details |
+| `disco` | Discover environment, SDK details, and active server instance |
 | `login` | Open the Uno Platform settings application |
 | `--mcp-app` | Start in MCP STDIO proxy mode |
 
@@ -221,6 +221,10 @@ The MCP proxy (`McpStdioServer.cs` / `ProxyLifecycleManager.cs`) runs in STDIO m
 - Each IDE manages its own DevServer lifecycle independently
 - **Multiple instances for the same solution** are possible today (IDE + CLI, or IDE + MCP)
 - The `--addins` flag MUST be opt-in: absence = MSBuild discovery unchanged
+
+### Active Server Discovery
+
+`disco --json` returns an `activeServer` field (null or object with `processId`, `port`, `mcpEndpoint`, `parentProcessId`, `startTime`) by querying the AmbientRegistry. This is the recommended way for extensions to detect a running DevServer without reading registry files directly.
 
 ### Visual Studio (`uno.studio`)
 

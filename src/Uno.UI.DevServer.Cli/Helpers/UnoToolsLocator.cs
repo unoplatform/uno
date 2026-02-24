@@ -6,6 +6,8 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using Uno.UI.RemoteControl.Host;
 
 namespace Uno.UI.DevServer.Cli.Helpers;
 
@@ -173,6 +175,36 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 			addInsDiscoveryDurationMs = addInStopwatch.ElapsedMilliseconds;
 		}
 
+		// Lookup active DevServer via AmbientRegistry
+		ActiveServerInfo? activeServer = null;
+		try
+		{
+			var solutionFiles = Directory.EnumerateFiles(workDirectory, "*.sln")
+				.Concat(Directory.EnumerateFiles(workDirectory, "*.slnx"))
+				.ToArray();
+			var solution = solutionFiles.FirstOrDefault();
+			if (solution is not null)
+			{
+				var ambient = new AmbientRegistry(NullLogger.Instance);
+				var existing = ambient.GetActiveDevServerForPath(solution);
+				if (existing is not null)
+				{
+					activeServer = new ActiveServerInfo
+					{
+						ProcessId = existing.ProcessId,
+						Port = existing.Port,
+						McpEndpoint = $"http://localhost:{existing.Port}/mcp",
+						ParentProcessId = existing.ParentProcessId,
+						StartTime = existing.StartTime,
+					};
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+			_logger.LogDebug(ex, "AmbientRegistry lookup failed");
+		}
+
 		return new DiscoveryInfo
 		{
 			WorkingDirectory = workDirectory,
@@ -195,6 +227,7 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 			AddInsDiscoveryMethod = addInsDiscoveryMethod,
 			AddInsDiscoveryDurationMs = addInsDiscoveryDurationMs,
 			AddInDiscoveryFailed = addInDiscoveryFailed,
+			ActiveServer = activeServer,
 			Warnings = warnings,
 			Errors = errors
 		};

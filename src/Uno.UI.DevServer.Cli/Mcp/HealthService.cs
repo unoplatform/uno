@@ -147,6 +147,16 @@ internal class HealthService(
 				EntryPointDll = a.EntryPointDll,
 				DiscoverySource = a.DiscoverySource,
 			}).ToList(),
+			ActiveServer = info.ActiveServer is { } s
+				? new ActiveServerSummary
+				{
+					ProcessId = s.ProcessId,
+					Port = s.Port,
+					McpEndpoint = s.McpEndpoint,
+					ParentProcessId = s.ParentProcessId,
+					StartTime = s.StartTime,
+				}
+				: null,
 		};
 	}
 }

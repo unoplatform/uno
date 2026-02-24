@@ -103,6 +103,11 @@ public sealed class DiscoveryInfo
 	public bool AddInDiscoveryFailed { get; init; }
 
 	/// <summary>
+	/// Gets the active DevServer instance information if one is running for this workspace.
+	/// </summary>
+	public ActiveServerInfo? ActiveServer { get; init; }
+
+	/// <summary>
 	/// Gets warnings encountered during discovery.
 	/// </summary>
 	public IReadOnlyList<string> Warnings { get; init; } = [];
@@ -111,4 +116,16 @@ public sealed class DiscoveryInfo
 	/// Gets errors encountered during discovery.
 	/// </summary>
 	public IReadOnlyList<string> Errors { get; init; } = [];
+}
+
+/// <summary>
+/// Describes an active DevServer instance discovered via the ambient registry.
+/// </summary>
+public sealed class ActiveServerInfo
+{
+	public int ProcessId { get; init; }
+	public int Port { get; init; }
+	public string McpEndpoint { get; init; } = "";
+	public int ParentProcessId { get; init; }
+	public DateTime StartTime { get; init; }
 }
