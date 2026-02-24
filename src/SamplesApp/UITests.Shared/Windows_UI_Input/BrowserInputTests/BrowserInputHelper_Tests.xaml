@@ -24,9 +24,17 @@
 			</StackPanel>
 			<TextBlock x:Name="ZoomStatus" Text="Zoom: enabled (default)" />
 
+			<!-- Full Screen (required for Keyboard Lock) -->
+			<TextBlock Text="Full Screen Mode" Style="{StaticResource SubtitleTextBlockStyle}" Margin="0,8,0,0" />
+			<TextBlock Text="The Keyboard Lock API only works in full-screen mode. Enter full screen before testing lock/unlock." TextWrapping="Wrap" />
+			<StackPanel Orientation="Horizontal" Spacing="8">
+				<Button x:Name="ToggleFullScreenButton" Content="Enter Full Screen" Click="ToggleFullScreen_Click" />
+			</StackPanel>
+			<TextBlock x:Name="FullScreenStatus" Text="Full screen: no" />
+
 			<!-- Keyboard Lock - Preset Scenarios -->
 			<TextBlock Text="Keyboard Lock (Preset Scenarios)" Style="{StaticResource SubtitleTextBlockStyle}" Margin="0,8,0,0" />
-			<TextBlock Text="Requires HTTPS + Chromium. Keys are captured from the browser/OS." TextWrapping="Wrap" />
+			<TextBlock Text="Requires full screen + HTTPS + Chromium. Keys are captured from the browser/OS." TextWrapping="Wrap" />
 			<StackPanel Spacing="8">
 				<Button Content="Lock Escape" Click="LockEscape_Click" />
 				<Button Content="Lock F1-F12" Click="LockFKeys_Click" />
