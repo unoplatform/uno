@@ -69,11 +69,11 @@ The table is grouped into sections. Each row shows a **key** and a **value**. Wh
 
 | Key | What it tells you |
 |-----|-------------------|
-| `source` | How the SDK was found (typically `global.json`) |
-| `sourcePath` | Full path to the file that declares the SDK |
+| `sdkSource` | How the SDK was found (typically `global.json`) |
+| `sdkSourcePath` | Full path to the file that declares the SDK |
 | `globalJsonPath` | Full path to the nearest `global.json` |
-| `package` | SDK package id (`Uno.Sdk` or `Uno.Sdk.Private`) |
-| `version` | SDK version declared in `global.json` |
+| `sdkPackage` | SDK package id (`Uno.Sdk` or `Uno.Sdk.Private`) |
+| `sdkVersion` | SDK version declared in `global.json` |
 | `sdkPath` | Resolved path in the NuGet cache |
 | `packagesJsonPath` | Path to the SDK's `packages.json` manifest |
 
@@ -83,7 +83,7 @@ The table is grouped into sections. Each row shows a **key** and a **value**. Wh
 |-----|-------------------|
 | `devServerPackageVersion` | `Uno.WinUI.DevServer` version listed in `packages.json` |
 | `devServerPackagePath` | Resolved package path in the NuGet cache |
-| `hostPath` | Path to the host executable (`Uno.UI.RemoteControl.Host`) the Dev Server will launch |
+| `devServerHostPath` | Path to the host executable (`Uno.UI.RemoteControl.Host`) the Dev Server will launch |
 
 ### Settings
 
@@ -119,12 +119,12 @@ A `<null>` value means the component could not be resolved. Use the hint next to
 | Key shows `<null>` | What to check |
 |---------------------|---------------|
 | `globalJsonPath` | No `global.json` found — run `disco` from your solution directory |
-| `package` / `version` | `global.json` exists but does not declare `Uno.Sdk` (or `Uno.Sdk.Private`) under `msbuild-sdks` |
+| `sdkPackage` / `sdkVersion` | `global.json` exists but does not declare `Uno.Sdk` (or `Uno.Sdk.Private`) under `msbuild-sdks` |
 | `sdkPath` | The SDK package is not restored — run `dotnet restore` |
 | `packagesJsonPath` | SDK package is restored but `packages.json` is missing inside it — the package may be corrupted |
 | `devServerPackageVersion` | `Uno.WinUI.DevServer` is not listed in `packages.json` |
 | `devServerPackagePath` | The DevServer package is not in the NuGet cache — run `dotnet restore` |
-| `hostPath` | The host executable is not found for the current .NET TFM — your .NET version may not match the package |
+| `devServerHostPath` | The host executable is not found for the current .NET TFM — your .NET version may not match the package |
 | `dotNetVersion` / `dotNetTfm` | `dotnet --version` failed — verify your .NET SDK installation |
 | `settingsPackageVersion` | `uno.settings.devserver` is not listed in `packages.json` (non-critical) |
 
@@ -178,7 +178,7 @@ The Uno SDK version declared in `global.json` has not been restored yet. Run `do
 ### Host not found for current .NET version
 
 ```text
-hostPath           <null> (missing Uno.WinUI.DevServer host for current dotnet TFM)
+devServerHostPath  <null> (missing Uno.WinUI.DevServer host for current dotnet TFM)
 dotNetTfm          net11.0
 ```
 

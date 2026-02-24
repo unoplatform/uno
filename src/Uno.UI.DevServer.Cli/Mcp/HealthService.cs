@@ -147,8 +147,8 @@ internal class HealthService(
 				EntryPointDll = a.EntryPointDll,
 				DiscoverySource = a.DiscoverySource,
 			}).ToList(),
-			ActiveServer = info.ActiveServer is { } s
-				? new ActiveServerSummary
+			ActiveServers = info.ActiveServers.Count > 0
+				? info.ActiveServers.Select(s => new ActiveServerSummary
 				{
 					ProcessId = s.ProcessId,
 					Port = s.Port,
@@ -156,7 +156,7 @@ internal class HealthService(
 					ParentProcessId = s.ParentProcessId,
 					StartTime = s.StartTime,
 					IdeChannelId = s.IdeChannelId,
-				}
+				}).ToList()
 				: null,
 		};
 	}

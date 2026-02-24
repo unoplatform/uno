@@ -103,9 +103,9 @@ public sealed class DiscoveryInfo
 	public bool AddInDiscoveryFailed { get; init; }
 
 	/// <summary>
-	/// Gets the active DevServer instance information if one is running for this workspace.
+	/// Gets active DevServer instances running for this workspace.
 	/// </summary>
-	public ActiveServerInfo? ActiveServer { get; init; }
+	public IReadOnlyList<ActiveServerInfo> ActiveServers { get; init; } = [];
 
 	/// <summary>
 	/// Gets warnings encountered during discovery.

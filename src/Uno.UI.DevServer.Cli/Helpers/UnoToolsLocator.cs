@@ -174,8 +174,8 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 			addInsDiscoveryDurationMs = addInStopwatch.ElapsedMilliseconds;
 		}
 
-		// Lookup active DevServer via AmbientRegistry
-		ActiveServerInfo? activeServer = null;
+		// Lookup active DevServers via AmbientRegistry
+		var activeServers = new List<ActiveServerInfo>();
 		try
 		{
 			var solutionFiles = Directory.EnumerateFiles(workDirectory, "*.sln")
@@ -184,20 +184,24 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 			var solution = solutionFiles.FirstOrDefault();
 			if (solution is not null)
 			{
+				var solutionFull = Path.GetFullPath(solution);
 				var ambient = new AmbientRegistry(NullLogger.Instance);
-				var existing = ambient.GetActiveDevServerForPath(solution);
-				if (existing is not null)
-				{
-					activeServer = new ActiveServerInfo
+				activeServers = ambient.GetActiveDevServers()
+					.Where(s =>
+						!string.IsNullOrWhiteSpace(s.SolutionPath)
+						&& Path.GetFullPath(s.SolutionPath).Equals(solutionFull, StringComparison.OrdinalIgnoreCase)
+						&& s.MachineName == Environment.MachineName
+						&& s.UserName == Environment.UserName)
+					.Select(s => new ActiveServerInfo
 					{
-						ProcessId = existing.ProcessId,
-						Port = existing.Port,
-						McpEndpoint = $"http://localhost:{existing.Port}/mcp",
-						ParentProcessId = existing.ParentProcessId,
-						StartTime = existing.StartTime,
-						IdeChannelId = existing.IdeChannelId,
-					};
-				}
+						ProcessId = s.ProcessId,
+						Port = s.Port,
+						McpEndpoint = $"http://localhost:{s.Port}/mcp",
+						ParentProcessId = s.ParentProcessId,
+						StartTime = s.StartTime,
+						IdeChannelId = s.IdeChannelId,
+					})
+					.ToList();
 			}
 		}
 		catch (Exception ex)
@@ -227,7 +231,7 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 			AddInsDiscoveryMethod = addInsDiscoveryMethod,
 			AddInsDiscoveryDurationMs = addInsDiscoveryDurationMs,
 			AddInDiscoveryFailed = addInDiscoveryFailed,
-			ActiveServer = activeServer,
+			ActiveServers = activeServers,
 			Warnings = warnings,
 			Errors = errors
 		};

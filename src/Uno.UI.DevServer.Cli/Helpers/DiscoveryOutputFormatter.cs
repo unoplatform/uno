@@ -17,18 +17,18 @@ internal static class DiscoveryOutputFormatter
 		AddRow(table, "workingDirectory", info.WorkingDirectory);
 
 		AddSection(table, "Uno SDK");
-		AddRow(table, "source", info.UnoSdkSource);
-		AddRow(table, "sourcePath", info.UnoSdkSourcePath);
+		AddRow(table, "sdkSource", info.UnoSdkSource);
+		AddRow(table, "sdkSourcePath", info.UnoSdkSourcePath);
 		AddRow(table, "globalJsonPath", info.GlobalJsonPath);
-		AddRow(table, "package", info.UnoSdkPackage);
-		AddRow(table, "version", info.UnoSdkVersion);
+		AddRow(table, "sdkPackage", info.UnoSdkPackage);
+		AddRow(table, "sdkVersion", info.UnoSdkVersion);
 		AddRow(table, "sdkPath", info.UnoSdkPath);
 		AddRow(table, "packagesJsonPath", info.PackagesJsonPath);
 
 		AddSection(table, "DevServer");
 		AddRow(table, "devServerPackageVersion", info.DevServerPackageVersion);
 		AddRow(table, "devServerPackagePath", info.DevServerPackagePath);
-		AddRow(table, "hostPath", info.HostPath);
+		AddRow(table, "devServerHostPath", info.HostPath);
 
 		AddSection(table, "Settings");
 		AddRow(table, "settingsPackageVersion", info.SettingsPackageVersion);
@@ -56,15 +56,22 @@ internal static class DiscoveryOutputFormatter
 			AddRow(table, "addIns", null);
 		}
 
-		AddSection(table, "Active Server");
-		if (info.ActiveServer is { } server)
+		AddSection(table, "Active Servers");
+		if (info.ActiveServers.Count > 0)
 		{
-			AddRow(table, "processId", server.ProcessId.ToString(CultureInfo.InvariantCulture));
-			AddRow(table, "port", server.Port.ToString(CultureInfo.InvariantCulture));
-			AddRow(table, "mcpEndpoint", server.McpEndpoint);
-			AddRow(table, "parentProcessId", server.ParentProcessId.ToString(CultureInfo.InvariantCulture));
-			AddRow(table, "startTime", server.StartTime.ToString("yyyy-MM-dd HH:mm:ss UTC", CultureInfo.InvariantCulture));
-			AddRow(table, "ideChannelId", server.IdeChannelId);
+			foreach (var server in info.ActiveServers)
+			{
+				AddRow(table, "processId", server.ProcessId.ToString(CultureInfo.InvariantCulture));
+				AddRow(table, "port", server.Port.ToString(CultureInfo.InvariantCulture));
+				AddRow(table, "mcpEndpoint", server.McpEndpoint);
+				AddRow(table, "parentProcessId", server.ParentProcessId.ToString(CultureInfo.InvariantCulture));
+				AddRow(table, "startTime", server.StartTime.ToString("yyyy-MM-dd HH:mm:ss UTC", CultureInfo.InvariantCulture));
+				AddRow(table, "ideChannelId", server.IdeChannelId);
+				if (server != info.ActiveServers[^1])
+				{
+					table.AddEmptyRow();
+				}
+			}
 		}
 		else
 		{
@@ -129,12 +136,12 @@ internal static class DiscoveryOutputFormatter
 	{
 		return key switch
 		{
-			"unoSdkSource" => "global.json or project source",
-			"unoSdkSourcePath" => "global.json or project file path",
+			"sdkSource" => "global.json or project source",
+			"sdkSourcePath" => "global.json or project file path",
 			"globalJsonPath" => "global.json in working directory or parents",
-			"unoSdkPackage" => "msbuild-sdks entry in global.json",
-			"unoSdkVersion" => "msbuild-sdks entry in global.json",
-			"unoSdkPath" => "restored Uno.Sdk package in NuGet cache",
+			"sdkPackage" => "msbuild-sdks entry in global.json",
+			"sdkVersion" => "msbuild-sdks entry in global.json",
+			"sdkPath" => "restored Uno.Sdk package in NuGet cache",
 			"packagesJsonPath" => "Uno.Sdk targets/netstandard2.0/packages.json",
 			"devServerPackageVersion" => "Uno.WinUI.DevServer entry in packages.json",
 			"devServerPackagePath" => "Uno.WinUI.DevServer package in NuGet cache",
@@ -142,7 +149,7 @@ internal static class DiscoveryOutputFormatter
 			"settingsPackagePath" => "uno.settings.devserver package in NuGet cache",
 			"dotNetVersion" => "dotnet --version output",
 			"dotNetTfm" => "parsed dotnet --version",
-			"hostPath" => "Uno.WinUI.DevServer host for current dotnet TFM",
+			"devServerHostPath" => "Uno.WinUI.DevServer host for current dotnet TFM",
 			"settingsPath" => "uno.settings.devserver tools/manager/Uno.Settings.dll",
 			"discoveryMethod" => "convention-based targets parsing",
 			"addIns" => "resolved add-in DLLs from .targets files",

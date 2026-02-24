@@ -28,7 +28,7 @@ internal sealed record DiscoverySummary
 	public string? HostPath { get; init; }
 	public string? SettingsPath { get; init; }
 	public IReadOnlyList<AddInSummary>? AddIns { get; init; }
-	public ActiveServerSummary? ActiveServer { get; init; }
+	public IReadOnlyList<ActiveServerSummary>? ActiveServers { get; init; }
 }
 
 internal sealed record ActiveServerSummary
