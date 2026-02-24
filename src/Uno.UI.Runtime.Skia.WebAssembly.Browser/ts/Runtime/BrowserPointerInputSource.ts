@@ -194,7 +194,7 @@
 
 			// pointer events may have some side effects (like changing focus or opening a context menu on right clicking)
 			// We blanket-disable all the native behaviour so we don't have to whack-a-mole all the edge cases.
-			// We only allow wheel events with ctrl key pressed to allow zooming in/out.
+			// We only allow wheel events with ctrl key pressed to allow zooming in/out when BrowserInputHelper.isBrowserZoomEnabled is true.
 			const isZooming = BrowserInputHelper.isBrowserZoomEnabled && evt instanceof WheelEvent && evt.ctrlKey;
 			if (result == HtmlEventDispatchResult.PreventDefault ||
 				!isZooming) {

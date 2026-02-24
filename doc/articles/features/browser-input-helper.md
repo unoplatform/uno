@@ -10,13 +10,13 @@ The `BrowserInputHelper` class provides APIs to control this behavior, giving de
 
 ## Default behavior
 
-By default, the Uno Skia WebAssembly runtime **prevents all browser keyboard shortcuts** from firing. This means:
+By default, the Uno Skia WebAssembly runtime routes keyboard events through the Uno input pipeline. When a key event is marked as `Handled` (either by your app or by Uno's built-in handling), `preventDefault()` is called on the underlying DOM event, preventing the corresponding browser shortcut from firing. This means:
 
-- Keys like <kbd>F5</kbd> (refresh), <kbd>Ctrl</kbd>+<kbd>S</kbd> (save), and <kbd>Ctrl</kbd>+<kbd>P</kbd> (print) are intercepted and delivered to your app instead of the browser.
+- Keys like <kbd>F5</kbd> (refresh), <kbd>Ctrl</kbd>+<kbd>S</kbd> (save), and <kbd>Ctrl</kbd>+<kbd>P</kbd> (print) can be intercepted by your app when you handle those key events.
 - Standard text input, clipboard operations (<kbd>Ctrl</kbd>+<kbd>C</kbd>/<kbd>V</kbd>/<kbd>X</kbd>), and other in-app keyboard interactions continue to work normally.
 - Browser zoom via <kbd>Ctrl</kbd>+mouse wheel is **allowed** by default.
 
-No additional code is required for the keyboard shortcut prevention to work.
+For most in-app shortcuts, no additional configuration is required beyond handling the relevant key events. For OS- or browser-reserved shortcuts (such as tab management or focusing the address bar), you may need the Keyboard Lock API described below.
 
 ## Prerequisites
 
