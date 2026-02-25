@@ -45,13 +45,7 @@ using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.ScrollContentPresente
 using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.IScrollContentPresenter;
 #endif
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
-#else
-using Windows.Devices.Input;
-using Windows.UI.Input;
-using Microsoft.UI.Xaml.Media;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {

@@ -1,8 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference BreadcrumbBarItemAutomationPeer.cpp, tag winui3/release/1.5.3, commit 2a60e27
+// MUX Reference BreadcrumbBarItemAutomationPeer.cpp, tag winui3/release/1.8.4
 
 #nullable enable
+#pragma warning disable CS8603 // Possible null reference return
 
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Helpers.WinUI;

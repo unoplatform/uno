@@ -18,16 +18,8 @@ using Uno.Disposables;
 using Uno.Extensions;
 using System.Threading;
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
-#else
-using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
-using Uno.UI.Xaml.Core;
-using Uno.UI.Controls.Legacy;
-using Windows.UI.ViewManagement;
-
-#endif
 #if __APPLE_UIKIT__
 using UIKit;
 #else

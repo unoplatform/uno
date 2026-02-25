@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -239,7 +239,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			border.Width = 100;
 			await WindowHelper.WaitForIdle();
 
-			Assert.IsTrue(initialWidth < sv.ActualWidth);
+			Assert.IsLessThan(sv.ActualWidth, initialWidth);
 		}
 
 		[TestMethod]
@@ -561,12 +561,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			textBox.ProcessTextInput("a");
 			await WindowHelper.WaitForIdle();
 			await WindowHelper.WaitFor(() => SUT.IsSuggestionListOpen);
-			Assert.AreEqual(2, listView.Items.Count);
+			Assert.HasCount(2, listView.Items);
 			Assert.AreEqual("a1", listView.Items[0].ToString());
 			Assert.AreEqual("a2", listView.Items[1].ToString());
 #if __WASM__
 			//ItemsPanelRoot.Children works only on wasm
-			Assert.AreEqual(2, listView.ItemsPanelRoot.Children.Count);
+			Assert.HasCount(2, listView.ItemsPanelRoot.Children);
 			Assert.AreEqual("a1", (listView.ItemsPanelRoot.Children[0] as ContentControl).Content.ToString());
 			Assert.AreEqual("a2", (listView.ItemsPanelRoot.Children[1] as ContentControl).Content.ToString());
 #endif
@@ -1059,11 +1059,85 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				var popupPoint = popup.Child.TransformToVisual(WindowHelper.WindowContent).TransformPoint(default);
 				var suggestBoxPoint = SUT.TransformToVisual(WindowHelper.WindowContent).TransformPoint(default);
-				Assert.IsTrue(
-					popupPoint.Y + popup.Child.ActualSize.Y <= suggestBoxPoint.Y + 1, // Added 1 to adjust for border on Windows
+				Assert.IsLessThanOrEqualTo(
+					suggestBoxPoint.Y + 1, // Added 1 to adjust for border on Windows
+					popupPoint.Y + popup.Child.ActualSize.Y,
 					$"Expected `{popupPoint.Y} + {popup.Child.ActualSize.Y}`={popupPoint.Y + popup.Child.ActualSize.Y} <= {suggestBoxPoint.Y + 1}");
 			});
 		}
+
+#if !WINAPPSDK // GetTemplateChild is protected in UWP while public in Uno.
+		[TestMethod]
+		[RequiresFullWindow]
+#if RUNTIME_NATIVE_AOT
+		[Ignore("TODO: figure out why this fails, how to fix")]
+#endif  // RUNTIME_NATIVE_AOT
+		public async Task When_Popup_Above_With_Header_Should_Overlap_Header()
+		{
+			var SUT = new AutoSuggestBox
+			{
+				Header = "Test Header",
+				VerticalAlignment = VerticalAlignment.Bottom
+			};
+
+			Button button = null;
+			try
+			{
+				button = new Button();
+				var rootGrid = new Grid();
+				var stack = new StackPanel()
+				{
+					Children =
+					{
+						button,
+						SUT
+					},
+					VerticalAlignment = VerticalAlignment.Bottom
+				};
+
+				SUT.ItemsSource = Enumerable.Range(0, 10).ToArray();
+				rootGrid.Children.Add(stack);
+				WindowHelper.WindowContent = rootGrid;
+				await WindowHelper.WaitForIdle();
+
+				var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
+				var headerPresenter = textBox.GetTemplateChild("HeaderContentPresenter") as FrameworkElement;
+				Assert.IsNotNull(headerPresenter);
+				Assert.IsTrue(headerPresenter.ActualHeight > 0);
+
+				SUT.Focus(FocusState.Programmatic);
+				SUT.Text = "1";
+				await WindowHelper.WaitForIdle();
+
+				var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot);
+				Assert.AreEqual(1, popups.Count);
+				var popup = popups[0];
+
+				Assert.IsNotNull(popup.Child);
+				await WindowHelper.WaitFor(() => popup.Child.ActualSize.Y > 0);
+
+				// Get positions relative to window content
+				var popupChild = popup.Child as FrameworkElement;
+				var popupPoint = popupChild.TransformToVisual(WindowHelper.WindowContent).TransformPoint(default);
+				var popupBottom = popupPoint.Y + popupChild.ActualHeight;
+
+				var textBoxPoint = textBox.TransformToVisual(WindowHelper.WindowContent).TransformPoint(default);
+				var headerPoint = headerPresenter.TransformToVisual(WindowHelper.WindowContent).TransformPoint(default);
+
+				var gapBetweenPopupAndTextBox = textBoxPoint.Y - popupBottom;
+
+				Assert.IsTrue(
+					gapBetweenPopupAndTextBox < headerPresenter.ActualHeight / 2,
+					$"Popup should overlap header area. Gap: {gapBetweenPopupAndTextBox}px, Header height: {headerPresenter.ActualHeight}px. " +
+					$"PopupBottom: {popupBottom}, TextBoxTop: {textBoxPoint.Y}, HeaderTop: {headerPoint.Y}");
+			}
+			finally
+			{
+				button?.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+			}
+		}
+#endif
 
 		[TestMethod]
 		[RequiresFullWindow]
@@ -1073,7 +1147,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				var popupPoint = popup.Child.TransformToVisual(WindowHelper.WindowContent).TransformPoint(default);
 				var suggestBoxPoint = SUT.TransformToVisual(WindowHelper.WindowContent).TransformPoint(default);
-				Assert.IsTrue(popupPoint.Y + 1 >= suggestBoxPoint.Y + SUT.ActualHeight); // Added 1 to adjust for border on Windows
+				Assert.IsGreaterThanOrEqualTo(suggestBoxPoint.Y + SUT.ActualHeight, popupPoint.Y + 1); // Added 1 to adjust for border on Windows
 			});
 		}
 
@@ -1158,7 +1232,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			textBox.ProcessTextInput("a");
 
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot).Count);
+			Assert.HasCount(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot));
 		}
 #endif
 
@@ -1196,14 +1270,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			textBox.ProcessTextInput("a");
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot).Count);
+			Assert.HasCount(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot));
 			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot)[0];
 			var oldPopupRect = (popup.Child as FrameworkElement).GetAbsoluteBoundsRect();
 
 			textBox.ProcessTextInput("ab");
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot).Count);
+			Assert.HasCount(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot));
 			var newPopupRect = (popup.Child as FrameworkElement).GetAbsoluteBoundsRect();
 
 			oldPopupRect.Y.Should().BeLessThan(newPopupRect.Y);

@@ -62,7 +62,7 @@ For existing applications, take this opportunity to update to the [latest **Uno.
 ---
 
 > [!IMPORTANT]
-> Using [.NET 9](https://dotnet.microsoft.com/download/dotnet/9.0) or later (`net9.0` in the `TargetFrameworks` property) is required for Hot Reload to be available when your solution contains iOS, Android, or WebAssembly project heads. On Windows, [Visual Studio 17.12](https://visualstudio.microsoft.com/vs) or later is required.
+> Using [.NET 10](https://dotnet.microsoft.com/download/dotnet/10.0) or later (`net10.0` in the `TargetFrameworks` property) is required for Hot Reload to be available when your solution contains iOS, Android, or WebAssembly project heads. On Windows, [Visual Studio 17.12](https://visualstudio.microsoft.com/vs) or later is required.
 
 ## Supported features per OS
 
@@ -114,38 +114,38 @@ For existing applications, take this opportunity to update to the [latest **Uno.
     </thead>
     <tbody>
         <tr>
-            <td>Desktop<br /><small><code>net9.0-desktop</code></code></small></td>
+            <td>Desktop<br /><small><code>net10.0-desktop</code></code></small></td>
             <td>✅</td><td>✅</td>
             <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>✅</td>
             <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>✅</td>
         </tr>
         <tr>
-            <td>Desktop - WSL<br /><small><code>net9.0-desktop</code></small></td>
+            <td>Desktop - WSL<br /><small><code>net10.0-desktop</code></small></td>
             <td>⌛<sup><a href="#hr-footnotes">[1]</a></sup></td><td>⌛<sup><a href="#hr-footnotes">[1]</a></sup></td>
             <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>✅</td>
             <td>❌<sup><a href="#hr-footnotes">[2]</a></sup><sup><a href="#hr-footnotes">[6]</a></sup></td><td>❌<sup><a href="#hr-footnotes">[2]</a></sup></td>
         </tr>
         <tr>
-            <td>iOS<br /><small><code>net9.0-ios</code></small></td>
+            <td>iOS<br /><small><code>net10.0-ios</code></small></td>
             <td>✅</a></sup></td><td>❌</td>
             <td>🛜</a></td><td>🛜</td>
             <td>❌</a></td><td>✅</td>
         </tr>
         <tr>
-            <td>Android<br /><small><code>net9.0-android</code></small></td>
+            <td>Android<br /><small><code>net10.0-android</code></small></td>
             <td>✅</td><td>❌</td>
             <td>✅</a></td><td>✅</td>
             <td>❌</a></td><td>✅</td>
         </tr>
         </tr>
         <tr>
-            <td>WinAppSDK<br /><small><code>net9.0-windows10.x.x</code></small></td>
+            <td>WinAppSDK<br /><small><code>net10.0-windows10.x.x</code></small></td>
             <td>✅<sup><a href="#hr-footnotes">[3]</a></sup></td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
             <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>❌</td>
             <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>❌</td>
         </tr>
         <tr>
-            <td>WebAssembly<br /><small><code>net9.0-browserwasm</code></small></td>
+            <td>WebAssembly<br /><small><code>net10.0-browserwasm</code></small></td>
             <td>✅</td><td>✅</td>
             <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>✅</td>
             <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>✅</td>
@@ -172,32 +172,32 @@ For existing applications, take this opportunity to update to the [latest **Uno.
     </thead>
     <tbody>
         <tr>
-            <td>Desktop<br /><small><code>net9.0-desktop</code></code></small></td>
+            <td>Desktop<br /><small><code>net10.0-desktop</code></code></small></td>
             <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>✅</td>
             <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>✅</td>
         </tr>
         <tr>
-            <td>Desktop - WSL<br /><small><code>net9.0-desktop</code></small></td>
+            <td>Desktop - WSL<br /><small><code>net10.0-desktop</code></small></td>
             <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>❌</td>
             <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>❌</td>
         </tr>
         <tr>
-            <td>iOS<br /><small><code>net9.0-ios</code></small></td>
+            <td>iOS<br /><small><code>net10.0-ios</code></small></td>
             <td>✅</td><td>✅</td>
             <td>❌</td><td>✅</td>
         </tr>
         <tr>
-            <td>Android<br /><small><code>net9.0-android</code></small></td>
+            <td>Android<br /><small><code>net10.0-android</code></small></td>
             <td>✅</td><td>✅</td>
             <td>❌</td><td>✅</td>
         </tr>
         <tr>
-            <td>WinAppSDK<br /><small><code>net9.0-windows10.x.x</code></small></td>
+            <td>WinAppSDK<br /><small><code>net10.0-windows10.x.x</code></small></td>
             <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>❌</td>
             <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>❌</td>
         </tr>
         <tr>
-            <td>WebAssembly<br /><small><code>net9.0-browserwasm</code></small></td>
+            <td>WebAssembly<br /><small><code>net10.0-browserwasm</code></small></td>
             <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>✅</td>
             <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>✅</td>
         </tr>
@@ -223,32 +223,32 @@ For existing applications, take this opportunity to update to the [latest **Uno.
     </thead>
     <tbody>
         <tr>
-            <td>Desktop<br /><small><code>net9.0-desktop</code></code></small></td>
+            <td>Desktop<br /><small><code>net10.0-desktop</code></code></small></td>
             <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>✅</td>
             <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>✅</td>
         </tr>
         <tr>
-            <td>Desktop - WSL<br /><small><code>net9.0-desktop</code></small></td>
+            <td>Desktop - WSL<br /><small><code>net10.0-desktop</code></small></td>
             <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>❌</td>
             <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>❌</td>
         </tr>
         <tr>
-            <td>iOS<br /><small><code>net9.0-ios</code></small></td>
+            <td>iOS<br /><small><code>net10.0-ios</code></small></td>
             <td>🛜</td><td>🛜</td>
             <td>❌</td><td>❌</td>
         </tr>
         <tr>
-            <td>Android<br /><small><code>net9.0-android</code></small></td>
+            <td>Android<br /><small><code>net10.0-android</code></small></td>
             <td>✅</td><td>✅</td>
             <td>❌</td><td>✅</td>
         </tr>
         <tr>
-            <td>WinAppSDK<br /><small><code>net9.0-windows10.x.x</code></small></td>
+            <td>WinAppSDK<br /><small><code>net10.0-windows10.x.x</code></small></td>
             <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>❌</td>
             <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>❌</td>
         </tr>
         <tr>
-            <td>WebAssembly<br /><small><code>net9.0-browserwasm</code></small></td>
+            <td>WebAssembly<br /><small><code>net10.0-browserwasm</code></small></td>
             <td>❌<sup><a href="#hr-footnotes">[5]</a></sup></td><td>✅</td>
             <td>❌<sup><a href="#hr-footnotes">[6]</a></sup></td><td>✅</td>
         </tr>
@@ -391,11 +391,16 @@ Here's a summary of the Hot Reload connection statuses and their corresponding i
 
 ### [**Common issues**](#tab/common-issues)
 
-- If the Hot Reload Indicator is red and shows a connection failure, ensure that you have the [latest stable version](https://www.nuget.org/packages/Uno.Sdk/latest) of [Uno.SDK](xref:Uno.Features.Uno.Sdk) and the latest version of your IDE’s extension ([Visual Studio](https://aka.platform.uno/vs-extension-marketplace), [Visual Studio Code](https://aka.platform.uno/vscode-extension-marketplace), or [Rider](https://aka.platform.uno/rider-extension-marketplace)). Additionally, [re-run Uno.Check](xref:UnoCheck.UsingUnoCheck) to update dependencies, then relaunch your IDE, [sign in with your Uno Platform account](xref:Uno.GetStarted.Licensing), and rebuild your application.
+- If the Hot Reload Indicator is red and shows a connection failure, ensure that you have the [latest stable version](https://www.nuget.org/packages/Uno.Sdk/latest) of [Uno.SDK](xref:Uno.Features.Uno.Sdk) and the latest version of your IDE's extension ([Visual Studio](https://aka.platform.uno/vs-extension-marketplace), [Visual Studio Code](https://aka.platform.uno/vscode-extension-marketplace), or [Rider](https://aka.platform.uno/rider-extension-marketplace)). Additionally, [re-run Uno.Check](xref:UnoCheck.UsingUnoCheck) to update dependencies, then relaunch your IDE, [sign in with your Uno Platform account](xref:Uno.GetStarted.Licensing), and rebuild your application.
 
   For existing applications, refer to our [migration guide](xref:Uno.Development.MigratingFromPreviousReleases) for upgrade steps.
   > [!IMPORTANT]
   > When upgrading to **Uno.Sdk 5.5 or higher**, the `EnableHotReload()` method in `App.xaml.cs` is deprecated and should be replaced with `UseStudio()`.
+
+- Check the **Uno Platform Status** panel in your IDE for real-time connection diagnostics. See the [Uno Platform Status documentation](https://aka.platform.uno/uno-platform-status/) for details.
+
+- If Hot Reload cannot connect to the Dev Server, run `uno-devserver disco` to verify your environment. Ensure **devServerHostPath** and **devServerPackageVersion** are resolved and match your Uno SDK version. See [Diagnostics (disco)](xref:Uno.Features.DevServerDisco) for a full reference.
+
 - Observe the application logs, you should see diagnostics messages in the app when a XAML file is reloaded.
 - WinAppSDK on Windows-specific issues
   - Grid Succinct syntax [is not supported](https://github.com/microsoft/microsoft-ui-xaml/issues/7043#issuecomment-1120061686)
@@ -469,8 +474,8 @@ Here's a summary of the Hot Reload connection statuses and their corresponding i
        ![`Uno Platform` output drop-down](../Assets/features/hotreload/vs-uno-platform-logs.png)
 - When a file is reloaded, XAML parsing errors will appear in the application's logs, on the device or in the browser.
 - If there are multiple versions of the Uno.WinUI Package present in the solution, the newest will be used, regardless of the started application
-- For `net9.0-windows10.xx`:
-  - Ensure that the `net9.0-windows10.xxx` target framework **is selected in the top-left dropdown list of the XAML editor**. Selecting any other platform will break Hot Reload.
+- For `net10.0-windows10.xx`:
+  - Ensure that the `net10.0-windows10.xxx` target framework **is selected in the top-left dropdown list of the XAML editor**. Selecting any other platform will break Hot Reload.
   - [A VS issue for WinUI may be hit](https://developercommunity.visualstudio.com/t/net80-windows10-needs-to-be-first-for-W/10643724). If XAML Hot Reload does not work, ensure that the `Uno Platform` output window exists, and that it mentions that the extension has successfully loaded. To do so, try closing and reopening the solution, and make sure that the [Visual Studio extension is installed](xref:Uno.GetStarted.vs2022).
   - [A known VS issue for WinUI](https://github.com/microsoft/microsoft-ui-xaml/issues/5944) breaks Hot Reload when using "simplified" `RowDefinitions`/`ColumnDefinitions`.
 
@@ -491,9 +496,9 @@ Here's a summary of the Hot Reload connection statuses and their corresponding i
 - Depending on your machine's performance, the Hot Reload engine may take a few moments to initialize and take your project modifications into account.
 - Make sure that the selected project in the status bar (or using the "Uno Platform: Select Active Project" in the command palette) is not the solution file, but rather the project file (i.e. ending by `.csproj`).
 - Align the "Debug profile" (at the top of the "Run and Debug" pane) with the platform you chose to debug within the status bar (or using the "Uno Platform: Select the Target Platform Moniker (TFM)")
-  - "Uno Platform Desktop Debug" profile for `net9.0-desktop`
-  - "Uno Platform Mobile Debug" profile for `net9.0-ios` and `net9.0-android`
-  - "Uno Platform WebAssembly Debug" profile for `net9.0-browserwasm`
+  - "Uno Platform Desktop Debug" profile for `net10.0-desktop`
+  - "Uno Platform Mobile Debug" profile for `net10.0-ios` and `net10.0-android`
+  - "Uno Platform WebAssembly Debug" profile for `net10.0-browserwasm`
 - If Hot Reload does not function properly, you can try using the `Developer: Reload Window` command in the palette (using `Ctrl+Shift+P`)
 - The TCP port number used by the app to connect back to the IDE is located in the `<UnoRemoteControlPort>` property of the `[ProjectName].csproj.user` file. If the port number does not match with the one found in the `Uno Platform - Hot Reload` output window, restart Code or use `Developer: Reload Window` in the command palette.
 

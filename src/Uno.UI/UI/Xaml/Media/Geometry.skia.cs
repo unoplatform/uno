@@ -16,6 +16,42 @@ namespace Microsoft.UI.Xaml.Media
 		/// </remarks>
 		internal virtual SKPath GetFilledSKPath() => null;
 
-		internal virtual SkiaGeometrySource2D GetGeometrySource2D() => new SkiaGeometrySource2D(new SKPath(GetSKPath()));
+		/// <summary>
+		/// Returns the SKPath with the <see cref="Transform"/> applied, if any.
+		/// </summary>
+		internal SKPath GetTransformedSKPath()
+		{
+			var path = GetSKPath();
+			return ApplyTransformToPath(path);
+		}
+
+		/// <summary>
+		/// Returns the filled SKPath with the <see cref="Transform"/> applied, if any.
+		/// </summary>
+		internal SKPath GetTransformedFilledSKPath()
+		{
+			var path = GetFilledSKPath();
+			return ApplyTransformToPath(path);
+		}
+
+		private SKPath ApplyTransformToPath(SKPath path)
+		{
+			if (path is null)
+			{
+				return null;
+			}
+
+			if (Transform is { MatrixCore: var matrix } && !matrix.IsIdentity)
+			{
+				var skMatrix = matrix.ToSKMatrix();
+				var transformed = new SKPath();
+				path.Transform(skMatrix, transformed);
+				return transformed;
+			}
+
+			return path;
+		}
+
+		internal virtual SkiaGeometrySource2D GetGeometrySource2D() => new SkiaGeometrySource2D(GetTransformedSKPath());
 	}
 }

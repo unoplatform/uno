@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -309,11 +309,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var SUT = new MyControl01();
 
 				SUT.Measure(new Size(10, 10));
-				Assert.AreEqual(1, SUT.MeasureOverrides.Count);
+				Assert.HasCount(1, SUT.MeasureOverrides);
 				Assert.AreEqual(new Size(10, 10), SUT.MeasureOverrides[0]);
 
 				SUT.Measure(new Size(10, 10));
-				Assert.AreEqual(1, SUT.MeasureOverrides.Count);
+				Assert.HasCount(1, SUT.MeasureOverrides);
 			});
 #endif
 
@@ -502,13 +502,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var SUT = new MyControl01();
 
 				SUT.Measure(new Size(10, 10));
-				Assert.AreEqual(1, SUT.MeasureOverrides.Count);
+				Assert.HasCount(1, SUT.MeasureOverrides);
 				Assert.AreEqual(new Size(10, 10), SUT.MeasureOverrides[0]);
 
 				SUT.InvalidateMeasure();
 
 				SUT.Measure(new Size(10, 10));
-				Assert.AreEqual(2, SUT.MeasureOverrides.Count);
+				Assert.HasCount(2, SUT.MeasureOverrides);
 				Assert.AreEqual(new Size(10, 10), SUT.MeasureOverrides[1]);
 			});
 
@@ -682,13 +682,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				grid.Children.Add(SUT);
 
 				grid.Measure(new Size(10, 10));
-				Assert.AreEqual(1, SUT.MeasureOverrides.Count);
+				Assert.HasCount(1, SUT.MeasureOverrides);
 				Assert.AreEqual(new Size(10, 10), SUT.MeasureOverrides[0]);
 
 				grid.InvalidateMeasure();
 
 				grid.Measure(new Size(10, 10));
-				Assert.AreEqual(1, SUT.MeasureOverrides.Count);
+				Assert.HasCount(1, SUT.MeasureOverrides);
 			});
 #endif
 
@@ -988,7 +988,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var tbNativeTyped = (_View)new TextBlock();
 			panel.Children.Add(tbNativeTyped);
 
-			Assert.AreEqual(1, panel.Children.Count);
+			Assert.HasCount(1, panel.Children);
 		}
 
 		[TestMethod]
@@ -1059,7 +1059,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			TestServices.WindowHelper.WindowContent = hostPanel;
 			await TestServices.WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(1, sut.Subviews.Length);
+			Assert.HasCount(1, sut.Subviews);
 
 			Assert.AreEqual(100, nativeView.Frame.Width);
 			Assert.AreEqual(100, nativeView.Frame.Height);
@@ -1165,7 +1165,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// NOTE: On WinUI, Unloaded is fired.
 			// In Uno, we only fire Unloaded if IsLoaded is true.
 			// See UIElement.Leave for more details.
-			Assert.AreEqual(0, events.Count);
+			Assert.IsEmpty(events);
 			//Assert.AreEqual("Unloaded", events[0]);
 
 			void Sut_Loading(FrameworkElement sender, object args)
@@ -1195,7 +1195,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			const int expectedCount = 9;
 
-			Assert.AreEqual(expectedCount, events.Count);
+			Assert.HasCount(expectedCount, events);
 			Assert.AreEqual("Parent Loading", events[0]);
 			Assert.AreEqual("Child Loading", events[1]);
 			Assert.AreEqual("Child OnApplyTemplate", events[2]);

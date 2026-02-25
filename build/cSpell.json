@@ -27,6 +27,7 @@
 	"datagrid",
 	"decompile",
 	"devs",
+	"devserver",
 	"dbus",
 	"Dismissable",
 	"dmgbuild",
@@ -130,7 +131,10 @@
 	"xunit",
 	"Raygun",
 	"waitlist",
-	"subviews"
+	"subviews",
+	"Swipeable",
+	"backgrounded",
+	"Agentic"
   ],
   "ignoreWords": [
 	"ADAL",

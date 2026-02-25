@@ -6,6 +6,10 @@ trigger:
       - release/stable/*
       - feature/*
       - legacy/*
+  paths:
+    include:
+      - doc/**
+      - '**/*.md'
 
 pr: 
   branches:
@@ -15,6 +19,10 @@ pr:
       - release/stable/*
       - feature/*
       - legacy/*
+  paths:
+    include:
+      - doc/**
+      - '**/*.md'
 
 variables:
   windowsScaledPool: 'Windows2022-20250720-1'

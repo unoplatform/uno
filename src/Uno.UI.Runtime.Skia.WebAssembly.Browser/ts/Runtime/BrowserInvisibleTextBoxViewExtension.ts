@@ -5,6 +5,7 @@
 		private static readonly isMacOS = navigator?.platform.toUpperCase().includes('MAC') ?? false;
 		private static inputElement: HTMLInputElement | HTMLTextAreaElement;
 		private static isInSelectionChange: boolean;
+		private static acceptsReturn: boolean;
 
 		private static waitingAsyncOnSelectionChange: boolean;
 		private static nextSelectionStart: number;
@@ -41,6 +42,7 @@
 		}
 
 		private static createInput(isPasswordBox: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string) {
+			BrowserInvisibleTextBoxViewExtension.acceptsReturn = acceptsReturn;
 			const input = document.createElement(acceptsReturn && !isPasswordBox ? "textarea" : "input");
 			if (isPasswordBox) {
 				(input as HTMLInputElement).type = "password";
@@ -84,6 +86,16 @@
 				ev.preventDefault();
 			};
 
+			// Handle Enter key from Android virtual keyboards which don't fire keydown events.
+			// Android keyboards typically fire beforeinput with inputType "insertLineBreak" instead.
+			input.addEventListener("beforeinput", (ev: InputEvent) => {
+				if (ev.inputType === "insertLineBreak" && !BrowserInvisibleTextBoxViewExtension.acceptsReturn) {
+					ev.preventDefault();
+
+					BrowserInvisibleTextBoxViewExtension._exports.OnEnterKeyPressed();
+				}
+			});
+
 			input.onkeydown = ev => {
 				if (ev.ctrlKey || (ev.metaKey && BrowserInvisibleTextBoxViewExtension.isMacOS)) {
 					// Due to browser security considerations, we need to let the clipboard operations be handled natively.
@@ -92,6 +104,13 @@
 						ev.stopPropagation();
 						return;
 					}
+				}
+
+				// Allow Enter key to propagate when the TextBox doesn't accept returns
+				// This enables focus navigation (e.g., Uno.Toolkit's AutoFocusNext) on mobile browsers
+				if ((ev.key === "Enter" || ev.keyCode === 13) && !BrowserInvisibleTextBoxViewExtension.acceptsReturn) {
+					// Don't call preventDefault() to allow the key event to propagate to document listeners
+					return;
 				}
 
 				ev.preventDefault();

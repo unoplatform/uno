@@ -1,13 +1,42 @@
-﻿#pragma warning disable 108 // new keyword hiding
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+#nullable enable
+#pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
-namespace Microsoft.UI.Xaml.Automation.Peers
+using System;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Controls;
+
+namespace Microsoft.UI.Xaml.Automation.Peers;
+
+public partial class ListViewBaseHeaderItemAutomationPeer : FrameworkElementAutomationPeer
 {
-	public partial class ListViewBaseHeaderItemAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer
+	protected ListViewBaseHeaderItemAutomationPeer(ListViewBaseHeaderItem owner) : base(owner)
 	{
-		[global::Uno.NotImplemented]
-		protected ListViewBaseHeaderItemAutomationPeer(object owner)
+		ArgumentNullException.ThrowIfNull(owner);
+	}
+
+	protected override string GetClassNameCore() => nameof(ListViewBaseHeaderItem);
+
+	protected override AutomationControlType GetAutomationControlTypeCore()
+		=> AutomationControlType.Group;
+
+	internal ItemsControlAutomationPeer? GetParentItemsControlAutomationPeer()
+	{
+		if (Owner is not ListViewBaseHeaderItem header)
 		{
-			throw new global::System.NotSupportedException();
+			return null;
 		}
+
+		var parentControl = ItemsControl.ItemsControlFromItemContainer(header);
+		if (parentControl is FrameworkElement element)
+		{
+			return FrameworkElementAutomationPeer.FromElement(element) as ItemsControlAutomationPeer
+				?? FrameworkElementAutomationPeer.CreatePeerForElement(element) as ItemsControlAutomationPeer;
+		}
+
+		return null;
 	}
 }

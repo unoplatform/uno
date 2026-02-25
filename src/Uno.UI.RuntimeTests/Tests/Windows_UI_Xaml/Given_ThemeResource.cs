@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
@@ -289,5 +290,56 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				Assert.AreEqual(darkThemeColor, contentPresenterForegroundBrush.Color);
 			}
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		public async Task When_HotReload_Updates_ThemeResource_Bindings_Without_HotReload_Flag()
+		{
+			// This test simulates the scenario where a library (e.g., Uno.Toolkit.Material)
+			// is compiled without Hot Reload support, so its resource bindings only have
+			// the ThemeResource flag, not the HotReload flag.
+			// When a standalone ResourceDictionary is hot-reloaded with updated brush values,
+			// these library bindings should also be re-evaluated.
+
+			var initialBrush = new SolidColorBrush(Colors.Red);
+			var updatedBrush = new SolidColorBrush(Colors.Blue);
+
+			// Set up an app-level resource
+			var overrideDict = new ResourceDictionary();
+			overrideDict["TestHRBrush"] = initialBrush;
+
+			using var cleanup = StyleHelper.UseAppLevelResources(overrideDict);
+
+			var border = new Border { Width = 50, Height = 50 };
+
+			// Manually set a resource binding with ONLY ThemeResource flag (no HotReload)
+			// This simulates a library-compiled {ThemeResource TestHRBrush} binding
+			var resourceKey = new SpecializedResourceDictionary.ResourceKey("TestHRBrush");
+			(border as IDependencyObjectStoreProvider).Store.SetResourceBinding(
+				Border.BackgroundProperty,
+				resourceKey,
+				ResourceUpdateReason.ThemeResource, // Only ThemeResource, no HotReload - simulates library
+				context: null,
+				precedence: null,
+				setterBindingPath: null);
+
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+
+			// Verify initial value
+			Assert.AreEqual(Colors.Red, (border.Background as SolidColorBrush)?.Color,
+				"Initial brush should be Red");
+
+			// Simulate a hot-reload update: change the resource value
+			overrideDict["TestHRBrush"] = updatedBrush;
+
+			// Trigger hot reload resource binding update
+			Application.Current.UpdateResourceBindingsForHotReload();
+
+			// The binding should now reflect the updated value
+			Assert.AreEqual(Colors.Blue, (border.Background as SolidColorBrush)?.Color,
+				"After hot reload, brush should be updated to Blue even for ThemeResource-only bindings");
+		}
+#endif
 	}
 }

@@ -1,6 +1,6 @@
 name: "📺 Samples Request"
 description: "Request an enhancement to the Uno Platform samples ✨"
-labels: [kind/contributor-experience, kind/documentation, triage/untriaged, difficulty/tbd]
+labels: [kind/contributor-experience, kind/documentation, triage/untriaged]
 body:
   - type: markdown
     attributes:

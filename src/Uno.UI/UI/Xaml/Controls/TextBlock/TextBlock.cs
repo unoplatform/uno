@@ -65,9 +65,11 @@ namespace Microsoft.UI.Xaml.Controls
 			get => _selection;
 			set
 			{
-				_selection = value;
-
-				OnSelectionChanged();
+				if (_selection != value)
+				{
+					_selection = value;
+					OnSelectionChanged();
+				}
 			}
 		}
 
@@ -311,7 +313,7 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateInlines(newValue);
 
 #if __SKIA__
-			if (!IsTextBoxDisplay)
+			if (OwningTextBox is null)
 #endif
 			{
 				// On skia, we don't want to set the selection here in case TextBox is managing the selection.
@@ -749,6 +751,12 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		partial void OnTextDecorationsChangedPartial();
+
+		#endregion
+
+		#region TextHighlighters
+
+		public IList<TextHighlighter> TextHighlighters { get; } = new ObservableCollection<TextHighlighter>();
 
 		#endregion
 

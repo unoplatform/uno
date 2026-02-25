@@ -10,11 +10,6 @@ using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 
-#if HAS_UNO_WINUI
-#else
-using Windows.Devices.Input;
-using Windows.UI.Input;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 

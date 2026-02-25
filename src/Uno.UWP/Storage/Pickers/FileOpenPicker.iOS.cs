@@ -99,22 +99,14 @@ namespace Windows.Storage.Pickers
 					return controller;
 
 				case PickerLocationId.PicturesLibrary when multiple is true && iOS14AndAbove is true:
-					var imageConfiguration = new PHPickerConfiguration
-					{
-						Filter = PHPickerFilter.ImagesFilter,
-						SelectionLimit = limit
-					};
-					return new PHPickerViewController(imageConfiguration)
-					{
-						Delegate = new PhotoPickerDelegate(completionSource)
-					};
 				case PickerLocationId.VideosLibrary when multiple is true && iOS14AndAbove is true:
-					var videoConfiguration = new PHPickerConfiguration
+					var pickerFilter = GetPhotoPickerFilter(FileTypeFilter);
+					var pickerConfiguration = new PHPickerConfiguration
 					{
-						Filter = PHPickerFilter.VideosFilter,
+						Filter = pickerFilter,
 						SelectionLimit = limit
 					};
-					return new PHPickerViewController(videoConfiguration)
+					return new PHPickerViewController(pickerConfiguration)
 					{
 						Delegate = new PhotoPickerDelegate(completionSource)
 					};
@@ -177,8 +169,20 @@ namespace Windows.Storage.Pickers
 
 			public override void FinishedPickingMedia(UIImagePickerController picker, NSDictionary info)
 			{
+				NSUrl? nSUrl = null;
 
-				if (info.ValueForKey(new NSString("UIImagePickerControllerImageURL")) is NSUrl nSUrl)
+				// Video URL
+				if (info.ValueForKey(new NSString("UIImagePickerControllerMediaURL")) is NSUrl videoUrl)
+				{
+					nSUrl = videoUrl;
+				}
+				// Image URL
+				else if (info.ValueForKey(new NSString("UIImagePickerControllerImageURL")) is NSUrl imageUrl)
+				{
+					nSUrl = imageUrl;
+				}
+
+				if (nSUrl != null)
 				{
 					var file = StorageFile.GetFromSecurityScopedUrl(nSUrl, null);
 					_taskCompletionSource.SetResult([file]);
@@ -296,6 +300,21 @@ namespace Windows.Storage.Pickers
 
 			public override void DidDismiss(UIPresentationController controller) =>
 				_taskCompletionSource.SetResult(Array.Empty<StorageFile?>());
+		}
+
+		private static PHPickerFilter? GetPhotoPickerFilter(IList<string> fileTypeFilter)
+		{
+			var acceptsAll = fileTypeFilter.Count == 0 || fileTypeFilter.Contains("*");
+			var hasImages = acceptsAll || FilterHasImage(fileTypeFilter);
+			var hasVideos = acceptsAll || FilterHasVideo(fileTypeFilter);
+
+			return (hasImages, hasVideos) switch
+			{
+				(true, true) => PHPickerFilter.GetAnyFilterMatchingSubfilters([PHPickerFilter.ImagesFilter, PHPickerFilter.VideosFilter]),
+				(true, false) => PHPickerFilter.ImagesFilter,
+				(false, true) => PHPickerFilter.VideosFilter,
+				_ => null
+			};
 		}
 
 		private static bool FilterHasVideo(IList<string> filters)

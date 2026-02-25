@@ -1,10 +1,6 @@
 using Uno.Disposables;
 
-#if HAS_UNO_WINUI
 using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
-#else
-using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
-#endif
 
 namespace Microsoft.UI.Xaml
 {

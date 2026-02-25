@@ -14,6 +14,7 @@ Uno Platform is an open-source .NET UI cross-platform framework for building .NE
 | Source Generators | `.github/agents/source-generators-agent.md` | XAML/DependencyObject generator work |
 | Runtime Tests | `.github/agents/runtime-tests-agent.md` | Creating and running runtime tests |
 | WinUI Porting | `.github/agents/winui-porting-agent.md` | Porting WinUI C++ code to C# |
+| DevServer CLI | `.github/agents/devserver-agent.md` | DevServer CLI/Host build, test, MCP proxy |
 
 ---
 
@@ -50,6 +51,8 @@ Uno Platform is an open-source .NET UI cross-platform framework for building .NE
 - `src/SourceGenerators/` - XAML parser, DependencyProperty generator
 - `src/SamplesApp/` - Sample app for validation and tests
 - `src/Uno.UI.RuntimeTests/` - Platform runtime tests
+- `src/Uno.UI.DevServer.Cli/` - DevServer CLI tool
+- `src/Uno.UI.RemoteControl.Host/` - DevServer Host process
 
 ### Build Setup (Required)
 
@@ -138,6 +141,85 @@ Auto-generated stubs marked with `[Uno.NotImplemented]` allow compilation but wa
 
 ## Development Workflow
 
+### Root-Cause First Debugging Protocol (MANDATORY)
+
+When fixing crashes, rendering issues, or selection/indexing bugs,
+agents must follow this order:
+
+1. **Reproduce first**
+   - Capture exact repro steps and expected vs actual behavior.
+   - Keep one known-good repro path and rerun it after each meaningful change.
+
+2. **Identify the broken invariant**
+   - Prefer state/lifecycle invariants over symptom-level checks.
+   - For pipelines that derive secondary state, verify those derived
+      structures (for example: maps, indices, caches, or metadata)
+      are rebuilt from final post-mutation state.
+
+3. **Fix root cause before adding guards**
+    - Do not lead with null/index guards as the primary fix if
+       ownership/lifecycle is incorrect.
+    - Defensive guards are allowed only after root-cause correction,
+       and only as secondary hardening.
+
+4. **Prove correctness with targeted tests**
+   - Add/extend tests that fail before and pass after the root fix.
+   - Cover both the triggering scenario and one adjacent regression scenario.
+
+5. **Validate with runtime behavior, not compile only**
+   - Run the closest runtime or integration path available for the changed area.
+   - If full runtime execution is not possible in the environment,
+       state that explicitly and provide the exact command(s) for
+       maintainers to run.
+
+6. **Communicate confidence accurately**
+   - Separate: (a) code review assessment,
+       (b) compile validation, (c) runtime validation.
+   - Never present guard-only mitigation as a complete root-cause fix.
+
+**Anti-pattern to avoid:**
+
+- Symptom-driven patching that accumulates bounds checks while
+   stale or invalid intermediate state remains possible.
+
+### Validation Evidence Protocol (MANDATORY)
+
+For bug fixes and PR reviews, agents must report validation evidence
+with explicit labels:
+
+- **Code review assessment**: What logic appears correct by inspection.
+- **Compile validation**: Which project/solution was built, and result.
+- **Runtime validation**: Which app/test path was executed, and result.
+
+Rules:
+
+1. Do not present compile-only checks as runtime validation.
+2. If runtime execution is skipped or blocked, state that explicitly
+   and provide exact commands to run.
+3. When reviewing another PR, distinguish between confidence from
+   diff inspection vs. confidence from local execution.
+
+### Diagnosis Bias Checks (MANDATORY)
+
+Before proposing a crash fix, agents must run these checks to avoid
+choosing symptom-level guards over the real fix:
+
+1. **Invariant checkpoint before patching**
+    - Name the invariant likely broken (ownership, lifecycle,
+       index/map coherence, post-mutation consistency).
+   - If no invariant is identified, do not claim a root-cause fix.
+
+2. **Mutation-point review**
+    - Inspect where state is created/trimmed/reordered and verify all
+       dependent structures are refreshed there.
+    - Prefer correcting the mutation point over adding protections in
+       downstream consumers.
+
+3. **Guard classification**
+    - Explicitly label each proposed change as either
+       `root-cause fix` or `defensive hardening`.
+   - Guard-only changes must not be presented as complete resolution.
+
 ### Validation Checklist
 
 Run these after making changes:
@@ -146,6 +228,32 @@ Run these after making changes:
 2. **Unit tests**: `dotnet test Uno.UI/Uno.UI.Tests.csproj --no-build`
 3. **Runtime tests** (UI changes): See [runtime tests agent](.github/agents/runtime-tests-agent.md)
 4. **Sample app** (visual changes): `cd src/SamplesApp/SamplesApp.Wasm && dotnet run`
+
+### SamplesApp: Register XAML files (CRITICAL)
+
+When adding XAML samples to the `SamplesApp`, you must register the XAML and its code-behind in `src/SamplesApp/UITests.Shared/UITests.Shared.projitems` or the sample will not appear in the app.
+
+- ALWAYS add your XAML file to `src/SamplesApp/UITests.Shared/UITests.Shared.projitems`
+- Without this registration, your sample will NOT be visible in SamplesApp
+- Add both the XAML page and the code-behind file. Example:
+
+```xml
+<Page Include="$(MSBuildThisFileDirectory)YourFolder\YourSample.xaml">
+  <SubType>Designer</SubType>
+  <Generator>MSBuild:Compile</Generator>
+</Page>
+<Compile Include="$(MSBuildThisFileDirectory)YourFolder\YourSample.xaml.cs">
+  <DependentUpon>YourSample.xaml</DependentUpon>
+</Compile>
+```
+
+Sample creation checklist:
+1. Create your sample XAML and code-behind under an appropriate folder in `UITests.Shared`.
+2. Add the `[Uno.UI.Samples.Controls.Sample]` attribute to the code-behind class.
+3. Register the XAML and code-behind in `UITests.Shared.projitems` (see XML above).
+4. Build and run `SamplesApp` to verify the sample appears.
+
+Theming guideline (brief): prefer `{ThemeResource}` for backgrounds/foregrounds so samples work in light and dark themes.
 
 ### Runtime Tests (Preferred for UI)
 
@@ -285,6 +393,7 @@ Guidelines:
 - `.github/agents/source-generators-agent.md` - XAML/DependencyObject generators
 - `.github/agents/runtime-tests-agent.md` - Runtime test execution
 - `.github/agents/winui-porting-agent.md` - WinUI C++ to C# porting
+- `.github/agents/devserver-agent.md` - DevServer CLI/Host maintenance
 
 ### Community
 - [Discord](https://platform.uno/discord)

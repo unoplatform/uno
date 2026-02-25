@@ -1,21 +1,10 @@
 ﻿using System;
-using System.Runtime.InteropServices;
-using CoreGraphics;
 using Foundation;
+using Microsoft.UI.Xaml.Controls;
 using ObjCRuntime;
 using UIKit;
 using Uno.Extensions;
-using Uno.UI.Controls;
 using Uno.UI.Extensions;
-using Microsoft.UI.Xaml.Media;
-using Windows.UI;
-using Uno.Disposables;
-using Uno.Foundation.Logging;
-using Uno.UI;
-using Uno.UI.Xaml;
-using static Uno.UI.FeatureConfiguration;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
 
 namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 
@@ -188,7 +177,7 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 				NativeTextSelection.SetSelectedTextRange(SuperHandle, value);
 				if (!_settingSelectionFromManaged)
 				{
-					textBoxView.Owner.TextBox?.OnSelectionChanged();
+					textBoxView.SyncSelectionToTextBox();
 				}
 			}
 		}

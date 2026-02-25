@@ -46,6 +46,7 @@ public class Given_SKCanvasElement
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/brain-products-private/issues/14")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Android)] // https://github.com/unoplatform/uno/issues/22665
 	public async Task When_Waiting_For_Another_Thread()
 	{
 		if (OperatingSystem.IsBrowser())
@@ -60,6 +61,7 @@ public class Given_SKCanvasElement
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/brain-products-private/issues/14")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Android)] // https://github.com/unoplatform/uno/issues/22665
 	public async Task When_Waiting_For_Another_Thread2()
 	{
 		if (OperatingSystem.IsBrowser())

@@ -349,10 +349,21 @@ namespace Uno.UI.Samples.Tests
 						};
 
 						testResults.Children.Add(testResultBlock);
-						testResultBlock.StartBringIntoView();
+						ScrollTestResultsToBottomIfNeeded();
 					}
 				}
 			);
+		}
+
+		private void ScrollTestResultsToBottomIfNeeded()
+		{
+			var sv = testResultsScroller;
+			// Consider "near bottom" if within 50px of the end
+			var isNearBottom = sv.VerticalOffset >= sv.ScrollableHeight - 50;
+			if (isNearBottom)
+			{
+				sv.ChangeView(null, sv.ScrollableHeight, null, disableAnimation: true);
+			}
 		}
 
 		private void ReportTestResult(UnitTestClassInfo testClassInfo, UnitTestMethodInfo testMethodInfo, string testName, TimeSpan duration, TestResult testResult, Exception error = null, string message = null, string console = null)
@@ -427,7 +438,7 @@ namespace Uno.UI.Samples.Tests
 				if (!IsRunningOnCI)
 				{
 					testResults.Children.Add(testResultBlock);
-					testResultBlock.StartBringIntoView();
+					ScrollTestResultsToBottomIfNeeded();
 				}
 
 				if (testResult == TestResult.Error || testResult == TestResult.Failed)

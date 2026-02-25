@@ -1,2 +1,3 @@
-# In ./CLAUDE.md
-@AGENTS.md
+# CLAUDE.md
+
+Follow instructions in @AGENTS.md

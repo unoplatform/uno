@@ -1,5 +1,4 @@
-﻿#if HAS_UNO_WINUI
-using System;
+﻿using System;
 using Microsoft.UI.Windowing;
 using Windows.UI.Popups;
 using MUXWindowId = Microsoft.UI.WindowId;
@@ -21,4 +20,3 @@ public static class InitializeWithWindow
 		}
 	}
 }
-#endif

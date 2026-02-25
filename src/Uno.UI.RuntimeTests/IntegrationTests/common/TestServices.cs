@@ -117,22 +117,22 @@ namespace Private.Infrastructure
 
 		public static void VERIFY_IS_LESS_THAN(double actual, double expected)
 		{
-			Assert.IsTrue(actual < expected, $"{actual} is not less than {expected}");
+			Assert.IsLessThan(expected, actual, $"{actual} is not less than {expected}");
 		}
 
 		public static void VERIFY_IS_LESS_THAN_OR_EQUAL(double actual, double expected)
 		{
-			Assert.IsTrue(actual <= expected, $"{actual} is not less than {expected}");
+			Assert.IsLessThanOrEqualTo(expected, actual, $"{actual} is not less than or equal to {expected}");
 		}
 
 		public static void VERIFY_IS_GREATER_THAN(double actual, double expected)
 		{
-			Assert.IsTrue(actual > expected, $"{actual} is not greater than {expected}");
+			Assert.IsGreaterThan(expected, actual, $"{actual} is not greater than {expected}");
 		}
 
 		public static void VERIFY_IS_GREATER_THAN_OR_EQUAL(double actual, double expected)
 		{
-			Assert.IsTrue(actual >= expected, $"{actual} is not greater than {expected}");
+			Assert.IsGreaterThanOrEqualTo(expected, actual, $"{actual} is not greater than or equal to {expected}");
 		}
 
 		public static void VERIFY_THROWS_WINRT(Action action, Type exceptionType)
@@ -183,7 +183,7 @@ namespace Private.Infrastructure
 		internal static void VERIFY_ARE_VERY_CLOSE(double actual, double expected, double tolerance = 0.1d, string message = null)
 		{
 			var difference = Math.Abs(actual - expected);
-			Assert.IsTrue(difference <= tolerance, $"Expected <{expected}>, actual <{actual}> (tolerance = {tolerance}) {message}");
+			Assert.IsLessThanOrEqualTo(tolerance, difference, $"Expected <{expected}>, actual <{actual}> (tolerance = {tolerance}) {message}");
 		}
 
 		internal static void VERIFY_DATES_ARE_EQUAL(DateTimeOffset actual, DateTimeOffset expected, string message = null)

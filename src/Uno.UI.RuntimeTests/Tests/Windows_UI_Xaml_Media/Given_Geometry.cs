@@ -153,6 +153,64 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			var skPath = streamGeometry.GetSKPath();
 			skPath.FillType.Should().Be(SKPathFillType.EvenOdd);
 		}
+
+		[TestMethod]
+		public void RectangleGeometry_Transform_Applies_To_SKPath()
+		{
+			var geometry = new RectangleGeometry
+			{
+				Rect = new Rect(0, 0, 100, 50),
+				Transform = new TranslateTransform { X = 30, Y = 20 }
+			};
+
+			var untransformed = geometry.GetSKPath();
+			var transformed = geometry.GetTransformedSKPath();
+
+			// Untransformed path should have bounds at origin
+			Assert.AreEqual(0, untransformed.Bounds.Left, 0.1f);
+			Assert.AreEqual(0, untransformed.Bounds.Top, 0.1f);
+
+			// Transformed path should be offset by the translation
+			Assert.AreEqual(30, transformed.Bounds.Left, 0.1f);
+			Assert.AreEqual(20, transformed.Bounds.Top, 0.1f);
+			Assert.AreEqual(130, transformed.Bounds.Right, 0.1f);
+			Assert.AreEqual(70, transformed.Bounds.Bottom, 0.1f);
+		}
+
+		[TestMethod]
+		public void RectangleGeometry_NoTransform_Returns_Same_Path()
+		{
+			var geometry = new RectangleGeometry
+			{
+				Rect = new Rect(10, 20, 100, 50)
+			};
+
+			var untransformed = geometry.GetSKPath();
+			var transformed = geometry.GetTransformedSKPath();
+
+			// Without a transform, both should have the same bounds
+			Assert.AreEqual(untransformed.Bounds.Left, transformed.Bounds.Left, 0.1f);
+			Assert.AreEqual(untransformed.Bounds.Top, transformed.Bounds.Top, 0.1f);
+			Assert.AreEqual(untransformed.Bounds.Right, transformed.Bounds.Right, 0.1f);
+			Assert.AreEqual(untransformed.Bounds.Bottom, transformed.Bounds.Bottom, 0.1f);
+		}
+
+		[TestMethod]
+		public void RectangleGeometry_Transform_Updates_GeometrySource2D()
+		{
+			var geometry = new RectangleGeometry
+			{
+				Rect = new Rect(0, 0, 100, 50),
+				Transform = new TranslateTransform { X = 50, Y = 0 }
+			};
+
+			var source = geometry.GetGeometrySource2D();
+			var path = source.Geometry;
+
+			// The path from GetGeometrySource2D should include the transform
+			Assert.AreEqual(50, path.Bounds.Left, 0.1f);
+			Assert.AreEqual(150, path.Bounds.Right, 0.1f);
+		}
 #endif
 	}
 }

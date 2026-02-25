@@ -11,12 +11,7 @@ using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-#if HAS_UNO_WINUI
-	public
-#else
-	internal
-#endif
-	partial class FlowLayoutAlgorithm : OrientationBasedMeasures
+	public partial class FlowLayoutAlgorithm : OrientationBasedMeasures
 	{
 		private enum GenerateDirection
 		{

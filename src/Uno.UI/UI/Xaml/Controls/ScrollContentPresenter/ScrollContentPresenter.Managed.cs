@@ -20,11 +20,7 @@ using Windows.Foundation;
 using static System.Net.Mime.MediaTypeNames;
 using static Uno.UI.Xaml.Core.InputManager.PointerManager;
 
-#if HAS_UNO_WINUI
 using _PointerDeviceType = global::Microsoft.UI.Input.PointerDeviceType;
-#else
-using _PointerDeviceType = global::Windows.Devices.Input.PointerDeviceType;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -467,10 +463,34 @@ namespace Microsoft.UI.Xaml.Controls
 				return false;
 			}
 
-			var scrollable = GetScrollableOffsets();
+			if (Scroller is not { IsScrollInertiaEnabled: true } sv)
+			{
+				_touchInertia = null;
+				return false;
+			}
+
 			var direction = GetDirection(args.Velocities);
-			if (Scroller is not { IsScrollInertiaEnabled: true } sv
-				|| !scrollable.IsValid(direction) // Nothing to scroll
+
+			// Check if we have snap points configured - if so, we should handle inertia even with limited scrollable space
+			bool hasValidSnapPoints(ScrollDirection dir)
+			{
+				if (dir.HasFlag(ScrollDirection.Left) || dir.HasFlag(ScrollDirection.Right))
+				{
+					return sv.HorizontalSnapPointsType is not SnapPointsType.None;
+				}
+				if (dir.HasFlag(ScrollDirection.Up) || dir.HasFlag(ScrollDirection.Down))
+				{
+					return sv.VerticalSnapPointsType is not SnapPointsType.None;
+				}
+
+				return false;
+			}
+
+			var scrollable = GetScrollableOffsets();
+			var isScrollableValid = scrollable.IsValid(direction);
+			var hasSnapPoints = hasValidSnapPoints(direction);
+
+			if ((!isScrollableValid && !hasSnapPoints) // Nothing to scroll and no snap points
 				|| recognizer.PendingManipulation is null) // Stopped by a child element (e.g. a child SV that is scrolling to a mandatory snap-point) - safety, should already be isHandled = true
 			{
 				// Inertia is starting but we cannot handle it.

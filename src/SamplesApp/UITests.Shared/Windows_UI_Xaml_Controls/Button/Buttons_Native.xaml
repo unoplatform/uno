@@ -3,12 +3,11 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:wasm="http://uno.ui/wasm"
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:macos="http://uno.ui/macos"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.Button"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d wasm macos"
+    mc:Ignorable="d wasm"
     d:DesignHeight="300"
     d:DesignWidth="400">
 	
@@ -16,9 +15,6 @@
 		<wasm:Style x:Key="NativeDefaultButton" BasedOn="{StaticResource DefaultXamlButton}" TargetType="Button" />
 		<wasm:Style x:Key="NativeDefaultToggleSwitch" BasedOn="{StaticResource DefaultXamlToggleSwitch}" TargetType="ToggleSwitch"  />
 		
-		<macos:Style x:Key="NativeDefaultButton" BasedOn="{StaticResource DefaultXamlButton}" TargetType="Button"  />
-		<macos:Style x:Key="NativeDefaultToggleSwitch" BasedOn="{StaticResource DefaultXamlToggleSwitch}" TargetType="ToggleSwitch"  />
-
 		<win:Style x:Key="NativeDefaultButton" TargetType="Button"  />
 		<win:Style x:Key="NativeDefaultToggleSwitch" TargetType="ToggleSwitch"  />
 	</UserControl.Resources>

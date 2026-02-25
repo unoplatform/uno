@@ -4,7 +4,6 @@
     xmlns:android="http://uno.ui/android"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ios="http://uno.ui/ios"
-    xmlns:macos="http://uno.ui/macos"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:netstdref="http://uno.ui/netstdref"
     xmlns:skia="http://uno.ui/skia"
@@ -12,7 +11,7 @@
     xmlns:uBehaviors="using:Uno.UI.Behaviors"
     xmlns:wasm="http://uno.ui/wasm"
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    mc:Ignorable="d ios android wasm netstdref macos skia">
+    mc:Ignorable="d ios android wasm netstdref skia">
 
     <!--  Default style for internal control Microsoft.UI.Xaml.DragView  -->
     <Style TargetType="DragView">

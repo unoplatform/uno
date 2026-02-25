@@ -1,4 +1,3 @@
-#if HAS_UNO_WINUI
 using WinRTResourceLoader = global::Windows.ApplicationModel.Resources.ResourceLoader;
 
 namespace Microsoft.Windows.ApplicationModel.Resources;
@@ -32,4 +31,3 @@ public partial class ResourceLoader
 	/// <returns>The most appropriate string value of the specified resource for the default ResourceContext.</returns>
 	public string GetString(string resourceId) => _resourceLoader.GetString(resourceId);
 }
-#endif

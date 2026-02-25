@@ -22,7 +22,7 @@ Here is how to publish an app from GitHub, using Uno Platform:
     dotnet new unoapp -o MyApp
     ```
 
-- If the `<TargetFrameworks>` value in the `MyApp.csproj` does not contain `net9.0-browserwasm`, [make sure to upgrade to the latest Uno release by following these steps](xref:Uno.Development.MigratingFromPreviousReleases).
+- If the `<TargetFrameworks>` value in the `MyApp.csproj` does not contain `net10.0-browserwasm`, [make sure to upgrade to the latest Uno release by following these steps](xref:Uno.Development.MigratingFromPreviousReleases).
 
 - If in the `MyApp/wwwroot`, you find a `web.config` file, delete it. This will enable brotli compression in Azure Static Web Apps.
 - Search for [Static Web Apps](https://portal.azure.com/#create/Microsoft.StaticApp) in the Azure Portal
@@ -47,13 +47,13 @@ Here is how to publish an app from GitHub, using Uno Platform:
 
     - run: 
         cd src/MyApp
-        dotnet publish -c Release -f net9.0-browserwasm
+        dotnet publish -c Release -f net10.0-browserwasm
     ```
 
 - In the Deploy step that was automatically added, change the `app_location` parameter to the following:
 
     ```yaml
-    app_location: "src/MyApp/bin/Release/net9.0-browserwasm/publish/wwwroot"
+    app_location: "src/MyApp/bin/Release/net10.0-browserwasm/publish/wwwroot"
     ```
 
 - Once changed, the application will be built and deployed on your Azure Static Web App instance.

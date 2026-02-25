@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
@@ -402,7 +402,7 @@ public class TimePickerIntegrationTests
 
 			var minuteItems = minuteLoopingSelector.Items;
 
-			Assert.AreEqual(12, minuteItems.Count);
+			Assert.HasCount(12, minuteItems);
 			for (int i = 0; i < minuteItems.Count; i++)
 			{
 				var dayItem = minuteItems[i] as DatePickerFlyoutItem;
