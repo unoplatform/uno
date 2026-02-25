@@ -49,6 +49,14 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 {
 	private const string WindowClassName = "UnoPlatformWebViewWindow";
 	private const uint SC_MASK = 0xFFF0; // Mask to extract system command from wParam
+	private const uint WM_SHOWWINDOW = 0x0018;
+	private const uint WM_ACTIVATEAPP = 0x001C;
+	private const uint WM_MOUSEACTIVATE = 0x0021;
+	private const uint WM_WINDOWPOSCHANGING = 0x0046;
+	private const uint WM_WINDOWPOSCHANGED = 0x0047;
+	private const uint WM_SETFOCUS = 0x0007;
+	private const uint WM_KILLFOCUS = 0x0008;
+	private const uint WM_NCACTIVATE = 0x0086;
 
 	// _windowClass must be statically stored, otherwise lpfnWndProc will get collected and the CLR will throw some weird exceptions
 	// ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
@@ -59,6 +67,7 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 	// window class (and a new WndProc) per window, but that sounds excessive.
 	private static WeakReference<Win32NativeWebView>? _webViewForNextCreateWindow;
 	private static readonly Dictionary<HWND, WeakReference<Win32NativeWebView>> _hwndToWebView = new();
+	private static readonly bool _isVerboseWin32WebViewTraceEnabled = IsVerboseWin32WebViewTraceEnabled();
 
 	private readonly ContentPresenter _presenter;
 	private readonly HWND _hwnd;
@@ -123,6 +132,7 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 		{
 			throw new InvalidOperationException($"{nameof(PInvoke.CreateWindowEx)} failed: {Win32Helper.GetErrorMessage()}");
 		}
+		LogVerboseWin32Trace(() => $"Created child hwnd={_hwnd.Value} appParent={ParentHwnd.Value}");
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
@@ -234,6 +244,10 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 	private LRESULT WndProcInner(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
 	{
 		Debug.Assert(_hwnd == HWND.Null || hwnd == _hwnd); // the null check is for when this method gets called inside CreateWindow before setting _hwnd
+		if (GetTrackedWndProcMessageName(msg) is { } messageName)
+		{
+			LogTrackedWndProcMessage(messageName, hwnd, wParam, lParam);
+		}
 
 		switch (msg)
 		{
@@ -241,6 +255,7 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 			case PInvoke.WM_SIZE when _controller is not null:
 				PInvoke.GetClientRect(_hwnd, out var bounds);
 				_controller.Bounds = bounds;
+				LogVerboseWin32Trace(() => $"Resized controller bounds to left={bounds.left} top={bounds.top} right={bounds.right} bottom={bounds.bottom}");
 				return new LRESULT(0);
 			case PInvoke.WM_SYSCOMMAND:
 				// When Alt+F4 is pressed on a focused WebView2, Windows sends WM_SYSCOMMAND with SC_CLOSE
@@ -252,9 +267,11 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 					var parentHwnd = ParentHwnd;
 					if (parentHwnd != HWND.Null)
 					{
+						LogVerboseWin32Trace(() => $"Forwarding {nameof(PInvoke.WM_SYSCOMMAND)} {nameof(PInvoke.SC_CLOSE)} to parent={parentHwnd.Value}");
 						PInvoke.SendMessage(parentHwnd, msg, wParam, lParam);
 						return new LRESULT(0);
 					}
+					LogVerboseWin32Trace(() => $"Received {nameof(PInvoke.WM_SYSCOMMAND)} {nameof(PInvoke.SC_CLOSE)} without parent window.");
 				}
 				break;
 			case PInvoke.WM_CLOSE:
@@ -264,13 +281,60 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 					var parentHwnd = ParentHwnd;
 					if (parentHwnd != HWND.Null)
 					{
+						LogVerboseWin32Trace(() => $"Forwarding {nameof(PInvoke.WM_CLOSE)} to parent={parentHwnd.Value}");
 						PInvoke.SendMessage(parentHwnd, msg, wParam, lParam);
 						return new LRESULT(0);
 					}
+					LogVerboseWin32Trace(() => $"Received {nameof(PInvoke.WM_CLOSE)} without parent window.");
 				}
 				break;
 		}
 		return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
+	}
+
+	private static bool IsVerboseWin32WebViewTraceEnabled()
+	{
+		// Keep this opt-in so verbose WndProc tracing stays off by default.
+		var value = Environment.GetEnvironmentVariable("UNO_WIN32_WEBVIEW2_TRACE");
+		return string.Equals(value, "1", StringComparison.Ordinal) || (bool.TryParse(value, out var enabled) && enabled);
+	}
+
+	private static string? GetTrackedWndProcMessageName(uint msg)
+		=> msg switch
+		{
+			PInvoke.WM_ACTIVATE => nameof(PInvoke.WM_ACTIVATE),
+			WM_ACTIVATEAPP => nameof(WM_ACTIVATEAPP),
+			WM_SETFOCUS => nameof(WM_SETFOCUS),
+			WM_KILLFOCUS => nameof(WM_KILLFOCUS),
+			WM_MOUSEACTIVATE => nameof(WM_MOUSEACTIVATE),
+			WM_NCACTIVATE => nameof(WM_NCACTIVATE),
+			WM_WINDOWPOSCHANGING => nameof(WM_WINDOWPOSCHANGING),
+			WM_WINDOWPOSCHANGED => nameof(WM_WINDOWPOSCHANGED),
+			WM_SHOWWINDOW => nameof(WM_SHOWWINDOW),
+			PInvoke.WM_SIZE => nameof(PInvoke.WM_SIZE),
+			PInvoke.WM_SYSCOMMAND => nameof(PInvoke.WM_SYSCOMMAND),
+			PInvoke.WM_CLOSE => nameof(PInvoke.WM_CLOSE),
+			_ => null
+		};
+
+	private void LogTrackedWndProcMessage(string messageName, HWND hwnd, WPARAM wParam, LPARAM lParam)
+	{
+		if (!_isVerboseWin32WebViewTraceEnabled)
+		{
+			return;
+		}
+
+		var active = PInvoke.GetActiveWindow();
+		LogVerboseWin32Trace(() => $"WndProc {messageName} hwnd={hwnd.Value} presenterParent={ParentHwnd.Value} wParam={wParam.Value} lParam={lParam.Value} active={active.Value}");
+	}
+
+	private void LogVerboseWin32Trace(Func<string> messageFactory)
+	{
+		// Avoid formatting trace payloads unless tracing is enabled and the selected sink will emit warnings.
+		if (_isVerboseWin32WebViewTraceEnabled && this.Log().IsEnabled(LogLevel.Warning))
+		{
+			this.LogWarn()?.Warn($"[WebView2Trace] {DateTime.UtcNow:O} {messageFactory()}");
+		}
 	}
 
 	public string DocumentTitle

@@ -25,6 +25,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 {
 	private static readonly SKPath _lastClipPath = new();
 	private static readonly SKPoint[] _conicPoints = new SKPoint[32 * 3]; // 3 points per quad
+	private static readonly bool _isVerboseWin32WebViewTraceEnabled = IsVerboseWin32WebViewTraceEnabled();
 
 	private readonly ContentPresenter _presenter;
 	private readonly SKPath _tempPath = new();
@@ -81,20 +82,30 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 			throw new ArgumentException($"content is not a {nameof(Win32NativeWindow)} instance.", nameof(content));
 		}
 
-		var oldExStyleVal = PInvoke.GetWindowLong((HWND)window.Hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE);
-		var oldStyleVal = PInvoke.GetWindowLong((HWND)window.Hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE);
-		PInvoke.SetWindowLong((HWND)window.Hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE, oldExStyleVal | (int)WINDOW_EX_STYLE.WS_EX_LAYERED);
-		PInvoke.SetWindowLong((HWND)window.Hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE, (oldStyleVal | (int)WINDOW_STYLE.WS_CLIPSIBLINGS) & ~(int)WINDOW_STYLE.WS_CAPTION); // removes the title bar and borders
+		var hwnd = (HWND)window.Hwnd;
+		var oldExStyleVal = PInvoke.GetWindowLong(hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE);
+		var oldStyleVal = PInvoke.GetWindowLong(hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE);
+		var newExStyleVal = oldExStyleVal | (int)WINDOW_EX_STYLE.WS_EX_LAYERED;
+		// Keep hosted WebView HWND as a true child window; popup styles can steal activation during refresh.
+		const int nonChildStyleMask = unchecked((int)WINDOW_STYLE.WS_CAPTION) | unchecked((int)WINDOW_STYLE.WS_POPUP);
+		var newStyleVal = (oldStyleVal | (int)(WINDOW_STYLE.WS_CLIPSIBLINGS | WINDOW_STYLE.WS_CHILD))
+			& ~nonChildStyleMask;
+		PInvoke.SetWindowLong(hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE, newExStyleVal);
+		PInvoke.SetWindowLong(hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE, newStyleVal); // removes the title bar and borders
+		LogVerboseWin32WebViewTrace(
+			() => $"{nameof(AttachNativeElement)} child={hwnd.Value} host={Hwnd.Value} exStyle=0x{oldExStyleVal:X8}->0x{newExStyleVal:X8} style=0x{oldStyleVal:X8}->0x{newStyleVal:X8} {GetActivationSnapshot()}");
 
-		_ = PInvoke.ShowWindow((HWND)window.Hwnd, SHOW_WINDOW_CMD.SW_HIDE);
+		_ = PInvoke.ShowWindow(hwnd, SHOW_WINDOW_CMD.SW_HIDE);
 		_showWindowOnNextArrange = true; // only show the window after the first arrange to avoid the split-second flicker between showing the window and positioning/clipping it correctly.
+		LogVerboseWin32WebViewTrace(() => $"{nameof(AttachNativeElement)} scheduled first show for child={hwnd.Value}");
 
-		var oldParent = PInvoke.SetParent((HWND)window.Hwnd, Hwnd);
+		var oldParent = PInvoke.SetParent(hwnd, Hwnd);
 		if (oldParent == HWND.Null && Marshal.GetLastWin32Error() != 0)
 		{
 			this.LogError()?.Error($"{nameof(PInvoke.SetParent)} failed: {Win32Helper.GetErrorMessage()}");
 			return;
 		}
+		LogVerboseWin32WebViewTrace(() => $"{nameof(AttachNativeElement)} child={hwnd.Value} oldParent={oldParent.Value} newParent={Hwnd.Value} {GetActivationSnapshot()}");
 
 		((Win32WindowWrapper)XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!).RenderingNegativePathReevaluated += OnRenderingNegativePathReevaluated;
 	}
@@ -271,13 +282,16 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 			throw new ArgumentException($"content is not a {nameof(Win32NativeWindow)} instance.", nameof(content));
 		}
 
-		_ = PInvoke.ShowWindow((HWND)window.Hwnd, SHOW_WINDOW_CMD.SW_HIDE);
+		var hwnd = (HWND)window.Hwnd;
+		LogVerboseWin32WebViewTrace(() => $"{nameof(DetachNativeElement)} child={hwnd.Value} {GetActivationSnapshot()}");
+		_ = PInvoke.ShowWindow(hwnd, SHOW_WINDOW_CMD.SW_HIDE);
 
-		var oldParent = PInvoke.SetParent((HWND)window.Hwnd, HWND.Null);
+		var oldParent = PInvoke.SetParent(hwnd, HWND.Null);
 		if (oldParent == HWND.Null && Marshal.GetLastWin32Error() != 0)
 		{
 			this.LogError()?.Error($"{nameof(PInvoke.SetParent)} failed: {Win32Helper.GetErrorMessage()}");
 		}
+		LogVerboseWin32WebViewTrace(() => $"{nameof(DetachNativeElement)} child={hwnd.Value} oldParent={oldParent.Value} detached=true {GetActivationSnapshot()}");
 
 		((Win32WindowWrapper)XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!).RenderingNegativePathReevaluated -= OnRenderingNegativePathReevaluated;
 	}
@@ -288,6 +302,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		{
 			throw new ArgumentException($"content is not a {nameof(Win32NativeWindow)} instance.", nameof(content));
 		}
+		var hwnd = (HWND)window.Hwnd;
 
 		var scale = _presenter.XamlRoot?.RasterizationScale ?? 1;
 
@@ -303,7 +318,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 			double.IsFinite(height) ? height : 0);
 
 		var success = PInvoke.SetWindowPos(
-				(HWND)window.Hwnd,
+				hwnd,
 				HWND.Null,
 				(int)_lastArrangeRect.X,
 				(int)_lastArrangeRect.Y,
@@ -314,6 +329,8 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		{
 			this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
 		}
+		LogVerboseWin32WebViewTrace(
+			() => $"{nameof(ArrangeNativeElement)} child={hwnd.Value} rect={_lastArrangeRect} scale={scale:0.###} setWindowPosSuccess={success} showOnNextArrange={_showWindowOnNextArrange} {GetActivationSnapshot()}");
 
 		_lastFinalSvgClipPath = null; // force reapply clip path after arranging
 		OnRenderingNegativePathReevaluated(this, _lastClipPath);
@@ -321,8 +338,56 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		if (_showWindowOnNextArrange)
 		{
 			_showWindowOnNextArrange = false;
-			_ = PInvoke.ShowWindow((HWND)window.Hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
+			_ = PInvoke.ShowWindow(hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
+			LogVerboseWin32WebViewTrace(() => $"{nameof(ArrangeNativeElement)} showed child={hwnd.Value} with {nameof(SHOW_WINDOW_CMD.SW_SHOWNORMAL)} {GetActivationSnapshot()}");
 		}
+	}
+
+	public bool SupportsZIndex() => true;
+
+	public void SetZIndex(object content, int zIndex)
+	{
+		if (content is not Win32NativeWindow window)
+		{
+			throw new ArgumentException($"content is not a {nameof(Win32NativeWindow)} instance.", nameof(content));
+		}
+
+		var hwnd = (HWND)window.Hwnd;
+		var success = PInvoke.SetWindowPos(
+			hwnd,
+			HWND.Null,
+			0,
+			0,
+			0,
+			0,
+			SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
+		if (!success)
+		{
+			this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
+		}
+		LogVerboseWin32WebViewTrace(() => $"{nameof(SetZIndex)} child={hwnd.Value} zIndex={zIndex} setWindowPosSuccess={success} {GetActivationSnapshot()}");
+	}
+
+	private static bool IsVerboseWin32WebViewTraceEnabled()
+	{
+		// Keep this opt-in so verbose native-host traces stay disabled by default.
+		var value = Environment.GetEnvironmentVariable("UNO_WIN32_WEBVIEW2_TRACE");
+		return string.Equals(value, "1", StringComparison.Ordinal) || (bool.TryParse(value, out var enabled) && enabled);
+	}
+
+	private void LogVerboseWin32WebViewTrace(Func<string> messageFactory)
+	{
+		// Avoid evaluating trace payloads unless tracing is enabled and the logger will emit warning messages.
+		if (_isVerboseWin32WebViewTraceEnabled && this.Log().IsEnabled(LogLevel.Warning))
+		{
+			this.LogWarn()?.Warn($"[WebView2Trace] {DateTime.UtcNow:O} {messageFactory()}");
+		}
+	}
+
+	private static string GetActivationSnapshot()
+	{
+		var active = PInvoke.GetActiveWindow();
+		return $"active={active.Value}";
 	}
 
 	public Size MeasureNativeElement(object content, Size childMeasuredSize, Size availableSize)
