@@ -5,7 +5,7 @@ using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Media
 {
-	public partial class GeneralTransform : DependencyObject
+	public partial class GeneralTransform : DependencyObject, IMultiParentShareableDependencyObject
 	{
 		protected GeneralTransform() { }
 

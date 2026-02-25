@@ -18,7 +18,7 @@ using Uno.UI.Xaml.Media;
 namespace Microsoft.UI.Xaml.Media
 {
 	[TypeConverter(typeof(ImageSourceConverter))]
-	public partial class ImageSource : DependencyObject, IDisposable
+	public partial class ImageSource : DependencyObject, IMultiParentShareableDependencyObject, IDisposable
 	{
 		private protected ImageData _imageData = ImageData.Empty;
 
