@@ -17,6 +17,14 @@ internal static class FileSystemHelper
 	/// </remarks>
 	public static async ValueTask WaitForFileUpdated(string filePath, IReporter? reporter = null)
 	{
+		if (OperatingSystem.IsBrowser())
+		{
+			// FileSystemWatcher is not supported on WASM.
+			// TODO: Use BrowserFileSystemWatcher once it is functional.
+			await Task.Yield();
+			return;
+		}
+
 		var file = new FileInfo(filePath);
 		var dir = file.Directory;
 		while (dir is { Exists: false })
