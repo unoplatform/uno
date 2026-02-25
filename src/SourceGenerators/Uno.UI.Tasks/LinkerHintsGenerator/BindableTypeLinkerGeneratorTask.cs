@@ -337,7 +337,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 						.Select(p =>
 							new XElement("property",
 								new XAttribute("name", p.PropertyName),
-								new XComment($" {p.PropertyType.FullName ?? "<<unresolved>>"} {p.PropertyName} {{get;}} "))));
+								new XComment($" {p.PropertyType.FullName} {p.PropertyName} {{get;}} "))));
 			}
 		}
 	}
