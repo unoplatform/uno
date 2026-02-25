@@ -38,10 +38,14 @@ internal class WebAssemblyWindowFactoryExtension : INativeWindowFactoryExtension
 
 		_initialWindow = window;
 
-		// If a windows is from another ALC, we should not set it as the main window
-		// of the wrapper, as it initializes native interop (e.g. input) which get
-		// incorrectly redirected.
-		if (!window.IsAlcWindow)
+		// Only register the primary window. When ContentHostOverride is set, we're in ALC hosting mode
+		// and the secondary ALC's window must not replace the primary app's InputManager/XamlRoot host.
+		// We can't use window.IsAlcWindow here because the Window may be created through shared
+		// Uno.Extensions assemblies (e.g. ApplicationBuilder), which are loaded in the default ALC
+		// regardless of whether the calling app is a secondary ALC — making IsAlcWindow unreliable.
+		// Additionally, as there can only be one window, we can simply check if the ContentHostOverride
+		// is set, which is only set when secondary ALCs are used.
+		if (Window.ContentHostOverride == null)
 		{
 			WebAssemblyWindowWrapper.Instance.SetWindow(window, xamlRoot);
 			XamlRootMap.Register(xamlRoot, _host);
