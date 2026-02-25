@@ -8,7 +8,6 @@ namespace Microsoft.UI.Xaml;
 
 partial class Window
 {
-#if HAS_UNO_WINUI
 	public Window() : this(Uno.UI.Xaml.WindowType.DesktopXamlSource, Assembly.GetCallingAssembly())
 	{
 	}
@@ -18,14 +17,8 @@ partial class Window
 	/// </summary>
 	public event TypedEventHandler<object, WindowEventArgs> Closed
 	{
-		add
-		{
-			_windowImplementation.Closed += value;
-		}
-		remove
-		{
-			_windowImplementation.Closed -= value;
-		}
+		add => _windowImplementation.Closed += value;
+		remove => _windowImplementation.Closed -= value;
 	}
 
 #if !__APPLE_UIKIT__ // This can be added when iOS uses SceneDelegate #8341.
