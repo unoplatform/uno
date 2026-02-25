@@ -135,7 +135,10 @@ To build an app with this feature enabled:
 
 ### Automatic Binding Preservation
 
-When building with Native AOT, Uno Platform automatically preserves public properties of types referenced by `[Bindable]` types to ensure data binding works correctly at runtime. This happens automatically when `PublishAot=true` is set.
+When building an Uno Platform application head (for example, a Skia Desktop head) with Native AOT, Uno Platform automatically preserves public properties of types referenced by `[Bindable]` types to ensure data binding works correctly at runtime. This happens automatically when both `IsUnoHead=true` and `PublishAot=true` are set on the project (Uno head templates set `IsUnoHead` for you).
+
+> [!NOTE]
+> Automatic binding preservation is only available for Uno Platform application heads. Class libraries or other projects that set `PublishAot=true` but are not marked with `IsUnoHead=true` will not get this behavior.
 
 The build system:
 
