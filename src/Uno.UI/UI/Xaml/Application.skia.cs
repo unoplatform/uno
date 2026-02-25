@@ -119,6 +119,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		internal Task FontPreloadTask { get; private set; }
+
 		private void InvokeOnLaunched()
 		{
 			InitializeSystemTheme();
@@ -126,7 +128,7 @@ namespace Microsoft.UI.Xaml
 			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
 			{
 				InitializationCompleted();
-				PreloadFonts();
+				FontPreloadTask = PreloadFonts();
 
 				// OnLaunched should execute only for full apps, not for individual islands.
 				if (CoreApplication.IsFullFledgedApp)
@@ -142,28 +144,64 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private static void PreloadFonts()
+		private static async Task PreloadFonts()
 		{
-			if (OperatingSystem.IsBrowser())
+			try
 			{
-				// WASM does the font preloading before removing the splash via PrefetchFonts.
-				return;
-			}
+				var symbolsFontTask = FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.SymbolsFont), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
 
-			_ = FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.SymbolsFont), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
-			if (Uri.TryCreate(FeatureConfiguration.Font.DefaultTextFontFamily, UriKind.RelativeOrAbsolute, out var uri))
-			{
-				_ = FontFamilyHelper.PreloadAllFontsInManifest(uri).ContinueWith(t =>
+				var textFontManifestSuccess = false;
+				if (Uri.TryCreate(FeatureConfiguration.Font.DefaultTextFontFamily, UriKind.RelativeOrAbsolute, out var uri))
 				{
-					if (!t.IsCompletedSuccessfully)
+					try
 					{
-						_ = FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.DefaultTextFontFamily), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
+						textFontManifestSuccess = await FontFamilyHelper.PreloadAllFontsInManifest(uri);
+						if (!textFontManifestSuccess)
+						{
+							typeof(Application).LogDebug()?.Debug($"Failed to load ${nameof(FeatureConfiguration.Font.DefaultTextFontFamily)}=[{FeatureConfiguration.Font.DefaultTextFontFamily}] as a font manifest");
+						}
 					}
-				});
+					catch (Exception e)
+					{
+						typeof(Application).LogError()?.Error($"Failed to load ${nameof(FeatureConfiguration.Font.DefaultTextFontFamily)}=[{FeatureConfiguration.Font.DefaultTextFontFamily}] as a font manifest", e);
+					}
+				}
+				if (!textFontManifestSuccess)
+				{
+					try
+					{
+						textFontManifestSuccess = await FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.DefaultTextFontFamily), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
+						if (!textFontManifestSuccess)
+						{
+							typeof(Application).LogDebug()?.Debug($"Failed to load ${nameof(FeatureConfiguration.Font.DefaultTextFontFamily)}=[{FeatureConfiguration.Font.DefaultTextFontFamily}] as a non-manifest font");
+						}
+					}
+					catch (Exception e)
+					{
+						typeof(Application).LogError()?.Error($"Failed to load ${nameof(FeatureConfiguration.Font.DefaultTextFontFamily)}=[{FeatureConfiguration.Font.DefaultTextFontFamily}] as a non-manifest font", e);
+					}
+				}
+
+				try
+				{
+					var symbolsFontSuccess = await symbolsFontTask;
+					if (symbolsFontSuccess)
+					{
+						typeof(Application).LogInfo()?.Info($"Loaded ${nameof(FeatureConfiguration.Font.SymbolsFont)}=[{FeatureConfiguration.Font.SymbolsFont}] successfully");
+					}
+					else
+					{
+						typeof(Application).LogError()?.Error($"Failed to load ${nameof(FeatureConfiguration.Font.SymbolsFont)}=[{FeatureConfiguration.Font.SymbolsFont}]");
+					}
+				}
+				catch (Exception e)
+				{
+					typeof(Application).LogError()?.Error($"Failed to load ${nameof(FeatureConfiguration.Font.SymbolsFont)}=[{FeatureConfiguration.Font.SymbolsFont}]", e);
+				}
 			}
-			else
+			catch (Exception e)
 			{
-				_ = FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.DefaultTextFontFamily), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
+				typeof(Application).LogError()?.Error($"Unexpected error during font preloading", e);
 			}
 		}
 	}
