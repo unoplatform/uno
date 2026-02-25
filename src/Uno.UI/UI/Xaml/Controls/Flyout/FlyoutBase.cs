@@ -634,8 +634,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 
 		// Ported from WinUI: FlyoutBase_partial.cpp OnPopupLostFocus (lines 2349-2434)
-		// When the popup loses focus, close the flyout unless focus moved to
-		// an element inside another light-dismiss popup (e.g. a child flyout).
 		private void OnPopupLostFocus(object sender, RoutedEventArgs args)
 		{
 			if (_popup is not { IsOpen: true })
@@ -649,10 +647,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				return;
 			}
 
-			// Walk up from the focused element to check if it's inside a light-dismiss popup.
-			// If it is, don't close — this allows child flyouts and related popups to work.
-			// If it's not in any popup (or only in non-light-dismiss popups), close.
-			// This matches WinUI: FlyoutBase_partial.cpp lines 2394-2429
+			// Walk up from the focused element (WinUI: FlyoutBase_partial.cpp lines 2394-2420).
+			// GetUIElementAdjustedParentInternal handles the popup jump (PopupPanel -> Popup),
+			// so this walk correctly finds Popup ancestors.
 			var currentElement = focusedElement;
 			Popup popupAncestor = null;
 			bool popupAncestorIsLightDismiss = false;

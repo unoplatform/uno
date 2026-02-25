@@ -415,6 +415,16 @@ namespace Microsoft.UI.Xaml
 			{
 				if (parentDO is UIElement uiElement)
 				{
+					// WinUI: uielement.cpp lines 2501-2517
+					// If the immediate parent is the popup hosting panel, the element is a
+					// Popup's child — jump to the Popup itself.
+					// In WinUI, Popup.Child is parented directly to PopupRoot.
+					// In Uno, Popup.Child is parented to PopupPanel (which is inside PopupRoot).
+					// PopupPanel.Popup provides the equivalent of WinUI's GetLogicalParentNoRef().
+					if (uiElement is PopupPanel popupPanel)
+					{
+						return popupPanel.Popup;
+					}
 					return uiElement;
 				}
 				else

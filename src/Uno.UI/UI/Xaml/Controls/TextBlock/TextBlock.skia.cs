@@ -67,10 +67,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				_forceFocusedForContextFlyout = ShouldForceFocusedVisualState();
 				UpdateSelectionRendering();
-				if (!_forceFocusedForContextFlyout && SelectionFlyout?.IsOpen == true)
-				{
-					SelectionFlyout.Hide();
-				}
 			};
 		}
 
