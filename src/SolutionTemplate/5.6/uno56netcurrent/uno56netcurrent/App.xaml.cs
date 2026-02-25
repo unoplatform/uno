@@ -20,7 +20,7 @@ public partial class App : Application
 
     protected Window? MainWindow { get; private set; }
 
-    protected override void OnLaunched(LaunchActivatedEventArgs args)
+    protected override async void OnLaunched(LaunchActivatedEventArgs args)
     {
         MainWindow = new Window();
 #if DEBUG
@@ -55,7 +55,11 @@ public partial class App : Application
 
         if (exitAfterLaunching)
         {
-            Exit();
+            await Task.Run(async () =>
+            {
+                await Task.Delay(1000);
+                Exit();
+            });
         }
     }
 
@@ -74,7 +78,6 @@ public partial class App : Application
     /// </summary>
     public static void InitializeLogging()
     {
-#if DEBUG
         // Logging is disabled by default for release builds, as it incurs a significant
         // initialization cost from Microsoft.Extensions.Logging setup. If startup performance
         // is a concern for your application, keep this disabled. If you're running on the web or
@@ -94,6 +97,18 @@ public partial class App : Application
 #else
             builder.AddConsole();
 #endif
+
+            builder.AddFakeLogging(options =>
+            {
+                options.FilteredCategories.Add("Uno.UI.DataBinding.BindingPropertyHelper");
+                options.OutputSink = message =>
+                {
+                    if (message.Contains("property getter does not exist on type", StringComparison.Ordinal))
+                    {
+                        Environment.FailFast(message);
+                    }
+                };
+            });
 
             // Exclude logs below this level
             builder.SetMinimumLevel(LogLevel.Information);
@@ -135,7 +150,6 @@ public partial class App : Application
 
 #if HAS_UNO
         global::Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
-#endif
 #endif
     }
 }
