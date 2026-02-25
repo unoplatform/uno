@@ -49,10 +49,11 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				var typeCache = new TypeDefinitionCache();
 				var typesToProperties = FindReferencedPropertyTypes(bindableTypes, typeCache);
 
-				if (typesToProperties.Count > 0)
+				var typesWithProperties = typesToProperties.Count(kvp => kvp.Value.Count > 0);
+				if (typesWithProperties > 0)
 				{
 					GenerateLinkerDescriptor(typesToProperties);
-					Log.LogMessage(DefaultLogMessageLevel, $"Generated descriptor with {typesToProperties.Count} types.");
+					Log.LogMessage(DefaultLogMessageLevel, $"Generated descriptor with {typesWithProperties} types.");
 				}
 				else
 				{
