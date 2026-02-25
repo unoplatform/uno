@@ -187,7 +187,7 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 		// when using WinUI, we need to use "legacy" version to work with CoreWindow
 		// (which will eventually be removed as a legacy API as well.
 		var coreWindowSizeChangedEventArgs = new Windows.UI.Core.WindowSizeChangedEventArgs(size);
-		
+
 		RaiseSizeChanged(windowSizeChanged);
 
 		XamlRoot?.RaiseChangedEvent();
