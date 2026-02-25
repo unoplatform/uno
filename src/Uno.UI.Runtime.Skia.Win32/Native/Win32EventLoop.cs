@@ -71,17 +71,24 @@ namespace Uno.UI.Runtime.Skia.Win32
 		[UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
 		internal static LRESULT WndProc(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
 		{
-			if (msg == UnoWin32DispatcherMsg)
+			try
 			{
-				Action action;
-				lock (_actions)
+				if (msg == UnoWin32DispatcherMsg)
 				{
-					// It's important not to keep the lock when we invoke the action, as it will deadlock in some cases,
-					// specifically when running the Given_ListViewBase tests in a call to GC.WaitForPendingFinalizers.
-					action = _actions.Dequeue();
+					Action action;
+					lock (_actions)
+					{
+						// It's important not to keep the lock when we invoke the action, as it will deadlock in some cases,
+						// specifically when running the Given_ListViewBase tests in a call to GC.WaitForPendingFinalizers.
+						action = _actions.Dequeue();
+					}
+					action.Invoke();
+					return new LRESULT(0);
 				}
-				action.Invoke();
-				return new LRESULT(0);
+			}
+			catch (Exception e)
+			{
+				typeof(Win32EventLoop).LogError()?.Error($"Exception in {nameof(WndProc)}", e);
 			}
 			return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
 		}

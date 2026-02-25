@@ -457,91 +457,101 @@ internal class X11ClipboardExtension : IClipboardExtension
 					}
 
 					// TODO: implement INCR
-					switch (event_.type)
+					try
 					{
-						case XEventName.SelectionClear:
-							if (event_.SelectionEvent.selection == X11Helper.GetAtom(_x11Window.Display, X11Helper.CLIPBOARD))
-							{
-								if (this.Log().IsEnabled(LogLevel.Information))
+						switch (event_.type)
+						{
+							case XEventName.SelectionClear:
+								if (event_.SelectionEvent.selection == X11Helper.GetAtom(_x11Window.Display, X11Helper.CLIPBOARD))
 								{
-									this.Log().LogInfo($"Lost X11 selection ownership");
-								}
+									if (this.Log().IsEnabled(LogLevel.Information))
+									{
+										this.Log().LogInfo($"Lost X11 selection ownership");
+									}
 
-								_currentlyOwningClipboard = false;
-							}
-							else
-							{
-								if (this.Log().IsEnabled(LogLevel.Trace))
-								{
-									this.Log().Trace($"Somehow losing X11 selection {XLib.GetAtomName(_x11Window.Display, event_.SelectionEvent.selection)}, even though we don't currently own it");
+									_currentlyOwningClipboard = false;
 								}
-							}
-							break;
-						case XEventName.SelectionRequest:
-							if (event_.SelectionRequestEvent.selection != X11Helper.GetAtom(_x11Window.Display, X11Helper.CLIPBOARD))
-							{
-								if (this.Log().IsEnabled(LogLevel.Trace))
+								else
 								{
-									this.Log().Trace($"Somehow getting a SelectionRequest for {XLib.GetAtomName(_x11Window.Display, event_.SelectionEvent.selection)}, even though we don't currently own it");
+									if (this.Log().IsEnabled(LogLevel.Trace))
+									{
+										this.Log().Trace($"Somehow losing X11 selection {XLib.GetAtomName(_x11Window.Display, event_.SelectionEvent.selection)}, even though we don't currently own it");
+									}
 								}
 								break;
-							}
-
-							var xsr = event_.SelectionRequestEvent;
-							XSelectionEvent ev = default; // reply
-
-							ev.type = XEventName.SelectionNotify;
-							ev.display = _x11Window.Display;
-							ev.requestor = xsr.requestor;
-							ev.selection = xsr.selection;
-							ev.time = xsr.time;
-							ev.send_event = 1;
-							ev.target = xsr.target;
-
-							if (this.Log().IsEnabled(LogLevel.Information))
-							{
-								this.Log().LogInfo($"Received SelectionRequest with target {XLib.GetAtomName(_x11Window.Display, ev.target)} and requestor {ev.requestor.ToString("X", CultureInfo.InvariantCulture)}");
-							}
-
-							if (xsr.property == X11Helper.None && ev.target != X11Helper.GetAtom(_x11Window.Display, X11Helper.MULTIPLE))
-							{
-								/* Obsolete requestor */
-								xsr.property = xsr.target;
-							}
-
-							// To be ICCCM-compliant, we need to support TARGETS and MULTIPLE at the very least.
-
-							if (ev.time != X11Helper.CurrentTime && ev.time < _ownershipTimestamp)
-							{
-								/* If the time is outside the period we have owned the selection,
-								 * which is any time later than timestamp, or if the requested target
-								 * is not a string, then refuse the SelectionRequest. NB. Some broken
-								 * clients don't set a valid timestamp, so we have to check against
-								 * CurrentTime here. */
-								if (this.Log().IsEnabled(LogLevel.Trace))
+							case XEventName.SelectionRequest:
+								if (event_.SelectionRequestEvent.selection != X11Helper.GetAtom(_x11Window.Display, X11Helper.CLIPBOARD))
 								{
-									this.Log().Trace($"XCLIP: Bad timestamp {ev.time} in clipboard request.");
-								}
-								ev.property = X11Helper.None;
-							}
-							else if (SwitchTargets(xsr.requestor, xsr.target, xsr.property))
-							{
-								ev.property = xsr.property;
-							}
-
-							if (ev.property != X11Helper.None)
-							{
-								if (this.Log().IsEnabled(LogLevel.Trace))
-								{
-									this.Log().Trace($"XCLIP: Sending reply to requestor {ev.requestor}.");
+									if (this.Log().IsEnabled(LogLevel.Trace))
+									{
+										this.Log().Trace($"Somehow getting a SelectionRequest for {XLib.GetAtomName(_x11Window.Display, event_.SelectionEvent.selection)}, even though we don't currently own it");
+									}
+									break;
 								}
 
-								XEvent xev = default;
-								xev.SelectionEvent = ev;
-								var _ = XLib.XSendEvent(_x11Window.Display, ev.requestor, false,
-									IntPtr.Zero, ref xev);
-							}
-							break;
+								var xsr = event_.SelectionRequestEvent;
+								XSelectionEvent ev = default; // reply
+
+								ev.type = XEventName.SelectionNotify;
+								ev.display = _x11Window.Display;
+								ev.requestor = xsr.requestor;
+								ev.selection = xsr.selection;
+								ev.time = xsr.time;
+								ev.send_event = 1;
+								ev.target = xsr.target;
+
+								if (this.Log().IsEnabled(LogLevel.Information))
+								{
+									this.Log().LogInfo($"Received SelectionRequest with target {XLib.GetAtomName(_x11Window.Display, ev.target)} and requestor {ev.requestor.ToString("X", CultureInfo.InvariantCulture)}");
+								}
+
+								if (xsr.property == X11Helper.None && ev.target != X11Helper.GetAtom(_x11Window.Display, X11Helper.MULTIPLE))
+								{
+									/* Obsolete requestor */
+									xsr.property = xsr.target;
+								}
+
+								// To be ICCCM-compliant, we need to support TARGETS and MULTIPLE at the very least.
+
+								if (ev.time != X11Helper.CurrentTime && ev.time < _ownershipTimestamp)
+								{
+									/* If the time is outside the period we have owned the selection,
+									 * which is any time later than timestamp, or if the requested target
+									 * is not a string, then refuse the SelectionRequest. NB. Some broken
+									 * clients don't set a valid timestamp, so we have to check against
+									 * CurrentTime here. */
+									if (this.Log().IsEnabled(LogLevel.Trace))
+									{
+										this.Log().Trace($"XCLIP: Bad timestamp {ev.time} in clipboard request.");
+									}
+									ev.property = X11Helper.None;
+								}
+								else if (SwitchTargets(xsr.requestor, xsr.target, xsr.property))
+								{
+									ev.property = xsr.property;
+								}
+
+								if (ev.property != X11Helper.None)
+								{
+									if (this.Log().IsEnabled(LogLevel.Trace))
+									{
+										this.Log().Trace($"XCLIP: Sending reply to requestor {ev.requestor}.");
+									}
+
+									XEvent xev = default;
+									xev.SelectionEvent = ev;
+									var _ = XLib.XSendEvent(_x11Window.Display, ev.requestor, false,
+										IntPtr.Zero, ref xev);
+								}
+								break;
+						}
+					}
+					catch (Exception e)
+					{
+						if (this.Log().IsEnabled(LogLevel.Error))
+						{
+							this.Log().Error($"Exception in {nameof(ClipboardOwnerLoop)}", e);
+						}
 					}
 				}
 			}
