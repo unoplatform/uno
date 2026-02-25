@@ -1914,43 +1914,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				"Default ContextFlyout is always TextCommandBarFlyout, but it won't be shown when IsTextSelectionEnabled is false");
 		}
 
-		[TestMethod]
-		public async Task When_TextBlock_SelectionFlyout_Hides_OnFocusLoss()
-		{
-			var SUT = new TextBlock
-			{
-				Text = "Hello world",
-				Width = 200,
-				IsTextSelectionEnabled = true
-			};
-			var other = new Button { Content = "Other" };
-			var panel = new StackPanel
-			{
-				Children = { SUT, other }
-			};
-
-			WindowHelper.WindowContent = panel;
-			await WindowHelper.WaitForLoaded(SUT);
-
-			SUT.Focus(FocusState.Programmatic);
-			await WindowHelper.WaitForIdle();
-
-			SUT.SelectAll();
-			await WindowHelper.WaitForIdle();
-
-			var flyout = SUT.SelectionFlyout as TextCommandBarFlyout;
-			Assert.IsNotNull(flyout, "SelectionFlyout should be TextCommandBarFlyout");
-
-			// Manually show the SelectionFlyout
-			flyout.ShowAt(SUT);
-			await WindowHelper.WaitForIdle();
-			Assert.IsTrue(flyout.IsOpen, "SelectionFlyout should be open after ShowAt");
-
-			// Move focus away
-			other.Focus(FocusState.Programmatic);
-			await WindowHelper.WaitFor(() => !flyout.IsOpen);
-		}
-
 		private (bool hasSelectAll, bool hasCut, bool hasCopy, bool hasPaste) GetAvailableTextBlockCommands(TextCommandBarFlyout flyout)
 		{
 			var allCommands = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands).ToList();

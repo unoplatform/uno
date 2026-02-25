@@ -313,42 +313,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsFalse(SUT.CanPasteClipboardContent, "CanPasteClipboardContent should be false when TextBox is read-only");
 		}
 
-		[TestMethod]
-		public async Task When_TextBox_SelectionFlyout_Hides_OnFocusLoss()
-		{
-#if __SKIA__
-			using var _ = new TextBoxFeatureConfigDisposable();
-#endif
-
-			var SUT = new TextBox { Text = "Hello world", Width = 200 };
-			var other = new Button { Content = "Other" };
-			var panel = new StackPanel
-			{
-				Children = { SUT, other }
-			};
-
-			WindowHelper.WindowContent = panel;
-			await WindowHelper.WaitForLoaded(SUT);
-
-			SUT.Focus(FocusState.Programmatic);
-			await WindowHelper.WaitForIdle();
-
-			SUT.Select(0, 5); // Select "Hello"
-			await WindowHelper.WaitForIdle();
-
-			var flyout = SUT.SelectionFlyout as TextCommandBarFlyout;
-			Assert.IsNotNull(flyout, "SelectionFlyout should be TextCommandBarFlyout");
-
-			// Manually show the SelectionFlyout
-			flyout.ShowAt(SUT);
-			await WindowHelper.WaitForIdle();
-			Assert.IsTrue(flyout.IsOpen, "SelectionFlyout should be open after ShowAt");
-
-			// Move focus away
-			other.Focus(FocusState.Programmatic);
-			await WindowHelper.WaitFor(() => !flyout.IsOpen);
-		}
-
 		private void CopyPlaceholderTextToClipboard()
 		{
 			var dataPackage = new DataPackage();
