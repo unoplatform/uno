@@ -239,7 +239,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests
 			grid.Width = gridWidth;
 			grid.Height = 100;
 
-			Assert.AreEqual(grid.Children.Count, columns.Length);
+			Assert.HasCount(columns.Length, grid.Children);
 
 			grid.Measure(new Size(10000, 10000));
 			var desired = grid.DesiredSize;
@@ -311,7 +311,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests
 			grid.Height = gridHeight;
 			grid.Width = 100;
 
-			Assert.AreEqual(grid.Children.Count, rows.Length);
+			Assert.HasCount(rows.Length, grid.Children);
 
 			grid.Measure(new Size(10000, 10000));
 			var desired = grid.DesiredSize;

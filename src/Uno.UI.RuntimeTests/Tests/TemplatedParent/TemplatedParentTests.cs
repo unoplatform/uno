@@ -383,7 +383,7 @@ public partial class TemplatedParentTests // helper methods
 		Func<object, IEnumerable<string>> debugVT = checkVSG ? DebugVT_TPTV : DebugVT_TP;
 
 
-		Assert.AreEqual(expectations.Length, descendants.Length, "Mismatched descendant size");
+		Assert.HasCount(expectations.Length, descendants, "Mismatched descendant size");
 		for (int i = 0; i < expectations.Length; i++)
 		{
 			var line = expectations[i].TrimStart("\t 0123456789.".ToArray());
@@ -392,7 +392,7 @@ public partial class TemplatedParentTests // helper methods
 			var node = descendants[i];
 			var actual = string.Join(", ", debugVT(node));
 
-			Assert.AreEqual(2, parts.Length, $"Failed to parse expectation on line {i}: {expectations[i]}");
+			Assert.HasCount(2, parts, $"Failed to parse expectation on line {i}: {expectations[i]}");
 			Assert.AreEqual(parts[0], DescribeObject(node), $"Invalid node on line {i}");
 			Assert.AreEqual(parts[1], actual, $"Invalid property(ies) on line {i}");
 		}

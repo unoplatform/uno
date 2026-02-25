@@ -74,7 +74,7 @@ namespace Uno.UI.Xaml.Input
 		/// <summary>
 		/// Gets the focus state.
 		/// </summary>
-		internal FocusState FocusState { get; } = FocusState.Unfocused;
+		internal FocusState FocusState { get; set; } = FocusState.Unfocused;
 
 		/// <summary>
 		/// Gets the focus navigation direction.

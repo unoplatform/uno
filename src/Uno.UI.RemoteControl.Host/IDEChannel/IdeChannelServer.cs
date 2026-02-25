@@ -26,6 +26,8 @@ internal class IdeChannelServer : IIdeChannel, IDisposable
 	private Proxy? _proxy;
 	private readonly Timer _keepAliveTimer;
 
+	internal bool IsConnected => _pipeServer?.IsConnected ?? false;
+
 	public IdeChannelServer(ILogger<IdeChannelServer> logger, IOptionsMonitor<IdeChannelServerOptions> config)
 	{
 		_logger = logger;

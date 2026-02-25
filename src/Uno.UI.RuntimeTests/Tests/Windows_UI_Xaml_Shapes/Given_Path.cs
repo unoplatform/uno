@@ -38,8 +38,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 #if WINAPPSDK
 			Assert.AreEqual(new Size(11, 50), SUT.DesiredSize);
 #else
-			Assert.IsTrue(Math.Abs(11 - SUT.DesiredSize.Width) <= 1, $"Actual size: {SUT.DesiredSize}");
-			Assert.IsTrue(Math.Abs(50 - SUT.DesiredSize.Height) <= 1, $"Actual size: {SUT.DesiredSize}");
+			Assert.IsLessThanOrEqualTo(1, Math.Abs(11 - SUT.DesiredSize.Width), $"Actual size: {SUT.DesiredSize}");
+			Assert.IsLessThanOrEqualTo(1, Math.Abs(50 - SUT.DesiredSize.Height), $"Actual size: {SUT.DesiredSize}");
 #endif
 		}
 
@@ -167,6 +167,118 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 
 			var screenShot = await UITestHelper.ScreenShot(SUT);
 			ImageAssert.HasColorAt(screenShot, new Point(90, 50), "#FF38FF52");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3238")]
+#if !__SKIA__ && !WINAPPSDK
+		[Ignore("Geometry.Transform is only implemented on Skia and WinUI.")]
+#endif
+		public async Task When_Geometry_Transform_Translates_Rendering()
+		{
+			var path = new Path
+			{
+				Data = new RectangleGeometry
+				{
+					Rect = new Rect(0, 0, 50, 50),
+					Transform = new TranslateTransform { X = 60, Y = 60 }
+				},
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Width = 150,
+				Height = 150
+			};
+
+			await UITestHelper.Load(path);
+
+			var screenshot = await UITestHelper.ScreenShot(path);
+
+			// The rectangle is at (0,0)-(50,50) but translated by (60,60),
+			// so it should render at (60,60)-(110,110).
+			// Origin area should NOT be red
+			ImageAssert.DoesNotHaveColorAt(screenshot, new Point(10, 10), Microsoft.UI.Colors.Red);
+			// Translated position should be red
+			ImageAssert.HasColorAt(screenshot, new Point(85, 85), Microsoft.UI.Colors.Red);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3238")]
+#if !__SKIA__ && !WINAPPSDK
+		[Ignore("Geometry.Transform is only implemented on Skia and WinUI.")]
+#endif
+		public async Task When_Geometry_Transform_Changed_At_Runtime()
+		{
+			var translate = new TranslateTransform { X = 0, Y = 0 };
+			var path = new Path
+			{
+				Data = new RectangleGeometry
+				{
+					Rect = new Rect(0, 0, 50, 50),
+					Transform = translate
+				},
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Width = 150,
+				Height = 150
+			};
+
+			await UITestHelper.Load(path);
+
+			// Initially, the rect is at (0,0)
+			var screenshotBefore = await UITestHelper.ScreenShot(path);
+			ImageAssert.HasColorAt(screenshotBefore, new Point(25, 25), Microsoft.UI.Colors.Red);
+			ImageAssert.DoesNotHaveColorAt(screenshotBefore, new Point(125, 125), Microsoft.UI.Colors.Red);
+
+			// Change the transform at runtime (simulates what an animation would do)
+			translate.X = 80;
+			translate.Y = 80;
+
+			await WindowHelper.WaitForIdle();
+
+			// After transform change, the rect should have moved
+			var screenshotAfter = await UITestHelper.ScreenShot(path);
+			ImageAssert.HasColorAt(screenshotAfter, new Point(105, 105), Microsoft.UI.Colors.Red);
+			// Origin should no longer be red
+			ImageAssert.DoesNotHaveColorAt(screenshotAfter, new Point(10, 10), Microsoft.UI.Colors.Red);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3238")]
+#if !__SKIA__ && !WINAPPSDK
+		[Ignore("Geometry.Transform is only implemented on Skia and WinUI.")]
+#endif
+		public async Task When_GeometryGroup_Children_Have_Transforms()
+		{
+			var path = new Path
+			{
+				Data = new GeometryGroup
+				{
+					Children =
+					{
+						new RectangleGeometry
+						{
+							Rect = new Rect(0, 0, 40, 40),
+						},
+						new RectangleGeometry
+						{
+							Rect = new Rect(0, 0, 40, 40),
+							Transform = new TranslateTransform { X = 80, Y = 80 }
+						}
+					}
+				},
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Width = 150,
+				Height = 150
+			};
+
+			await UITestHelper.Load(path);
+
+			var screenshot = await UITestHelper.ScreenShot(path);
+
+			// First rect at origin should be red
+			ImageAssert.HasColorAt(screenshot, new Point(20, 20), Microsoft.UI.Colors.Red);
+			// Second rect translated to (80,80) should be red
+			ImageAssert.HasColorAt(screenshot, new Point(100, 100), Microsoft.UI.Colors.Red);
+			// Gap between the two rects should NOT be red
+			ImageAssert.DoesNotHaveColorAt(screenshot, new Point(60, 60), Microsoft.UI.Colors.Red);
 		}
 
 		private void Brush_ImageOpened(object sender, Microsoft.UI.Xaml.RoutedEventArgs e) => throw new NotImplementedException();

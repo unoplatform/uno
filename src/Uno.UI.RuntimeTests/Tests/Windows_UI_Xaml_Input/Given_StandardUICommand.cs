@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Private.Infrastructure;
 using Windows.System;
@@ -90,123 +91,131 @@ public class Given_StandardUICommand
 		"Cut",
 		"Remove the selected content and put it on the clipboard",
 		Symbol.Cut,
-		VirtualKey.X,
-		VirtualKeyModifiers.Control)]
+		VirtualKey.X)]
 	[DataRow(
 		StandardUICommandKind.Copy,
 		"Copy",
 		"Copy the selected content to the clipboard",
 		Symbol.Copy,
-		VirtualKey.C,
-		VirtualKeyModifiers.Control)]
+		VirtualKey.C)]
 	[DataRow(
 		StandardUICommandKind.Paste,
 		"Paste",
 		"Insert the contents of the clipboard at the current location",
 		Symbol.Paste,
-		VirtualKey.V,
-		VirtualKeyModifiers.Control)]
+		VirtualKey.V)]
 	[DataRow(
 		StandardUICommandKind.SelectAll,
 		"Select All",
 		"Select all content",
 		Symbol.SelectAll,
-		VirtualKey.A,
-		VirtualKeyModifiers.Control)]
+		VirtualKey.A)]
 	[DataRow(
 		StandardUICommandKind.Delete,
 		"Delete",
 		"Delete the selected content",
 		Symbol.Delete,
-		VirtualKey.Delete,
-		VirtualKeyModifiers.None)]
+		VirtualKey.Delete)]
 	[DataRow(
 		StandardUICommandKind.Share,
 		"Share",
 		"Share the selected content",
 		Symbol.Share,
-		VirtualKey.None,
-		VirtualKeyModifiers.None)]
+		VirtualKey.None)]
 	[DataRow(
 		StandardUICommandKind.Save,
 		"Save",
 		"Save your changes",
 		Symbol.Save,
-		VirtualKey.S,
-		VirtualKeyModifiers.Control)]
+		VirtualKey.S)]
 	[DataRow(
 		StandardUICommandKind.Open,
 		"Open",
 		"Open",
 		Symbol.OpenFile,
-		VirtualKey.O,
-		VirtualKeyModifiers.Control)]
+		VirtualKey.O)]
 	[DataRow(
 		StandardUICommandKind.Close,
 		"Close",
 		"Close",
 		Symbol.Cancel,
-		VirtualKey.W,
-		VirtualKeyModifiers.Control)]
+		VirtualKey.W)]
 	[DataRow(
 		StandardUICommandKind.Pause,
 		"Pause",
 		"Pause",
 		Symbol.Pause,
-		VirtualKey.None,
-		VirtualKeyModifiers.None)]
+		VirtualKey.None)]
 	[DataRow(
 		StandardUICommandKind.Play,
 		"Play",
 		"Play",
 		Symbol.Play,
-		VirtualKey.None,
-		VirtualKeyModifiers.None)]
+		VirtualKey.None)]
 	[DataRow(
 		StandardUICommandKind.Stop,
 		"Stop",
 		"Stop",
 		Symbol.Stop,
-		VirtualKey.None,
-		VirtualKeyModifiers.None)]
+		VirtualKey.None)]
 	[DataRow(
 		StandardUICommandKind.Forward,
 		"Forward",
 		"Go to the next item",
 		Symbol.Forward,
-		VirtualKey.None,
-		VirtualKeyModifiers.None)]
+		VirtualKey.None)]
 	[DataRow(
 		StandardUICommandKind.Backward,
 		"Backward",
 		"Go to the previous item",
 		Symbol.Back,
-		VirtualKey.None,
-		VirtualKeyModifiers.None)]
+		VirtualKey.None)]
 	[DataRow(
 		StandardUICommandKind.Undo,
 		"Undo",
 		"Reverse the most recent action",
 		Symbol.Undo,
-		VirtualKey.Z,
-		VirtualKeyModifiers.Control)]
+		VirtualKey.Z)]
 	[DataRow(
 		StandardUICommandKind.Redo,
 		"Redo",
 		"Repeat the most recently undone action",
 		Symbol.Redo,
-		VirtualKey.Y,
-		VirtualKeyModifiers.Control)]
+		VirtualKey.Y)]
 	public void When_Predefined_StandardUICommand(
 		StandardUICommandKind kind,
 		string label,
 		string description,
 		Symbol symbol,
-		VirtualKey virtualKey,
-		VirtualKeyModifiers modifiers)
+		VirtualKey virtualKey)
 	{
 		var SUT = new StandardUICommand(kind);
-		AssertStandardUICommandProperties(SUT, label, description, symbol, virtualKey, modifiers);
+		var expectedModifiers = GetExpectedModifierForKey(virtualKey);
+		AssertStandardUICommandProperties(SUT, label, description, symbol, virtualKey, expectedModifiers);
+	}
+
+	/// <summary>
+	/// Gets the expected modifier key based on the virtual key and platform.
+	/// On Apple platforms (macOS, iOS, Mac Catalyst) and WASM on Apple devices,
+	/// uses VirtualKeyModifiers.Windows (which maps to the Command key).
+	/// On other platforms, uses Control key.
+	/// </summary>
+	private static VirtualKeyModifiers GetExpectedModifierForKey(VirtualKey virtualKey)
+	{
+		// Commands that use platform-specific command modifier
+		var commandKeys = new[] { VirtualKey.X, VirtualKey.C, VirtualKey.V, VirtualKey.A,
+			VirtualKey.S, VirtualKey.O, VirtualKey.W, VirtualKey.Z, VirtualKey.Y };
+
+		if (!commandKeys.Contains(virtualKey))
+		{
+			return VirtualKeyModifiers.None;
+		}
+
+#if HAS_UNO_WINUI
+		return Uno.UI.Helpers.DeviceTargetHelper.PlatformCommandModifier;
+#else
+		return VirtualKeyModifiers.Control;
+#endif
 	}
 
 	[TestMethod]
@@ -228,7 +237,7 @@ public class Given_StandardUICommand
 			"Copy the selected content to the clipboard",
 			Symbol.Copy,
 			VirtualKey.C,
-			VirtualKeyModifiers.Control);
+			GetExpectedModifierForKey(VirtualKey.C));
 	}
 
 	[TestMethod]
@@ -252,7 +261,7 @@ public class Given_StandardUICommand
 			"Copy the selected content to the clipboard",
 			Symbol.Copy,
 			VirtualKey.C,
-			VirtualKeyModifiers.Control);
+			GetExpectedModifierForKey(VirtualKey.C));
 
 		SUT.Kind = StandardUICommandKind.Cut;
 
@@ -262,7 +271,7 @@ public class Given_StandardUICommand
 			"Remove the selected content and put it on the clipboard",
 			Symbol.Cut,
 			VirtualKey.X,
-			VirtualKeyModifiers.Control);
+			GetExpectedModifierForKey(VirtualKey.X));
 	}
 
 	[TestMethod]
@@ -339,11 +348,11 @@ public class Given_StandardUICommand
 		}
 		if (virtualKey == VirtualKey.None)
 		{
-			Assert.AreEqual(0, command.KeyboardAccelerators.Count);
+			Assert.IsEmpty(command.KeyboardAccelerators);
 		}
 		else
 		{
-			Assert.AreEqual(1, command.KeyboardAccelerators.Count);
+			Assert.HasCount(1, command.KeyboardAccelerators);
 			var keyboardAccelerator = command.KeyboardAccelerators[0];
 			Assert.AreEqual(virtualKey, keyboardAccelerator.Key);
 			Assert.AreEqual(modifiers, keyboardAccelerator.Modifiers);

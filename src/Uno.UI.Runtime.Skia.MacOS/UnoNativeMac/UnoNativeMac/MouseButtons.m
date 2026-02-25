@@ -53,21 +53,12 @@ static int sDepth[8] = {0};
         }
     }
     
-    // 2) Fall back to AppKit snapshot
-    NSInteger appKitMask = [NSEvent pressedMouseButtons];
-    
     if (m != 0) {
-        // If we think buttons are down, but AppKit says NONE are down, we likely missed a MouseUp.
-        // We trust AppKit and reset our counters.
-        if (appKitMask == 0) {
-            for (int i = 0; i < 8; i++) {
-                sDepth[i] = 0;
-            }
-            return 0;
-        }
         return m;
     }
 
+    // 2) AppKit fallback (may be inaccurate; doesn't track taps)
+    NSInteger appKitMask = [NSEvent pressedMouseButtons];
     if (appKitMask != 0) return appKitMask;
 
     // 3) Quartz fallback (polls physical state; taps may already be up)
@@ -77,6 +68,17 @@ static int sDepth[8] = {0};
         }
     }
     return m;
+}
+
++ (NSInteger)buttonMask:(NSEvent *)e
+{    
+    // reset the mask in cases where we believe we missed a MouseUp
+    for (int i = 0; i < 8; i++) {
+        sDepth[i] = 0;
+    }
+
+    [self track:e];
+    return [self mask];
 }
 
 @end

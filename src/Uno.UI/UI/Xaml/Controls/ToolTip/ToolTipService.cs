@@ -1,9 +1,13 @@
 ﻿using System;
+using DirectUI;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
 using Uno.UI;
+using Uno.UI.Xaml.Core;
 using Windows.System;
+using Windows.UI;
+
 
 #if __APPLE_UIKIT__
 using UIKit;
@@ -20,6 +24,8 @@ public partial class ToolTipService
 	private static uint m_LastEnteredFrameId;
 	private static DispatcherTimer m_OpenTimer;
 	private static DispatcherTimer m_CloseTimer;
+
+	private static AutomaticToolTipInputMode s_lastEnterInputMode = AutomaticToolTipInputMode.Mouse;
 
 	private static void RegisterToolTip(
 		DependencyObject owner,
@@ -88,13 +94,15 @@ public partial class ToolTipService
 		}
 	}
 
-	private static void OpenToolTipImpl(ToolTip toolTip)
+	private static void OpenToolTipImpl(ToolTip toolTip, AutomaticToolTipInputMode mode)
 	{
 		if (m_CurrentToolTip is { })
 		{
 			// Only one instance of the tooltip can be opened at any time.
 			CloseToolTipImpl(m_CurrentToolTip);
 		}
+
+		s_lastEnterInputMode = mode;
 
 		if (toolTip is { })
 		{
@@ -136,6 +144,7 @@ public partial class ToolTipService
 
 		if (m_CurrentToolTip is { })
 		{
+			m_CurrentToolTip.m_inputMode = s_lastEnterInputMode;
 			m_CurrentToolTip.IsOpen = true;
 		}
 
@@ -238,10 +247,26 @@ public partial class ToolTipService
 	{
 		if (sender is FrameworkElement owner && GetActualToolTipObject(owner) is { } toolTip)
 		{
-			if (toolTip.IsOpen) return;
+			if (toolTip.IsOpen)
+			{
+				return;
+			}
 
-			EnsureOpenTimer();
-			OpenToolTipImpl(toolTip);
+			ContentRoot contentRoot = VisualTree.GetContentRootForElement(owner);
+
+			var focusState = contentRoot?.FocusManager.GetRealFocusStateForFocusedElement();
+
+			// If the source of a programmatic focus was UIA, we should show the tooltip:
+			bool shouldShowToolTip = (focusState == FocusState.Keyboard) ||
+									 (focusState == FocusState.Programmatic
+										&& sender is not null
+										&& contentRoot?.InputManager?.GetWasUIAFocusSetSinceLastInput() == true);
+
+			if (shouldShowToolTip)
+			{
+				EnsureOpenTimer();
+				OpenToolTipImpl(toolTip, AutomaticToolTipInputMode.Keyboard);
+			}
 		}
 	}
 
@@ -258,7 +283,7 @@ public partial class ToolTipService
 
 			EnsureOpenTimer();
 			m_LastEnteredFrameId = e.FrameId;
-			OpenToolTipImpl(toolTip);
+			OpenToolTipImpl(toolTip, e.Pointer.PointerDeviceType == UI.Input.PointerDeviceType.Touch ? AutomaticToolTipInputMode.Touch : AutomaticToolTipInputMode.Mouse);
 		}
 	}
 

@@ -16,7 +16,7 @@ partial class SelectorItem
 		bool animateIfBringIntoView,
 		out bool pFocused,
 		FocusNavigationDirection focusNavigationDirection,
-		InputActivationBehavior inputActivationBehavior)
+		Uno.UI.Xaml.Input.InputActivationBehavior inputActivationBehavior)
 	{
 		bool isItemAlreadyFocused = false;
 		DependencyObject spItemToFocus = null;

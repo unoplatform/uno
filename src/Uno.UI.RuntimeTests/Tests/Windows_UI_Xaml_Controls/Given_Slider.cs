@@ -31,8 +31,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsNotNull(thumb);
 
-			Assert.IsTrue(thumb.ActualWidth > 0);
-			Assert.IsTrue(thumb.ActualHeight > 0);
+			Assert.IsGreaterThan(0, thumb.ActualWidth);
+			Assert.IsGreaterThan(0, thumb.ActualHeight);
 		}
 
 		[TestMethod]

@@ -389,6 +389,11 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_webview_unsupported_scheme_identified_callback(delegate* unmanaged[Cdecl]<IntPtr, sbyte*, int> callback);
 
+	// WebResourceRequested callback - returns JSON string of headers to inject, or null for no modification
+	// The returned string is allocated by C# and must be freed by native code using free()
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_webview_resource_requested_callback(delegate* unmanaged[Cdecl]<IntPtr, sbyte*, sbyte*, sbyte*> callback);
+
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial nint uno_webview_create(nint window, string ok, string cancel);
 

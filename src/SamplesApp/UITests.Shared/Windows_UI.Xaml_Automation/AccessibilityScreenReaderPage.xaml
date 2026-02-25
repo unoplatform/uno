@@ -1,0 +1,603 @@
+<UserControl
+	x:Class="UITests.Shared.Windows_UI_Xaml_Automation.AccessibilityScreenReaderPage"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	d:DesignHeight="3000"
+	d:DesignWidth="800">
+
+	<ScrollViewer>
+		<StackPanel Spacing="12" Padding="20">
+
+			<!-- Page header -->
+			<TextBlock
+				Text="Accessibility - Screen Reader Support"
+				AutomationProperties.HeadingLevel="Level1"
+				Style="{ThemeResource TitleTextBlockStyle}" />
+
+			<TextBlock TextWrapping="WrapWholeWords">
+				This sample demonstrates the accessibility properties supported by the macOS VoiceOver screen reader.
+				Each section shows a specific accessibility feature with examples that can be tested with VoiceOver (Cmd+F5).
+			</TextBlock>
+
+			<!-- ============================================== -->
+			<!-- SECTION: Accessible Names -->
+			<!-- ============================================== -->
+			<TextBlock
+				Margin="0,20,0,0"
+				AutomationProperties.HeadingLevel="Level2"
+				Style="{ThemeResource SubtitleTextBlockStyle}"
+				Text="Accessible names" />
+
+			<TextBlock TextWrapping="WrapWholeWords">
+				An accessible name is a short, descriptive text string that a screen reader uses to describe a UI element.
+				If the control's content can be converted to a string, an accessible name is automatically determined from the visible text.
+			</TextBlock>
+
+			<!-- Auto name from content -->
+			<TextBlock
+				Margin="0,12,0,0"
+				AutomationProperties.HeadingLevel="Level3"
+				Style="{ThemeResource BodyStrongTextBlockStyle}"
+				Text="Getting an accessible name automatically" />
+
+			<Border Padding="12" CornerRadius="8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+				<StackPanel Spacing="12">
+					<Button Content="Download survey" />
+					<TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}">
+						VoiceOver reads this button as "Download survey". The name is automatically derived from the Button's Content.
+					</TextBlock>
+				</StackPanel>
+			</Border>
+
+			<!-- TextBox with Header and PlaceholderText -->
+			<Border Padding="12" CornerRadius="8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+				<StackPanel Spacing="12">
+					<TextBox
+						Width="200"
+						HorizontalAlignment="Left"
+						Header="Name" />
+
+					<TextBox
+						Width="200"
+						HorizontalAlignment="Left"
+						PlaceholderText="Nickname" />
+
+					<TextBox
+						MinWidth="200"
+						HorizontalAlignment="Left"
+						Header="Email"
+						PlaceholderText="test@example.com" />
+
+					<TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="WrapWholeWords">
+						VoiceOver reads these TextBoxes as "Name", "Nickname", and "Email".
+						When both Header and PlaceholderText are present, Header is used as name and PlaceholderText is used as description.
+					</TextBlock>
+				</StackPanel>
+			</Border>
+
+			<!-- Manual name via AutomationProperties.Name -->
+			<TextBlock
+				Margin="0,12,0,0"
+				AutomationProperties.HeadingLevel="Level3"
+				Style="{ThemeResource BodyStrongTextBlockStyle}"
+				Text="Setting an accessible name manually" />
+
+			<Border Padding="12" CornerRadius="8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+				<StackPanel Spacing="12">
+					<ListView
+						Width="300"
+						HorizontalAlignment="Left"
+						AutomationProperties.Name="Contacts">
+						<ListViewItem>Nathan Quinn</ListViewItem>
+						<ListViewItem>Jessica Lamber</ListViewItem>
+						<ListViewItem>Carl Bond</ListViewItem>
+						<ListViewItem>Jessica Russel</ListViewItem>
+					</ListView>
+					<TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="WrapWholeWords">
+						VoiceOver reads this ListView as "Contacts", while each item will be read using its respective text content.
+					</TextBlock>
+				</StackPanel>
+			</Border>
+
+			<!-- Image with accessible name -->
+			<Border Padding="12" CornerRadius="8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+				<StackPanel Spacing="12">
+					<Border CornerRadius="4" Width="150" Height="150" HorizontalAlignment="Left" Background="{ThemeResource SystemAccentColor}">
+						<TextBlock Text="🍇" FontSize="60" HorizontalAlignment="Center" VerticalAlignment="Center"
+							AutomationProperties.Name="Grapes image placeholder" />
+					</Border>
+					<TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="WrapWholeWords">
+						The element above has AutomationProperties.Name="Grapes image placeholder" so VoiceOver announces it by name.
+					</TextBlock>
+				</StackPanel>
+			</Border>
+
+			<!-- LabeledBy -->
+			<TextBlock
+				Margin="0,12,0,0"
+				AutomationProperties.HeadingLevel="Level3"
+				Style="{ThemeResource BodyStrongTextBlockStyle}"
+				Text="Using another control to provide an accessible name (LabeledBy)" />
+
+			<Border Padding="12" CornerRadius="8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+				<StackPanel Spacing="8">
+					<TextBlock
+						x:Name="InputLabel"
+						AutomationProperties.AccessibilityView="Raw"
+						Style="{ThemeResource BodyTextBlockStyle}"
+						Text="Searching Photos:" />
+					<TextBox
+						Width="200"
+						HorizontalAlignment="Left"
+						AutomationProperties.LabeledBy="{x:Bind InputLabel}" />
+					<TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="WrapWholeWords">
+						The TextBox above is labeled by the TextBlock and will be read as "Searching Photos".
+						The label TextBlock uses AccessibilityView="Raw" to hide it from VoiceOver (avoiding redundancy).
+					</TextBlock>
+				</StackPanel>
+			</Border>
+
+			<!-- ============================================== -->
+			<!-- SECTION: Common Accessibility Properties -->
+			<!-- ============================================== -->
+			<TextBlock
+				Margin="0,20,0,0"
+				AutomationProperties.HeadingLevel="Level2"
+				Style="{ThemeResource SubtitleTextBlockStyle}"
+				Text="Common accessibility properties" />
+
+			<TextBlock TextWrapping="WrapWholeWords">
+				Besides accessible name, common accessibility properties include description and help text,
+				position in set, headings and landmarks.
+			</TextBlock>
+
+			<!-- Description and HelpText -->
+			<TextBlock
+				Margin="0,12,0,0"
+				AutomationProperties.HeadingLevel="Level3"
+				Style="{ThemeResource BodyStrongTextBlockStyle}"
+				Text="Description and help text" />
+
+			<Border Padding="12" CornerRadius="8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+				<StackPanel Spacing="8">
+					<!-- FullDescription -->
+					<StackPanel Spacing="8">
+						<CheckBox AutomationProperties.FullDescription="{x:Bind ClearCacheDescription.Text}" Content="Clear cache on exit" />
+						<TextBlock
+							x:Name="ClearCacheDescription"
+							AutomationProperties.AccessibilityView="Raw"
+							Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+							TextWrapping="WrapWholeWords"
+							Text="Deletes all cached items when closing the browser. This includes cookies, images, and browsing history." />
+					</StackPanel>
+
+					<!-- HelpText and Tooltip -->
+					<Button
+						AutomationProperties.HelpText="Launch the cancellation wizard"
+						Content="Cancel RSS subscriptions"
+						ToolTipService.ToolTip="Launch the cancellation wizard" />
+
+					<TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="WrapWholeWords">
+						FullDescription provides an extended description. HelpText provides short contextual help.
+						Both are read by VoiceOver in addition to the control's name.
+					</TextBlock>
+				</StackPanel>
+			</Border>
+
+			<!-- Position in set -->
+			<TextBlock
+				Margin="0,12,0,0"
+				AutomationProperties.HeadingLevel="Level3"
+				Style="{ThemeResource BodyStrongTextBlockStyle}"
+				Text="Position in set" />
+
+			<Border Padding="12" CornerRadius="8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+				<StackPanel Spacing="8">
+					<TextBlock
+						x:Name="StudentsLabel"
+						AutomationProperties.AccessibilityView="Raw"
+						Style="{ThemeResource BodyStrongTextBlockStyle}"
+						Text="Students" />
+					<ListView AutomationProperties.LabeledBy="{x:Bind StudentsLabel}">
+						<ListView.ItemTemplate>
+							<DataTemplate x:DataType="x:String">
+								<TextBlock Text="{x:Bind}" />
+							</DataTemplate>
+						</ListView.ItemTemplate>
+						<x:String>Nathan Quinn</x:String>
+						<x:String>Jessica Lamber</x:String>
+						<x:String>Carl Bond</x:String>
+						<x:String>Jessica Russel</x:String>
+					</ListView>
+
+					<!-- Custom PositionInSet / SizeOfSet -->
+					<TextBlock Style="{ThemeResource BodyStrongTextBlockStyle}" Text="Manual position in set:" />
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<Button
+							AutomationProperties.PositionInSet="1"
+							AutomationProperties.SizeOfSet="3"
+							Content="View" />
+						<Button
+							AutomationProperties.PositionInSet="2"
+							AutomationProperties.SizeOfSet="3"
+							Content="Rename" />
+						<Button
+							AutomationProperties.PositionInSet="3"
+							AutomationProperties.SizeOfSet="3"
+							Content="Delete" />
+					</StackPanel>
+
+					<TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="WrapWholeWords">
+						ListViews automatically provide position in set. For custom layouts, use PositionInSet and SizeOfSet.
+						VoiceOver announces items as "1 of 3", "2 of 3", etc.
+					</TextBlock>
+				</StackPanel>
+			</Border>
+
+			<!-- ============================================== -->
+			<!-- SECTION: Visual tree (AccessibilityView) -->
+			<!-- ============================================== -->
+			<TextBlock
+				Margin="0,20,0,0"
+				AutomationProperties.HeadingLevel="Level2"
+				Style="{ThemeResource SubtitleTextBlockStyle}"
+				Text="Visual tree" />
+
+			<TextBlock TextWrapping="WrapWholeWords">
+				You can hide decorative or redundant elements from screen readers by setting AccessibilityView="Raw".
+				This removes them from the accessibility tree so VoiceOver will skip them.
+			</TextBlock>
+
+			<Border Padding="12" CornerRadius="8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+				<StackPanel Orientation="Horizontal" Spacing="8">
+					<Border CornerRadius="4" Width="40" Height="40" Background="{ThemeResource SystemAccentColor}"
+						AutomationProperties.AccessibilityView="Raw">
+						<TextBlock Text="🌲" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+					</Border>
+
+					<TextBlock
+						MaxWidth="400"
+						VerticalAlignment="Center"
+						TextWrapping="WrapWholeWords">
+						This is some demo text. The emoji on the left is just for decoration.
+						To prevent VoiceOver from reading it, we set AccessibilityView to "Raw",
+						which removes it from the accessibility tree.
+					</TextBlock>
+				</StackPanel>
+			</Border>
+
+			<!-- ============================================== -->
+			<!-- SECTION: Landmarks and Headings -->
+			<!-- ============================================== -->
+			<TextBlock
+				Margin="0,20,0,0"
+				AutomationProperties.HeadingLevel="Level2"
+				Style="{ThemeResource SubtitleTextBlockStyle}"
+				Text="Landmarks and headings" />
+
+			<TextBlock TextWrapping="WrapWholeWords">
+				Landmarks and headings indicate, or label, different sections of a user interface for screen readers,
+				just like visible headings do for visual users. Marking up your content with landmarks and headings
+				lets screen reader users skim content similarly to sighted users.
+			</TextBlock>
+
+			<!-- Landmarks -->
+			<TextBlock
+				Margin="0,12,0,0"
+				AutomationProperties.HeadingLevel="Level3"
+				Style="{ThemeResource BodyStrongTextBlockStyle}"
+				Text="Landmarks" />
+
+			<Border Padding="12" CornerRadius="8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+				<StackPanel Spacing="8">
+					<TextBlock Style="{ThemeResource CaptionTextBlockStyle}" TextWrapping="WrapWholeWords">
+						The sample below showcases Navigation, Search, Main, and Custom landmarks.
+						VoiceOver announces these as landmark regions.
+					</TextBlock>
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="200" />
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="200" />
+						</Grid.ColumnDefinitions>
+
+						<!-- Navigation landmark -->
+						<StackPanel
+							Grid.Column="0"
+							Padding="6"
+							AutomationProperties.LandmarkType="Navigation"
+							Background="{ThemeResource CardStrokeColorDefaultBrush}"
+							CornerRadius="4"
+							Spacing="8">
+							<AutoSuggestBox AutomationProperties.LandmarkType="Search" PlaceholderText="Search" />
+							<Button Content="Open settings" />
+						</StackPanel>
+
+						<!-- Main landmark -->
+						<StackPanel
+							Grid.Column="1"
+							Padding="6"
+							AutomationProperties.LandmarkType="Main">
+							<TextBlock TextWrapping="WrapWholeWords">
+								Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+								Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+							</TextBlock>
+						</StackPanel>
+
+						<!-- Custom landmark with LocalizedLandmarkType -->
+						<StackPanel
+							Grid.Column="2"
+							Padding="6"
+							AutomationProperties.LandmarkType="Custom"
+							AutomationProperties.LocalizedLandmarkType="Current viewers"
+							Background="{ThemeResource CardStrokeColorDefaultBrush}"
+							CornerRadius="4"
+							Spacing="8">
+							<TextBlock
+								AutomationProperties.HeadingLevel="Level1"
+								Style="{ThemeResource BodyStrongTextBlockStyle}"
+								Text="Current viewers" />
+							<TextBlock
+								FontStyle="Italic"
+								Style="{ThemeResource BodyTextBlockStyle}"
+								Text="(No other users viewing)" />
+						</StackPanel>
+					</Grid>
+				</StackPanel>
+			</Border>
+
+			<!-- Headings -->
+			<TextBlock
+				Margin="0,12,0,0"
+				AutomationProperties.HeadingLevel="Level3"
+				Style="{ThemeResource BodyStrongTextBlockStyle}"
+				Text="Headings" />
+
+			<Border Padding="12" CornerRadius="8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+				<StackPanel MaxWidth="500" HorizontalAlignment="Left" Spacing="4">
+					<TextBlock Style="{ThemeResource CaptionTextBlockStyle}" TextWrapping="WrapWholeWords" Margin="0,0,0,8">
+						The sample below showcases headings at different levels.
+						VoiceOver announces these as heading elements.
+					</TextBlock>
+
+					<TextBlock AutomationProperties.HeadingLevel="Level1" FontSize="26">Lorem ipsums</TextBlock>
+					<TextBlock AutomationProperties.HeadingLevel="Level2" FontSize="22">Lorem ipsum</TextBlock>
+					<TextBlock TextWrapping="WrapWholeWords">
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+						Pellentesque feugiat velit pulvinar, vehicula nisi at, molestie risus.
+					</TextBlock>
+
+					<TextBlock AutomationProperties.HeadingLevel="Level2" FontSize="22">Cat ipsum</TextBlock>
+					<TextBlock AutomationProperties.HeadingLevel="Level3" FontSize="18">Standard</TextBlock>
+					<TextBlock TextWrapping="WrapWholeWords">
+						Mice litter kitter kitty litty little kitten big roar roar feed me
+						but i will ruin the couch with my claws and hunt by meowing loudly at 5am next to human.
+					</TextBlock>
+					<TextBlock AutomationProperties.HeadingLevel="Level3" FontSize="18">Cat breeds</TextBlock>
+					<TextBlock TextWrapping="WrapWholeWords">
+						Tabby abyssinian for jaguar. Thai russian blue and ragdoll, ocicat.
+						Mouser puma so american bobtail for donskoy balinese. Scottish fold manx so siamese.
+					</TextBlock>
+
+					<TextBlock AutomationProperties.HeadingLevel="Level2" FontSize="22">Bacon ipsum</TextBlock>
+					<TextBlock TextWrapping="WrapWholeWords">
+						Bacon ipsum dolor amet meatball nulla labore,
+						tempor sirloin chicken frankfurter tail drumstick ex cupim ground round.
+					</TextBlock>
+				</StackPanel>
+			</Border>
+
+			<!-- ============================================== -->
+			<!-- SECTION: Grouping -->
+			<!-- ============================================== -->
+			<TextBlock
+				Margin="0,20,0,0"
+				AutomationProperties.HeadingLevel="Level2"
+				Style="{ThemeResource SubtitleTextBlockStyle}"
+				Text="Associating smaller groups of controls" />
+
+			<TextBlock TextWrapping="WrapWholeWords">
+				You can group controls together by adding an accessible name to the parent container.
+				When entering a named region, VoiceOver will announce the group name as context.
+			</TextBlock>
+
+			<Border Padding="12" CornerRadius="8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+				<StackPanel Spacing="8">
+					<TextBlock Style="{ThemeResource CaptionTextBlockStyle}" TextWrapping="WrapWholeWords">
+						The sample below groups items using accessible names.
+						VoiceOver will read "My albums" or "Shared with me" when navigating between the groups.
+					</TextBlock>
+					<StackPanel AutomationProperties.Name="Album browser">
+						<StackPanel AutomationProperties.Name="My albums">
+							<TextBlock Style="{ThemeResource BodyStrongTextBlockStyle}" Text="My albums" />
+							<ListView>
+								<x:String>Trip to Redmond</x:String>
+								<x:String>Visiting Ben</x:String>
+							</ListView>
+						</StackPanel>
+						<StackPanel AutomationProperties.Name="Shared with me">
+							<TextBlock Style="{ThemeResource BodyStrongTextBlockStyle}" Text="Shared with me" />
+							<ListView>
+								<x:String>Valeria's cat</x:String>
+								<x:String>Paul's winter vacation</x:String>
+								<x:String>Cool street photography</x:String>
+							</ListView>
+						</StackPanel>
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+			<!-- ============================================== -->
+			<!-- SECTION: Interactive Controls -->
+			<!-- ============================================== -->
+			<TextBlock
+				Margin="0,20,0,0"
+				AutomationProperties.HeadingLevel="Level2"
+				Style="{ThemeResource SubtitleTextBlockStyle}"
+				Text="Interactive controls" />
+
+			<TextBlock TextWrapping="WrapWholeWords">
+				The following examples demonstrate accessible interactive controls:
+				toggle/checkbox, slider, password field, combobox, and multi-line text.
+			</TextBlock>
+
+			<!-- Toggle / Checkbox -->
+			<TextBlock
+				Margin="0,12,0,0"
+				AutomationProperties.HeadingLevel="Level3"
+				Style="{ThemeResource BodyStrongTextBlockStyle}"
+				Text="Toggle states (CheckBox, ToggleSwitch, RadioButton)" />
+
+			<Border Padding="12" CornerRadius="8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+				<StackPanel Spacing="8">
+					<CheckBox Content="Enable notifications" IsChecked="True" />
+					<CheckBox Content="Send analytics" IsChecked="False" />
+					<ToggleSwitch Header="Dark mode" IsOn="True" />
+					<StackPanel Orientation="Horizontal" Spacing="16">
+						<RadioButton Content="Small" GroupName="Size" IsChecked="True" />
+						<RadioButton Content="Medium" GroupName="Size" />
+						<RadioButton Content="Large" GroupName="Size" />
+					</StackPanel>
+					<TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="WrapWholeWords">
+						VoiceOver announces the checked/unchecked or on/off state of these controls.
+					</TextBlock>
+				</StackPanel>
+			</Border>
+
+			<!-- Slider / Range value -->
+			<TextBlock
+				Margin="0,12,0,0"
+				AutomationProperties.HeadingLevel="Level3"
+				Style="{ThemeResource BodyStrongTextBlockStyle}"
+				Text="Slider (range value)" />
+
+			<Border Padding="12" CornerRadius="8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+				<StackPanel Spacing="8">
+					<Slider
+						Header="Volume"
+						Minimum="0"
+						Maximum="100"
+						Value="50"
+						Width="300"
+						HorizontalAlignment="Left" />
+					<TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="WrapWholeWords">
+						VoiceOver reads the slider value and allows incrementing/decrementing with VoiceOver gestures.
+					</TextBlock>
+				</StackPanel>
+			</Border>
+
+			<!-- Password field -->
+			<TextBlock
+				Margin="0,12,0,0"
+				AutomationProperties.HeadingLevel="Level3"
+				Style="{ThemeResource BodyStrongTextBlockStyle}"
+				Text="Password field" />
+
+			<Border Padding="12" CornerRadius="8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+				<StackPanel Spacing="8">
+					<PasswordBox
+						Header="Password"
+						PlaceholderText="Enter your password"
+						Width="200"
+						HorizontalAlignment="Left" />
+					<TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="WrapWholeWords">
+						VoiceOver announces this as a "secure text field" and does not expose the password text.
+					</TextBlock>
+				</StackPanel>
+			</Border>
+
+			<!-- ComboBox -->
+			<TextBlock
+				Margin="0,12,0,0"
+				AutomationProperties.HeadingLevel="Level3"
+				Style="{ThemeResource BodyStrongTextBlockStyle}"
+				Text="ComboBox (expand/collapse)" />
+
+			<Border Padding="12" CornerRadius="8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+				<StackPanel Spacing="8">
+					<ComboBox Header="Favorite color" Width="200" HorizontalAlignment="Left">
+						<ComboBoxItem Content="Red" />
+						<ComboBoxItem Content="Green" />
+						<ComboBoxItem Content="Blue" />
+						<ComboBoxItem Content="Yellow" />
+					</ComboBox>
+					<TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="WrapWholeWords">
+						VoiceOver announces the ComboBox as expandable, reads the selected value, and supports expand/collapse actions.
+					</TextBlock>
+				</StackPanel>
+			</Border>
+
+			<!-- Multi-line text -->
+			<TextBlock
+				Margin="0,12,0,0"
+				AutomationProperties.HeadingLevel="Level3"
+				Style="{ThemeResource BodyStrongTextBlockStyle}"
+				Text="Multi-line text editing" />
+
+			<Border Padding="12" CornerRadius="8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+				<StackPanel Spacing="8">
+					<TextBox
+						Header="Comments"
+						AcceptsReturn="True"
+						TextWrapping="Wrap"
+						Width="300"
+						Height="100"
+						HorizontalAlignment="Left" />
+					<TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="WrapWholeWords">
+						VoiceOver announces this as a "text area" instead of "text field" because AcceptsReturn is true.
+					</TextBlock>
+				</StackPanel>
+			</Border>
+
+			<!-- Required field -->
+			<TextBlock
+				Margin="0,12,0,0"
+				AutomationProperties.HeadingLevel="Level3"
+				Style="{ThemeResource BodyStrongTextBlockStyle}"
+				Text="Required field" />
+
+			<Border Padding="12" CornerRadius="8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+				<StackPanel Spacing="8">
+					<TextBox
+						Header="Full name"
+						AutomationProperties.IsRequiredForForm="True"
+						Width="200"
+						HorizontalAlignment="Left" />
+					<TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="WrapWholeWords">
+						VoiceOver announces this field as "required" when it has IsRequiredForForm set to True.
+					</TextBlock>
+				</StackPanel>
+			</Border>
+
+			<!-- ============================================== -->
+			<!-- SECTION: Live Regions -->
+			<!-- ============================================== -->
+			<TextBlock
+				Margin="0,20,0,0"
+				AutomationProperties.HeadingLevel="Level2"
+				Style="{ThemeResource SubtitleTextBlockStyle}"
+				Text="Live regions" />
+
+			<Border Padding="12" CornerRadius="8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+				<StackPanel Spacing="8">
+					<TextBlock
+						x:Name="LiveRegionText"
+						AutomationProperties.LiveSetting="Polite"
+						Text="Status: Ready"
+						Style="{ThemeResource BodyTextBlockStyle}" />
+					<Button Content="Update status" x:Name="LiveRegionButton" Click="OnUpdateLiveRegion" />
+					<TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="WrapWholeWords">
+						When the status text changes, VoiceOver will automatically announce the new text
+						because it is marked as a polite live region.
+					</TextBlock>
+				</StackPanel>
+			</Border>
+
+			<!-- Bottom padding -->
+			<Border Height="40" />
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

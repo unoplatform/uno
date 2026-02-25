@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -311,6 +311,9 @@
   </data>
   <data name="TEXT_CONTEXT_MENU_SELECT_ALL" xml:space="preserve">
     <value>ជ្រើសទាំងអស់</value>
+  </data>
+  <data name="TEXT_CONTEXT_MENU_SPELLCHECK_SUGGESTIONS_HEADER" xml:space="preserve">
+    <value>អក្ខរាវិរុទ្ធ</value>
   </data>
   <data name="TEXT_TOGGLESWITCH_ON" xml:space="preserve">
     <value>បើក</value>

@@ -101,7 +101,7 @@ public partial class Given_VisualStateManager
 		Assert.IsTrue(SUT.IsTaskState);
 		Assert.IsTrue(SUT.IsTaskTextVisible);
 		Assert.IsFalse(SUT.IsMessageTextVisible);
-		Assert.AreEqual(true, SUT.LastGoToStateResult);
+		Assert.IsTrue(SUT.LastGoToStateResult);
 
 		SUT.Mode = ButtonMode.Message;
 		await TestServices.WindowHelper.WaitForIdle();
@@ -109,7 +109,7 @@ public partial class Given_VisualStateManager
 		Assert.IsTrue(SUT.IsMessageState);
 		Assert.IsTrue(SUT.IsMessageTextVisible);
 		Assert.IsFalse(SUT.IsTaskTextVisible);
-		Assert.AreEqual(true, SUT.LastGoToStateResult);
+		Assert.IsTrue(SUT.LastGoToStateResult);
 
 		SUT = new VisualStateUserControlWithoutTrigger
 		{
@@ -151,7 +151,7 @@ public partial class Given_VisualStateManager
 		Assert.IsTrue(SUT.IsMessageState);
 		Assert.IsTrue(SUT.IsMessageTextVisible);
 		Assert.IsFalse(SUT.IsTriggerState);
-		Assert.AreEqual(true, SUT.LastGoToStateResult);
+		Assert.IsTrue(SUT.LastGoToStateResult);
 	}
 
 	[TestMethod]
@@ -180,7 +180,7 @@ public partial class Given_VisualStateManager
 		Assert.IsTrue(SUT.IsMessageState);
 		Assert.IsTrue(SUT.IsMessageTextVisible);
 		Assert.IsFalse(SUT.IsTriggerState);
-		Assert.AreEqual(true, SUT.LastGoToStateResult);
+		Assert.IsTrue(SUT.LastGoToStateResult);
 	}
 
 #if HAS_UNO

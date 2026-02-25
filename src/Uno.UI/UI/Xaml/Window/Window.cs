@@ -34,11 +34,7 @@ namespace Microsoft.UI.Xaml;
 /// Represents an application window.
 /// </summary>
 [ContentProperty(Name = nameof(Content))]
-public
-#if !HAS_UNO_WINUI
-sealed
-#endif
-partial class Window
+public partial class Window
 {
 	private static readonly ConcurrentDictionary<AppWindow, Window> _appWindowMap = new();
 	private static Window? _current;
@@ -185,12 +181,7 @@ partial class Window
 		}
 	}
 
-#if HAS_UNO_WINUI
-	public
-#else
-	internal
-#endif
-	AppWindow AppWindow
+	public AppWindow AppWindow
 	{ get; }
 
 	/// <summary>
@@ -314,10 +305,6 @@ partial class Window
 		}
 
 		_windowImplementation.Initialize();
-
-#if !HAS_UNO_WINUI
-		RaiseCreated();
-#endif
 	}
 
 	internal static void EnsureWindowCurrent()
@@ -336,11 +323,7 @@ partial class Window
 	/// </summary>
 	public CoreDispatcher Dispatcher => CoreDispatcher.Main;
 
-#if HAS_UNO_WINUI
 	public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue => global::Microsoft.UI.Dispatching.DispatcherQueue.Main;
-#else
-	internal global::Windows.System.DispatcherQueue DispatcherQueue => global::Windows.System.DispatcherQueue.Main;
-#endif
 
 	/// <summary>
 	/// Gets a value that reports whether the window is visible.

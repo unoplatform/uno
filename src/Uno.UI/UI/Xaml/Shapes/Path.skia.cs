@@ -26,7 +26,7 @@ namespace Microsoft.UI.Xaml.Shapes
 
 			_fillGeometry ??= Visual.Compositor.CreatePathGeometry();
 			SpriteShape.FillGeometry = _fillGeometry;
-			if (Data?.GetFilledSKPath() is { } filledPath)
+			if (Data?.GetTransformedFilledSKPath() is { } filledPath)
 			{
 				_fillGeometry.Path = new CompositionPath(new SkiaGeometrySource2D(filledPath));
 			}

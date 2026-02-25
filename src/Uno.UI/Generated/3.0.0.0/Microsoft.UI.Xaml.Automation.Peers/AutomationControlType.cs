@@ -47,7 +47,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared field Microsoft.UI.Xaml.Automation.Peers.AutomationControlType.Separator
 		// Skipping already declared field Microsoft.UI.Xaml.Automation.Peers.AutomationControlType.SemanticZoom
 		// Skipping already declared field Microsoft.UI.Xaml.Automation.Peers.AutomationControlType.AppBar
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 		FlipView = 41,
 #endif
 	}

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
+using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ItemsControl
 {
@@ -57,6 +58,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ItemsControl
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)] // Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688
 		public void ItemsControl_AppendItem()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ItemsControl.ItemsControl_AppendItem");
@@ -72,7 +74,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ItemsControl
 
 
 			// This check validates that the native collection is properly manipulated
-			Assert.IsTrue(item01.Rect.CenterY < item02.Rect.CenterY);
+			Assert.Less(item01.Rect.CenterY, item02.Rect.CenterY);
 		}
 	}
 }

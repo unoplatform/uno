@@ -213,7 +213,7 @@
 
         <TextBlock x:Name="failedTests" Grid.Row="3" />
         <TextBlock x:Name="runningState" Grid.Row="3" />
-        <ScrollViewer Grid.Row="3">
+        <ScrollViewer x:Name="testResultsScroller" Grid.Row="3">
             <StackPanel x:Name="testResults" Background="Black" />
         </ScrollViewer>
         <Button

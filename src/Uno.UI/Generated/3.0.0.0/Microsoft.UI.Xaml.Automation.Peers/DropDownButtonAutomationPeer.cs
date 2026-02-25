@@ -3,44 +3,17 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class DropDownButtonAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.ButtonAutomationPeer, global::Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Automation.ExpandCollapseState ExpandCollapseState
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ExpandCollapseState DropDownButtonAutomationPeer.ExpandCollapseState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ExpandCollapseState%20DropDownButtonAutomationPeer.ExpandCollapseState");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public DropDownButtonAutomationPeer(global::Microsoft.UI.Xaml.Controls.DropDownButton owner) : base(owner)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer", "DropDownButtonAutomationPeer.DropDownButtonAutomationPeer(DropDownButton owner)");
-		}
-#endif
+		// Skipping already declared property ExpandCollapseState
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer.DropDownButtonAutomationPeer(Microsoft.UI.Xaml.Controls.DropDownButton)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer.DropDownButtonAutomationPeer(Microsoft.UI.Xaml.Controls.DropDownButton)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer.ExpandCollapseState.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Collapse()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer", "void DropDownButtonAutomationPeer.Collapse()");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Expand()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer", "void DropDownButtonAutomationPeer.Expand()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer.Collapse()
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer.Expand()
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider
 	}
 }

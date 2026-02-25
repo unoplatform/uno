@@ -33,6 +33,11 @@ internal class SharedMediaPlayerExtension : IMediaPlayerExtension
 	private static int _vlcInitialized;
 	private static LibVLC _vlc = null!;
 
+	// LibVLC initialization arguments used across the class. Keep these in one place
+	// so the options and the explanatory comment are not duplicated.
+	// --start-paused: Media is loaded but not played automatically (required for proper loading behavior)
+	private static readonly string[] VlcInitArgs = new[] { "--start-paused" };
+
 	private const string MsAppXScheme = "ms-appx";
 	private static readonly ConditionalWeakTable<Windows.Media.Playback.MediaPlayer, SharedMediaPlayerExtension> _mediaPlayerToExtension = new();
 
@@ -138,7 +143,7 @@ internal class SharedMediaPlayerExtension : IMediaPlayerExtension
 		{
 			if (Volatile.Read(ref _vlcInitialized) == 0)
 			{
-				var vlc = new LibVLC("--start-paused");
+				var vlc = new LibVLC(VlcInitArgs);
 				try
 				{
 					var mediaPlayer = new LibVLCSharp.Shared.MediaPlayer(vlc);
@@ -174,7 +179,8 @@ internal class SharedMediaPlayerExtension : IMediaPlayerExtension
 	{
 		if (Interlocked.CompareExchange(ref _vlcInitialized, 1, 0) == 0)
 		{
-			_vlc = new LibVLC("--start-paused");
+			// Initialize shared LibVLC instance using the centralized argument list above.
+			_vlc = new LibVLC(VlcInitArgs);
 		}
 
 		VlcPlayer = new LibVLCSharp.Shared.MediaPlayer(_vlc) { EnableMouseInput = false, EnableKeyInput = false };

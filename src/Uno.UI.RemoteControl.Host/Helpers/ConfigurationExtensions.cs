@@ -48,4 +48,20 @@ internal static class ConfigurationExtensions
 		var trimmed = value.Trim();
 		return trimmed.Length == 0 ? null : trimmed;
 	}
+
+	/// <summary>
+	/// Gets the value for the --addins key, preserving the distinction between
+	/// "not present" (null → MSBuild fallback) and "empty string" (no add-ins).
+	/// </summary>
+	/// <seealso href="../../Uno.UI.DevServer.Cli/addin-discovery.md"/>
+	public static string? GetAddinsValue(this IConfiguration configuration, string key)
+	{
+		var value = configuration[key];
+		if (value is null)
+		{
+			return null;
+		}
+
+		return value.Trim();
+	}
 }

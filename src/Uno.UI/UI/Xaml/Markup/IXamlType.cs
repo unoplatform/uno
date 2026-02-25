@@ -14,13 +14,11 @@ public partial interface IXamlType
 	/// </summary>
 	IXamlType BaseType { get; }
 
-#if HAS_UNO_WINUI // In WUX this is in IXamlType2
 	/// <summary>
 	/// Gets the IXamlType for the boxed type of the XAML type.
 	/// Determination of this value is based on the underlying type for core types.
 	/// </summary>
 	IXamlType BoxedType { get; }
-#endif
 
 	/// <summary>
 	/// Gets the IXamlMember information for the XAML content property of this IXamlType.

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -697,11 +697,11 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		{
 			var testControl = new Test_Control();
 
-			Assert.AreEqual(2, testControl.SubliminalGradientBrushByName.GradientStops.Count);
+			Assert.HasCount(2, testControl.SubliminalGradientBrushByName.GradientStops);
 
 			var fromResources = testControl.Resources["SubliminalGradientBrush"] as LinearGradientBrush;
 			Assert.IsNotNull(fromResources);
-			Assert.AreEqual(2, fromResources.GradientStops.Count);
+			Assert.HasCount(2, fromResources.GradientStops);
 		}
 
 		[TestMethod]

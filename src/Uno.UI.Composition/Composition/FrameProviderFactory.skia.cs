@@ -36,10 +36,30 @@ internal static class FrameProviderFactory
 		}
 
 		var images = GC.AllocateUninitializedArray<SKImage>(frameInfos.Length);
-		var totalDuration = 0;
+		var durations = new int[frameInfos.Length];
+		long totalDuration = 0;
+
 		for (int i = 0; i < frameInfos.Length; i++)
 		{
-			var options = new SKCodecOptions(i);
+			var requiredFrame = frameInfos[i].RequiredFrame;
+
+			if (requiredFrame == -1)
+			{
+				// Independent frame - clear the bitmap before decoding.
+				bitmap.Erase(SKColor.Empty);
+			}
+			else if (requiredFrame != i - 1)
+			{
+				// The required frame is not the immediately preceding one, so we
+				// need to restore its pixels into the bitmap before decoding.
+				using var restoreCanvas = new SKCanvas(bitmap);
+				restoreCanvas.Clear(SKColor.Empty);
+				restoreCanvas.DrawImage(images[requiredFrame], 0, 0);
+			}
+			// When requiredFrame == i - 1, the bitmap already contains the
+			// correct prior frame pixels from the previous iteration.
+
+			var options = new SKCodecOptions(i, requiredFrame);
 			codec.GetPixels(imageInfo, bitmap.GetPixels(), options);
 
 			var currentBitmap = GetImage(bitmap, codec.EncodedOrigin);
@@ -50,10 +70,15 @@ internal static class FrameProviderFactory
 			}
 
 			images[i] = currentBitmap;
-			totalDuration += frameInfos[i].Duration;
+
+			// Clamp zero-duration frames to 100ms to prevent division-by-zero
+			// and match common animated image behavior.
+			var duration = frameInfos[i].Duration;
+			durations[i] = duration > 0 ? duration : 100;
+			totalDuration += durations[i];
 		}
 
-		provider = new GifFrameProvider(images, frameInfos, totalDuration, onFrameChanged);
+		provider = new AnimatedImageFrameProvider(images, durations, totalDuration, onFrameChanged);
 		return true;
 	}
 
@@ -98,16 +123,16 @@ internal static class FrameProviderFactory
 	private static bool SkEncodedOriginSwapsWidthHeight(SKEncodedOrigin origin)
 	{
 		return origin is
-			// Reflected across x - axis.Rotated 90° counter - clockwise.
+			// Reflected across x - axis.Rotated 90ï¿½ counter - clockwise.
 			SKEncodedOrigin.LeftTop or
 
-			// Rotated 90° clockwise.
+			// Rotated 90ï¿½ clockwise.
 			SKEncodedOrigin.RightTop or
 
-			// Reflected across x-axis. Rotated 90° clockwise.
+			// Reflected across x-axis. Rotated 90ï¿½ clockwise.
 			SKEncodedOrigin.RightBottom or
 
-			// Rotated 90° counter-clockwise.
+			// Rotated 90ï¿½ counter-clockwise.
 			SKEncodedOrigin.LeftBottom;
 	}
 

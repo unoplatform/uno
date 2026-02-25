@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -213,12 +213,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			for (int i = 0; i < 5; i++)
 			{
 				AddItems(nv, 10);
-				Assert.AreEqual(10, nv.MenuItems.Count, "Initial count of MenuItems should be 10.");
+				Assert.HasCount(10, nv.MenuItems, "Initial count of MenuItems should be 10.");
 				nv.SelectedItem = nv.MenuItems[0];
 				await WindowHelper.WaitForIdle();
 				Action act = () => nv.MenuItems.Clear();
 				act.Should().NotThrow("Clearing MenuItems should not throw an exception.");
-				Assert.AreEqual(0, nv.MenuItems.Count, "MenuItems should be empty after clearing.");
+				Assert.IsEmpty(nv.MenuItems, "MenuItems should be empty after clearing.");
 			}
 		}
 	}

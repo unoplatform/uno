@@ -1,4 +1,4 @@
-﻿#if __WASM__ || __SKIA__
+#if __WASM__ || __SKIA__
 using System;
 using System.Drawing;
 using System.Linq;
@@ -58,7 +58,7 @@ public class Given_SystemFocusVisual
 		var focusVisualLayer = visualTree?.FocusVisualRoot;
 
 		Assert.IsNotNull(focusVisualLayer);
-		Assert.AreEqual(1, focusVisualLayer.Children.Count);
+		Assert.HasCount(1, focusVisualLayer.Children);
 
 		var focusVisual = focusVisualLayer.Children.First();
 
@@ -120,7 +120,7 @@ public class Given_SystemFocusVisual
 		var focusVisualLayer = visualTree?.FocusVisualRoot;
 
 		Assert.IsNotNull(focusVisualLayer);
-		Assert.AreEqual(1, focusVisualLayer.Children.Count);
+		Assert.HasCount(1, focusVisualLayer.Children);
 
 		for (var i = 0; i < 15; i++)
 		{
@@ -164,7 +164,7 @@ public class Given_SystemFocusVisual
 		var focusVisualLayer = visualTree?.FocusVisualRoot;
 
 		Assert.IsNotNull(focusVisualLayer);
-		Assert.AreEqual(1, focusVisualLayer.Children.Count);
+		Assert.HasCount(1, focusVisualLayer.Children);
 
 		var focusVisual = focusVisualLayer.Children.First();
 
@@ -228,7 +228,7 @@ public class Given_SystemFocusVisual
 		var focusVisualLayer = visualTree?.FocusVisualRoot;
 
 		Assert.IsNotNull(focusVisualLayer);
-		Assert.AreEqual(1, focusVisualLayer.Children.Count);
+		Assert.HasCount(1, focusVisualLayer.Children);
 
 		var focusVisual = focusVisualLayer.Children.First();
 
@@ -308,7 +308,7 @@ public class Given_SystemFocusVisual
 		var focusVisualLayer = visualTree?.FocusVisualRoot;
 
 		Assert.IsNotNull(focusVisualLayer);
-		Assert.AreEqual(1, focusVisualLayer.Children.Count);
+		Assert.HasCount(1, focusVisualLayer.Children);
 
 		var focusVisual = focusVisualLayer.Children.First();
 

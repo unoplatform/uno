@@ -1,5 +1,5 @@
 > [!NOTE]
-> Estimated time to complete: 10 minutes
+> Estimated time to complete: 5 minutes
 
 ## Introduction
 
