@@ -36,6 +36,7 @@ using Uno.UI.Xaml.Media;
 using Point = Windows.Foundation.Point;
 using Size = Windows.Foundation.Size;
 using static Private.Infrastructure.TestServices;
+using Private.Infrastructure;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -1825,7 +1826,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		#endregion
 #endif
 
-#if __SKIA__
 		[TestMethod]
 		public async Task When_TextBlock_ContextFlyout_IsTextCommandBarFlyout()
 		{
@@ -1856,78 +1856,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsNotNull(SUT.SelectionFlyout, "TextBlock should have a default SelectionFlyout when IsTextSelectionEnabled is true");
 			Assert.IsInstanceOfType(SUT.SelectionFlyout, typeof(TextCommandBarFlyout), "SelectionFlyout should be TextCommandBarFlyout");
-		}
-
-		[TestMethod]
-		public async Task When_TextBlock_HasSelection_Commands_Available()
-		{
-			var SUT = new TextBlock
-			{
-				Text = "Test content",
-				Width = 200,
-				IsTextSelectionEnabled = true
-			};
-
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
-
-			SUT.Focus(FocusState.Programmatic);
-			await WindowHelper.WaitForIdle();
-
-			// Select "Test"
-			SUT.Selection = new TextBlock.Range(0, 4);
-			await WindowHelper.WaitForIdle();
-
-			Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout, "ContextFlyout should be TextCommandBarFlyout");
-			var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
-
-			flyout.ShowAt(SUT);
-			await WindowHelper.WaitForIdle();
-
-			var (hasSelectAll, hasCut, hasCopy, hasPaste) = GetAvailableTextBlockCommands(flyout);
-
-			Assert.IsFalse(hasCut, "Cut should NOT be available for TextBlock (read-only)");
-			Assert.IsTrue(hasCopy, "Copy button should be available when text is selected");
-			Assert.IsTrue(hasSelectAll, "Select All button should be available");
-			Assert.IsFalse(hasPaste, "Paste should NOT be available for TextBlock (read-only)");
-
-			flyout.Hide();
-		}
-
-		[TestMethod]
-		public async Task When_TextBlock_NoSelection_Commands_Available()
-		{
-			var SUT = new TextBlock
-			{
-				Text = "Test content",
-				Width = 200,
-				IsTextSelectionEnabled = true
-			};
-
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
-
-			SUT.Focus(FocusState.Programmatic);
-			await WindowHelper.WaitForIdle();
-
-			// No selection
-			SUT.Selection = default;
-			await WindowHelper.WaitForIdle();
-
-			Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout, "ContextFlyout should be TextCommandBarFlyout");
-			var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
-
-			flyout.ShowAt(SUT);
-			await WindowHelper.WaitForIdle();
-
-			var (hasSelectAll, hasCut, hasCopy, hasPaste) = GetAvailableTextBlockCommands(flyout);
-
-			Assert.IsFalse(hasCut, "Cut should NOT be available for TextBlock");
-			Assert.IsFalse(hasCopy, "Copy should NOT be available when no text is selected");
-			Assert.IsTrue(hasSelectAll, "Select All should be available when not all text is selected");
-			Assert.IsFalse(hasPaste, "Paste should NOT be available for TextBlock");
-
-			flyout.Hide();
 		}
 
 		[TestMethod]
@@ -2020,9 +1948,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// Move focus away
 			other.Focus(FocusState.Programmatic);
-			await WindowHelper.WaitForIdle();
-
-			Assert.IsFalse(flyout.IsOpen, "SelectionFlyout should be closed after focus loss");
+			await WindowHelper.WaitFor(() => !flyout.IsOpen);
 		}
 
 		private (bool hasSelectAll, bool hasCut, bool hasCopy, bool hasPaste) GetAvailableTextBlockCommands(TextCommandBarFlyout flyout)
@@ -2034,6 +1960,79 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var hasSelectAll = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.A && ka.Modifiers.HasFlag(VirtualKeyModifiers.Control)));
 
 			return (hasSelectAll, hasCut, hasCopy, hasPaste);
+		}
+
+#if __SKIA__
+		[TestMethod]
+		public async Task When_TextBlock_HasSelection_Commands_Available()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "Test content",
+				Width = 200,
+				IsTextSelectionEnabled = true
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Select "Test"
+			SUT.Selection = new TextBlock.Range(0, 4);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout, "ContextFlyout should be TextCommandBarFlyout");
+			var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
+
+			flyout.ShowAt(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var (hasSelectAll, hasCut, hasCopy, hasPaste) = GetAvailableTextBlockCommands(flyout);
+
+			Assert.IsFalse(hasCut, "Cut should NOT be available for TextBlock (read-only)");
+			Assert.IsTrue(hasCopy, "Copy button should be available when text is selected");
+			Assert.IsTrue(hasSelectAll, "Select All button should be available");
+			Assert.IsFalse(hasPaste, "Paste should NOT be available for TextBlock (read-only)");
+
+			flyout.Hide();
+		}
+
+		[TestMethod]
+		public async Task When_TextBlock_NoSelection_Commands_Available()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "Test content",
+				Width = 200,
+				IsTextSelectionEnabled = true
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// No selection
+			SUT.Selection = default;
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout, "ContextFlyout should be TextCommandBarFlyout");
+			var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
+
+			flyout.ShowAt(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var (hasSelectAll, hasCut, hasCopy, hasPaste) = GetAvailableTextBlockCommands(flyout);
+
+			Assert.IsFalse(hasCut, "Cut should NOT be available for TextBlock");
+			Assert.IsFalse(hasCopy, "Copy should NOT be available when no text is selected");
+			Assert.IsTrue(hasSelectAll, "Select All should be available when not all text is selected");
+			Assert.IsFalse(hasPaste, "Paste should NOT be available for TextBlock");
+
+			flyout.Hide();
 		}
 #endif
 
