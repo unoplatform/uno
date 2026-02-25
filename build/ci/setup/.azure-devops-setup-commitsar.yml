@@ -16,7 +16,4 @@ steps:
 
   # Condition removes the step from running on PRs that are targeting the dev/jela/alc-merge-master branch, which is used for
   # merging master into dev/jela/alc-merge-master and should not be blocked by commit message checks.
-  condition: and(
-    ne(variables['System.PullRequest.PullRequestNumber'], ''),
-    ne(variables['System.PullRequest.SourceBranch'], 'refs/heads/dev/jela/alc-merge-master')
-  )
+  condition: and(ne(variables['System.PullRequest.PullRequestNumber'], ''), ne(variables['System.PullRequest.SourceBranch'], 'refs/heads/dev/jela/alc-merge-master'))
