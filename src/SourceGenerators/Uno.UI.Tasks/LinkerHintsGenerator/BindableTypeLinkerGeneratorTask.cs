@@ -293,9 +293,8 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				.OrderBy(g => g.Key);
 
 			var linkerElement = new XElement("linker",
-				typesByAssembly
-					.Select(assemblyGroup => CreateAssemblyElement(assemblyGroup.Key, assemblyGroup))
-					.Where(element => element != null));
+				typesByAssembly.Select(assemblyGroup =>
+					CreateAssemblyElement(assemblyGroup.Key, assemblyGroup)));
 
 			// Ensure output directory exists
 			var outputDir = Path.GetDirectoryName(OutputDescriptorPath);
@@ -320,9 +319,8 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 				return new XElement("assembly",
 					new XAttribute("fullname", assemblyName),
-					types.OrderBy(t => t.Key.FullName)
-						.Select(typeEntry => CreateTypeElement(typeEntry.Key.FullName, typeEntry.Value))
-						.Where(element => element != null));
+					types.OrderBy(t => t.Key.FullName).Select(typeEntry =>
+						CreateTypeElement(typeEntry.Key.FullName, typeEntry.Value)));
 			}
 
 			static XElement? CreateTypeElement(string typeFullName, HashSet<PreservePropertyInfo> properties)
@@ -347,8 +345,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 	internal sealed class PreserveTypeDefinition : IEquatable<PreserveTypeDefinition>
 	{
 		public string FullName { get; }
-		// Note: This property should not be mutated after construction as it's used as a dictionary key
-		public TypeDefinition TypeDefinition { get; set; }
+		public TypeDefinition TypeDefinition { get; }
 
 		public PreserveTypeDefinition(string fullName, TypeDefinition typeDefinition)
 		{
