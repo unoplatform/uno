@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using CoreGraphics;
 using Foundation;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
@@ -9,6 +10,7 @@ using Uno.UI.Extensions;
 using Uno.UI.Xaml.Extensions;
 using Windows.Devices.Input;
 using Windows.Foundation;
+using Windows.System;
 using Windows.UI.Core;
 using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
 
@@ -20,6 +22,13 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
 internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSource
 {
+#if __IOS__
+	private const int ScrollWheelDeltaMultiplier = -45;
+	private const int MaxScrollDelta = 120;
+	private const double MinTranslationThreshold = 1.0;
+	private const double MaxTranslationThreshold = 4.0;
+#endif
+
 	public static AppleUIKitCorePointerInputSource Instance { get; } = new();
 
 	private AppleUIKitCorePointerInputSource()
@@ -159,6 +168,104 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 			Application.Current.RaiseRecoverableUnhandledException(e);
 		}
 	}
+
+#if __IOS__
+	internal void HandleScrollFromGesture(UIView source, CGPoint translation, CGPoint location, UIGestureRecognizerState gestureState)
+	{
+		try
+		{
+			if (!UIDevice.CurrentDevice.CheckSystemVersion(13, 4))
+			{
+				return;
+			}
+
+			if (gestureState != UIGestureRecognizerState.Changed)
+			{
+				return;
+			}
+
+			if (Math.Abs(translation.X) < MinTranslationThreshold && Math.Abs(translation.Y) < MinTranslationThreshold)
+			{
+				return;
+			}
+
+			translation = new CGPoint(
+				Math.Sign(translation.X) * Math.Min(Math.Abs(translation.X), MaxTranslationThreshold),
+				Math.Sign(translation.Y) * Math.Min(Math.Abs(translation.Y), MaxTranslationThreshold)
+			);
+
+			_trace?.Invoke($"<ScrollGesture src={source.GetDebugName()} state={gestureState}>");
+
+			var args = CreateScrollGestureEventArgs(translation, location);
+
+			_trace?.Invoke($"ScrollGesture: {args}>");
+
+			_trace?.Invoke($"iOS HandleScrollFromGesture: Delta={args.CurrentPoint.Properties.MouseWheelDelta}, IsHorizontal={args.CurrentPoint.Properties.IsHorizontalMouseWheel}, Position=({args.CurrentPoint.Position.X}, {args.CurrentPoint.Position.Y}), Translation=({translation.X:F2}, {translation.Y:F2}), State={gestureState}");
+
+			PointerWheelChanged?.Invoke(this, args);
+
+			_trace?.Invoke("</ScrollGesture>");
+		}
+		catch (Exception e)
+		{
+			_trace?.Invoke($"</ScrollGesture error=true>\r\n" + e);
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	private PointerEventArgs CreateScrollGestureEventArgs(CGPoint translation, CGPoint location)
+	{
+		var scrollDeltaX = (int)(translation.X * ScrollWheelDeltaMultiplier);
+		var scrollDeltaY = (int)(translation.Y * ScrollWheelDeltaMultiplier);
+
+		scrollDeltaX = Math.Sign(scrollDeltaX) * Math.Min(Math.Abs(scrollDeltaX), MaxScrollDelta);
+		scrollDeltaY = Math.Sign(scrollDeltaY) * Math.Min(Math.Abs(scrollDeltaY), MaxScrollDelta);
+
+		var position = location;
+
+		var pointerDevice = PointerDevice.For(Windows.Devices.Input.PointerDeviceType.Mouse);
+		var id = 1u;
+
+		var absX = Math.Abs(scrollDeltaX);
+		var absY = Math.Abs(scrollDeltaY);
+		var isHorizontal = absX > absY * 1.5;
+		var wheelDelta = isHorizontal ? scrollDeltaX : scrollDeltaY;
+
+		var properties = new PointerPointProperties()
+		{
+			IsLeftButtonPressed = false,
+			IsRightButtonPressed = false,
+			IsMiddleButtonPressed = false,
+			IsXButton1Pressed = false,
+			IsXButton2Pressed = false,
+			PointerUpdateKind = PointerUpdateKind.Other,
+			IsBarrelButtonPressed = false,
+			IsEraser = false,
+			IsHorizontalMouseWheel = isHorizontal,
+			MouseWheelDelta = wheelDelta,
+			IsPrimary = true,
+			IsInRange = true,
+			Orientation = 0,
+			Pressure = 0,
+			TouchConfidence = false,
+		};
+
+		var timestamp = PointerHelpers.ToTimestamp(CoreAnimation.CAAnimation.CurrentMediaTime());
+
+		var point = new PointerPoint(
+			frameId: PointerHelpers.ToFrameId(timestamp),
+			timestamp: timestamp,
+			device: pointerDevice,
+			pointerId: id,
+			rawPosition: new Point(position.X, position.Y),
+			position: new Point(position.X, position.Y),
+			isInContact: false,
+			properties: properties
+		);
+
+		return new PointerEventArgs(point, VirtualKeyModifiers.None);
+	}
+#endif
 
 	private PointerEventArgs CreatePointerEventArgs(UIView source, UITouch touch)
 	{
