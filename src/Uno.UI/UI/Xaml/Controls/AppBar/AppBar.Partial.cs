@@ -199,14 +199,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void OnLayoutUpdated(object? sender, object e)
-		{
-			//if (m_layoutTransitionElement is { })
-			//{
-			//	PositionLTEs();
-			//}
-		}
-
 		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
 		{
 			RefreshContentHeight();
