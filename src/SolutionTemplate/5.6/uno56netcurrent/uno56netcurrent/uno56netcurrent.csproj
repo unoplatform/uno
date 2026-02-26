@@ -50,20 +50,26 @@
         </PropertyGroup>
         <Error Text="The Uno.Bindable.Descriptor.xml was not generated!"
                 Condition="!Exists('$(_UnoBindableDescriptorXmlPath)')" />
-        <ReadLinesFromFile
-                File="$(_UnoBindableDescriptorXmlPath)">
-            <Output TaskParameter="Lines" ItemName="_UnoBindableDescriptorXmlLines" />
-        </ReadLinesFromFile>
-        <Message Text="# jonp: Uno.Bindable.Descriptor.xml contents:" Importance="High" />
-        <Message Text="@(_UnoBindableDescriptorXmlLines, '
-')" Importance="High" />
         <XmlPeek
                 XmlInputPath="$(_UnoBindableDescriptorXmlPath)"
                 Query="/linker/assembly[@fullname='uno56netcurrent']/type[@fullname='uno56netcurrent.HelloEntity']">
             <Output TaskParameter="Result" ItemName="_UnoPreserveEntity" />
         </XmlPeek>
-        <Error Text="`uno56netcurrent.HelloEntity` not present within `Uno.Bindable.Descriptor.xml`!"
-                Condition=" @(_UnoPreserveEntity->Count()) == 0 " />
+        <ReadLinesFromFile
+                Condition=" @(_UnoPreserveEntity->Count()) == 0 "
+                File="$(_UnoBindableDescriptorXmlPath)">
+            <Output TaskParameter="Lines" ItemName="_UnoBindableDescriptorXmlLines" />
+        </ReadLinesFromFile>
+        <Message
+                Condition=" @(_UnoPreserveEntity->Count()) == 0 "
+                Text="# Uno.Bindable.Descriptor.xml contents:" Importance="High" />
+        <Message
+                Condition=" @(_UnoPreserveEntity->Count()) == 0 "
+                Text="@(_UnoBindableDescriptorXmlLines, '
+')" Importance="High" />
+        <Error
+                Condition=" @(_UnoPreserveEntity->Count()) == 0 "
+                Text="`uno56netcurrent.HelloEntity` not present within `Uno.Bindable.Descriptor.xml`!" />
     </Target>
 
 </Project>
