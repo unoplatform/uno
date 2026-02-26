@@ -181,7 +181,7 @@ internal class ToolListManager(
 			var upstreamClient = await mcpUpstreamClient.UpstreamClient;
 
 			var list = await upstreamClient.ListToolsAsync();
-			Tool[] protocolTools = [.. list.Select(t => t.ProtocolTool)];
+			Tool[] protocolTools = [.. list.Select(t => t.ProtocolTool).DistinctBy(t => t.Name)];
 
 			PersistToolCacheIfNeeded(protocolTools);
 		}
@@ -237,7 +237,7 @@ internal class ToolListManager(
 		logger.LogTrace("Client requested tools list update");
 
 		var list = await upstreamClient.ListToolsAsync(cancellationToken: ct);
-		Tool[] protocolTools = [.. list.Select(t => t.ProtocolTool)];
+		Tool[] protocolTools = [.. list.Select(t => t.ProtocolTool).DistinctBy(t => t.Name)];
 
 		logger.LogDebug("Reporting {Count} tools", protocolTools.Length);
 

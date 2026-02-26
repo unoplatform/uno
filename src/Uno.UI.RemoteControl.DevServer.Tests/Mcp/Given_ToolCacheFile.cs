@@ -231,6 +231,19 @@ public class Given_ToolCacheFile
 		ToolCacheFile.ComputeWorkspaceHash("  ").Should().BeEmpty();
 	}
 
+	[TestMethod]
+	[Description("ComputeWorkspaceHash is case-insensitive on all platforms (including Linux/WSL)")]
+	public void ComputeWorkspaceHash_IsCaseInsensitiveOnAllPlatforms()
+	{
+		var hash1 = ToolCacheFile.ComputeWorkspaceHash("/home/user/project");
+		var hash2 = ToolCacheFile.ComputeWorkspaceHash("/HOME/USER/PROJECT");
+		var hash3 = ToolCacheFile.ComputeWorkspaceHash("/Home/User/Project");
+
+		hash1.Should().Be(hash2, "hashes for different casings of the same path should match");
+		hash1.Should().Be(hash3, "hashes for different casings of the same path should match");
+		hash1.Should().HaveLength(16);
+	}
+
 	// -------------------------------------------------------------------
 	// Atomic cache writes
 	// -------------------------------------------------------------------
