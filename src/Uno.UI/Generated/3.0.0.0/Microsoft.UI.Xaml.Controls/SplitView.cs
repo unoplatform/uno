@@ -12,20 +12,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property PaneBackground
 		// Skipping already declared property Pane
 		// Skipping already declared property OpenPaneLength
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.LightDismissOverlayMode LightDismissOverlayMode
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.LightDismissOverlayMode)this.GetValue(LightDismissOverlayModeProperty);
-			}
-			set
-			{
-				this.SetValue(LightDismissOverlayModeProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property LightDismissOverlayMode
 		// Skipping already declared property IsPaneOpen
 		// Skipping already declared property DisplayMode
 		// Skipping already declared property Content
@@ -35,14 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property ContentProperty
 		// Skipping already declared property DisplayModeProperty
 		// Skipping already declared property IsPaneOpenProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty LightDismissOverlayModeProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(LightDismissOverlayMode), typeof(global::Microsoft.UI.Xaml.Controls.LightDismissOverlayMode),
-			typeof(global::Microsoft.UI.Xaml.Controls.SplitView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.LightDismissOverlayMode)));
-#endif
+		// Skipping already declared property LightDismissOverlayModeProperty
 		// Skipping already declared property OpenPaneLengthProperty
 		// Skipping already declared property PaneBackgroundProperty
 		// Skipping already declared property PanePlacementProperty
