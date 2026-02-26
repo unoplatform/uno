@@ -255,7 +255,7 @@ public readonly struct FlagValue :
 
     public bool IsWildcard => _value is '*' or '?';
 
-    public bool IsNotWildcard => _value is not '*' or '?';
+    public bool IsNotWildcard => _value is not ('*' or '?');
 
     internal bool IsPrintable => (int)_value is > 32 and < 127;
 

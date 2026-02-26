@@ -55,6 +55,11 @@
 		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="119.2.0.2" />
 	</ItemGroup>
 
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net11.0-android'">
+		<PackageReference Include="Xamarin.GooglePlayServices.Location" Version="121.3.0.6" />
+		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="119.2.0.2" />
+	</ItemGroup>
+
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">

@@ -3075,7 +3075,7 @@ public partial class WordList
             word.Dispose();
             return target.GetStringAndDispose();
 
-            static bool notConditionMarkup(char c) => c is not '(' or '-' or '<' or '^' or '$';
+            static bool notConditionMarkup(char c) => c is not ('(' or '-' or '<' or '^' or '$');
 
             static bool isAsciiDigit(char c) => c is >= '0' and <= '9';
         }

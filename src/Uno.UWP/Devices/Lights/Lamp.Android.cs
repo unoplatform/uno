@@ -109,6 +109,7 @@ namespace Windows.Devices.Lights
 
 		private void UpdateLampState()
 		{
+#pragma warning disable IDE0055
 			var isOn = _isEnabled && _brightness > 0;
 			lock (_lock)
 			{
@@ -162,6 +163,7 @@ namespace Windows.Devices.Lights
 #pragma warning restore CS0618 // Type or member is obsolete
 				}
 			}
+#pragma warning restore IDE0055
 		}
 
 
