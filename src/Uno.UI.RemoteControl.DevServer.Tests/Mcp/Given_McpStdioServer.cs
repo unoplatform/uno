@@ -110,7 +110,9 @@ public class Given_McpStdioServer
 		var addRootsTool = new Tool { Name = "uno_app_set_roots", Description = "Set roots" };
 		var cachedTools = new[] { healthTool, new Tool { Name = "uno_app_get_info", Description = "Info" } };
 
-		// New behavior: start with addRootsTool only, then AddRange, then AppendBuiltInTools
+		// Mirrors ToolListManager.AppendBuiltInTools logic inline because the test project
+		// uses Compile-linked sources and ToolListManager cannot be linked without pulling in
+		// DevServerMonitor and its heavy dependency graph.
 		List<Tool> tools = [addRootsTool];
 		tools.AddRange(cachedTools);
 
@@ -143,7 +145,7 @@ public class Given_McpStdioServer
 		List<Tool> tools = [addRootsTool];
 		// No cached tools
 
-		// AppendBuiltInTools: add uno_health since it's not present
+		// Same inline mirror of AppendBuiltInTools (see comment above)
 		IList<Tool> result;
 		if (tools.Any(t => t.Name == healthToolName))
 		{

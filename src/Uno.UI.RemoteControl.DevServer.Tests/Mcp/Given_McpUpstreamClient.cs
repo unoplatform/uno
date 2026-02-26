@@ -222,48 +222,40 @@ public class Given_McpUpstreamClient
 	}
 
 	[TestMethod]
-	[Description("When ToolListChangedNotification fires during CreateAsync, the explicit post-connect callback is skipped to avoid duplicates")]
-	public async Task ConnectOrDie_WhenNotificationFiredDuringConnect_SkipsExplicitCallback()
+	[Description("The notification guard pattern ensures callback fires exactly once: via notification if it arrived, otherwise via explicit post-connect path")]
+	public async Task ConnectOrDie_NotificationGuard_CallbackFiresExactlyOnce()
 	{
+		// This test verifies the guard pattern used in McpUpstreamClient.ConnectOrDieAsync:
+		// an int flag (set via Interlocked.Exchange) prevents the post-connect explicit callback
+		// from firing if the ToolListChangedNotification handler already fired during CreateAsync.
+		//
+		// McpUpstreamClient cannot be instantiated in tests (requires DevServerMonitor + real HTTP),
+		// so we verify the pattern in isolation.
+
 		var callCount = 0;
 		Func<Task> callback = () => { callCount++; return Task.CompletedTask; };
 
-		var notificationAlreadyFired = false;
-
-		// Simulate: notification fires during CreateAsync
-		notificationAlreadyFired = true;
-		if (notificationAlreadyFired && callback is { } c1)
+		// Case 1: notification fires during connect → explicit path is skipped
+		var notificationFired = 0;
+		Interlocked.Exchange(ref notificationFired, 1);
+		if (Volatile.Read(ref notificationFired) != 0 && callback is { } c1)
 		{
 			await c1();
 		}
-
-		// Simulate: explicit post-connect callback — should be skipped
-		if (!notificationAlreadyFired && callback is { } c2)
+		if (Volatile.Read(ref notificationFired) == 0 && callback is { } c2)
 		{
 			await c2();
 		}
+		callCount.Should().Be(1, "callback fires via notification path only");
 
-		callCount.Should().Be(1, "callback should fire exactly once when notification already fired during connect");
-	}
-
-	[TestMethod]
-	[Description("When no ToolListChangedNotification fires during CreateAsync, the explicit post-connect callback runs to unblock waiters")]
-	public async Task ConnectOrDie_WhenNoNotificationDuringConnect_ExplicitCallbackRuns()
-	{
-		var callCount = 0;
-		Func<Task> callback = () => { callCount++; return Task.CompletedTask; };
-
-		var notificationAlreadyFired = false;
-
-		// Simulate: no notification during CreateAsync
-
-		// Simulate: explicit post-connect callback — should run
-		if (!notificationAlreadyFired && callback is { } c2)
+		// Case 2: no notification → explicit path fires
+		callCount = 0;
+		notificationFired = 0;
+		if (Volatile.Read(ref notificationFired) == 0 && callback is { } c3)
 		{
-			await c2();
+			await c3();
 		}
-
-		callCount.Should().Be(1, "callback should fire exactly once via explicit path when no notification arrived");
+		callCount.Should().Be(1, "callback fires via explicit path when no notification arrived");
 	}
 
 	[TestMethod]

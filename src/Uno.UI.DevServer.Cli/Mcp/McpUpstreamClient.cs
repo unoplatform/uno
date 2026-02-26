@@ -66,7 +66,7 @@ internal class McpUpstreamClient
 				TransportMode = HttpTransportMode.StreamableHttp,
 			});
 
-			var notificationAlreadyFired = false;
+			var notificationAlreadyFired = 0;
 			var options = new McpClientOptions
 			{
 				ClientInfo = new Implementation
@@ -83,7 +83,7 @@ internal class McpUpstreamClient
 							log.LogTrace("Upstream MCP notified tool list changed");
 
 							// ToolListChanged has no meaningful params — no deserialization needed
-							notificationAlreadyFired = true;
+							Interlocked.Exchange(ref notificationAlreadyFired, 1);
 							if (_toolListChanged is { } callback)
 							{
 								await callback();
@@ -112,7 +112,7 @@ internal class McpUpstreamClient
 
 			// Always notify — 0 tools is a valid response and must unblock waiters.
 			// Skip if the notification handler already fired to avoid duplicate downstream events.
-			if (!notificationAlreadyFired && _toolListChanged is { } toolsCallback)
+			if (Volatile.Read(ref notificationAlreadyFired) == 0 && _toolListChanged is { } toolsCallback)
 			{
 				await toolsCallback();
 			}
