@@ -165,6 +165,7 @@ public partial class TextBox
 			{
 				UpdateProofingMenu();
 			}
+			SetValue(ProofingMenuFlyoutProperty, _proofingMenu);
 			return _proofingMenu;
 		}
 	}
@@ -508,7 +509,7 @@ public partial class TextBox
 	// Ported from: TextBoxBase.cpp DismissAllFlyouts (lines 5566-5574)
 	internal void DismissAllFlyouts()
 	{
-		TextControlFlyoutHelper.CloseIfOpen(ProofingMenuFlyout);
+		TextControlFlyoutHelper.CloseIfOpen(_proofingMenu);
 		TextControlFlyoutHelper.CloseIfOpen(SelectionFlyout);
 		TextControlFlyoutHelper.CloseIfOpen(ContextFlyout);
 	}
