@@ -85,7 +85,15 @@ internal class McpUpstreamClient
 							// ToolListChanged has no meaningful params — no deserialization needed
 							if (_toolListChanged is { } callback && notificationGuard.TryStart())
 							{
-								await callback();
+								try
+								{
+									await callback();
+								}
+								catch (Exception ex)
+								{
+									log.LogError(ex, "Error while handling tool list changed notification");
+									notificationGuard.Reset();
+								}
 							}
 						})
 					],
@@ -113,7 +121,15 @@ internal class McpUpstreamClient
 			// Skip if the notification handler already fired to avoid duplicate downstream events.
 			if (_toolListChanged is { } toolsCallback && notificationGuard.TryStart())
 			{
-				await toolsCallback();
+				try
+				{
+					await toolsCallback();
+				}
+				catch (Exception ex)
+				{
+					log.LogError(ex, "Error while handling tool list changed callback after ListTools");
+					notificationGuard.Reset();
+				}
 			}
 		}
 		catch (Exception ex)

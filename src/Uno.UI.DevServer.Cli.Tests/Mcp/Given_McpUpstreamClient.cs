@@ -256,6 +256,47 @@ public class Given_McpUpstreamClient
 	}
 
 	[TestMethod]
+	[Description("When the callback throws, the guard is reset so the other path can retry")]
+	public async Task ConnectOrDie_NotificationGuard_ResetsOnCallbackException()
+	{
+		var callCount = 0;
+		var shouldThrow = true;
+		Func<Task> callback = () =>
+		{
+			callCount++;
+			if (shouldThrow)
+			{
+				throw new InvalidOperationException("callback failed");
+			}
+			return Task.CompletedTask;
+		};
+
+		var guard = new MonitorDecisions.StartOnceGuard();
+
+		// First path: callback throws, guard should be reset
+		if (callback is { } c1 && guard.TryStart())
+		{
+			try
+			{
+				await c1();
+			}
+			catch
+			{
+				guard.Reset();
+			}
+		}
+		callCount.Should().Be(1, "first callback was invoked");
+
+		// Second path: guard was reset, so this path can now succeed
+		shouldThrow = false;
+		if (callback is { } c2 && guard.TryStart())
+		{
+			await c2();
+		}
+		callCount.Should().Be(2, "second callback fires after guard reset");
+	}
+
+	[TestMethod]
 	[Description("Notification handler must await the async callback to ensure it completes before returning")]
 	public async Task Bug3_CallbackHandler_AwaitsAsyncCallback()
 	{
