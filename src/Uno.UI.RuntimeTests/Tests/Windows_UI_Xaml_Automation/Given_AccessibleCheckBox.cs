@@ -7,9 +7,9 @@ using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Runtime.Skia;
 
 #if HAS_UNO
-using Uno.UI.Runtime.Skia;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
@@ -107,7 +107,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 #if HAS_UNO
 			// Verify AriaMapper produces correct attribute
-			var attributes = AriaMapper.GetAriaAttributes(peer);
+			var attributes = Uno.UI.Runtime.Skia.AriaMapper.GetAriaAttributes(peer);
 			Assert.AreEqual("mixed", attributes.Checked, "AriaMapper should report Checked='mixed' for indeterminate checkbox");
 #endif
 		}
@@ -223,10 +223,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 			// Act
 			var peer = checkBox.GetOrCreateAutomationPeer();
-			var elementType = AriaMapper.GetSemanticElementType(peer);
+			var elementType = Uno.UI.Runtime.Skia.AriaMapper.GetSemanticElementType(peer);
 
 			// Assert
-			Assert.AreEqual(SemanticElementType.Checkbox, elementType);
+			Assert.AreEqual(Uno.UI.Runtime.Skia.SemanticElementType.Checkbox, elementType);
 		}
 
 		/// <summary>
@@ -246,7 +246,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 			// Act
 			var peer = checkBox.GetOrCreateAutomationPeer();
-			var attributes = AriaMapper.GetAriaAttributes(peer);
+			var attributes = Uno.UI.Runtime.Skia.AriaMapper.GetAriaAttributes(peer);
 
 			// Assert
 			Assert.AreEqual("checkbox", attributes.Role);
@@ -266,7 +266,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 			// Act
 			var peer = checkBox.GetOrCreateAutomationPeer();
-			var capabilities = AriaMapper.GetPatternCapabilities(peer);
+			var capabilities = Uno.UI.Runtime.Skia.AriaMapper.GetPatternCapabilities(peer);
 
 			// Assert
 			Assert.IsTrue(capabilities.CanToggle, "CheckBox should have CanToggle capability");
@@ -285,10 +285,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 			// Act
 			var peer = radioButton.GetOrCreateAutomationPeer();
-			var elementType = AriaMapper.GetSemanticElementType(peer);
+			var elementType = Uno.UI.Runtime.Skia.AriaMapper.GetSemanticElementType(peer);
 
 			// Assert
-			Assert.AreEqual(SemanticElementType.RadioButton, elementType);
+			Assert.AreEqual(Uno.UI.Runtime.Skia.SemanticElementType.RadioButton, elementType);
 		}
 #endif
 	}
