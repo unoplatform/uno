@@ -509,17 +509,23 @@ public partial class AutomationPeer : DependencyObject
 	/// Raises an automation event.
 	/// </summary>
 	/// <param name="eventId">The event to raise.</param>
+#if __SKIA__
 	public void RaiseAutomationEvent(AutomationEvents eventId)
 	{
-		// TODO Implement when implemented in WinUI
-		// #if __SKIA__
-		// 		if (ListenerExists(eventId))
-		// 		{
-		// 			AutomationPeerListener?.NotifyAutomationEvent(this, eventId);
-		// 		}
-		// #else
+		// Mirrors WinUI pattern: CAutomationPeer::RaiseAutomationEvent checks ListenerExists
+		// then delegates to CCoreServices::UIARaiseAutomationEvent → CUIAWindow::UIARaiseAutomationEvent
+		var listener = AutomationPeerListener;
+		if (listener is not null && listener.ListenerExistsHelper(eventId))
+		{
+			listener.OnAutomationEvent(this, eventId);
+		}
+	}
+#else
+	public void RaiseAutomationEvent(AutomationEvents eventId)
+	{
 		ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseAutomationEvent(AutomationEvents eventId)", LogLevel.Warning);
 	}
+#endif
 
 	/// <summary>
 	/// Initiates a notification event.
@@ -539,82 +545,6 @@ public partial class AutomationPeer : DependencyObject
 		// #else
 		ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseNotificationEvent(AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)", LogLevel.Warning);
 	}
-		//UNO TODO: Check the implementations of IsKeyboardFocusableHelper and IsOffscreenHelper
-		internal bool IsKeyboardFocusableHelper()
-			=> false;
-
-		internal bool IsOffscreenHelper(bool ignoreClippingOnScrollContentPresenters)
-			=> false;
-
-		private static string LocalizeControlType(AutomationControlType controlType) =>
-			// TODO: Humanize ("AppBarButton" -> "app bar button")
-			// TODO: Localize
-			Enum.GetName<AutomationControlType>(controlType).ToLowerInvariant();
-
-		internal bool InvokeAutomationPeer()
-		{
-			// TODO: Add support for ComboBox, Slider, CheckBox, ToggleButton, RadioButton, ToggleSwitch, Selector, etc.
-			if (this is IInvokeProvider invokeProvider)
-			{
-				invokeProvider.Invoke();
-				return true;
-			}
-			else if (this is IToggleProvider toggleProvider)
-			{
-				toggleProvider.Toggle();
-				return true;
-			}
-			else if (this is ISelectionItemProvider selectionItemProvider)
-			{
-				selectionItemProvider.Select();
-				return true;
-			}
-
-			return false;
-		}
-
-		internal static void RaiseEventIfListener(DependencyObject target, AutomationEvents eventId) => ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "RaiseEventIfListener");
-
-		#endregion
-
-		#region NotImplemented
-
-		[Uno.NotImplemented]
-		public static bool ListenerfExists(AutomationEvents eventId)
-		{
-			ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "bool AutomationPeer.ListenerExists");
-			return false;
-		}
-
-		[Uno.NotImplemented]
-		public void InvalidatePeer()
-		{
-		}
-
-#if __SKIA__
-		public void RaiseAutomationEvent(global::Microsoft.UI.Xaml.Automation.Peers.AutomationEvents eventId)
-		{
-			// Mirrors WinUI pattern: CAutomationPeer::RaiseAutomationEvent checks ListenerExists
-			// then delegates to CCoreServices::UIARaiseAutomationEvent → CUIAWindow::UIARaiseAutomationEvent
-			var listener = AutomationPeerListener;
-			if (listener is not null && listener.ListenerExistsHelper(eventId))
-			{
-				listener.OnAutomationEvent(this, eventId);
-			}
-		}
-#else
-		[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public void RaiseAutomationEvent(global::Microsoft.UI.Xaml.Automation.Peers.AutomationEvents eventId)
-		{
-			ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseAutomationEvent(AutomationEvents eventId)", LogLevel.Warning);
-		}
-#endif
-
-		[global::Uno.NotImplemented]
-		public void RaiseNotificationEvent(global::Microsoft.UI.Xaml.Automation.Peers.AutomationNotificationKind notificationKind, global::Microsoft.UI.Xaml.Automation.Peers.AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)
-		{
-			ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseNotificationEvent(AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)", LogLevel.Warning);
-		}
 
 #if !__SKIA__
 	/// <summary>
