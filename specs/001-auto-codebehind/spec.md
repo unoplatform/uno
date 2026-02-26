@@ -64,8 +64,8 @@ A developer using Uno Platform targets (Skia, WebAssembly, Mobile) and/or WinUI 
 
 **Acceptance Scenarios**:
 
-1. **Given** a multi-targeted Uno Platform project, **When** built for Skia (`net10.0`), **Then** auto code-behind is generated.
-2. **Given** the same project, **When** built for WinUI (`net10.0-windows10.0.19041.0`), **Then** auto code-behind is generated.
+1. **Given** a multi-targeted Uno Platform project, **When** built for Skia (`net11.0`), **Then** auto code-behind is generated.
+2. **Given** the same project, **When** built for WinUI (`net11.0-windows10.0.19041.0`), **Then** auto code-behind is generated.
 3. **Given** the same project, **When** built for WebAssembly, Android, or iOS, **Then** auto code-behind is generated consistently.
 
 ---
@@ -92,7 +92,7 @@ A developer using Uno Platform targets (Skia, WebAssembly, Mobile) and/or WinUI 
 - **FR-008**: The system MUST support per-file MSBuild item metadata (`UnoGenerateCodeBehind`) on `Page`, `UnoPage`, `ApplicationDefinition`, and `UnoApplicationDefinition` items to override the project-level setting.
 - **FR-009**: Per-file metadata MUST take precedence over the project-level property.
 - **FR-010**: The feature MUST work on all Uno Platform target frameworks (Skia, WebAssembly, Android, iOS, macOS, tvOS).
-- **FR-011**: The feature MUST work on WinUI target frameworks (`net10.0-windows10.0.*`) via Uno.Sdk integration.
+- **FR-011**: The feature MUST work on WinUI target frameworks (`net11.0-windows10.0.*`) via Uno.Sdk integration.
 - **FR-012**: The generated source MUST be produced by a Roslyn source generator (IIncrementalGenerator) to integrate with the standard build pipeline and IDE experience.
 - **FR-013**: The generated class MUST be declared as `partial` to allow the XAML source generator to add `InitializeComponent()` and named fields to the same class.
 

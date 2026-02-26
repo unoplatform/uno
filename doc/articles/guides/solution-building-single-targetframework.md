@@ -40,17 +40,17 @@ To do so:
         <PropertyGroup>
             <!-- Uncomment each line for each platform that you want to build: -->
 
-            <!-- <OverrideTargetFramework Condition="''!='hint: Windows App Sdk (WinUI)'">net10.0-windows10.0.19041.0</OverrideTargetFramework> -->
-            <!-- <OverrideTargetFramework Condition="''!='hint: Webassembly'">net10.0-browserwasm</OverrideTargetFramework> -->
-            <!-- <OverrideTargetFramework Condition="''!='hint: Desktop'">net10.0-desktop</OverrideTargetFramework> -->
-            <!-- <OverrideTargetFramework Condition="''!='hint: iOS'">net10.0-ios</OverrideTargetFramework> -->
-            <!-- <OverrideTargetFramework Condition="''!='hint: Android'">net10.0-android</OverrideTargetFramework> -->
-            <!-- <OverrideTargetFramework Condition="''!='hint: TvOS'">net10.0-tvos</OverrideTargetFramework> -->
+            <!-- <OverrideTargetFramework Condition="''!='hint: Windows App Sdk (WinUI)'">net11.0-windows10.0.19041.0</OverrideTargetFramework> -->
+            <!-- <OverrideTargetFramework Condition="''!='hint: Webassembly'">net11.0-browserwasm</OverrideTargetFramework> -->
+            <!-- <OverrideTargetFramework Condition="''!='hint: Desktop'">net11.0-desktop</OverrideTargetFramework> -->
+            <!-- <OverrideTargetFramework Condition="''!='hint: iOS'">net11.0-ios</OverrideTargetFramework> -->
+            <!-- <OverrideTargetFramework Condition="''!='hint: Android'">net11.0-android</OverrideTargetFramework> -->
+            <!-- <OverrideTargetFramework Condition="''!='hint: TvOS'">net11.0-tvos</OverrideTargetFramework> -->
         </PropertyGroup>
     </Project>
     ```
 
-    Make sure to replace `net10.0` and `-windows10.0.19041.0` with the appropriate version from your `.csproj` project.
+    Make sure to replace `net11.0` and `-windows10.0.19041.0` with the appropriate version from your `.csproj` project.
 
 - You can commit `solution-config.props.sample` to your source control.
 - Next, make a copy of `solution-config.props.sample` to `solution-config.props`. This file is [automatically loaded](https://github.com/unoplatform/uno/blob/71f1d5ab067c0dcfad2f4cccd310e506cdeaf6bf/src/Uno.Sdk/targets/Uno.Import.SolutionConfig.props#L9) by the `Uno.Sdk`.

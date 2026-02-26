@@ -9,7 +9,7 @@ To get started with Codex CLI for Uno Platform development:
 1. Create a new project using the [Uno Platform Live Wizard](https://aka.platform.uno/app-wizard), or [`dotnet new`](xref:Uno.GetStarted.dotnet-new)
 
     ```bash
-    dotnet new unoapp --tfm net10.0 -o MyNewApp
+    dotnet new unoapp --tfm net11.0 -o MyNewApp
     ```
 
 1. Change your directory to be in the folder containing the new project (e.g., `cd MyNewApp`)

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -33,24 +34,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private DataTemplate SelectableItemTemplateC => _testsResources["SelectableItemTemplateC"] as DataTemplate;
 
 		// Commented types don't seem to use ContentTemplateSelector on UWP
-		private static readonly Type[] _contentControlStyledDerivedTypes = new[]
+		private static readonly ActivatableType[] _contentControlStyledDerivedTypes =
 		{
-			typeof(Button),
-			//typeof(AppBarButton),
-			//typeof(AppBar),
-			//typeof(CommandBar),
-			//typeof(SplitButton),
-			typeof(RepeatButton),
-			typeof(ToggleButton),
-			//typeof(AppBarToggleButton),
-			typeof(CheckBox),
-			typeof(RadioButton),
-			//typeof(SplitButton),
-			//typeof(ToggleSplitButton),
-			typeof(DropDownButton)
+			new(typeof(Button)),
+			//new(typeof(AppBarButton)_,
+			//new(typeof(AppBar)),
+			//new(typeof(CommandBar)),
+			//new(typeof(SplitButton)),
+			new(typeof(RepeatButton)),
+			new(typeof(ToggleButton)),
+			//new(typeof(AppBarToggleButton)),
+			new(typeof(CheckBox)),
+			new(typeof(RadioButton)),
+			//new(typeof(SplitButton)),
+			//new(typeof(ToggleSplitButton)),
+			new(typeof(DropDownButton)),
 		};
 
-		public IEnumerable<ContentControl> DerivedStyledControlsInstances => _contentControlStyledDerivedTypes.Select(t => Activator.CreateInstance(t) as ContentControl);
+		public IEnumerable<ContentControl> DerivedStyledControlsInstances => _contentControlStyledDerivedTypes.Select(t => Activator.CreateInstance(t.Type) as ContentControl);
 
 		[TestInitialize]
 		public void Init()
@@ -58,20 +59,32 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			_testsResources = new TestsResources();
 		}
 
+		private const DynamicallyAccessedMemberTypes ActivatorRequirements = DynamicallyAccessedMemberTypes.PublicParameterlessConstructor;
+
 		[TestMethod]
 		[RunsOnUIThread]
 		[DataRow(typeof(Grid))]
 		[DataRow(typeof(StackPanel))]
 		[DataRow(typeof(Border))]
 		[DataRow(typeof(ContentPresenter))]
-		public async Task When_SelfLoading(Type type)
+		public async Task When_SelfLoading([DynamicallyAccessedMembers(ActivatorRequirements)] Type type)
 		{
+			// Keep PreserveMetadata() calls in sync with the types in [DataRow] above.
+			PreserveMetadata(typeof(Grid));
+			PreserveMetadata(typeof(StackPanel));
+			PreserveMetadata(typeof(Border));
+			PreserveMetadata(typeof(ContentPresenter));
+
 			var control = (FrameworkElement)Activator.CreateInstance(type);
 
 			control.Width = 200;
 			control.Height = 200;
 
 			await UITestHelper.Load(control);
+
+			static void PreserveMetadata([DynamicallyAccessedMembers(ActivatorRequirements)] Type type)
+			{
+			}
 		}
 
 		[TestMethod]
@@ -260,6 +273,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public IEnumerable<Item> Items => _items;
 
 			public int SelectedIndex { get; set; } = 1;
+		}
+	}
+
+	struct ActivatableType
+	{
+		private const DynamicallyAccessedMemberTypes ActivatableRequirements = DynamicallyAccessedMemberTypes.PublicParameterlessConstructor;
+
+		[DynamicallyAccessedMembers(ActivatableRequirements)]
+		public Type Type { get; }
+
+		public ActivatableType([DynamicallyAccessedMembers(ActivatableRequirements)] Type type)
+		{
+			this.Type = type;
 		}
 	}
 }

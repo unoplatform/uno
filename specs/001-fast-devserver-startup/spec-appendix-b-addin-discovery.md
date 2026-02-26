@@ -157,7 +157,7 @@ This serves as a **diagnostic signal** to detect packages that might be add-ins 
 
 ### Checklist for Creating a DevServer Add-In
 
-1. **Create a .NET class library** targeting `net9.0` (or current .NET version)
+1. **Create a .NET class library** targeting `net10.0` (or current .NET version)
 2. **Reference `Uno.WinUI.DevServer.Messaging`** for `IIdeChannel` and messaging contracts
 3. **Register services** via one of:
    - `[assembly: ServerProcessor(typeof(MyProcessor))]` for `IServerProcessor` implementations
@@ -287,7 +287,7 @@ uno.ui.app.mcp/6.5.100/
 │       ├── Uno.UI.App.Mcp.Server.dll
 │       └── (dependencies)
 ├── lib/
-│   └── net9.0/
+│   └── net10.0/
 │       └── Uno.UI.App.Mcp.Client.dll
 └── (other content)
 ```

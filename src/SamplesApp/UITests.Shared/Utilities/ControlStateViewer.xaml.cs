@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -14,6 +15,9 @@ namespace MUXControlsTestApp.Utilities
 	// Test control intended to help you see all the different visual states your control can be in
 	public sealed partial class ControlStateViewer : UserControl
 	{
+		private const DynamicallyAccessedMemberTypes ControlTypeRequirements = DynamicallyAccessedMemberTypes.PublicParameterlessConstructor;
+
+		[DynamicallyAccessedMembers(ControlTypeRequirements)]
 		Type _controlType;
 		List<string> _states;
 
@@ -22,6 +26,7 @@ namespace MUXControlsTestApp.Utilities
 			this.InitializeComponent();
 		}
 
+		[DynamicallyAccessedMembers(ControlTypeRequirements)]
 		public Type ControlType
 		{
 			get
@@ -34,6 +39,15 @@ namespace MUXControlsTestApp.Utilities
 				_controlType = value;
 				UpdateGrid();
 			}
+		}
+
+		public void AssertSetControlType<[DynamicallyAccessedMembers(ControlTypeRequirements)] T>(Type controlType)
+		{
+			if (typeof(T) != controlType)
+			{
+				throw new ArgumentException($"ControlType must be of type {typeof(T)}");
+			}
+			ControlType = typeof(T);
 		}
 
 		public List<string> States

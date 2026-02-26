@@ -134,7 +134,7 @@ dotnet xstyler -f src/SamplesApp/UITests.Shared/FolderName/SampleName.xaml
 
 1. **Build** to verify compilation:
    ```bash
-   dotnet build src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -f net10.0
+   dotnet build src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -f net11.0
    ```
 
 2. Remind the user:

@@ -29,7 +29,7 @@ Forward-compatibility: when `manifest.Version > 1`, the resolver logs a warning 
   "version": 1,
   "addins": [
     {
-      "entryPoint": "lib/net10.0/MyAddIn.dll",
+      "entryPoint": "lib/net11.0/MyAddIn.dll",
       "minHostVersion": "5.6.0"
     }
   ]

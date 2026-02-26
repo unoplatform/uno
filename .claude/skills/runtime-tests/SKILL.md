@@ -49,12 +49,12 @@ Choose **Skia WASM** only when:
 
 #### Skia Desktop (default)
 ```bash
-dotnet build src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -f net10.0
+dotnet build src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -f net11.0
 ```
 
 #### Skia WASM
 ```bash
-dotnet publish src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/SamplesApp.Skia.WebAssembly.Browser.csproj -c Release -f net10.0
+dotnet publish src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/SamplesApp.Skia.WebAssembly.Browser.csproj -c Release -f net11.0
 ```
 
 Note: WASM requires `publish` (not just `build`) to produce the static web assets needed for hosting.
@@ -101,13 +101,13 @@ If running specific tests (not all tests):
 
 Navigate to the build output and execute:
 ```bash
-cd src/SamplesApp/SamplesApp.Skia.Generic/bin/Release/net10.0
+cd src/SamplesApp/SamplesApp.Skia.Generic/bin/Release/net11.0
 dotnet SamplesApp.Skia.Generic.dll --runtime-tests=test-results.xml
 ```
 
 If running filtered tests, set the env var first:
 ```bash
-export UITEST_RUNTIME_TESTS_FILTER=$(echo -n "fully.qualified.TestName" | base64) && cd src/SamplesApp/SamplesApp.Skia.Generic/bin/Release/net10.0 && dotnet SamplesApp.Skia.Generic.dll --runtime-tests=test-results.xml
+export UITEST_RUNTIME_TESTS_FILTER=$(echo -n "fully.qualified.TestName" | base64) && cd src/SamplesApp/SamplesApp.Skia.Generic/bin/Release/net11.0 && dotnet SamplesApp.Skia.Generic.dll --runtime-tests=test-results.xml
 ```
 
 Results are output in NUnit XML format to `test-results.xml` (relative to CWD).
@@ -118,7 +118,7 @@ WASM tests run in a browser. The published app is served over HTTP, and test par
 
 **Step 1: Locate the publish output**
 ```bash
-PUBLISH_DIR="src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/bin/Release/net10.0/publish/wwwroot"
+PUBLISH_DIR="src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/bin/Release/net11.0/publish/wwwroot"
 ```
 
 **Step 2: Start the HTTP file server and the file-creation companion server**
@@ -217,7 +217,7 @@ kill $HTTP_PID $COMPANION_PID 2>/dev/null || true
 | | Skia Desktop | Skia WASM |
 |-|-------------|-----------|
 | **Project** | `SamplesApp.Skia.Generic` | `SamplesApp.Skia.WebAssembly.Browser` |
-| **Build command** | `dotnet build ... -c Release -f net10.0` | `dotnet publish ... -c Release -f net10.0` |
+| **Build command** | `dotnet build ... -c Release -f net11.0` | `dotnet publish ... -c Release -f net11.0` |
 | **Run method** | `dotnet SamplesApp.Skia.Generic.dll --runtime-tests=...` | Browser navigates to URL with query params |
 | **Filter delivery** | `UITEST_RUNTIME_TESTS_FILTER` env var | `--runtime-test-filter` URL query param |
 | **Base64 `=` handling** | Standard base64 | Replace `=` with `!` before URL-encoding |

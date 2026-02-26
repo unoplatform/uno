@@ -21,23 +21,23 @@ jobs:
   - template: ../templates/gitversion.yml
   - template: ../templates/dotnet-mobile-install-linux.yml
     parameters:
-      UnoCheckParameters: '--tfm net10.0-browserwasm'
+      UnoCheckParameters: '--preview-major --tfm net11.0-browserwasm'
 
   - template: ../templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
   - bash: |
-      dotnet publish /r /nr:false /p:Configuration=Release /p:UnoTargetFrameworkOverride=net10.0 src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /bl:$(build.artifactstagingdirectory)/logs/build-wasm-$(XAML_FLAVOR_BUILD)-uitest-net9-$(NBGV_SemVer2).binlog
+      dotnet publish /r /nr:false /p:Configuration=Release /p:UnoTargetFrameworkOverride=net11.0 src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /bl:$(build.artifactstagingdirectory)/logs/build-wasm-$(XAML_FLAVOR_BUILD)-uitest-net9-$(NBGV_SemVer2).binlog
 
-    displayName: 'Build sample app (net10.0)'
+    displayName: 'Build sample app (net11.0)'
 
   - task: CopyFiles@2
-    displayName: 'Publish Wasm Site (net10.0)'
+    displayName: 'Publish Wasm Site (net11.0)'
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm/bin/Release/net10.0/publish/wwwroot
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm/bin/Release/net11.0/publish/wwwroot
       Contents: '**/*.*'
-      TargetFolder: $(build.artifactstagingdirectory)/bin/site-net10.0-$(XAML_FLAVOR_BUILD)
+      TargetFolder: $(build.artifactstagingdirectory)/bin/site-net11.0-$(XAML_FLAVOR_BUILD)
       CleanTargetFolder: false
       OverWrite: false
       flattenFolders: false
@@ -71,7 +71,7 @@ jobs:
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
-    SITE_SUFFIX: 'net10.0'
+    SITE_SUFFIX: 'net11.0'
 
   steps:
   - checkout: self
@@ -97,7 +97,7 @@ jobs:
       dotnet tool uninstall dotnet-serve --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
       dotnet tool install dotnet-serve --version 1.10.140 --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
       export PATH="$PATH:$BUILD_SOURCESDIRECTORY/build/tools"
-      $BUILD_SOURCESDIRECTORY/build/tools/dotnet-serve -p 8000 -d "$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site-net10.0-WinUI" &
+      $BUILD_SOURCESDIRECTORY/build/tools/dotnet-serve -p 8000 -d "$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site-net11.0-WinUI" &
       cd $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.Wasm.UITests
       npm install
       node app
@@ -138,7 +138,7 @@ jobs:
   strategy:
     matrix:
       'UI Tests':
-        SITE_SUFFIX: 'net10.0-WinUI'
+        SITE_SUFFIX: 'net11.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'Default'
         TEST_RUN_NAME: 'UI Tests'
         UITEST_TEST_TIMEOUT: '5m'
@@ -146,7 +146,7 @@ jobs:
         IS_UI_TESTS: true
 
       'Benchmarks':
-        SITE_SUFFIX: 'net10.0-WinUI'
+        SITE_SUFFIX: 'net11.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'Benchmarks'
         TEST_RUN_NAME: 'Benchmarks'
         UITEST_TEST_TIMEOUT: '15m'
@@ -154,7 +154,7 @@ jobs:
         IS_UI_TESTS: true
 
       'Runtime Tests 0':
-        SITE_SUFFIX: 'net10.0-WinUI'
+        SITE_SUFFIX: 'net11.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         TEST_RUN_NAME: 'Runtime Tests 0'
         UITEST_TEST_TIMEOUT: '20m'
@@ -164,7 +164,7 @@ jobs:
         IS_UI_TESTS: false
 
       'Runtime Tests 1':
-        SITE_SUFFIX: 'net10.0-WinUI'
+        SITE_SUFFIX: 'net11.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         TEST_RUN_NAME: 'Runtime Tests 1'
         UITEST_TEST_TIMEOUT: '20m'
@@ -174,7 +174,7 @@ jobs:
         IS_UI_TESTS: false
 
       'Runtime Tests 2':
-        SITE_SUFFIX: 'net10.0-WinUI'
+        SITE_SUFFIX: 'net11.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         TEST_RUN_NAME: 'Runtime Tests 2'
         UITEST_TEST_TIMEOUT: '20m'

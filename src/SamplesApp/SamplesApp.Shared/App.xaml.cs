@@ -618,6 +618,8 @@ namespace SamplesApp
 
 			var availableFlags = new Dictionary<string, PropertyInfo>();
 
+#pragma warning disable IL2075
+			// This works as intended in local testing
 			foreach (var featureClass in typeof(FeatureConfiguration).GetNestedTypes(BindingFlags.Public | BindingFlags.Static))
 			{
 				foreach (var featureProperty in featureClass.GetProperties(BindingFlags.Public | BindingFlags.Static))
@@ -625,6 +627,7 @@ namespace SamplesApp
 					availableFlags[$"{featureClass.Name}.{featureProperty.Name}"] = featureProperty;
 				}
 			}
+#pragma warning restore IL2075
 
 #pragma warning disable SYSLIB1045
 			var regex = new Regex(@"^--FeatureConfiguration\.(\w+\.\w+)=(.+)$");

@@ -98,7 +98,7 @@ The table is grouped into sections. Each row shows a **key** and a **value**. Wh
 | Key | What it tells you |
 |-----|-------------------|
 | `dotNetVersion` | Raw output of `dotnet --version` |
-| `dotNetTfm` | Computed target framework moniker (e.g. `net10.0`) used to locate the host |
+| `dotNetTfm` | Computed target framework moniker (e.g. `net11.0`) used to locate the host |
 
 ### Add-Ins
 

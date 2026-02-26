@@ -1290,7 +1290,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 						DebugMarkupAttachable.SetValue(fe, serviceProvider);
 					}
 
+#pragma warning disable IL2072
+					// TODO; ¯\_(ツ)_/¯
 					return pvtp.Type.IsValueType ? Activator.CreateInstance(pvtp.Type) : null;
+#pragma warning restore IL2072
 				}
 
 				return DependencyProperty.UnsetValue;

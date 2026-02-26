@@ -1011,7 +1011,7 @@ Single I/O seam via `IFileSystem`. All business logic is fully testable with an 
 ### Design Principles
 
 - **Pure logic extraction**: follows the `MonitorDecisions.cs` pattern — no I/O in business logic
-- **Minimal dependency surface**: primary JSON manipulation uses `System.Text.Json.Nodes` (`JsonNode`, `JsonObject`, `JsonArray`) already available in net9.0; `Newtonsoft.Json` is added only where required to preserve comments when updating JSONC config files
+- **Minimal dependency surface**: primary JSON manipulation uses `System.Text.Json.Nodes` (`JsonNode`, `JsonObject`, `JsonArray`) already available in net10.0; `Newtonsoft.Json` is added only where required to preserve comments when updating JSONC config files
 - **Manual arg parsing**: consistent with existing `CliManager` patterns (no System.CommandLine migration)
 - **JSON options**: reuses `McpJsonUtilities.DefaultOptions` for deserialization; camelCase + indented for output serialization
 

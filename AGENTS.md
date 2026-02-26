@@ -78,10 +78,10 @@ cp crosstargeting_override.props.sample crosstargeting_override.props
 <Project>
   <PropertyGroup>
     <!-- Choose ONE target: -->
-    <UnoTargetFrameworkOverride>net10.0</UnoTargetFrameworkOverride>              <!-- WebAssembly/Skia -->
-    <!-- <UnoTargetFrameworkOverride>net10.0-android</UnoTargetFrameworkOverride>  Android -->
-    <!-- <UnoTargetFrameworkOverride>net10.0-ios</UnoTargetFrameworkOverride>      iOS -->
-    <!-- <UnoTargetFrameworkOverride>net10.0-windows10.0.19041.0</UnoTargetFrameworkOverride> Windows -->
+    <UnoTargetFrameworkOverride>net11.0</UnoTargetFrameworkOverride>              <!-- WebAssembly/Skia -->
+    <!-- <UnoTargetFrameworkOverride>net11.0-android</UnoTargetFrameworkOverride>  Android -->
+    <!-- <UnoTargetFrameworkOverride>net11.0-ios</UnoTargetFrameworkOverride>      iOS -->
+    <!-- <UnoTargetFrameworkOverride>net11.0-windows10.0.19041.0</UnoTargetFrameworkOverride> Windows -->
   </PropertyGroup>
 </Project>
 ```

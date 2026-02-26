@@ -68,7 +68,7 @@
 
 ## Phase 4: User Story 4 - Cross-Platform Consistency (Priority: P1)
 
-**Goal**: Auto code-behind generation works on WinUI targets (`net10.0-windows10.0.*`) via a standalone `IIncrementalGenerator`, producing the same result as the Uno integrated path
+**Goal**: Auto code-behind generation works on WinUI targets (`net11.0-windows10.0.*`) via a standalone `IIncrementalGenerator`, producing the same result as the Uno integrated path
 
 **Independent Test**: Build same project for WinUI target and verify code-behind is generated for XAML files without developer-authored code-behind
 

@@ -120,6 +120,6 @@ partial class UnoAssemblyHelper
 #else
 		"Release";
 #endif
-	private const string TFMPrevious = "net9.0";
-	private const string TFMCurrent = "net10.0";
+	private const string TFMPrevious = "net10.0";
+	private const string TFMCurrent = "net11.0";
 }

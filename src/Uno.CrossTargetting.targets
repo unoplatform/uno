@@ -111,7 +111,7 @@
 
 	<PropertyGroup Condition="$(IsAndroid)">
 		<DefineConstants>$(DefineConstants);__ANDROID__;XAMARIN;HAS_NATIVE_IMPLICIT_POINTER_CAPTURE;HAS_RENDER_TARGET_BITMAP</DefineConstants>
-		<SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion>23.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(TargetFramework)' != 'uap10.0.19041' and $(TargetFramework.EndsWith('-windows10.0.19041.0')) != 'true' and '$(TargetPlatformIdentifier)' != 'UAP'">
