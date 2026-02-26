@@ -184,8 +184,11 @@ public partial class TextBox
 
 		if (touchHoldTime >= GestureRecognizer.HoldMinDelayMicroseconds)
 		{
-			// Touch holding - show ContextFlyout
-			ContextFlyout?.ShowAt(this, new FlyoutShowOptions { Position = position });
+			// Touch holding - show ContextFlyout via OnContextRequested
+			// Ported from: WinUI TextBoxBase.cpp OnGripperHeld (line 5219)
+			var contextArgs = new ContextRequestedEventArgs();
+			contextArgs.SetGlobalPoint(args.GetCurrentPoint(null).Position);
+			OnContextRequested(this, contextArgs);
 		}
 		else if (!Text.IsNullOrEmpty()) // Touch tap
 		{
@@ -319,10 +322,9 @@ public partial class TextBox
 		{
 			// Line 5219: Gripper was held - show ContextFlyout (OnContextRequested)
 			e.Handled = true;
-			ContextFlyout?.ShowAt(this, new FlyoutShowOptions
-			{
-				Position = e.GetCurrentPoint(this).Position
-			});
+			var contextArgs = new ContextRequestedEventArgs();
+			contextArgs.SetGlobalPoint(e.GetCurrentPoint(null).Position);
+			OnContextRequested(this, contextArgs);
 		}
 		else if (IsMultiTapGesture((previous.PointerId, previous.Timestamp, previous.Position), current))
 		{
