@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
@@ -26,6 +27,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 	private static readonly SKPath _lastClipPath = new();
 	private static readonly SKPoint[] _conicPoints = new SKPoint[32 * 3]; // 3 points per quad
 	private static readonly bool _isVerboseWin32WebViewTraceEnabled = IsVerboseWin32WebViewTraceEnabled();
+	private static readonly Dictionary<nint, (nint host, int zIndex)> _zOrderByChild = new();
 
 	private readonly ContentPresenter _presenter;
 	private readonly SKPath _tempPath = new();
@@ -83,6 +85,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		}
 
 		var hwnd = (HWND)window.Hwnd;
+		_zOrderByChild.Remove(hwnd.Value);
 		var oldExStyleVal = PInvoke.GetWindowLong(hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE);
 		var oldStyleVal = PInvoke.GetWindowLong(hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE);
 		var newExStyleVal = oldExStyleVal | (int)WINDOW_EX_STYLE.WS_EX_LAYERED;
@@ -288,6 +291,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		}
 
 		var hwnd = (HWND)window.Hwnd;
+		_zOrderByChild.Remove(hwnd.Value);
 		LogVerboseWin32WebViewTrace(() => $"{nameof(DetachNativeElement)} child={hwnd.Value} {GetActivationSnapshot()}");
 		_ = PInvoke.ShowWindow(hwnd, SHOW_WINDOW_CMD.SW_HIDE);
 
@@ -358,9 +362,29 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		}
 
 		var hwnd = (HWND)window.Hwnd;
+		var hostHwnd = Hwnd;
+		_zOrderByChild[hwnd.Value] = (hostHwnd.Value, zIndex);
+
+		var insertAfter = (HWND)(IntPtr)1; // HWND_BOTTOM
+		var highestLowerZIndex = int.MinValue;
+		foreach (var (siblingValue, sibling) in _zOrderByChild)
+		{
+			if (siblingValue == hwnd.Value || sibling.host != hostHwnd.Value || sibling.zIndex >= zIndex)
+			{
+				continue;
+			}
+
+			var siblingHwnd = (HWND)(IntPtr)siblingValue;
+			if (sibling.zIndex >= highestLowerZIndex)
+			{
+				highestLowerZIndex = sibling.zIndex;
+				insertAfter = siblingHwnd;
+			}
+		}
+
 		var success = PInvoke.SetWindowPos(
 			hwnd,
-			HWND.Null,
+			insertAfter,
 			0,
 			0,
 			0,
@@ -370,7 +394,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		{
 			this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
 		}
-		LogVerboseWin32WebViewTrace(() => $"{nameof(SetZIndex)} child={hwnd.Value} zIndex={zIndex} setWindowPosSuccess={success} {GetActivationSnapshot()}");
+		LogVerboseWin32WebViewTrace(() => $"{nameof(SetZIndex)} child={hwnd.Value} zIndex={zIndex} insertAfter={insertAfter.Value} setWindowPosSuccess={success} {GetActivationSnapshot()}");
 	}
 
 	private static bool IsVerboseWin32WebViewTraceEnabled()
