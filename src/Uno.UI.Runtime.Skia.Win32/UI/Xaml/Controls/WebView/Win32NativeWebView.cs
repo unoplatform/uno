@@ -68,7 +68,6 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 	// window class (and a new WndProc) per window, but that sounds excessive.
 	private static WeakReference<Win32NativeWebView>? _webViewForNextCreateWindow;
 	private static readonly Dictionary<HWND, WeakReference<Win32NativeWebView>> _hwndToWebView = new();
-	private static readonly bool _isVerboseWin32WebViewTraceEnabled = Win32WebViewTraceHelper.IsVerboseWin32WebViewTraceEnabled();
 
 	private readonly ContentPresenter _presenter;
 	private readonly HWND _hwnd;
@@ -327,7 +326,7 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 
 	private void LogTrackedWndProcMessage(uint msg, string messageName, HWND hwnd, WPARAM wParam, LPARAM lParam)
 	{
-		if (!_isVerboseWin32WebViewTraceEnabled)
+		if (!Win32WebViewTraceHelper.IsVerboseWin32WebViewTraceEnabled())
 		{
 			return;
 		}
@@ -369,11 +368,28 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 
 	private void LogVerboseWin32Trace(Func<string> messageFactory)
 	{
-		Win32WebViewTraceHelper.LogVerboseTrace(
-			_isVerboseWin32WebViewTraceEnabled,
-			this.Log().IsEnabled(LogLevel.Warning),
-			message => this.LogWarn()?.Warn(message),
-			messageFactory);
+		if (!Win32WebViewTraceHelper.IsVerboseWin32WebViewTraceEnabled())
+		{
+			return;
+		}
+
+		var loggerEnabled = this.Log().IsEnabled(LogLevel.Warning);
+		var debugOutputEnabled = Debugger.IsAttached;
+		if (!loggerEnabled && !debugOutputEnabled)
+		{
+			return;
+		}
+
+		var message = $"[WebView2Trace] {DateTime.UtcNow:O} {messageFactory()}";
+		if (loggerEnabled)
+		{
+			this.LogWarn()?.Warn(message);
+		}
+
+		if (debugOutputEnabled)
+		{
+			Debug.WriteLine(message);
+		}
 	}
 
 	public string DocumentTitle

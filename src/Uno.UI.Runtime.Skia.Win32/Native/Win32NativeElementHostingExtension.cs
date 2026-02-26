@@ -25,7 +25,6 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 {
 	private static readonly SKPath _lastClipPath = new();
 	private static readonly SKPoint[] _conicPoints = new SKPoint[32 * 3]; // 3 points per quad
-	private static readonly bool _isVerboseWin32WebViewTraceEnabled = Win32WebViewTraceHelper.IsVerboseWin32WebViewTraceEnabled();
 
 	private readonly ContentPresenter _presenter;
 	private readonly SKPath _tempPath = new();
@@ -348,11 +347,28 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 
 	private void LogVerboseWin32WebViewTrace(Func<string> messageFactory)
 	{
-		Win32WebViewTraceHelper.LogVerboseTrace(
-			_isVerboseWin32WebViewTraceEnabled,
-			this.Log().IsEnabled(LogLevel.Warning),
-			message => this.LogWarn()?.Warn(message),
-			messageFactory);
+		if (!Win32WebViewTraceHelper.IsVerboseWin32WebViewTraceEnabled())
+		{
+			return;
+		}
+
+		var loggerEnabled = this.Log().IsEnabled(LogLevel.Warning);
+		var debugOutputEnabled = Debugger.IsAttached;
+		if (!loggerEnabled && !debugOutputEnabled)
+		{
+			return;
+		}
+
+		var message = $"[WebView2Trace] {DateTime.UtcNow:O} {messageFactory()}";
+		if (loggerEnabled)
+		{
+			this.LogWarn()?.Warn(message);
+		}
+
+		if (debugOutputEnabled)
+		{
+			Debug.WriteLine(message);
+		}
 	}
 
 	private static string GetActivationSnapshot()
