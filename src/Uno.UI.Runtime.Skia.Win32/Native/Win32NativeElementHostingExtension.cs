@@ -86,8 +86,12 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		var oldExStyleVal = PInvoke.GetWindowLong(hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE);
 		var oldStyleVal = PInvoke.GetWindowLong(hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE);
 		var newExStyleVal = oldExStyleVal | (int)WINDOW_EX_STYLE.WS_EX_LAYERED;
-		// Keep hosted WebView HWND as a true child window; popup styles can steal activation during refresh.
-		const int nonChildStyleMask = unchecked((int)WINDOW_STYLE.WS_CAPTION) | unchecked((int)WINDOW_STYLE.WS_POPUP);
+		// Keep hosted WebView HWND as a true child window; popup/minimized top-level styles cause activation and placement issues.
+		const int nonChildStyleMask =
+			unchecked((int)WINDOW_STYLE.WS_CAPTION)
+			| unchecked((int)WINDOW_STYLE.WS_POPUP)
+			| unchecked((int)WINDOW_STYLE.WS_MINIMIZE)
+			| unchecked((int)WINDOW_STYLE.WS_MAXIMIZE);
 		var newStyleVal = (oldStyleVal | (int)(WINDOW_STYLE.WS_CLIPSIBLINGS | WINDOW_STYLE.WS_CHILD))
 			& ~nonChildStyleMask;
 		PInvoke.SetWindowLong(hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE, newExStyleVal);
@@ -95,8 +99,9 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		LogVerboseWin32WebViewTrace(
 			() => $"{nameof(AttachNativeElement)} child={hwnd.Value} host={Hwnd.Value} exStyle=0x{oldExStyleVal:X8}->0x{newExStyleVal:X8} style=0x{oldStyleVal:X8}->0x{newStyleVal:X8} {GetActivationSnapshot()}");
 
+		// Keep the child hidden until first arrange applies final bounds and clipping to avoid first-frame flicker.
 		_ = PInvoke.ShowWindow(hwnd, SHOW_WINDOW_CMD.SW_HIDE);
-		_showWindowOnNextArrange = true; // only show the window after the first arrange to avoid the split-second flicker between showing the window and positioning/clipping it correctly.
+		_showWindowOnNextArrange = true;
 		LogVerboseWin32WebViewTrace(() => $"{nameof(AttachNativeElement)} scheduled first show for child={hwnd.Value}");
 
 		var oldParent = PInvoke.SetParent(hwnd, Hwnd);
@@ -330,7 +335,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 			this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 		LogVerboseWin32WebViewTrace(
-			() => $"{nameof(ArrangeNativeElement)} child={hwnd.Value} rect={_lastArrangeRect} scale={scale:0.###} setWindowPosSuccess={success} showOnNextArrange={_showWindowOnNextArrange} {GetActivationSnapshot()}");
+			() => $"{nameof(ArrangeNativeElement)} child={hwnd.Value} rect={_lastArrangeRect} scale={scale:0.###} setWindowPosSuccess={success} showOnNextArrange={_showWindowOnNextArrange} childRect={GetWindowRectSnapshot(hwnd)} hostRect={GetWindowRectSnapshot(Hwnd)} {GetActivationSnapshot()}");
 
 		_lastFinalSvgClipPath = null; // force reapply clip path after arranging
 		OnRenderingNegativePathReevaluated(this, _lastClipPath);
@@ -339,7 +344,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		{
 			_showWindowOnNextArrange = false;
 			_ = PInvoke.ShowWindow(hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
-			LogVerboseWin32WebViewTrace(() => $"{nameof(ArrangeNativeElement)} showed child={hwnd.Value} with {nameof(SHOW_WINDOW_CMD.SW_SHOWNORMAL)} {GetActivationSnapshot()}");
+			LogVerboseWin32WebViewTrace(() => $"{nameof(ArrangeNativeElement)} showed child={hwnd.Value} with {nameof(SHOW_WINDOW_CMD.SW_SHOWNORMAL)} childRect={GetWindowRectSnapshot(hwnd)} hostRect={GetWindowRectSnapshot(Hwnd)} {GetActivationSnapshot()}");
 		}
 	}
 
@@ -377,10 +382,27 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 
 	private void LogVerboseWin32WebViewTrace(Func<string> messageFactory)
 	{
-		// Avoid evaluating trace payloads unless tracing is enabled and the logger will emit warning messages.
-		if (_isVerboseWin32WebViewTraceEnabled && this.Log().IsEnabled(LogLevel.Warning))
+		if (!_isVerboseWin32WebViewTraceEnabled)
 		{
-			this.LogWarn()?.Warn($"[WebView2Trace] {DateTime.UtcNow:O} {messageFactory()}");
+			return;
+		}
+
+		var loggerEnabled = this.Log().IsEnabled(LogLevel.Warning);
+		var debugOutputEnabled = Debugger.IsAttached;
+		if (!loggerEnabled && !debugOutputEnabled)
+		{
+			return;
+		}
+
+		var message = $"[WebView2Trace] {DateTime.UtcNow:O} {messageFactory()}";
+		if (loggerEnabled)
+		{
+			this.LogWarn()?.Warn(message);
+		}
+
+		if (debugOutputEnabled)
+		{
+			Debug.WriteLine(message);
 		}
 	}
 
@@ -388,6 +410,21 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 	{
 		var active = PInvoke.GetActiveWindow();
 		return $"active={active.Value}";
+	}
+
+	private static string GetWindowRectSnapshot(HWND hwnd)
+	{
+		if (hwnd == HWND.Null)
+		{
+			return "null";
+		}
+
+		if (PInvoke.GetWindowRect(hwnd, out var rect))
+		{
+			return $"{rect.left},{rect.top},{rect.right - rect.left}x{rect.bottom - rect.top}";
+		}
+
+		return $"error={Marshal.GetLastWin32Error()}";
 	}
 
 	public Size MeasureNativeElement(object content, Size childMeasuredSize, Size availableSize)

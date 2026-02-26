@@ -18,6 +18,7 @@ using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.Web.WebView2.Core;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
@@ -160,6 +161,8 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 		}
 
 		_controller = tcs.Task.Result;
+		// Align the initial WebView2 fallback fill with the host window to minimize white pre-content flashes.
+		ApplyInitialControllerBackgroundColor();
 		_nativeWebView = _controller.CoreWebView2;
 		_nativeWebView.Settings.IsScriptEnabled = true;
 		_nativeWebView.Settings.IsWebMessageEnabled = true;
@@ -246,7 +249,7 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 		Debug.Assert(_hwnd == HWND.Null || hwnd == _hwnd); // the null check is for when this method gets called inside CreateWindow before setting _hwnd
 		if (GetTrackedWndProcMessageName(msg) is { } messageName)
 		{
-			LogTrackedWndProcMessage(messageName, hwnd, wParam, lParam);
+			LogTrackedWndProcMessage(msg, messageName, hwnd, wParam, lParam);
 		}
 
 		switch (msg)
@@ -292,6 +295,18 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 		return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
 	}
 
+	private void ApplyInitialControllerBackgroundColor()
+	{
+		if (_presenter.XamlRoot?.HostWindow?.Background is not SolidColorBrush brush)
+		{
+			return;
+		}
+
+		var color = Color.FromArgb(255, brush.Color.R, brush.Color.G, brush.Color.B);
+		_controller.DefaultBackgroundColor = color;
+		LogVerboseWin32Trace(() => $"Applied initial controller background argb=0x{color.ToArgb():X8} from host window background.");
+	}
+
 	private static bool IsVerboseWin32WebViewTraceEnabled()
 	{
 		// Keep this opt-in so verbose WndProc tracing stays off by default.
@@ -317,7 +332,7 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 			_ => null
 		};
 
-	private void LogTrackedWndProcMessage(string messageName, HWND hwnd, WPARAM wParam, LPARAM lParam)
+	private void LogTrackedWndProcMessage(uint msg, string messageName, HWND hwnd, WPARAM wParam, LPARAM lParam)
 	{
 		if (!_isVerboseWin32WebViewTraceEnabled)
 		{
@@ -325,15 +340,78 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 		}
 
 		var active = PInvoke.GetActiveWindow();
-		LogVerboseWin32Trace(() => $"WndProc {messageName} hwnd={hwnd.Value} presenterParent={ParentHwnd.Value} wParam={wParam.Value} lParam={lParam.Value} active={active.Value}");
+		LogVerboseWin32Trace(
+			() => $"WndProc {messageName} hwnd={hwnd.Value} presenterParent={ParentHwnd.Value} wParam={wParam.Value} lParam={lParam.Value}{TryGetWindowPosPayload(msg, lParam)} active={active.Value} childRect={GetWindowRectSnapshot(hwnd)} parentRect={GetWindowRectSnapshot(ParentHwnd)}");
+	}
+
+	private static string TryGetWindowPosPayload(uint msg, LPARAM lParam)
+	{
+		if ((msg != WM_WINDOWPOSCHANGING && msg != WM_WINDOWPOSCHANGED) || lParam.Value == 0)
+		{
+			return string.Empty;
+		}
+
+		try
+		{
+			var windowPos = Marshal.PtrToStructure<WindowPosPayload>((IntPtr)lParam.Value);
+			return $" windowPos=(x={windowPos.x},y={windowPos.y},cx={windowPos.cx},cy={windowPos.cy},flags=0x{(uint)windowPos.flags:X})";
+		}
+		catch (Exception)
+		{
+			return " windowPos=(unavailable)";
+		}
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	private struct WindowPosPayload
+	{
+		public nint hwnd;
+		public nint hwndInsertAfter;
+		public int x;
+		public int y;
+		public int cx;
+		public int cy;
+		public uint flags;
+	}
+
+	private static string GetWindowRectSnapshot(HWND hwnd)
+	{
+		if (hwnd == HWND.Null)
+		{
+			return "null";
+		}
+
+		if (PInvoke.GetWindowRect(hwnd, out var rect))
+		{
+			return $"{rect.left},{rect.top},{rect.right - rect.left}x{rect.bottom - rect.top}";
+		}
+
+		return $"error={Marshal.GetLastWin32Error()}";
 	}
 
 	private void LogVerboseWin32Trace(Func<string> messageFactory)
 	{
-		// Avoid formatting trace payloads unless tracing is enabled and the selected sink will emit warnings.
-		if (_isVerboseWin32WebViewTraceEnabled && this.Log().IsEnabled(LogLevel.Warning))
+		if (!_isVerboseWin32WebViewTraceEnabled)
 		{
-			this.LogWarn()?.Warn($"[WebView2Trace] {DateTime.UtcNow:O} {messageFactory()}");
+			return;
+		}
+
+		var loggerEnabled = this.Log().IsEnabled(LogLevel.Warning);
+		var debugOutputEnabled = Debugger.IsAttached;
+		if (!loggerEnabled && !debugOutputEnabled)
+		{
+			return;
+		}
+
+		var message = $"[WebView2Trace] {DateTime.UtcNow:O} {messageFactory()}";
+		if (loggerEnabled)
+		{
+			this.LogWarn()?.Warn(message);
+		}
+
+		if (debugOutputEnabled)
+		{
+			Debug.WriteLine(message);
 		}
 	}
 
@@ -362,6 +440,8 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 
 	private void NativeWebView_NavigationStarting(object? sender, NativeWebView.CoreWebView2NavigationStartingEventArgs e)
 	{
+		LogVerboseWin32Trace(() => $"NavigationStarting id={e.NavigationId} uri={e.Uri ?? "<null>"} child={_hwnd.Value} childRect={GetWindowRectSnapshot(_hwnd)} parent={ParentHwnd.Value} parentRect={GetWindowRectSnapshot(ParentHwnd)}");
+
 		if (e.Uri is null)
 		{
 			return; // this is what the Wpf version does
@@ -383,6 +463,9 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 
 	private void NativeWebView_NavigationCompleted(object? sender, NativeWebView.CoreWebView2NavigationCompletedEventArgs e)
 	{
+		LogVerboseWin32Trace(
+			() => $"NavigationCompleted id={e.NavigationId} success={e.IsSuccess} http={e.HttpStatusCode} errorStatus={e.WebErrorStatus} child={_hwnd.Value} childRect={GetWindowRectSnapshot(_hwnd)} parent={ParentHwnd.Value} parentRect={GetWindowRectSnapshot(ParentHwnd)}");
+
 		if (!_navigationIdToUriMap.TryGetValue(e.NavigationId, out var uriString))
 		{
 			if (this.Log().IsEnabled(LogLevel.Error))
