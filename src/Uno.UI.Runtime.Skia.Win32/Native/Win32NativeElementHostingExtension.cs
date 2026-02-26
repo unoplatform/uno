@@ -26,7 +26,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 {
 	private static readonly SKPath _lastClipPath = new();
 	private static readonly SKPoint[] _conicPoints = new SKPoint[32 * 3]; // 3 points per quad
-	private static readonly bool _isVerboseWin32WebViewTraceEnabled = IsVerboseWin32WebViewTraceEnabled();
+	private static readonly bool _isVerboseWin32WebViewTraceEnabled = Win32WebViewTraceHelper.IsVerboseWin32WebViewTraceEnabled();
 	private static readonly Dictionary<nint, (nint host, int zIndex)> _zOrderByChild = new();
 
 	private readonly ContentPresenter _presenter;
@@ -339,7 +339,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 			this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 		LogVerboseWin32WebViewTrace(
-			() => $"{nameof(ArrangeNativeElement)} child={hwnd.Value} rect={_lastArrangeRect} scale={scale:0.###} setWindowPosSuccess={success} showOnNextArrange={_showWindowOnNextArrange} childRect={GetWindowRectSnapshot(hwnd)} hostRect={GetWindowRectSnapshot(Hwnd)} {GetActivationSnapshot()}");
+			() => $"{nameof(ArrangeNativeElement)} child={hwnd.Value} rect={_lastArrangeRect} scale={scale:0.###} setWindowPosSuccess={success} showOnNextArrange={_showWindowOnNextArrange} childRect={Win32WebViewTraceHelper.GetWindowRectSnapshot(hwnd)} hostRect={Win32WebViewTraceHelper.GetWindowRectSnapshot(Hwnd)} {GetActivationSnapshot()}");
 
 		_lastFinalSvgClipPath = null; // force reapply clip path after arranging
 		OnRenderingNegativePathReevaluated(this, _lastClipPath);
@@ -348,7 +348,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		{
 			_showWindowOnNextArrange = false;
 			_ = PInvoke.ShowWindow(hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
-			LogVerboseWin32WebViewTrace(() => $"{nameof(ArrangeNativeElement)} showed child={hwnd.Value} with {nameof(SHOW_WINDOW_CMD.SW_SHOWNORMAL)} childRect={GetWindowRectSnapshot(hwnd)} hostRect={GetWindowRectSnapshot(Hwnd)} {GetActivationSnapshot()}");
+			LogVerboseWin32WebViewTrace(() => $"{nameof(ArrangeNativeElement)} showed child={hwnd.Value} with {nameof(SHOW_WINDOW_CMD.SW_SHOWNORMAL)} childRect={Win32WebViewTraceHelper.GetWindowRectSnapshot(hwnd)} hostRect={Win32WebViewTraceHelper.GetWindowRectSnapshot(Hwnd)} {GetActivationSnapshot()}");
 		}
 	}
 
@@ -397,58 +397,19 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		LogVerboseWin32WebViewTrace(() => $"{nameof(SetZIndex)} child={hwnd.Value} zIndex={zIndex} insertAfter={insertAfter.Value} setWindowPosSuccess={success} {GetActivationSnapshot()}");
 	}
 
-	private static bool IsVerboseWin32WebViewTraceEnabled()
-	{
-		// Keep this opt-in so verbose native-host traces stay disabled by default.
-		var value = Environment.GetEnvironmentVariable("UNO_WIN32_WEBVIEW2_TRACE");
-		return string.Equals(value, "1", StringComparison.Ordinal) || (bool.TryParse(value, out var enabled) && enabled);
-	}
-
 	private void LogVerboseWin32WebViewTrace(Func<string> messageFactory)
 	{
-		if (!_isVerboseWin32WebViewTraceEnabled)
-		{
-			return;
-		}
-
-		var loggerEnabled = this.Log().IsEnabled(LogLevel.Warning);
-		var debugOutputEnabled = Debugger.IsAttached;
-		if (!loggerEnabled && !debugOutputEnabled)
-		{
-			return;
-		}
-
-		var message = $"[WebView2Trace] {DateTime.UtcNow:O} {messageFactory()}";
-		if (loggerEnabled)
-		{
-			this.LogWarn()?.Warn(message);
-		}
-
-		if (debugOutputEnabled)
-		{
-			Debug.WriteLine(message);
-		}
+		Win32WebViewTraceHelper.LogVerboseTrace(
+			_isVerboseWin32WebViewTraceEnabled,
+			this.Log().IsEnabled(LogLevel.Warning),
+			message => this.LogWarn()?.Warn(message),
+			messageFactory);
 	}
 
 	private static string GetActivationSnapshot()
 	{
 		var active = PInvoke.GetActiveWindow();
 		return $"active={active.Value}";
-	}
-
-	private static string GetWindowRectSnapshot(HWND hwnd)
-	{
-		if (hwnd == HWND.Null)
-		{
-			return "null";
-		}
-
-		if (PInvoke.GetWindowRect(hwnd, out var rect))
-		{
-			return $"{rect.left},{rect.top},{rect.right - rect.left}x{rect.bottom - rect.top}";
-		}
-
-		return $"error={Marshal.GetLastWin32Error()}";
 	}
 
 	public Size MeasureNativeElement(object content, Size childMeasuredSize, Size availableSize)
