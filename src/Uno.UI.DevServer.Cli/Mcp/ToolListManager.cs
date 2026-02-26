@@ -81,7 +81,7 @@ internal class ToolListManager(
 						expectedWorkspaceHash: WorkspaceHash,
 						expectedUnoSdkVersion: devServerMonitor.UnoSdkVersion))
 					{
-						_toolCache = cachedTools;
+						_toolCache = cachedTools.DistinctBy(t => t.Name).ToArray();
 						logger.LogTrace("Loaded {Count} cached tools from {Path}", _toolCache.Length, _toolCachePath);
 					}
 					else

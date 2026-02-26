@@ -225,8 +225,9 @@ public class Given_McpUpstreamClient
 	[Description("The StartOnceGuard ensures callback fires exactly once: via notification if it arrived, otherwise via explicit post-connect path")]
 	public async Task ConnectOrDie_NotificationGuard_CallbackFiresExactlyOnce()
 	{
-		// This test exercises the production StartOnceGuard used in McpUpstreamClient.ConnectOrDieAsync:
-		// TryStart() atomically claims the flag so exactly one path wins,
+		// This test exercises the production pattern used in McpUpstreamClient.ConnectOrDieAsync:
+		// The callback is checked first (short-circuit avoids consuming the guard when no callback
+		// is registered), then TryStart() atomically claims the flag so exactly one path wins,
 		// eliminating the TOCTOU race between the notification handler and post-connect callback.
 
 		var callCount = 0;
@@ -234,11 +235,11 @@ public class Given_McpUpstreamClient
 
 		// Case 1: notification fires during connect -> explicit path is skipped
 		var guard = new MonitorDecisions.StartOnceGuard();
-		if (guard.TryStart() && callback is { } c1)
+		if (callback is { } c1 && guard.TryStart())
 		{
 			await c1();
 		}
-		if (guard.TryStart() && callback is { } c2)
+		if (callback is { } c2 && guard.TryStart())
 		{
 			await c2();
 		}
@@ -247,7 +248,7 @@ public class Given_McpUpstreamClient
 		// Case 2: no notification -> explicit path fires
 		callCount = 0;
 		guard = new MonitorDecisions.StartOnceGuard();
-		if (guard.TryStart() && callback is { } c3)
+		if (callback is { } c3 && guard.TryStart())
 		{
 			await c3();
 		}

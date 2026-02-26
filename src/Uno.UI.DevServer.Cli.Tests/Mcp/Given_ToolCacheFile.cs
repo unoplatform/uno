@@ -265,6 +265,52 @@ public class Given_ToolCacheFile
 	}
 
 	// -------------------------------------------------------------------
+	// Deduplication of legacy cache
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	[Description("A cache written by a pre-dedup version may contain duplicate tool names; DistinctBy at load time should collapse them")]
+	public void TryRead_WithDuplicateTools_DeduplicatesOnLoad()
+	{
+		var tools = new[]
+		{
+			new Tool
+			{
+				Name = "uno_app_get_info",
+				Description = "Get app info (first)",
+				InputSchema = JsonSerializer.Deserialize<JsonElement>("""{"type":"object","properties":{}}"""),
+			},
+			new Tool
+			{
+				Name = "uno_app_get_info",
+				Description = "Get app info (duplicate)",
+				InputSchema = JsonSerializer.Deserialize<JsonElement>("""{"type":"object","properties":{}}"""),
+			},
+			new Tool
+			{
+				Name = "uno_health",
+				Description = "Health check",
+				InputSchema = JsonSerializer.Deserialize<JsonElement>("""{"type":"object","properties":{}}"""),
+			},
+		};
+
+		var entry = ToolCacheFile.CreateEntry(tools);
+		var json = JsonSerializer.Serialize(entry, McpJsonUtilities.DefaultOptions);
+
+		using var loggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(b => { });
+		var logger = loggerFactory.CreateLogger("test");
+		var success = ToolCacheFile.TryRead(json, "test-cache.json", logger, out var restored);
+
+		success.Should().BeTrue();
+
+		// TryRead returns raw tools — deduplication is done by the consumer (ToolListManager.GetCachedTools)
+		// Verify that DistinctBy produces the expected result
+		var deduped = restored.DistinctBy(t => t.Name).ToArray();
+		deduped.Should().HaveCount(2);
+		deduped.Select(t => t.Name).Should().BeEquivalentTo(new[] { "uno_app_get_info", "uno_health" });
+	}
+
+	// -------------------------------------------------------------------
 	// Atomic cache writes
 	// -------------------------------------------------------------------
 

@@ -83,7 +83,7 @@ internal class McpUpstreamClient
 							log.LogTrace("Upstream MCP notified tool list changed");
 
 							// ToolListChanged has no meaningful params — no deserialization needed
-							if (notificationGuard.TryStart() && _toolListChanged is { } callback)
+							if (_toolListChanged is { } callback && notificationGuard.TryStart())
 							{
 								await callback();
 							}
@@ -111,7 +111,7 @@ internal class McpUpstreamClient
 
 			// Always notify — 0 tools is a valid response and must unblock waiters.
 			// Skip if the notification handler already fired to avoid duplicate downstream events.
-			if (notificationGuard.TryStart() && _toolListChanged is { } toolsCallback)
+			if (_toolListChanged is { } toolsCallback && notificationGuard.TryStart())
 			{
 				await toolsCallback();
 			}
