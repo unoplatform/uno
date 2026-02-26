@@ -769,6 +769,10 @@ namespace Microsoft.UI.Xaml.Controls
 		#region DependencyProperty: IsTextTrimmed
 		private TypedEventHandler<TextBlock, IsTextTrimmedChangedEventArgs> _isTextTrimmedChanged;
 
+#if __SKIA__
+		public event ContextMenuOpeningEventHandler ContextMenuOpening;
+#endif
+
 #if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
 		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 #endif

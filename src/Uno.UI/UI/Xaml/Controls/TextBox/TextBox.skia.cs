@@ -1842,4 +1842,29 @@ public partial class TextBox
 			}
 		}
 	}
+
+	/// <summary>
+	/// Fires the ContextMenuOpening event synchronously and returns whether it was handled.
+	/// </summary>
+	/// <remarks>
+	/// Ported from CTextBoxBase::FireContextMenuOpeningEventSynchronously (TextBoxBase.cpp:5304)
+	/// and TextControlHelper::OnContextMenuOpeningHandler (TextControlHelper.h:10).
+	///
+	/// WinUI does m_pView->TransformToRoot(point) then divides by rasterization scale
+	/// to convert physical pixels to DIPs. In Uno/Skia, TransformToVisual(null) already
+	/// yields DIP coordinates, so no rasterization scale division is needed.
+	/// </remarks>
+	internal bool FireContextMenuOpeningEventSynchronously(Point point)
+	{
+		// WinUI: m_pView->TransformToRoot + pointerPosition /= zoomScale
+		var rootPoint = TransformToVisual(null).TransformPoint(point);
+
+		// WinUI: TextControlHelper::OnContextMenuOpeningHandler
+		// — creates ContextMenuEventArgs, sets CursorLeft/CursorTop, Handled=false
+		// — raises event synchronously
+		// — reads back Handled
+		var args = new ContextMenuEventArgs(rootPoint.X, rootPoint.Y);
+		ContextMenuOpening?.Invoke(this, args);
+		return args.Handled;
+	}
 }

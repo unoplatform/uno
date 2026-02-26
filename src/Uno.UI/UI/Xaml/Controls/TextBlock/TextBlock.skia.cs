@@ -545,5 +545,25 @@ namespace Microsoft.UI.Xaml.Controls
 			_lastInputDeviceType = default;
 		}
 		#endregion
+
+		/// <summary>
+		/// Fires the ContextMenuOpening event synchronously and returns whether it was handled.
+		/// </summary>
+		/// <remarks>
+		/// Ported from CTextBlock::FireContextMenuOpeningEventSynchronously (TextBlock.cpp:4107)
+		/// and TextControlHelper::OnContextMenuOpeningHandler (TextControlHelper.h:10).
+		///
+		/// WinUI does this->TransformToRoot(point) then divides by rasterization scale.
+		/// In Uno/Skia, TransformToVisual(null) already yields DIP coordinates.
+		/// </remarks>
+		internal bool FireContextMenuOpeningEventSynchronously(Point point)
+		{
+			// WinUI: TransformToRoot + pointerPosition /= zoomScale
+			var rootPoint = TransformToVisual(null).TransformPoint(point);
+
+			var args = new ContextMenuEventArgs(rootPoint.X, rootPoint.Y);
+			ContextMenuOpening?.Invoke(this, args);
+			return args.Handled;
+		}
 	}
 }

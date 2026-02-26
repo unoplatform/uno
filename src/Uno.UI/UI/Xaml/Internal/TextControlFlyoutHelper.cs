@@ -353,27 +353,27 @@ internal static class TextControlFlyoutHelper
 
 	public static void ShowAt(FlyoutBase flyout, FrameworkElement owner, Point point, Rect exclusionRect, FlyoutShowMode showMode)
 	{
-		// TODO Uno: WinUI fires ContextMenuOpening event here for backward compat.
-		// Events are [NotImplemented] on TextBox/TextBlock in Uno.
-		// Original C++:
-		//   if (auto textBoxBase = do_pointer_cast<CTextBoxBase>(owner))
-		//   {
-		//       bool handled = false;
-		//       textBoxBase->FireContextMenuOpeningEventSynchronously(handled, point);
-		//       if (handled) return;
-		//   }
-		//   else if (auto textBlock = do_pointer_cast<CTextBlock>(owner))
-		//   {
-		//       bool handled = false;
-		//       textBlock->FireContextMenuOpeningEventSynchronously(handled, point);
-		//       if (handled) return;
-		//   }
-		//   else if (auto richTextBlock = do_pointer_cast<CRichTextBlock>(owner))
-		//   {
-		//       bool handled = false;
-		//       richTextBlock->FireContextMenuOpeningEventSynchronously(handled, point);
-		//       if (handled) return;
-		//   }
+		// Ported from TextControlFlyoutHelper.cpp:153-181
+		// For backward compatibility, fire ContextMenuOpening event for every
+		// floatie invocation. If the app handles it, do not show the flyout.
+		if (owner is Controls.TextBox textBox)
+		{
+			// WinUI: CTextBoxBase covers TextBox, PasswordBox, RichEditBox
+			// In Uno, PasswordBox extends TextBox so this covers both.
+			if (textBox.FireContextMenuOpeningEventSynchronously(point))
+			{
+				return;
+			}
+		}
+		else if (owner is Controls.TextBlock textBlock)
+		{
+			if (textBlock.FireContextMenuOpeningEventSynchronously(point))
+			{
+				return;
+			}
+		}
+		// TODO Uno: WinUI also fires ContextMenuOpening for RichTextBlock
+		// (CRichTextBlock::FireContextMenuOpeningEventSynchronously, TextBlock.cpp:3607).
 
 		if (!_flyouts.TryGetValue(flyout, out var wrapper))
 		{

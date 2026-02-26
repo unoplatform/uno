@@ -75,6 +75,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public event TypedEventHandler<TextBox, TextBoxSelectionChangingEventArgs> SelectionChanging;
 
+#if __SKIA__
+		public event ContextMenuOpeningEventHandler ContextMenuOpening;
+#endif
+
 #if !IS_UNIT_TESTS
 		/// <summary>
 		/// Occurs when text is pasted into the control.
