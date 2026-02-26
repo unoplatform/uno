@@ -243,7 +243,6 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 		if (IsAccessibilityEnabled)
 		{
 			var isChildSemantic = IsSemanticElement(child);
-			Console.WriteLine($"[A11y] OnChildAdded: parent={parent.GetType().Name} handle={parent.Visual.Handle} child={child.GetType().Name} handle={child.Visual.Handle} index={index?.ToString(CultureInfo.InvariantCulture) ?? "append"} isSemantic={isChildSemantic}");
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -257,18 +256,15 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 
 			// Find the nearest semantic ancestor for this child
 			var semanticParent = FindSemanticParent(parent);
-			Console.WriteLine($"[A11y] OnChildAdded: semanticParent found={semanticParent} for child={child.GetType().Name} handle={child.Visual.Handle}");
 
 			if (isChildSemantic)
 			{
 				if (AddSemanticElement(semanticParent, child, index))
 				{
 					_semanticParentMap[child.Visual.Handle] = semanticParent;
-					Console.WriteLine($"[A11y] OnChildAdded: ADDED to semantic tree child={child.GetType().Name} handle={child.Visual.Handle} semanticParent={semanticParent}");
 				}
 				else
 				{
-					Console.WriteLine($"[A11y] OnChildAdded: AddSemanticElement FAILED for child={child.GetType().Name} handle={child.Visual.Handle}");
 					if (this.Log().IsEnabled(LogLevel.Warning))
 					{
 						this.Log().Warn($"[A11y] OnChildAdded: AddSemanticElement failed for {child.GetType().Name} handle={child.Visual.Handle}");
@@ -289,7 +285,6 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 	{
 		if (IsAccessibilityEnabled)
 		{
-			Console.WriteLine($"[A11y] OnChildRemoved: parent={parent.GetType().Name} handle={parent.Visual.Handle} child={child.GetType().Name} handle={child.Visual.Handle}");
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -308,7 +303,6 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 			var childHandle = child.Visual.Handle;
 			if (_semanticParentMap.TryGetValue(childHandle, out var semanticParent))
 			{
-				Console.WriteLine($"[A11y] OnChildRemoved: REMOVING from semantic tree child={child.GetType().Name} handle={childHandle} semanticParent={semanticParent}");
 				RemoveSemanticElement(semanticParent, childHandle);
 				_semanticParentMap.Remove(childHandle);
 			}
@@ -493,12 +487,10 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 	[JSExport]
 	public static void EnableAccessibility()
 	{
-		Console.WriteLine("[A11y] EnableAccessibility() called");
 
 		var @this = Instance;
 		if (@this.IsAccessibilityEnabled)
 		{
-			Console.WriteLine("[A11y] EnableAccessibility() called for the second time. Returning early.");
 			if (@this.Log().IsEnabled(LogLevel.Warning))
 			{
 				@this.Log().LogWarning("EnableA11y is called for the second time. This shouldn't happen.");
@@ -512,18 +504,15 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 
 		if (rootElement is null)
 		{
-			Console.WriteLine($"[A11y] EnableAccessibility() ERROR: Window={window?.GetType().Name ?? "null"}, RootElement={rootElement?.GetType().Name ?? "null"}");
 
 			// Retry with delay if we haven't exceeded max retries
 			if (_enableAccessibilityRetryCount < MaxEnableAccessibilityRetries)
 			{
 				_enableAccessibilityRetryCount++;
-				Console.WriteLine($"[A11y] EnableAccessibility() will retry in {EnableAccessibilityRetryDelayMs}ms (attempt {_enableAccessibilityRetryCount}/{MaxEnableAccessibilityRetries})");
 
 				var timer = new Timer(
 					_ =>
 					{
-						Console.WriteLine($"[A11y] EnableAccessibility() retry attempt {_enableAccessibilityRetryCount}");
 						EnableAccessibility();
 					},
 					null,
@@ -534,7 +523,6 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 			}
 			else
 			{
-				Console.WriteLine($"[A11y] EnableAccessibility() ERROR: Max retries ({MaxEnableAccessibilityRetries}) exceeded. Window still not ready.");
 				if (@this.Log().IsEnabled(LogLevel.Warning))
 				{
 					@this.Log().LogWarning("EnableA11y is called while either Window or its RootElement is null. This shouldn't happen.");
@@ -546,7 +534,6 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 
 		// Success! Window and RootElement are now available
 		_enableAccessibilityRetryCount = 0;
-		Console.WriteLine($"[A11y] EnableAccessibility() SUCCESS: rootElement={rootElement.GetType().Name}, children={rootElement.GetChildren().Count}");
 
 		@this.IsAccessibilityEnabled = true;
 		@this.CreateAOM(rootElement);
@@ -812,7 +799,6 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 	{
 		Debug.Assert(IsAccessibilityEnabled);
 
-		Console.WriteLine($"[A11y] CreateAOM called: rootElement={rootElement.GetType().Name}, handle={rootElement.Visual.Handle}");
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
@@ -831,7 +817,6 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 		NativeMethods.UpdateLandmarkRole(rootHandle, "application");
 
 		var topLevelChildren = rootElement.GetChildren().ToList();
-		Console.WriteLine($"[A11y] CreateAOM: found {topLevelChildren.Count} top-level children");
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
@@ -842,7 +827,6 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 			BuildSemanticsTreeRecursive(rootHandle, child, depth: 1);
 		}
 
-		Console.WriteLine($"[A11y] CreateAOM complete: semantic tree construction finished");
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
@@ -978,7 +962,6 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 		var totalOffset = GetVisualOffset(child.Visual);
 		var automationPeer = child.GetOrCreateAutomationPeer();
 
-		Console.WriteLine($"[A11y] AddSemanticElement: type={child.GetType().Name} handle={child.Visual.Handle} parent={parentHandle} hasPeer={automationPeer != null}");
 
 		if (automationPeer is null && this.Log().IsEnabled(LogLevel.Debug))
 		{
@@ -1070,7 +1053,6 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 		}
 		// TODO: aria-valuenow, aria-valuemin, aria-valuemax for Slider
 
-		Console.WriteLine($"[A11y] AddSemanticElement using generic path: role='{role}' automationId='{automationId}'");
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
@@ -1081,7 +1063,6 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 
 		if (!result)
 		{
-			Console.WriteLine($"[A11y] AddSemanticElement ERROR: NativeMethods.AddSemanticElement returned false for {child.GetType().Name} handle={child.Visual.Handle} — parent={parentHandle} may not exist in JS DOM");
 		}
 
 		if (!result && this.Log().IsEnabled(LogLevel.Warning))
@@ -1141,19 +1122,16 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 			TryGetPeerOwner(peer, out var element))
 		{
 			var ariaChecked = ConvertToAriaChecked((ToggleState)newValue);
-			Console.WriteLine($"[A11y] PROP CHANGE: ToggleState handle={element.Visual.Handle} element={element.GetType().Name} old={oldValue} new={newValue} ariaChecked={ariaChecked}");
 			NativeMethods.UpdateAriaChecked(element.Visual.Handle, ariaChecked);
 		}
 		else if (automationProperty == AutomationElementIdentifiers.NameProperty &&
 			TryGetPeerOwner(peer, out element))
 		{
-			Console.WriteLine($"[A11y] PROP CHANGE: Name handle={element.Visual.Handle} element={element.GetType().Name} old='{oldValue}' new='{newValue}'");
 			OnAutomationNameChanged(element, (string)newValue);
 		}
 		else if (automationProperty == AutomationElementIdentifiers.HelpTextProperty &&
 			TryGetPeerOwner(peer, out element))
 		{
-			Console.WriteLine($"[A11y] PROP CHANGE: HelpText handle={element.Visual.Handle} element={element.GetType().Name} new='{newValue}'");
 			NativeMethods.UpdateAriaDescription(element.Visual.Handle, (string)newValue);
 		}
 		else if (automationProperty == AutomationElementIdentifiers.LandmarkTypeProperty &&
@@ -1170,7 +1148,6 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 			TryGetPeerOwner(peer, out element))
 		{
 			var isDisabled = !(bool)newValue;
-			Console.WriteLine($"[A11y] PROP CHANGE: IsEnabled handle={element.Visual.Handle} element={element.GetType().Name} disabled={isDisabled}");
 			NativeMethods.UpdateDisabledState(element.Visual.Handle, isDisabled);
 		}
 		else if (automationProperty == ExpandCollapsePatternIdentifiers.ExpandCollapseStateProperty &&
@@ -1178,14 +1155,12 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 		{
 			var expanded = (ExpandCollapseState)newValue == ExpandCollapseState.Expanded ||
 						   (ExpandCollapseState)newValue == ExpandCollapseState.PartiallyExpanded;
-			Console.WriteLine($"[A11y] PROP CHANGE: ExpandCollapse handle={element.Visual.Handle} element={element.GetType().Name} expanded={expanded}");
 			NativeMethods.UpdateExpandCollapseState(element.Visual.Handle, expanded);
 		}
 		else if (automationProperty == SelectionItemPatternIdentifiers.IsSelectedProperty &&
 			TryGetPeerOwner(peer, out element))
 		{
 			var selected = (bool)newValue;
-			Console.WriteLine($"[A11y] PROP CHANGE: IsSelected handle={element.Visual.Handle} element={element.GetType().Name} selected={selected}");
 			NativeMethods.UpdateSelectionState(element.Visual.Handle, selected);
 		}
 		else if ((automationProperty == RangeValuePatternIdentifiers.ValueProperty ||
@@ -1226,7 +1201,6 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 		switch (eventId)
 		{
 			case AutomationEvents.LiveRegionChanged:
-				Console.WriteLine($"[A11y] AUTOMATION EVENT: LiveRegionChanged peer={peer.GetType().Name}");
 				_liveRegionManager?.HandleLiveRegionChanged(peer);
 				break;
 		}

@@ -148,8 +148,6 @@ namespace Microsoft.UI.Xaml
 			var enterParams = new EnterParams(IsActiveInVisualTree);
 			ChildEnter(child, enterParams);
 
-			UIElementAccessibilityHelper.ExternalOnChildAdded?.Invoke(this, child, index);
-
 			OnChildAdded(child);
 			UIElementAccessibilityHelper.ExternalOnChildAdded?.Invoke(this, child, index);
 
