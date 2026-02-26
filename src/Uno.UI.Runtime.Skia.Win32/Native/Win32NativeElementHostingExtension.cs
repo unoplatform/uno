@@ -28,6 +28,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 	private static readonly SKPoint[] _conicPoints = new SKPoint[32 * 3]; // 3 points per quad
 	private static readonly bool _isVerboseWin32WebViewTraceEnabled = Win32WebViewTraceHelper.IsVerboseWin32WebViewTraceEnabled();
 	private static readonly Dictionary<nint, (nint host, int zIndex)> _zOrderByChild = new();
+	private static readonly HWND _hwndTop = (HWND)(nint)0;
 
 	private readonly ContentPresenter _presenter;
 	private readonly SKPath _tempPath = new();
@@ -365,19 +366,19 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		var hostHwnd = Hwnd;
 		_zOrderByChild[hwnd.Value] = (hostHwnd.Value, zIndex);
 
-		var insertAfter = (HWND)(IntPtr)1; // HWND_BOTTOM
-		var highestLowerZIndex = int.MinValue;
+		var insertAfter = _hwndTop;
+		var lowestHigherZIndex = int.MaxValue;
 		foreach (var (siblingValue, sibling) in _zOrderByChild)
 		{
-			if (siblingValue == hwnd.Value || sibling.host != hostHwnd.Value || sibling.zIndex >= zIndex)
+			if (siblingValue == hwnd.Value || sibling.host != hostHwnd.Value || sibling.zIndex <= zIndex)
 			{
 				continue;
 			}
 
 			var siblingHwnd = (HWND)(IntPtr)siblingValue;
-			if (sibling.zIndex >= highestLowerZIndex)
+			if (sibling.zIndex <= lowestHigherZIndex)
 			{
-				highestLowerZIndex = sibling.zIndex;
+				lowestHigherZIndex = sibling.zIndex;
 				insertAfter = siblingHwnd;
 			}
 		}

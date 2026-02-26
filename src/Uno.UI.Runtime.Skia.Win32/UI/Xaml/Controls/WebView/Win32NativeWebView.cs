@@ -302,7 +302,7 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 			return;
 		}
 
-		var color = Color.FromArgb(255, brush.Color.R, brush.Color.G, brush.Color.B);
+		var color = Color.FromArgb(brush.Color.A, brush.Color.R, brush.Color.G, brush.Color.B);
 		_controller.DefaultBackgroundColor = color;
 		LogVerboseWin32Trace(() => $"Applied initial controller background argb=0x{color.ToArgb():X8} from host window background.");
 	}
