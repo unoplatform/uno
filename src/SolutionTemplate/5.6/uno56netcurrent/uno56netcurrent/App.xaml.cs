@@ -55,11 +55,8 @@ public partial class App : Application
 
         if (exitAfterLaunching)
         {
-            await Task.Run(async () =>
-            {
-                await Task.Delay(1000);
-                Exit();
-            });
+            await Task.Delay(1000);
+            Exit();
         }
     }
 

@@ -210,7 +210,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				}
 			}
 
-			Log.LogMessage(DefaultLogMessageLevel, $"Found {typesToProperties.Count} implicitly referenced types.");
+			Log.LogMessage(DefaultLogMessageLevel, $"Found {typesToProperties.Values.Count(v => v.Count > 0)} implicitly referenced types.");
 			return typesToProperties;
 		}
 
@@ -222,6 +222,20 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			if (typeDefinition == null)
 			{
 				return;
+			}
+
+			// Process generic arguments (e.g., List<Entity> should also process Entity)
+			if (typeReference is GenericInstanceType genericType)
+			{
+				foreach (var genericArg in genericType.GenericArguments)
+				{
+					AddDeclaredPropertyTypes(typeCache, genericArg, typesToProperties);
+				}
+			}
+
+			if (typeDefinition.BaseType != null)
+			{
+				AddDeclaredPropertyTypes(typeCache, typeDefinition.BaseType, typesToProperties);
 			}
 
 			var key = new PreserveTypeDefinition(typeDefinition.FullName, typeDefinition);
@@ -249,15 +263,6 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			foreach (var property in declaredProperties)
 			{
 				AddDeclaredPropertyTypes(typeCache, property.PropertyType, typesToProperties);
-			}
-
-			// Process generic arguments (e.g., List<Entity> should also process Entity)
-			if (typeReference is GenericInstanceType genericType)
-			{
-				foreach (var genericArg in genericType.GenericArguments)
-				{
-					AddDeclaredPropertyTypes(typeCache, genericArg, typesToProperties);
-				}
 			}
 		}
 
