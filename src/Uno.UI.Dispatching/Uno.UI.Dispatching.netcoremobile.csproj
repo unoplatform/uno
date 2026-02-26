@@ -7,6 +7,14 @@
 	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
+		<!-- When building for the generic net target (e.g., via UnoTargetFrameworkOverride=net10.0),
+		     use the Skia runtime identifier so that NativeDispatcher.skia.cs is included.
+		     Use GetTargetPlatformIdentifier() instead of $(TargetPlatformIdentifier) because the latter
+		     is set in Sdk.targets (after project file evaluation) and would always be empty here. -->
+		<UnoRuntimeIdentifier Condition="'$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))' == ''">Skia</UnoRuntimeIdentifier>
+	</PropertyGroup>
+
+	<PropertyGroup>
 		<AssemblyName>Uno.UI.Dispatching</AssemblyName>
 		<RootNamespace>Uno.UI.Dispatching</RootNamespace>
 		<DefineConstants>$(DefineConstants);XAMARIN;IS_UNO;IS_UNO_UI_DISPATCHING_PROJECT</DefineConstants>
