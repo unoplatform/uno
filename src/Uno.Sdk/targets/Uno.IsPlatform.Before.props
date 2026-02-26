@@ -2,7 +2,6 @@
 	<PropertyGroup>
 		<IsAndroid>false</IsAndroid>
 		<IsIOS>false</IsIOS>
-		<IsMacOS>false</IsMacOS>
 		<IsMacCatalyst>false</IsMacCatalyst>
 		<IsIOSOrCatalyst>false</IsIOSOrCatalyst>
 		<IsTvOS>false</IsTvOS>

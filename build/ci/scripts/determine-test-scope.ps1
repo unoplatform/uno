@@ -58,7 +58,7 @@ function Set-TestScopeVariable {
 }
 
 function Publish-TestScopes {
-    param([hashtable]$Values)
+    param([System.Collections.IDictionary]$Values)
 
     foreach ($key in @($Values.Keys)) {
         Set-TestScopeVariable -Name $key -Value $Values[$key]
@@ -66,7 +66,7 @@ function Publish-TestScopes {
 }
 
 function Enable-AllScopes {
-    param([hashtable]$Values)
+    param([System.Collections.IDictionary]$Values)
 
     foreach ($key in @($Values.Keys)) {
         $Values[$key] = $true
@@ -85,13 +85,18 @@ $targetRef = if ([string]::IsNullOrWhiteSpace($env:SYSTEM_PULLREQUEST_TARGETBRAN
     $env:SYSTEM_PULLREQUEST_TARGETBRANCH
 }
 
-try {
-    git fetch origin $targetRef --depth=200 | Out-Null
-}
-catch {
-    Write-Warning ("Unable to fetch {0}: {1}. Falling back to enabling all native test scopes." -f $targetRef, $_.Exception.Message)
+$prevErrorPref = $ErrorActionPreference
+$ErrorActionPreference = 'Continue'
+git fetch origin $targetRef --depth=200 2>&1 | Out-Null
+$fetchExitCode = $LASTEXITCODE
+$ErrorActionPreference = $prevErrorPref
+
+if ($fetchExitCode -ne 0) {
+    Write-Warning ("Unable to fetch {0} (exit code {1}). Falling back to enabling all native test scopes." -f $targetRef, $fetchExitCode)
     Enable-AllScopes -Values $scopeVariables
     Publish-TestScopes -Values $scopeVariables
+    # Reset LASTEXITCODE so the Azure pipeline step does not fail due to git fetch's non-zero exit code.
+    $global:LASTEXITCODE = 0
     return
 }
 

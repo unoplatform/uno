@@ -119,6 +119,7 @@ MONITORINFOEXW
 PIXELFORMATDESCRIPTOR
 RECT
 MARGINS
+STGC
 
 // Enums
 BI_COMPRESSION
@@ -247,6 +248,7 @@ SetWindowText
 SHCreateItemFromParsingName
 SHCreateItemInKnownFolder
 ShowWindow
+StgCreateStorageEx
 SwapBuffers
 TranslateMessage
 wglCreateContext

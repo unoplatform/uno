@@ -70,22 +70,6 @@ internal partial class MultilineInvisibleTextBoxDelegate : UITextViewDelegate
 		return true;
 	}
 
-	public override void SelectionChanged(UITextView textView)
-	{
-		SyncSelectionToTextView(textView);
-	}
-
-	private void SyncSelectionToTextView(UITextView textView)
-	{
-		if (_textBoxViewExtension.GetTarget()?.Owner.TextBox is { } textBox &&
-		textView.SelectedTextRange is { } selectedRange)
-		{
-			var selectionStart = (int)textView.GetOffsetFromPosition(textView.BeginningOfDocument, selectedRange.Start);
-			var selectionEnd = (int)textView.GetOffsetFromPosition(textView.BeginningOfDocument, selectedRange.End);
-			textBox.Select(selectionStart, selectionEnd - selectionStart);
-		}
-	}
-
 	public override bool ShouldEndEditing(UITextView textView)
 	{
 		return true;

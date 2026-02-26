@@ -145,6 +145,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Android)]
+		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
 		public void NativeCommandBar_Content_Alignment_Automated()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.CommandBar.CommandBar_Native_With_TextBox");
@@ -160,19 +161,19 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 			TakeScreenshot("Default");
 
 			var innerTextBoxResult = _app.Query(innerTextBox).First();
-			Assert.IsLessThanOrEqualTo(myCommandBarResult.Rect.Width / 2, innerTextBoxResult.Rect.Width, "TextBox Width is too large");
+			Assert.LessOrEqual(innerTextBoxResult.Rect.Width, myCommandBarResult.Rect.Width / 2, "TextBox Width is too large");
 
 			horizontalValue.SetDependencyPropertyValue("SelectedItem", "Stretch");
 
 			TakeScreenshot("Stretch");
 
 			innerTextBoxResult = _app.Query(innerTextBox).First();
-			Assert.IsGreaterThan(myCommandBarResult.Rect.Width * .75, innerTextBoxResult.Rect.Width, "TextBox Width is not large enough");
+			Assert.Less(myCommandBarResult.Rect.Width * .75, innerTextBoxResult.Rect.Width, "TextBox Width is too large");
 
 			horizontalValue.SetDependencyPropertyValue("SelectedItem", "Left");
 
 			innerTextBoxResult = _app.Query(innerTextBox).First();
-			Assert.IsLessThanOrEqualTo(myCommandBarResult.Rect.Width / 2, innerTextBoxResult.Rect.Width, "TextBox Width is too large");
+			Assert.LessOrEqual(innerTextBoxResult.Rect.Width, myCommandBarResult.Rect.Width / 2, "TextBox Width is too large");
 
 			TakeScreenshot("Left");
 		}

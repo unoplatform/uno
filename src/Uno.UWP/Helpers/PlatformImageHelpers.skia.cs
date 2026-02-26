@@ -14,7 +14,8 @@ internal static partial class PlatformImageHelpers
 
 	internal static Task<string> GetScaledPath(Uri uri, ResolutionScale? scaleOverride)
 	{
-		var path = uri.PathAndQuery;
+		// Unescaping is necessary for things like spaces that are valid in a file system path but not in a URI
+		var path = Uri.UnescapeDataString(uri.AbsolutePath);
 		if (uri.Host is { Length: > 0 } host)
 		{
 			path = host + "/" + path.TrimStart('/');

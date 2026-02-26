@@ -76,9 +76,9 @@ namespace Uno.UI.Extensions
 			DependencyObject? pFocusedElement,
 			FocusState focusState,
 			bool animateIfBringIntoView,
-			FocusNavigationDirection focusNavigationDirection,
-			bool forceBringIntoView = false,
-			InputActivationBehavior inputActivationBehavior = InputActivationBehavior.RequestActivation) // default to request activation to match legacy behavior
+				FocusNavigationDirection focusNavigationDirection,
+				bool forceBringIntoView = false,
+				Uno.UI.Xaml.Input.InputActivationBehavior inputActivationBehavior = Uno.UI.Xaml.Input.InputActivationBehavior.RequestActivation) // default to request activation to match legacy behavior
 		{
 			return FocusManager.SetFocusedElementWithDirection(
 				pFocusedElement,
@@ -86,7 +86,7 @@ namespace Uno.UI.Extensions
 				animateIfBringIntoView,
 				forceBringIntoView,
 				focusNavigationDirection,
-				(inputActivationBehavior == InputActivationBehavior.RequestActivation));
+				(inputActivationBehavior == Uno.UI.Xaml.Input.InputActivationBehavior.RequestActivation));
 		}
 
 		/// <summary>

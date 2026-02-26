@@ -227,7 +227,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				var fg = SUT.PrimaryButton.Foreground as SolidColorBrush;
 				Assert.IsNotNull(fg);
-				Assert.AreEqual(Colors.Black, fg.Color);
+				Assert.AreEqual(Color.FromArgb(0xE4, 0x00, 0x00, 0x00), fg.Color);
 			}
 			finally
 			{

@@ -877,6 +877,10 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 		return false;
 	}
 
+	// TODO (DOTI): Added with macOS automation, maybe won't be needed for wasm
+	public void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId) => throw new NotImplementedException();
+	public void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId) => throw new NotImplementedException();
+
 	private static partial class NativeMethods
 	{
 		// ===== Existing Methods =====

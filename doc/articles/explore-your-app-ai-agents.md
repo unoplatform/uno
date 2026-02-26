@@ -4,9 +4,7 @@ uid: Uno.BuildYourApp.AI.Agents
 
 # Prompting in your App
 
-Once you have a running app, you're setup to have your agent help you develop features.
-
-In the agent chat, ask the following:
+Now that you've created your Uno Platform app, you're setup to have your agent help you develop features. In the agent chat, ask the following:
 
   > [!IMPORTANT]
   > The MCP tools are best used by agents when using premium models like Claude 4.5, GPT-5-Codex or GPT-5.

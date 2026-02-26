@@ -836,6 +836,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI.Xaml_Automation\AccessibilityScreenReaderPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI.Xaml_Automation\AutomationProperties_AutomationId.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -2220,6 +2224,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Image_AnimatedWebP.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\ImageAlignment2541.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -2801,6 +2809,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_CornerRadius.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_ControlCharacter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -3888,6 +3900,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_TextHighlighters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Attributed_text_Supserscript.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -4412,6 +4428,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_MouseEvents.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_NavigationProperties.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -4833,6 +4853,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\AcrylicBrushTests\BasicAcrylicBrushTest.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Projection\PlaneProjection_Basic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Projection\Matrix3DProjection_Basic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -5517,6 +5545,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\PathTestsControl\Path_Geometry.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\PathTestsControl\Path_GeometryTransform.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\PathTestsControl\PathGeometry_Showcase.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -6355,6 +6391,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_System\UserProfile\UserProfilePersonalizationSettingsTests.xaml.cs">
       <DependentUpon>UserProfilePersonalizationSettingsTests.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI.Xaml_Automation\AccessibilityScreenReaderPage.xaml.cs">
+      <DependentUpon>AccessibilityScreenReaderPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI.Xaml_Automation\AutomationProperties_AutomationId.xaml.cs">
       <DependentUpon>AutomationProperties_AutomationId.xaml</DependentUpon>
@@ -7287,6 +7326,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\BitmapImage_IsPlaying.xaml.cs">
       <DependentUpon>BitmapImage_IsPlaying.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Image_AnimatedWebP.xaml.cs">
+      <DependentUpon>Image_AnimatedWebP.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\BitmapImage_vs_SvgImageSource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\ImageAlignment2541.xaml.cs">
       <DependentUpon>ImageAlignment2541.xaml</DependentUpon>
@@ -7710,6 +7752,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_CornerRadius.xaml.cs">
       <DependentUpon>TextBox_CornerRadius.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_ControlCharacter.xaml.cs">
+      <DependentUpon>TextBox_ControlCharacter.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_DeleteButton_Automated.xaml.cs">
       <DependentUpon>TextBox_DeleteButton_Automated.xaml</DependentUpon>
@@ -8764,6 +8809,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\LoadedImageSurface\LoadedImageSurfaceTests.xaml.cs">
       <DependentUpon>LoadedImageSurfaceTests.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Projection\PlaneProjection_Basic.xaml.cs">
+      <DependentUpon>PlaneProjection_Basic.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Projection\Matrix3DProjection_Basic.xaml.cs">
+      <DependentUpon>Matrix3DProjection_Basic.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Geometry\ArcSegmentPage.xaml.cs">
       <DependentUpon>ArcSegmentPage.xaml</DependentUpon>
     </Compile>
@@ -9147,6 +9198,12 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\PathTestsControl\Path_Geometry.xaml.cs">
       <DependentUpon>Path_Geometry.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\PathTestsControl\Path_GeometryTransform.xaml.cs">
+      <DependentUpon>Path_GeometryTransform.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\PathTestsControl\PathGeometry_Showcase.xaml.cs">
+      <DependentUpon>PathGeometry_Showcase.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\PathTestsControl\Path_LinearGradientBrush.xaml.cs">
       <DependentUpon>Path_LinearGradientBrush.xaml</DependentUpon>
@@ -9574,6 +9631,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Attributed_text_Simple_databound.xaml.cs">
       <DependentUpon>Attributed_text_Simple_databound.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_TextHighlighters.xaml.cs">
+      <DependentUpon>TextBlock_TextHighlighters.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Attributed_text_Supserscript.xaml.cs">
       <DependentUpon>Attributed_text_Supserscript.xaml</DependentUpon>
     </Compile>
@@ -9825,6 +9885,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_Folder.xaml.cs">
       <DependentUpon>WebView2_Folder.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_MouseEvents.xaml.cs">
+      <DependentUpon>WebView2_MouseEvents.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_NavigationProperties.xaml.cs">
       <DependentUpon>WebView2_NavigationProperties.xaml</DependentUpon>
@@ -10110,6 +10173,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\Renaiss-Italic.ttf" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\RoteFlora.ttf" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\animated.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\animated.webp" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.bmp" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.gif" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.jpg" />
@@ -10184,6 +10248,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\rating_placeholder _hc.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\rating_placeholder.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\rating_set.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\image with space in path.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\rating_set_hc.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\rating_unset.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\rating_unset_hc.png" />

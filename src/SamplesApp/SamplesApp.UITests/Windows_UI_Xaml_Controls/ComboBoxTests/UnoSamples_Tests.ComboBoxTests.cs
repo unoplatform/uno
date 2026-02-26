@@ -99,6 +99,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)] // Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688
 		public void ComboBoxTests_Stretch()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ComboBox.ComboBox_Stretch");
@@ -112,12 +113,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 
 			var popupResult = _app.WaitForElement("PopupBorder").First();
 
-			Assert.IsLessThan(sampleControlResult.Rect.Width / 2, popupResult.Rect.Width, "The popup should not stretch to the width of the screen");
+			Assert.Less(popupResult.Rect.Width, sampleControlResult.Rect.Width / 2, "The popup should not stretch to the width of the screen");
 		}
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.Browser)] // Ignore iOS for timeout using Xamarin.UITest 3.2 (or iOS 15) https://github.com/unoplatform/uno/issues/8013
+		[ActivePlatforms(Platform.Browser)] // Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688
 		public void ComboBoxTests_Fullscreen_Popup_Generic()
 		{
 			Run("SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox.ComboBox_FullScreen_Popup");
@@ -134,7 +135,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 			TakeScreenshot("Opened");
 
 			Assert.AreEqual(popupResult.Rect.Width, sampleControlResult.Rect.Width, "The popup must stretch horizontally");
-			Assert.IsLessThan(sampleControlResult.Rect.Height / 2, popupResult.Rect.Height, "The popup should not stretch to the height of the screen");
+			Assert.Less(popupResult.Rect.Height, sampleControlResult.Rect.Height / 2, "The popup should not stretch to the height of the screen");
 
 			_app.TapCoordinates(sampleControlResult.Rect.Width / 2, popupResult.Rect.Bottom + 20);
 
@@ -162,7 +163,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 			var popupResult = _app.WaitForElement("PopupBorder").First();
 
 			Assert.AreEqual(popupResult.Rect.Width, sampleControlResult.Rect.Width, "The popup must stretch horizontally");
-			Assert.IsLessThan(sampleControlResult.Rect.Height / 2, popupResult.Rect.Height, "The popup should not stretch to the height of the screen");
+			Assert.Less(popupResult.Rect.Height, sampleControlResult.Rect.Height / 2, "The popup should not stretch to the height of the screen");
 
 			_app.TapCoordinates(sampleControlResult.Rect.Width / 2, popupResult.Rect.Y - 20);
 

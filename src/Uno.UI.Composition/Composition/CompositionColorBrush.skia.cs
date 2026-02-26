@@ -10,7 +10,7 @@ namespace Microsoft.UI.Composition
 	{
 		// We don't call SKPaint.Reset() after usage, so make sure
 		// that only SKPaint.Color is being set
-		private static readonly SKPaint _tempPaint = new();
+		private static readonly SKPaint _tempPaint = new() { IsAntialias = true };
 
 		internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds)
 		{

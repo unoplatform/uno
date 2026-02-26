@@ -38,7 +38,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.Browser)] // Test authoring problem on iOS
+		[ActivePlatforms(Platform.Browser)] // Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688
 		public void FlyoutTest_DataBoundButton_CommandExecutes()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.Flyout.Flyout_ButtonInContent");
@@ -61,7 +61,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.Browser)] // Test is flaky on iOS #9080
+		[ActivePlatforms(Platform.Browser)] // Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688
 		public void FlyoutTest_Target()
 		{
 			Run("Uno.UI.Samples.Content.UITests.Flyout.Flyout_Target");
@@ -81,8 +81,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 				var innerContentResult = _app.WaitForElement(innerContent, timeoutMessage: $"Timed out waiting for element {nameof(innerContent)} after tapping target1").First();
 
-				Assert.IsLessThanOrEqualTo(innerContentResult.Rect.X, target1Result.Rect.X);
-				Assert.IsGreaterThan(innerContentResult.Rect.Width, target1Result.Rect.Width);
+				Assert.LessOrEqual(target1Result.Rect.X, innerContentResult.Rect.X);
+				Assert.Greater(target1Result.Rect.Width, innerContentResult.Rect.Width);
 
 				_app.TapCoordinates(50, 100);
 			}
@@ -94,8 +94,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 				var innerContentResult = _app.WaitForElement(innerContent, timeoutMessage: $"Timed out waiting for element {nameof(innerContent)} after tapping target2").First();
 
-				Assert.IsLessThanOrEqualTo(innerContentResult.Rect.X, target2Result.Rect.X);
-				Assert.IsGreaterThan(innerContentResult.Rect.Width, target2Result.Rect.Width);
+				Assert.LessOrEqual(target2Result.Rect.X, innerContentResult.Rect.X);
+				Assert.Greater(target2Result.Rect.Width, innerContentResult.Rect.Width);
 
 				_app.TapCoordinates(50, 100);
 			}
@@ -121,7 +121,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.Browser)] // Very flaky on iOS #9080
+		[ActivePlatforms(Platform.Browser)] // Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688
 		public void FlyoutTest_Unloaded()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.Flyout.Flyout_Unloaded");
@@ -140,7 +140,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.Browser)] // Test authoring problem on iOS
+		[ActivePlatforms(Platform.Browser)] // Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688
 		public void FlyoutTest_Simple_FlyoutsCanBeDismissed()
 		{
 			Run("Uno.UI.Samples.Content.UITests.Flyout.Flyout_Simple");
@@ -200,6 +200,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Android)] // Test authoring problem on iOS, flaky on WASM #9080
+		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
 		public void Flyout_TemplatedParent()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.Flyout.Flyout_TemplatedParent");
@@ -217,7 +218,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.Browser)] // Test authoring problem on iOS
+		[ActivePlatforms(Platform.Browser)] // Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688
 		public void Flyout_Namescope()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.FlyoutTests.Flyout_Namescope");
@@ -238,6 +239,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)] // Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688
 		public void Flyout_ShowAt_Window_Content()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.FlyoutTests.Flyout_ShowAt_Window_Content");

@@ -1066,6 +1066,79 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			});
 		}
 
+#if !WINAPPSDK // GetTemplateChild is protected in UWP while public in Uno.
+		[TestMethod]
+		[RequiresFullWindow]
+#if RUNTIME_NATIVE_AOT
+		[Ignore("TODO: figure out why this fails, how to fix")]
+#endif  // RUNTIME_NATIVE_AOT
+		public async Task When_Popup_Above_With_Header_Should_Overlap_Header()
+		{
+			var SUT = new AutoSuggestBox
+			{
+				Header = "Test Header",
+				VerticalAlignment = VerticalAlignment.Bottom
+			};
+
+			Button button = null;
+			try
+			{
+				button = new Button();
+				var rootGrid = new Grid();
+				var stack = new StackPanel()
+				{
+					Children =
+					{
+						button,
+						SUT
+					},
+					VerticalAlignment = VerticalAlignment.Bottom
+				};
+
+				SUT.ItemsSource = Enumerable.Range(0, 10).ToArray();
+				rootGrid.Children.Add(stack);
+				WindowHelper.WindowContent = rootGrid;
+				await WindowHelper.WaitForIdle();
+
+				var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
+				var headerPresenter = textBox.GetTemplateChild("HeaderContentPresenter") as FrameworkElement;
+				Assert.IsNotNull(headerPresenter);
+				Assert.IsTrue(headerPresenter.ActualHeight > 0);
+
+				SUT.Focus(FocusState.Programmatic);
+				SUT.Text = "1";
+				await WindowHelper.WaitForIdle();
+
+				var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot);
+				Assert.AreEqual(1, popups.Count);
+				var popup = popups[0];
+
+				Assert.IsNotNull(popup.Child);
+				await WindowHelper.WaitFor(() => popup.Child.ActualSize.Y > 0);
+
+				// Get positions relative to window content
+				var popupChild = popup.Child as FrameworkElement;
+				var popupPoint = popupChild.TransformToVisual(WindowHelper.WindowContent).TransformPoint(default);
+				var popupBottom = popupPoint.Y + popupChild.ActualHeight;
+
+				var textBoxPoint = textBox.TransformToVisual(WindowHelper.WindowContent).TransformPoint(default);
+				var headerPoint = headerPresenter.TransformToVisual(WindowHelper.WindowContent).TransformPoint(default);
+
+				var gapBetweenPopupAndTextBox = textBoxPoint.Y - popupBottom;
+
+				Assert.IsTrue(
+					gapBetweenPopupAndTextBox < headerPresenter.ActualHeight / 2,
+					$"Popup should overlap header area. Gap: {gapBetweenPopupAndTextBox}px, Header height: {headerPresenter.ActualHeight}px. " +
+					$"PopupBottom: {popupBottom}, TextBoxTop: {textBoxPoint.Y}, HeaderTop: {headerPoint.Y}");
+			}
+			finally
+			{
+				button?.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+			}
+		}
+#endif
+
 		[TestMethod]
 		[RequiresFullWindow]
 		public async Task When_Popup_Below()

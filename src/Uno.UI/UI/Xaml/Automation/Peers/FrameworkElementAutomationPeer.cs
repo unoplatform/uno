@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference FrameworkElementAutomationPeer_Partial.cpp, tag winui3/release/1.5.3
+// MUX Reference FrameworkElementAutomationPeer_Partial.cpp, tag winui3/release/1.8.4
 
 using System;
 using System.Collections.Generic;
@@ -79,11 +79,8 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 
 		if (string.IsNullOrEmpty(automationId))
 		{
-			//UNO TODO: Implement GetAutomationIdHelper on AutomationPeer
-
-			//Owner.GetAutomationIdHelper(out var strAutomationId);
-
-			//return strAutomationId;
+			// Use the helper which falls back to the element's Name property
+			return GetAutomationIdHelper() ?? string.Empty;
 		}
 
 		return automationId;
@@ -271,10 +268,13 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 			return simpleAccessibilityName;
 		}
 
+		// TODO (DOTI): GetAccessibilityInnerText() doesn't seem to be supported on some platforms
+#if __SKIA__
 		if ((Owner as FrameworkElement)?.GetAccessibilityInnerText() is string innerText && !string.IsNullOrEmpty(innerText))
 		{
 			return innerText;
 		}
+#endif
 
 		return base.GetNameCore();
 	}

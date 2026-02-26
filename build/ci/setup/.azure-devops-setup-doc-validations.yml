@@ -7,7 +7,11 @@ steps:
 
     if [ -n "$TARGET_REF" ]; then
       echo "Fetching $TARGET_REF for diff..."
-      git fetch origin "$TARGET_REF" --depth=1
+      if ! git fetch origin "$TARGET_REF" --depth=1 2>/dev/null; then
+        echo "Unable to fetch $TARGET_REF; running documentation checks by default."
+        echo "##vso[task.setvariable variable=DocChangesDetected]true"
+        exit 0
+      fi
       BASE="FETCH_HEAD"
     else
       BASE="$(git rev-parse HEAD^ 2>/dev/null || echo '')"

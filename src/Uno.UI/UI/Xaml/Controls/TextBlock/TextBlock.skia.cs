@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Linq;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
 using System.Numerics;
@@ -11,6 +14,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Input;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers.WinUI;
@@ -30,8 +34,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private MenuFlyout? _contextMenu;
 		private IDisposable? _selectionHighlightBrushChangedSubscription;
 		private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
-		private readonly VirtualKeyModifiers _platformCtrlKey = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
+		private readonly VirtualKeyModifiers _platformCtrlKey = Uno.UI.Helpers.DeviceTargetHelper.PlatformCommandModifier;
 		private Size _lastInlinesArrangeWithPadding;
+		private readonly Dictionary<TextHighlighter, IDisposable> _textHighlighterDisposables = new();
 
 		private protected override ContainerVisual CreateElementVisual() => new TextVisual(Compositor.GetSharedCompositor(), this);
 
@@ -47,6 +52,7 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateLastUsedTheme();
 
 			_hyperlinks.CollectionChanged += HyperlinksOnCollectionChanged;
+			((ObservableCollection<TextHighlighter>)TextHighlighters).CollectionChanged += OnTextHighlightersChanged;
 
 			Tapped += static (s, e) => ((TextBlock)s).OnTapped(e);
 			DoubleTapped += static (s, e) => ((TextBlock)s).OnDoubleTapped(e);
@@ -58,6 +64,8 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		internal TextBox? OwningTextBox { private get; init; }
+
+		internal bool IsSpellCheckEnabled { get; set; }
 
 #if DEBUG
 		private protected override void OnLoaded()
@@ -108,6 +116,8 @@ namespace Microsoft.UI.Xaml.Controls
 						? null
 						: TextAlignment,
 				TextWrapping,
+				TextTrimming,
+				IsSpellCheckEnabled,
 				this,
 				out size);
 
@@ -177,11 +187,23 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			session.Canvas.Save();
 			session.Canvas.Translate((float)Padding.Left, (float)Padding.Top);
-			var selection = (Math.Min(Selection.start, Selection.end), Math.Max(Selection.start, Selection.end), SelectionHighlightColor.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()), DefaultBrushes.SelectedTextForegroundColor);
+			var highligherters = _renderSelection ? TextHighlighters.Append(new TextHighlighter
+			{
+				Background = SelectionHighlightColor,
+				Foreground = DefaultBrushes.SelectedTextForegroundColor,
+				Ranges =
+				{
+					new TextRange
+					{
+						StartIndex = Math.Min(Selection.start, Selection.end),
+						Length = Math.Abs(Selection.start - Selection.end)
+					}
+				}
+			}) : TextHighlighters;
 			ParsedText.Draw(
 				session,
 				_caretPaint is { } c ? (c.index, c.brush, CaretThickness) : null,
-				_renderSelection ? selection : null);
+				highligherters);
 			session.Canvas.Restore();
 			DrawingFinished?.Invoke();
 		}
@@ -227,7 +249,51 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void OnLineStackingStrategyChangedPartial() => InvalidateInlineAndRequireRepaint();
 		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush) => InvalidateInlineAndRequireRepaint();
 
-		void UnicodeText.IFontCacheUpdateListener.Invalidate() => InvalidateInlineAndRequireRepaint();
+		private void OnTextHighlightersChanged(object? sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (e.OldItems is not null)
+			{
+				foreach (var item in e.OldItems)
+				{
+					if (item is TextHighlighter highlighter)
+					{
+						if (_textHighlighterDisposables.Remove(highlighter, out var disposable))
+						{
+							disposable.Dispose();
+						}
+					}
+				}
+			}
+			if (e.NewItems is not null)
+			{
+				foreach (var item in e.NewItems)
+				{
+					if (item is TextHighlighter highlighter)
+					{
+						var backgroundDisposable = highlighter.RegisterDisposablePropertyChangedCallback(TextHighlighter.BackgroundProperty, OnTextHighlighterPropertyChanged);
+						var foregroundDisposable = highlighter.RegisterDisposablePropertyChangedCallback(TextHighlighter.ForegroundProperty, OnTextHighlighterPropertyChanged);
+						NotifyCollectionChangedEventHandler onCollectionChanged = (_, _) => InvalidateInlineAndRequireRepaint();
+						var rangesDisposable = Disposable.Create(() => ((ObservableCollection<TextRange>)highlighter.Ranges).CollectionChanged -= onCollectionChanged);
+						((ObservableCollection<TextRange>)highlighter.Ranges).CollectionChanged += onCollectionChanged;
+						var disposable = new CompositeDisposable();
+						disposable.Add(backgroundDisposable);
+						disposable.Add(foregroundDisposable);
+						disposable.Add(rangesDisposable);
+						_textHighlighterDisposables.Add(highlighter, disposable);
+					}
+				}
+			}
+
+			InvalidateInlineAndRequireRepaint();
+		}
+
+		private void OnTextHighlighterPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			InvalidateInlineAndRequireRepaint();
+		}
+
+		void UnicodeText.IFontCacheUpdateListener.Invalidate() => InvalidateMeasure();
+
 		void IBlock.Invalidate(bool updateText) => InvalidateInlineAndRequireRepaint();
 		string IBlock.GetText() => Text;
 
@@ -354,7 +420,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(SelectedText), typeof(string),
 				typeof(TextBlock),
-				new FrameworkPropertyMetadata(default(string)));
+				new FrameworkPropertyMetadata(string.Empty));
 
 		public string SelectedText
 		{
