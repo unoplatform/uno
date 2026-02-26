@@ -45,4 +45,8 @@
 	<ItemGroup>
 	  <Folder Include="Services\" />
 	</ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="Uno.UI.DevServer.Cli.Tests" />
+	</ItemGroup>
 </Project>

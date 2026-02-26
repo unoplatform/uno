@@ -20,6 +20,7 @@
       "Uno.UI.FluentTheme.v1\\Uno.UI.FluentTheme.v1.Tests.csproj",
       "Uno.UI.FluentTheme.v2\\Uno.UI.FluentTheme.v2.Tests.csproj",
       "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.Tests.csproj",
+      "Uno.UI.DevServer.Cli.Tests\\Uno.UI.DevServer.Cli.Tests.csproj",
       "Uno.UI.RemoteControl.DevServer.Tests\\Uno.UI.RemoteControl.DevServer.Tests.csproj",
       "Uno.UI.Tests.ViewLibraryProps\\Uno.UI.Tests.ViewLibraryProps.csproj",
       "Uno.UI.Tests.ViewLibrary\\Uno.UI.Tests.ViewLibrary.csproj",

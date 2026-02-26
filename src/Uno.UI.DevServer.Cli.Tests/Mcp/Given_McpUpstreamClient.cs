@@ -1,7 +1,7 @@
 using AwesomeAssertions;
 using Uno.UI.DevServer.Cli.Mcp;
 
-namespace Uno.UI.RemoteControl.DevServer.Tests.Mcp;
+namespace Uno.UI.DevServer.Cli.Tests.Mcp;
 
 /// <summary>
 /// Tests for <see cref="McpUpstreamClient"/> patterns: TCS lifecycle,
@@ -219,6 +219,81 @@ public class Given_McpUpstreamClient
 		holder.Tcs.TrySetResult("second-connection");
 		var secondResult = await holder.Tcs.Task;
 		secondResult.Should().Be("second-connection");
+	}
+
+	[TestMethod]
+	[Description("The StartOnceGuard ensures callback fires exactly once: via notification if it arrived, otherwise via explicit post-connect path")]
+	public async Task ConnectOrDie_NotificationGuard_CallbackFiresExactlyOnce()
+	{
+		// This test exercises the production pattern used in McpUpstreamClient.ConnectOrDieAsync:
+		// The callback is checked first (short-circuit avoids consuming the guard when no callback
+		// is registered), then TryStart() atomically claims the flag so exactly one path wins,
+		// eliminating the TOCTOU race between the notification handler and post-connect callback.
+
+		var callCount = 0;
+		Func<Task> callback = () => { callCount++; return Task.CompletedTask; };
+
+		// Case 1: notification fires during connect -> explicit path is skipped
+		var guard = new MonitorDecisions.StartOnceGuard();
+		if (callback is { } c1 && guard.TryStart())
+		{
+			await c1();
+		}
+		if (callback is { } c2 && guard.TryStart())
+		{
+			await c2();
+		}
+		callCount.Should().Be(1, "callback fires via notification path only");
+
+		// Case 2: no notification -> explicit path fires
+		callCount = 0;
+		guard = new MonitorDecisions.StartOnceGuard();
+		if (callback is { } c3 && guard.TryStart())
+		{
+			await c3();
+		}
+		callCount.Should().Be(1, "callback fires via explicit path when no notification arrived");
+	}
+
+	[TestMethod]
+	[Description("When the callback throws, the guard is reset so the other path can retry")]
+	public async Task ConnectOrDie_NotificationGuard_ResetsOnCallbackException()
+	{
+		var callCount = 0;
+		var shouldThrow = true;
+		Func<Task> callback = () =>
+		{
+			callCount++;
+			if (shouldThrow)
+			{
+				throw new InvalidOperationException("callback failed");
+			}
+			return Task.CompletedTask;
+		};
+
+		var guard = new MonitorDecisions.StartOnceGuard();
+
+		// First path: callback throws, guard should be reset
+		if (callback is { } c1 && guard.TryStart())
+		{
+			try
+			{
+				await c1();
+			}
+			catch
+			{
+				guard.Reset();
+			}
+		}
+		callCount.Should().Be(1, "first callback was invoked");
+
+		// Second path: guard was reset, so this path can now succeed
+		shouldThrow = false;
+		if (callback is { } c2 && guard.TryStart())
+		{
+			await c2();
+		}
+		callCount.Should().Be(2, "second callback fires after guard reset");
 	}
 
 	[TestMethod]
