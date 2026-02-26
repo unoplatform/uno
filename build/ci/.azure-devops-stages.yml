@@ -62,6 +62,16 @@ stages:
       XAML_FLAVOR_BUILD: WinUI
       macOSImageName: '$(macOSVMImage)'
  
+- stage: smoke_test_dotnet_preview_linux
+  displayName: Smoke Test - .NET 11 Preview
+  dependsOn:
+    - binaries_build_native_macos
+
+  jobs:
+  - template: tests/.azure-devops-smoke-tests-dotnet-preview-macos.yml
+    parameters:
+      vmImage: '$(macOSVMImage_UITests)'
+      xCodeRoot: '$(xCodeRoot)'
 
 - stage: binaries_build_winui
   displayName: Build - Managed Binaries

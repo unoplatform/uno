@@ -135,12 +135,14 @@ namespace Windows.Devices.Lights
 					var nativeLevel = minLevel + _brightness * ((int)maxLevel - minLevel);
 					_cameraManager.TurnOnTorchWithStrengthLevel(_defaultCameraId, (int)Math.Round(nativeLevel));
 				}
+#pragma warning disable IDE0055
 				else
 #endif
 				if ((int)Build.VERSION.SdkInt >= (int)BuildVersionCodes.M)
 				{
 					_cameraManager.SetTorchMode(_defaultCameraId, isOn);
 				}
+#pragma warning restore IDE0055
 				else
 				{
 					// using deprecated API for older Android versions
