@@ -21,6 +21,8 @@ using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 using Windows.UI.Core;
 using Uno.Extensions;
+using System.Diagnostics.CodeAnalysis;
+
 
 #if !HAS_UNO_WINUI && !WINAPPSDK
 using Microsoft.UI.Xaml.Controls;
@@ -122,7 +124,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum), 15)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Expander), 15, LeakTestStyles.All, RuntimeTestPlatforms.SkiaWasm)] // Fails on net10.0-wasm, see https://github.com/unoplatform/uno/issues/9080
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Expander), 15, LeakTestStyles.All, RuntimeTestPlatforms.SkiaWasm)] // Fails on net11.0-wasm, see https://github.com/unoplatform/uno/issues/9080
 #endif
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ImageIcon), 15)]
 #if !WINAPPSDK
@@ -133,7 +135,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.NavigationViewItem), 15, LeakTestStyles.All, RuntimeTestPlatforms.SkiaWasm)] // Fails on net10.0-wasm, see https://github.com/unoplatform/uno/issues/9080
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.NavigationViewItem), 15, LeakTestStyles.All, RuntimeTestPlatforms.SkiaWasm)] // Fails on net11.0-wasm, see https://github.com/unoplatform/uno/issues/9080
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter), 15)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.NavigationView), 15)]
@@ -208,6 +210,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "TODO; probably need to emit + use a Linker XML file in Uno.UI.RuntimeTests to ensure that types in [DataRow] (above) are actually preserved.")]
 		private async Task When_Add_Remove_Inner(object controlTypeRaw, int count)
 		{
 			Type GetType(string s)
@@ -363,6 +366,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				}
 			}
 
+			[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "TODO; probably need to emit + use a Linker XML file in Uno.UI.RuntimeTests to ensure that types in [DataRow] (above) are actually preserved.")]
 			async Task MaterializeControl(Type controlType, ContentControl rootContainer)
 			{
 				rootContainer.Content = (FrameworkElement)Activator.CreateInstance(controlType)!;

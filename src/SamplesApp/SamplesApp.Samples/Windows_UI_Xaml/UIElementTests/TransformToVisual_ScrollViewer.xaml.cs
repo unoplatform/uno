@@ -18,7 +18,7 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 		{
 			this.InitializeComponent();
 
-			_tests = new TestRunner(this, TestsOutput);
+			_tests = TestRunner.Create(this, TestsOutput);
 
 			Loaded += RunTest;
 		}

@@ -35,6 +35,15 @@
 		<NoWarn>$(NoWarn);NU1703;SYSLIB1045</NoWarn>
 
 		<!--
+		error IL2026: Using member '…' which has 'RequiresUnreferencedCodeAttribute' can break functionality when trimming application code.
+		  (in System.Data and System.ComponentModel, which we can't do anything about)
+		error IL2121: Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.xLoad_xBind.InitializeComponent(): Unused 'UnconditionalSuppressMessageAttribute' for warning 'IL2111'. Consider removing the unused warning suppression.
+		error IL2104: Assembly 'System.Private.CoreLib' produced trim warnings.
+		…and 'System.Private.Xml', and 'System.Memory.Data', and…
+		-->
+		<NoWarn>$(NoWarn);IL2026;IL2121;IL2104</NoWarn>
+
+		<!--
 		aab is the default packaging format in net6 API 31.
 		We need an APK for deployment on simulators.
 		-->
@@ -178,7 +187,6 @@
 
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='android'">
 			<PropertyGroup>
-				<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
 				<AndroidUseAssemblyStore>false</AndroidUseAssemblyStore>
 			</PropertyGroup>
 
@@ -186,12 +194,12 @@
 				<RuntimeIdentifiers>android-x64;android-arm64</RuntimeIdentifiers>
 			</PropertyGroup>
 			
-			<ItemGroup Condition=" '$(TargetFramework)' == 'net9.0-android'">
-				<PackageReference Include="Xamarin.Google.Android.Material" Version="1.4.0.4" />
-			</ItemGroup>
-
 			<ItemGroup Condition=" '$(TargetFramework)' == 'net10.0-android'">
 				<PackageReference Include="Xamarin.Google.Android.Material" Version="1.12.0.4" />
+			</ItemGroup>
+
+			<ItemGroup Condition=" '$(TargetFramework)' == 'net11.0-android'">
+				<PackageReference Include="Xamarin.Google.Android.Material" Version="1.13.0.2" />
 			</ItemGroup>
 
 			<ItemGroup>

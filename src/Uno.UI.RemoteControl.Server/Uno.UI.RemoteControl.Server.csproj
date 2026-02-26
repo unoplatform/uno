@@ -22,7 +22,6 @@
 		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="Uno.DevTools.Telemetry" Version="1.2.1" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

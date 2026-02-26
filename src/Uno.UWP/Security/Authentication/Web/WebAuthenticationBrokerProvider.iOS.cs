@@ -179,7 +179,7 @@ namespace Uno.AuthenticationBroker
 
 		protected virtual IEnumerable<string> GetApplicationCustomSchemes()
 		{
-			if (NSBundle.MainBundle.InfoDictionary.TryGetValue((NSString)"CFBundleURLTypes", out var o))
+			if (NSBundle.MainBundle.InfoDictionary?.TryGetValue((NSString)"CFBundleURLTypes", out var o) ?? false)
 			{
 				if (o is NSArray a)
 				{

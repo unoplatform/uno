@@ -117,7 +117,7 @@ public
 
 		foreach (var header in requestMessage.Headers)
 		{
-			headerDictionnary.AddDistinct(new KeyValuePair<NSObject, NSObject>(NSObject.FromObject(header.Key), NSObject.FromObject(header.Value.JoinBy(", "))));
+			headerDictionnary.AddDistinct(new KeyValuePair<NSObject, NSObject>(NSObject.FromObject(header.Key)!, NSObject.FromObject(header.Value.JoinBy(", "))!));
 		}
 
 		urlRequest.Headers = headerDictionnary;
@@ -154,10 +154,13 @@ public
 
 			if (relativePath.StartsWith('/'))
 			{
-				relativePath = relativePath.Substring(1);
+				relativePath = relativePath.TrimStart('/');
 			}
 
-			var fullPath = Path.Combine(NSBundle.MainBundle.ResourcePath, folderName, relativePath);
+			var fullPath = Path.Combine(
+				NSBundle.MainBundle.ResourcePath ?? throw new InvalidOperationException("NSBundle.MainBundle.ResourcePath is null!"),
+				folderName,
+				relativePath);
 
 			var nsUrl = new NSUrl("file://" + fullPath);
 			ProcessNSUrlRequest(new NSUrlRequest(nsUrl));

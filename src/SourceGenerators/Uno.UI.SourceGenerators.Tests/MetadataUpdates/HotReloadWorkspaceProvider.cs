@@ -31,6 +31,11 @@ internal class HotReloadWorkspace
 	const string NetCoreCapsRaw = "Baseline AddMethodToExistingType AddStaticFieldToExistingType AddInstanceFieldToExistingType NewTypeDefinition ChangeCustomAttributes UpdateParameters GenericUpdateMethod GenericAddMethodToExistingType GenericAddFieldToExistingType AddFieldRva";
 	// https://github.com/dotnet/runtime/blob/2db28217c40088686fcc8ccc52df2da0391bb712/src/mono/mono/component/hot_reload.c#L3349
 	const string MonoCapsRaw = "Baseline AddMethodToExistingType AddStaticFieldToExistingType NewTypeDefinition ChangeCustomAttributes AddInstanceFieldToExistingType GenericAddMethodToExistingType GenericUpdateMethod UpdateParameters GenericAddFieldToExistingType";
+#elif NET11_0
+	// https://github.com/dotnet/runtime/blob/ab6aa47b475070e581e0caf59b779d174b94cc89/src/coreclr/System.Private.CoreLib/src/System/Reflection/Metadata/MetadataUpdater.cs#L58
+	const string NetCoreCapsRaw = "Baseline AddMethodToExistingType AddStaticFieldToExistingType AddInstanceFieldToExistingType NewTypeDefinition ChangeCustomAttributes UpdateParameters GenericUpdateMethod GenericAddMethodToExistingType GenericAddFieldToExistingType AddFieldRva";
+	// https://github.com/dotnet/runtime/blob/ab6aa47b475070e581e0caf59b779d174b94cc89/src/mono/mono/component/hot_reload.c#L3363
+	const string MonoCapsRaw = "Baseline AddMethodToExistingType AddStaticFieldToExistingType NewTypeDefinition ChangeCustomAttributes AddInstanceFieldToExistingType GenericAddMethodToExistingType GenericUpdateMethod UpdateParameters GenericAddFieldToExistingType";
 #else
 #error This runtime is not supported yet, find the caps in the .NET runtime's sources
 #endif

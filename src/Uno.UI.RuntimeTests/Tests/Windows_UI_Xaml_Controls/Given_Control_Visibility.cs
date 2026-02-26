@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -26,6 +27,11 @@ public class Given_Control_Visibility
 #if !HAS_RENDER_TARGET_BITMAP
 	[Ignore("Cannot take screenshot on this platform.")]
 #endif
+	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "TODO (Assembly.GetTypes()); trimmer may remove types and/or constructors!")]
+	[UnconditionalSuppressMessage("Trimming", "IL2062", Justification = "TODO (Activator.CreateInstance()); trimmer may remove types and/or constructors!")]
+	[UnconditionalSuppressMessage("Trimming", "IL2065", Justification = "TODO (Activator.CreateInstance()); trimmer may remove types and/or constructors!")]
+	[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "TODO (Activator.CreateInstance()); trimmer may remove types and/or constructors!")]
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "TODO (Type.GetConstructor()); trimmer may remove types and/or constructors!")]
 	public async Task When_Visibility_Changes()
 	{
 		foreach (var type in typeof(Control).Assembly.GetTypes())
