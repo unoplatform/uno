@@ -347,28 +347,13 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 
 	private void LogVerboseWin32WebViewTrace(Func<string> messageFactory)
 	{
-		if (!Win32WebViewTraceHelper.IsVerboseWin32WebViewTraceEnabled())
-		{
-			return;
-		}
-
-		var loggerEnabled = this.Log().IsEnabled(LogLevel.Warning);
-		var debugOutputEnabled = Debugger.IsAttached;
-		if (!loggerEnabled && !debugOutputEnabled)
+		if (!Win32WebViewTraceHelper.IsVerboseWin32WebViewTraceEnabled() || !this.Log().IsEnabled(LogLevel.Warning))
 		{
 			return;
 		}
 
 		var message = $"[WebView2Trace] {DateTime.UtcNow:O} {messageFactory()}";
-		if (loggerEnabled)
-		{
-			this.LogWarn()?.Warn(message);
-		}
-
-		if (debugOutputEnabled)
-		{
-			Debug.WriteLine(message);
-		}
+		this.LogWarn()?.Warn(message);
 	}
 
 	private static string GetActivationSnapshot()

@@ -368,28 +368,13 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 
 	private void LogVerboseWin32Trace(Func<string> messageFactory)
 	{
-		if (!Win32WebViewTraceHelper.IsVerboseWin32WebViewTraceEnabled())
-		{
-			return;
-		}
-
-		var loggerEnabled = this.Log().IsEnabled(LogLevel.Warning);
-		var debugOutputEnabled = Debugger.IsAttached;
-		if (!loggerEnabled && !debugOutputEnabled)
+		if (!Win32WebViewTraceHelper.IsVerboseWin32WebViewTraceEnabled() || !this.Log().IsEnabled(LogLevel.Warning))
 		{
 			return;
 		}
 
 		var message = $"[WebView2Trace] {DateTime.UtcNow:O} {messageFactory()}";
-		if (loggerEnabled)
-		{
-			this.LogWarn()?.Warn(message);
-		}
-
-		if (debugOutputEnabled)
-		{
-			Debug.WriteLine(message);
-		}
+		this.LogWarn()?.Warn(message);
 	}
 
 	public string DocumentTitle
