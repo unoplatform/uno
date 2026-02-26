@@ -274,8 +274,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private protected override void OnUnloaded()
 		{
-			LayoutUpdated -= OnLayoutUpdated;
-			SizeChanged -= OnSizeChanged;
 			if (m_isInOverlayState)
 			{
 				TeardownOverlayState();
@@ -284,7 +282,6 @@ namespace Microsoft.UI.Xaml.Controls
 			UnregisterEvents();
 
 			base.OnUnloaded();
-
 		}
 
 		protected override void OnApplyTemplate()
