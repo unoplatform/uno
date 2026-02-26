@@ -83,8 +83,8 @@ internal class McpUpstreamClient
 							log.LogTrace("Upstream MCP notified tool list changed");
 
 							// ToolListChanged has no meaningful params — no deserialization needed
-							Interlocked.Exchange(ref notificationAlreadyFired, 1);
-							if (_toolListChanged is { } callback)
+							if (Interlocked.CompareExchange(ref notificationAlreadyFired, 1, 0) == 0
+								&& _toolListChanged is { } callback)
 							{
 								await callback();
 							}
@@ -112,7 +112,8 @@ internal class McpUpstreamClient
 
 			// Always notify — 0 tools is a valid response and must unblock waiters.
 			// Skip if the notification handler already fired to avoid duplicate downstream events.
-			if (Volatile.Read(ref notificationAlreadyFired) == 0 && _toolListChanged is { } toolsCallback)
+			if (Interlocked.CompareExchange(ref notificationAlreadyFired, 1, 0) == 0
+				&& _toolListChanged is { } toolsCallback)
 			{
 				await toolsCallback();
 			}

@@ -226,23 +226,19 @@ public class Given_McpUpstreamClient
 	public async Task ConnectOrDie_NotificationGuard_CallbackFiresExactlyOnce()
 	{
 		// This test verifies the guard pattern used in McpUpstreamClient.ConnectOrDieAsync:
-		// an int flag (set via Interlocked.Exchange) prevents the post-connect explicit callback
-		// from firing if the ToolListChangedNotification handler already fired during CreateAsync.
-		//
-		// McpUpstreamClient cannot be instantiated in tests (requires DevServerMonitor + real HTTP),
-		// so we verify the pattern in isolation.
+		// Interlocked.CompareExchange atomically claims the flag so exactly one path wins,
+		// eliminating the TOCTOU race between the notification handler and post-connect callback.
 
 		var callCount = 0;
 		Func<Task> callback = () => { callCount++; return Task.CompletedTask; };
 
 		// Case 1: notification fires during connect → explicit path is skipped
 		var notificationFired = 0;
-		Interlocked.Exchange(ref notificationFired, 1);
-		if (Volatile.Read(ref notificationFired) != 0 && callback is { } c1)
+		if (Interlocked.CompareExchange(ref notificationFired, 1, 0) == 0 && callback is { } c1)
 		{
 			await c1();
 		}
-		if (Volatile.Read(ref notificationFired) == 0 && callback is { } c2)
+		if (Interlocked.CompareExchange(ref notificationFired, 1, 0) == 0 && callback is { } c2)
 		{
 			await c2();
 		}
@@ -251,7 +247,7 @@ public class Given_McpUpstreamClient
 		// Case 2: no notification → explicit path fires
 		callCount = 0;
 		notificationFired = 0;
-		if (Volatile.Read(ref notificationFired) == 0 && callback is { } c3)
+		if (Interlocked.CompareExchange(ref notificationFired, 1, 0) == 0 && callback is { } c3)
 		{
 			await c3();
 		}
