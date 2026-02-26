@@ -5,18 +5,19 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Windows.Markup;
 using DirectUI;
-using Uno.UI.Extensions;
-using Uno.UI.Xaml;
-using Uno.UI.Xaml.Core;
-using Uno.UI.Xaml.Input;
-using Windows.Foundation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.Collections;
+using Uno.UI.Extensions;
+using Uno.UI.Xaml;
+using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Input;
+using Windows.Foundation;
 using Windows.System;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
@@ -425,6 +426,13 @@ namespace Microsoft.UI.Xaml
 					{
 						return popupPanel.Popup;
 					}
+
+					// If the parent is PopupRoot and this is a PopupPanel, jump to the owning Popup.
+					if (uiElement is PopupRoot && this is PopupPanel selfPanel)
+					{
+						return selfPanel.Popup;
+					}
+
 					return uiElement;
 				}
 				else

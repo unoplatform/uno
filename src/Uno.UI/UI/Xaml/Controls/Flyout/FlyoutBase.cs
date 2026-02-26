@@ -652,20 +652,32 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// so this walk correctly finds Popup ancestors.
 			var currentElement = focusedElement;
 			Popup popupAncestor = null;
+			bool popupRootExists = false;
 			bool popupAncestorIsLightDismiss = false;
 
 			while (currentElement != null)
 			{
+				// WinUI: FlyoutBase_partial.cpp lines 2396-2401
+				if (currentElement is PopupRoot)
+				{
+					popupRootExists = true;
+					currentElement = currentElement.GetUIElementAdjustedParentInternal(false);
+					continue;
+				}
+
 				if (currentElement is Popup popup)
 				{
 					popupAncestor = popup;
-					popupAncestorIsLightDismiss = popup.IsLightDismissEnabled;
+					// WinUI: IsSelfOrAncestorLightDismiss() = m_fIsLightDismiss || m_fIsSubMenu
+					popupAncestorIsLightDismiss = popup.IsLightDismissEnabled || popup.IsSubMenu;
 					break;
 				}
+
 				currentElement = currentElement.GetUIElementAdjustedParentInternal(false);
 			}
 
-			if (popupAncestor == null || !popupAncestorIsLightDismiss)
+			// WinUI: FlyoutBase_partial.cpp lines 2422-2429
+			if (!popupRootExists && (popupAncestor == null || !popupAncestorIsLightDismiss))
 			{
 				Hide();
 			}
