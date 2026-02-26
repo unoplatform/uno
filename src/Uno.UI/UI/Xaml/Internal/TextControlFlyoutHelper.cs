@@ -308,20 +308,20 @@ internal static class TextControlFlyoutHelper
 			return;
 		}
 
-		// Close both ContextFlyout and SelectionFlyout on the owner.
-		CloseIfOpen(owner.ContextFlyout);
+		// Delegate to owner-specific DismissAllFlyouts which closes all tracked flyouts.
 		if (owner is Controls.TextBox textBox)
 		{
-			CloseIfOpen(textBox.SelectionFlyout);
+			textBox.DismissAllFlyouts();
 		}
-		else if (owner is Controls.TextBlock textBlock)
+		else
 		{
-			CloseIfOpen(textBlock.SelectionFlyout);
+			// Close both ContextFlyout and SelectionFlyout on the owner.
+			CloseIfOpen(owner.ContextFlyout);
+			if (owner is Controls.TextBlock textBlock)
+			{
+				CloseIfOpen(textBlock.SelectionFlyout);
+			}
 		}
-
-		// TODO Uno: WinUI also calls TextBoxBase.DismissAllFlyouts() and
-		// TextSelectionManager.DismissAllFlyouts() which handle additional
-		// internal flyouts. These are not yet ported.
 	}
 
 	public static void CloseIfOpen(FlyoutBase? flyout)

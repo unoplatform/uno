@@ -328,6 +328,11 @@ public partial class TextBox
 		{
 			e.Handled = true;
 			TouchTap(e.GetCurrentPoint(TextBoxView.DisplayBlock).Position, true);
+			// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (line 653)
+			// Gripper manipulation ended - queue SelectionFlyout visibility update
+			QueueUpdateSelectionFlyoutVisibility(
+				e.Pointer.PointerDeviceType,
+				e.GetCurrentPoint(this).Position);
 		}
 		else
 		{

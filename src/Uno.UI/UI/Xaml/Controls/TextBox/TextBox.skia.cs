@@ -160,6 +160,7 @@ public partial class TextBox
 		get
 		{
 			EnsureProofingMenu();
+			TextControlFlyoutHelper.AddProofingFlyout(_proofingMenu, this);
 			if (IsSpellCheckEnabled && (FocusState != FocusState.Unfocused || _forceFocusedVisualState))
 			{
 				UpdateProofingMenu();
@@ -462,6 +463,15 @@ public partial class TextBox
 				// Ported from: TextBoxBase.cpp UpdateFocusState (lines 4996-5008)
 				// Check if focus is moving to a text control flyout before deciding to unfocus.
 				_forceFocusedVisualState = ShouldForceFocusedVisualState();
+
+				// Ported from: TextBoxBase.cpp UpdateFocusState (lines 5009-5016)
+				// Hide touch caret thumbs when context flyout is opening.
+				if (_forceFocusedVisualState && ShouldHideGrippersOnFlyoutOpening()
+					&& CaretMode is CaretDisplayMode.CaretWithThumbsOnlyEndShowing
+						or CaretDisplayMode.CaretWithThumbsBothEndsShowing)
+				{
+					CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+				}
 			}
 
 			if (focusState == FocusState.Unfocused && !_forceFocusedVisualState)
@@ -487,6 +497,20 @@ public partial class TextBox
 	{
 		return TextControlFlyoutHelper.IsGettingFocus(SelectionFlyout, this)
 			|| TextControlFlyoutHelper.IsGettingFocus(ContextFlyout, this);
+	}
+
+	// Ported from: TextBoxBase.cpp ShouldHideGrippersOnFlyoutOpening (lines 5291-5294)
+	private bool ShouldHideGrippersOnFlyoutOpening()
+	{
+		return TextControlFlyoutHelper.IsGettingFocus(ContextFlyout, this);
+	}
+
+	// Ported from: TextBoxBase.cpp DismissAllFlyouts (lines 5566-5574)
+	internal void DismissAllFlyouts()
+	{
+		TextControlFlyoutHelper.CloseIfOpen(ProofingMenuFlyout);
+		TextControlFlyoutHelper.CloseIfOpen(SelectionFlyout);
+		TextControlFlyoutHelper.CloseIfOpen(ContextFlyout);
 	}
 
 	// Ported from: TextBoxBase.cpp ForceFocusLoss (lines 5551-5560)
@@ -1484,6 +1508,10 @@ public partial class TextBox
 	{
 		if (_isSkiaTextBox)
 		{
+			// Ported from: TextBoxBase.cpp TxNotify EN_CHANGE (line 3113)
+			// Close the selection flyout when text changes.
+			TextControlFlyoutHelper.CloseIfOpen(SelectionFlyout);
+
 			if (_pendingSelection is { } selection)
 			{
 				SelectInternal(selection.start, selection.length);

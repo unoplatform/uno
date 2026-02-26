@@ -980,7 +980,14 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				e.Handled = true;
-				that.Focus(FocusState.Pointer);
+				// Ported from: TextSelectionManager.cpp OnHolding/OnRightTapped
+				// Don't take focus if the context flyout is open.
+#if __SKIA__
+				if (!Internal.TextControlFlyoutHelper.IsOpen(that.ContextFlyout))
+#endif
+				{
+					that.Focus(FocusState.Pointer);
+				}
 
 				that.CapturePointer(e.Pointer);
 			}

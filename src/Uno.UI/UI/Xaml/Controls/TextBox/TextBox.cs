@@ -30,6 +30,9 @@ using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 using Uno.UI.Xaml.Controls;
 using System.Linq;
+#if __SKIA__
+using Microsoft.UI.Xaml.Internal;
+#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -1140,7 +1143,14 @@ namespace Microsoft.UI.Xaml.Controls
 			bool wasFocused = FocusState != FocusState.Unfocused;
 			if (!ShouldFocusOnPointerPressed(args))
 			{
-				Focus(FocusState.Pointer);
+				// Ported from: TextBoxBase.cpp OnPointerReleased
+				// Don't take focus if the context flyout is open.
+#if __SKIA__
+				if (!TextControlFlyoutHelper.IsOpen(ContextFlyout))
+#endif
+				{
+					Focus(FocusState.Pointer);
+				}
 #if __SKIA__
 				if (wasFocused)
 				{
