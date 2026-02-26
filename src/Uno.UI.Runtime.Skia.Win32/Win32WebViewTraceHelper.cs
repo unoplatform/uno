@@ -7,7 +7,12 @@ namespace Uno.UI.Runtime.Skia.Win32;
 
 internal static class Win32WebViewTraceHelper
 {
+	private static readonly bool _isVerboseWin32WebViewTraceEnabled = GetIsVerboseWin32WebViewTraceEnabled();
+
 	internal static bool IsVerboseWin32WebViewTraceEnabled()
+		=> _isVerboseWin32WebViewTraceEnabled;
+
+	private static bool GetIsVerboseWin32WebViewTraceEnabled()
 	{
 		var value = Environment.GetEnvironmentVariable("UNO_WIN32_WEBVIEW2_TRACE");
 		return string.Equals(value, "1", StringComparison.Ordinal) || (bool.TryParse(value, out var enabled) && enabled);
