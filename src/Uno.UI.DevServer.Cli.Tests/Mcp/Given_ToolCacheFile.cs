@@ -3,7 +3,7 @@ using AwesomeAssertions;
 using ModelContextProtocol.Protocol;
 using Uno.UI.DevServer.Cli.Mcp;
 
-namespace Uno.UI.RemoteControl.DevServer.Tests.Mcp;
+namespace Uno.UI.DevServer.Cli.Tests.Mcp;
 
 /// <summary>
 /// Tests for <see cref="ToolCacheFile"/> validation, serialization,
@@ -232,16 +232,36 @@ public class Given_ToolCacheFile
 	}
 
 	[TestMethod]
-	[Description("ComputeWorkspaceHash is case-insensitive on all platforms (including Linux/WSL)")]
-	public void ComputeWorkspaceHash_IsCaseInsensitiveOnAllPlatforms()
+	[Description("ComputeWorkspaceHash is case-insensitive on Windows paths and WSL-mounted drives")]
+	public void ComputeWorkspaceHash_IsCaseInsensitive_OnWindowsAndWslMounts()
 	{
+		// Windows paths are always case-folded
+		var hash1 = ToolCacheFile.ComputeWorkspaceHash(@"C:\Users\Test\Project");
+		var hash2 = ToolCacheFile.ComputeWorkspaceHash(@"C:\USERS\TEST\PROJECT");
+		hash1.Should().Be(hash2, "Windows paths should be case-insensitive");
+
+		// WSL-mounted paths (/mnt/...) are case-folded
+		var hash3 = ToolCacheFile.ComputeWorkspaceHash("/mnt/c/Users/Test/Project");
+		var hash4 = ToolCacheFile.ComputeWorkspaceHash("/mnt/c/USERS/TEST/PROJECT");
+		hash3.Should().Be(hash4, "WSL mount paths should be case-insensitive");
+	}
+
+	[TestMethod]
+	[Description("ComputeWorkspaceHash is case-sensitive on native Linux paths (no /mnt/ prefix)")]
+	public void ComputeWorkspaceHash_IsCaseSensitive_OnNativeLinuxPaths()
+	{
+		if (OperatingSystem.IsWindows())
+		{
+			// On Windows, all paths are case-folded (OperatingSystem.IsWindows() == true),
+			// so this test only validates behavior on native Linux.
+			Assert.Inconclusive("This test validates Linux-specific case-sensitive behavior.");
+			return;
+		}
+
 		var hash1 = ToolCacheFile.ComputeWorkspaceHash("/home/user/project");
 		var hash2 = ToolCacheFile.ComputeWorkspaceHash("/HOME/USER/PROJECT");
-		var hash3 = ToolCacheFile.ComputeWorkspaceHash("/Home/User/Project");
 
-		hash1.Should().Be(hash2, "hashes for different casings of the same path should match");
-		hash1.Should().Be(hash3, "hashes for different casings of the same path should match");
-		hash1.Should().HaveLength(16);
+		hash1.Should().NotBe(hash2, "native Linux paths are case-sensitive");
 	}
 
 	// -------------------------------------------------------------------

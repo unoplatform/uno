@@ -92,6 +92,9 @@
     <Project Path="Uno.UI.DevServer.Cli/Uno.UI.DevServer.Cli.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
+    <Project Path="Uno.UI.DevServer.Cli.Tests/Uno.UI.DevServer.Cli.Tests.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+    </Project>
     <Project Path="Uno.UI.RemoteControl.DevServer.Tests/Uno.UI.RemoteControl.DevServer.Tests.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>

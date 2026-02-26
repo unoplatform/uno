@@ -1,10 +1,11 @@
 using AwesomeAssertions;
 using ModelContextProtocol.Protocol;
+using Uno.UI.DevServer.Cli.Mcp;
 
-namespace Uno.UI.RemoteControl.DevServer.Tests.Mcp;
+namespace Uno.UI.DevServer.Cli.Tests.Mcp;
 
 /// <summary>
-/// Tests for <see cref="Uno.UI.DevServer.Cli.Mcp.McpStdioServer"/> handler behavior:
+/// Tests for <see cref="McpStdioServer"/> handler behavior:
 /// structured error responses returned by the call_tool handler,
 /// and ServerInfo configuration patterns.
 /// </summary>
@@ -62,7 +63,7 @@ public class Given_McpStdioServer
 
 	/// <summary>
 	/// Mirrors the GetAssemblyVersion() logic in McpStdioServer to verify the
-	/// InformationalVersion → SemVer extraction pattern.
+	/// InformationalVersion -> SemVer extraction pattern.
 	/// </summary>
 	private static string GetInformationalVersion()
 	{
@@ -88,16 +89,14 @@ public class Given_McpStdioServer
 	[Description("When cached tools include uno_health and it is prepended explicitly, duplicates appear (demonstrates the old bug)")]
 	public void ListTools_FallbackPath_OldBehavior_ProducesDuplicateHealthTool()
 	{
-		const string healthToolName = "uno_health";
-		var healthTool = new Tool { Name = healthToolName, Description = "Health" };
 		var addRootsTool = new Tool { Name = "uno_app_set_roots", Description = "Set roots" };
-		var cachedTools = new[] { healthTool, new Tool { Name = "uno_app_get_info", Description = "Info" } };
+		var cachedTools = new[] { HealthService.HealthTool, new Tool { Name = "uno_app_get_info", Description = "Info" } };
 
 		// Old behavior: explicitly prepend uno_health, then AddRange cached tools
-		List<Tool> tools = [healthTool, addRootsTool];
+		List<Tool> tools = [HealthService.HealthTool, addRootsTool];
 		tools.AddRange(cachedTools);
 
-		var healthCount = tools.Count(t => t.Name == healthToolName);
+		var healthCount = tools.Count(t => t.Name == HealthService.HealthTool.Name);
 		healthCount.Should().Be(2, "old code prepends uno_health AND it may already be in cached tools");
 	}
 
@@ -105,31 +104,16 @@ public class Given_McpStdioServer
 	[Description("New behavior: AppendBuiltInTools deduplication prevents duplicate uno_health in forceRootsFallback path")]
 	public void ListTools_FallbackPath_NewBehavior_NoDuplicateHealthTool()
 	{
-		const string healthToolName = "uno_health";
-		var healthTool = new Tool { Name = healthToolName, Description = "Health" };
 		var addRootsTool = new Tool { Name = "uno_app_set_roots", Description = "Set roots" };
-		var cachedTools = new[] { healthTool, new Tool { Name = "uno_app_get_info", Description = "Info" } };
+		var cachedTools = new[] { HealthService.HealthTool, new Tool { Name = "uno_app_get_info", Description = "Info" } };
 
-		// Mirrors ToolListManager.AppendBuiltInTools logic inline because the test project
-		// uses Compile-linked sources and ToolListManager cannot be linked without pulling in
-		// DevServerMonitor and its heavy dependency graph.
 		List<Tool> tools = [addRootsTool];
 		tools.AddRange(cachedTools);
 
-		// AppendBuiltInTools: only add uno_health if not already present
-		IList<Tool> result;
-		if (tools.Any(t => t.Name == healthToolName))
-		{
-			result = tools;
-		}
-		else
-		{
-			var withHealth = new List<Tool>(tools.Count + 1) { healthTool };
-			withHealth.AddRange(tools);
-			result = withHealth;
-		}
+		// Call the real production code
+		var result = ToolListManager.AppendBuiltInTools(tools);
 
-		var healthCount = result.Count(t => t.Name == healthToolName);
+		var healthCount = result.Count(t => t.Name == HealthService.HealthTool.Name);
 		healthCount.Should().Be(1, "AppendBuiltInTools deduplication ensures uno_health appears exactly once");
 		result.Should().HaveCount(3, "addRoots + uno_health (from cache) + uno_app_get_info");
 	}
@@ -138,27 +122,15 @@ public class Given_McpStdioServer
 	[Description("AppendBuiltInTools adds uno_health when no cached tools are available (fresh start)")]
 	public void ListTools_FallbackPath_NoCachedTools_HealthToolIsAdded()
 	{
-		const string healthToolName = "uno_health";
-		var healthTool = new Tool { Name = healthToolName, Description = "Health" };
 		var addRootsTool = new Tool { Name = "uno_app_set_roots", Description = "Set roots" };
 
 		List<Tool> tools = [addRootsTool];
 		// No cached tools
 
-		// Same inline mirror of AppendBuiltInTools (see comment above)
-		IList<Tool> result;
-		if (tools.Any(t => t.Name == healthToolName))
-		{
-			result = tools;
-		}
-		else
-		{
-			var withHealth = new List<Tool>(tools.Count + 1) { healthTool };
-			withHealth.AddRange(tools);
-			result = withHealth;
-		}
+		// Call the real production code
+		var result = ToolListManager.AppendBuiltInTools(tools);
 
 		result.Should().HaveCount(2, "uno_health + addRoots when no cache is available");
-		result[0].Name.Should().Be(healthToolName, "uno_health should be first");
+		result[0].Name.Should().Be(HealthService.HealthTool.Name, "uno_health should be first");
 	}
 }

@@ -1,0 +1,19 @@
+<Project Sdk="MSTest.Sdk/4.0.2">
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AwesomeAssertions" />
+		<PackageReference Include="ModelContextProtocol" Version="0.8.0-preview.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.UI.DevServer.Cli\Uno.UI.DevServer.Cli.csproj" />
+	</ItemGroup>
+
+</Project>

@@ -168,11 +168,13 @@ internal static class ToolCacheFile
 			return string.Empty;
 		}
 
-		// Case-insensitive on all platforms: on WSL, the same Windows-mounted directory
-		// can arrive with inconsistent casing depending on the source (CLI arg vs Path.GetFullPath).
-		// On native Linux this is technically incorrect (paths are case-sensitive), but in practice
-		// workspace paths are consistent and this only affects cache keying, not correctness.
-		var normalized = solutionDirectory.Replace('\\', '/').ToLowerInvariant();
+		var normalized = solutionDirectory.Replace('\\', '/');
+
+		// Only case-fold on case-insensitive filesystems: Windows, or WSL-mounted Windows drives.
+		if (OperatingSystem.IsWindows() || normalized.StartsWith("/mnt/", StringComparison.Ordinal))
+		{
+			normalized = normalized.ToLowerInvariant();
+		}
 		var bytes = Encoding.UTF8.GetBytes(normalized);
 		var hash = SHA256.HashData(bytes);
 		return Convert.ToHexString(hash)[..16];

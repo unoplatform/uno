@@ -1,7 +1,7 @@
 using AwesomeAssertions;
 using Uno.UI.DevServer.Cli.Mcp;
 
-namespace Uno.UI.RemoteControl.DevServer.Tests.Mcp;
+namespace Uno.UI.DevServer.Cli.Tests.Mcp;
 
 /// <summary>
 /// Tests for <see cref="McpUpstreamClient"/> patterns: TCS lifecycle,
@@ -222,32 +222,32 @@ public class Given_McpUpstreamClient
 	}
 
 	[TestMethod]
-	[Description("The notification guard pattern ensures callback fires exactly once: via notification if it arrived, otherwise via explicit post-connect path")]
+	[Description("The StartOnceGuard ensures callback fires exactly once: via notification if it arrived, otherwise via explicit post-connect path")]
 	public async Task ConnectOrDie_NotificationGuard_CallbackFiresExactlyOnce()
 	{
-		// This test verifies the guard pattern used in McpUpstreamClient.ConnectOrDieAsync:
-		// Interlocked.CompareExchange atomically claims the flag so exactly one path wins,
+		// This test exercises the production StartOnceGuard used in McpUpstreamClient.ConnectOrDieAsync:
+		// TryStart() atomically claims the flag so exactly one path wins,
 		// eliminating the TOCTOU race between the notification handler and post-connect callback.
 
 		var callCount = 0;
 		Func<Task> callback = () => { callCount++; return Task.CompletedTask; };
 
-		// Case 1: notification fires during connect → explicit path is skipped
-		var notificationFired = 0;
-		if (Interlocked.CompareExchange(ref notificationFired, 1, 0) == 0 && callback is { } c1)
+		// Case 1: notification fires during connect -> explicit path is skipped
+		var guard = new MonitorDecisions.StartOnceGuard();
+		if (guard.TryStart() && callback is { } c1)
 		{
 			await c1();
 		}
-		if (Interlocked.CompareExchange(ref notificationFired, 1, 0) == 0 && callback is { } c2)
+		if (guard.TryStart() && callback is { } c2)
 		{
 			await c2();
 		}
 		callCount.Should().Be(1, "callback fires via notification path only");
 
-		// Case 2: no notification → explicit path fires
+		// Case 2: no notification -> explicit path fires
 		callCount = 0;
-		notificationFired = 0;
-		if (Interlocked.CompareExchange(ref notificationFired, 1, 0) == 0 && callback is { } c3)
+		guard = new MonitorDecisions.StartOnceGuard();
+		if (guard.TryStart() && callback is { } c3)
 		{
 			await c3();
 		}
