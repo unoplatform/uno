@@ -12,7 +12,7 @@ Uno Platform lets you write an application once in XAML and/or C#, and deploy it
 
 ### Who makes Uno Platform?
 
-Uno Platform is an [open-source project](https://github.com/unoplatform/Uno) with many contributors. It was developed internally by [nventive](https://nventive.com) from 2013-2018, and has been open source since 2018. It's maintained by [Uno Platform](https://platform.uno).
+Uno Platform is an [open-source project](https://github.com/unoplatform/Uno) with many contributors. Uno Platform has been open source since 2018. It's maintained by [Uno Platform](https://platform.uno).
 
 ### What platforms can I target with Uno Platform?
 
@@ -24,7 +24,7 @@ Yes - Uno Platform taps into the native UI frameworks on most supported platform
 
 ### Can applications look the same on all platforms?
 
-Yes. Unless configured otherwise, your application's UI renders exactly the same on all targeted platforms, to the pixel. Uno Platform achieves this by either taking low-level control of the native visual primitives on the targeted platform or by using a Skia-based rendering approach. [Read more about how Uno works.](xref:Uno.Documentation.Intro)
+Yes. Unless configured otherwise, your application's UI renders exactly the same on all targeted platforms, to the pixel. Uno Platform achieves this by either taking low-level control of the native visual primitives on the targeted platform or by using a Skia-based rendering approach. The rendering choice is yours. [Read more about how Uno works.](xref:Uno.Documentation.Intro)
 
 ### How is Uno Platform different from .NET MAUI?
 
@@ -32,11 +32,13 @@ First, Uno Platform is available in production today to build single-codebase, p
 
 Second, Uno Platform can target additional platforms like Linux and the Web.
 
-Third, Uno Platform aligns with WinUI, which uses a flavor of XAML most Windows developers are familiar with. It also allows you to tap into WinUI's rich styling engine to create pixel-perfect applications.
+Third, Uno Platform provides two MCPs (Model Context Protocols) that enable AI agents to seamlessly access your live application's runtime state and visual tree. These MCPs work across any development environment – Visual Studio, VS Code, Claude Code, GitHub Copilot CLI, OpenAI Codex or Google Antigravity.
 
-Fourth, Uno Platform provides [Hot Design](https://platform.uno/hot-design/) for visually designing your Uno Platform apps.
+Fourth, Uno Platform provides [Hot Design](https://platform.uno/hot-design/) for visually designing your Uno Platform apps, as well as AI-powered Hot Design Agent to quickly scaffold your apps from prompts.
 
-Fifth, Uno Platform provides an optional [Figma plugin](https://platform.uno/unofigma/) for pixel-perfect XAML export for Uno Platform apps.
+Fifth, Uno Platform aligns with WinUI, which uses a flavor of XAML most Windows developers are familiar with. It also allows you to tap into WinUI's rich styling engine to create pixel-perfect applications.
+
+Sixth, Uno Platform provides excellent integration with Figma through the [Figma plugin](https://platform.uno/unofigma/) for pixel-perfect XAML export for Uno Platform apps using a deterministic approach, or you can use your Figma designs with Uno Platform MCPs to have those designs transformed into markup by prompting your favorite agent or CLI tool.
 
 Finally, by extending the reach of WinUI across all supported platforms, it also allows you to leverage the rich 1st and 3rd party ecosystem and bring rich controls everywhere like `DataGrid`, `TreeView`, `TabView`, `NavigationView`, and many others.
 
@@ -49,6 +51,10 @@ Uno Platform applications are cross-platform, running on the web as well as mobi
 Uno Platform applications are written in C# and XAML markup, whereas Blazor applications are written in 'Razor' syntax, a hybrid of HTML/CSS and C#.
 
 Uno Platform and Blazor both make use of .NET's WebAssembly support to run natively in the browser.
+
+In addition, Uno Platform provides two MCPs (Model Context Protocols) that enable AI agents to seamlessly access your live application's runtime state and visual tree. These MCPs work across any development environment – Visual Studio, VS Code, Claude Code, GitHub Copilot CLI, OpenAI Codex or Google Antigravity.
+
+Lastly, Uno Platform provides [Hot Design](https://platform.uno/hot-design/) for visually designing your Uno Platform apps, as well as AI-powered Hot Design Agent to quickly scaffold your apps from prompts.
 
 ### How is Uno Platform different from Flutter?
 
@@ -93,7 +99,7 @@ If you have an existing VB.NET application that you would like to port/modernize
 To be exact, add "Class Library" VB project (not "Class Library (.Net Framework)", and not "Class Library (Universal Windows)"). Use ".NET Standard 2.0" as Target Framework.
 To use this library in Uno heads for all platforms, add a reference to this library (the simplest way is to right-click on "References" nodes inside these heads).
 You can also use the same Class Library in your original VB project. The same Class Library can also be used in any other .NET Standard compatible projects.
-Additionally, if you’d like to move any of your VB.NET code to C#, you may be able to use automated tools such as https://converter.telerik.com
+Additionally, if you’d like to move any of your VB.NET code to C#, you may be able to use automated tools such as <https://converter.telerik.com>.
 
 The best course of action is to do a POC and our team is happy to assist you in validating Uno Platform’s fit. Please [contact us](https://platform.uno/contact) with any queries.
 
