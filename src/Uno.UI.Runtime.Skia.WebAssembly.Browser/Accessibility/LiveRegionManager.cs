@@ -36,8 +36,11 @@ internal sealed partial class LiveRegionManager
 		var liveSetting = peer.GetLiveSetting();
 		var content = peer.GetName();
 
+		Console.WriteLine($"[A11y] LIVE REGION: HandleLiveRegionChanged peer={peer.GetType().Name} liveSetting={liveSetting} content='{content}'");
+
 		if (string.IsNullOrEmpty(content))
 		{
+			Console.WriteLine("[A11y] LIVE REGION: SKIPPED (empty content)");
 			return;
 		}
 
@@ -49,7 +52,7 @@ internal sealed partial class LiveRegionManager
 		switch (liveSetting)
 		{
 			case AutomationLiveSetting.Off:
-				// No-op per spec
+				Console.WriteLine("[A11y] LIVE REGION: liveSetting=Off — no-op");
 				break;
 			case AutomationLiveSetting.Polite:
 				EnqueuePolite(content);
@@ -62,6 +65,7 @@ internal sealed partial class LiveRegionManager
 
 	private void EnqueuePolite(string content)
 	{
+		Console.WriteLine($"[A11y] LIVE REGION: EnqueuePolite content='{content}' debounce={DebounceMs}ms");
 		_pendingPoliteContent = content;
 		_politeDebounceTimer?.Dispose();
 		_politeDebounceTimer = new Timer(_ => FlushPolite(), null, DebounceMs, Timeout.Infinite);
@@ -69,6 +73,7 @@ internal sealed partial class LiveRegionManager
 
 	private void EnqueueAssertive(string content)
 	{
+		Console.WriteLine($"[A11y] LIVE REGION: EnqueueAssertive content='{content}' debounce={DebounceMs}ms");
 		_pendingAssertiveContent = content;
 		_assertiveDebounceTimer?.Dispose();
 		_assertiveDebounceTimer = new Timer(_ => FlushAssertive(), null, DebounceMs, Timeout.Infinite);
@@ -97,6 +102,7 @@ internal sealed partial class LiveRegionManager
 		}
 
 		_politeThrottleTimestamp = now;
+		Console.WriteLine($"[A11y] LIVE REGION: FlushPolite ANNOUNCING content='{content}'");
 		NativeMethods.UpdateLiveRegionContent(IntPtr.Zero, content, 1);
 	}
 
@@ -123,6 +129,7 @@ internal sealed partial class LiveRegionManager
 		}
 
 		_assertiveThrottleTimestamp = now;
+		Console.WriteLine($"[A11y] LIVE REGION: FlushAssertive ANNOUNCING content='{content}'");
 		NativeMethods.UpdateLiveRegionContent(IntPtr.Zero, content, 2);
 	}
 
@@ -131,6 +138,7 @@ internal sealed partial class LiveRegionManager
 	/// </summary>
 	internal void ClearPending()
 	{
+		Console.WriteLine("[A11y] LIVE REGION: ClearPending — clearing all pending announcements");
 		_politeDebounceTimer?.Dispose();
 		_politeDebounceTimer = null;
 		_assertiveDebounceTimer?.Dispose();

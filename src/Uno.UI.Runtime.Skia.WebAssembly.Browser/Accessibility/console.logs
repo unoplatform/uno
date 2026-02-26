@@ -1,0 +1,1043 @@
+uno-bootstrap.js:237 Setting UNO_BOOTSTRAP_MONO_RUNTIME_CONFIGURATION=Release
+uno-bootstrap.js:237 Setting UNO_BOOTSTRAP_MONO_RUNTIME_FEATURES=
+uno-bootstrap.js:237 Setting UNO_BOOTSTRAP_APP_BASE=package_5ec2b24b8cbfde9669364f0f2834d203021d6a2f
+uno-bootstrap.js:237 Setting UNO_BOOTSTRAP_WEBAPP_BASE_PATH=./
+uno-bootstrap.js:426 Debugging hotkey: Shift+Cmd+D (when application has focus)
+Uno.Runtime.Wasm.js:153 [A11y] Accessibility.setup() — initializing accessibility subsystem
+dotnet.native.js:1685 [A11y] EnableAccessibility() called
+dotnet.native.js:1685 [A11y] EnableAccessibility() ERROR: Window=null, RootElement=null
+dotnet.native.js:1685 [A11y] EnableAccessibility() will retry in 100ms (attempt 1/20)
+dotnet.native.js:7946  WebGL: INVALID_ENUM: getParameter: invalid parameter name, WEBGL_debug_renderer_info not enabled
+_glGetString @ dotnet.native.js:7946
+dotnet.native.js:7946  WebGL: INVALID_ENUM: getParameter: invalid parameter name, WEBGL_debug_renderer_info not enabled
+_glGetString @ dotnet.native.js:7946
+dotnet.native.js:1685 [A11y] EnableAccessibility() retry attempt 1
+dotnet.native.js:1685 [A11y] EnableAccessibility() called
+dotnet.native.js:1685 [A11y] EnableAccessibility() ERROR: Window=null, RootElement=null
+dotnet.native.js:1685 [A11y] EnableAccessibility() will retry in 100ms (attempt 2/20)
+invoke-js.ts:246  warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource Color07Brush
+(anonymous) @ invoke-js.ts:246
+invoke-js.ts:246  warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource Color07Brush
+(anonymous) @ invoke-js.ts:246
+invoke-js.ts:246  warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource Color07Brush
+(anonymous) @ invoke-js.ts:246
+invoke-js.ts:246  warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+(anonymous) @ invoke-js.ts:246
+invoke-js.ts:246  warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+(anonymous) @ invoke-js.ts:246
+invoke-js.ts:246  warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+(anonymous) @ invoke-js.ts:246
+invoke-js.ts:246  warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+(anonymous) @ invoke-js.ts:246
+invoke-js.ts:246  warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+(anonymous) @ invoke-js.ts:246
+invoke-js.ts:246  warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+(anonymous) @ invoke-js.ts:246
+invoke-js.ts:246  warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+(anonymous) @ invoke-js.ts:246
+invoke-js.ts:246  warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewContentBackground
+(anonymous) @ invoke-js.ts:246
+invoke-js.ts:246  warn: Microsoft.UI.Xaml.FrameworkTemplatePool[0]
+      Template pooling is disabled in this build of Uno Platform. See https://github.com/unoplatform/uno/issues/13969
+(anonymous) @ invoke-js.ts:246
+invoke-js.ts:246 info: SampleControl.Presentation.SampleChooserViewModel[0]
+      Found 1342 sample(s) in 129 categories.
+invoke-js.ts:246  fail: Uno.UI.DataBinding.BindingPropertyHelper[0]
+      The [ControlName] property getter does not exist on type [SampleControl.Presentation.SampleChooserViewModel]
+(anonymous) @ invoke-js.ts:246
+invoke-js.ts:246  fail: Uno.UI.DataBinding.BindingPropertyHelper[0]
+      The [ControlName] property getter does not exist on type [SampleControl.Presentation.SampleChooserViewModel]
+(anonymous) @ invoke-js.ts:246
+invoke-js.ts:246  fail: Uno.UI.DataBinding.BindingPropertyHelper[0]
+      The [CategoriesString] property getter does not exist on type [SampleControl.Presentation.SampleChooserViewModel]
+(anonymous) @ invoke-js.ts:246
+invoke-js.ts:246  fail: Uno.UI.DataBinding.BindingPropertyHelper[0]
+      The [CategoriesString] property getter does not exist on type [SampleControl.Presentation.SampleChooserViewModel]
+(anonymous) @ invoke-js.ts:246
+invoke-js.ts:246  fail: Uno.UI.DataBinding.BindingPropertyHelper[0]
+      The [Description] property getter does not exist on type [SampleControl.Presentation.SampleChooserViewModel]
+(anonymous) @ invoke-js.ts:246
+invoke-js.ts:246  fail: Uno.UI.DataBinding.BindingPropertyHelper[0]
+      The [Description] property getter does not exist on type [SampleControl.Presentation.SampleChooserViewModel]
+(anonymous) @ invoke-js.ts:246
+invoke-js.ts:246  fail: Uno.UI.DataBinding.BindingPropertyHelper[0]
+      The [ControlType] property getter does not exist on type [SampleControl.Presentation.SampleChooserViewModel]
+(anonymous) @ invoke-js.ts:246
+invoke-js.ts:246  fail: Uno.UI.DataBinding.BindingPropertyHelper[0]
+      The [ControlType] property getter does not exist on type [SampleControl.Presentation.SampleChooserViewModel]
+(anonymous) @ invoke-js.ts:246
+invoke-js.ts:246  fail: Uno.UI.DataBinding.BindingPropertyHelper[0]
+      The [QueryString] property getter does not exist on type [SampleControl.Presentation.SampleChooserViewModel]
+(anonymous) @ invoke-js.ts:246
+invoke-js.ts:246  fail: Uno.UI.DataBinding.BindingPropertyHelper[0]
+      The [QueryString] property getter does not exist on type [SampleControl.Presentation.SampleChooserViewModel]
+(anonymous) @ invoke-js.ts:246
+dotnet.native.js:1685 HandleLaunchArguments: 
+dotnet.native.js:1685 Automated runtime tests args: 
+dotnet.native.js:1685 Automated runtime tests output file:  (UITEST_RUNTIME_TEST_GROUP: , UITEST_RUNTIME_TEST_GROUP_COUNT: , UITEST_RUNTIME_TESTS_FILTER: )
+dotnet.native.js:1685 Done loading 00:00:00.2881000
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=104914
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=104914
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] EnableAccessibility() retry attempt 2
+dotnet.native.js:1685 [A11y] EnableAccessibility() called
+dotnet.native.js:1685 [A11y] EnableAccessibility() SUCCESS: rootElement=XamlIslandRoot, children=4
+dotnet.native.js:1685 [A11y] CreateAOM called: rootElement=XamlIslandRoot, handle=81794
+dotnet.native.js:1685 [A11y] CreateAOM: found 4 top-level children
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=ToggleButton handle=93554 parent=81794 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Button handle=93554 parent=81794 index=append label='' pos=(0,0) size=47.777782x47.777782
+dotnet.native.js:1685 [A11y] CREATE BUTTON: handle=93554 parent=81794 label='' disabled=False pos=(0,0) size=47.777782x47.777782
+Uno.Runtime.Wasm.js:2053 [A11y] TS createButtonElement: handle=93554 parent=81794 label='' disabled=false
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=ImplicitTextBlock handle=135874 parent=93554 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Generic handle=135874 parent=93554 index=append label='' pos=(0,0) size=12.222223x23.888891
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateGenericElement: no specific semantic element for controlType=Text handle=135874 — returning false to use generic AddSemanticElement fallback
+dotnet.native.js:1685 [A11y] AddSemanticElement using generic path: role='' automationId=''
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=TextBlock handle=93650 parent=81794 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Generic handle=93650 parent=81794 index=append label='' pos=(552.77783,13.88889) size=0x20.000002
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateGenericElement: no specific semantic element for controlType=Text handle=93650 — returning false to use generic AddSemanticElement fallback
+dotnet.native.js:1685 [A11y] AddSemanticElement using generic path: role='' automationId=''
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=Button handle=96514 parent=81794 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Button handle=96514 parent=81794 index=append label='' pos=(1055.5557,3.8888893) size=40.000004x40.000004
+dotnet.native.js:1685 [A11y] CREATE BUTTON: handle=96514 parent=81794 label='' disabled=False pos=(1055.5557,3.8888893) size=40.000004x40.000004
+Uno.Runtime.Wasm.js:2053 [A11y] TS createButtonElement: handle=96514 parent=81794 label='' disabled=false
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=TextBlock handle=94018 parent=96514 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Generic handle=94018 parent=96514 index=append label='' pos=(0,0) size=12.222223x23.888891
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateGenericElement: no specific semantic element for controlType=Text handle=94018 — returning false to use generic AddSemanticElement fallback
+dotnet.native.js:1685 [A11y] AddSemanticElement using generic path: role='' automationId=''
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=Button handle=97010 parent=81794 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Button handle=97010 parent=81794 index=append label='' pos=(1100.0001,3.8888893) size=40.000004x40.000004
+dotnet.native.js:1685 [A11y] CREATE BUTTON: handle=97010 parent=81794 label='' disabled=True pos=(1100.0001,3.8888893) size=40.000004x40.000004
+Uno.Runtime.Wasm.js:2053 [A11y] TS createButtonElement: handle=97010 parent=81794 label='' disabled=true
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=TextBlock handle=96882 parent=97010 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Generic handle=96882 parent=97010 index=append label='' pos=(13.88889,7.7777786) size=12.222223x23.888891
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateGenericElement: no specific semantic element for controlType=Text handle=96882 — returning false to use generic AddSemanticElement fallback
+dotnet.native.js:1685 [A11y] AddSemanticElement using generic path: role='' automationId=''
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=Button handle=97490 parent=81794 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Button handle=97490 parent=81794 index=append label='' pos=(1143.889,3.8888893) size=40.000004x40.000004
+dotnet.native.js:1685 [A11y] CREATE BUTTON: handle=97490 parent=81794 label='' disabled=True pos=(1143.889,3.8888893) size=40.000004x40.000004
+Uno.Runtime.Wasm.js:2053 [A11y] TS createButtonElement: handle=97490 parent=81794 label='' disabled=true
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=TextBlock handle=97378 parent=97490 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Generic handle=97378 parent=97490 index=append label='' pos=(13.88889,7.7777786) size=12.222223x23.888891
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateGenericElement: no specific semantic element for controlType=Text handle=97378 — returning false to use generic AddSemanticElement fallback
+dotnet.native.js:1685 [A11y] AddSemanticElement using generic path: role='' automationId=''
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=Button handle=97970 parent=81794 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Button handle=97970 parent=81794 index=append label='' pos=(1187.7778,3.8888893) size=40.000004x40.000004
+dotnet.native.js:1685 [A11y] CREATE BUTTON: handle=97970 parent=81794 label='' disabled=True pos=(1187.7778,3.8888893) size=40.000004x40.000004
+Uno.Runtime.Wasm.js:2053 [A11y] TS createButtonElement: handle=97970 parent=81794 label='' disabled=true
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=TextBlock handle=97858 parent=97970 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Generic handle=97858 parent=97970 index=append label='' pos=(13.88889,7.7777786) size=12.222223x23.888891
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateGenericElement: no specific semantic element for controlType=Text handle=97858 — returning false to use generic AddSemanticElement fallback
+dotnet.native.js:1685 [A11y] AddSemanticElement using generic path: role='' automationId=''
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=Button handle=98802 parent=81794 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Button handle=98802 parent=81794 index=append label='' pos=(1231.6667,3.8888893) size=40.000004x40.000004
+dotnet.native.js:1685 [A11y] CREATE BUTTON: handle=98802 parent=81794 label='' disabled=False pos=(1231.6667,3.8888893) size=40.000004x40.000004
+Uno.Runtime.Wasm.js:2053 [A11y] TS createButtonElement: handle=98802 parent=81794 label='' disabled=false
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=TextBlock handle=98290 parent=98802 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Generic handle=98290 parent=98802 index=append label='' pos=(13.88889,7.7777786) size=12.222223x23.888891
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateGenericElement: no specific semantic element for controlType=Text handle=98290 — returning false to use generic AddSemanticElement fallback
+dotnet.native.js:1685 [A11y] AddSemanticElement using generic path: role='' automationId=''
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=TextBlock handle=98674 parent=98802 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Generic handle=98674 parent=98802 index=append label='' pos=(13.88889,7.7777786) size=12.222223x23.888891
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateGenericElement: no specific semantic element for controlType=Text handle=98674 — returning false to use generic AddSemanticElement fallback
+dotnet.native.js:1685 [A11y] AddSemanticElement using generic path: role='' automationId=''
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=Button handle=103842 parent=81794 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Button handle=103842 parent=81794 index=append label='' pos=(1287.778,0) size=12.222223x47.777782
+dotnet.native.js:1685 [A11y] CREATE BUTTON: handle=103842 parent=81794 label='' disabled=False pos=(1287.778,0) size=12.222223x47.777782
+Uno.Runtime.Wasm.js:2053 [A11y] TS createButtonElement: handle=103842 parent=81794 label='' disabled=false
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=TextBlock handle=103570 parent=103842 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Generic handle=103570 parent=103842 index=append label='' pos=(0,0) size=12.222223x23.888891
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateGenericElement: no specific semantic element for controlType=Text handle=103570 — returning false to use generic AddSemanticElement fallback
+dotnet.native.js:1685 [A11y] AddSemanticElement using generic path: role='' automationId=''
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=TextBlock handle=104130 parent=81794 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Generic handle=104130 parent=81794 index=append label='Description' pos=(7.7777786,7.7777786) size=1299.4446x20.000002
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateGenericElement: no specific semantic element for controlType=Text handle=104130 — returning false to use generic AddSemanticElement fallback
+dotnet.native.js:1685 [A11y] AddSemanticElement using generic path: role='' automationId='Description'
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=TextBlock handle=104354 parent=81794 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Generic handle=104354 parent=81794 index=append label='' pos=(7.7777786,31.66667) size=1299.4446x16.666668
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateGenericElement: no specific semantic element for controlType=Text handle=104354 — returning false to use generic AddSemanticElement fallback
+dotnet.native.js:1685 [A11y] AddSemanticElement using generic path: role='' automationId=''
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=Button handle=132642 parent=81794 hasPeer=False
+dotnet.native.js:1685 [A11y] AddSemanticElement using generic path: role='button' automationId=''
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=Button handle=85218 parent=81794 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Button handle=85218 parent=81794 index=append label='' pos=(0,0) size=0x0
+dotnet.native.js:1685 [A11y] CREATE BUTTON: handle=85218 parent=81794 label='' disabled=False pos=(0,0) size=0x0
+Uno.Runtime.Wasm.js:2053 [A11y] TS createButtonElement: handle=85218 parent=81794 label='' disabled=false
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=Button handle=85650 parent=81794 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Button handle=85650 parent=81794 index=append label='' pos=(0,0) size=0x0
+dotnet.native.js:1685 [A11y] CREATE BUTTON: handle=85650 parent=81794 label='' disabled=False pos=(0,0) size=0x0
+Uno.Runtime.Wasm.js:2053 [A11y] TS createButtonElement: handle=85650 parent=81794 label='' disabled=false
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=Image handle=85730 parent=81794 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Generic handle=85730 parent=81794 index=append label='' pos=(0,0) size=0x0
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateGenericElement: no specific semantic element for controlType=Image handle=85730 — returning false to use generic AddSemanticElement fallback
+dotnet.native.js:1685 [A11y] AddSemanticElement using generic path: role='' automationId=''
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=TextBlock handle=85890 parent=81794 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Generic handle=85890 parent=81794 index=append label='Skia WebAssembly' pos=(0,0) size=0x0
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateGenericElement: no specific semantic element for controlType=Text handle=85890 — returning false to use generic AddSemanticElement fallback
+dotnet.native.js:1685 [A11y] AddSemanticElement using generic path: role='' automationId='Skia WebAssembly'
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=TextBlock handle=85970 parent=81794 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Generic handle=85970 parent=81794 index=append label='/Users/dominik/Projects/uno' pos=(0,0) size=0x0
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateGenericElement: no specific semantic element for controlType=Text handle=85970 — returning false to use generic AddSemanticElement fallback
+dotnet.native.js:1685 [A11y] AddSemanticElement using generic path: role='' automationId='/Users/dominik/Projects/uno'
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=Button handle=86370 parent=81794 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Button handle=86370 parent=81794 index=append label='' pos=(0,0) size=0x0
+dotnet.native.js:1685 [A11y] CREATE BUTTON: handle=86370 parent=81794 label='' disabled=False pos=(0,0) size=0x0
+Uno.Runtime.Wasm.js:2053 [A11y] TS createButtonElement: handle=86370 parent=81794 label='' disabled=false
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=Button handle=86578 parent=81794 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Button handle=86578 parent=81794 index=append label='' pos=(0,0) size=0x0
+dotnet.native.js:1685 [A11y] CREATE BUTTON: handle=86578 parent=81794 label='' disabled=False pos=(0,0) size=0x0
+Uno.Runtime.Wasm.js:2053 [A11y] TS createButtonElement: handle=86578 parent=81794 label='' disabled=false
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=CheckBox handle=88322 parent=81794 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Checkbox handle=88322 parent=81794 index=append label='Manual tests only' pos=(0,0) size=0x0
+dotnet.native.js:1685 [A11y] CREATE CHECKBOX: handle=88322 parent=81794 label='Manual tests only' checked='' pos=(0,0) size=0x0
+Uno.Runtime.Wasm.js:2131 [A11y] TS createCheckboxElement: handle=88322 parent=81794 checked='null' label='Manual tests only'
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=TextBlock handle=88770 parent=81794 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Generic handle=88770 parent=81794 index=append label='Favorites' pos=(0,0) size=0x0
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateGenericElement: no specific semantic element for controlType=Text handle=88770 — returning false to use generic AddSemanticElement fallback
+dotnet.native.js:1685 [A11y] AddSemanticElement using generic path: role='' automationId='Favorites'
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=TextBlock handle=89362 parent=81794 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Generic handle=89362 parent=81794 index=append label='History' pos=(0,0) size=0x0
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateGenericElement: no specific semantic element for controlType=Text handle=89362 — returning false to use generic AddSemanticElement fallback
+dotnet.native.js:1685 [A11y] AddSemanticElement using generic path: role='' automationId='History'
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=RadioButton handle=90994 parent=81794 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=RadioButton handle=90994 parent=81794 index=append label='' pos=(0,0) size=0x0
+dotnet.native.js:1685 [A11y] CREATE RADIO: handle=90994 parent=81794 label='' checked=False group='SelectedSectionPhone' pos=(0,0) size=0x0
+Uno.Runtime.Wasm.js:2163 [A11y] TS createRadioElement: handle=90994 parent=81794 checked=false label='' group='SelectedSectionPhone'
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=RadioButton handle=91618 parent=81794 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=RadioButton handle=91618 parent=81794 index=append label='' pos=(0,0) size=0x0
+dotnet.native.js:1685 [A11y] CREATE RADIO: handle=91618 parent=81794 label='' checked=False group='SelectedSectionPhone' pos=(0,0) size=0x0
+Uno.Runtime.Wasm.js:2163 [A11y] TS createRadioElement: handle=91618 parent=81794 checked=false label='' group='SelectedSectionPhone'
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=RadioButton handle=92242 parent=81794 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=RadioButton handle=92242 parent=81794 index=append label='' pos=(0,0) size=0x0
+dotnet.native.js:1685 [A11y] CREATE RADIO: handle=92242 parent=81794 label='' checked=False group='SelectedSectionPhone' pos=(0,0) size=0x0
+Uno.Runtime.Wasm.js:2163 [A11y] TS createRadioElement: handle=92242 parent=81794 checked=false label='' group='SelectedSectionPhone'
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=Button handle=129474 parent=81794 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Button handle=129474 parent=81794 index=append label='Minimize' pos=(0,0) size=0x0
+dotnet.native.js:1685 [A11y] CREATE BUTTON: handle=129474 parent=81794 label='Minimize' disabled=False pos=(0,0) size=0x0
+Uno.Runtime.Wasm.js:2053 [A11y] TS createButtonElement: handle=129474 parent=81794 label='Minimize' disabled=false
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=Button handle=129522 parent=81794 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Button handle=129522 parent=81794 index=append label='Maximize' pos=(0,0) size=0x0
+dotnet.native.js:1685 [A11y] CREATE BUTTON: handle=129522 parent=81794 label='Maximize' disabled=False pos=(0,0) size=0x0
+Uno.Runtime.Wasm.js:2053 [A11y] TS createButtonElement: handle=129522 parent=81794 label='Maximize' disabled=false
+dotnet.native.js:1685 [A11y] AddSemanticElement: type=Button handle=129698 parent=81794 hasPeer=True
+dotnet.native.js:1685 [A11y] SemanticElementFactory.CreateElement: type=Button handle=129698 parent=81794 index=append label='Close' pos=(0,0) size=0x0
+dotnet.native.js:1685 [A11y] CREATE BUTTON: handle=129698 parent=81794 label='Close' disabled=False pos=(0,0) size=0x0
+Uno.Runtime.Wasm.js:2053 [A11y] TS createButtonElement: handle=129698 parent=81794 label='Close' disabled=false
+dotnet.native.js:1685 [A11y] CreateAOM complete: semantic tree construction finished
+dotnet.native.js:1685 [A11y] FocusSynchronizer.Initialize: subscribing to FocusManager.GotFocus and LostFocus
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=158194 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=160706 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=160706 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=163266 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=163266 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=164690 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=164690 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=165234 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=165234 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=165234 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=165666 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=165666 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=183186 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=183186 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=184514 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=184514 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=190434 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=190434 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=190514 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=190514 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=192754 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=196338 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=199618 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=202898 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=206178 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=209458 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=212738 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=216018 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=219298 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=222578 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=225858 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=229138 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=232418 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=235698 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=238978 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=242258 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=245538 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=248818 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=252098 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=255378 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=258658 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=261938 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=265218 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=268498 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=271778 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=275058 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=278338 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=281618 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=284898 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=288178 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=291458 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=295506 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=295506 focusable=false
+Uno.Runtime.Wasm.js:2339 [A11y] TS updateSliderValue: handle=295506 value=0 min=0 max=4357.7782
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=295506 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=295506 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=297266 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=297266 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=297954 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=297954 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=298034 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=298034 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=298386 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=298386 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=298434 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=298434 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=299810 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=299810 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=299890 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=299890 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=299938 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=299938 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=300130 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=300130 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=300178 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=300178 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=298034 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=299938 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=299938 focusable=false
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=SplitView handle=104914 prev=0
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=104914
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=104914
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+invoke-js.ts:246 info: Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper[0]
+      The default symbols font was preloaded successfully.
+Uno.Runtime.Wasm.js:2339 [A11y] TS updateSliderValue: handle=295506 value=0 min=0 max=4375.0004
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=291458 focusable=false
+invoke-js.ts:246  warn: SampleControl.Presentation.SampleChooserViewModel[0]
+      There is no file with name 'SampleChooserFileAddress.Samples.Favorites'.
+(anonymous) @ invoke-js.ts:246
+Uno.Runtime.Wasm.js:2339 [A11y] TS updateSliderValue: handle=295506 value=0 min=0 max=4377.7782
+Uno.Runtime.Wasm.js:2339 [A11y] TS updateSliderValue: handle=295506 value=0 min=0 max=4379.4449
+invoke-js.ts:246 info: Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper[0]
+      The default text font was preloaded successfully.
+dotnet.native.js:1685 [A11y] FOCUS SYNC: OnXamlGotFocus SKIPPED (not UIElement) element=
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=104914
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=104914
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=SplitView handle=104914 prev=104914
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=104914
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=104914
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=148514 focusable=false
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=93554
+dotnet.native.js:1685 [A11y] FOCUS SYNC: Browser→XAML handle=93554 owner=ToggleButton prev=104914
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=ToggleButton handle=93554 prev=93554
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=93554
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=96514
+dotnet.native.js:1685 [A11y] FOCUS SYNC: Browser→XAML handle=96514 owner=Button prev=93554
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=Button handle=96514 prev=96514
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=96514
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=98802
+dotnet.native.js:1685 [A11y] FOCUS SYNC: Browser→XAML handle=98802 owner=Button prev=96514
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=Button handle=98802 prev=98802
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=98802
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=103842
+dotnet.native.js:1685 [A11y] FOCUS SYNC: Browser→XAML handle=103842 owner=Button prev=98802
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=Button handle=103842 prev=103842
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=103842
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=148514 focusable=false
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=104066
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=104066
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=ContentControl handle=104066 prev=103842
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=104066
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=104066
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=104066 prev=103842
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=148514 focusable=false
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=85218
+dotnet.native.js:1685 [A11y] FOCUS SYNC: Browser→XAML handle=85218 owner=Button prev=104066
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=Button handle=85218 prev=85218
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=85218
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=148514 focusable=false
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=151682
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=151682
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=PathControl handle=151682 prev=85218
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=151682
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=151682
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=151682 prev=85218
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=148514 focusable=false
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=85650
+dotnet.native.js:1685 [A11y] FOCUS SYNC: Browser→XAML handle=85650 owner=Button prev=151682
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=Button handle=85650 prev=85650
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=85650
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=86370
+dotnet.native.js:1685 [A11y] FOCUS SYNC: Browser→XAML handle=86370 owner=Button prev=85650
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=Button handle=86370 prev=86370
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=86370
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=86578
+dotnet.native.js:1685 [A11y] FOCUS SYNC: Browser→XAML handle=86578 owner=Button prev=86370
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=Button handle=86578 prev=86578
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=86578
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=148514 focusable=false
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=156418
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=156418
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=PathControl handle=156418 prev=86578
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=156418
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=156418
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=156418 prev=86578
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=87906
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=87906
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=StackPanel handle=87906 prev=156418
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=87906
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=87906
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=87906 prev=156418
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=TextBox handle=158194 prev=87906
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=158194
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=158194
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=158194 prev=87906
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=148514 focusable=false
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=88322
+dotnet.native.js:1685 [A11y] FOCUS SYNC: Browser→XAML handle=88322 owner=CheckBox prev=158194
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=CheckBox handle=88322 prev=88322
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=88322
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=335042 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=335042 focusable=false
+Uno.Runtime.Wasm.js:2339 [A11y] TS updateSliderValue: handle=335042 value=0 min=0 max=0
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=335042 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=148514 focusable=false
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=88514
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=88514
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=ContentControl handle=88514 prev=88322
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=88514
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=88514
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=88514 prev=88322
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=148514 focusable=false
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=192754
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=192754
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=ListViewItem handle=192754 prev=88514
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=192754
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=192754
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=192754 prev=88514
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=90994
+dotnet.native.js:1685 [A11y] FOCUS SYNC: Browser→XAML handle=90994 owner=RadioButton prev=192754
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=RadioButton handle=90994 prev=90994
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=90994
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=91618
+dotnet.native.js:1685 [A11y] FOCUS SYNC: Browser→XAML handle=91618 owner=RadioButton prev=90994
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=RadioButton handle=91618 prev=91618
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=91618
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=92242
+dotnet.native.js:1685 [A11y] FOCUS SYNC: Browser→XAML handle=92242 owner=RadioButton prev=91618
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=RadioButton handle=92242 prev=92242
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=92242
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=148514 focusable=false
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=216018
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=216018
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 Section changed: Samples (GC Heap: 83.72 MB)
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=90994
+dotnet.native.js:1685 [A11y] FOCUS SYNC: Browser→XAML handle=90994 owner=RadioButton prev=92242
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=88514 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=88610 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=88706 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=358674 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=362002 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=362002 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=362898 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=362898 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=367234 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=367234 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=367314 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=367314 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=368818 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=369074 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=370354 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=370354 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=371842 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=373122 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=373122 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=374610 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=375890 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=375890 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=377378 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=378658 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=378658 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=380146 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=381426 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=381426 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=382914 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=384194 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=384194 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=385682 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=386962 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=386962 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=388450 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=389730 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=389730 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=391218 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=392498 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=392498 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=393986 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=395266 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=395266 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=396754 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=398034 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=398034 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=399522 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=400802 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=400802 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=402290 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=403570 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=403570 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=405058 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=406338 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=406338 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=407826 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=409106 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=409106 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=410594 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=411874 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=411874 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=413362 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=414642 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=414642 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=416130 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=417410 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=417410 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=418898 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=420178 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=420178 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=421666 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=422946 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=422946 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=424434 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=425714 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=425714 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=427202 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=428482 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=428482 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=429970 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=431250 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=431250 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=432738 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=434018 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=434018 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=435506 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=436786 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=436786 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=438274 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=439554 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=439554 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=441042 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=442322 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=442322 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=443810 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=445090 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=445090 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=446578 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=447858 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=447858 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=449346 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=450626 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=450626 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=452114 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=453394 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=453394 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=455650 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=455650 focusable=false
+Uno.Runtime.Wasm.js:2339 [A11y] TS updateSliderValue: handle=455650 value=0 min=0 max=1118.3334
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=455650 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=455650 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=456930 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=456930 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=457026 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=457026 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=457106 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=457106 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=457298 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=457298 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=457346 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=457346 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=458722 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=458722 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=458802 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=458802 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=458850 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=458850 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=459042 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=459042 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=459090 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=459090 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=457106 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=458850 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=458850 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=466450 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=466450 focusable=false
+Uno.Runtime.Wasm.js:2339 [A11y] TS updateSliderValue: handle=466450 value=0 min=0 max=0
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=466450 focusable=false
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=ListViewItem handle=216018 prev=90994
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=216018
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=216018
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=216018 prev=90994
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=RadioButton handle=90994 prev=216018
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=90994
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=90994 prev=216018
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=RadioButton handle=90994 prev=90994
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=90994
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=396754
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=396754
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 Section changed: SamplesContent (GC Heap: 83.74 MB)
+dotnet.native.js:1685 [A11y] PROP CHANGE: ToggleState handle=93554 element=ToggleButton old=On new=Off ariaChecked=false
+Uno.Runtime.Wasm.js:464 [A11y] TS updateAriaChecked: handle=93554 checked=false
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=ListViewItem handle=396754 prev=90994
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=396754
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=396754
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=396754 prev=90994
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=104914
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=104914
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=97490 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=97010 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=97970 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=470386 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=470514 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=471154 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=471234 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=471314 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=471714 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=471810 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=472290 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=472370 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=472466 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=472658 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=472786 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=472850 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=472914 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=473106 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=473250 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=473362 focusable=false
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=SplitView handle=104914 prev=396754
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=104914
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=104914
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=104914 prev=396754
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=473842 focusable=false
+dotnet.native.js:1685 [A11y] PROP CHANGE: ToggleState handle=472658 element=CheckBox old=Off new=On ariaChecked=true
+Uno.Runtime.Wasm.js:464 [A11y] TS updateAriaChecked: handle=472658 checked=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=530946 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=530946 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=531026 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=531026 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=148514 focusable=false
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=93554
+dotnet.native.js:1685 [A11y] FOCUS SYNC: Browser→XAML handle=93554 owner=ToggleButton prev=104914
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=ToggleButton handle=93554 prev=93554
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=93554
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=96514
+dotnet.native.js:1685 [A11y] FOCUS SYNC: Browser→XAML handle=96514 owner=Button prev=93554
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=Button handle=96514 prev=96514
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=96514
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=97010
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=Button handle=97010 prev=96514
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=97010
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=97010 prev=96514
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=97490
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=Button handle=97490 prev=97010
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=97490
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=97490 prev=97010
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=97970
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=Button handle=97970 prev=97490
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=97970
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=97970 prev=97490
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=98802
+dotnet.native.js:1685 [A11y] FOCUS SYNC: Browser→XAML handle=98802 owner=Button prev=97970
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=Button handle=98802 prev=98802
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=98802
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=103842
+dotnet.native.js:1685 [A11y] FOCUS SYNC: Browser→XAML handle=103842 owner=Button prev=98802
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=Button handle=103842 prev=103842
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=103842
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=148514 focusable=false
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=104066
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=104066
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=ContentControl handle=104066 prev=103842
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=104066
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=104066
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=104066 prev=103842
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=473362
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=473362
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=SampleControl handle=473362 prev=104066
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=473362
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=473362
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=473362 prev=104066
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=473842
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=473842
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=ContentControl handle=473842 prev=473362
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=473842
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=473842
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=473842 prev=473362
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=148514 focusable=false
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=470514
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=470514
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=HyperlinkButton handle=470514 prev=473842
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=470514
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=470514
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=470514 prev=473842
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=471154
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=471154
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=HyperlinkButton handle=471154 prev=470514
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=471154
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=471154
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=471154 prev=470514
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=471234
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=471234
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=Button handle=471234 prev=471154
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=471234
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=471234
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=471234 prev=471154
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=471314
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=471314
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=ToggleButton handle=471314 prev=471234
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=471314
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=471314
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=471314 prev=471234
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=471714
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=471714
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=CheckBox handle=471714 prev=471314
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=471714
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=471714
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=471714 prev=471314
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=471810
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=471810
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=RadioButton handle=471810 prev=471714
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=471810
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=471810
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=471810 prev=471714
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=472290
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=472290
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=Button handle=472290 prev=471810
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=472290
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=472290
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=472290 prev=471810
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=472370
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=472370
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=CheckBox handle=472370 prev=472290
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=472370
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=472370
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=472370 prev=472290
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=472466
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=472466
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=RadioButton handle=472466 prev=472370
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=472466
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=472466
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=472466 prev=472370
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=472658
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=472658
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=CheckBox handle=472658 prev=472466
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=472658
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=472658
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=472658 prev=472466
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=472786
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=472786
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=CheckBox handle=472786 prev=472658
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=472786
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=472786
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=472786 prev=472658
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=472850
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=472850
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=Button handle=472850 prev=472786
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=472850
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=472850
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=472850 prev=472786
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=148514 focusable=false
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=472914
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=472914
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=ItemsControl handle=472914 prev=472850
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=472914
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=472914
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=472914 prev=472850
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=148514 focusable=false
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=473106
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=473106
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=Button handle=473106 prev=472914
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=473106
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=473106
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=473106 prev=472914
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=564594 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=148514 focusable=false
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=591058
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=591058
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=591426 focusable=true
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=591426 focusable=false
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=564594
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=564594
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=594850 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=594850 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=594930 focusable=false
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=594930 focusable=false
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=Popup handle=591058 prev=473106
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=591058
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=591058
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=591058 prev=473106
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=148514 focusable=false
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=595378
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=595378
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=MenuFlyoutPresenter handle=564594 prev=591058
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=564594
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=564594
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=564594 prev=591058
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=MenuFlyoutSubItem handle=595378 prev=564594
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=595378
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=595378
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=595378 prev=564594
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=473106
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=473106
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS RECOVERY: element=MenuFlyoutSubItem handle=595378
+dotnet.native.js:1685 [A11y] FOCUS RECOVERY: recovered to next sibling=ToggleMenuFlyoutItem handle=569202
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=569202
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=569202
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=572482
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=572482
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=575666
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=575666
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=578850
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=578850
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=582034
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=582034
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=585218
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=585218
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=588002
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=588002
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=148514 focusable=false
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=597074
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=597074
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=148514 focusable=false
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=590754
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=590754
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=148514 focusable=false
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=104914
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=104914
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=Button handle=473106 prev=595378
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=473106
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=473106
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=473106 prev=595378
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=ToggleMenuFlyoutItem handle=569202 prev=473106
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=569202
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=569202
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=569202 prev=473106
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=ToggleMenuFlyoutItem handle=572482 prev=569202
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=572482
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=572482
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=572482 prev=569202
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=ToggleMenuFlyoutItem handle=575666 prev=572482
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=575666
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=575666
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=575666 prev=572482
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=ToggleMenuFlyoutItem handle=578850 prev=575666
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=578850
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=578850
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=578850 prev=575666
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=ToggleMenuFlyoutItem handle=582034 prev=578850
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=582034
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=582034
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=582034 prev=578850
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=ToggleMenuFlyoutItem handle=585218 prev=582034
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=585218
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=585218
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=585218 prev=582034
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=MenuFlyoutItem handle=588002 prev=585218
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=588002
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=588002
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=588002 prev=585218
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=MenuFlyoutSeparator handle=597074 prev=588002
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=597074
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=597074
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=597074 prev=588002
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=MenuFlyoutItem handle=590754 prev=597074
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=590754
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=590754
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=590754 prev=597074
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=SplitView handle=104914 prev=590754
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=104914
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=104914
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=104914 prev=590754
+invoke-js.ts:246  fail: Uno.UI.DataBinding.BindingPropertyHelper[0]
+      The [controls:AnimatedIcon.State] property getter does not exist on type [Microsoft.UI.Xaml.Controls.ContentPresenter]
+(anonymous) @ invoke-js.ts:246
+invoke-js.ts:246  fail: Uno.UI.DataBinding.BindingPropertyHelper[0]
+      The [controls:AnimatedIcon.State] property getter does not exist on type [Microsoft.UI.Xaml.Controls.ContentPresenter]
+(anonymous) @ invoke-js.ts:246
+invoke-js.ts:246  fail: Uno.UI.DataBinding.BindingPropertyHelper[0]
+      The property setter for [controls:AnimatedIcon.State] does not exist on [Microsoft.UI.Xaml.Controls.ContentPresenter]
+(anonymous) @ invoke-js.ts:246
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=473106
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=473106
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=Button handle=473106 prev=104914
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=473106
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=473106
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=473106 prev=104914
+invoke-js.ts:246  fail: Uno.UI.DataBinding.BindingPropertyHelper[0]
+      The property unsetter for [controls:AnimatedIcon.State] does not exist on [Microsoft.UI.Xaml.Controls.ContentPresenter]
+(anonymous) @ invoke-js.ts:246
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=472850
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=472850
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=Button handle=472850 prev=473106
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=472850
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=472850
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=472850 prev=473106
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=472786
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=472786
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=CheckBox handle=472786 prev=472850
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=472786
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=472786
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=472786 prev=472850
+dotnet.native.js:1685 [A11y] PROP CHANGE: ToggleState handle=471314 element=ToggleButton old=Off new=On ariaChecked=true
+Uno.Runtime.Wasm.js:464 [A11y] TS updateAriaChecked: handle=471314 checked=true
+dotnet.native.js:1685 [A11y] PROP CHANGE: ToggleState handle=471714 element=CheckBox old=Off new=On ariaChecked=true
+Uno.Runtime.Wasm.js:464 [A11y] TS updateAriaChecked: handle=471714 checked=true
+dotnet.native.js:1685 [A11y] PROP CHANGE: IsSelected handle=471810 element=RadioButton selected=True
+Uno.Runtime.Wasm.js:2376 [A11y] TS updateSelectionState: handle=471810 selected=true
+dotnet.native.js:1685 [A11y] PROP CHANGE: ToggleState handle=472370 element=CheckBox old=Off new=On ariaChecked=true
+Uno.Runtime.Wasm.js:464 [A11y] TS updateAriaChecked: handle=472370 checked=true
+dotnet.native.js:1685 [A11y] PROP CHANGE: IsSelected handle=471810 element=RadioButton selected=False
+Uno.Runtime.Wasm.js:2376 [A11y] TS updateSelectionState: handle=471810 selected=false
+dotnet.native.js:1685 [A11y] PROP CHANGE: IsSelected handle=472466 element=RadioButton selected=True
+Uno.Runtime.Wasm.js:2376 [A11y] TS updateSelectionState: handle=472466 selected=true
+dotnet.native.js:1685 [A11y] PROP CHANGE: ToggleState handle=472786 element=CheckBox old=Off new=On ariaChecked=true
+Uno.Runtime.Wasm.js:464 [A11y] TS updateAriaChecked: handle=472786 checked=true
+dotnet.native.js:1685 [A11y] PROP CHANGE: ToggleState handle=471314 element=ToggleButton old=On new=Off ariaChecked=false
+Uno.Runtime.Wasm.js:464 [A11y] TS updateAriaChecked: handle=471314 checked=false
+dotnet.native.js:1685 [A11y] PROP CHANGE: ToggleState handle=471714 element=CheckBox old=On new=Off ariaChecked=false
+Uno.Runtime.Wasm.js:464 [A11y] TS updateAriaChecked: handle=471714 checked=false
+dotnet.native.js:1685 [A11y] PROP CHANGE: ToggleState handle=472370 element=CheckBox old=On new=Off ariaChecked=false
+Uno.Runtime.Wasm.js:464 [A11y] TS updateAriaChecked: handle=472370 checked=false
+dotnet.native.js:1685 [A11y] PROP CHANGE: IsSelected handle=472466 element=RadioButton selected=False
+Uno.Runtime.Wasm.js:2376 [A11y] TS updateSelectionState: handle=472466 selected=false
+dotnet.native.js:1685 [A11y] PROP CHANGE: ToggleState handle=472786 element=CheckBox old=On new=Off ariaChecked=false
+Uno.Runtime.Wasm.js:464 [A11y] TS updateAriaChecked: handle=472786 checked=false
+dotnet.native.js:1685 [A11y] PROP CHANGE: ToggleState handle=471314 element=ToggleButton old=Off new=On ariaChecked=true
+Uno.Runtime.Wasm.js:464 [A11y] TS updateAriaChecked: handle=471314 checked=true
+dotnet.native.js:1685 [A11y] PROP CHANGE: ToggleState handle=471714 element=CheckBox old=Off new=On ariaChecked=true
+Uno.Runtime.Wasm.js:464 [A11y] TS updateAriaChecked: handle=471714 checked=true
+dotnet.native.js:1685 [A11y] PROP CHANGE: IsSelected handle=471810 element=RadioButton selected=True
+Uno.Runtime.Wasm.js:2376 [A11y] TS updateSelectionState: handle=471810 selected=true
+dotnet.native.js:1685 [A11y] PROP CHANGE: ToggleState handle=472370 element=CheckBox old=Off new=On ariaChecked=true
+Uno.Runtime.Wasm.js:464 [A11y] TS updateAriaChecked: handle=472370 checked=true
+dotnet.native.js:1685 [A11y] PROP CHANGE: IsSelected handle=471810 element=RadioButton selected=False
+Uno.Runtime.Wasm.js:2376 [A11y] TS updateSelectionState: handle=471810 selected=false
+dotnet.native.js:1685 [A11y] PROP CHANGE: IsSelected handle=472466 element=RadioButton selected=True
+Uno.Runtime.Wasm.js:2376 [A11y] TS updateSelectionState: handle=472466 selected=true
+dotnet.native.js:1685 [A11y] PROP CHANGE: ToggleState handle=472786 element=CheckBox old=Off new=On ariaChecked=true
+Uno.Runtime.Wasm.js:464 [A11y] TS updateAriaChecked: handle=472786 checked=true
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=471234
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=471234
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=Button handle=471234 prev=472786
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=471234
+Uno.Runtime.Wasm.js:325  [A11y] TS focusSemanticElement: element NOT FOUND handle=471234
+focusSemanticElement @ Uno.Runtime.Wasm.js:325
+dotnet.native.js:1685 [A11y] FOCUS SYNC: UpdateRovingTabindex active=471234 prev=472786
+dotnet.native.js:1685 [A11y] FOCUS SYNC: Browser→XAML handle=103842 owner=Button prev=471234
+Uno.Runtime.Wasm.js:417 [A11y] TS updateIsFocusable: handle=148514 focusable=false
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=103842
+dotnet.native.js:1685 [A11y] FOCUS SYNC: XAML→Browser element=Button handle=103842 prev=103842
+Uno.Runtime.Wasm.js:319 [A11y] TS focusSemanticElement: handle=103842
+dotnet.native.js:1685 [A11y] FOCUS SYNC: Browser→XAML handle=103842 owner=Button prev=103842
+dotnet.native.js:1685 [A11y] FOCUS SYNC: Browser→XAML handle=103842 owner=Button prev=103842
+[NEW] Explain Console errors by using Copilot in Edge: click
+         
+         to explain an error. 
+        Learn more
+        Don't show again

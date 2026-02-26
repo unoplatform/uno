@@ -6,6 +6,7 @@ namespace Uno.UI.Runtime.Skia {
 	export type SemanticElementType =
 		| 'generic'      // <div> with ARIA role
 		| 'button'       // <button>
+		| 'heading'      // <h1>-<h6> (VoiceOver rotor heading navigation)
 		| 'checkbox'     // <input type="checkbox">
 		| 'radio'        // <input type="radio">
 		| 'slider'       // <input type="range">
@@ -45,6 +46,32 @@ namespace Uno.UI.Runtime.Skia {
 		 */
 		private static getCallbacks() {
 			return Accessibility.getCallbacks();
+		}
+
+		/**
+		 * Appends a created semantic element to its proper parent in the tree,
+		 * or falls back to the semantics root if the parent is not found.
+		 */
+		private static appendToParent(
+			element: HTMLElement,
+			parentHandle: number,
+			index: number | null
+		): void {
+			let parent: HTMLElement | null = null;
+			if (parentHandle !== 0) {
+				parent = document.getElementById(`uno-semantics-${parentHandle}`);
+			}
+			if (!parent) {
+				console.warn(`[A11y] TS appendToParent: parent NOT FOUND handle=${parentHandle} for element=${element.id} — falling back to semanticsRoot`);
+				parent = SemanticElements.getSemanticsRoot();
+			}
+			if (parent) {
+				if (index != null && index < parent.childElementCount) {
+					parent.insertBefore(element, parent.children[index]);
+				} else {
+					parent.appendChild(element);
+				}
+			}
 		}
 
 		/**
@@ -92,7 +119,9 @@ namespace Uno.UI.Runtime.Skia {
 		 * Called from C# via JSImport.
 		 */
 		public static createButtonElement(
+			parentHandle: number,
 			handle: number,
+			index: number | null,
 			x: number,
 			y: number,
 			width: number,
@@ -100,12 +129,13 @@ namespace Uno.UI.Runtime.Skia {
 			label: string | null,
 			disabled: boolean
 		): void {
+			console.log(`[A11y] TS createButtonElement: handle=${handle} parent=${parentHandle} label='${label}' disabled=${disabled}`);
 			const element = document.createElement('button');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
 			// Enable focus and interaction
 			element.tabIndex = 0;
-			element.style.pointerEvents = 'all';
+			element.style.pointerEvents = 'none';
 
 			if (label) {
 				element.setAttribute('aria-label', label);
@@ -136,19 +166,17 @@ namespace Uno.UI.Runtime.Skia {
 				}
 			});
 
-			// Append to semantics root
-			const root = this.getSemanticsRoot();
-			if (root) {
-				root.appendChild(element);
-			}
+			this.appendToParent(element, parentHandle, index);
 		}
 
 		/**
-		 * Creates a slider (range input) semantic element and appends it to the semantics root.
+		 * Creates a slider (range input) semantic element.
 		 * Called from C# via JSImport.
 		 */
 		public static createSliderElement(
+			parentHandle: number,
 			handle: number,
+			index: number | null,
 			x: number,
 			y: number,
 			width: number,
@@ -157,15 +185,17 @@ namespace Uno.UI.Runtime.Skia {
 			min: number,
 			max: number,
 			step: number,
-			orientation: string
+			orientation: string,
+			valueText: string | null
 		): void {
+			console.log(`[A11y] TS createSliderElement: handle=${handle} parent=${parentHandle} value=${value} min=${min} max=${max} step=${step} orient=${orientation}`);
 			const element = document.createElement('input');
 			element.type = 'range';
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
 			// Enable focus and interaction
 			element.tabIndex = 0;
-			element.style.pointerEvents = 'all';
+			element.style.pointerEvents = 'none';
 
 			// Set range properties
 			element.min = String(min);
@@ -177,6 +207,12 @@ namespace Uno.UI.Runtime.Skia {
 			element.setAttribute('aria-valuenow', String(value));
 			element.setAttribute('aria-valuemin', String(min));
 			element.setAttribute('aria-valuemax', String(max));
+
+			// aria-valuetext: VoiceOver reads this instead of the raw number
+			// when a human-readable value description is available
+			if (valueText) {
+				element.setAttribute('aria-valuetext', valueText);
+			}
 
 			if (orientation === 'vertical') {
 				// Some browsers support orient attribute, others need CSS
@@ -194,19 +230,17 @@ namespace Uno.UI.Runtime.Skia {
 				}
 			});
 
-			// Append to semantics root
-			const root = this.getSemanticsRoot();
-			if (root) {
-				root.appendChild(element);
-			}
+			this.appendToParent(element, parentHandle, index);
 		}
 
 		/**
-		 * Creates a checkbox semantic element and appends it to the semantics root.
+		 * Creates a checkbox semantic element.
 		 * Called from C# via JSImport.
 		 */
 		public static createCheckboxElement(
+			parentHandle: number,
 			handle: number,
+			index: number | null,
 			x: number,
 			y: number,
 			width: number,
@@ -214,13 +248,14 @@ namespace Uno.UI.Runtime.Skia {
 			checkedState: string | null,
 			label: string | null
 		): void {
+			console.log(`[A11y] TS createCheckboxElement: handle=${handle} parent=${parentHandle} checked='${checkedState}' label='${label}'`);
 			const element = document.createElement('input');
 			element.type = 'checkbox';
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
 			// Enable focus and interaction
 			element.tabIndex = 0;
-			element.style.pointerEvents = 'all';
+			element.style.pointerEvents = 'none';
 
 			if (label) {
 				element.setAttribute('aria-label', label);
@@ -243,19 +278,17 @@ namespace Uno.UI.Runtime.Skia {
 				}
 			});
 
-			// Append to semantics root
-			const root = this.getSemanticsRoot();
-			if (root) {
-				root.appendChild(element);
-			}
+			this.appendToParent(element, parentHandle, index);
 		}
 
 		/**
-		 * Creates a radio button semantic element and appends it to the semantics root.
+		 * Creates a radio button semantic element.
 		 * Called from C# via JSImport.
 		 */
 		public static createRadioElement(
+			parentHandle: number,
 			handle: number,
+			index: number | null,
 			x: number,
 			y: number,
 			width: number,
@@ -264,13 +297,14 @@ namespace Uno.UI.Runtime.Skia {
 			label: string | null,
 			groupName: string | null
 		): void {
+			console.log(`[A11y] TS createRadioElement: handle=${handle} parent=${parentHandle} checked=${checked} label='${label}' group='${groupName}'`);
 			const element = document.createElement('input');
 			element.type = 'radio';
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
 			// Enable focus and interaction
 			element.tabIndex = 0;
-			element.style.pointerEvents = 'all';
+			element.style.pointerEvents = 'none';
 
 			if (label) {
 				element.setAttribute('aria-label', label);
@@ -291,19 +325,59 @@ namespace Uno.UI.Runtime.Skia {
 				}
 			});
 
-			// Append to semantics root
-			const root = this.getSemanticsRoot();
-			if (root) {
-				root.appendChild(element);
-			}
+			this.appendToParent(element, parentHandle, index);
 		}
 
 		/**
-		 * Creates a text input semantic element and appends it to the semantics root.
+		 * Creates a heading semantic element (h1-h6).
+		 * VoiceOver uses headings for rotor navigation (VO+U → Headings).
+		 * Called from C# via JSImport.
+		 */
+		public static createHeadingElement(
+			parentHandle: number,
+			handle: number,
+			index: number | null,
+			x: number,
+			y: number,
+			width: number,
+			height: number,
+			level: number,
+			label: string | null
+		): void {
+			console.log(`[A11y] TS createHeadingElement: handle=${handle} parent=${parentHandle} level=h${level} label='${label}'`);
+			// Clamp heading level to valid h1-h6 range
+			const clampedLevel = Math.max(1, Math.min(6, level));
+			const element = document.createElement(`h${clampedLevel}`) as HTMLHeadingElement;
+			this.applyCommonStyles(element, x, y, width, height, handle);
+
+			// Enable focus for screen readers
+			element.tabIndex = 0;
+			element.style.pointerEvents = 'none';
+
+			// Reset default heading styles so they don't affect layout
+			element.style.margin = '0';
+			element.style.padding = '0';
+			element.style.fontSize = 'inherit';
+			element.style.fontWeight = 'inherit';
+
+			if (label) {
+				element.setAttribute('aria-label', label);
+				element.textContent = label;
+			}
+
+			element.setAttribute('aria-level', String(clampedLevel));
+
+			this.appendToParent(element, parentHandle, index);
+		}
+
+		/**
+		 * Creates a text input semantic element.
 		 * Called from C# via JSImport.
 		 */
 		public static createTextBoxElement(
+			parentHandle: number,
 			handle: number,
+			index: number | null,
 			x: number,
 			y: number,
 			width: number,
@@ -313,6 +387,7 @@ namespace Uno.UI.Runtime.Skia {
 			password: boolean,
 			isReadOnly: boolean
 		): void {
+			console.log(`[A11y] TS createTextBoxElement: handle=${handle} parent=${parentHandle} multiline=${multiline} password=${password} readOnly=${isReadOnly} valueLen=${value?.length ?? 0}`);
 			let element: HTMLInputElement | HTMLTextAreaElement;
 
 			if (multiline) {
@@ -326,7 +401,7 @@ namespace Uno.UI.Runtime.Skia {
 
 			// Enable focus and interaction
 			element.tabIndex = 0;
-			element.style.pointerEvents = 'all';
+			element.style.pointerEvents = 'none';
 
 			element.value = value;
 
@@ -360,19 +435,17 @@ namespace Uno.UI.Runtime.Skia {
 				}
 			});
 
-			// Append to semantics root
-			const root = this.getSemanticsRoot();
-			if (root) {
-				root.appendChild(element);
-			}
+			this.appendToParent(element, parentHandle, index);
 		}
 
 		/**
-		 * Creates a combobox semantic element and appends it to the semantics root.
+		 * Creates a combobox semantic element.
 		 * Called from C# via JSImport.
 		 */
 		public static createComboBoxElement(
+			parentHandle: number,
 			handle: number,
+			index: number | null,
 			x: number,
 			y: number,
 			width: number,
@@ -380,6 +453,7 @@ namespace Uno.UI.Runtime.Skia {
 			expanded: boolean,
 			selectedValue: string | null
 		): void {
+			console.log(`[A11y] TS createComboBoxElement: handle=${handle} parent=${parentHandle} expanded=${expanded} selectedValue='${selectedValue}'`);
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
@@ -387,7 +461,7 @@ namespace Uno.UI.Runtime.Skia {
 			element.setAttribute('aria-expanded', String(expanded));
 			element.setAttribute('aria-haspopup', 'listbox');
 			element.tabIndex = 0;
-			element.style.pointerEvents = 'all';
+			element.style.pointerEvents = 'none';
 
 			if (selectedValue) {
 				element.setAttribute('aria-label', selectedValue);
@@ -413,49 +487,46 @@ namespace Uno.UI.Runtime.Skia {
 				}
 			});
 
-			// Append to semantics root
-			const root = this.getSemanticsRoot();
-			if (root) {
-				root.appendChild(element);
-			}
+			this.appendToParent(element, parentHandle, index);
 		}
 
 		/**
-		 * Creates a listbox semantic element and appends it to the semantics root.
+		 * Creates a listbox semantic element.
 		 * Called from C# via JSImport.
 		 */
 		public static createListBoxElement(
+			parentHandle: number,
 			handle: number,
+			index: number | null,
 			x: number,
 			y: number,
 			width: number,
 			height: number,
 			multiselect: boolean
 		): void {
+			console.log(`[A11y] TS createListBoxElement: handle=${handle} parent=${parentHandle} multiselect=${multiselect}`);
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
 			element.setAttribute('role', 'listbox');
 			element.tabIndex = 0;
-			element.style.pointerEvents = 'all';
+			element.style.pointerEvents = 'none';
 
 			if (multiselect) {
 				element.setAttribute('aria-multiselectable', 'true');
 			}
 
-			// Append to semantics root
-			const root = this.getSemanticsRoot();
-			if (root) {
-				root.appendChild(element);
-			}
+			this.appendToParent(element, parentHandle, index);
 		}
 
 		/**
-		 * Creates a list item semantic element and appends it to the semantics root.
+		 * Creates a list item semantic element.
 		 * Called from C# via JSImport.
 		 */
 		public static createListItemElement(
+			parentHandle: number,
 			handle: number,
+			index: number | null,
 			x: number,
 			y: number,
 			width: number,
@@ -464,6 +535,7 @@ namespace Uno.UI.Runtime.Skia {
 			positionInSet: number,
 			sizeOfSet: number
 		): void {
+			console.log(`[A11y] TS createListItemElement: handle=${handle} parent=${parentHandle} selected=${selected} pos=${positionInSet}/${sizeOfSet}`);
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
@@ -472,7 +544,7 @@ namespace Uno.UI.Runtime.Skia {
 			element.setAttribute('aria-posinset', String(positionInSet));
 			element.setAttribute('aria-setsize', String(sizeOfSet));
 			element.tabIndex = -1; // Focusable but not in tab order (parent listbox manages focus)
-			element.style.pointerEvents = 'all';
+			element.style.pointerEvents = 'none';
 
 			const callbacks = this.getCallbacks();
 
@@ -493,17 +565,14 @@ namespace Uno.UI.Runtime.Skia {
 				}
 			});
 
-			// Append to semantics root
-			const root = this.getSemanticsRoot();
-			if (root) {
-				root.appendChild(element);
-			}
+			this.appendToParent(element, parentHandle, index);
 		}
 
 		/**
 		 * Updates the value of a slider element and its ARIA attributes.
 		 */
 		public static updateSliderValue(handle: number, value: number, min: number, max: number): void {
+			console.log(`[A11y] TS updateSliderValue: handle=${handle} value=${value} min=${min} max=${max}`);
 			const element = document.getElementById(`uno-semantics-${handle}`) as HTMLInputElement;
 			if (element && element.type === 'range') {
 				element.min = String(min);
@@ -524,6 +593,7 @@ namespace Uno.UI.Runtime.Skia {
 			selectionStart: number,
 			selectionEnd: number
 		): void {
+			console.log(`[A11y] TS updateTextBoxValue: handle=${handle} valueLen=${value?.length ?? 0} sel=${selectionStart}-${selectionEnd}`);
 			const element = document.getElementById(`uno-semantics-${handle}`) as HTMLInputElement | HTMLTextAreaElement;
 			if (element && (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA')) {
 				element.value = value;
@@ -535,6 +605,7 @@ namespace Uno.UI.Runtime.Skia {
 		 * Updates the expanded/collapsed state of a combobox element.
 		 */
 		public static updateExpandCollapseState(handle: number, expanded: boolean): void {
+			console.log(`[A11y] TS updateExpandCollapseState: handle=${handle} expanded=${expanded}`);
 			const element = document.getElementById(`uno-semantics-${handle}`);
 			if (element) {
 				element.setAttribute('aria-expanded', String(expanded));
@@ -545,6 +616,7 @@ namespace Uno.UI.Runtime.Skia {
 		 * Updates the selected state of a list item element.
 		 */
 		public static updateSelectionState(handle: number, selected: boolean): void {
+			console.log(`[A11y] TS updateSelectionState: handle=${handle} selected=${selected}`);
 			const element = document.getElementById(`uno-semantics-${handle}`);
 			if (element) {
 				element.setAttribute('aria-selected', String(selected));
@@ -555,6 +627,7 @@ namespace Uno.UI.Runtime.Skia {
 		 * Updates the disabled state of an element.
 		 */
 		public static updateDisabledState(handle: number, disabled: boolean): void {
+			console.log(`[A11y] TS updateDisabledState: handle=${handle} disabled=${disabled}`);
 			const element = document.getElementById(`uno-semantics-${handle}`) as HTMLButtonElement | HTMLInputElement;
 			if (element) {
 				if ('disabled' in element) {
@@ -569,18 +642,21 @@ namespace Uno.UI.Runtime.Skia {
 		 * Called from C# via JSImport.
 		 */
 		public static createLinkElement(
+			parentHandle: number,
 			handle: number,
+			index: number | null,
 			x: number,
 			y: number,
 			width: number,
 			height: number,
 			label: string | null
 		): void {
+			console.log(`[A11y] TS createLinkElement: handle=${handle} parent=${parentHandle} label='${label}'`);
 			const element = document.createElement('a');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
 			element.tabIndex = 0;
-			element.style.pointerEvents = 'all';
+			element.style.pointerEvents = 'none';
 			element.setAttribute('role', 'link');
 
 			if (label) {
@@ -605,10 +681,7 @@ namespace Uno.UI.Runtime.Skia {
 				}
 			});
 
-			const root = this.getSemanticsRoot();
-			if (root) {
-				root.appendChild(element);
-			}
+			this.appendToParent(element, parentHandle, index);
 		}
 
 		// ===== Virtualized Container Functions =====
@@ -701,7 +774,7 @@ namespace Uno.UI.Runtime.Skia {
 				element.setAttribute('aria-posinset', String(index + 1));
 				element.setAttribute('aria-setsize', String(totalCount));
 				element.tabIndex = -1;
-				element.style.pointerEvents = 'all';
+				element.style.pointerEvents = 'none';
 
 				if (label) {
 					element.setAttribute('aria-label', label);

@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
@@ -36,9 +35,7 @@ public static class AriaMapper
 		{ AutomationControlType.TreeItem, "treeitem" },
 		{ AutomationControlType.ProgressBar, "progressbar" },
 		{ AutomationControlType.ScrollBar, "scrollbar" },
-		// Note: AutomationControlType.Text intentionally omitted.
-		// The ARIA "label" role is for labeling form elements, not displaying text.
-		// Plain text should have no explicit ARIA role (use aria-label instead).
+		{ AutomationControlType.Text, "label" },
 		{ AutomationControlType.Hyperlink, "link" },
 		{ AutomationControlType.Image, "img" },
 		{ AutomationControlType.Group, "group" },
@@ -129,7 +126,7 @@ public static class AriaMapper
 		{
 			// Basic attributes from AutomationPeer
 			Role = GetAriaRole(controlType),
-			Label = ResolveLabel(peer),
+			Label = peer.GetName(),
 			Disabled = !peer.IsEnabled(),
 		};
 
@@ -187,7 +184,7 @@ public static class AriaMapper
 		if (peer.GetPattern(PatternInterface.ExpandCollapse) is IExpandCollapseProvider expandCollapseProvider)
 		{
 			attributes.Expanded = expandCollapseProvider.ExpandCollapseState == ExpandCollapseState.Expanded ||
-								  expandCollapseProvider.ExpandCollapseState == ExpandCollapseState.PartiallyExpanded;
+						  expandCollapseProvider.ExpandCollapseState == ExpandCollapseState.PartiallyExpanded;
 
 			// HasPopup for comboboxes and menus
 			if (controlType == AutomationControlType.ComboBox)
@@ -220,7 +217,6 @@ public static class AriaMapper
 			attributes.ValueMax = rangeValueProvider.Maximum;
 
 			// aria-valuetext for VoiceOver: read human-friendly text instead of raw number
-			// Use the automation name if it contains the value context (e.g., "Volume: 50%")
 			if (peer is FrameworkElementAutomationPeer frameworkPeerRange &&
 				frameworkPeerRange.Owner is Slider slider)
 			{
@@ -249,69 +245,6 @@ public static class AriaMapper
 			ToggleState.Indeterminate => "mixed",
 			_ => "false"
 		};
-	}
-
-	/// <summary>
-	/// Resolves a label for an automation peer using a fallback chain:
-	/// 1. peer.GetName() — the standard automation name
-	/// 2. AutomationProperties.GetName() — explicitly set name
-	/// 3. Content.ToString() — for ContentControls (buttons, etc.) with text content
-	/// 4. First child TextBlock.Text — for controls with text children
-	/// This ensures buttons, toggle buttons, and other controls get meaningful labels.
-	/// </summary>
-	private static string? ResolveLabel(AutomationPeer peer)
-	{
-		// 1. Standard automation peer name
-		var name = peer.GetName();
-		if (!string.IsNullOrEmpty(name))
-		{
-			return name;
-		}
-
-		// Try to get the owner element for further resolution
-		if (peer is not FrameworkElementAutomationPeer frameworkPeer)
-		{
-			return name;
-		}
-
-		var owner = frameworkPeer.Owner;
-
-		// 2. AutomationProperties.Name (explicitly set on the element)
-		var automationName = AutomationProperties.GetName(owner);
-		if (!string.IsNullOrEmpty(automationName))
-		{
-			return automationName;
-		}
-
-		// 3. For ContentControls, try Content.ToString()
-		if (owner is ContentControl contentControl && contentControl.Content is not null)
-		{
-			var contentString = contentControl.Content switch
-			{
-				string s => s,
-				// Avoid calling ToString() on UIElement / complex objects
-				UIElement => null,
-				_ => contentControl.Content.ToString()
-			};
-			if (!string.IsNullOrEmpty(contentString))
-			{
-				return contentString;
-			}
-		}
-
-		// 4. Walk immediate children looking for a TextBlock with text
-		if (owner is UIElement uiElement)
-		{
-			foreach (var child in uiElement.GetChildren())
-			{
-				if (child is TextBlock textBlock && !string.IsNullOrEmpty(textBlock.Text))
-				{
-					return textBlock.Text;
-				}
-			}
-		}
-
-		return name; // May still be empty, but we tried
 	}
 
 	/// <summary>
