@@ -347,13 +347,15 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 
 	private void LogVerboseWin32WebViewTrace(Func<string> messageFactory)
 	{
-		if (!Win32WebViewTraceHelper.IsVerboseWin32WebViewTraceEnabled() || !this.Log().IsEnabled(LogLevel.Warning))
+		if (!Win32WebViewTraceHelper.IsVerboseWin32WebViewTraceEnabled() || this.LogWarn() is not { } warningLogger)
 		{
 			return;
 		}
 
+		// Keep payload creation lazy because these traces include expensive native state snapshots
+		// and the Uno logger does not provide a Warn(Func<string>) overload.
 		var message = $"[WebView2Trace] {DateTime.UtcNow:O} {messageFactory()}";
-		this.LogWarn()?.Warn(message);
+		warningLogger.Warn(message);
 	}
 
 	private static string GetActivationSnapshot()

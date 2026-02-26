@@ -368,13 +368,15 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 
 	private void LogVerboseWin32Trace(Func<string> messageFactory)
 	{
-		if (!Win32WebViewTraceHelper.IsVerboseWin32WebViewTraceEnabled() || !this.Log().IsEnabled(LogLevel.Warning))
+		if (!Win32WebViewTraceHelper.IsVerboseWin32WebViewTraceEnabled() || this.LogWarn() is not { } warningLogger)
 		{
 			return;
 		}
 
+		// Keep payload creation lazy because these traces capture native window state and
+		// Uno's logger API does not expose a Warn(Func<string>) lazy overload.
 		var message = $"[WebView2Trace] {DateTime.UtcNow:O} {messageFactory()}";
-		this.LogWarn()?.Warn(message);
+		warningLogger.Warn(message);
 	}
 
 	public string DocumentTitle
