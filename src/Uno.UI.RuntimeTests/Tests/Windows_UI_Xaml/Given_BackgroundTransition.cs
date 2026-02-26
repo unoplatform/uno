@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -16,6 +17,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 [RunsOnUIThread]
 public class Given_BackgroundTransition
 {
+	private const DynamicallyAccessedMemberTypes ActivatorRequirements = DynamicallyAccessedMemberTypes.PublicParameterlessConstructor;
+
 #if !__SKIA__
 	[Ignore]
 #endif
@@ -25,8 +28,14 @@ public class Given_BackgroundTransition
 	[DataRow(typeof(Border))]
 	[DataRow(typeof(ContentPresenter))]
 	[RequiresFullWindow] // https://github.com/unoplatform/uno/issues/17470
-	public async Task When_Has_Brush_Transition(Type type)
+	public async Task When_Has_Brush_Transition([DynamicallyAccessedMembers(ActivatorRequirements)] Type type)
 	{
+		// Keep PreserveMetadata() calls in sync with the types in [DataRow] above.
+		PreserveMetadata(typeof(Grid));
+		PreserveMetadata(typeof(StackPanel));
+		PreserveMetadata(typeof(Border));
+		PreserveMetadata(typeof(ContentPresenter));
+
 		if (OperatingSystem.IsAndroid())
 		{
 			// This test is generally flaky due to its nature.
@@ -73,6 +82,10 @@ public class Given_BackgroundTransition
 		var bitmap = await UITestHelper.ScreenShot(control);
 
 		ImageAssert.HasColorAt(bitmap, new Point(100, 100), Color.FromArgb(255, 127, 0, 127), tolerance: 30);
+
+		static void PreserveMetadata([DynamicallyAccessedMembers(ActivatorRequirements)] Type type)
+		{
+		}
 	}
 
 #if !__SKIA__

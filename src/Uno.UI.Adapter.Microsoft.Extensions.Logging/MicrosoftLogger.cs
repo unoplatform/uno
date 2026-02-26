@@ -61,6 +61,6 @@ namespace Uno.UI.Adapter.Microsoft.Extensions.Logging
 		public LogLevel LogLevel { get; private set; }
 
 		public void Log(LogLevel logLevel, string? message, Exception? exception = null)
-			=> _logger.Log<object>(Convert(logLevel), 0, null!, exception, (_, __) => message);
+			=> _logger.Log<object>(Convert(logLevel), 0, null!, exception, (_, __) => message ?? "");
 	}
 }

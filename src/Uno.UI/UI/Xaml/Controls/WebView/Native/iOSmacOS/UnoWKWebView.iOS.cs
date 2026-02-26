@@ -117,7 +117,7 @@ public
 
 		foreach (var header in requestMessage.Headers)
 		{
-			headerDictionnary.AddDistinct(new KeyValuePair<NSObject, NSObject>(NSObject.FromObject(header.Key), NSObject.FromObject(header.Value.JoinBy(", "))));
+			headerDictionnary.AddDistinct(new KeyValuePair<NSObject, NSObject>(NSObject.FromObject(header.Key)!, NSObject.FromObject(header.Value.JoinBy(", "))!));
 		}
 
 		urlRequest.Headers = headerDictionnary;

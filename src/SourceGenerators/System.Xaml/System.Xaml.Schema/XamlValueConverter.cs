@@ -23,19 +23,22 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 namespace Uno.Xaml.Schema
 {
-	public class XamlValueConverter<TConverterBase> : IEquatable<XamlValueConverter<TConverterBase>>
+	public class XamlValueConverter<[DynamicallyAccessedMembers(TConverterBaseRequirements)] TConverterBase> : IEquatable<XamlValueConverter<TConverterBase>>
 		where TConverterBase : class
 	{
-		public XamlValueConverter (Type converterType, XamlType targetType)
+		internal const DynamicallyAccessedMemberTypes TConverterBaseRequirements = DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.NonPublicConstructors;
+
+		public XamlValueConverter ([DynamicallyAccessedMembers(TConverterBaseRequirements)] Type converterType, XamlType targetType)
 			: this (converterType, targetType, null)
 		{
 		}
 
-		public XamlValueConverter (Type converterType, XamlType targetType, string name)
+		public XamlValueConverter ([DynamicallyAccessedMembers(TConverterBaseRequirements)] Type converterType, XamlType targetType, string name)
 		{
 			if (converterType == null && targetType == null && name == null)
 				throw new ArgumentException ("Either of converterType, targetType or name must be non-null");
@@ -52,6 +55,7 @@ namespace Uno.Xaml.Schema
 				return converter_instance;
 			}
 		}
+		[DynamicallyAccessedMembers(TConverterBaseRequirements)]
 		public Type ConverterType { get; private set; }
 		public string Name { get; private set; }
 		public XamlType TargetType { get; private set; }
@@ -83,6 +87,7 @@ namespace Uno.Xaml.Schema
 			return Equals (a);
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "TODO")]
 		protected virtual TConverterBase CreateInstance ()
 		{
 			if (ConverterType == null)

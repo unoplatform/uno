@@ -1,0 +1,16 @@
+{
+	"sdk": {
+		"version": "11.0.100-preview.4.26230.115",
+		"allowPrerelease": true,
+		"rollForward": "disable"
+	},
+	"test": {
+		"runner": "Microsoft.Testing.Platform"
+	},
+	"tools": {
+		"dotnet": "11.0.100-preview.4.26230.115"
+	},
+	"msbuild-sdks": {
+		"Microsoft.Build.NoTargets": "3.7.56"
+	}
+}

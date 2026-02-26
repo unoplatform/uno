@@ -440,10 +440,10 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 				// As BasePath is a directory, try and load processors from assemblies within that dir
 				var basePath = msg.BasePath.Replace('/', Path.DirectorySeparatorChar);
 
-#if NET10_0_OR_GREATER
+#if NET11_0_OR_GREATER
+				basePath = Path.Combine(basePath, "net11.0");
+#elif NET10_0_OR_GREATER
 				basePath = Path.Combine(basePath, "net10.0");
-#elif NET9_0_OR_GREATER
-				basePath = Path.Combine(basePath, "net9.0");
 #endif
 
 				// Additional processors may not need the directory added immediately above.

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -30,13 +31,21 @@ internal static partial class QueryExtensions
 	public static object GetDependencyPropertyValue(this QueryEx query, string propertyName)
 	{
 		var elt = App.Query(query).Single().Element;
-		var property = elt.GetType().GetProperty(propertyName + "Property", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)?.GetValue(elt) as DependencyProperty;
+		var property = GetPropertyValue(elt, propertyName);
 		if (property is null)
 		{
 			throw new InvalidOperationException($"Cannot get property named '{propertyName}'.");
 		}
 
 		return elt.GetValue(property);
+
+		[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "The value of `elt.GetType()` is not known statically, and thus we cannot annotate it.  Existing code already handles null.")]
+		static DependencyProperty GetPropertyValue(object value, string propertyName)
+		{
+			return value.GetType()
+				.GetProperty(propertyName + "Property", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)
+				?.GetValue(value) as DependencyProperty;
+		}
 	}
 
 	public static T GetDependencyPropertyValue<T>(this QueryEx query, string propertyName)

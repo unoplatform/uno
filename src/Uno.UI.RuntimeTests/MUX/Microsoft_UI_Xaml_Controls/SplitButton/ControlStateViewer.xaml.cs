@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Collections.Generic;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -11,6 +12,9 @@ namespace MUXControlsTestApp.UtilitiesTemp
 	// Test control intended to help you see all the different visual states your control can be in
 	public sealed partial class ControlStateViewer : UserControl
 	{
+		private const DynamicallyAccessedMemberTypes ControlTypeRequirements = DynamicallyAccessedMemberTypes.PublicParameterlessConstructor;
+
+		[DynamicallyAccessedMembers(ControlTypeRequirements)]
 		Type _controlType;
 		List<string> _states;
 
@@ -19,6 +23,7 @@ namespace MUXControlsTestApp.UtilitiesTemp
 			this.InitializeComponent();
 		}
 
+		[DynamicallyAccessedMembers(ControlTypeRequirements)]
 		public Type ControlType
 		{
 			get
@@ -31,6 +36,15 @@ namespace MUXControlsTestApp.UtilitiesTemp
 				_controlType = value;
 				UpdateGrid();
 			}
+		}
+
+		public void AssertSetControlType<[DynamicallyAccessedMembers(ControlTypeRequirements)] T>(Type controlType)
+		{
+			if (typeof(T) != controlType)
+			{
+				throw new ArgumentException($"ControlType must be of type {typeof(T)}");
+			}
+			ControlType = typeof(T);
 		}
 
 		public List<string> States

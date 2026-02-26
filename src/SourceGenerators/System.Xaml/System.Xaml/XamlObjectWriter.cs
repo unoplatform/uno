@@ -33,6 +33,7 @@ using Uno.Xaml;
 using Uno.Xaml.Schema;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Diagnostics.CodeAnalysis;
 
 // To use this under .NET, compile sources as:
 //
@@ -329,6 +330,7 @@ namespace Uno.Xaml
 
 		static readonly BindingFlags static_flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
 
+		[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "TODO")]
 		protected override void OnWriteEndMember ()
 		{
 			var xm = CurrentMember;
@@ -365,6 +367,7 @@ namespace Uno.Xaml
 			}
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "TODO")]
 		void SetEvent (XamlMember member, string value)
 		{
 			if (member.UnderlyingMember == null)
