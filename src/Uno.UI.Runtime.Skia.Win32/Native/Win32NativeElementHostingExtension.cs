@@ -4,7 +4,6 @@ using Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
@@ -27,8 +26,6 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 	private static readonly SKPath _lastClipPath = new();
 	private static readonly SKPoint[] _conicPoints = new SKPoint[32 * 3]; // 3 points per quad
 	private static readonly bool _isVerboseWin32WebViewTraceEnabled = Win32WebViewTraceHelper.IsVerboseWin32WebViewTraceEnabled();
-	private static readonly Dictionary<nint, (nint host, int zIndex)> _zOrderByChild = new();
-	private static readonly HWND _hwndTop = (HWND)(nint)0;
 
 	private readonly ContentPresenter _presenter;
 	private readonly SKPath _tempPath = new();
@@ -86,16 +83,13 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		}
 
 		var hwnd = (HWND)window.Hwnd;
-		_zOrderByChild.Remove(hwnd.Value);
 		var oldExStyleVal = PInvoke.GetWindowLong(hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE);
 		var oldStyleVal = PInvoke.GetWindowLong(hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE);
 		var newExStyleVal = oldExStyleVal | (int)WINDOW_EX_STYLE.WS_EX_LAYERED;
-		// Keep hosted WebView HWND as a true child window; popup/minimized top-level styles cause activation and placement issues.
+		// Keep hosted WebView HWND as a true child window; popup top-level style causes activation and placement issues.
 		const int nonChildStyleMask =
 			unchecked((int)WINDOW_STYLE.WS_CAPTION)
-			| unchecked((int)WINDOW_STYLE.WS_POPUP)
-			| unchecked((int)WINDOW_STYLE.WS_MINIMIZE)
-			| unchecked((int)WINDOW_STYLE.WS_MAXIMIZE);
+			| unchecked((int)WINDOW_STYLE.WS_POPUP);
 		var newStyleVal = (oldStyleVal | (int)(WINDOW_STYLE.WS_CLIPSIBLINGS | WINDOW_STYLE.WS_CHILD))
 			& ~nonChildStyleMask;
 		PInvoke.SetWindowLong(hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE, newExStyleVal);
@@ -292,7 +286,6 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		}
 
 		var hwnd = (HWND)window.Hwnd;
-		_zOrderByChild.Remove(hwnd.Value);
 		LogVerboseWin32WebViewTrace(() => $"{nameof(DetachNativeElement)} child={hwnd.Value} {GetActivationSnapshot()}");
 		_ = PInvoke.ShowWindow(hwnd, SHOW_WINDOW_CMD.SW_HIDE);
 
@@ -351,51 +344,6 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 			_ = PInvoke.ShowWindow(hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
 			LogVerboseWin32WebViewTrace(() => $"{nameof(ArrangeNativeElement)} showed child={hwnd.Value} with {nameof(SHOW_WINDOW_CMD.SW_SHOWNORMAL)} childRect={Win32WebViewTraceHelper.GetWindowRectSnapshot(hwnd)} hostRect={Win32WebViewTraceHelper.GetWindowRectSnapshot(Hwnd)} {GetActivationSnapshot()}");
 		}
-	}
-
-	public bool SupportsZIndex() => true;
-
-	public void SetZIndex(object content, int zIndex)
-	{
-		if (content is not Win32NativeWindow window)
-		{
-			throw new ArgumentException($"content is not a {nameof(Win32NativeWindow)} instance.", nameof(content));
-		}
-
-		var hwnd = (HWND)window.Hwnd;
-		var hostHwnd = Hwnd;
-		_zOrderByChild[hwnd.Value] = (hostHwnd.Value, zIndex);
-
-		var insertAfter = _hwndTop;
-		var lowestHigherZIndex = int.MaxValue;
-		foreach (var (siblingValue, sibling) in _zOrderByChild)
-		{
-			if (siblingValue == hwnd.Value || sibling.host != hostHwnd.Value || sibling.zIndex <= zIndex)
-			{
-				continue;
-			}
-
-			var siblingHwnd = (HWND)(IntPtr)siblingValue;
-			if (sibling.zIndex <= lowestHigherZIndex)
-			{
-				lowestHigherZIndex = sibling.zIndex;
-				insertAfter = siblingHwnd;
-			}
-		}
-
-		var success = PInvoke.SetWindowPos(
-			hwnd,
-			insertAfter,
-			0,
-			0,
-			0,
-			0,
-			SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
-		if (!success)
-		{
-			this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
-		}
-		LogVerboseWin32WebViewTrace(() => $"{nameof(SetZIndex)} child={hwnd.Value} zIndex={zIndex} insertAfter={insertAfter.Value} setWindowPosSuccess={success} {GetActivationSnapshot()}");
 	}
 
 	private void LogVerboseWin32WebViewTrace(Func<string> messageFactory)
