@@ -39,9 +39,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	/// </summary>
 	public partial class Given_TextBox
 	{
-		// Apple platforms (macOS, iOS, Mac Catalyst, tvOS) use Command key for standard shortcuts
-		private readonly VirtualKeyModifiers _platformCtrlKey = DeviceTargetHelper.PlatformCommandModifier;
-
 		[TestMethod]
 		public async Task When_Basic_Input()
 		{
@@ -3371,6 +3368,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var _ = new TextBoxFeatureConfigDisposable();
 			using var __ = new DisposableAction(() => (VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
 
+			Clipboard.Clear();
+
 			var SUT = new TextBox
 			{
 				Width = 40
@@ -3403,14 +3402,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.MoveTo(SUT.GetAbsoluteBounds().GetCenter());
 			await WindowHelper.WaitForIdle();
 
+			// Right-click to open context menu
 			mouse.PressRight();
 			mouse.ReleaseRight();
 			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForIdle();
 
-			var flyoutItems = (VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot)[0].Child as FrameworkElement).FindChildren<MenuFlyoutItem>().ToList();
-			Assert.HasCount(3, flyoutItems);
+			Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout);
+			var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
 
-			mouse.MoveTo(flyoutItems[1].GetAbsoluteBounds().GetCenter());
+			var undoButton = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands)
+				.OfType<AppBarButton>()
+				.FirstOrDefault(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.Z && ka.Modifiers.HasFlag(_platformCtrlKey)));
+			Assert.IsNotNull(undoButton, "Undo button should be present in the context menu");
+
+			mouse.MoveTo(undoButton.GetAbsoluteBounds().GetCenter());
 			mouse.Press();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
@@ -3419,14 +3425,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.MoveTo(SUT.GetAbsoluteBounds().GetCenter());
 			await WindowHelper.WaitForIdle();
 
+			// Right-click to open context menu again
 			mouse.PressRight();
 			mouse.ReleaseRight();
 			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForIdle();
 
-			flyoutItems = (VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot)[0].Child as FrameworkElement).FindChildren<MenuFlyoutItem>().ToList();
-			Assert.HasCount(3, flyoutItems);
+			var redoButton = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands)
+				.OfType<AppBarButton>()
+				.FirstOrDefault(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.Y && ka.Modifiers.HasFlag(_platformCtrlKey)));
+			Assert.IsNotNull(redoButton, "Redo button should be present in the context menu");
 
-			mouse.MoveTo(flyoutItems[1].GetAbsoluteBounds().GetCenter());
+			mouse.MoveTo(redoButton.GetAbsoluteBounds().GetCenter());
 			mouse.Press();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();

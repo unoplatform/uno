@@ -41,6 +41,8 @@ using UIKit;
 #elif __SKIA__
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Foundation.Extensibility;
+using Windows.System;
+
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -49,6 +51,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public partial class Given_TextBox
 	{
+#if HAS_UNO
+		// Apple platforms (macOS, iOS, Mac Catalyst, tvOS) use Command key for standard shortcuts
+		private readonly VirtualKeyModifiers _platformCtrlKey = DeviceTargetHelper.PlatformCommandModifier;
+#else
+		private readonly VirtualKeyModifiers _platformCtrlKey = VirtualKeyModifiers.Control;
+#endif
+
 		[TestMethod]
 		[DataRow(UpdateSourceTrigger.Default, false)]
 		[DataRow(UpdateSourceTrigger.PropertyChanged, false)]
