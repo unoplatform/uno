@@ -328,10 +328,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private (bool hasSelectAll, bool hasCut, bool hasCopy, bool hasPaste) GetAvailableCommands(TextCommandBarFlyout flyout)
 		{
 			var allCommands = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands).ToList();
-			var hasCut = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.X && ka.Modifiers.HasFlag(VirtualKeyModifiers.Control)));
-			var hasCopy = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.C && ka.Modifiers.HasFlag(VirtualKeyModifiers.Control)));
-			var hasPaste = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.V && ka.Modifiers.HasFlag(VirtualKeyModifiers.Control)));
-			var hasSelectAll = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.A && ka.Modifiers.HasFlag(VirtualKeyModifiers.Control)));
+			var hasCut = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.X && ka.Modifiers.HasFlag(_platformCtrlKey)));
+			var hasCopy = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.C && ka.Modifiers.HasFlag(_platformCtrlKey)));
+			var hasPaste = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.V && ka.Modifiers.HasFlag(_platformCtrlKey)));
+			var hasSelectAll = allCommands.OfType<AppBarButton>().Any(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.A && ka.Modifiers.HasFlag(_platformCtrlKey)));
 
 			return (hasSelectAll, hasCut, hasCopy, hasPaste);
 		}
