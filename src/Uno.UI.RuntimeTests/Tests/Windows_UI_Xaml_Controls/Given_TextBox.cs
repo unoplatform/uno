@@ -14,15 +14,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.UI;
 using Uno.UI.Toolkit.DevTools.Input;
-using Windows.System;
 using Color = Windows.UI.Color;
-
-#if HAS_UNO_WINUI || WINAPPSDK || WINUI
-using Colors = Microsoft.UI.Colors;
-#else
-using Colors = Windows.UI.Colors;
-#endif
-
 using static Private.Infrastructure.TestServices;
 using SamplesApp.UITests;
 using Windows.UI.Input.Preview.Injection;
@@ -33,6 +25,11 @@ using Windows.UI.ViewManagement;
 using Private.Infrastructure;
 using Combinatorial.MSTest;
 
+#if HAS_UNO_WINUI || WINAPPSDK || WINUI
+using Colors = Microsoft.UI.Colors;
+#else
+using Colors = Windows.UI.Colors;
+#endif
 
 #if WINAPPSDK
 using Uno.UI.Extensions;
@@ -43,16 +40,20 @@ using Uno.ApplicationModel.DataTransfer;
 using Uno.Foundation.Extensibility;
 #endif
 
+#if WINAPPSDK || __SKIA__
+using Windows.System;
+#endif
+
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
 	[RunsOnUIThread]
 	public partial class Given_TextBox
 	{
-#if HAS_UNO
+#if __SKIA__
 		// Apple platforms (macOS, iOS, Mac Catalyst, tvOS) use Command key for standard shortcuts
 		private readonly VirtualKeyModifiers _platformCtrlKey = DeviceTargetHelper.PlatformCommandModifier;
-#else
+#elif WINAPPSDK
 		private readonly VirtualKeyModifiers _platformCtrlKey = VirtualKeyModifiers.Control;
 #endif
 
