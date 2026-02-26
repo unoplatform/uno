@@ -21,4 +21,10 @@ public partial class PasswordBox
 	public static new DependencyProperty CanPasteClipboardContentProperty => TextBox.CanPasteClipboardContentProperty;
 
 	public new bool CanPasteClipboardContent => base.CanPasteClipboardContent;
+
+	public new event ContextMenuOpeningEventHandler ContextMenuOpening
+	{
+		add => base.ContextMenuOpening += value;
+		remove => base.ContextMenuOpening -= value;
+	}
 }

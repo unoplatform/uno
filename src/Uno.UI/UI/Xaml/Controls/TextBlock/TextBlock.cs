@@ -1058,8 +1058,8 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			// Mirrors WinUI behavior in TextSelectionManager.cpp:
-			// Queue SelectionFlyout visibility update after pointer release (for touch/pen input)
+			// Modeled after WinUI TextSelectionManager.cpp UpdateSelectionFlyoutVisibility:
+			// After pointer release, queue a SelectionFlyout visibility update for touch/pen input.
 			that.OnPointerReleasedForSelectionFlyout(e);
 #if !__WASM__
 			e.Handled |= that.IsTextSelectionEnabled;

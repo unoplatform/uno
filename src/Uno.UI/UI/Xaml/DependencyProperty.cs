@@ -636,9 +636,10 @@ namespace Microsoft.UI.Xaml
 		// GetTextControlFlyoutResource - looks up flyout from app resources, then theme resources
 		private static FlyoutBase GetTextControlFlyoutResource(string resourceKey)
 		{
-			if (Application.Current?.Resources?.TryGetValue(resourceKey, out var flyout) == true)
+			if (Application.Current?.Resources?.TryGetValue(resourceKey, out var flyout) == true
+				&& flyout is FlyoutBase flyoutBase)
 			{
-				return flyout as FlyoutBase;
+				return flyoutBase;
 			}
 
 			var resolved = ResourceResolver.ResolveResourceStatic(resourceKey, typeof(FlyoutBase));

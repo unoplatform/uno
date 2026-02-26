@@ -284,9 +284,13 @@ namespace Microsoft.UI.Xaml
 
 				if (e is UIElement uiElement &&
 					uiElement.ContextFlyout is Controls.Primitives.FlyoutBase contextFlyout &&
-					// Skip TextCommandBarFlyout to avoid infinite recursion: its presenter tree
-					// contains TextBlock/TextBox which also have TextCommandBarFlyout as default
-					// ContextFlyout/SelectionFlyout, causing FindName to recurse indefinitely.
+					// TextCommandBarFlyout's presenter tree contains TextBlock/TextBox controls.
+					// Those inner controls get their own default TextCommandBarFlyout assigned as
+					// ContextFlyout/SelectionFlyout (via GetDefaultValue). If we searched into a
+					// ContextFlyout that was set at DefaultValue precedence, FindName would recurse
+					// into the presenter -> inner TextBlock -> its default flyout -> its presenter -> ...
+					// We skip only when ContextFlyout is at DefaultValue precedence; user-set flyouts
+					// are always searched.
 					(contextFlyout is not TextCommandBarFlyout || uiElement.GetCurrentHighestValuePrecedence(UIElement.ContextFlyoutProperty) != DependencyPropertyValuePrecedences.DefaultValue))
 				{
 					return FindInFlyout(name, contextFlyout);
