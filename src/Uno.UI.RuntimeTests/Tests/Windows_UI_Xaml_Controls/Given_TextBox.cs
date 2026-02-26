@@ -14,7 +14,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.UI;
 using Uno.UI.Toolkit.DevTools.Input;
-
+using Windows.System;
 using Color = Windows.UI.Color;
 
 #if HAS_UNO_WINUI || WINAPPSDK || WINUI
@@ -41,8 +41,6 @@ using UIKit;
 #elif __SKIA__
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Foundation.Extensibility;
-using Windows.System;
-
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
