@@ -25,13 +25,23 @@ namespace Microsoft.UI.Xaml.Internal;
 internal sealed class TextControlFlyout
 {
 	private readonly WeakReference<FlyoutBase> _flyoutRef;
+	private readonly bool _isProofingFlyout;
 	private WeakReference<FrameworkElement>? _activeOwnerRef;
 	private bool _isOpened;
+	private bool _isTransient;
 	private bool _isGettingFocus;
 
-	public TextControlFlyout(FlyoutBase flyout)
+	// WinUI header declares OnActiveOwnerGettingFocus and OnActiveOwnerGotFocus
+	// but the .cpp does NOT implement them. Noted here for completeness.
+
+	public TextControlFlyout(FlyoutBase flyout, bool isProofingFlyout = false)
 	{
 		_flyoutRef = new WeakReference<FlyoutBase>(flyout);
+		_isProofingFlyout = isProofingFlyout;
+
+		_isTransient =
+			flyout.ShowMode == FlyoutShowMode.Transient ||
+			flyout.ShowMode == FlyoutShowMode.TransientWithDismissOnPointerMoveAway;
 
 		flyout.Opened += OnOpened;
 		flyout.Closing += OnClosing;
@@ -40,6 +50,8 @@ internal sealed class TextControlFlyout
 
 	public bool IsGettingFocus => _isGettingFocus;
 	public bool IsOpened => _isOpened;
+	public bool IsTransient => _isTransient;
+	public bool IsProofingFlyout => _isProofingFlyout;
 
 	public FrameworkElement? GetActiveOwner()
 		=> _activeOwnerRef is not null && _activeOwnerRef.TryGetTarget(out var owner) ? owner : null;
@@ -53,6 +65,13 @@ internal sealed class TextControlFlyout
 
 		_activeOwnerRef = new WeakReference<FrameworkElement>(owner);
 		owner.LosingFocus += OnActiveOwnerLosingFocus;
+
+		// Propagate XamlRoot for multi-window support.
+		// WinUI equivalent: flyout->SetVisualTree(VisualTree::GetForElementNoRef(owner))
+		if (_flyoutRef.TryGetTarget(out var flyout))
+		{
+			flyout.XamlRoot = owner.XamlRoot;
+		}
 	}
 
 	public bool IsOpen()
@@ -72,8 +91,12 @@ internal sealed class TextControlFlyout
 		}
 	}
 
-	public void ShowAt(Point point, FlyoutShowMode showMode)
+	public void ShowAt(Point point, Rect exclusionRect, FlyoutShowMode showMode)
 	{
+		_isTransient =
+			showMode == FlyoutShowMode.Transient ||
+			showMode == FlyoutShowMode.TransientWithDismissOnPointerMoveAway;
+
 		// If the flyout is open, close it so it refreshes the buttons
 		CloseIfOpen();
 
@@ -85,11 +108,17 @@ internal sealed class TextControlFlyout
 				flyout.ShowAt(owner, new FlyoutShowOptions
 				{
 					Position = point,
-					ShowMode = showMode
+					ShowMode = showMode,
+					// TODO Uno: FlyoutShowOptions.ExclusionRect is [NotImplemented] in Uno.
+					// When implemented, set: ExclusionRect = exclusionRect
 				});
 			}
 		}
 	}
+
+	/// <summary>Backward-compatible overload without exclusion rect.</summary>
+	public void ShowAt(Point point, FlyoutShowMode showMode)
+		=> ShowAt(point, default, showMode);
 
 	private void OnOpened(object? sender, object e)
 	{
@@ -114,13 +143,26 @@ internal sealed class TextControlFlyout
 
 		if (activeOwner is not null && !activeOwner.IsFocused)
 		{
-			if (activeOwner is TextBox textBox)
+			// WinUI gates ForceFocusLoss on !IsProofingFlyout() so that closing
+			// a proofing flyout does not tear down the selection highlight.
+			if (!_isProofingFlyout)
 			{
-				textBox.ForceFocusLoss();
-			}
-			else if (activeOwner is TextBlock textBlock)
-			{
-				textBlock.ForceFocusLoss();
+				if (activeOwner is TextBox textBox)
+				{
+					textBox.ForceFocusLoss();
+				}
+				else if (activeOwner is TextBlock textBlock)
+				{
+					textBlock.ForceFocusLoss();
+				}
+				// TODO Uno: WinUI also handles RichTextBlock and RichTextBlockOverflow here
+				// via their SelectionManager.ForceFocusLoss(). These are [NotImplemented] on Skia.
+				// Original C++:
+				//   if (auto richTextBlock = do_pointer_cast<CRichTextBlock>(activeOwner))
+				//       selectionManager = richTextBlock->GetSelectionManager();
+				//   else if (auto richTextBlockOverflow = do_pointer_cast<CRichTextBlockOverflow>(activeOwner))
+				//       selectionManager = richTextBlockOverflow->GetMaster()->GetSelectionManager();
+				//   if (selectionManager) selectionManager->ForceFocusLoss();
 			}
 		}
 
@@ -194,6 +236,94 @@ internal static class TextControlFlyoutHelper
 		return false;
 	}
 
+	public static bool IsElementChildOfOpenedFlyout(UIElement? element)
+	{
+		if (element is null)
+		{
+			return false;
+		}
+
+		var flyout = Popup.GetClosestFlyoutAncestor(element);
+		if (flyout is null)
+		{
+			return false;
+		}
+
+		return _flyouts.TryGetValue(flyout, out var wrapper) && wrapper.IsOpened;
+	}
+
+	public static bool IsElementChildOfTransientOpenedFlyout(UIElement? element)
+	{
+		if (element is null)
+		{
+			return false;
+		}
+
+		var flyout = Popup.GetClosestFlyoutAncestor(element);
+		if (flyout is null)
+		{
+			return false;
+		}
+
+		return _flyouts.TryGetValue(flyout, out var wrapper) && wrapper.IsOpened && wrapper.IsTransient;
+	}
+
+	public static bool IsElementChildOfProofingFlyout(UIElement? element)
+	{
+		if (element is null)
+		{
+			return false;
+		}
+
+		var flyout = Popup.GetClosestFlyoutAncestor(element);
+		if (flyout is null)
+		{
+			return false;
+		}
+
+		return _flyouts.TryGetValue(flyout, out var wrapper) && wrapper.IsProofingFlyout;
+	}
+
+	public static void DismissAllFlyoutsForOwner(UIElement? element)
+	{
+		if (element is null)
+		{
+			return;
+		}
+
+		var flyout = Popup.GetClosestFlyoutAncestor(element);
+		if (flyout is null)
+		{
+			return;
+		}
+
+		if (!_flyouts.TryGetValue(flyout, out var wrapper))
+		{
+			return;
+		}
+
+		var owner = wrapper.GetActiveOwner();
+		if (owner is null)
+		{
+			return;
+		}
+
+		// Close both ContextFlyout and SelectionFlyout on the owner.
+		CloseIfOpen(owner.ContextFlyout);
+		if (owner is Controls.TextBox textBox)
+		{
+			CloseIfOpen(textBox.SelectionFlyout);
+		}
+		else if (owner is Controls.TextBlock textBlock)
+		{
+			CloseIfOpen(textBlock.SelectionFlyout);
+		}
+
+		// TODO Uno: WinUI also calls TextBoxBase.DismissAllFlyouts() and
+		// TextSelectionManager.DismissAllFlyouts() which handle additional
+		// internal flyouts. These are not yet ported.
+	}
+
 	public static void CloseIfOpen(FlyoutBase? flyout)
 	{
 		if (flyout is null)
@@ -207,8 +337,44 @@ internal static class TextControlFlyoutHelper
 		}
 	}
 
-	public static void ShowAt(FlyoutBase flyout, FrameworkElement owner, Point point, FlyoutShowMode showMode)
+	public static void AddProofingFlyout(FlyoutBase flyout, FrameworkElement owner)
 	{
+		if (!_flyouts.TryGetValue(flyout, out var wrapper))
+		{
+			wrapper = new TextControlFlyout(flyout, isProofingFlyout: true);
+			_flyouts.AddOrUpdate(flyout, wrapper);
+		}
+
+		if (wrapper.GetActiveOwner() != owner)
+		{
+			wrapper.SetActiveOwner(owner);
+		}
+	}
+
+	public static void ShowAt(FlyoutBase flyout, FrameworkElement owner, Point point, Rect exclusionRect, FlyoutShowMode showMode)
+	{
+		// TODO Uno: WinUI fires ContextMenuOpening event here for backward compat.
+		// Events are [NotImplemented] on TextBox/TextBlock in Uno.
+		// Original C++:
+		//   if (auto textBoxBase = do_pointer_cast<CTextBoxBase>(owner))
+		//   {
+		//       bool handled = false;
+		//       textBoxBase->FireContextMenuOpeningEventSynchronously(handled, point);
+		//       if (handled) return;
+		//   }
+		//   else if (auto textBlock = do_pointer_cast<CTextBlock>(owner))
+		//   {
+		//       bool handled = false;
+		//       textBlock->FireContextMenuOpeningEventSynchronously(handled, point);
+		//       if (handled) return;
+		//   }
+		//   else if (auto richTextBlock = do_pointer_cast<CRichTextBlock>(owner))
+		//   {
+		//       bool handled = false;
+		//       richTextBlock->FireContextMenuOpeningEventSynchronously(handled, point);
+		//       if (handled) return;
+		//   }
+
 		if (!_flyouts.TryGetValue(flyout, out var wrapper))
 		{
 			wrapper = new TextControlFlyout(flyout);
@@ -220,7 +386,11 @@ internal static class TextControlFlyoutHelper
 			wrapper.SetActiveOwner(owner);
 		}
 
-		wrapper.ShowAt(point, showMode);
+		wrapper.ShowAt(point, exclusionRect, showMode);
 	}
+
+	/// <summary>Backward-compatible overload without exclusion rect.</summary>
+	public static void ShowAt(FlyoutBase flyout, FrameworkElement owner, Point point, FlyoutShowMode showMode)
+		=> ShowAt(flyout, owner, point, default, showMode);
 }
 #endif
