@@ -1,3 +1,5 @@
+#if HAS_UNO
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml;
@@ -358,3 +360,4 @@ public class Given_DependencyProperty_PropMethodCall
 			=> PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 	}
 }
+#endif
