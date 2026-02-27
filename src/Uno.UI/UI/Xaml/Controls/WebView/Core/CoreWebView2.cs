@@ -26,6 +26,7 @@ public partial class CoreWebView2
 
 	private bool _scrollEnabled = true;
 	private INativeWebView? _nativeWebView;
+	private bool _recreateNativeWebViewOnNextLoad;
 	private ISupportsWebResourceRequested? _webResourceRequestedSupport;
 	private readonly List<WebResourceRequestedFilter> _webResourceRequestedFilters = new();
 	internal long _navigationId;
@@ -44,9 +45,12 @@ public partial class CoreWebView2
 #if __SKIA__
 	internal void OnLoaded()
 	{
-		// If native resources were released on unload, recreate from current template before using it again.
-		if (_nativeWebView is null)
+		// Only recreate after an explicit unload disposal.
+		// During first-time Win32 creation, the constructor pumps the event loop and can raise Loaded before
+		// OnOwnerApplyTemplate assigns _nativeWebView; recreating here would re-enter template application.
+		if (_recreateNativeWebViewOnNextLoad && _nativeWebView is null)
 		{
+			_recreateNativeWebViewOnNextLoad = false;
 			OnOwnerApplyTemplate();
 		}
 
@@ -66,6 +70,7 @@ public partial class CoreWebView2
 		DetachWebResourceRequestedSupport();
 		_nativeWebView.Dispose();
 		_nativeWebView = null;
+		_recreateNativeWebViewOnNextLoad = true;
 	}
 #endif
 
@@ -185,6 +190,7 @@ public partial class CoreWebView2
 	{
 		DetachWebResourceRequestedSupport();
 		_nativeWebView = GetNativeWebViewFromTemplate();
+		_recreateNativeWebViewOnNextLoad = false;
 		AttachWebResourceRequestedSupport();
 
 		// Signal that native WebView is now initialized
