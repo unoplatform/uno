@@ -92,7 +92,9 @@ namespace Uno.UI.Xaml.Input
 						this.Log().LogDebug($"Showing focus rect for {focusedElement?.GetType().Name} and state {(focusedElement as UIElement)?.FocusState} and uses system focus visuals {(focusedElement as UIElement)?.UseSystemFocusVisuals}");
 					}
 					_focusVisual.FocusedElement = (focusedElement as FrameworkElement) ?? uiElement;
+#if !__SKIA__
 					_focusVisual.Visibility = Visibility.Visible;
+#endif
 				}
 				else
 				{
@@ -101,14 +103,11 @@ namespace Uno.UI.Xaml.Input
 						this.Log().LogDebug($"Hiding focus rect");
 					}
 					_focusVisual.FocusedElement = null;
+#if !__SKIA__
 					_focusVisual.Visibility = Visibility.Collapsed;
+#endif
 				}
 			}
-		}
-
-		internal void RedrawFocusVisual()
-		{
-			_focusVisual?.Redraw();
 		}
 	}
 }
