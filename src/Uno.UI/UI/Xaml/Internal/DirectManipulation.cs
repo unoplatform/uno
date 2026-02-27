@@ -430,7 +430,7 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 
 		Trace?.Invoke($"[DirectManipulation] [{args.Pointers[0]}] Update @={args.Position.ToDebugString()} | Δ=({args.Delta} | v={args.Velocities}){(args.IsInertial ? " *inertial*" : "")}");
 
-		//Debug.Assert(!args.IsInertial || _inertiaHandler is not null);
+		Debug.Assert(!args.IsInertial || _inertiaHandler is not null);
 
 		var unhandledDelta = args.Delta;
 		if (args.IsInertial && _inertiaHandler is { } inertialHandler)
