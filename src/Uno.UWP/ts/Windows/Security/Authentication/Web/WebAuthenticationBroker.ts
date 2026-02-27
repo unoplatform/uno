@@ -68,16 +68,24 @@
 			return new Promise<string>((ok, err) => {
 
 				let finished = false;
+				let closing = false;
 				const close = () => {
-					if (win) {
-						win.close();
-						win = null;
+					if (closing) {
+						return; // Prevent re-entry when win.close() triggers beforeunload
 					}
+					closing = true;
 
 					if (timerSubscription) {
 						window.clearInterval(timerSubscription);
 						timerSubscription = null;
 					}
+
+					if (win) {
+						const w = win;
+						win = null;
+						w.close();
+					}
+
 					if (!finished) {
 						err("Incomplete");
 					}
@@ -135,20 +143,40 @@
 					const left = ((width / 2) - (popUpWidth / 2)) + winLeft;
 					const top = ((height / 2) - (popUpHeight / 2)) + winTop;
 
+					// Listen for postMessage from the popup (more reliable in Safari)
+					const messageHandler = (event: MessageEvent) => {
+						// Verify the message is from our expected redirect origin
+						if (event.origin === window.location.origin ||
+							urlRedirect.startsWith(event.origin)) {
+							const data = event.data;
+							if (typeof data === 'string' && data.indexOf(urlRedirect) === 0) {
+								window.removeEventListener('message', messageHandler);
+								completeSuccessfully(data);
+							} else if (data && typeof data === 'object' && data.type === 'oauth-callback') {
+								window.removeEventListener('message', messageHandler);
+								if (data.url && data.url.indexOf(urlRedirect) === 0) {
+									completeSuccessfully(data.url);
+								}
+							}
+						}
+					};
+					window.addEventListener('message', messageHandler);
+
 					// open the window
 					win = window.open(urlNavigate,
 						title,
 						"width=" + popUpWidth + ", height=" + popUpHeight + ", top=" + top + ", left=" + left);
 					if (!win) {
+						window.removeEventListener('message', messageHandler);
 						completeWithError("Can't open window");
 						return;
 					}
 					if (win.focus) {
 						win.focus();
 					}
-					win.addEventListener("beforeunload", close);
 
 					const onFinalUrlReached = (success: boolean, timedout: boolean, finalUrlOrMessage: string) => {
+						window.removeEventListener('message', messageHandler);
 						if (success) {
 							completeSuccessfully(finalUrlOrMessage);
 						} else {
@@ -174,24 +202,70 @@
 
 			const currentTime = (new Date()).getTime();
 			const maxTime = currentTime + timeout;
+			let callbackInvoked = false;
+
+			const invokeCallback = (success: boolean, timedout: boolean, finalUrlOrMessage: string) => {
+				if (!callbackInvoked) {
+					callbackInvoked = true;
+					callback(success, timedout, finalUrlOrMessage);
+				}
+			};
 
 			const subscription = window.setInterval(() => {
 					try {
 						if ((new Date()).getTime() > maxTime) {
-							callback(false, true, null);
-						}
-
-						if (win.closed) {
-							callback(false, false, "Popup closed");
+							invokeCallback(false, true, null);
 							return;
 						}
-						const url = win.document.URL;
-						if (url.indexOf(urlRedirect) === 0) {
-							callback(true, false, url);
+
+						// Check if window is closed - this should be accessible even cross-origin
+						let isClosed = false;
+						try {
+							isClosed = win.closed;
+						} catch (e) {
+							// Some browsers restrict even this for cross-origin, continue polling
+							return;
 						}
 
+						if (isClosed) {
+							invokeCallback(false, false, "Popup closed");
+							return;
+						}
+
+						// Try multiple methods to get the URL - Safari is very strict about cross-origin access
+						// Method 1: Try to check if we're same-origin by comparing origin
+						let isSameOrigin = false;
+						try {
+							// This will throw if cross-origin
+							isSameOrigin = win.location.origin === window.location.origin;
+						} catch (e) {
+							// Cross-origin, continue polling
+							return;
+						}
+
+						if (!isSameOrigin) {
+							return;
+						}
+
+						// Method 2: Now that we know we're same-origin, get the full URL
+						let url: string = null;
+						try {
+							url = win.location.href;
+						} catch (e) {
+							// Safari ITP may still block even same-origin in some cases
+							// Try alternative method: string coercion
+							try {
+								url = '' + win.location;
+							} catch (e2) {
+								return;
+							}
+						}
+
+						if (url && url.indexOf(urlRedirect) === 0) {
+							invokeCallback(true, false, url);
+						}
 					} catch (e) {
-						// Expected! DOMException / crossed origin until reached correct redirect page
+						// Catch-all for any unexpected errors - continue polling
 					}
 				},
 				100);
