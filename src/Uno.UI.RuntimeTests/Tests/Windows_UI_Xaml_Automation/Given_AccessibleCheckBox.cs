@@ -7,9 +7,8 @@ using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Runtime.Skia;
-
 #if HAS_UNO
+using Uno.UI.Runtime.Skia;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
