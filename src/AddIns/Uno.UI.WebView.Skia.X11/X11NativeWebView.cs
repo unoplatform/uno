@@ -193,11 +193,14 @@ public class X11NativeWebView : INativeWebView
 			return;
 		}
 
-		if (disposing)
+		if (!disposing)
 		{
-			_presenter.Loaded -= OnPresenterLoaded;
-			_presenter.Unloaded -= OnPresenterUnloaded;
+			// Do not touch GTK managed wrappers from the finalizer thread.
+			return;
 		}
+
+		_presenter.Loaded -= OnPresenterLoaded;
+		_presenter.Unloaded -= OnPresenterUnloaded;
 
 		RunOnGtkThread(() =>
 		{

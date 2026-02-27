@@ -234,18 +234,16 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 			return;
 		}
 
-		if (disposing)
-		{
-			// Unsubscribe first so no callback can target this instance once teardown starts.
-			_nativeWebView.NavigationCompleted -= _navigationCompletedHandler;
-			_nativeWebView.NewWindowRequested -= _newWindowRequestedHandler;
-			_nativeWebView.SourceChanged -= _sourceChangedHandler;
-			_nativeWebView.WebMessageReceived -= _webMessageReceivedHandler;
-			_nativeWebView.NavigationStarting -= _navigationStartingHandler;
-			_nativeWebView.HistoryChanged -= _historyChangedHandler;
-			_nativeWebView.DocumentTitleChanged -= _documentTitleChangedHandler;
-			_nativeWebView.WebResourceRequested -= NativeWebView2_WebResourceRequested;
-		}
+		// Unsubscribe first so no callback can target this instance once teardown starts.
+		// Do this for both explicit Dispose and finalizer paths to avoid late callback races.
+		_nativeWebView.NavigationCompleted -= _navigationCompletedHandler;
+		_nativeWebView.NewWindowRequested -= _newWindowRequestedHandler;
+		_nativeWebView.SourceChanged -= _sourceChangedHandler;
+		_nativeWebView.WebMessageReceived -= _webMessageReceivedHandler;
+		_nativeWebView.NavigationStarting -= _navigationStartingHandler;
+		_nativeWebView.HistoryChanged -= _historyChangedHandler;
+		_nativeWebView.DocumentTitleChanged -= _documentTitleChangedHandler;
+		_nativeWebView.WebResourceRequested -= NativeWebView2_WebResourceRequested;
 
 		ReleaseNativeResources();
 	}
