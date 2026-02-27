@@ -35,6 +35,11 @@ namespace Microsoft.UI.Xaml
 
 		internal void CloneToForHotReload(DependencyPropertyDetails other)
 		{
+			if (IsPropMethodCall)
+			{
+				return; // Value lives on the object, not in DependencyPropertyDetails.
+			}
+
 			// If the old instance has a local value **and** the new instance doesn't, then copy the local value.
 			// We shouldn't be copying local value if the new instance already has it set. The new value in the new instance
 			// should not be overwritten as it's more likely to be more correct.
@@ -61,6 +66,7 @@ namespace Microsoft.UI.Xaml
 			_flags |= property.HasWeakStorage ? Flags.WeakStorage : Flags.None;
 			_flags |= hasValueInherits ? Flags.ValueInherits : Flags.None;
 			_flags |= hasValueDoesNotInherits ? Flags.ValueDoesNotInherit : Flags.None;
+			_flags |= property.IsPropMethodCall ? Flags.IsPropMethodCall : Flags.None;
 		}
 
 		private void GetPropertyInheritanceConfiguration(
@@ -107,7 +113,8 @@ namespace Microsoft.UI.Xaml
 		{
 			// Always set inherited value.
 			// This is needed for now to always be able to restore inherited value efficiently when higher precedences are cleared.
-			if (precedence == DependencyPropertyValuePrecedences.Inheritance)
+			// PropMethodCall DPs never use inheritance — their value is always computed from the backing field.
+			if (!IsPropMethodCall && precedence == DependencyPropertyValuePrecedences.Inheritance)
 			{
 				_inheritedValue = value;
 			}
@@ -163,15 +170,24 @@ namespace Microsoft.UI.Xaml
 		/// <param name="precedence">The precedence level to set the value at</param>
 		internal void SetValue(object? value, DependencyPropertyValuePrecedences precedence)
 		{
-			Property.ValidateValue(value);
+			// For PropMethodCall base values, skip validation — the value is
+			// managed by the method delegate, not stored here.
+			bool skipValidation = IsPropMethodCall
+				&& precedence != DependencyPropertyValuePrecedences.Coercion
+				&& precedence != DependencyPropertyValuePrecedences.Animations;
 
-			if (HasWeakStorage)
+			if (!skipValidation)
 			{
-				value = Validate(value);
-			}
-			else
-			{
-				value = ValidateNoWrap(value);
+				Property.ValidateValue(value);
+
+				if (HasWeakStorage)
+				{
+					value = Validate(value);
+				}
+				else
+				{
+					value = ValidateNoWrap(value);
+				}
 			}
 
 			switch (precedence)
@@ -297,6 +313,9 @@ namespace Microsoft.UI.Xaml
 		internal bool HasValueDoesNotInherit
 			=> (_flags & Flags.ValueDoesNotInherit) != 0;
 
+		internal bool IsPropMethodCall
+			=> (_flags & Flags.IsPropMethodCall) != 0;
+
 		public override string ToString()
 		{
 			return $"DependencyPropertyDetails({Property.Name})";
@@ -332,6 +351,11 @@ namespace Microsoft.UI.Xaml
 			/// Determines if the property must not inherit DataContext from its parent
 			/// </summary>
 			ValueDoesNotInherit = 1 << 2,
+
+			/// <summary>
+			/// The property uses PropMethodCall — value is stored on the object via a backing field, not in DependencyPropertyDetails.
+			/// </summary>
+			IsPropMethodCall = 1 << 3,
 		}
 	}
 }
