@@ -1,0 +1,11 @@
+<Project>
+	<PropertyGroup>
+		<IsAppleUIKit>true</IsAppleUIKit>
+		<IsTvOS>true</IsTvOS>
+		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">16.0</SupportedOSPlatformVersion>
+
+		<EnableDefaulttvOSItems Condition="$(EnableDefaulttvOSItems) == ''">false</EnableDefaulttvOSItems>
+	</PropertyGroup>
+
+	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.tvOS.targets" Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' " />
+</Project>
