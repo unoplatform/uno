@@ -11,7 +11,7 @@ using Uno.HotReload.Tracking;
 
 namespace Uno.HotReload.Diffing;
 
-internal static class ChangeSetExtensions
+public static class ChangeSetExtensions
 {
 	public static async ValueTask<Solution> ApplyAsync(this Solution solution, ChangeSet changeSet, HotReloadOperation hotReload, CancellationToken ct)
 	{

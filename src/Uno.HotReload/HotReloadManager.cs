@@ -27,19 +27,34 @@ public sealed class HotReloadManager : IDisposable
 		IHotReloadTracker tracker,
 		CancellationToken ct,
 		bool forceEmitCompilationOutput = false)
+		=> await CreateAsync(
+			await workspaceProvider(ct).ConfigureAwait(false),
+			metadataUpdateCapabilities,
+			sendUpdates,
+			tracker,
+			new ChangesDetector(new TemporaryWorkspaceAddDetector(workspaceProvider, tracker), tracker),
+			ct,
+			forceEmitCompilationOutput);
+
+	public static async ValueTask<HotReloadManager> CreateAsync(
+		Workspace workspace,
+		string[] metadataUpdateCapabilities,
+		SendUpdatesAsync sendUpdates,
+		IHotReloadTracker tracker,
+		IChangesDetector changesDetector,
+		CancellationToken ct,
+		bool forceEmitCompilationOutput = false)
 	{
-		var initialWorkspace = await workspaceProvider(ct).ConfigureAwait(false);
 		if (forceEmitCompilationOutput
-			|| initialWorkspace.CurrentSolution.Projects.Any(project => !File.Exists(project.CompilationOutputInfo.AssemblyPath)))
+			|| workspace.CurrentSolution.Projects.Any(project => !File.Exists(project.CompilationOutputInfo.AssemblyPath)))
 		{
-			var result = await initialWorkspace.EmitCompilationOutputAsync(ct).ConfigureAwait(false);
+			var result = await workspace.EmitCompilationOutputAsync(ct).ConfigureAwait(false);
 			result.EnsureSuccess();
 		}
 
-		var watch = await WatchHotReloadService.CreateAsync(initialWorkspace, metadataUpdateCapabilities, ct).ConfigureAwait(false);
-		var detector = new ChangesDetector(workspaceProvider, tracker);
+		var watch = await WatchHotReloadService.CreateAsync(workspace, metadataUpdateCapabilities, ct).ConfigureAwait(false);
 
-		return new HotReloadManager(initialWorkspace, watch, sendUpdates, detector, tracker);
+		return new HotReloadManager(workspace, watch, sendUpdates, changesDetector, tracker);
 	}
 
 	private readonly FastAsyncLock _solutionUpdateGate = new();
@@ -47,13 +62,13 @@ public sealed class HotReloadManager : IDisposable
 	private readonly WatchHotReloadService _watchService;
 	private readonly SendUpdatesAsync _sendUpdates;
 	private readonly IHotReloadTracker _tracker;
-	private readonly ChangesDetector _changesDetector;
+	private readonly IChangesDetector _changesDetector;
 
 	private HotReloadManager(
 		Workspace innerWorkspace,
 		WatchHotReloadService watchService,
 		SendUpdatesAsync sendUpdates,
-		ChangesDetector changesDetector,
+		IChangesDetector changesDetector,
 		IHotReloadTracker tracker)
 	{
 		_innerWorkspace = innerWorkspace;

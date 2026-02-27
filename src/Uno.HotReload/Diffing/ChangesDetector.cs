@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
@@ -11,8 +10,13 @@ using Uno.HotReload.Utils;
 
 namespace Uno.HotReload.Diffing;
 
-internal class ChangesDetector(Func<CancellationToken, ValueTask<Workspace>> CreateWorkspace, IReporter reporter)
+/// <summary>
+/// Default implementation of <see cref="IChangesDetector"/> that classifies file changes into edits, removes, and adds
+/// by comparing them against the current solution and delegating add detection to an <see cref="IAddDetector"/>.
+/// </summary>
+public class ChangesDetector(IAddDetector addDetector, IReporter reporter) : IChangesDetector
 {
+	/// <inheritdoc />
 	public async ValueTask<ChangeSet> DiscoverChangesAsync(Solution solution, ImmutableHashSet<string> files, CancellationToken ct)
 	{
 		var editedDocuments = new List<Document>();
@@ -75,74 +79,15 @@ internal class ChangesDetector(Func<CancellationToken, ValueTask<Workspace>> Cre
 			}
 		}
 
-		var added = await DiscoverNewFilesAsync(ImmutableHashSet.CreateRange(potentiallyAdded), ct).ConfigureAwait(false);
+		var added = await addDetector.DiscoverAddsAsync(ImmutableHashSet.CreateRange(potentiallyAdded), ct).ConfigureAwait(false);
 
 		return new(
 			[.. editedDocuments],
 			[.. editedAdditionalDocuments],
-			added.documents,
-			added.additionalDocuments,
+			added.Documents,
+			added.AdditionalDocuments,
 			[.. removedDocuments],
 			[.. removedAdditionalDocuments],
-			[.. notFound, .. added.ignored]);
-	}
-
-	private async ValueTask<(ImmutableArray<AddedDocumentInfo> documents, ImmutableArray<AddedDocumentInfo> additionalDocuments, ImmutableHashSet<string> ignored)> DiscoverNewFilesAsync(
-		ImmutableHashSet<string> newFiles,
-		CancellationToken ct)
-	{
-		if (newFiles is not { IsEmpty: false })
-		{
-			return ([], [], newFiles);
-		}
-
-		Workspace? tempWorkspace = null;
-		try
-		{
-			reporter.Output($"Detected {newFiles.Count} potentially new file(s). Creating temporary workspace to discover them...");
-
-			// Create a temporary workspace to discover the new files
-			tempWorkspace = await CreateWorkspace(ct).ConfigureAwait(false);
-
-			var discoveredDocuments = ImmutableArray.CreateBuilder<AddedDocumentInfo>();
-			var discoveredAdditionalDocuments = ImmutableArray.CreateBuilder<AddedDocumentInfo>();
-			var ignoredFiles = ImmutableHashSet.CreateBuilder<string>();
-
-			foreach (var file in newFiles)
-			{
-				// Search for the file in the temp workspace's projects
-				// Note: Here again we assume that document can appear in more than one project (same project loaded with different TFM)
-				var found = false;
-				foreach (var project in tempWorkspace.CurrentSolution.Projects)
-				{
-					if (project.Documents.FirstOrDefault(d => string.Equals(d.FilePath, file, PathComparer.Comparison)) is { } document)
-					{
-						found = true;
-						discoveredDocuments.Add(new(project.GetInfo(), document.GetInfo()));
-					}
-					else if (project.AdditionalDocuments.FirstOrDefault(d => string.Equals(d.FilePath, file, PathComparer.Comparison)) is { } additionalDocument)
-					{
-						found = true;
-						discoveredAdditionalDocuments.Add(new(project.GetInfo(), additionalDocument.GetInfo()));
-					}
-				}
-
-				if (!found)
-				{
-					ignoredFiles.Add(file);
-				}
-			}
-
-			return (discoveredDocuments.ToImmutable(), discoveredAdditionalDocuments.ToImmutable(), ignoredFiles.ToImmutable());
-		}
-		catch (Exception ex)
-		{
-			reporter.Warn($"Error while discovering new files: {ex.Message}");
-			return ([], [], newFiles);
-		}
-		finally
-		{
-			tempWorkspace?.Dispose();
-		}
+			[.. notFound, .. added.Ignored]);
 	}
 }

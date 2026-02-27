@@ -3,7 +3,10 @@ using Microsoft.CodeAnalysis;
 
 namespace Uno.HotReload.Diffing;
 
-internal record ChangeSet(
+/// <summary>
+/// Describes the set of changes detected in a batch of modified files, including edits, adds, removes, and ignored files.
+/// </summary>
+public record ChangeSet(
 	ImmutableArray<Document> EditedDocuments,
 	ImmutableArray<TextDocument> EditedAdditionalDocuments,
 	ImmutableArray<AddedDocumentInfo> AddedDocuments,
