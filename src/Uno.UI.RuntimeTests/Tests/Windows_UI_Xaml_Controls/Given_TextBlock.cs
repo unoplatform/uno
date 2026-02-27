@@ -1835,6 +1835,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		#endregion
 #endif
 
+#if __SKIA__ || WINAPPSDK
 		[TestMethod]
 		public async Task When_TextBlock_ContextFlyout_IsTextCommandBarFlyout()
 		{
@@ -1938,6 +1939,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			return (hasSelectAll, hasCut, hasCopy, hasPaste);
 		}
+#endif
 
 #if __SKIA__
 		[TestMethod]
