@@ -38,7 +38,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(textBox);
 
 			// Act
-			var peer = textBox.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(textBox);
 			var valueProvider = peer?.GetPattern(PatternInterface.Value) as IValueProvider;
 
 			// Assert
@@ -61,7 +61,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 			await UITestHelper.Load(textBox);
 
-			var peer = textBox.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(textBox);
 			var valueProvider = peer?.GetPattern(PatternInterface.Value) as IValueProvider;
 
 			Assert.IsNotNull(valueProvider, "TextBox should support IValueProvider");
@@ -91,7 +91,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(passwordBox);
 
 			// Act
-			var peer = passwordBox.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(passwordBox);
 
 			// Assert
 			Assert.IsNotNull(peer, "PasswordBox should have an automation peer");
@@ -116,7 +116,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(textBox);
 
 			// Act
-			var peer = textBox.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(textBox);
 			var controlType = peer?.GetAutomationControlType();
 
 			// Assert
@@ -137,7 +137,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(textBox);
 
 			// Act
-			var peer = textBox.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(textBox);
 			var name = peer?.GetName();
 
 			// Assert
@@ -160,7 +160,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(textBox);
 
 			// Act
-			var peer = textBox.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(textBox);
 			var valueProvider = peer?.GetPattern(PatternInterface.Value) as IValueProvider;
 
 			// Assert

@@ -40,7 +40,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(slider);
 
 			// Act
-			var peer = slider.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(slider);
 			var rangeValueProvider = peer?.GetPattern(PatternInterface.RangeValue) as IRangeValueProvider;
 
 			// Assert
@@ -71,7 +71,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 			await UITestHelper.Load(slider);
 
-			var peer = slider.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(slider);
 			var rangeValueProvider = peer?.GetPattern(PatternInterface.RangeValue) as IRangeValueProvider;
 
 			Assert.IsNotNull(rangeValueProvider, "Slider should support IRangeValueProvider");
@@ -103,7 +103,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 			await UITestHelper.Load(slider);
 
-			var peer = slider.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(slider);
 			var rangeValueProvider = peer?.GetPattern(PatternInterface.RangeValue) as IRangeValueProvider;
 
 			Assert.IsNotNull(rangeValueProvider, "Slider should support IRangeValueProvider");
@@ -137,7 +137,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(slider);
 
 			// Act
-			var peer = slider.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(slider);
 			var controlType = peer?.GetAutomationControlType();
 
 			// Assert
@@ -163,7 +163,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(slider);
 
 			// Act
-			var peer = slider.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(slider);
 			var rangeValueProvider = peer?.GetPattern(PatternInterface.RangeValue) as IRangeValueProvider;
 
 			// Assert
@@ -192,7 +192,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(slider);
 
 			// Act
-			var peer = slider.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(slider);
 			var rangeValueProvider = peer?.GetPattern(PatternInterface.RangeValue) as IRangeValueProvider;
 
 			// Assert
@@ -214,7 +214,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(slider);
 
 			// Act
-			var peer = slider.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(slider);
 			var name = peer?.GetName();
 
 			// Assert
@@ -234,7 +234,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(slider);
 
 			// Act
-			var peer = slider.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(slider);
 			var elementType = AriaMapper.GetSemanticElementType(peer);
 
 			// Assert
@@ -253,7 +253,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(slider);
 
 			// Act
-			var peer = slider.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(slider);
 			var attributes = AriaMapper.GetAriaAttributes(peer);
 
 			// Assert
@@ -272,7 +272,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(slider);
 
 			// Act
-			var peer = slider.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(slider);
 			var capabilities = AriaMapper.GetPatternCapabilities(peer);
 
 			// Assert

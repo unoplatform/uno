@@ -37,7 +37,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(comboBox);
 
 			// Act
-			var peer = comboBox.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(comboBox);
 			var expandCollapseProvider = peer?.GetPattern(PatternInterface.ExpandCollapse) as IExpandCollapseProvider;
 
 			// Assert
@@ -60,7 +60,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 			await UITestHelper.Load(comboBox);
 
-			var peer = comboBox.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(comboBox);
 			var expandCollapseProvider = peer?.GetPattern(PatternInterface.ExpandCollapse) as IExpandCollapseProvider;
 
 			Assert.IsNotNull(expandCollapseProvider, "ComboBox should support IExpandCollapseProvider");
@@ -111,7 +111,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(comboBox);
 
 			// Act
-			var peer = comboBox.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(comboBox);
 			var controlType = peer?.GetAutomationControlType();
 
 			// Assert
@@ -132,7 +132,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(comboBox);
 
 			// Act
-			var peer = comboBox.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(comboBox);
 			var elementType = AriaMapper.GetSemanticElementType(peer);
 
 			// Assert
@@ -152,7 +152,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(comboBox);
 
 			// Act
-			var peer = comboBox.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(comboBox);
 			var attributes = AriaMapper.GetAriaAttributes(peer);
 
 			// Assert
@@ -173,7 +173,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(comboBox);
 
 			// Act
-			var peer = comboBox.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(comboBox);
 			var capabilities = AriaMapper.GetPatternCapabilities(peer);
 
 			// Assert

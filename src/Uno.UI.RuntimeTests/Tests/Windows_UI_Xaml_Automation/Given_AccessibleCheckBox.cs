@@ -38,7 +38,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(checkBox);
 
 			// Act
-			var peer = checkBox.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(checkBox);
 			var toggleProvider = peer?.GetPattern(PatternInterface.Toggle) as IToggleProvider;
 
 			// Assert
@@ -64,7 +64,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 			await UITestHelper.Load(checkBox);
 
-			var peer = checkBox.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(checkBox);
 			var toggleProvider = peer?.GetPattern(PatternInterface.Toggle) as IToggleProvider;
 
 			Assert.IsNotNull(toggleProvider, "CheckBox should support IToggleProvider");
@@ -97,7 +97,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(checkBox);
 
 			// Act
-			var peer = checkBox.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(checkBox);
 			var toggleProvider = peer?.GetPattern(PatternInterface.Toggle) as IToggleProvider;
 
 			// Assert
@@ -123,7 +123,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(checkBox);
 
 			// Act
-			var peer = checkBox.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(checkBox);
 			var controlType = peer?.GetAutomationControlType();
 
 			// Assert
@@ -146,7 +146,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(checkBox);
 
 			// Act
-			var peer = checkBox.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(checkBox);
 			var toggleProvider = peer?.GetPattern(PatternInterface.Toggle) as IToggleProvider;
 
 			// Assert
@@ -168,7 +168,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(checkBox);
 
 			// Act
-			var peer = checkBox.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(checkBox);
 			var name = peer?.GetName();
 
 			// Assert
@@ -191,7 +191,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			};
 			await UITestHelper.Load(checkBox);
 
-			var peer = checkBox.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(checkBox);
 			var toggleProvider = peer?.GetPattern(PatternInterface.Toggle) as IToggleProvider;
 			Assert.IsNotNull(toggleProvider);
 
@@ -221,7 +221,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(checkBox);
 
 			// Act
-			var peer = checkBox.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(checkBox);
 			var elementType = Uno.UI.Runtime.Skia.AriaMapper.GetSemanticElementType(peer);
 
 			// Assert
@@ -244,7 +244,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(checkBox);
 
 			// Act
-			var peer = checkBox.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(checkBox);
 			var attributes = Uno.UI.Runtime.Skia.AriaMapper.GetAriaAttributes(peer);
 
 			// Assert
@@ -264,7 +264,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(checkBox);
 
 			// Act
-			var peer = checkBox.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(checkBox);
 			var capabilities = Uno.UI.Runtime.Skia.AriaMapper.GetPatternCapabilities(peer);
 
 			// Assert
@@ -283,7 +283,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(radioButton);
 
 			// Act
-			var peer = radioButton.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(radioButton);
 			var elementType = Uno.UI.Runtime.Skia.AriaMapper.GetSemanticElementType(peer);
 
 			// Assert

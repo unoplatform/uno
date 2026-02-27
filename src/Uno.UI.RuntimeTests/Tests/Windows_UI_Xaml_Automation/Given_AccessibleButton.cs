@@ -39,7 +39,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(button);
 
 			// Act
-			var peer = button.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(button);
 
 			// Assert
 			Assert.IsNotNull(peer, "Button should have an automation peer");
@@ -62,7 +62,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 			await UITestHelper.Load(button);
 
-			var peer = button.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(button);
 			var invokeProvider = peer?.GetPattern(PatternInterface.Invoke) as IInvokeProvider;
 
 			// Act
@@ -91,7 +91,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(button);
 
 			// Act
-			var peer = button.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(button);
 
 			// Assert
 			Assert.IsNotNull(peer, "Button should have an automation peer");
@@ -116,7 +116,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(button);
 
 			// Act
-			var peer = button.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(button);
 			var controlType = peer?.GetAutomationControlType();
 
 			// Assert
@@ -137,7 +137,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(button);
 
 			// Act
-			var peer = button.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(button);
 			var name = peer?.GetName();
 
 			// Assert
@@ -156,7 +156,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(button);
 
 			// Act
-			var peer = button.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(button);
 			var pattern = peer?.GetPattern(PatternInterface.Invoke);
 
 			// Assert
@@ -177,7 +177,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(button);
 
 			// Act
-			var peer = button.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(button);
 			var elementType = AriaMapper.GetSemanticElementType(peer);
 
 			// Assert
@@ -196,7 +196,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(button);
 
 			// Act
-			var peer = button.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(button);
 			var attributes = AriaMapper.GetAriaAttributes(peer);
 
 			// Assert
@@ -215,7 +215,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(button);
 
 			// Act
-			var peer = button.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(button);
 			var capabilities = AriaMapper.GetPatternCapabilities(peer);
 
 			// Assert

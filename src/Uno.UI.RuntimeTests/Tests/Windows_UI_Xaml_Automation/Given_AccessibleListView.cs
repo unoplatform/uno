@@ -39,7 +39,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await TestServices.WindowHelper.WaitForIdle();
 
 			// Act
-			var peer = listView.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(listView);
 
 			// Assert
 			Assert.IsNotNull(peer, "ListView should have an automation peer");
@@ -112,7 +112,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(listView);
 
 			// Act
-			var peer = listView.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(listView);
 			var controlType = peer?.GetAutomationControlType();
 
 			// Assert
@@ -135,7 +135,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(listView);
 
 			// Act
-			var peer = listView.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(listView);
 			var elementType = AriaMapper.GetSemanticElementType(peer);
 
 			// Assert
