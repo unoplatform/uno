@@ -80,7 +80,7 @@ stages:
       displayName: Deploy Docs Staging
       environmentName: Uno UI Docs Staging
       azureSubscription: Uno Platform - Operations (platformuno.onmicrosoft.com)
-      storageAccountName: unoplatformdocsstaging
+      storageAccountName: unoplatformdocstaging
 
 - stage: docs_deploy_prod
   displayName: Docs Deploy - Prod
