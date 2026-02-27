@@ -104,8 +104,7 @@ internal partial class SystemFocusVisual : Control
 			return;
 		}
 
-		var parentElement = VisualTreeHelper.GetParent(FocusedElement) as UIElement;
-		if (parentElement is null)
+		if (VisualTreeHelper.GetParent(FocusedElement) is not UIElement)
 		{
 			Visibility = Visibility.Collapsed;
 			return;
