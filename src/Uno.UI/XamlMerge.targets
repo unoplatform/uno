@@ -18,8 +18,13 @@
 		direct non-overridable resources in other files. See When_Theme_Changed_Animated_Value
 		test for more details.
 	  -->
-	  <_NonMergedXamlResources Include="$(MSBuildProjectDirectory)\UI\Xaml\Style\Generic\SystemResources.xaml" />
-	  <_NonMergedXamlResources Include="$(MSBuildProjectDirectory)\UI\Xaml\Style\Generic\Generic.Native.xaml" />
+	  <_NonMergedXamlResources Include="UI\Xaml\Style\Generic\SystemResources.xaml" />
+	  <_NonMergedXamlResources Include="UI\Xaml\Style\Generic\Generic.Native.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<Page Remove="Microsoft\UI\Xaml\Styles\Common_themeresources_any.xaml" />
+	<Page Include="Microsoft\UI\Xaml\Styles\Common_themeresources_any.xaml" Priority="1" />
   </ItemGroup>
 
   <Import Project="$(NuGetPackageRoot)\uno.xamlmerge.task\$(_Uno_XamlMerge_Task_Version)\build\Uno.XamlMerge.Task.targets"

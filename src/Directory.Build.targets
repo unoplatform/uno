@@ -35,9 +35,14 @@
 		<None Remove="**/*.xaml" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(XamlMergeOutputFile)'!=''">
-		<XamlMergeInput Include="@(Page)" Exclude="@(_NonMergedXamlResources)" />
-	</ItemGroup>
+	<Target Name="PrepareXamlMergeInput" BeforeTargets="GenerateMergedXaml" Condition="'$(XamlMergeOutputFile)'!=''">
+		<ItemGroup>
+			<OrderedMergedXamlResources Include="@(Page)" Condition="'%(Page.Priority)' == '1'" />
+			<OrderedMergedXamlResources Include="@(Page)" Exclude="@(_NonMergedXamlResources)" Condition="'%(Page.Priority)' == ''" />
+
+			<XamlMergeInput Include="@(OrderedMergedXamlResources)" />
+		</ItemGroup>
+	</Target>
 
 	<ItemGroup>
 		<UpToDateCheckInput Include="@(Page)" />
