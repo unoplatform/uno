@@ -1507,6 +1507,47 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 							throw new Exception($"Invalid property path: {memberValue}");
 						}
 					}
+					else if (propertyType == typeof(RoutedEvent))
+					{
+						// Parse RoutedEvent values in the format "TypeName.EventName" (e.g., "FrameworkElement.Loaded")
+						// The actual validation of which events are supported is done by the property setter (e.g., EventTrigger.RoutedEvent)
+						var normalizedValue = memberValue?.Trim();
+						if (string.IsNullOrEmpty(normalizedValue))
+						{
+							throw new XamlParseException("RoutedEvent value cannot be empty.", null, member.LineNumber, member.LinePosition);
+						}
+
+						var dotIndex = normalizedValue!.LastIndexOf('.');
+						if (dotIndex <= 0 || dotIndex >= normalizedValue.Length - 1)
+						{
+							throw new XamlParseException(
+								$"Invalid RoutedEvent format '{memberValue}'. Expected format is 'TypeName.EventName' (e.g., 'FrameworkElement.Loaded').",
+								null, member.LineNumber, member.LinePosition);
+						}
+
+						var typeName = normalizedValue.Substring(0, dotIndex);
+						var eventName = normalizedValue.Substring(dotIndex + 1);
+
+						// Find the type
+						var type = TypeResolver.FindType(typeName);
+						if (type == null)
+						{
+							throw new XamlParseException(
+								$"Could not find type '{typeName}' for RoutedEvent '{memberValue}'.",
+								null, member.LineNumber, member.LinePosition);
+						}
+
+						// Validate that this is the Loaded event on a FrameworkElement-derived type,
+						// which is the only event EventTrigger supports.
+						if (eventName != "Loaded" || !typeof(FrameworkElement).IsAssignableFrom(type))
+						{
+							throw new XamlParseException(
+								$"EventTrigger only supports the FrameworkElement.Loaded event, but got '{normalizedValue}'.",
+								null, member.LineNumber, member.LinePosition);
+						}
+
+						return new RoutedEvent(Uno.UI.Xaml.RoutedEventFlag.None, "Loaded");
+					}
 					else
 					{
 						return BuildLiteralValue(propertyType, memberValue);

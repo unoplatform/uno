@@ -142,6 +142,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public const string Duration = BaseXamlNamespace + ".Duration";
 			public const string FontFamily = Namespaces.Media + ".FontFamily";
 			public const string ImageSource = Namespaces.Media + ".ImageSource";
+			public const string RoutedEvent = BaseXamlNamespace + ".RoutedEvent";
 
 			// Controls
 			public const string NativePage = Namespaces.Controls + ".NativePage";
