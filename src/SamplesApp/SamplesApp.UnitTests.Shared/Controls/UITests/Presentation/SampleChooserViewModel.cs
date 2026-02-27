@@ -714,7 +714,8 @@ namespace SampleControl.Presentation
 		{
 			try
 			{
-				return await GetFile(SampleChooserLRUConstant, () => new List<SampleChooserContent>());
+				var names = await GetFile(SampleChooserLRUConstant, () => new List<string>());
+				return names.Select(ResolveSampleByFullName).Where(s => s != null).ToList();
 			}
 			catch (Exception e)
 			{
@@ -917,7 +918,7 @@ namespace SampleControl.Presentation
 				favorites.Add(sample);
 			}
 
-			await SetFile(SampleChooserFavoriteConstant, favorites.ToArray());
+			await SetFile(SampleChooserFavoriteConstant, favorites.Where(s => s?.ControlType != null).Select(s => s.ControlType.FullName).ToArray());
 
 			FavoriteSamples = favorites;
 
@@ -965,7 +966,8 @@ namespace SampleControl.Presentation
 		{
 			try
 			{
-				var favoriteSamples = await GetFile(SampleChooserFavoriteConstant, () => new List<SampleChooserContent>());
+				var names = await GetFile(SampleChooserFavoriteConstant, () => new List<string>());
+				var favoriteSamples = names.Select(ResolveSampleByFullName).Where(s => s != null).ToList();
 
 				// Update the Sample List to set the IsFavorite to True
 				UpdateFavorites(getAllSamples, favoriteSamples);
@@ -1076,7 +1078,7 @@ namespace SampleControl.Presentation
 					recents.RemoveAt(_numberOfRecentSamplesVisible);
 				}
 
-				await SetFile(SampleChooserLRUConstant, recents.ToArray());
+				await SetFile(SampleChooserLRUConstant, recents.Where(s => s?.ControlType != null).Select(s => s.ControlType.FullName).ToArray());
 
 				RecentSamples = recents;
 			}
@@ -1089,6 +1091,23 @@ namespace SampleControl.Presentation
 			return _allCategories.FirstOrDefault(cat =>
 						cat.SamplesContent.Any(
 							sample => sample.Equals(content)));
+		}
+
+		private SampleChooserContent ResolveSampleByFullName(string controlTypeFullName)
+		{
+			if (string.IsNullOrEmpty(controlTypeFullName))
+			{
+				return null;
+			}
+
+			if (_allCategories == null)
+			{
+				return null;
+			}
+
+			return _allCategories
+				.SelectMany(c => c.SamplesContent)
+				.FirstOrDefault(s => s.ControlType.FullName == controlTypeFullName);
 		}
 
 		// Simple function to convert string to Enum value since specifying
