@@ -246,7 +246,10 @@ namespace Microsoft.UI.Xaml
 			if (!tabStopProcessingResult.IsOverriden && !candidateTabStopProcessingResult.IsOverriden)
 			{
 				// Process TabStop if the application bar service is available.
-				var spApplicationBarService = DXamlCore.Current.TryGetApplicationBarService();
+				var element = (spFocusedTarget ?? spCandidateTarget) as DependencyObject;
+				var spApplicationBarService = element is not null
+					? XamlRoot.GetForElement(element, createIfNotExist: false)?.TryGetApplicationBarService()
+					: null;
 				if (spApplicationBarService != null)
 				{
 					var appBarResult = spApplicationBarService.ProcessTabStopOverride(

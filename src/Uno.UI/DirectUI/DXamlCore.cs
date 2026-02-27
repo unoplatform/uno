@@ -107,6 +107,27 @@ namespace DirectUI
 			// OnUWPWindowSizeChanged();
 		}
 
+		internal bool BackButtonSupported => false; // TODO Uno: Implement system back button detection
+
+		internal Rect GetContentBoundsForElement(Microsoft.UI.Xaml.UIElement element)
+		{
+			// Returns the window/content bounds in which the element resides.
+			var xamlRoot = element?.XamlRoot;
+			if (xamlRoot is not null)
+			{
+				return new Rect(0, 0, xamlRoot.Size.Width, xamlRoot.Size.Height);
+			}
+
+			return Rect.Empty;
+		}
+
+		internal Rect GetContentLayoutBoundsForElement(Microsoft.UI.Xaml.UIElement element)
+		{
+			// Returns the layout bounds (excluding system chrome like status bar).
+			// For now, same as content bounds since Uno handles safe areas differently.
+			return GetContentBoundsForElement(element);
+		}
+
 		internal bool IsKeyboardPresent
 		{
 			get
