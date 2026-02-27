@@ -47,6 +47,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<EmbeddedResource Include="Mcp\Setup\ide-profiles.json" LogicalName="ide-profiles.json" />
+		<EmbeddedResource Include="Mcp\Setup\server-definitions.json" LogicalName="server-definitions.json" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<InternalsVisibleTo Include="Uno.UI.DevServer.Cli.Tests" />
 	</ItemGroup>
 </Project>
