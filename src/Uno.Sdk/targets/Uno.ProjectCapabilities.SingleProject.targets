@@ -5,6 +5,7 @@
 		 $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'
 		 OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'
 		 OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'
+		 OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'
 		 ">
 		<ProjectCapability Include="Msix" Exclude="@(ProjectCapability)" />
 		<ProjectCapability Include="MauiSingleProject" Exclude="@(ProjectCapability)" />

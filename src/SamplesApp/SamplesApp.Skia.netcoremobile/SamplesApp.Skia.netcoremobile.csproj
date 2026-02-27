@@ -21,8 +21,8 @@
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">maccatalyst-x64</RuntimeIdentifier>
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">tvossimulator-x64</RuntimeIdentifier>
 
-		<!-- Override RuntimeIdentifir specifically for smaller builds -->
-		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))!=''">$(UnoSampleAppRuntimeIdentifiers)</RuntimeIdentifier>
+		<!-- Override RuntimeIdentifier specifically for smaller builds -->
+		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))!='' AND '$(UnoSampleAppRuntimeIdentifiers)' != ''">$(UnoSampleAppRuntimeIdentifiers)</RuntimeIdentifier>
 
 		<InvariantGlobalization Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">true</InvariantGlobalization>
 
