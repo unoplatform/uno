@@ -1,0 +1,36 @@
+parameters:
+  poolName: ''
+  deploymentName: ''
+  displayName: ''
+  environmentName: ''
+  azureSubscription: ''
+  storageAccountName: ''
+
+jobs:
+- deployment: ${{ parameters.deploymentName }}
+  displayName: ${{ parameters.displayName }}
+  cancelTimeoutInMinutes: 0
+  environment: ${{ parameters.environmentName }}
+
+  pool: ${{ parameters.poolName }}
+
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - download: none
+
+        - task: DownloadPipelineArtifact@2
+          displayName: Download Docs Artifacts
+          inputs:
+            artifactName: DocumentationArtifacts
+            targetPath: $(Pipeline.Workspace)/DocumentationArtifacts
+
+        - task: AzureCLI@2
+          displayName: Upload site files
+          inputs:
+            azureSubscription: ${{ parameters.azureSubscription }}
+            scriptType: pscore
+            scriptLocation: inlineScript
+            inlineScript: |
+              az storage blob upload-batch --account-name ${{ parameters.storageAccountName }} -s "$(Pipeline.Workspace)/DocumentationArtifacts/doc/_site" -d '$web' --overwrite
