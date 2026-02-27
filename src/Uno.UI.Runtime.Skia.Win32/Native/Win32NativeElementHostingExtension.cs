@@ -341,11 +341,9 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		{
 			this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
 		}
-		// Only the currently hosted HWND can perform the deferred first show.
-		// Rapid reload can queue arrange for old instances; this guard blocks those stale callbacks.
-		var showOnThisArrange = _showWindowOnNextArrangeHwnd.Value == hwnd.Value
-			&& _presenter.Content is Win32NativeWindow currentWindow
-			&& currentWindow.Hwnd == window.Hwnd;
+		// Only the HWND currently armed by AttachNativeElement can perform the deferred first show.
+		// Rapid reload can queue arrange for old instances; hwnd token mismatch blocks those stale callbacks.
+		var showOnThisArrange = _showWindowOnNextArrangeHwnd.Value == hwnd.Value;
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
 			this.LogTrace()?.Trace($"{nameof(ArrangeNativeElement)} child={hwnd.Value} rect={_lastArrangeRect} scale={scale:0.###} setWindowPosSuccess={success} showOnNextArrangeFor={_showWindowOnNextArrangeHwnd.Value} showNow={showOnThisArrange} childRect={Win32WindowRectHelper.GetWindowRectSnapshot(hwnd)} hostRect={Win32WindowRectHelper.GetWindowRectSnapshot(Hwnd)} active={PInvoke.GetActiveWindow().Value}");
