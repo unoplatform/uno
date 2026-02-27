@@ -140,9 +140,14 @@ VS Code requires manual ADB setup or extensions for Logcat viewing.
    # Clear previous logs first
    adb logcat -c
 
-   # Filter by your app's package name
+   # Filter by your app's package name (Linux/macOS or other bash-like shells)
    adb logcat | grep "com.yourcompany.yourapp"
 
+   # Windows PowerShell equivalent:
+   # adb logcat | Select-String "com.yourcompany.yourapp"
+
+   # Windows CMD equivalent:
+   # adb logcat | findstr "com.yourcompany.yourapp"
    # Filter by log priority (E=Error, W=Warn, I=Info, D=Debug, V=Verbose)
    adb logcat *:E
 
