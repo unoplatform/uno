@@ -1564,7 +1564,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.ReleaseRight();
 			await WindowHelper.WaitForIdle();
 
-			Assert.HasCount(isTextSelectionEnabled ? 1 : 0, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot));
+			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot);
+			if (isTextSelectionEnabled)
+			{
+				Assert.IsNotEmpty(popups);
+				Assert.IsTrue(SUT.ContextFlyout.IsOpen);
+			}
+			else
+			{
+				Assert.IsEmpty(popups);
+			}
 		}
 
 #if !HAS_INPUT_INJECTOR
