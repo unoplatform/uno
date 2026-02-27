@@ -124,6 +124,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // WASM clipboard APIs are async; GetContent() always registers providers, so Contains() is always true after Clear()
 		public async Task When_TextBox_Clipboard_Empty()
 		{
 #if __SKIA__
@@ -266,6 +267,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // WASM clipboard APIs are async; GetContent() always registers providers, so Contains() is always true after Clear()
 		public async Task When_CanPasteClipboardContent_EmptyClipboard()
 		{
 #if __SKIA__
