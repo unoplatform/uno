@@ -339,6 +339,12 @@ namespace Microsoft.UI.Xaml
 					return GetDefaultValue(property);
 				}
 
+				// For PropMethodCall, the authoritative base value is always the backing field.
+				if (property.IsPropMethodCall)
+				{
+					return GetValueFromMethodCall(property);
+				}
+
 				return modifiedValue.GetBaseValue();
 			}
 
@@ -2199,6 +2205,17 @@ namespace Microsoft.UI.Xaml
 				// Most (if not all) broken cases appear to be related to TemplatedParent being null incorrectly when applying styles.
 				// This should be re-validated after https://github.com/unoplatform/uno/issues/1621 is fixed.
 				value = GetDefaultValue(propertyDetails.Property);
+			}
+
+			// For PropMethodCall Coercion/Animation: seed ModifiedValue with the real backing field value
+			// before EnsureModifiedValue() would read stale _value (which is UnsetValue for PropMethodCall).
+			if (propertyDetails.IsPropMethodCall
+				&& propertyDetails.GetModifiedValue() == null
+				&& value != DependencyProperty.UnsetValue
+				&& (precedence == DependencyPropertyValuePrecedences.Coercion
+					|| precedence == DependencyPropertyValuePrecedences.Animations))
+			{
+				propertyDetails.InitializeModifiedValue(GetValueFromMethodCall(propertyDetails.Property));
 			}
 
 			propertyDetails.SetValue(value, precedence);

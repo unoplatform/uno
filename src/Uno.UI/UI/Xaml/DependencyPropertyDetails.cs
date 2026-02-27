@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -140,9 +141,12 @@ namespace Microsoft.UI.Xaml
 				if (_baseValueSource == precedence)
 				{
 					// Caller will re-evaluate base value.
-					_baseValueSource = _inheritedValue == DependencyProperty.UnsetValue
+					// PropMethodCall DPs never participate in inheritance — always fall back to DefaultValue.
+					_baseValueSource = IsPropMethodCall
 						? DependencyPropertyValuePrecedences.DefaultValue
-						: DependencyPropertyValuePrecedences.Inheritance;
+						: (_inheritedValue == DependencyProperty.UnsetValue
+							? DependencyPropertyValuePrecedences.DefaultValue
+							: DependencyPropertyValuePrecedences.Inheritance);
 				}
 			}
 
@@ -151,16 +155,17 @@ namespace Microsoft.UI.Xaml
 				// If our value is ModifiedValue, then the BaseValue is stored there.
 				modifiedValue.SetBaseValue(value, precedence);
 
-				if (_baseValueSource == DependencyPropertyValuePrecedences.Inheritance)
+				if (!IsPropMethodCall && _baseValueSource == DependencyPropertyValuePrecedences.Inheritance)
 				{
 					modifiedValue.SetBaseValue(_inheritedValue, DependencyPropertyValuePrecedences.Inheritance);
 				}
 			}
-			else
+			else if (!IsPropMethodCall)
 			{
 				// Otherwise, the BaseValue is stored directly in the _value field.
 				_value = _baseValueSource == DependencyPropertyValuePrecedences.Inheritance ? _inheritedValue : value;
 			}
+			// For PropMethodCall without ModifiedValue: skip _value write — value lives on backing field
 		}
 
 		/// <summary>
@@ -240,6 +245,20 @@ namespace Microsoft.UI.Xaml
 
 		internal ModifiedValue? GetModifiedValue()
 			=> _value as ModifiedValue;
+
+		/// <summary>
+		/// Pre-seeds a <see cref="ModifiedValue"/> with the real base value from the backing field.
+		/// Called by <see cref="DependencyObjectStore"/> before setting Coercion/Animation on a
+		/// PropMethodCall DP, so that <see cref="EnsureModifiedValue"/> doesn't capture stale <c>_value</c>.
+		/// </summary>
+		internal void InitializeModifiedValue(object? baseValue)
+		{
+			Debug.Assert(IsPropMethodCall);
+			Debug.Assert(_value is not ModifiedValue);
+			var modifiedValue = new ModifiedValue();
+			modifiedValue.SetBaseValue(baseValue, _baseValueSource);
+			_value = modifiedValue;
+		}
 
 		/// <summary>
 		/// Gets the current highest value precedence level
