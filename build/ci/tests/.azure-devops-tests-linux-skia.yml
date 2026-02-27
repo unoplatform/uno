@@ -104,7 +104,9 @@ jobs:
     inputs:
       testRunTitle: 'Linux Skia Runtime Tests'
       testResultsFormat: 'NUnit'
-      testResultsFiles: '$(build.sourcesdirectory)/build/skia-linux-runtime-tests-results.xml'
+      testResultsFiles: |
+        $(build.sourcesdirectory)/build/skia-linux-runtime-tests-results.xml
+        $(build.sourcesdirectory)/build/runtime-heartbeat-*.xml
       failTaskOnFailedTests: true
       failTaskOnMissingResultsFile: true
 

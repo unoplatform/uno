@@ -80,7 +80,9 @@ jobs:
     inputs:
       testRunTitle: 'WebAssembly Skia Runtime Tests $(UITEST_RUNTIME_TEST_GROUP)'
       testResultsFormat: 'NUnit'
-      testResultsFiles: '$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml'
+      testResultsFiles: |
+        $(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml
+        $(build.sourcesdirectory)/build/runtime-heartbeat-*.xml
       failTaskOnFailedTests: true
       failTaskOnMissingResultsFile: true
 
