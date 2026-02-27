@@ -4,6 +4,16 @@ using Microsoft.UI.Xaml.Data;
 namespace Microsoft.UI.Xaml
 {
 	/// <summary>
+	/// Supports PropMethodCall DPs.
+	/// </summary>
+	/// <remarks>
+	/// <paramref name="valueToSet"/> should be null when isGet is true.
+	/// In WinUI, when setting the value, the return value represents whether the property has changed its value.
+	/// In Uno, we are not yet doing it this way, and the return will be always null when setting the value.
+	/// </remarks>
+	internal delegate object PropMethodCall(DependencyObject @do, bool isGet, object valueToSet);
+
+	/// <summary>
 	/// Defines the metadata to use for a dependency property for framework elements
 	/// </summary>
 	/// <remarks>
@@ -149,6 +159,10 @@ namespace Microsoft.UI.Xaml
 		}
 
 		public FrameworkPropertyMetadataOptions Options { get; set; } = FrameworkPropertyMetadataOptions.Default;
+
+		internal PropMethodCall PropMethodCall { get; init; }
+
+		internal bool IsPropMethodCall => PropMethodCall is not null;
 
 		// Kept for binary compat only.
 		// This property should be removed, and the whole FrameworkPropertyMetadata should be internal.

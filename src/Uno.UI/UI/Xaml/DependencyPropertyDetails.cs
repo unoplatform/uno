@@ -7,9 +7,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
+using Microsoft.UI.Xaml.Data;
 using Uno.Buffers;
 using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml.Data;
 
 namespace Microsoft.UI.Xaml
 {

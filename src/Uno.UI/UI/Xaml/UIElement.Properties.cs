@@ -16,6 +16,7 @@ using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
 using Microsoft.UI.Xaml.Input;
+using Uno.UI.Helpers;
 
 #if __APPLE_UIKIT__
 using UIKit;
@@ -25,14 +26,47 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : DependencyObject, IXUidProvider
 	{
-		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true)]
-		public static DependencyProperty IsHitTestVisibleProperty { get; } = CreateIsHitTestVisibleProperty();
+		// TODO: Add more PropMethodCall and combine them in BitVector32
+		private bool _isHitTestVisible = true;
 
 		public bool IsHitTestVisible
 		{
-			get => GetIsHitTestVisibleValue();
-			set => SetIsHitTestVisibleValue(value);
+			get => (bool)GetValue(IsHitTestVisibleProperty);
+			set => SetValue(IsHitTestVisibleProperty, value);
 		}
+
+		public static DependencyProperty IsHitTestVisibleProperty { get; } = DependencyProperty.Register(
+			nameof(IsHitTestVisible),
+			typeof(bool),
+			typeof(UIElement),
+			new FrameworkPropertyMetadata(defaultValue: true, propertyChangedCallback: (s, e) => ((UIElement)s).OnIsHitTestVisibleChanged((bool)e.OldValue, (bool)e.NewValue))
+			{
+				PropMethodCall = HitTestVisible,
+			}
+		);
+
+		private static object HitTestVisible(DependencyObject @do, bool isGet, object valueToSet)
+		{
+			var @this = (UIElement)@do;
+			if (isGet)
+			{
+				return Boxes.Box(@this._isHitTestVisible);
+			}
+			else
+			{
+				var newValue = (bool)valueToSet;
+				if (newValue != @this._isHitTestVisible)
+				{
+					@this._isHitTestVisible = newValue;
+					// The value has changed.
+					return true;
+				}
+
+				// The value didn't change.
+				return false;
+			}
+		}
+
 
 		[GeneratedDependencyProperty(DefaultValue = 1.0, ChangedCallback = true)]
 		public static DependencyProperty OpacityProperty { get; } = CreateOpacityProperty();
