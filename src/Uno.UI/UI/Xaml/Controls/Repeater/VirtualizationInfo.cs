@@ -1,7 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// VirtualizationInfo.h, tag winui3/release/1.8.4
 
 using System;
+using System.Diagnostics;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Markup;
 using Uno.Extensions;
@@ -21,9 +23,14 @@ namespace Microsoft.UI.Xaml.Controls
 		private int m_phase = PhaseNotSpecified;
 		private bool m_keepAlive;
 		private bool m_autoRecycleCandidate;
+		private bool m_mustClearDataContext;
 
 		private WeakReference<object> m_data;
 		private WeakReference<IDataTemplateComponent> m_dataTemplateComponent;
+
+#if DEBUG
+		private static int s_logItemIndexDbg;
+#endif
 
 		public VirtualizationInfo()
 		{
@@ -48,6 +55,12 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get => m_autoRecycleCandidate;
 			set => m_autoRecycleCandidate = value;
+		}
+
+		public bool MustClearDataContext
+		{
+			get => m_mustClearDataContext;
+			set => m_mustClearDataContext = value;
 		}
 
 		public ElementOwner Owner => m_owner;
@@ -187,5 +200,17 @@ namespace Microsoft.UI.Xaml.Controls
 
 			m_index = newIndex;
 		}
+
+#if DEBUG
+		public static int GetLogItemIndex()
+		{
+			return s_logItemIndexDbg;
+		}
+
+		public static void SetLogItemIndex(int logItemIndex)
+		{
+			s_logItemIndexDbg = logItemIndex;
+		}
+#endif
 	}
 }

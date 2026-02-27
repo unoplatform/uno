@@ -1,0 +1,208 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// ItemCollectionTransitionProvider.cpp, tag winui3/release/1.8.4
+
+using System;
+using System.Collections.Generic;
+using Microsoft.UI.Xaml.Media;
+using Uno.Disposables;
+using Uno.UI.Helpers.WinUI;
+using Windows.Foundation;
+using static Microsoft.UI.Xaml.Controls._Tracing;
+
+namespace Microsoft.UI.Xaml.Controls
+{
+	public partial class ItemCollectionTransitionProvider
+	{
+		private IDisposable m_rendering;
+		private int m_transitionsBatch;
+
+		// Maps from batch ID to list of transitions
+		private readonly Dictionary<int, List<ItemCollectionTransition>> m_transitionsMap = new();
+		private readonly Dictionary<int, List<ItemCollectionTransition>> m_transitionsWithAnimationsMap = new();
+
+		// Keep-alive timers to ensure transitions aren't garbage collected before completion
+		private readonly Dictionary<DispatcherTimer, int> m_keepAliveTimersMap = new();
+
+		// Backing field for the event
+		private event TypedEventHandler<ItemCollectionTransitionProvider, ItemCollectionTransitionCompletedEventArgs> m_transitionCompletedEventSource;
+
+		public ItemCollectionTransitionProvider()
+		{
+		}
+
+		~ItemCollectionTransitionProvider()
+		{
+			foreach (var timerBatchPair in m_keepAliveTimersMap)
+			{
+				timerBatchPair.Key?.Stop();
+			}
+		}
+
+		public bool ShouldAnimate(ItemCollectionTransition transition)
+		{
+			return ShouldAnimateCore(transition);
+		}
+
+		public void QueueTransition(ItemCollectionTransition transition)
+		{
+			// When usesNewTransitionsBatch remains 'false', the provided transition is added to the current batch
+			// identified by the current m_transitionsBatch value.
+			bool usesNewTransitionsBatch = false;
+
+			if (m_rendering == null)
+			{
+				// This marks the beginning of a new batch of transitions.
+				usesNewTransitionsBatch = true;
+				// The batch gets a new id.
+				m_transitionsBatch++;
+				CompositionTarget.Rendering += OnRendering;
+				m_rendering = Disposable.Create(() => CompositionTarget.Rendering -= OnRendering);
+			}
+
+			// We'll animate if animations are enabled and the transition provider has indicated we should animate this transition.
+			if (SharedHelpers.IsAnimationsEnabled() && ShouldAnimate(transition))
+			{
+				if (usesNewTransitionsBatch)
+				{
+					// Allocating a new list of ItemCollectionTransition with animations for this new batch.
+					m_transitionsWithAnimationsMap[m_transitionsBatch] = new List<ItemCollectionTransition>();
+				}
+
+				if (m_transitionsWithAnimationsMap.TryGetValue(m_transitionsBatch, out var transitionsWithAnimations))
+				{
+					transitionsWithAnimations.Add(transition);
+				}
+			}
+
+			// To ensure proper VirtualizationInfo ordering, we still need to raise TransitionCompleted in a
+			// CompositionTarget.Rendering handler, even if we aren't going to animate anything for this transition.
+			if (usesNewTransitionsBatch)
+			{
+				// Allocating a new list of ItemCollectionTransition for this new batch.
+				m_transitionsMap[m_transitionsBatch] = new List<ItemCollectionTransition>();
+			}
+
+			if (m_transitionsMap.TryGetValue(m_transitionsBatch, out var transitions))
+			{
+				transitions.Add(transition);
+			}
+		}
+
+		protected virtual bool ShouldAnimateCore(ItemCollectionTransition transition)
+		{
+			throw new NotImplementedException("ShouldAnimateCore must be overridden in derived classes.");
+		}
+
+		protected virtual void StartTransitions(IList<ItemCollectionTransition> transitions)
+		{
+			throw new NotImplementedException("StartTransitions must be overridden in derived classes.");
+		}
+
+		public event TypedEventHandler<ItemCollectionTransitionProvider, ItemCollectionTransitionCompletedEventArgs> TransitionCompleted
+		{
+			add => m_transitionCompletedEventSource += value;
+			remove => m_transitionCompletedEventSource -= value;
+		}
+
+		/// <summary>
+		/// Notifies that a transition has completed.
+		/// </summary>
+		/// <param name="transition">The completed transition.</param>
+		internal void NotifyTransitionCompleted(ItemCollectionTransition transition)
+		{
+			m_transitionCompletedEventSource?.Invoke(this, new ItemCollectionTransitionCompletedEventArgs(transition));
+		}
+
+		private void CleanTransitionsBatch()
+		{
+			// Called when none of a batch's transitions required a timer to keep them alive.
+			// No completion notification is expected and all transitions can be released.
+			m_transitionsWithAnimationsMap.Remove(m_transitionsBatch);
+			m_transitionsMap.Remove(m_transitionsBatch);
+		}
+
+		private void OnKeepAliveTimerTick(object sender, object args)
+		{
+			// By the time this timer expires, all transitions associated with it are considered completed and they no longer need to be kept alive for
+			// ItemCollectionTransitionProgress.Complete() to successfully trigger a ItemCollectionTransitionProvider.NotifyTransitionCompleted call.
+			var keepAliveTimer = sender as DispatcherTimer;
+
+			if (keepAliveTimer != null)
+			{
+				// The timer is stopped, all its associated transitions are released and so is the timer itself.
+				keepAliveTimer.Stop();
+
+				if (m_keepAliveTimersMap.TryGetValue(keepAliveTimer, out var transitionsBatch))
+				{
+					m_transitionsWithAnimationsMap.Remove(transitionsBatch);
+					m_transitionsMap.Remove(transitionsBatch);
+					m_keepAliveTimersMap.Remove(keepAliveTimer);
+				}
+			}
+		}
+
+		private void OnRendering(object sender, object args)
+		{
+			m_rendering?.Dispose();
+			m_rendering = null;
+
+			bool keepAliveTimerRequired = false;
+
+			try
+			{
+				if (m_transitionsWithAnimationsMap.TryGetValue(m_transitionsBatch, out var transitionsWithAnimations) &&
+					transitionsWithAnimations != null)
+				{
+					StartTransitions(transitionsWithAnimations);
+				}
+
+				// We'll automatically raise TransitionCompleted on all of the transitions that were not actually animated
+				// in order to guarantee that every transition queued receives a corresponding TransitionCompleted event.
+				if (m_transitionsMap.TryGetValue(m_transitionsBatch, out var transitions) && transitions != null)
+				{
+					foreach (var transition in transitions)
+					{
+						if (transition.HasStarted)
+						{
+							keepAliveTimerRequired = true;
+						}
+						else
+						{
+							NotifyTransitionCompleted(transition);
+						}
+					}
+				}
+			}
+			finally
+			{
+				if (keepAliveTimerRequired)
+				{
+					// At least one transition in the batch requires a new 'keep alive' timer.
+					StartNewKeepAliveTimer();
+				}
+				else
+				{
+					// None of the transitions in the batch requires a 'keep alive' timer. Simply discard them all.
+					CleanTransitionsBatch();
+				}
+			}
+		}
+
+		private void StartNewKeepAliveTimer()
+		{
+			// This timer delays the release of the batch's transitions so that ItemCollectionTransitionProgress.Complete()
+			// which uses transition weak references is able to trigger an ItemCollectionTransitionProvider.NotifyTransitionCompleted
+			// call for completion. This is important for TransitionManager.OnTransitionProviderTransitionCompleted to be able to
+			// update the ItemsRepeater's items ownership.
+			MUX_ASSERT(m_transitionsMap.TryGetValue(m_transitionsBatch, out var list) && list.Count > 0);
+
+			var keepAliveTimer = new DispatcherTimer();
+			keepAliveTimer.Interval = TimeSpan.FromSeconds(5);
+			keepAliveTimer.Tick += OnKeepAliveTimerTick;
+			keepAliveTimer.Start();
+
+			m_keepAliveTimersMap[keepAliveTimer] = m_transitionsBatch;
+		}
+	}
+}
