@@ -57,6 +57,14 @@ namespace Uno.UI.Tests.Resources
 		[DataRow(@"Assets\logo.scale-200.lang-fr-CA.png", @"Assets\logo.png", "200", "fr-CA", null)]
 		[DataRow(@"Assets\sr-Cyrl\logo.png", @"Assets\logo.png", null, "sr-Cyrl", null)]
 		[DataRow(@"fr\Assets\sr-Cyrl\logo.png", @"Assets\logo.png", null, "sr-Cyrl", null)]
+		// Locales that triggered UNOB0003 due to language detection failures
+		[DataRow(@"Strings\quz-PE\Resources.resw", @"Strings\Resources.resw", null, "quz-PE", null)]
+		[DataRow(@"Strings\zh-CN\Resources.resw", @"Strings\Resources.resw", null, "zh-CN", null)]
+		[DataRow(@"Strings\zh-TW\Resources.resw", @"Strings\Resources.resw", null, "zh-TW", null)]
+		[DataRow(@"Strings\ca-Es-VALENCIA\Resources.resw", @"Strings\Resources.resw", null, "ca-Es-VALENCIA", null)]
+		[DataRow(@"Strings\pa-IN\Resources.resw", @"Strings\Resources.resw", null, "pa-IN", null)]
+		[DataRow(@"Strings\zh-Hans\Resources.resw", @"Strings\Resources.resw", null, "zh-Hans", null)]
+		[DataRow(@"Strings\zh-Hant\Resources.resw", @"Strings\Resources.resw", null, "zh-Hant", null)]
 		[TestMethod]
 		public void When_Parse(string relativePath, string logicalPath, string scale, string language, string custom)
 		{
