@@ -21,7 +21,7 @@
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">tvossimulator-x64</RuntimeIdentifier>
 
 		<!-- Override RuntimeIdentifier specifically for smaller builds -->
-		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))!=''">$(UnoSampleAppRuntimeIdentifiers)</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))!='' AND '$(UnoSampleAppRuntimeIdentifiers)' != ''">$(UnoSampleAppRuntimeIdentifiers)</RuntimeIdentifier>
 
 		<!--
 		Required for the mobile nuget restore to revalidate
