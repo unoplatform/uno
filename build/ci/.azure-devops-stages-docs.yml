@@ -31,7 +31,20 @@ stages:
 - stage: docs_deploy_dev
   displayName: Docs Deploy - Dev
   dependsOn: docs_generation
-  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/legacy/4x')), not(eq(variables['Build.Reason'], 'PullRequest')))
+  condition: |
+    and(
+      succeeded(),
+      or(
+        and(
+          or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/legacy/4x')),
+          not(eq(variables['Build.Reason'], 'PullRequest'))
+        ),
+        and(
+          eq(variables['DocsDeployTestMode'], 'true'),
+          or(eq(variables['DocsDeployTarget'], 'dev'), eq(variables['DocsDeployTarget'], 'all'))
+        )
+      )
+    )
   jobs:
   - template: docs/.azure-devops-docs-deploy.yml
     parameters:
@@ -45,7 +58,20 @@ stages:
 - stage: docs_deploy_staging
   displayName: Docs Deploy - Staging
   dependsOn: docs_generation
-  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/stable/'), not(eq(variables['Build.Reason'], 'PullRequest')))
+  condition: |
+    and(
+      succeeded(),
+      or(
+        and(
+          startsWith(variables['Build.SourceBranch'], 'refs/heads/release/stable/'),
+          not(eq(variables['Build.Reason'], 'PullRequest'))
+        ),
+        and(
+          eq(variables['DocsDeployTestMode'], 'true'),
+          or(eq(variables['DocsDeployTarget'], 'staging'), eq(variables['DocsDeployTarget'], 'prod'), eq(variables['DocsDeployTarget'], 'all'))
+        )
+      )
+    )
   jobs:
   - template: docs/.azure-devops-docs-deploy.yml
     parameters:
@@ -59,7 +85,20 @@ stages:
 - stage: docs_deploy_prod
   displayName: Docs Deploy - Prod
   dependsOn: docs_deploy_staging
-  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/stable/'), not(eq(variables['Build.Reason'], 'PullRequest')))
+  condition: |
+    and(
+      succeeded(),
+      or(
+        and(
+          startsWith(variables['Build.SourceBranch'], 'refs/heads/release/stable/'),
+          not(eq(variables['Build.Reason'], 'PullRequest'))
+        ),
+        and(
+          eq(variables['DocsDeployTestMode'], 'true'),
+          or(eq(variables['DocsDeployTarget'], 'prod'), eq(variables['DocsDeployTarget'], 'all'))
+        )
+      )
+    )
   jobs:
   - template: docs/.azure-devops-docs-deploy.yml
     parameters:
