@@ -385,7 +385,9 @@ public partial class CoreWebView2
 			_nativeWebView.ProcessNavigation(httpRequestMessage);
 		}
 
+#if !__SKIA__
 		_processedSource = null;
+#endif
 	}
 
 
