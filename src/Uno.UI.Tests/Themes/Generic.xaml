@@ -1,0 +1,15 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:local="using:Uno.UI.Tests.App.Views">
+
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="ms-appx:///Uno.UI.Tests/Themes/Controls/GenericXamlMergedControl.xaml" />
+	</ResourceDictionary.MergedDictionaries>
+
+	<!-- Default style for GenericXamlTestControl - tests app-level Generic.xaml discovery -->
+	<Style TargetType="local:GenericXamlTestControl">
+		<Setter Property="TestTag" Value="FromGenericXaml" />
+		<Setter Property="TestTag2" Value="FromGenericXaml" />
+	</Style>
+
+</ResourceDictionary>

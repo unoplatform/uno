@@ -306,5 +306,72 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		public partial class SubRangeBase : Microsoft.UI.Xaml.Controls.Primitives.RangeBase { }
 		public partial class SubNavigationViewItem : NavigationViewItem { }
 
+		#region Generic.xaml Tests (Issue #4424)
+
+		[TestMethod]
+		public void When_Custom_Control_Style_In_Generic_Xaml()
+		{
+			// Test that a custom control defined in the app assembly gets its default style from Themes/Generic.xaml
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var control = new GenericXamlTestControl();
+			Assert.AreEqual("NotApplied", control.TestTag); // Before being added to visual tree
+
+			app.HostView.Children.Add(control);
+
+			Assert.AreEqual("FromGenericXaml", control.TestTag);
+			Assert.AreEqual("FromGenericXaml", control.TestTag2);
+		}
+
+		[TestMethod]
+		public void When_Style_In_MergedDictionary_Of_Generic_Xaml()
+		{
+			// Test that styles in MergedDictionaries of Generic.xaml are also found
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var control = new GenericXamlMergedControl();
+			Assert.AreEqual("NotApplied", control.TestTag); // Before being added to visual tree
+
+			app.HostView.Children.Add(control);
+
+			Assert.AreEqual("FromMergedDictionary", control.TestTag);
+		}
+
+		[TestMethod]
+		public void When_External_Library_Generic_Xaml_Still_Works_After_App_Generic_Xaml()
+		{
+			// Regression test: ensure external library Generic.xaml still works with the new app Generic.xaml support
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var extControl = new MyExtControl();
+
+			app.HostView.Children.Add(extControl);
+
+			Assert.AreEqual("FromDefaultStyle", extControl.MyTag);
+		}
+
+		[TestMethod]
+		public void When_Explicit_Style_Replaces_Implicit_Merges_Default()
+		{
+			// Test that explicit style replaces implicit but merges with default style from Generic.xaml
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var control = new GenericXamlTestControl();
+			// Set an explicit style that only sets TestTag2
+			control.Style = new Style(typeof(GenericXamlTestControl))
+			{
+				Setters = { new Setter(GenericXamlTestControl.TestTag2Property, "FromExplicitStyle") }
+			};
+
+			app.HostView.Children.Add(control);
+
+			// TestTag should come from default style (Generic.xaml) since explicit style doesn't set it
+			Assert.AreEqual("FromGenericXaml", control.TestTag);
+			// TestTag2 should come from explicit style
+			Assert.AreEqual("FromExplicitStyle", control.TestTag2);
+		}
+
+		#endregion
+
 	}
 }
