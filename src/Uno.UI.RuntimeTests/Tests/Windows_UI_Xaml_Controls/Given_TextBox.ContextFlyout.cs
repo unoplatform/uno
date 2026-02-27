@@ -1,3 +1,4 @@
+#if WINAPPSDK || __SKIA__
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -339,3 +340,4 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 	}
 }
+#endif
