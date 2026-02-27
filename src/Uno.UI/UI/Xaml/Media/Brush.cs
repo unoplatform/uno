@@ -14,7 +14,7 @@ using Windows.UI;
 namespace Microsoft.UI.Xaml.Media
 {
 	[TypeConverter(typeof(BrushConverter))]
-	public partial class Brush : DependencyObject
+	public partial class Brush : DependencyObject, IMultiParentShareableDependencyObject
 	{
 		private WeakEventHelper.WeakEventCollection? _invalidateRenderHandlers;
 
