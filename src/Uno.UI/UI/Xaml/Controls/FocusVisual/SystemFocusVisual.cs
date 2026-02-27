@@ -46,6 +46,10 @@ internal partial class SystemFocusVisual : Control
 
 		focusVisual._focusedElementSubscriptions.Disposable = null;
 
+#if __SKIA__
+		focusVisual.Visibility = Visibility.Collapsed;
+#endif
+
 		if (args.NewValue is FrameworkElement element)
 		{
 #if __SKIA__
