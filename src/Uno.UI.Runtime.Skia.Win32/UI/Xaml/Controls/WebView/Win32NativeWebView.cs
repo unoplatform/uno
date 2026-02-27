@@ -50,14 +50,6 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 {
 	private const string WindowClassName = "UnoPlatformWebViewWindow";
 	private const uint SC_MASK = 0xFFF0; // Mask to extract system command from wParam
-	private const uint WM_SHOWWINDOW = 0x0018;
-	private const uint WM_ACTIVATEAPP = 0x001C;
-	private const uint WM_MOUSEACTIVATE = 0x0021;
-	private const uint WM_WINDOWPOSCHANGING = 0x0046;
-	private const uint WM_WINDOWPOSCHANGED = 0x0047;
-	private const uint WM_SETFOCUS = 0x0007;
-	private const uint WM_KILLFOCUS = 0x0008;
-	private const uint WM_NCACTIVATE = 0x0086;
 
 	// _windowClass must be statically stored, otherwise lpfnWndProc will get collected and the CLR will throw some weird exceptions
 	// ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
@@ -310,14 +302,14 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 		=> msg switch
 		{
 			PInvoke.WM_ACTIVATE => nameof(PInvoke.WM_ACTIVATE),
-			WM_ACTIVATEAPP => nameof(WM_ACTIVATEAPP),
-			WM_SETFOCUS => nameof(WM_SETFOCUS),
-			WM_KILLFOCUS => nameof(WM_KILLFOCUS),
-			WM_MOUSEACTIVATE => nameof(WM_MOUSEACTIVATE),
-			WM_NCACTIVATE => nameof(WM_NCACTIVATE),
-			WM_WINDOWPOSCHANGING => nameof(WM_WINDOWPOSCHANGING),
-			WM_WINDOWPOSCHANGED => nameof(WM_WINDOWPOSCHANGED),
-			WM_SHOWWINDOW => nameof(WM_SHOWWINDOW),
+			PInvoke.WM_ACTIVATEAPP => nameof(PInvoke.WM_ACTIVATEAPP),
+			PInvoke.WM_SETFOCUS => nameof(PInvoke.WM_SETFOCUS),
+			PInvoke.WM_KILLFOCUS => nameof(PInvoke.WM_KILLFOCUS),
+			PInvoke.WM_MOUSEACTIVATE => nameof(PInvoke.WM_MOUSEACTIVATE),
+			PInvoke.WM_NCACTIVATE => nameof(PInvoke.WM_NCACTIVATE),
+			PInvoke.WM_WINDOWPOSCHANGING => nameof(PInvoke.WM_WINDOWPOSCHANGING),
+			PInvoke.WM_WINDOWPOSCHANGED => nameof(PInvoke.WM_WINDOWPOSCHANGED),
+			PInvoke.WM_SHOWWINDOW => nameof(PInvoke.WM_SHOWWINDOW),
 			PInvoke.WM_SIZE => nameof(PInvoke.WM_SIZE),
 			PInvoke.WM_SYSCOMMAND => nameof(PInvoke.WM_SYSCOMMAND),
 			PInvoke.WM_CLOSE => nameof(PInvoke.WM_CLOSE),
@@ -326,26 +318,26 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 
 	private void LogTrackedWndProcMessage(uint msg, string messageName, HWND hwnd, WPARAM wParam, LPARAM lParam)
 	{
-		if (!Win32WebViewTraceHelper.IsVerboseWin32WebViewTraceEnabled())
+		if (!this.Log().IsEnabled(LogLevel.Trace))
 		{
 			return;
 		}
 
 		var active = PInvoke.GetActiveWindow();
 		LogVerboseWin32Trace(
-			() => $"WndProc {messageName} hwnd={hwnd.Value} presenterParent={ParentHwnd.Value} wParam={wParam.Value} lParam={lParam.Value}{TryGetWindowPosPayload(msg, lParam)} active={active.Value} childRect={Win32WebViewTraceHelper.GetWindowRectSnapshot(hwnd)} parentRect={Win32WebViewTraceHelper.GetWindowRectSnapshot(ParentHwnd)}");
+			() => $"WndProc {messageName} hwnd={hwnd.Value} presenterParent={ParentHwnd.Value} wParam={wParam.Value} lParam={lParam.Value}{TryGetWindowPosPayload(msg, lParam)} active={active.Value} childRect={GetWindowRectSnapshot(hwnd)} parentRect={GetWindowRectSnapshot(ParentHwnd)}");
 	}
 
 	private static string TryGetWindowPosPayload(uint msg, LPARAM lParam)
 	{
-		if ((msg != WM_WINDOWPOSCHANGING && msg != WM_WINDOWPOSCHANGED) || lParam.Value == 0)
+		if ((msg != PInvoke.WM_WINDOWPOSCHANGING && msg != PInvoke.WM_WINDOWPOSCHANGED) || lParam.Value == 0)
 		{
 			return string.Empty;
 		}
 
 		try
 		{
-			var windowPos = Marshal.PtrToStructure<WindowPosPayload>((IntPtr)lParam.Value);
+			var windowPos = Marshal.PtrToStructure<WINDOWPOS>((IntPtr)lParam.Value);
 			return $" windowPos=(x={windowPos.x},y={windowPos.y},cx={windowPos.cx},cy={windowPos.cy},flags=0x{(uint)windowPos.flags:X})";
 		}
 		catch (Exception)
@@ -354,29 +346,32 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 		}
 	}
 
-	[StructLayout(LayoutKind.Sequential)]
-	private struct WindowPosPayload
+	internal static string GetWindowRectSnapshot(HWND hwnd)
 	{
-		public nint hwnd;
-		public nint hwndInsertAfter;
-		public int x;
-		public int y;
-		public int cx;
-		public int cy;
-		public uint flags;
+		if (hwnd == HWND.Null)
+		{
+			return "null";
+		}
+
+		if (PInvoke.GetWindowRect(hwnd, out var rect))
+		{
+			return $"{rect.left},{rect.top},{rect.right - rect.left}x{rect.bottom - rect.top}";
+		}
+
+		return $"error={Marshal.GetLastWin32Error()}";
 	}
 
 	private void LogVerboseWin32Trace(Func<string> messageFactory)
 	{
-		if (!Win32WebViewTraceHelper.IsVerboseWin32WebViewTraceEnabled() || this.LogWarn() is not { } warningLogger)
+		if (!this.Log().IsEnabled(LogLevel.Trace))
 		{
 			return;
 		}
 
 		// Keep payload creation lazy because these traces capture native window state and
-		// Uno's logger API does not expose a Warn(Func<string>) lazy overload.
+		// Uno's logger API does not expose a Trace(Func<string>) lazy overload.
 		var message = $"[WebView2Trace] {DateTime.UtcNow:O} {messageFactory()}";
-		warningLogger.Warn(message);
+		this.LogTrace()?.Trace(message);
 	}
 
 	public string DocumentTitle
@@ -404,7 +399,7 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 
 	private void NativeWebView_NavigationStarting(object? sender, NativeWebView.CoreWebView2NavigationStartingEventArgs e)
 	{
-		LogVerboseWin32Trace(() => $"NavigationStarting id={e.NavigationId} uri={e.Uri ?? "<null>"} child={_hwnd.Value} childRect={Win32WebViewTraceHelper.GetWindowRectSnapshot(_hwnd)} parent={ParentHwnd.Value} parentRect={Win32WebViewTraceHelper.GetWindowRectSnapshot(ParentHwnd)}");
+		LogVerboseWin32Trace(() => $"NavigationStarting id={e.NavigationId} uri={e.Uri ?? "<null>"} child={_hwnd.Value} childRect={GetWindowRectSnapshot(_hwnd)} parent={ParentHwnd.Value} parentRect={GetWindowRectSnapshot(ParentHwnd)}");
 
 		if (e.Uri is null)
 		{
@@ -428,7 +423,7 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 	private void NativeWebView_NavigationCompleted(object? sender, NativeWebView.CoreWebView2NavigationCompletedEventArgs e)
 	{
 		LogVerboseWin32Trace(
-			() => $"NavigationCompleted id={e.NavigationId} success={e.IsSuccess} http={e.HttpStatusCode} errorStatus={e.WebErrorStatus} child={_hwnd.Value} childRect={Win32WebViewTraceHelper.GetWindowRectSnapshot(_hwnd)} parent={ParentHwnd.Value} parentRect={Win32WebViewTraceHelper.GetWindowRectSnapshot(ParentHwnd)}");
+			() => $"NavigationCompleted id={e.NavigationId} success={e.IsSuccess} http={e.HttpStatusCode} errorStatus={e.WebErrorStatus} child={_hwnd.Value} childRect={GetWindowRectSnapshot(_hwnd)} parent={ParentHwnd.Value} parentRect={GetWindowRectSnapshot(ParentHwnd)}");
 
 		if (!_navigationIdToUriMap.TryGetValue(e.NavigationId, out var uriString))
 		{

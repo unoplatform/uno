@@ -332,7 +332,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 			this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 		LogVerboseWin32WebViewTrace(
-			() => $"{nameof(ArrangeNativeElement)} child={hwnd.Value} rect={_lastArrangeRect} scale={scale:0.###} setWindowPosSuccess={success} showOnNextArrange={_showWindowOnNextArrange} childRect={Win32WebViewTraceHelper.GetWindowRectSnapshot(hwnd)} hostRect={Win32WebViewTraceHelper.GetWindowRectSnapshot(Hwnd)} {GetActivationSnapshot()}");
+			() => $"{nameof(ArrangeNativeElement)} child={hwnd.Value} rect={_lastArrangeRect} scale={scale:0.###} setWindowPosSuccess={success} showOnNextArrange={_showWindowOnNextArrange} childRect={Win32NativeWebView.GetWindowRectSnapshot(hwnd)} hostRect={Win32NativeWebView.GetWindowRectSnapshot(Hwnd)} {GetActivationSnapshot()}");
 
 		_lastFinalSvgClipPath = null; // force reapply clip path after arranging
 		OnRenderingNegativePathReevaluated(this, _lastClipPath);
@@ -341,21 +341,21 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		{
 			_showWindowOnNextArrange = false;
 			_ = PInvoke.ShowWindow(hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
-			LogVerboseWin32WebViewTrace(() => $"{nameof(ArrangeNativeElement)} showed child={hwnd.Value} with {nameof(SHOW_WINDOW_CMD.SW_SHOWNORMAL)} childRect={Win32WebViewTraceHelper.GetWindowRectSnapshot(hwnd)} hostRect={Win32WebViewTraceHelper.GetWindowRectSnapshot(Hwnd)} {GetActivationSnapshot()}");
+			LogVerboseWin32WebViewTrace(() => $"{nameof(ArrangeNativeElement)} showed child={hwnd.Value} with {nameof(SHOW_WINDOW_CMD.SW_SHOWNORMAL)} childRect={Win32NativeWebView.GetWindowRectSnapshot(hwnd)} hostRect={Win32NativeWebView.GetWindowRectSnapshot(Hwnd)} {GetActivationSnapshot()}");
 		}
 	}
 
 	private void LogVerboseWin32WebViewTrace(Func<string> messageFactory)
 	{
-		if (!Win32WebViewTraceHelper.IsVerboseWin32WebViewTraceEnabled() || this.LogWarn() is not { } warningLogger)
+		if (!this.Log().IsEnabled(LogLevel.Trace))
 		{
 			return;
 		}
 
 		// Keep payload creation lazy because these traces include expensive native state snapshots
-		// and the Uno logger does not provide a Warn(Func<string>) overload.
+		// and the Uno logger does not provide a Trace(Func<string>) overload.
 		var message = $"[WebView2Trace] {DateTime.UtcNow:O} {messageFactory()}";
-		warningLogger.Warn(message);
+		this.LogTrace()?.Trace(message);
 	}
 
 	private static string GetActivationSnapshot()
