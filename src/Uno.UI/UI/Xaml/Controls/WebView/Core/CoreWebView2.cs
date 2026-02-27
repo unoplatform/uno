@@ -254,14 +254,6 @@ public partial class CoreWebView2
 		{
 			Source = (uri ?? BlankUri).ToString();
 		}
-#if __SKIA__
-		// Keep track of the currently displayed URI so a native view recreated after unload
-		// can navigate back to the same document.
-		if (_processedSource is not string && uri is not null)
-		{
-			_processedSource = uri;
-		}
-#endif
 
 		NavigationCompleted?.Invoke(this, new CoreWebView2NavigationCompletedEventArgs((ulong)_navigationId, uri, isSuccess, httpStatusCode, errorStatus));
 	}
@@ -393,9 +385,7 @@ public partial class CoreWebView2
 			_nativeWebView.ProcessNavigation(httpRequestMessage);
 		}
 
-#if !__SKIA__
 		_processedSource = null;
-#endif
 	}
 
 
