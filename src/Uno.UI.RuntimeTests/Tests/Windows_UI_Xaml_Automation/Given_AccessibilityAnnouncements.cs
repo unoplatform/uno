@@ -83,7 +83,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			var button = new Microsoft.UI.Xaml.Controls.Button { Content = "Test" };
 			await Uno.UI.RuntimeTests.Helpers.UITestHelper.Load(button);
 
-			var peer = button.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(button);
 			Assert.IsNotNull(peer);
 
 			// Act & Assert - Should not throw

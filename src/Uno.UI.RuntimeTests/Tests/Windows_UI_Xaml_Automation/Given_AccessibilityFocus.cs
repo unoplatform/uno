@@ -42,14 +42,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await TestServices.WindowHelper.WaitForIdle();
 
 			// Assert
-			var peer1 = button1.GetOrCreateAutomationPeer();
+			var peer1 = FrameworkElementAutomationPeer.CreatePeerForElement(button1);
 			Assert.IsNotNull(peer1, "Button1 should have an automation peer");
 			Assert.IsTrue(peer1.IsKeyboardFocusable(), "Button1 should be keyboard focusable");
 
-			var peer2 = button2.GetOrCreateAutomationPeer();
+			var peer2 = FrameworkElementAutomationPeer.CreatePeerForElement(button2);
 			Assert.IsTrue(peer2.IsKeyboardFocusable(), "Button2 should be keyboard focusable");
 
-			var peer3 = button3.GetOrCreateAutomationPeer();
+			var peer3 = FrameworkElementAutomationPeer.CreatePeerForElement(button3);
 			Assert.IsTrue(peer3.IsKeyboardFocusable(), "Button3 should be keyboard focusable");
 		}
 
@@ -84,7 +84,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await TestServices.WindowHelper.WaitForIdle();
 
 			// Assert
-			var peer = dialogContent.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(dialogContent);
 			Assert.IsNotNull(peer, "Dialog button should have an automation peer");
 			Assert.IsTrue(peer.IsKeyboardFocusable(), "Dialog content should be keyboard focusable");
 		}
@@ -114,7 +114,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await TestServices.WindowHelper.WaitForIdle();
 
 			// Assert
-			var peer1 = button1.GetOrCreateAutomationPeer();
+			var peer1 = FrameworkElementAutomationPeer.CreatePeerForElement(button1);
 			Assert.IsFalse(peer1.IsEnabled(), "Disabled button should report IsEnabled=false");
 		}
 
@@ -130,7 +130,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(textBlock);
 
 			// Act
-			var peer = textBlock.GetOrCreateAutomationPeer();
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(textBlock);
 
 			// Assert
 			Assert.IsNotNull(peer);
