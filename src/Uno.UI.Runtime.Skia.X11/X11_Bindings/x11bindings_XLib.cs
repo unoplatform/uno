@@ -46,6 +46,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		private const string libX11 = "libX11.so.6";
 		private const string libX11Randr = "libXrandr.so.2";
 		internal const string libXInput = "libXi.so.6";
+		internal const string libXfixes = "libXfixes.so.3";
 
 		[LibraryImport(libX11)]
 		public static partial IntPtr XOpenDisplay(IntPtr display);
@@ -159,6 +160,9 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		[LibraryImport(libX11, StringMarshallingCustomType = typeof(AnsiStringMarshaller))]
 		public static partial IntPtr XInternAtom(IntPtr display, string atom_name, [MarshalAs(UnmanagedType.Bool)] bool only_if_exists);
+
+		[LibraryImport(libXfixes)]
+		public static partial void XFixesSelectSelectionInput(IntPtr display, IntPtr window, IntPtr selection, IntPtr event_mask);
 
 		[LibraryImport(libX11)]
 		public static partial IntPtr XGetAtomName(IntPtr display, IntPtr atom);
