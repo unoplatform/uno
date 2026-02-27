@@ -50,6 +50,7 @@ public class X11NativeWebView : INativeWebView
 	private readonly Window _window;
 	private readonly WebKit.WebView _webview;
 	private readonly string _title = $"Uno WebView {Random.Shared.Next()}";
+	private int _disposed;
 
 	private bool _dontRaiseNextNavigationCompleted;
 
@@ -170,13 +171,41 @@ public class X11NativeWebView : INativeWebView
 			RunOnGtkThread(() => _window.ShowAll());
 		}
 
-		presenter.Loaded += (_, _) => RunOnGtkThread(() => _window.ShowAll());
-		presenter.Unloaded += (_, _) => RunOnGtkThread(() => _window.Hide());
+		presenter.Loaded += OnPresenterLoaded;
+		presenter.Unloaded += OnPresenterUnloaded;
 	}
 
 	~X11NativeWebView()
 	{
-		RunOnGtkThread(() => _window.Close());
+		Dispose(disposing: false);
+	}
+
+	public void Dispose()
+	{
+		Dispose(disposing: true);
+		GC.SuppressFinalize(this);
+	}
+
+	private void Dispose(bool disposing)
+	{
+		if (System.Threading.Interlocked.Exchange(ref _disposed, 1) != 0)
+		{
+			return;
+		}
+
+		if (disposing)
+		{
+			_presenter.Loaded -= OnPresenterLoaded;
+			_presenter.Unloaded -= OnPresenterUnloaded;
+		}
+
+		RunOnGtkThread(() =>
+		{
+			_webview.LoadChanged -= WebViewOnLoadChanged;
+			_webview.LoadFailed -= WebViewOnLoadFailed;
+			_webview.UserContentManager.ScriptMessageReceived -= UserContentManagerOnScriptMessageReceived;
+			_window.Close();
+		});
 	}
 
 	public string DocumentTitle => RunOnGtkThread(() => _webview.Title);
@@ -217,6 +246,10 @@ public class X11NativeWebView : INativeWebView
 			tcs.Task.Wait();
 		}
 	}
+
+	private void OnPresenterLoaded(object sender, global::Microsoft.UI.Xaml.RoutedEventArgs e) => RunOnGtkThread(() => _window.ShowAll());
+
+	private void OnPresenterUnloaded(object sender, global::Microsoft.UI.Xaml.RoutedEventArgs e) => RunOnGtkThread(() => _window.Hide());
 
 	public void GoBack() => RunOnGtkThread(() => _webview.GoBack());
 	public void GoForward() => RunOnGtkThread(() => _webview.GoForward());

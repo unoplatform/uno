@@ -69,6 +69,15 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 	private Dictionary<ulong, string> _navigationIdToUriMap = new();
 	private string _documentTitle = string.Empty;
 	private readonly NativeWebView.CoreWebView2Controller _controller;
+	private readonly EventHandler<NativeWebView.CoreWebView2NavigationCompletedEventArgs> _navigationCompletedHandler;
+	private readonly EventHandler<NativeWebView.CoreWebView2NewWindowRequestedEventArgs> _newWindowRequestedHandler;
+	private readonly EventHandler<NativeWebView.CoreWebView2SourceChangedEventArgs> _sourceChangedHandler;
+	private readonly EventHandler<NativeWebView.CoreWebView2WebMessageReceivedEventArgs> _webMessageReceivedHandler;
+	private readonly EventHandler<NativeWebView.CoreWebView2NavigationStartingEventArgs> _navigationStartingHandler;
+	private readonly EventHandler<object> _historyChangedHandler;
+	private readonly EventHandler<object> _documentTitleChangedHandler;
+	private int _nativeResourcesReleased;
+	private int _disposed;
 
 	private HWND ParentHwnd => (_presenter.XamlRoot?.HostWindow?.NativeWindow as Win32NativeWindow)?.Hwnd is IntPtr hwnd ? (HWND)hwnd : HWND.Null;
 
@@ -167,13 +176,21 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 
 		// This dance with weak refs is necessary because there seems like _nativeWebView when it has a ref back
 		// to this.
-		_nativeWebView.NavigationCompleted += EventHandlerBuilder<NativeWebView.CoreWebView2NavigationCompletedEventArgs>(static (@this, o, a) => @this.NativeWebView_NavigationCompleted(o, a));
-		_nativeWebView.NewWindowRequested += EventHandlerBuilder<NativeWebView.CoreWebView2NewWindowRequestedEventArgs>(static (@this, o, a) => @this.NativeWebView_NewWindowRequested(o, a));
-		_nativeWebView.SourceChanged += EventHandlerBuilder<NativeWebView.CoreWebView2SourceChangedEventArgs>(static (@this, o, a) => @this.NativeWebView_SourceChanged(o, a));
-		_nativeWebView.WebMessageReceived += EventHandlerBuilder<NativeWebView.CoreWebView2WebMessageReceivedEventArgs>(static (@this, o, a) => @this.NativeWebView_WebMessageReceived(o, a));
-		_nativeWebView.NavigationStarting += EventHandlerBuilder<NativeWebView.CoreWebView2NavigationStartingEventArgs>(static (@this, o, a) => @this.NativeWebView_NavigationStarting(o, a));
-		_nativeWebView.HistoryChanged += EventHandlerBuilder<object>(static (@this, o, a) => @this.CoreWebView2_HistoryChanged(o, a));
-		_nativeWebView.DocumentTitleChanged += EventHandlerBuilder<object>(static (@this, o, a) => @this.OnNativeTitleChanged(o, a));
+		_navigationCompletedHandler = EventHandlerBuilder<NativeWebView.CoreWebView2NavigationCompletedEventArgs>(static (@this, o, a) => @this.NativeWebView_NavigationCompleted(o, a));
+		_newWindowRequestedHandler = EventHandlerBuilder<NativeWebView.CoreWebView2NewWindowRequestedEventArgs>(static (@this, o, a) => @this.NativeWebView_NewWindowRequested(o, a));
+		_sourceChangedHandler = EventHandlerBuilder<NativeWebView.CoreWebView2SourceChangedEventArgs>(static (@this, o, a) => @this.NativeWebView_SourceChanged(o, a));
+		_webMessageReceivedHandler = EventHandlerBuilder<NativeWebView.CoreWebView2WebMessageReceivedEventArgs>(static (@this, o, a) => @this.NativeWebView_WebMessageReceived(o, a));
+		_navigationStartingHandler = EventHandlerBuilder<NativeWebView.CoreWebView2NavigationStartingEventArgs>(static (@this, o, a) => @this.NativeWebView_NavigationStarting(o, a));
+		_historyChangedHandler = EventHandlerBuilder<object>(static (@this, o, a) => @this.CoreWebView2_HistoryChanged(o, a));
+		_documentTitleChangedHandler = EventHandlerBuilder<object>(static (@this, o, a) => @this.OnNativeTitleChanged(o, a));
+
+		_nativeWebView.NavigationCompleted += _navigationCompletedHandler;
+		_nativeWebView.NewWindowRequested += _newWindowRequestedHandler;
+		_nativeWebView.SourceChanged += _sourceChangedHandler;
+		_nativeWebView.WebMessageReceived += _webMessageReceivedHandler;
+		_nativeWebView.NavigationStarting += _navigationStartingHandler;
+		_nativeWebView.HistoryChanged += _historyChangedHandler;
+		_nativeWebView.DocumentTitleChanged += _documentTitleChangedHandler;
 		_nativeWebView.WebResourceRequested += NativeWebView2_WebResourceRequested;
 		UpdateDocumentTitle();
 
@@ -201,19 +218,79 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 
 	~Win32NativeWebView()
 	{
-		_presenter.DispatcherQueue.TryEnqueue(() =>
+		Dispose(disposing: false);
+	}
+
+	public void Dispose()
+	{
+		Dispose(disposing: true);
+		GC.SuppressFinalize(this);
+	}
+
+	private void Dispose(bool disposing)
+	{
+		if (Interlocked.Exchange(ref _disposed, 1) != 0)
 		{
-			var success = PInvoke.DestroyWindow(_hwnd);
-			if (!success && this.Log().IsEnabled(LogLevel.Error))
+			return;
+		}
+
+		if (disposing)
+		{
+			// Unsubscribe first so no callback can target this instance once teardown starts.
+			_nativeWebView.NavigationCompleted -= _navigationCompletedHandler;
+			_nativeWebView.NewWindowRequested -= _newWindowRequestedHandler;
+			_nativeWebView.SourceChanged -= _sourceChangedHandler;
+			_nativeWebView.WebMessageReceived -= _webMessageReceivedHandler;
+			_nativeWebView.NavigationStarting -= _navigationStartingHandler;
+			_nativeWebView.HistoryChanged -= _historyChangedHandler;
+			_nativeWebView.DocumentTitleChanged -= _documentTitleChangedHandler;
+			_nativeWebView.WebResourceRequested -= NativeWebView2_WebResourceRequested;
+		}
+
+		ReleaseNativeResources();
+	}
+
+	private void ReleaseNativeResources()
+	{
+		if (_presenter.DispatcherQueue.HasThreadAccess)
+		{
+			ReleaseNativeResourcesCore();
+		}
+		else
+		{
+			_ = _presenter.DispatcherQueue.TryEnqueue(ReleaseNativeResourcesCore);
+		}
+	}
+
+	private void ReleaseNativeResourcesCore()
+	{
+		if (Interlocked.Exchange(ref _nativeResourcesReleased, 1) != 0)
+		{
+			return;
+		}
+
+		_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_HIDE);
+		_ = PInvoke.SetParent(_hwnd, HWND.Null);
+
+		if (_controller is IDisposable disposableController)
+		{
+			disposableController.Dispose();
+		}
+
+		var success = PInvoke.DestroyWindow(_hwnd);
+		if (!success)
+		{
+			var error = Marshal.GetLastWin32Error();
+			if (error != 1400 && this.Log().IsEnabled(LogLevel.Error)) // 1400 = invalid window handle (already gone)
 			{
 				this.Log().Error($"{nameof(PInvoke.DestroyWindow)} failed: {Win32Helper.GetErrorMessage()}");
 			}
+		}
 
-			lock (_hwndToWebView)
-			{
-				_hwndToWebView.Remove(_hwnd);
-			}
-		});
+		lock (_hwndToWebView)
+		{
+			_hwndToWebView.Remove(_hwnd);
+		}
 	}
 
 	[UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
@@ -292,6 +369,8 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 			return;
 		}
 
+		// WebView2 uses DefaultBackgroundColor for its pre-content fallback fill.
+		// Matching the host window brush reduces the first-frame white flash before page paint.
 		var color = Color.FromArgb(brush.Color.A, brush.Color.R, brush.Color.G, brush.Color.B);
 		_controller.DefaultBackgroundColor = color;
 		this.LogTrace()?.Trace($"Applied initial controller background argb=0x{color.ToArgb():X8} from host window background.");

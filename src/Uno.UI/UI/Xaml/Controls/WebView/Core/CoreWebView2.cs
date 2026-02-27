@@ -42,9 +42,31 @@ public partial class CoreWebView2
 	internal IReadOnlyDictionary<string, string> HostToFolderMap { get; }
 
 #if __SKIA__
-	internal void OnLoaded() => (_nativeWebView as ICleanableNativeWebView)?.OnLoaded();
+	internal void OnLoaded()
+	{
+		// If native resources were released on unload, recreate from current template before using it again.
+		if (_nativeWebView is null)
+		{
+			OnOwnerApplyTemplate();
+		}
 
-	internal void OnUnloaded() => (_nativeWebView as ICleanableNativeWebView)?.OnUnloaded();
+		(_nativeWebView as ICleanableNativeWebView)?.OnLoaded();
+	}
+
+	internal void OnUnloaded()
+	{
+		(_nativeWebView as ICleanableNativeWebView)?.OnUnloaded();
+
+		if (_nativeWebView is null)
+		{
+			return;
+		}
+
+		// Detach CoreWebView event bridging first so no native callbacks can race with disposal.
+		DetachWebResourceRequestedSupport();
+		_nativeWebView.Dispose();
+		_nativeWebView = null;
+	}
 #endif
 
 	/// <summary>
@@ -416,4 +438,3 @@ public partial class CoreWebView2
 		}
 	}
 }
-

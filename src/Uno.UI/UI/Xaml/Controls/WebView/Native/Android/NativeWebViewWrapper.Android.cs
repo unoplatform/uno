@@ -25,6 +25,7 @@ internal partial class NativeWebViewWrapper : INativeWebView
 
 	private string _documentTitle;
 	internal bool _wasLoadedFromString;
+	private bool _isDisposed;
 
 	public NativeWebViewWrapper(WebView webView, CoreWebView2 coreWebView)
 	{
@@ -293,7 +294,19 @@ internal partial class NativeWebViewWrapper : INativeWebView
 		}
 	}
 
+	public void Dispose()
+	{
+		if (_isDisposed)
+		{
+			return;
+		}
+
+		_isDisposed = true;
+		_webView.SetWebViewClient(null);
+		_webView.SetWebChromeClient(null);
+		_webView.RemoveJavascriptInterface("unoWebView");
+	}
+
 	[System.Text.RegularExpressions.GeneratedRegex(@"^file://(?!/)")]
 	private static partial System.Text.RegularExpressions.Regex MalformedFileUri();
 }
-

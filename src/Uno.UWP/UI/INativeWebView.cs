@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal partial interface INativeWebView
+internal partial interface INativeWebView : IDisposable
 {
 	string DocumentTitle { get; }
 

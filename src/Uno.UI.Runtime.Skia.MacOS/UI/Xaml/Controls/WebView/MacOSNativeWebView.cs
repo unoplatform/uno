@@ -22,6 +22,7 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, INativeWebView
 	private bool _isHistoryChangeQueued;
 	private bool _isCancelling;
 	private string? _lastHtmlContent;
+	private bool _disposed;
 
 	private const string OkResourceKey = "WebView_Ok";
 	private const string CancelResourceKey = "WebView_Cancel";
@@ -58,14 +59,26 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, INativeWebView
 		_webview = NativeUno.uno_webview_create(_window.Handle, OkString, CancelString);
 		NativeHandle = _webview;
 
-		Unloaded += (s, e) =>
-		{
-			_webViews.Remove(NativeHandle);
-		};
+		Unloaded += OnElementUnloaded;
 
 		_webViews.Add(NativeHandle, new WeakReference<MacOSNativeWebView>(this));
 
 		_previousTitle = "";
+	}
+
+	public void Dispose()
+	{
+		if (_disposed)
+		{
+			return;
+		}
+
+		_disposed = true;
+		Unloaded -= OnElementUnloaded;
+		_webViews.Remove(NativeHandle);
+		_webResourceFilters.Clear();
+		_pendingInjectedNavigationKeys.Clear();
+		WebResourceRequested = null;
 	}
 
 	public string DocumentTitle => NativeUno.uno_webview_get_title(_webview);
@@ -240,6 +253,11 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, INativeWebView
 	public void Stop() => NativeUno.uno_webview_stop(_webview);
 
 	private static readonly Dictionary<nint, WeakReference<MacOSNativeWebView>> _webViews = [];
+
+	private void OnElementUnloaded(object? sender, global::Microsoft.UI.Xaml.RoutedEventArgs e)
+	{
+		_webViews.Remove(NativeHandle);
+	}
 
 	private static MacOSNativeWebView? GetWebView(nint handle)
 	{

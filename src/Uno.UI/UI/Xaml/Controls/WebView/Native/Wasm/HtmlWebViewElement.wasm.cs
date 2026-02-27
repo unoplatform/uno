@@ -14,6 +14,7 @@ namespace Microsoft.UI.Xaml.Controls;
 internal class HtmlWebViewElement : UIElement, INativeWebView
 {
 	private CoreWebView2 _coreWebView;
+	private bool _isDisposed;
 
 	public HtmlWebViewElement(CoreWebView2 coreWebView) : base("iframe")
 	{
@@ -93,5 +94,16 @@ internal class HtmlWebViewElement : UIElement, INativeWebView
 	public void GoForward() => NativeMethods.GoForward(HtmlId);
 
 	public void SetScrollingEnabled(bool isScrollingEnabled) { }
+
+	public void Dispose()
+	{
+		if (_isDisposed)
+		{
+			return;
+		}
+
+		_isDisposed = true;
+		IFrameLoaded -= OnNavigationCompleted;
+	}
 
 }
