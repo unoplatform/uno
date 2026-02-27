@@ -1,0 +1,78 @@
+{
+  "vscode": {
+    "configPaths": [
+      "{workspace}/.vscode/mcp.json",
+      "{home}/.vscode/mcp.json",
+      "{appdata}/Code/User/settings.json"
+    ],
+    "writeTarget": "{workspace}/.vscode/mcp.json",
+    "jsonRootKey": "servers"
+  },
+  "cursor": {
+    "configPaths": [
+      "{workspace}/.cursor/mcp.json",
+      "{home}/.cursor/mcp.json"
+    ],
+    "writeTarget": "{workspace}/.cursor/mcp.json",
+    "jsonRootKey": "mcpServers"
+  },
+  "windsurf": {
+    "configPaths": [
+      "{workspace}/.windsurf/mcp.json",
+      "{home}/.codeium/windsurf/mcp_config.json"
+    ],
+    "writeTarget": "{workspace}/.windsurf/mcp.json",
+    "jsonRootKey": "mcpServers"
+  },
+  "kiro": {
+    "configPaths": [
+      "{workspace}/.kiro/settings/mcp.json",
+      "{home}/.kiro/settings/mcp.json"
+    ],
+    "writeTarget": "{workspace}/.kiro/settings/mcp.json",
+    "jsonRootKey": "mcpServers"
+  },
+  "trae": {
+    "configPaths": [
+      "{workspace}/.trae/mcp.json"
+    ],
+    "writeTarget": "{workspace}/.trae/mcp.json",
+    "jsonRootKey": "mcpServers"
+  },
+  "antigravity": {
+    "configPaths": [
+      "{home}/.gemini/antigravity/mcp_config.json"
+    ],
+    "writeTarget": "{home}/.gemini/antigravity/mcp_config.json",
+    "jsonRootKey": "mcpServers"
+  },
+  "rider": {
+    "configPaths": [
+      "{workspace}/.idea/mcpServers.json"
+    ],
+    "writeTarget": "{workspace}/.idea/mcpServers.json",
+    "jsonRootKey": "mcpServers"
+  },
+  "claude-code": {
+    "configPaths": [
+      "{workspace}/.mcp.json",
+      "{home}/.claude/mcp.json"
+    ],
+    "writeTarget": "{workspace}/.mcp.json",
+    "jsonRootKey": "mcpServers"
+  },
+  "opencode": {
+    "configPaths": [
+      "{workspace}/.opencode/mcp.json"
+    ],
+    "writeTarget": "{workspace}/.opencode/mcp.json",
+    "jsonRootKey": "mcpServers"
+  },
+  "aider": {
+    "configPaths": [
+      "{workspace}/.aider/mcp.json"
+    ],
+    "writeTarget": "{workspace}/.aider/mcp.json",
+    "jsonRootKey": "mcpServers"
+  }
+}
