@@ -110,8 +110,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				var (hasSelectAll, hasCut, hasCopy, hasPaste) = GetAvailableCommands(flyout);
 
-				Assert.IsFalse(hasCut, "Cut button should be available when text is selected");
-				Assert.IsFalse(hasCopy, "Copy button should be available when text is selected");
+				Assert.IsFalse(hasCut, "Cut button should not be available when text is selected");
+				Assert.IsFalse(hasCopy, "Copy button should not be available when text is selected");
 				Assert.IsTrue(hasSelectAll, "Select All button should be available when not all text is selected");
 				Assert.IsTrue(hasPaste, "Paste should be available");
 
