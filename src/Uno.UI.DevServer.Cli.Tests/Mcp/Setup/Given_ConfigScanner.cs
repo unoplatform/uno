@@ -192,7 +192,8 @@ public class Given_ConfigScanner
 	{
 		var result = ConfigScanner.ResolvePath(
 			"{workspace}/.vscode/mcp.json", "/my/project", "/home/user", "/home/user/.config");
-		result.Should().Be("/my/project/.vscode/mcp.json");
+		var sep = Path.DirectorySeparatorChar;
+		result.Should().Be($"{sep}my{sep}project{sep}.vscode{sep}mcp.json");
 	}
 
 	[TestMethod]
@@ -200,7 +201,8 @@ public class Given_ConfigScanner
 	{
 		var result = ConfigScanner.ResolvePath(
 			"{home}/.cursor/mcp.json", "/project", "/home/user", "/home/user/.config");
-		result.Should().Be("/home/user/.cursor/mcp.json");
+		var sep = Path.DirectorySeparatorChar;
+		result.Should().Be($"{sep}home{sep}user{sep}.cursor{sep}mcp.json");
 	}
 
 	[TestMethod]
@@ -208,7 +210,8 @@ public class Given_ConfigScanner
 	{
 		var result = ConfigScanner.ResolvePath(
 			"{appdata}/Code/User/settings.json", "/project", "/home/user", "/home/user/.config");
-		result.Should().Be("/home/user/.config/Code/User/settings.json");
+		var sep = Path.DirectorySeparatorChar;
+		result.Should().Be($"{sep}home{sep}user{sep}.config{sep}Code{sep}User{sep}settings.json");
 	}
 
 	// ── Content-based detection with renamed key ──
