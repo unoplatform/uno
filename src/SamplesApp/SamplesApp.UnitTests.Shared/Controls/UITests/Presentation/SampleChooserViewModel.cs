@@ -918,7 +918,7 @@ namespace SampleControl.Presentation
 				favorites.Add(sample);
 			}
 
-			await SetFile(SampleChooserFavoriteConstant, favorites.Select(s => s.ControlType.FullName).ToArray());
+			await SetFile(SampleChooserFavoriteConstant, favorites.Where(s => s?.ControlType != null).Select(s => s.ControlType.FullName).ToArray());
 
 			FavoriteSamples = favorites;
 
@@ -1078,7 +1078,7 @@ namespace SampleControl.Presentation
 					recents.RemoveAt(_numberOfRecentSamplesVisible);
 				}
 
-				await SetFile(SampleChooserLRUConstant, recents.Select(s => s.ControlType.FullName).ToArray());
+				await SetFile(SampleChooserLRUConstant, recents.Where(s => s?.ControlType != null).Select(s => s.ControlType.FullName).ToArray());
 
 				RecentSamples = recents;
 			}
@@ -1096,6 +1096,11 @@ namespace SampleControl.Presentation
 		private SampleChooserContent ResolveSampleByFullName(string controlTypeFullName)
 		{
 			if (string.IsNullOrEmpty(controlTypeFullName))
+			{
+				return null;
+			}
+
+			if (_allCategories == null)
 			{
 				return null;
 			}
