@@ -20,7 +20,7 @@ public partial class App : Application
 
     protected Window? MainWindow { get; private set; }
 
-    protected override void OnLaunched(LaunchActivatedEventArgs args)
+    protected override async void OnLaunched(LaunchActivatedEventArgs args)
     {
         MainWindow = new Window();
 #if DEBUG
@@ -55,6 +55,7 @@ public partial class App : Application
 
         if (exitAfterLaunching)
         {
+            await Task.Delay(1000);
             Exit();
         }
     }
@@ -74,13 +75,10 @@ public partial class App : Application
     /// </summary>
     public static void InitializeLogging()
     {
-#if DEBUG
-        // Logging is disabled by default for release builds, as it incurs a significant
-        // initialization cost from Microsoft.Extensions.Logging setup. If startup performance
-        // is a concern for your application, keep this disabled. If you're running on the web or
-        // desktop targets, you can use URL or command line parameters to enable it.
+        // Logging must be enabled for all build configurations so that `.AddFakeLogging()` can be used to
+        // catch binding errors in test and production builds.
         //
-        // For more performance documentation: https://platform.uno/docs/articles/Uno-UI-Performance.html
+        // Performance is not a concern here.  This is an integration test.
 
         var factory = LoggerFactory.Create(builder =>
         {
@@ -94,6 +92,38 @@ public partial class App : Application
 #else
             builder.AddConsole();
 #endif
+
+            builder.AddFakeLogging(options =>
+            {
+                options.FilteredCategories.Add("Uno.UI.DataBinding.BindingPropertyHelper");
+                options.OutputSink = message =>
+                {
+                    if (message.Contains("property getter does not exist on type", StringComparison.Ordinal))
+                    {
+                        // We have a `{Binding …}` expression which refers to a non-existent member,
+                        // or the relevant `DataContext` is not properly set at the time of the binding evaluation,
+                        // or `Uno.Bindable.Descriptor.xml` is missing an entry for the type and property mentioned.
+                        //
+                        // For example, if `message` contains:
+                        //
+                        //  The [HelloText] property getter does not exist on type [unoapp.MainPage]
+                        //
+                        // *If* `unoapp.MainPage.HelloText` exists (or should exist), then
+                        // `Uno.Bindable.Descriptor.xml` *should* contain an entry like:
+                        //
+                        //   <type fullname="unoapp.MainPage">
+                        //     <property name="HelloText" />
+                        //   </type>
+                        //
+                        // If it doesn't, that's a bug; please file a repro.
+                        //
+                        // Use `Environment.FailFast()` to (1) ensure the failure is visible on CI
+                        // with a non-zero exit code, and (2) *if anyone is debugging the app*,
+                        // allow the debugger to "break" on the failure before app exit.
+                        Environment.FailFast(message);
+                    }
+                };
+            });
 
             // Exclude logs below this level
             builder.SetMinimumLevel(LogLevel.Information);
@@ -135,7 +165,6 @@ public partial class App : Application
 
 #if HAS_UNO
         global::Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
-#endif
 #endif
     }
 }
