@@ -177,6 +177,17 @@
 				<PackageReference Include="SkiaSharp.NativeAssets.TvOS" />
 			</ItemGroup>
 
+			<!-- The .NET SDK's default item glob (EnableDefaultNoneItems) auto-includes
+			     ALL files in the project tree, so iOS/Info.plist and MacCatalyst/Info.plist
+			     are present as None items even when targeting tvOS. Rider reads every
+			     included Info.plist to check UIDeviceFamily and flags the project as
+			     "requires iPhone, iPad" when it finds UIDeviceFamily=[1,2] in those files.
+			     Explicitly removing them here keeps only tvOS/Info.plist visible. -->
+			<ItemGroup>
+				<None Remove="iOS\Info.plist" />
+				<None Remove="MacCatalyst\Info.plist" />
+			</ItemGroup>
+
 			<PropertyGroup>
 				<MtouchUseLlvm>true</MtouchUseLlvm>
 				<SupportedOSPlatformVersion>12.2</SupportedOSPlatformVersion>
