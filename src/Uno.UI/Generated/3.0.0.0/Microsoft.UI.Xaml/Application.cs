@@ -26,20 +26,7 @@ namespace Microsoft.UI.Xaml
 #endif
 		// Skipping already declared property FocusVisualKind
 		// Skipping already declared property DebugSettings
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.DispatcherShutdownMode DispatcherShutdownMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DispatcherShutdownMode Application.DispatcherShutdownMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DispatcherShutdownMode%20Application.DispatcherShutdownMode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Application", "DispatcherShutdownMode Application.DispatcherShutdownMode");
-			}
-		}
-#endif
+		// Skipping already declared property DispatcherShutdownMode
 		// Skipping already declared property Current
 		// Skipping already declared method Microsoft.UI.Xaml.Application.Application()
 		// Forced skipping of method Microsoft.UI.Xaml.Application.Application()

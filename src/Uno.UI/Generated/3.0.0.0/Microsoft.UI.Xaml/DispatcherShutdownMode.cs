@@ -4,12 +4,21 @@
 namespace Microsoft.UI.Xaml
 {
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	/// <summary>
+	/// Defines constants that specify when the application's dispatcher begins shutdown.
+	/// </summary>
 	public enum DispatcherShutdownMode
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		/// <summary>
+		/// The dispatcher shuts down when the last window closes.
+		/// </summary>
 		OnLastWindowClose = 0,
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		/// <summary>
+		/// The dispatcher shuts down only when the application explicitly calls Exit.
+		/// </summary>
 		OnExplicitShutdown = 1,
 #endif
 	}
