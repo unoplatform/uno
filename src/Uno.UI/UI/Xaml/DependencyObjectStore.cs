@@ -1190,6 +1190,13 @@ namespace Microsoft.UI.Xaml
 				return (GetDefaultValue(property), DependencyPropertyValuePrecedences.DefaultValue);
 			}
 
+			// For PropMethodCall DPs, the authoritative value is on the backing field,
+			// not in DependencyPropertyDetails._value. Read it from the method delegate.
+			if (property.IsPropMethodCall)
+			{
+				return (GetValueFromMethodCall(property), baseValueSource);
+			}
+
 			return (details.GetBaseValue(), baseValueSource);
 		}
 
@@ -2203,10 +2210,23 @@ namespace Microsoft.UI.Xaml
 
 			if (propertyDetails.Property.IsPropMethodCall)
 			{
-				var effectiveValue = propertyDetails.CurrentHighestValuePrecedence == DependencyPropertyValuePrecedences.DefaultValue
-					? GetDefaultValue(propertyDetails.Property)
-					: propertyDetails.GetEffectiveValue();
-				SetValueViaMethodCall(propertyDetails.Property, effectiveValue);
+				var highestPrecedence = propertyDetails.CurrentHighestValuePrecedence;
+				if (highestPrecedence == DependencyPropertyValuePrecedences.DefaultValue)
+				{
+					SetValueViaMethodCall(propertyDetails.Property, GetDefaultValue(propertyDetails.Property));
+				}
+				else if (highestPrecedence <= DependencyPropertyValuePrecedences.Animations)
+				{
+					// Coercion/Animation values ARE stored in ModifiedValue; GetEffectiveValue works.
+					SetValueViaMethodCall(propertyDetails.Property, propertyDetails.GetEffectiveValue());
+				}
+				else if (value != DependencyProperty.UnsetValue)
+				{
+					// Base value: pass incoming value directly, avoiding store-then-read-back.
+					SetValueViaMethodCall(propertyDetails.Property, value);
+				}
+				// else: ClearValue (UnsetValue) where ReevaluateBaseValue already called
+				// SetValueInternal recursively with the style/default value.
 			}
 		}
 
