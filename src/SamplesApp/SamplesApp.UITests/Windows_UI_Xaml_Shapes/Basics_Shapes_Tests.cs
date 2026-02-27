@@ -69,6 +69,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 		[AutoRetry]
 		[ActivePlatforms(Platform.iOS)]
 		[Timeout(TestTimeout)]
+		[Ignore("Flaky on iOS/Android native https://github.com/unoplatform/uno/issues/22688")]
 		public void When_Path()
 		{
 			// For Path, the junction between the begin and the end of the path is not as smooth as WinUI (on iOS),

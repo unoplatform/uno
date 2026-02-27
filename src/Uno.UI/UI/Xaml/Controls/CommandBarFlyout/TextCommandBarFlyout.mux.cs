@@ -757,7 +757,7 @@ partial class TextCommandBarFlyout
 	{
 		var target = Target;
 
-		if (target is TextBox textBoxTarget and not PasswordBox) // Uno specific: PasswordBox derives from TextBox)
+		if (target is TextBox textBoxTarget and not PasswordBox) // Uno specific: PasswordBox derives from TextBox
 		{
 			textBoxTarget.Redo();
 		}
