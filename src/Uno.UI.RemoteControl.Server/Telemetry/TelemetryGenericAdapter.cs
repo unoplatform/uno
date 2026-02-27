@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,6 +41,14 @@ namespace Uno.UI.RemoteControl.Server.Telemetry
 		/// <inheritdoc />
 		public void TrackEvent(string eventName, IDictionary<string, string>? properties, IDictionary<string, double>? measurements)
 			=> Inner.TrackEvent(eventName, properties, measurements);
+
+		/// <inheritdoc />
+		public void TrackException(Exception exception, (string key, string value)[]? properties = null, (string key, double value)[]? measurements = null)
+			=> Inner.TrackException(exception, properties, measurements);
+
+		/// <inheritdoc />
+		public void TrackException(Exception exception, IDictionary<string, string>? properties = null, IDictionary<string, double>? measurements = null)
+			=> Inner.TrackException(exception, properties, measurements);
 
 		/// <inheritdoc />
 		public bool Enabled => Inner.Enabled;

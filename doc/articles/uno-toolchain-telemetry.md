@@ -31,7 +31,7 @@ The feature collects the following data:
 * Timestamp of invocation
 * The step invoked
 * The duration of the step
-* The exception type if the generation fails
+* Exception details if the generation fails (tracked via TrackException API for better analytics)
 * If the build is running under a CI (Travis, Azure Devops, AppVeyor, Jenkins, GitHub Actions, BitBucket, Build kite, Codebuild, Drone, MyGet, Space, TeamCity)
 * Operating system name, version, kernel version, and architecture
 * The current culture

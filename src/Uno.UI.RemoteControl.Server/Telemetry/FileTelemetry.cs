@@ -152,5 +152,66 @@ namespace Uno.UI.RemoteControl.Server.Telemetry
 				}
 			}
 		}
+
+		public void TrackException(Exception exception, (string key, string value)[]? properties = null, (string key, double value)[]? measurements = null)
+		{
+			var propertiesDict = properties != null ? new Dictionary<string, string>() : null;
+			if (properties != null)
+			{
+				foreach (var (key, value) in properties)
+				{
+					propertiesDict![key] = value;
+				}
+			}
+
+			var measurementsDict = measurements != null ? new Dictionary<string, double>() : null;
+			if (measurements != null)
+			{
+				foreach (var (key, value) in measurements)
+				{
+					measurementsDict![key] = value;
+				}
+			}
+
+			TrackException(exception, propertiesDict, measurementsDict);
+		}
+
+		public void TrackException(Exception exception, IDictionary<string, string>? properties = null, IDictionary<string, double>? measurements = null)
+		{
+			// For file-based telemetry, write exception details as a special event
+			var exceptionProperties = properties != null
+				? new Dictionary<string, string>(properties)
+				: new Dictionary<string, string>();
+
+			exceptionProperties["ExceptionType"] = exception.GetType().FullName ?? exception.GetType().Name;
+			exceptionProperties["ExceptionMessage"] = exception.Message;
+			if (exception.StackTrace != null)
+			{
+				exceptionProperties["ExceptionStackTrace"] = exception.StackTrace;
+			}
+
+			var telemetryEvent = new
+			{
+				Timestamp = DateTime.Now,
+				EventType = "Exception",
+				Properties = exceptionProperties,
+				Measurements = measurements
+			};
+
+			var json = JsonSerializer.Serialize(telemetryEvent, JsonOptions);
+
+			lock (_lock)
+			{
+				try
+				{
+					var line = _contextPrefix + ": " + json + Environment.NewLine;
+					File.AppendAllText(_filePath, line);
+				}
+				catch
+				{
+					// Ignore file write errors in telemetry to avoid breaking the application
+				}
+			}
+		}
 	}
 }

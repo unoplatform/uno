@@ -226,12 +226,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 			catch (Exception ex)
 			{
-				var errorProperties = new Dictionary<string, string>(properties)
-				{
-					["ErrorMessage"] = ex.Message,
-					["ErrorType"] = ex.GetType().Name
-				};
-				_telemetry.TrackEvent("notify-error", errorProperties, measurements);
+				// Exception details are now tracked via TrackException instead of adding ErrorMessage and ErrorType properties
+				_telemetry.TrackException(ex, properties, measurements);
 				throw;
 			}
 		}
