@@ -27,6 +27,7 @@ public class HotReloadOperation
 	private static readonly ImmutableHashSet<string> _empty = ImmutableHashSet<string>.Empty.WithComparer(PathComparer.Comparer);
 	private static long _count;
 
+	private readonly TaskCompletionSource _completed = new();
 	private readonly HotReloadTracker _owner;
 	private readonly HotReloadOperation? _previous;
 	private readonly Timer _timeout;
@@ -202,24 +203,36 @@ public class HotReloadOperation
 			return; // Already completed
 		}
 
-		_diagnostics = diagnostics;
-
-		CompletionTime = DateTimeOffset.Now;
-		await _timeout.DisposeAsync().ConfigureAwait(false);
-
-		// Consider previous hot-reload operation(s) as aborted (this is actually a chain list)
-		if (_previous is not null)
+		try
 		{
-			await _previous.Complete(
-				HotReloadOperationResult.Aborted,
-				new TimeoutException("An more recent hot-reload operation has completed."),
-				isFromNext: true,
-				diagnostics: null).ConfigureAwait(false);
+			_diagnostics = diagnostics;
+
+			CompletionTime = DateTimeOffset.Now;
+			await _timeout.DisposeAsync().ConfigureAwait(false);
+
+			// Consider previous hot-reload operation(s) as aborted (this is actually a chain list)
+			if (_previous is not null)
+			{
+				await _previous
+					.Complete(
+						HotReloadOperationResult.Aborted,
+						new TimeoutException("An more recent hot-reload operation has completed."),
+						isFromNext: true,
+						diagnostics: null)
+					.ConfigureAwait(false);
+			}
+
+			if (!isFromNext) // Only the head of the list should request update
+			{
+				await _owner.SendUpdate(this).ConfigureAwait(false);
+			}
 		}
-
-		if (!isFromNext) // Only the head of the list should request update
+		finally
 		{
-			await _owner.SendUpdate(this).ConfigureAwait(false);
+			_completed.TrySetResult();
 		}
 	}
+
+	public Task WaitForCompletionAsync(CancellationToken ct)
+		=> _completed.Task.WaitAsync(ct);
 }
