@@ -1,19 +1,22 @@
 ﻿using System;
 using System.Threading.Tasks;
-using MUXControlsTestApp.Utilities;
-using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Tests.Enterprise;
+using MUXControlsTestApp.Utilities;
+using Private.Infrastructure;
+using Windows.UI;
+using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.MUX.Helpers
 {
 	internal static class FlyoutHelper
 	{
-		public static FrameworkElement GetOpenFlyoutPresenter(XamlRoot xamlRoot)
+		public static FrameworkElement GetOpenFlyoutPresenter()
 		{
-			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(xamlRoot);
+			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
 			if (popups.Count != 1)
 			{
 				throw new InvalidOperationException("Expected exactly one open Popup.");
@@ -23,23 +26,99 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 			return child as FrameworkElement;
 		}
 
-		public static void HideFlyout<T>(T flyoutControl)
+		public static async Task HideFlyout<T>(T flyoutControl)
 			where T : FlyoutBase
 		{
 #if WINAPPSDK
 			flyoutControl.Hide();
 #else
-			flyoutControl.Close();
+			Event closedEvent = new();
+			var closedRegistration = CreateSafeEventRegistration<T, EventHandler<object>>("Closed");
+			closedRegistration.Attach(flyoutControl, (s, e) => { closedEvent.Set(); });
+
+			await RunOnUIThread(() =>
+			{
+				flyoutControl.Hide();
+			});
+
+			await closedEvent.WaitForDefault();
+			await TestServices.WindowHelper.WaitForIdle();
 #endif
 		}
 
-		internal static void OpenFlyout<T>(T flyoutControl, FrameworkElement target, FlyoutOpenMethod openMethod)
+		internal static async Task OpenFlyout<T>(T flyoutControl, FrameworkElement target, FlyoutOpenMethod openMethod)
 			where T : FlyoutBase
 		{
 #if WINAPPSDK
 			flyoutControl.ShowAt(target);
 #else
-			flyoutControl.Open();
+			Event openingEvent = new Event();
+			var openingRegistration = CreateSafeEventRegistration<T, EventHandler<object>>("Opening");
+			openingRegistration.Attach(flyoutControl, (s, e) => openingEvent.Set());
+
+			Event openedEvent = new Event();
+			var openedRegistration = CreateSafeEventRegistration<T, EventHandler<object>>("Opened");
+			openedRegistration.Attach(flyoutControl, (s, e) => openedEvent.Set());
+
+			if (openMethod == FlyoutOpenMethod.Mouse)
+			{
+				TestServices.InputHelper.LeftMouseClick(target);
+				await TestServices.WindowHelper.WaitForIdle();
+				// Wait for the sub menu to open. It opens after a delay - clicking and waiting for idle doesn't open it.
+				await TestServices.WindowHelper.SynchronouslyTickUIThread(60);
+			}
+			else if (openMethod == FlyoutOpenMethod.Touch)
+			{
+				TestServices.InputHelper.Tap(target);
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+			else if (openMethod == FlyoutOpenMethod.Pen)
+			{
+				throw new NotImplementedException("Pen not implemented yet");
+				//TestServices.InputHelper.PenHold(target);
+				//await TestServices.WindowHelper.WaitForIdle();
+				//await TestServices.WindowHelper.SynchronouslyTickUIThread(60);
+			}
+			else if (openMethod == FlyoutOpenMethod.Keyboard)
+			{
+				await RunOnUIThread(() =>
+				{
+					target.Focus(FocusState.Keyboard);
+				});
+				await TestServices.WindowHelper.WaitForIdle();
+				await TestServices.KeyboardHelper.PressKeySequence(" ");
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+			else if (openMethod == FlyoutOpenMethod.Gamepad)
+			{
+				await RunOnUIThread(() =>
+				{
+					target.Focus(FocusState.Keyboard);
+				});
+				await TestServices.WindowHelper.WaitForIdle();
+				await TestServices.KeyboardHelper.GamepadA();
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+			else if (openMethod == FlyoutOpenMethod.Programmatic_ShowAt)
+			{
+				await RunOnUIThread(() =>
+				{
+					flyoutControl.ShowAt(target);
+				});
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+			else if (openMethod == FlyoutOpenMethod.Programmatic_ShowAttachedFlyout)
+			{
+				await RunOnUIThread(() =>
+				{
+					FlyoutBase.ShowAttachedFlyout(target);
+				});
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+			await openingEvent.WaitForDefault();
+			await openedEvent.WaitForDefault();
+
+			await TestServices.WindowHelper.WaitForIdle();
 #endif
 		}
 
@@ -57,7 +136,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 		{
 			Border target = null;
 
-			await RunOnUIThread.ExecuteAsync(() =>
+			await RunOnUIThread(() =>
 			{
 				target = new Border();
 				target.Background = new SolidColorBrush(Colors.RoyalBlue);

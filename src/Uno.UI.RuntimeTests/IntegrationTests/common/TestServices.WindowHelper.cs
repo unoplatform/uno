@@ -15,6 +15,10 @@ using ToolTip = Microsoft.UI.Xaml.Controls.ToolTip;
 
 #if HAS_UNO
 using DirectUI;
+using Uno.UI.Xaml.Input;
+using Windows.Foundation;
+
+
 
 #endif
 
@@ -134,6 +138,8 @@ namespace Private.Infrastructure
 			public static UnitTestDispatcherCompat RootElementDispatcher => UseActualWindowRoot
 				? (CurrentTestWindow is { } ? UnitTestDispatcherCompat.From(CurrentTestWindow) : UnitTestDispatcherCompat.Instance)
 				: UnitTestDispatcherCompat.From(EmbeddedTestRoot.control);
+
+			public static Rect WindowBounds => CurrentTestWindow?.Bounds ?? default;
 
 			internal static Page SetupSimulatedAppPage()
 			{
@@ -481,6 +487,18 @@ namespace Private.Infrastructure
 #endif
 
 				return tcs.Task;
+			}
+
+			internal async static Task SetLastInputMethod(InputDeviceType lastInputType, XamlRoot xamlRoot)
+			{
+				// Uno specific: Implementation is a bit different in WinUI.
+				await RunOnUIThread(() =>
+				{
+					if (TestServices.WindowHelper.XamlRoot?.VisualTree?.ContentRoot?.InputManager is { } inputManager)
+					{
+						inputManager.LastInputDeviceType = lastInputType;
+					}
+				});
 			}
 
 #if HAS_UNO
