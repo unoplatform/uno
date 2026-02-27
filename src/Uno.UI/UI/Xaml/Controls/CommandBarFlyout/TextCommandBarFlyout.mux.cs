@@ -344,7 +344,7 @@ partial class TextCommandBarFlyout
 		TextControlButtons buttonsToAdd = TextControlButtons.None;
 		var target = Target;
 
-		if (target is TextBox textBoxTarget and not PasswordBox) // TextBox is a PasswordBox in Uno Platform
+		if (target is TextBox textBoxTarget and not PasswordBox) // PasswordBox derives from TextBox in Uno Platform
 		{
 			buttonsToAdd = GetTextBoxButtonsToAdd(textBoxTarget);
 		}
