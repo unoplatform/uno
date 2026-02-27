@@ -34,8 +34,9 @@ internal static class TextCore
 		}
 		else if (textControl is RichTextBlockOverflow richTextBlockOverflow)
 		{
-			throw new NotSupportedException("RichTextBlockOverflow not supported yet");
-			// return richTextBlockOverflow.GetMaster().IsSelectionEnabled();
+			// Selection is not currently supported for RichTextBlockOverflow; treat as disabled.
+			// Future implementation may use: return richTextBlockOverflow.GetMaster().IsSelectionEnabled();
+			return false;
 		}
 		else if (textControl is RichEditBox or TextBox or PasswordBox)
 		{
