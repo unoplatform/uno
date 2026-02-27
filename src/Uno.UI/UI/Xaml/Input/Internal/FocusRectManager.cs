@@ -105,10 +105,5 @@ namespace Uno.UI.Xaml.Input
 				}
 			}
 		}
-
-		internal void RedrawFocusVisual()
-		{
-			_focusVisual?.Redraw();
-		}
 	}
 }

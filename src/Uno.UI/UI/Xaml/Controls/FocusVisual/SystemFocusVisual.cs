@@ -7,38 +7,22 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using System.Numerics;
-
-
-using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
+using Uno.Extensions;
+using CompositionTarget = Microsoft.UI.Xaml.Media.CompositionTarget;
 
 namespace Uno.UI.Xaml.Controls;
 
 internal partial class SystemFocusVisual : Control
 {
 	private SerialDisposable _focusedElementSubscriptions = new SerialDisposable();
-	private Rect _lastRect = Rect.Empty;
 
 	public SystemFocusVisual()
 	{
 		DefaultStyleKey = typeof(SystemFocusVisual);
+#if !__SKIA__
 		Loaded += OnLoaded;
 		Unloaded += OnUnloaded;
-	}
-
-	private void OnLoaded(object sender, RoutedEventArgs e)
-	{
-		if (XamlRoot is not null)
-		{
-			XamlRoot.Changed += XamlRootChanged;
-		}
-	}
-
-	private void OnUnloaded(object sender, RoutedEventArgs e)
-	{
-		if (XamlRoot is not null)
-		{
-			XamlRoot.Changed -= XamlRootChanged;
-		}
+#endif
 	}
 
 	public UIElement? FocusedElement
@@ -54,8 +38,6 @@ internal partial class SystemFocusVisual : Control
 			typeof(SystemFocusVisual),
 			new FrameworkPropertyMetadata(default, OnFocusedElementChanged));
 
-	internal void Redraw() => SetLayoutProperties();
-
 	private static void OnFocusedElementChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 	{
 		var focusVisual = (SystemFocusVisual)dependencyObject;
@@ -64,6 +46,16 @@ internal partial class SystemFocusVisual : Control
 
 		if (args.NewValue is FrameworkElement element)
 		{
+#if __SKIA__
+			if (element.XamlRoot?.VisualTree.ContentRoot.CompositionTarget is { } compositionTarget)
+			{
+				compositionTarget.FrameRendered += focusVisual.OnFrameRendered;
+				focusVisual._focusedElementSubscriptions.Disposable = Disposable.Create(() =>
+				{
+					compositionTarget.FrameRendered -= focusVisual.OnFrameRendered;
+				});
+			}
+#else
 			element.SizeChanged += focusVisual.FocusedElementSizeChanged;
 #if !UNO_HAS_ENHANCED_LIFECYCLE
 			element.LayoutUpdated += focusVisual.FocusedElementLayoutUpdated;
@@ -75,7 +67,6 @@ internal partial class SystemFocusVisual : Control
 
 			focusVisual.AttachVisualPartial();
 
-			focusVisual._lastRect = Rect.Empty;
 			focusVisual.SetLayoutProperties();
 			var parentViewport = element.GetParentViewport(); // the parent Viewport is used, similar to PropagateEffectiveViewportChange
 			focusVisual.ApplyClipping(parentViewport.Effective);
@@ -91,6 +82,82 @@ internal partial class SystemFocusVisual : Control
 
 				focusVisual.DetachVisualPartial();
 			});
+#endif
+		}
+	}
+
+#if __SKIA__
+	private void OnFrameRendered()
+	{
+		if (XamlRoot is null ||
+			FocusedElement is null ||
+			FocusedElement.Visibility == Visibility.Collapsed ||
+			(FocusedElement is Control control && !control.IsEnabled && !control.AllowFocusWhenDisabled))
+		{
+			Visibility = Visibility.Collapsed;
+			return;
+		}
+
+		var parentElement = VisualTreeHelper.GetParent(FocusedElement) as UIElement;
+		if (parentElement is null)
+		{
+			Visibility = Visibility.Collapsed;
+			return;
+		}
+
+		Visibility = Visibility.Visible;
+
+		var transform = GetTransform(FocusedElement, XamlRoot.VisualTree.RootElement);
+
+		var totalClipRect = FocusedElement.Visual.GetTotalClipPath(true).Bounds;
+		var inverseMatrix = transform.Inverse();
+		var topLeft = inverseMatrix.Transform(new Point(totalClipRect.Left, totalClipRect.Top));
+		var topRight = inverseMatrix.Transform(new Point(totalClipRect.Right, totalClipRect.Top));
+		var bottomLeft = inverseMatrix.Transform(new Point(totalClipRect.Left, totalClipRect.Bottom));
+		var bottomRight = inverseMatrix.Transform(new Point(totalClipRect.Right, totalClipRect.Bottom));
+
+		var minX = Math.Min(Math.Min(topLeft.X, topRight.X), Math.Min(bottomLeft.X, bottomRight.X));
+		var maxX = Math.Max(Math.Max(topLeft.X, topRight.X), Math.Max(bottomLeft.X, bottomRight.X));
+		var minY = Math.Min(Math.Min(topLeft.Y, topRight.Y), Math.Min(bottomLeft.Y, bottomRight.Y));
+		var maxY = Math.Max(Math.Max(topLeft.Y, topRight.Y), Math.Max(bottomLeft.Y, bottomRight.Y));
+
+		var clipRect = new Rect(minX, minY, maxX - minX, maxY - minY);
+		var layoutRect = new Rect(0, 0, FocusedElement.ActualSize.X, FocusedElement.ActualSize.Y);
+		var left = Math.Max(clipRect.Left, layoutRect.Left);
+		var top = Math.Max(clipRect.Top, layoutRect.Top);
+		var right = Math.Min(clipRect.Right, layoutRect.Right);
+		var bottom = Math.Min(clipRect.Bottom, layoutRect.Bottom);
+
+		var translatedMatrix = new Matrix(Matrix3x2.CreateTranslation((float)left, (float)top) * transform);
+		if ((RenderTransform as MatrixTransform)?.Matrix != translatedMatrix)
+		{
+			RenderTransform = new MatrixTransform { Matrix = translatedMatrix };
+		}
+
+		if (Width != right - left || Height != bottom - top)
+		{
+			Width = Math.Max(0, right - left);
+			Height = Math.Max(0, bottom - top);
+			if (Width <= 0 || Height <= 0)
+			{
+				Visibility = Visibility.Collapsed;
+			}
+		}
+	}
+#else
+	private void OnLoaded(object sender, RoutedEventArgs e)
+	{
+		if (XamlRoot is not null)
+		{
+			XamlRoot.Changed += XamlRootChanged;
+		}
+	}
+
+	private void OnUnloaded(object sender, RoutedEventArgs e)
+	{
+		if (XamlRoot is not null)
+		{
+			XamlRoot.Changed -= XamlRootChanged;
 		}
 	}
 
@@ -192,4 +259,5 @@ internal partial class SystemFocusVisual : Control
 
 		Clip = clip;
 	}
+#endif
 }
