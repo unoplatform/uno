@@ -131,9 +131,8 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 		{
 			throw new InvalidOperationException($"{nameof(PInvoke.CreateWindowEx)} failed: {Win32Helper.GetErrorMessage()}");
 		}
-		// Keep the temporary top-level HWND minimized until host attach reparents it.
-		// Hiding at creation can stall first navigation on some WebView2 startup paths.
-		_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_MINIMIZE);
+		// Do not force an initial ShowWindow state here.
+		// The window is created without WS_VISIBLE and stays hidden until host attach/arrange explicitly shows it.
 		this.LogTrace()?.Trace($"Created child hwnd={_hwnd.Value} appParent={ParentHwnd.Value}");
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
