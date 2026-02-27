@@ -12,6 +12,9 @@
 		<NoWarn>$(NoWarn);CS1998</NoWarn>
 
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+
+		<!-- CI passes InformationalVersion from NBGV; default to dev for local builds -->
+		<InformationalVersion Condition="'$(InformationalVersion)' == ''">0.0.0-dev</InformationalVersion>
 	</PropertyGroup>
 	
 	<PropertyGroup>
