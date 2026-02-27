@@ -51,7 +51,7 @@ internal sealed record ServerIdeStatus(
 	IReadOnlyList<LocationEntry>? Locations,
 	IReadOnlyList<string>? Warnings);
 
-internal sealed record LocationEntry(string Path, string Variant);
+internal sealed record LocationEntry(string Path, string Variant, string Transport);
 
 // ──────────────────────────────────────────────
 // Install / Uninstall response

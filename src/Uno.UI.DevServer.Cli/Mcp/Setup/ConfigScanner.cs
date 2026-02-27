@@ -62,10 +62,12 @@ internal sealed class ConfigScanner(IFileSystem fs)
 	/// </summary>
 	internal static string ResolvePath(string template, string workspace, string home, string appdata)
 	{
-		return template
+		var resolved = template
 			.Replace("{workspace}", workspace)
 			.Replace("{home}", home)
 			.Replace("{appdata}", appdata);
+		// Normalize mixed separators (templates use '/' but OS paths may use '\')
+		return resolved.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 	}
 
 	private void ScanConfigFile(
@@ -126,7 +128,8 @@ internal sealed class ConfigScanner(IFileSystem fs)
 			if (matchedServer is not null)
 			{
 				var variant = DuplicateDetector.DetectVariant(entryJson, serverDef);
-				locations.Add(new LocationEntry(configPath, variant));
+				var transport = DetectTransport(entryJson);
+				locations.Add(new LocationEntry(configPath, variant, transport));
 			}
 		}
 	}
@@ -161,6 +164,21 @@ internal sealed class ConfigScanner(IFileSystem fs)
 		}
 
 		return "registered";
+	}
+
+	private static string DetectTransport(JsonObject entryJson)
+	{
+		if (entryJson["command"] is not null)
+		{
+			return "stdio";
+		}
+
+		if (entryJson["url"] is not null)
+		{
+			return "http";
+		}
+
+		return "unknown";
 	}
 
 	/// <summary>

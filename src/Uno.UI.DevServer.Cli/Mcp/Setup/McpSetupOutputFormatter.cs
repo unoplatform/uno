@@ -7,7 +7,7 @@ namespace Uno.UI.DevServer.Cli.Mcp.Setup;
 /// </summary>
 internal static class McpSetupOutputFormatter
 {
-	public static void WriteStatus(StatusResponse response)
+	public static void WriteStatus(StatusResponse response, string workspace)
 	{
 		var table = new Table()
 			.Border(TableBorder.Rounded)
@@ -15,8 +15,9 @@ internal static class McpSetupOutputFormatter
 			.AddColumn(new TableColumn("[grey]Server[/]").LeftAligned())
 			.AddColumn(new TableColumn("[grey]IDE[/]").LeftAligned())
 			.AddColumn(new TableColumn("[grey]Status[/]").LeftAligned())
-			.AddColumn(new TableColumn("[grey]Variant[/]").LeftAligned())
-			.AddColumn(new TableColumn("[grey]Path[/]").LeftAligned());
+			.AddColumn(new TableColumn("[grey]Cfg File[/]").LeftAligned())
+			.AddColumn(new TableColumn("[grey]Transport[/]").LeftAligned())
+			.AddColumn(new TableColumn("[grey]Variant[/]").LeftAligned());
 
 		foreach (var server in response.Servers)
 		{
@@ -25,21 +26,26 @@ internal static class McpSetupOutputFormatter
 			{
 				var serverCol = isFirst ? Escape(server.Name) : "";
 				var statusMarkup = FormatStatus(ide.Status);
-				var variant = ide.Locations is { Count: > 0 } ? ide.Locations[0].Variant : "-";
-				var path = ide.Locations is { Count: > 0 } ? ide.Locations[0].Path : "-";
+				var hasLocation = ide.Locations is { Count: > 0 };
+				var cfgFile = hasLocation ? ShortenPath(ide.Locations![0].Path, workspace) : "-";
+				var transport = hasLocation ? ide.Locations![0].Transport : "-";
+				var variant = hasLocation ? ide.Locations![0].Variant : "-";
+				var valColor = hasLocation ? "white" : "grey";
 
 				table.AddRow(
 					new Markup($"[white]{serverCol}[/]"),
 					new Markup($"[white]{Escape(ide.Ide)}[/]"),
 					statusMarkup,
-					new Markup($"[grey]{Escape(variant)}[/]"),
-					new Markup($"[grey]{Escape(ShortenPath(path))}[/]"));
+					new Markup($"[{valColor}]{Escape(cfgFile)}[/]"),
+					new Markup($"[{valColor}]{Escape(transport)}[/]"),
+					new Markup($"[{valColor}]{Escape(variant)}[/]"));
 
 				if (ide.Warnings is { Count: > 0 })
 				{
 					foreach (var warning in ide.Warnings)
 					{
 						table.AddRow(
+							new Markup(""),
 							new Markup(""),
 							new Markup(""),
 							new Markup($"[yellow]⚠ {Escape(warning)}[/]"),
@@ -68,17 +74,17 @@ internal static class McpSetupOutputFormatter
 		}
 	}
 
-	public static void WriteInstall(OperationResponse response)
+	public static void WriteInstall(OperationResponse response, string workspace)
 	{
-		WriteOperations("MCP Install", response);
+		WriteOperations("MCP Install", response, workspace);
 	}
 
-	public static void WriteUninstall(OperationResponse response)
+	public static void WriteUninstall(OperationResponse response, string workspace)
 	{
-		WriteOperations("MCP Uninstall", response);
+		WriteOperations("MCP Uninstall", response, workspace);
 	}
 
-	private static void WriteOperations(string title, OperationResponse response)
+	private static void WriteOperations(string title, OperationResponse response, string workspace)
 	{
 		var table = new Table()
 			.Border(TableBorder.Rounded)
@@ -94,7 +100,7 @@ internal static class McpSetupOutputFormatter
 			table.AddRow(
 				new Markup($"[white]{Escape(op.Server)}[/]"),
 				actionMarkup,
-				new Markup($"[grey]{Escape(ShortenPath(op.Path ?? "-"))}[/]"),
+				new Markup($"[grey]{Escape(ShortenPath(op.Path ?? "-", workspace))}[/]"),
 				new Markup($"[grey]{Escape(op.Reason ?? "")}[/]"));
 		}
 
@@ -122,8 +128,21 @@ internal static class McpSetupOutputFormatter
 
 	private static string Escape(string text) => text.Replace("[", "[[").Replace("]", "]]");
 
-	private static string ShortenPath(string path)
+	private static string ShortenPath(string path, string workspace)
 	{
+		// Normalize mixed separators (templates use '/' but OS may use '\')
+		path = path.Replace('/', Path.DirectorySeparatorChar);
+		workspace = workspace.Replace('/', Path.DirectorySeparatorChar).TrimEnd(Path.DirectorySeparatorChar);
+
+		// Prefer workspace-relative paths
+		if (path.StartsWith(workspace, StringComparison.OrdinalIgnoreCase)
+			&& path.Length > workspace.Length
+			&& path[workspace.Length] == Path.DirectorySeparatorChar)
+		{
+			return "." + path[workspace.Length..];
+		}
+
+		// Fall back to home-relative paths
 		var home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 		if (!string.IsNullOrEmpty(home) && path.StartsWith(home, StringComparison.OrdinalIgnoreCase))
 		{
