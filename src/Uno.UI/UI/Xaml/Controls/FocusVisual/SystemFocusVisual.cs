@@ -107,8 +107,6 @@ internal partial class SystemFocusVisual : Control
 			return;
 		}
 
-		Visibility = Visibility.Visible;
-
 		var transform = GetTransform(FocusedElement, XamlRoot.VisualTree.RootElement);
 
 		FocusedElement.Visual.GetTotalClipPath(_spareRenderPath, true);
@@ -139,15 +137,9 @@ internal partial class SystemFocusVisual : Control
 
 		var newWidth = Math.Max(0, right - left);
 		var newHeight = Math.Max(0, bottom - top);
-		if (Width != newWidth || Height != newHeight)
-		{
-			Width = newWidth;
-			Height = newHeight;
-			if (newWidth <= 0 || newHeight <= 0)
-			{
-				Visibility = Visibility.Collapsed;
-			}
-		}
+		Width = newWidth;
+		Height = newHeight;
+		Visibility = newWidth <= 0 || newHeight <= 0 ? Visibility.Collapsed : Visibility.Visible;
 	}
 #else
 	private void OnLoaded(object sender, RoutedEventArgs e)

@@ -583,6 +583,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		else
 		{
 			dst.Rewind();
+			dst.AddRect(InfiniteClipRect);
 		}
 
 		var localPath = _pathPool.Allocate();
