@@ -31,6 +31,25 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 	[ThreadStatic] private static bool _isDispatcherThread;
 	private readonly EventLoop _eventLoop;
 
+	// Must be a static field to prevent GC collection while the native callback is active.
+	private static readonly XErrorHandler s_x11ErrorHandler = OnX11Error;
+
+	private static int OnX11Error(IntPtr display, ref XErrorEvent error_event)
+	{
+		if (typeof(X11ApplicationHost).Log().IsEnabled(LogLevel.Warning))
+		{
+			typeof(X11ApplicationHost).Log().LogWarning(
+				$"X11 protocol error — " +
+				$"ErrorCode: {error_event.error_code}, " +
+				$"RequestCode: {error_event.request_code}, " +
+				$"MinorCode: {error_event.minor_code}, " +
+				$"ResourceId: 0x{error_event.resourceid:X}, " +
+				$"Serial: {error_event.serial}");
+		}
+
+		return 0;
+	}
+
 	private readonly Func<Application> _appBuilder;
 
 	static X11ApplicationHost()
@@ -38,6 +57,10 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		// This seems to be necessary to run on WSL, but not necessary on the X.org implementation.
 		// We therefore wrap every x11 call with XLockDisplay and XUnlockDisplay
 		_ = X11Helper.XInitThreads();
+
+		// Install a custom error handler so X11 protocol errors (e.g. BadWindow from a secondary
+		// app loaded via ALC) are logged and ignored instead of calling exit().
+		XLib.XSetErrorHandler(s_x11ErrorHandler);
 
 		// keyboard input fails without this, not sure why this works but Avalonia and xev make similar calls, cf. https://stackoverflow.com/a/18288346
 		// This disables IME, cf. https://tedyin.com/posts/a-brief-intro-to-linux-input-method-framework/
