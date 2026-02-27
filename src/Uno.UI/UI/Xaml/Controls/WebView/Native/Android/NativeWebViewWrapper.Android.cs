@@ -302,6 +302,7 @@ internal partial class NativeWebViewWrapper : INativeWebView
 		}
 
 		_isDisposed = true;
+		DisposeWebResourceRequested();
 		_webView.SetWebViewClient(null);
 		_webView.SetWebChromeClient(null);
 		_webView.RemoveJavascriptInterface("unoWebView");

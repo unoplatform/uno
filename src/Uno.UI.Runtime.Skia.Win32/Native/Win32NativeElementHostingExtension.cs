@@ -346,7 +346,10 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		var showOnThisArrange = _showWindowOnNextArrangeHwnd.Value == hwnd.Value
 			&& _presenter.Content is Win32NativeWindow currentWindow
 			&& currentWindow.Hwnd == window.Hwnd;
-		this.LogTrace()?.Trace($"{nameof(ArrangeNativeElement)} child={hwnd.Value} rect={_lastArrangeRect} scale={scale:0.###} setWindowPosSuccess={success} showOnNextArrangeFor={_showWindowOnNextArrangeHwnd.Value} showNow={showOnThisArrange} childRect={Win32NativeWebView.GetWindowRectSnapshot(hwnd)} hostRect={Win32NativeWebView.GetWindowRectSnapshot(Hwnd)} active={PInvoke.GetActiveWindow().Value}");
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			this.LogTrace()?.Trace($"{nameof(ArrangeNativeElement)} child={hwnd.Value} rect={_lastArrangeRect} scale={scale:0.###} setWindowPosSuccess={success} showOnNextArrangeFor={_showWindowOnNextArrangeHwnd.Value} showNow={showOnThisArrange} childRect={Win32WindowRectHelper.GetWindowRectSnapshot(hwnd)} hostRect={Win32WindowRectHelper.GetWindowRectSnapshot(Hwnd)} active={PInvoke.GetActiveWindow().Value}");
+		}
 
 		_lastFinalSvgClipPath = null; // force reapply clip path after arranging
 		OnRenderingNegativePathReevaluated(this, _lastClipPath);
@@ -355,7 +358,10 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		{
 			_showWindowOnNextArrangeHwnd = HWND.Null;
 			_ = PInvoke.ShowWindow(hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
-			this.LogTrace()?.Trace($"{nameof(ArrangeNativeElement)} showed child={hwnd.Value} with {nameof(SHOW_WINDOW_CMD.SW_SHOWNORMAL)} childRect={Win32NativeWebView.GetWindowRectSnapshot(hwnd)} hostRect={Win32NativeWebView.GetWindowRectSnapshot(Hwnd)} active={PInvoke.GetActiveWindow().Value}");
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.LogTrace()?.Trace($"{nameof(ArrangeNativeElement)} showed child={hwnd.Value} with {nameof(SHOW_WINDOW_CMD.SW_SHOWNORMAL)} childRect={Win32WindowRectHelper.GetWindowRectSnapshot(hwnd)} hostRect={Win32WindowRectHelper.GetWindowRectSnapshot(Hwnd)} active={PInvoke.GetActiveWindow().Value}");
+			}
 		}
 	}
 

@@ -26,7 +26,9 @@ public partial class CoreWebView2
 
 	private bool _scrollEnabled = true;
 	private INativeWebView? _nativeWebView;
+#if __SKIA__
 	private bool _recreateNativeWebViewOnNextLoad;
+#endif
 	private ISupportsWebResourceRequested? _webResourceRequestedSupport;
 	private readonly List<WebResourceRequestedFilter> _webResourceRequestedFilters = new();
 	internal long _navigationId;
@@ -71,6 +73,7 @@ public partial class CoreWebView2
 		_nativeWebView.Dispose();
 		_nativeWebView = null;
 		_recreateNativeWebViewOnNextLoad = true;
+		_nativeWebViewInitializedTcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
 	}
 #endif
 
@@ -190,7 +193,9 @@ public partial class CoreWebView2
 	{
 		DetachWebResourceRequestedSupport();
 		_nativeWebView = GetNativeWebViewFromTemplate();
+#if __SKIA__
 		_recreateNativeWebViewOnNextLoad = false;
+#endif
 		AttachWebResourceRequestedSupport();
 
 		// Signal that native WebView is now initialized
@@ -328,7 +333,7 @@ public partial class CoreWebView2
 
 
 
-	private TaskCompletionSource<bool> _nativeWebViewInitializedTcs = new TaskCompletionSource<bool>();
+	private TaskCompletionSource<bool> _nativeWebViewInitializedTcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
 	internal Task EnsureNativeWebViewAsync() => _nativeWebViewInitializedTcs.Task;
 	internal static bool GetIsHistoryEntryValid(string url) =>
 		!url.IsNullOrWhiteSpace() &&
