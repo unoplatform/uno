@@ -486,7 +486,7 @@ internal class CliManager
 		}
 		else
 		{
-			McpSetupOutputFormatter.WriteStatus(result);
+			McpSetupOutputFormatter.WriteStatus(result, workspace);
 		}
 
 		return 0;
@@ -503,7 +503,7 @@ internal class CliManager
 		}
 		else
 		{
-			McpSetupOutputFormatter.WriteInstall(result);
+			McpSetupOutputFormatter.WriteInstall(result, workspace);
 		}
 
 		return result.Operations.Any(o => o.Action == "error") ? 1 : 0;
@@ -519,7 +519,7 @@ internal class CliManager
 		}
 		else
 		{
-			McpSetupOutputFormatter.WriteUninstall(result);
+			McpSetupOutputFormatter.WriteUninstall(result, workspace);
 		}
 
 		return result.Operations.Any(o => o.Action == "error") ? 1 : 0;
