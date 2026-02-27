@@ -124,7 +124,7 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 		{
 			throw new InvalidOperationException($"{nameof(PInvoke.CreateWindowEx)} failed: {Win32Helper.GetErrorMessage()}");
 		}
-		LogVerboseWin32Trace(() => $"Created child hwnd={_hwnd.Value} appParent={ParentHwnd.Value}");
+		this.LogTrace()?.Trace($"Created child hwnd={_hwnd.Value} appParent={ParentHwnd.Value}");
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
@@ -238,10 +238,7 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 	private LRESULT WndProcInner(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
 	{
 		Debug.Assert(_hwnd == HWND.Null || hwnd == _hwnd); // the null check is for when this method gets called inside CreateWindow before setting _hwnd
-		if (GetTrackedWndProcMessageName(msg) is { } messageName)
-		{
-			LogTrackedWndProcMessage(msg, messageName, hwnd, wParam, lParam);
-		}
+		this.LogTrace()?.Trace($"WndProc {GetTrackedWndProcMessageName(msg)} hwnd={hwnd.Value} presenterParent={ParentHwnd.Value} wParam={wParam.Value} lParam={lParam.Value}{TryGetWindowPosPayload(msg, lParam)} active={PInvoke.GetActiveWindow().Value} childRect={GetWindowRectSnapshot(hwnd)} parentRect={GetWindowRectSnapshot(ParentHwnd)}");
 
 		switch (msg)
 		{
@@ -249,7 +246,7 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 			case PInvoke.WM_SIZE when _controller is not null:
 				PInvoke.GetClientRect(_hwnd, out var bounds);
 				_controller.Bounds = bounds;
-				LogVerboseWin32Trace(() => $"Resized controller bounds to left={bounds.left} top={bounds.top} right={bounds.right} bottom={bounds.bottom}");
+				this.LogTrace()?.Trace($"Resized controller bounds to left={bounds.left} top={bounds.top} right={bounds.right} bottom={bounds.bottom}");
 				return new LRESULT(0);
 			case PInvoke.WM_SYSCOMMAND:
 				// When Alt+F4 is pressed on a focused WebView2, Windows sends WM_SYSCOMMAND with SC_CLOSE
@@ -261,11 +258,11 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 					var parentHwnd = ParentHwnd;
 					if (parentHwnd != HWND.Null)
 					{
-						LogVerboseWin32Trace(() => $"Forwarding {nameof(PInvoke.WM_SYSCOMMAND)} {nameof(PInvoke.SC_CLOSE)} to parent={parentHwnd.Value}");
+						this.LogTrace()?.Trace($"Forwarding {nameof(PInvoke.WM_SYSCOMMAND)} {nameof(PInvoke.SC_CLOSE)} to parent={parentHwnd.Value}");
 						PInvoke.SendMessage(parentHwnd, msg, wParam, lParam);
 						return new LRESULT(0);
 					}
-					LogVerboseWin32Trace(() => $"Received {nameof(PInvoke.WM_SYSCOMMAND)} {nameof(PInvoke.SC_CLOSE)} without parent window.");
+					this.LogTrace()?.Trace($"Received {nameof(PInvoke.WM_SYSCOMMAND)} {nameof(PInvoke.SC_CLOSE)} without parent window.");
 				}
 				break;
 			case PInvoke.WM_CLOSE:
@@ -275,11 +272,11 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 					var parentHwnd = ParentHwnd;
 					if (parentHwnd != HWND.Null)
 					{
-						LogVerboseWin32Trace(() => $"Forwarding {nameof(PInvoke.WM_CLOSE)} to parent={parentHwnd.Value}");
+						this.LogTrace()?.Trace($"Forwarding {nameof(PInvoke.WM_CLOSE)} to parent={parentHwnd.Value}");
 						PInvoke.SendMessage(parentHwnd, msg, wParam, lParam);
 						return new LRESULT(0);
 					}
-					LogVerboseWin32Trace(() => $"Received {nameof(PInvoke.WM_CLOSE)} without parent window.");
+					this.LogTrace()?.Trace($"Received {nameof(PInvoke.WM_CLOSE)} without parent window.");
 				}
 				break;
 		}
@@ -295,10 +292,10 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 
 		var color = Color.FromArgb(brush.Color.A, brush.Color.R, brush.Color.G, brush.Color.B);
 		_controller.DefaultBackgroundColor = color;
-		LogVerboseWin32Trace(() => $"Applied initial controller background argb=0x{color.ToArgb():X8} from host window background.");
+		this.LogTrace()?.Trace($"Applied initial controller background argb=0x{color.ToArgb():X8} from host window background.");
 	}
 
-	private static string? GetTrackedWndProcMessageName(uint msg)
+	private static string GetTrackedWndProcMessageName(uint msg)
 		=> msg switch
 		{
 			PInvoke.WM_ACTIVATE => nameof(PInvoke.WM_ACTIVATE),
@@ -313,20 +310,8 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 			PInvoke.WM_SIZE => nameof(PInvoke.WM_SIZE),
 			PInvoke.WM_SYSCOMMAND => nameof(PInvoke.WM_SYSCOMMAND),
 			PInvoke.WM_CLOSE => nameof(PInvoke.WM_CLOSE),
-			_ => null
+			_ => $"UnknownMessage:0x{msg:X}"
 		};
-
-	private void LogTrackedWndProcMessage(uint msg, string messageName, HWND hwnd, WPARAM wParam, LPARAM lParam)
-	{
-		if (!this.Log().IsEnabled(LogLevel.Trace))
-		{
-			return;
-		}
-
-		var active = PInvoke.GetActiveWindow();
-		LogVerboseWin32Trace(
-			() => $"WndProc {messageName} hwnd={hwnd.Value} presenterParent={ParentHwnd.Value} wParam={wParam.Value} lParam={lParam.Value}{TryGetWindowPosPayload(msg, lParam)} active={active.Value} childRect={GetWindowRectSnapshot(hwnd)} parentRect={GetWindowRectSnapshot(ParentHwnd)}");
-	}
 
 	private static string TryGetWindowPosPayload(uint msg, LPARAM lParam)
 	{
@@ -361,19 +346,6 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 		return $"error={Marshal.GetLastWin32Error()}";
 	}
 
-	private void LogVerboseWin32Trace(Func<string> messageFactory)
-	{
-		if (!this.Log().IsEnabled(LogLevel.Trace))
-		{
-			return;
-		}
-
-		// Keep payload creation lazy because these traces capture native window state and
-		// Uno's logger API does not expose a Trace(Func<string>) lazy overload.
-		var message = $"[WebView2Trace] {DateTime.UtcNow:O} {messageFactory()}";
-		this.LogTrace()?.Trace(message);
-	}
-
 	public string DocumentTitle
 	{
 		get => _documentTitle;
@@ -399,7 +371,7 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 
 	private void NativeWebView_NavigationStarting(object? sender, NativeWebView.CoreWebView2NavigationStartingEventArgs e)
 	{
-		LogVerboseWin32Trace(() => $"NavigationStarting id={e.NavigationId} uri={e.Uri ?? "<null>"} child={_hwnd.Value} childRect={GetWindowRectSnapshot(_hwnd)} parent={ParentHwnd.Value} parentRect={GetWindowRectSnapshot(ParentHwnd)}");
+		this.LogTrace()?.Trace($"NavigationStarting id={e.NavigationId} uri={e.Uri ?? "<null>"} child={_hwnd.Value} childRect={GetWindowRectSnapshot(_hwnd)} parent={ParentHwnd.Value} parentRect={GetWindowRectSnapshot(ParentHwnd)}");
 
 		if (e.Uri is null)
 		{
@@ -422,8 +394,7 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 
 	private void NativeWebView_NavigationCompleted(object? sender, NativeWebView.CoreWebView2NavigationCompletedEventArgs e)
 	{
-		LogVerboseWin32Trace(
-			() => $"NavigationCompleted id={e.NavigationId} success={e.IsSuccess} http={e.HttpStatusCode} errorStatus={e.WebErrorStatus} child={_hwnd.Value} childRect={GetWindowRectSnapshot(_hwnd)} parent={ParentHwnd.Value} parentRect={GetWindowRectSnapshot(ParentHwnd)}");
+		this.LogTrace()?.Trace($"NavigationCompleted id={e.NavigationId} success={e.IsSuccess} http={e.HttpStatusCode} errorStatus={e.WebErrorStatus} child={_hwnd.Value} childRect={GetWindowRectSnapshot(_hwnd)} parent={ParentHwnd.Value} parentRect={GetWindowRectSnapshot(ParentHwnd)}");
 
 		if (!_navigationIdToUriMap.TryGetValue(e.NavigationId, out var uriString))
 		{
