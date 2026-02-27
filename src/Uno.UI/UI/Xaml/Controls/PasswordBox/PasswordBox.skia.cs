@@ -19,7 +19,11 @@ public partial class PasswordBox
 
 	partial void SetPasswordRevealState(PasswordRevealState state) => TextBoxView?.SetPasswordRevealState(state);
 
-	public new FlyoutBase SelectionFlyout => base.SelectionFlyout;
+	public new FlyoutBase SelectionFlyout
+	{
+		get => base.SelectionFlyout;
+		set => base.SelectionFlyout = value;
+	}
 
 	public static new DependencyProperty SelectionFlyoutProperty => TextBox.SelectionFlyoutProperty;
 

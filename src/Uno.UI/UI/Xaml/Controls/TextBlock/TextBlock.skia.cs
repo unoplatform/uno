@@ -70,6 +70,17 @@ namespace Microsoft.UI.Xaml.Controls
 			};
 		}
 
+		public static DependencyProperty SelectionFlyoutProperty { get; } =
+			DependencyProperty.Register(
+				nameof(SelectionFlyout), typeof(FlyoutBase), typeof(TextBlock),
+				new FrameworkPropertyMetadata(default(FlyoutBase)));
+
+		public FlyoutBase SelectionFlyout
+		{
+			get => (FlyoutBase)GetValue(SelectionFlyoutProperty);
+			set => SetValue(SelectionFlyoutProperty, value);
+		}
+
 		internal TextBox? OwningTextBox { private get; init; }
 
 		internal bool IsSpellCheckEnabled { get; set; }
