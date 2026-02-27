@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging.Console;
 using Uno.UI.DevServer.Cli.Helpers;
 using Uno.UI.DevServer.Cli.Logging;
 using Uno.UI.DevServer.Cli.Mcp;
+using Uno.UI.DevServer.Cli.Mcp.Setup;
 
 namespace Uno.UI.DevServer.Cli;
 
@@ -38,6 +39,23 @@ internal class Program
 			WriteCommand("stop", "Stop the DevServer for the current folder");
 			WriteCommand("list", "List active DevServer instances");
 			WriteCommand("disco", "Discover environment and SDK details");
+			Console.WriteLine();
+			Console.WriteLine("MCP setup commands:");
+			WriteCommand("mcp start", "Start the MCP STDIO proxy (alias: --mcp-app)");
+			WriteCommand("mcp status", "Report installation state of MCP servers across IDEs");
+			WriteCommand("mcp install", "Register MCP servers in IDE config files");
+			WriteCommand("mcp uninstall", "Remove MCP servers from IDE config files");
+			Console.WriteLine();
+			Console.WriteLine("MCP setup options:");
+			WriteOption("<ide>", "Target IDE (positional): vscode, cursor, windsurf, kiro, trae, antigravity, rider, claude-code, opencode, aider");
+			WriteOption("--workspace <path>", "Workspace root (default: current directory)");
+			WriteOption("--release", "Use stable variant");
+			WriteOption("--prerelease", "Use prerelease variant");
+			WriteOption("--version <ver>", "Pin to specific version");
+			WriteOption("--servers <list>", "Comma-separated server names (default: all)");
+			WriteOption("--json", "Emit JSON output");
+			WriteOption("--ide-definitions <path>", "Override embedded IDE profiles");
+			WriteOption("--server-definitions <path>", "Override embedded server definitions");
 			Console.WriteLine();
 			return 0;
 		}
@@ -93,6 +111,8 @@ internal class Program
 		services.AddSingleton<HealthService>();
 		services.AddSingleton<McpStdioServer>();
 		services.AddSingleton<ProxyLifecycleManager>();
+		services.AddSingleton<IFileSystem, FileSystem>();
+		services.AddSingleton<McpSetupOrchestrator>();
 
 		using var sp = services.BuildServiceProvider();
 		var manager = sp.GetRequiredService<CliManager>();

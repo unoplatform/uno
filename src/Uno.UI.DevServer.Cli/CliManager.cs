@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Uno.UI.DevServer.Cli.Helpers;
 using Uno.UI.DevServer.Cli.Mcp;
+using Uno.UI.DevServer.Cli.Mcp.Setup;
 
 namespace Uno.UI.DevServer.Cli;
 
@@ -43,6 +44,13 @@ internal class CliManager
 
 			originalArgs = solutionDirParseResult.FilteredArgs;
 			var workingDirectory = solutionDirParseResult.SolutionDirectory ?? Environment.CurrentDirectory;
+
+			// Route "mcp" subcommand group
+			if (originalArgs is { Length: > 0 } &&
+				string.Equals(originalArgs[0], "mcp", StringComparison.OrdinalIgnoreCase))
+			{
+				return RunMcpSubcommand(originalArgs[1..], workingDirectory, solutionDirParseResult.SolutionDirectory);
+			}
 
 			if (originalArgs.Contains("--mcp-app"))
 			{
@@ -365,6 +373,237 @@ internal class CliManager
 		}
 
 		return (true, filteredArgs.ToArray(), normalizedSolutionDirectory);
+	}
+
+	private int RunMcpSubcommand(string[] args, string workingDirectory, string? solutionDirectory)
+	{
+		if (args.Length == 0)
+		{
+			_logger.LogError("Missing mcp subcommand. Use: mcp start|status|install|uninstall");
+			return 2;
+		}
+
+		var subcommand = args[0].ToLowerInvariant();
+
+		if (subcommand == "start")
+		{
+			// "mcp start" is an alias for --mcp-app
+			return RunMcpProxyAsync(args[1..], workingDirectory, solutionDirectory).GetAwaiter().GetResult();
+		}
+
+		if (subcommand is not ("status" or "install" or "uninstall"))
+		{
+			_logger.LogError("Unknown mcp subcommand '{Subcommand}'. Use: start|status|install|uninstall", subcommand);
+			return 2;
+		}
+
+		// Parse common setup options
+		var parsed = ParseMcpSetupArgs(args[1..], subcommand);
+		if (parsed is null)
+		{
+			return 2; // error already logged
+		}
+
+		// Validate IDE requirement for install/uninstall
+		if (subcommand is "install" or "uninstall" && parsed.Value.Ide is null)
+		{
+			_logger.LogError("Missing IDE argument. Usage: mcp {Subcommand} <ide>", subcommand);
+			return 2;
+		}
+
+		// Validate mutually exclusive variant flags
+		var flagCount = (parsed.Value.ReleaseFlag ? 1 : 0) + (parsed.Value.PrereleaseFlag ? 1 : 0) + (parsed.Value.VersionFlag is not null ? 1 : 0);
+		if (flagCount > 1)
+		{
+			_logger.LogError("--release, --prerelease, and --version are mutually exclusive");
+			return 2;
+		}
+
+		try
+		{
+			var defs = DefinitionsLoader.Load(
+				_services.GetRequiredService<IFileSystem>(),
+				parsed.Value.IdeDefinitionsPath,
+				parsed.Value.ServerDefinitionsPath);
+
+			// Validate IDE if specified
+			if (parsed.Value.Ide is not null && !defs.Ides.ContainsKey(parsed.Value.Ide))
+			{
+				_logger.LogError("Unknown IDE '{Ide}'. Known IDEs: {KnownIdes}",
+					parsed.Value.Ide, string.Join(", ", defs.Ides.Keys));
+				return 1;
+			}
+
+			// Validate server filter
+			if (parsed.Value.Servers is not null)
+			{
+				foreach (var s in parsed.Value.Servers)
+				{
+					if (!defs.Servers.ContainsKey(s))
+					{
+						_logger.LogError("Unknown server '{Server}'. Known servers: {KnownServers}",
+							s, string.Join(", ", defs.Servers.Keys));
+						return 2;
+					}
+				}
+			}
+
+			var workspace = parsed.Value.Workspace ?? workingDirectory;
+			var toolVersion = ServerDefinitionResolver.GetToolVersion();
+			var expectedVariant = ServerDefinitionResolver.ResolveExpectedVariant(
+				toolVersion, parsed.Value.ReleaseFlag, parsed.Value.PrereleaseFlag, parsed.Value.VersionFlag);
+
+			var orchestrator = _services.GetRequiredService<McpSetupOrchestrator>();
+
+			return subcommand switch
+			{
+				"status" => RunMcpStatus(orchestrator, defs, workspace, parsed.Value, expectedVariant, toolVersion),
+				"install" => RunMcpInstall(orchestrator, defs, workspace, parsed.Value, expectedVariant, toolVersion),
+				"uninstall" => RunMcpUninstall(orchestrator, defs, workspace, parsed.Value),
+				_ => 2,
+			};
+		}
+		catch (FileNotFoundException ex)
+		{
+			_logger.LogError(ex, "Definitions file not found: {Message}", ex.Message);
+			return 1;
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "MCP setup error: {Message}", ex.Message);
+			return 1;
+		}
+	}
+
+	private static int RunMcpStatus(
+		McpSetupOrchestrator orchestrator, Definitions defs, string workspace,
+		McpSetupParsedArgs parsed, string expectedVariant, string toolVersion)
+	{
+		var result = orchestrator.Status(defs, workspace, parsed.Ide, expectedVariant, toolVersion);
+		if (parsed.JsonOutput)
+		{
+			Console.WriteLine(JsonSerializer.Serialize(result, McpSetupJson.OutputOptions));
+		}
+		else
+		{
+			McpSetupOutputFormatter.WriteStatus(result);
+		}
+
+		return 0;
+	}
+
+	private static int RunMcpInstall(
+		McpSetupOrchestrator orchestrator, Definitions defs, string workspace,
+		McpSetupParsedArgs parsed, string expectedVariant, string toolVersion)
+	{
+		var result = orchestrator.Install(defs, workspace, parsed.Ide!, expectedVariant, toolVersion, parsed.Servers);
+		if (parsed.JsonOutput)
+		{
+			Console.WriteLine(JsonSerializer.Serialize(result, McpSetupJson.OutputOptions));
+		}
+		else
+		{
+			McpSetupOutputFormatter.WriteInstall(result);
+		}
+
+		return result.Operations.Any(o => o.Action == "error") ? 1 : 0;
+	}
+
+	private static int RunMcpUninstall(
+		McpSetupOrchestrator orchestrator, Definitions defs, string workspace, McpSetupParsedArgs parsed)
+	{
+		var result = orchestrator.Uninstall(defs, workspace, parsed.Ide!, parsed.Servers);
+		if (parsed.JsonOutput)
+		{
+			Console.WriteLine(JsonSerializer.Serialize(result, McpSetupJson.OutputOptions));
+		}
+		else
+		{
+			McpSetupOutputFormatter.WriteUninstall(result);
+		}
+
+		return result.Operations.Any(o => o.Action == "error") ? 1 : 0;
+	}
+
+	private record struct McpSetupParsedArgs(
+		string? Ide,
+		string? Workspace,
+		bool ReleaseFlag,
+		bool PrereleaseFlag,
+		string? VersionFlag,
+		List<string>? Servers,
+		bool JsonOutput,
+		string? IdeDefinitionsPath,
+		string? ServerDefinitionsPath);
+
+	private McpSetupParsedArgs? ParseMcpSetupArgs(string[] args, string subcommand)
+	{
+		string? ide = null;
+		string? workspace = null;
+		bool releaseFlag = false;
+		bool prereleaseFlag = false;
+		string? versionFlag = null;
+		List<string>? servers = null;
+		bool jsonOutput = false;
+		string? ideDefinitionsPath = null;
+		string? serverDefinitionsPath = null;
+
+		for (int i = 0; i < args.Length; i++)
+		{
+			var a = args[i];
+			switch (a)
+			{
+				case "--workspace":
+					if (i + 1 >= args.Length) { _logger.LogError("Missing value for --workspace"); return null; }
+					workspace = args[++i];
+					break;
+				case "--release":
+					releaseFlag = true;
+					break;
+				case "--prerelease":
+					prereleaseFlag = true;
+					break;
+				case "--version":
+					if (i + 1 >= args.Length) { _logger.LogError("Missing value for --version"); return null; }
+					versionFlag = args[++i];
+					break;
+				case "--servers":
+					if (i + 1 >= args.Length) { _logger.LogError("Missing value for --servers"); return null; }
+					servers = args[++i].Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
+					break;
+				case "--json":
+					jsonOutput = true;
+					break;
+				case "--ide-definitions":
+					if (i + 1 >= args.Length) { _logger.LogError("Missing value for --ide-definitions"); return null; }
+					ideDefinitionsPath = args[++i];
+					break;
+				case "--server-definitions":
+					if (i + 1 >= args.Length) { _logger.LogError("Missing value for --server-definitions"); return null; }
+					serverDefinitionsPath = args[++i];
+					break;
+				default:
+					if (a.StartsWith('-'))
+					{
+						_logger.LogError("Unknown option '{Option}' for mcp {Subcommand}", a, subcommand);
+						return null;
+					}
+					// Positional: IDE identifier
+					if (ide is null)
+					{
+						ide = a;
+					}
+					else
+					{
+						_logger.LogError("Unexpected argument '{Arg}' for mcp {Subcommand}", a, subcommand);
+						return null;
+					}
+					break;
+			}
+		}
+
+		return new McpSetupParsedArgs(ide, workspace, releaseFlag, prereleaseFlag, versionFlag,
+			servers, jsonOutput, ideDefinitionsPath, serverDefinitionsPath);
 	}
 
 	private ProcessStartInfo BuildHostArgs(string hostPath, string[] originalArgs, string workingDirectory, bool redirectOutput = true, string? addins = null)
