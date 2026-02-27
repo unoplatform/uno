@@ -149,13 +149,13 @@ VS Code requires manual ADB setup or extensions for Logcat viewing.
    # Windows CMD equivalent:
    # adb logcat | findstr "com.yourcompany.yourapp"
    # Filter by log priority (E=Error, W=Warn, I=Info, D=Debug, V=Verbose)
-   adb logcat *:E
+   adb logcat '*:E'
 
    # Filter by tag (show only Uno logs)
-   adb logcat Uno:* *:S
+   adb logcat 'Uno:*' '*:S'
 
    # Combination: Show Uno debug logs and all errors
-   adb logcat Uno:D *:E
+   adb logcat 'Uno:D' '*:E'
 
    # Save logs to file
    adb logcat > android-logs.txt
