@@ -8,12 +8,14 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using System.Numerics;
 using Uno.Extensions;
-using CompositionTarget = Microsoft.UI.Xaml.Media.CompositionTarget;
 
 namespace Uno.UI.Xaml.Controls;
 
 internal partial class SystemFocusVisual : Control
 {
+#if __SKIA__
+	private static readonly SkiaSharp.SKPath _spareRenderPath = new SkiaSharp.SKPath();
+#endif
 	private SerialDisposable _focusedElementSubscriptions = new SerialDisposable();
 
 	public SystemFocusVisual()
@@ -92,7 +94,7 @@ internal partial class SystemFocusVisual : Control
 		if (XamlRoot is null ||
 			FocusedElement is null ||
 			FocusedElement.Visibility == Visibility.Collapsed ||
-			(FocusedElement is Control control && !control.IsEnabled && !control.AllowFocusWhenDisabled))
+			FocusedElement is Control { IsEnabled: false, AllowFocusWhenDisabled: false })
 		{
 			Visibility = Visibility.Collapsed;
 			return;
@@ -109,7 +111,8 @@ internal partial class SystemFocusVisual : Control
 
 		var transform = GetTransform(FocusedElement, XamlRoot.VisualTree.RootElement);
 
-		var totalClipRect = FocusedElement.Visual.GetTotalClipPath(true).Bounds;
+		FocusedElement.Visual.GetTotalClipPath(_spareRenderPath, true);
+		var totalClipRect = _spareRenderPath.Bounds;
 		var inverseMatrix = transform.Inverse();
 		var topLeft = inverseMatrix.Transform(new Point(totalClipRect.Left, totalClipRect.Top));
 		var topRight = inverseMatrix.Transform(new Point(totalClipRect.Right, totalClipRect.Top));
@@ -134,11 +137,13 @@ internal partial class SystemFocusVisual : Control
 			RenderTransform = new MatrixTransform { Matrix = translatedMatrix };
 		}
 
-		if (Width != right - left || Height != bottom - top)
+		var newWidth = Math.Max(0, right - left);
+		var newHeight = Math.Max(0, bottom - top);
+		if (Width != newWidth || Height != newHeight)
 		{
-			Width = Math.Max(0, right - left);
-			Height = Math.Max(0, bottom - top);
-			if (Width <= 0 || Height <= 0)
+			Width = newWidth;
+			Height = newHeight;
+			if (newWidth <= 0 || newHeight <= 0)
 			{
 				Visibility = Visibility.Collapsed;
 			}

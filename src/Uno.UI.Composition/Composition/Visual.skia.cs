@@ -574,40 +574,36 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 	}
 
-	internal SKPath GetTotalClipPath(bool skipPostPaintingClipping)
+	internal void GetTotalClipPath(SKPath dst, bool skipPostPaintingClipping)
 	{
-		SKPath currentClip;
-
 		if (Parent is Visual parent)
 		{
-			currentClip = parent.GetTotalClipPath(false);
+			parent.GetTotalClipPath(dst, false);
 		}
 		else
 		{
-			currentClip = new SKPath();
-			currentClip.AddRect(InfiniteClipRect);
+			dst.Rewind();
 		}
 
 		var localPath = _pathPool.Allocate();
 		using var localPathDisposable = new DisposableStruct<SKPath>(static path => _pathPool.Free(path), localPath);
 
+		var totalMatrix = TotalMatrix.ToSKMatrix();
 		if (GetPrePaintingClipping(localPath))
 		{
 			// The local clip is in local coordinates. We need to transform it to root coordinates.
-			localPath.Transform(TotalMatrix.ToSKMatrix());
-			currentClip.Op(localPath, SKPathOp.Intersect, currentClip);
+			localPath.Transform(in totalMatrix);
+			dst.Op(localPath, SKPathOp.Intersect, dst);
 		}
 
 		if (!skipPostPaintingClipping)
 		{
 			if (GetPostPaintingClipping() is { } postClip)
 			{
-				postClip.Transform(TotalMatrix.ToSKMatrix());
-				currentClip.Op(postClip, SKPathOp.Intersect, currentClip);
+				postClip.Transform(in totalMatrix);
+				dst.Op(postClip, SKPathOp.Intersect, dst);
 			}
 		}
-
-		return currentClip;
 	}
 
 	/// <summary>
