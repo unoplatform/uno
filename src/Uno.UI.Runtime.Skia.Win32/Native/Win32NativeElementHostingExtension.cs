@@ -103,8 +103,10 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		// Ordering is important: hide before reparenting, and only arm deferred show after SetParent succeeds.
 		_ = PInvoke.ShowWindow(hwnd, SHOW_WINDOW_CMD.SW_HIDE);
 
+		Marshal.SetLastPInvokeError(0);
 		var oldParent = PInvoke.SetParent(hwnd, Hwnd);
-		if (oldParent == HWND.Null && Marshal.GetLastWin32Error() != 0)
+		var setParentError = Marshal.GetLastPInvokeError();
+		if (oldParent == HWND.Null && setParentError != 0)
 		{
 			_showWindowOnNextArrangeHwnd = HWND.Null;
 			this.LogError()?.Error($"{nameof(PInvoke.SetParent)} failed: {Win32Helper.GetErrorMessage()}");
@@ -298,8 +300,10 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 			_showWindowOnNextArrangeHwnd = HWND.Null;
 		}
 
+		Marshal.SetLastPInvokeError(0);
 		var oldParent = PInvoke.SetParent(hwnd, HWND.Null);
-		if (oldParent == HWND.Null && Marshal.GetLastWin32Error() != 0)
+		var setParentError = Marshal.GetLastPInvokeError();
+		if (oldParent == HWND.Null && setParentError != 0)
 		{
 			this.LogError()?.Error($"{nameof(PInvoke.SetParent)} failed: {Win32Helper.GetErrorMessage()}");
 		}
