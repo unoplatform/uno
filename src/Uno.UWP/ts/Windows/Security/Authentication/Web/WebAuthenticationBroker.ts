@@ -143,19 +143,26 @@
 					const left = ((width / 2) - (popUpWidth / 2)) + winLeft;
 					const top = ((height / 2) - (popUpHeight / 2)) + winTop;
 
+					// Determine the expected origin of the redirect URL
+					const redirectOrigin = new URL(urlRedirect, window.location.href).origin;
+
 					// Listen for postMessage from the popup (more reliable in Safari)
 					const messageHandler = (event: MessageEvent) => {
-						// Verify the message is from our expected redirect origin
+						// Ensure the message comes from the popup window we opened
+						if (event.source !== win) {
+							return;
+						}
+						// Verify the message is from our expected origin
 						if (event.origin === window.location.origin ||
-							urlRedirect.startsWith(event.origin)) {
+							event.origin === redirectOrigin) {
 							const data = event.data;
 							if (typeof data === 'string' && data.indexOf(urlRedirect) === 0) {
 								window.removeEventListener('message', messageHandler);
 								completeSuccessfully(data);
 							} else if (data && typeof data === 'object' && data.type === 'oauth-callback') {
-								window.removeEventListener('message', messageHandler);
-								if (data.url && data.url.indexOf(urlRedirect) === 0) {
-									completeSuccessfully(data.url);
+								if (typeof (data as any).url === 'string' && (data as any).url.indexOf(urlRedirect) === 0) {
+									window.removeEventListener('message', messageHandler);
+									completeSuccessfully((data as any).url);
 								}
 							}
 						}
