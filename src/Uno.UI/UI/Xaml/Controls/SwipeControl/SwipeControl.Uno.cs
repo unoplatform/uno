@@ -261,14 +261,19 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private async void OnSwipeManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
+		private void OnSwipeManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
+		{
+			_ = OnSwipeManipulationCompletedAsync(e);
+		}
+
+		private async Task OnSwipeManipulationCompletedAsync(ManipulationCompletedRoutedEventArgs e)
 		{
 			try
 			{
 #if !DEBUG
 				// On UWP, SwipeControl works only with touch.
 				// We do allow other pointers in DEBUG ... well, because it easier to debug on a PC :)
-				// Note: The OnSwipeManipulationCompleted is invoked with null args in the Close()
+				// Note: The OnSwipeManipulationCompletedAsync is invoked with null args in the CloseInnerAsync()
 				if (e != null && e.PointerDeviceType != PointerDeviceType.Touch)
 				{
 					return;
