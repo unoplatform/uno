@@ -233,9 +233,24 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 		FlushPendingUpdates();
 	}
 
-	private Vector3 GetVisualOffset(Visual visual)
+	/// <summary>
+	/// Calculates the cumulative visual offset from a UIElement up to (but not including)
+	/// the element whose Visual.Handle matches <paramref name="semanticParentHandle"/>.
+	/// This accounts for intermediate non-semantic elements that were pruned from the
+	/// accessibility tree, whose offsets would otherwise be lost.
+	/// </summary>
+	private static Vector3 GetOffsetRelativeToSemanticParent(UIElement element, IntPtr semanticParentHandle)
 	{
-		return visual.GetTotalOffset();
+		var offset = element.Visual.GetTotalOffset();
+
+		var parent = element.GetParent() as UIElement;
+		while (parent is not null && parent.Visual.Handle != semanticParentHandle)
+		{
+			offset += parent.Visual.GetTotalOffset();
+			parent = parent.GetParent() as UIElement;
+		}
+
+		return offset;
 	}
 
 	private void OnChildAdded(UIElement parent, UIElement child, int? index)
@@ -243,7 +258,6 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 		if (IsAccessibilityEnabled)
 		{
 			var isChildSemantic = IsSemanticElement(child);
-			Console.WriteLine($"[A11y] OnChildAdded: parent={parent.GetType().Name} handle={parent.Visual.Handle} child={child.GetType().Name} handle={child.Visual.Handle} index={index?.ToString(CultureInfo.InvariantCulture) ?? "append"} isSemantic={isChildSemantic}");
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -261,23 +275,34 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 
 			if (isChildSemantic)
 			{
-				if (AddSemanticElement(semanticParent, child, index))
+				// Guard against duplicate additions: ExternalOnChildAdded fires for
+				// each child as it's added to the visual tree, but the recursion below
+				// also visits children. Without this check, elements at depth D get
+				// processed D times, creating duplicate DOM nodes and corrupting
+				// the _semanticParentMap (which causes removeChild to throw when
+				// the recorded parent doesn't match the actual DOM parent).
+				var childHandle = child.Visual.Handle;
+				if (!_semanticParentMap.ContainsKey(childHandle))
 				{
-					_semanticParentMap[child.Visual.Handle] = semanticParent;
-					Console.WriteLine($"[A11y] OnChildAdded: ADDED to semantic tree child={child.GetType().Name} handle={child.Visual.Handle} semanticParent={semanticParent}");
-				}
-				else
-				{
-					Console.WriteLine($"[A11y] OnChildAdded: AddSemanticElement FAILED for child={child.GetType().Name} handle={child.Visual.Handle}");
-					if (this.Log().IsEnabled(LogLevel.Warning))
+					if (AddSemanticElement(semanticParent, child, index))
 					{
-						this.Log().Warn($"[A11y] OnChildAdded: AddSemanticElement failed for {child.GetType().Name} handle={child.Visual.Handle}");
+						_semanticParentMap[childHandle] = semanticParent;
+					}
+					else
+					{
+						if (this.Log().IsEnabled(LogLevel.Warning))
+						{
+							this.Log().Warn($"[A11y] OnChildAdded: AddSemanticElement failed for {child.GetType().Name} handle={child.Visual.Handle}");
+						}
 					}
 				}
 			}
 
 			// Always recurse into children — if this element was skipped,
-			// its children will be parented to the nearest semantic ancestor
+			// its children will be parented to the nearest semantic ancestor.
+			// The _semanticParentMap guard above prevents duplicate additions
+			// when the same element is visited via both ExternalOnChildAdded
+			// (fired per-child by UIElement) and this recursion.
 			foreach (var childChild in child._children)
 			{
 				OnChildAdded(child, childChild, null);
@@ -333,7 +358,7 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 				var peer = itemElement.GetOrCreateAutomationPeer();
 				var label = peer?.GetName() ?? string.Empty;
 				var totalCount = repeater.ItemsSourceView?.Count ?? 0;
-				var offset = GetVisualOffset(itemElement.Visual);
+				var offset = GetOffsetRelativeToSemanticParent(itemElement, repeater.Visual.Handle);
 				region.OnItemRealized(
 					itemElement.Visual.Handle,
 					itemIndex,
@@ -375,7 +400,7 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 						var peer = itemElement.GetOrCreateAutomationPeer();
 						var label = peer?.GetName() ?? string.Empty;
 						var totalCount = listView.Items?.Count ?? 0;
-						var offset = GetVisualOffset(itemElement.Visual);
+						var offset = GetOffsetRelativeToSemanticParent(itemElement, listView.Visual.Handle);
 						region.OnItemRealized(
 							itemElement.Visual.Handle,
 							e.ItemIndex,
@@ -479,8 +504,19 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 			}
 			else
 			{
-				var totalOffset = GetVisualOffset(visual);
-				NativeMethods.UpdateSemanticElementPositioning(shapeVisual.Handle, shapeVisual.Size.X, shapeVisual.Size.Y, totalOffset.X, totalOffset.Y);
+				var handle = shapeVisual.Handle;
+				if (_semanticParentMap.TryGetValue(handle, out var semanticParentHandle)
+					&& (visual as ContainerVisual)?.Owner?.Target is UIElement element)
+				{
+					var totalOffset = GetOffsetRelativeToSemanticParent(element, semanticParentHandle);
+					NativeMethods.UpdateSemanticElementPositioning(handle, shapeVisual.Size.X, shapeVisual.Size.Y, totalOffset.X, totalOffset.Y);
+				}
+				else
+				{
+					// Root element or element not in semantic map — use local offset
+					var totalOffset = visual.GetTotalOffset();
+					NativeMethods.UpdateSemanticElementPositioning(handle, shapeVisual.Size.X, shapeVisual.Size.Y, totalOffset.X, totalOffset.Y);
+				}
 			}
 		}
 	}
@@ -493,9 +529,12 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 	[JSExport]
 	public static void EnableAccessibility()
 	{
-		Console.WriteLine("[A11y] EnableAccessibility() called");
-
 		var @this = Instance;
+		if (@this.Log().IsEnabled(LogLevel.Debug))
+		{
+			@this.Log().Debug("[A11y] EnableAccessibility() called");
+		}
+
 		if (@this.IsAccessibilityEnabled)
 		{
 			Console.WriteLine("[A11y] EnableAccessibility() called for the second time. Returning early.");
@@ -535,10 +574,6 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 			else
 			{
 				Console.WriteLine($"[A11y] EnableAccessibility() ERROR: Max retries ({MaxEnableAccessibilityRetries}) exceeded. Window still not ready.");
-				if (@this.Log().IsEnabled(LogLevel.Warning))
-				{
-					@this.Log().LogWarning("EnableA11y is called while either Window or its RootElement is null. This shouldn't happen.");
-				}
 
 				return;
 			}
@@ -823,8 +858,9 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 		// https://wicg.github.io/aom/explainer.html
 		var rootHandle = rootElement.Visual.Handle;
 
-		var totalOffset = GetVisualOffset(rootElement.Visual);
-		NativeMethods.AddRootElementToSemanticsRoot(rootHandle, rootElement.Visual.Size.X, rootElement.Visual.Size.Y, totalOffset.X, totalOffset.Y, IsAccessibilityFocusable(rootElement, rootElement.IsFocusable));
+		// Root element is placed directly under uno-semantics-root — use its local offset
+		var rootOffset = rootElement.Visual.GetTotalOffset();
+		NativeMethods.AddRootElementToSemanticsRoot(rootHandle, rootElement.Visual.Size.X, rootElement.Visual.Size.Y, rootOffset.X, rootOffset.Y, IsAccessibilityFocusable(rootElement, rootElement.IsFocusable));
 
 		// Set role="application" on the root so VoiceOver uses app interaction mode
 		// instead of document-style page navigation
@@ -975,10 +1011,9 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 
 	private bool AddSemanticElement(IntPtr parentHandle, UIElement child, int? index)
 	{
-		var totalOffset = GetVisualOffset(child.Visual);
+		var totalOffset = GetOffsetRelativeToSemanticParent(child, parentHandle);
 		var automationPeer = child.GetOrCreateAutomationPeer();
 
-		Console.WriteLine($"[A11y] AddSemanticElement: type={child.GetType().Name} handle={child.Visual.Handle} parent={parentHandle} hasPeer={automationPeer != null}");
 
 		if (automationPeer is null && this.Log().IsEnabled(LogLevel.Debug))
 		{
