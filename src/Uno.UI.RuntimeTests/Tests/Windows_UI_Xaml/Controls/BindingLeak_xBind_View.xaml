@@ -1,0 +1,9 @@
+<UserControl
+	x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.BindingLeak_xBind_View"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+	<Grid>
+		<TextBlock Text="{x:Bind ViewModel.Text, Mode=OneWay}" />
+	</Grid>
+</UserControl>
