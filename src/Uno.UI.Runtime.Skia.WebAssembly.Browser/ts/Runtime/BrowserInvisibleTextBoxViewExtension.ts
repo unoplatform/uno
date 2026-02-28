@@ -1,4 +1,4 @@
-﻿namespace Uno.UI.Runtime.Skia {
+namespace Uno.UI.Runtime.Skia {
 	export class BrowserInvisibleTextBoxViewExtension {
 		private static _exports: any;
 		private static readonly inputElementId = "uno-input";
@@ -11,6 +11,10 @@
 		private static nextSelectionStart: number;
 		private static nextSelectionEnd: number;
 		private static nextSelectionDirection: "forward" | "backward" | "none";
+
+		// Track whether the next keydown should skip preventDefault because
+		// a beforeinput event indicated a delete operation.
+		private static skipPreventDefaultForDelete: boolean = false;
 
 		public static initialize() {
 			if (BrowserInvisibleTextBoxViewExtension._exports == undefined) {
@@ -86,13 +90,32 @@
 				ev.preventDefault();
 			};
 
-			// Handle Enter key from Android virtual keyboards which don't fire keydown events.
-			// Android keyboards typically fire beforeinput with inputType "insertLineBreak" instead.
 			input.addEventListener("beforeinput", (ev: InputEvent) => {
+				// Handle Enter key from Android virtual keyboards which don't fire keydown events.
+				// Android keyboards typically fire beforeinput with inputType "insertLineBreak" instead.
 				if (ev.inputType === "insertLineBreak" && !BrowserInvisibleTextBoxViewExtension.acceptsReturn) {
 					ev.preventDefault();
 
 					BrowserInvisibleTextBoxViewExtension._exports.OnEnterKeyPressed();
+				}
+
+				// Detect delete operations from Android soft keyboards (keyCode 229 workaround).
+				// On Android, keydown events return keyCode 229 (IME processing) for all keys,
+				// making it impossible to detect Backspace/Delete via keydown. The beforeinput
+				// event provides inputType which reliably indicates the operation type.
+				if (ev.inputType &&
+					(ev.inputType === 'deleteContentBackward' ||
+					 ev.inputType === 'deleteContentForward' ||
+					 ev.inputType === 'deleteByCut' ||
+					 ev.inputType === 'deleteByDrag' ||
+					 ev.inputType === 'deleteContent' ||
+					 ev.inputType === 'deleteWordBackward' ||
+					 ev.inputType === 'deleteWordForward' ||
+					 ev.inputType === 'deleteSoftLineBackward' ||
+					 ev.inputType === 'deleteSoftLineForward' ||
+					 ev.inputType === 'deleteHardLineBackward' ||
+					 ev.inputType === 'deleteHardLineForward')) {
+					BrowserInvisibleTextBoxViewExtension.skipPreventDefaultForDelete = true;
 				}
 			});
 
@@ -110,6 +133,20 @@
 				// This enables focus navigation (e.g., Uno.Toolkit's AutoFocusNext) on mobile browsers
 				if ((ev.key === "Enter" || ev.keyCode === 13) && !BrowserInvisibleTextBoxViewExtension.acceptsReturn) {
 					// Don't call preventDefault() to allow the key event to propagate to document listeners
+					return;
+				}
+
+				// Check if beforeinput indicated this is a delete operation.
+				// If so, let the browser handle it natively (don't preventDefault).
+				if (BrowserInvisibleTextBoxViewExtension.skipPreventDefaultForDelete) {
+					BrowserInvisibleTextBoxViewExtension.skipPreventDefaultForDelete = false;
+					ev.stopPropagation();
+					return;
+				}
+
+				// Fallback for desktop browsers where beforeinput may fire after keydown
+				if (ev.key === 'Backspace' || ev.key === 'Delete') {
+					ev.stopPropagation();
 					return;
 				}
 
