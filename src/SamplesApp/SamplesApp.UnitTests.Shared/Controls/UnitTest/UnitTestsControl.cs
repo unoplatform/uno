@@ -265,7 +265,7 @@ namespace Uno.UI.Samples.Tests
 			// Apply test group settings from UI
 			if (int.TryParse(testGroupNumber.Text, out var groupNum) &&
 				int.TryParse(testGroupCount.Text, out var groupCount) &&
-				groupCount > 0 && groupNum >= 0)
+				groupCount > 0 && groupNum >= 0 && groupNum < groupCount)
 			{
 				CITestGroup = groupNum;
 				CITestGroupCount = groupCount;
@@ -643,7 +643,7 @@ namespace Uno.UI.Samples.Tests
 				IsConsoleOutputEnabled = isConsoleOutput,
 				IsRunningIgnored = isRunningIgnored,
 				Attempts = attempts,
-				IsUnloadingTestContent = unloadTestContent.IsChecked ?? false,
+				IsUnloadingTestContent = unloadTestContent.IsChecked ?? true,
 				Iterations = int.TryParse(iterationCount.Text, out var iter) && iter > 1 ? iter : 1,
 			};
 		}
