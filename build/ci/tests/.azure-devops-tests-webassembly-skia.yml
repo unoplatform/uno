@@ -9,7 +9,7 @@ jobs:
 ##
 - job: Skia_Browser_Runtime_Tests_Build
   displayName: 'Run' ## Name is concatenated with the matrix group name
-  timeoutInMinutes: 60
+  timeoutInMinutes: 120
   cancelTimeoutInMinutes: 0
 
   pool:
