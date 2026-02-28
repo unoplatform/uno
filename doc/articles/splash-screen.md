@@ -2,22 +2,55 @@
 uid: Uno.Development.SplashScreen
 ---
 
-# How to manually add a splash screen
+# Splash Screen Customization
 
-Projects created using Uno Platform 4.8 or later have the Uno.Resizetizer [package](https://www.nuget.org/packages/Uno.Resizetizer) installed by default. Simply provide an SVG file, and the tool handles the task of generating various image sizes. That package updates the build process to automate configuring a splash screen for each platform.
+This guide covers splash screen customization for Uno Platform applications. A splash screen is displayed while your application is loading, providing visual feedback to users and improving the perceived performance of your app.
 
-While the new templates simplify adding a splash screen, this article covers how to add one to your application manually if using Uno.Resizetizer is not warranted.
+## Overview
+
+Uno Platform provides several approaches for configuring splash screens, depending on your project setup and requirements:
+
+### Recommended: Using Uno.Resizetizer (Modern Approach)
+
+**For projects created with Uno Platform 4.8 or later**, splash screens are configured automatically using [Uno.Resizetizer](xref:Uno.Resizetizer.GettingStarted#unosplashscreen). This is the **recommended approach** for all new projects.
+
+**Benefits:**
+- Automatically generates platform-specific assets from a single SVG or PNG image
+- Simplifies multi-platform deployment with MSBuild properties like `UnoSplashScreen` and `UnoIcon`
+- Reduces manual configuration across different platforms
+- Supports modern image formats and scaling
 
 > [!TIP]
-> If your solution was generated using the older templates, it is possible to configure these projects to use Uno.Resizetizer instead. That process makes the steps below unnecessary.
->
-> See the guide [How-To: Get Started with Uno.Resizetizer](xref:Uno.Resizetizer.GettingStarted#unosplashscreen) for more information.
+> **Start here:** If you're using Uno Platform 4.8 or later, see the [Uno.Resizetizer documentation](xref:Uno.Resizetizer.GettingStarted#unosplashscreen) for the easiest way to customize your splash screen.
 
-## Step-by-step instructions
+### Manual Setup (Legacy Projects)
 
-### 1. Shared splash screen image resources
+If you're working with an older project that doesn't use Uno.Resizetizer, or have specific requirements that necessitate manual configuration, this article provides step-by-step instructions for adding a splash screen manually on each platform.
+
+> [!NOTE]
+> **Upgrading?** If your solution was generated using older templates, you can migrate to use Uno.Resizetizer instead of the manual approach. See the [Uno.Resizetizer Getting Started guide](xref:Uno.Resizetizer.GettingStarted#unosplashscreen) for migration instructions.
+
+### Platform-Specific Considerations
+
+- **WebAssembly**: Additional splash screen customization options are available through the [Uno WebAssembly Bootstrapper](https://platform.uno/docs/articles/external/uno.wasm.bootstrap/doc/features-splash-screen.html), including theme-aware backgrounds and loading indicators
+- **Extended Splash Screens**: For splash screens that remain visible while loading data or performing initialization, see the [ExtendedSplashScreen control](https://platform.uno/docs/articles/external/uno.toolkit.ui/doc/controls/ExtendedSplashScreen.html) from Uno.Toolkit
+
+---
+
+## Manual Splash Screen Setup
+
+The following sections describe how to manually configure a splash screen if you're not using Uno.Resizetizer.
+
+### Prerequisites for Manual Setup
+
+Before proceeding with manual splash screen setup:
 
 * Review [Assets and image display](xref:Uno.Features.Assets) to understand the present support for various image asset types
+* Consider whether [Uno.Resizetizer](xref:Uno.Resizetizer.GettingStarted#unosplashscreen) would be a better fit for your project
+
+### Step-by-Step Instructions
+
+#### 1. Shared splash screen image resources
 
 * Prepare your images intended for the splash screen under different resolutions, eg:
 
@@ -39,7 +72,11 @@ While the new templates simplify adding a splash screen, this article covers how
 
 * Add these images under the `Assets\` folder of the `MyApp` project, right-click on each image, go to `Properties`, and set their build action as `Content`.
 
-### 2. Windows
+#### 2. Platform-Specific Configuration
+
+The following sections describe how to configure the splash screen for each platform.
+
+##### Windows
 
 * In the `MyApp` project, open the file `Package.appxmanifest` and navigate to `Visual Assets > SplashScreen`.
 
@@ -47,7 +84,7 @@ While the new templates simplify adding a splash screen, this article covers how
 
     ![uwp-splash-screen](Assets/uwp-splash-screen.JPG)
 
-### 3. Android
+##### Android
 
 * In the `MyApp` project, open the subfolder for `Platforms/Android`
 
@@ -101,7 +138,7 @@ While the new templates simplify adding a splash screen, this article covers how
     >
     > Simply rebuild the Android target to get rid of these errors.
 
-### 4. iOS
+##### iOS
 
 * In the `MyApp` project, open the subfolder for `Platforms/iOS`
 
@@ -146,13 +183,16 @@ While the new templates simplify adding a splash screen, this article covers how
     > [!TIP]
     > iOS caches the splash screen to improve the launch time, even across re-installs. In order to see the actual changes made, you need to restart the iPhone or simulator. Alternatively, you can rename the `CFBundleIdentifier` in `info.plist` incrementally (eg: MyApp1 -> MyApp2) before each build.
 
-### 5. WebAssembly
+##### WebAssembly
+
+> [!NOTE]
+> **For advanced WebAssembly splash screen customization**, including theme-aware backgrounds, custom loading indicators, and more, see the [WebAssembly Bootstrapper Splash Screen documentation](https://platform.uno/docs/articles/external/uno.wasm.bootstrap/doc/features-splash-screen.html).
 
 * The default splash screen configuration for WebAssembly is to use the Uno Platform logo as a placeholder.
 
 * An `Platforms/WebAssembly/WasmScript/AppManifest.js` file contains some app settings, including properties to customize its splash screen. This file is found in the `MyApp` project.
 
-#### General properties
+###### Basic Configuration
 
 You can customize the splash screen image and background color by adjusting several key properties:
 
@@ -166,10 +206,12 @@ You can customize the splash screen image and background color by adjusting seve
   > [!TIP]
   > `splashScreenColor` allows you to maintain a background color regardless of the system theme. However, a simple method to make the splash screen theme-aware is to assign `transparent` as its value or by omitting that property altogether.
 
-#### Theme-aware properties
+###### Advanced: Theme-Aware Properties
 
   > [!NOTE]
   > The section below contains optional properties. If nothing is assigned to them, the value of `splashScreenColor` will be used under both themes as the background color.
+  >
+  > For more advanced WebAssembly splash screen features, see the [WebAssembly Bootstrapper documentation](https://platform.uno/docs/articles/external/uno.wasm.bootstrap/doc/features-splash-screen.html).
 
   Uno Platform supports theme-aware backgrounds as an optional customization for splash screens. Set the following properties to adjust the splash screen based on a system theme:
 
@@ -190,8 +232,17 @@ You can customize the splash screen image and background color by adjusting seve
   }
   ```
 
-## See also
+## See Also
 
-* [Completed sample on GitHub](https://github.com/unoplatform/Uno.Samples/tree/master/UI/SplashScreenSample)
-* [Ask for help on Discord](https://www.platform.uno/discord)
-* [Uno.Resizetizer repository](https://github.com/unoplatform/uno.resizetizer)
+### Documentation
+
+* **[Uno.Resizetizer Getting Started](xref:Uno.Resizetizer.GettingStarted#unosplashscreen)** - Recommended approach for modern projects (Uno Platform 4.8+)
+* **[WebAssembly Splash Screen Customization](https://platform.uno/docs/articles/external/uno.wasm.bootstrap/doc/features-splash-screen.html)** - Advanced WASM-specific splash screen options including theme-aware backgrounds
+* **[ExtendedSplashScreen Control](https://platform.uno/docs/articles/external/uno.toolkit.ui/doc/controls/ExtendedSplashScreen.html)** - For splash screens that remain visible during app initialization
+* **[Assets and Image Display](xref:Uno.Features.Assets)** - Understanding image asset handling in Uno Platform
+
+### Resources
+
+* [Completed sample on GitHub](https://github.com/unoplatform/Uno.Samples/tree/master/UI/SplashScreenSample) - Manual splash screen implementation example
+* [Uno.Resizetizer repository](https://github.com/unoplatform/uno.resizetizer) - Source code and latest updates
+* [Ask for help on Discord](https://www.platform.uno/discord) - Community support
