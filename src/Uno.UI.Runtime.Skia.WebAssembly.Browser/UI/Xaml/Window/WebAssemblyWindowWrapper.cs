@@ -12,8 +12,11 @@ using Microsoft.UI.Xaml.Media;
 using Uno.UI.Xaml.Controls;
 using FontFamilyHelper = Microsoft.UI.Xaml.FontFamilyHelper;
 using Windows.Graphics;
+using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.UI.Dispatching;
+using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia.WebAssembly.Browser;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -34,10 +37,6 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		_instance._displayInformation = DisplayInformation.GetForCurrentView();
 		_instance.RasterizationScale = (float)_instance._displayInformation.RawPixelsPerViewPixel;
 		_instance._displayInformation.DpiChanged += (_, _) => _instance.RasterizationScale = (float)_instance._displayInformation.RawPixelsPerViewPixel;
-
-		// The font prefetching must be done after Application is created,
-		// after the default fonts are updated e.g. by OpenSansGenerator.
-		NativeDispatcher.Main.Enqueue(() => _ = PrefetchFonts());
 	}
 
 	private WebAssemblyWindowWrapper()
@@ -95,29 +94,29 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		}
 	}
 
-	private static async Task PrefetchFonts()
+	protected override void ShowCore()
 	{
-		var symbolsFontSuccess = await FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.SymbolsFont), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
-		if (symbolsFontSuccess)
+		if (Application.Current.FontPreloadTask is { } task)
 		{
-			typeof(WebAssemblyWindowWrapper).Log().Info("The default symbols font was preloaded successfully.");
-		}
-
-		if (Uri.TryCreate(FeatureConfiguration.Font.DefaultTextFontFamily, UriKind.RelativeOrAbsolute, out var uri))
-		{
-			var textFontSuccess = await FontFamilyHelper.PreloadAllFontsInManifest(uri);
-			if (textFontSuccess)
+			task.ContinueWith(_ =>
 			{
-				typeof(WebAssemblyWindowWrapper).Log().Info("The default text font was preloaded successfully.");
-			}
-		}
-		else
-		{
-			await FontFamilyHelper.PreloadAsync(
-				FeatureConfiguration.Font.DefaultTextFontFamily,
-				FontWeights.Normal,
-				FontStretch.Normal,
-				FontStyle.Normal);
+				NativeDispatcher.Main.Enqueue(() =>
+				{
+					// queue twice to ensure that a layout cycle happens after the fonts are loaded
+					NativeDispatcher.Main.Enqueue(() =>
+					{
+						var compositionTarget = (CompositionTarget)XamlRoot?.Content?.Visual.CompositionTarget!;
+						var host = (WebAssemblyBrowserHost)XamlRootMap.GetHostForRoot(XamlRoot!)!;
+						compositionTarget.FrameRendered += CompositionTargetOnFrameRendered;
+						((IXamlRootHost)host).InvalidateRender();
+						void CompositionTargetOnFrameRendered()
+						{
+							compositionTarget.FrameRendered -= CompositionTargetOnFrameRendered;
+							host.RemoveSplashScreen();
+						}
+					});
+				});
+			});
 		}
 	}
 
