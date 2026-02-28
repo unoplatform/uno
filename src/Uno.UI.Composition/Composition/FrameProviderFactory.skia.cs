@@ -13,6 +13,9 @@ internal static class FrameProviderFactory
 		=> new SingleFrameProvider(image);
 
 	public static bool TryCreate(SKManagedStream stream, Action onFrameChanged, [NotNullWhen(true)] out IFrameProvider? provider)
+		=> TryCreate(stream, onFrameChanged, null, null, out provider);
+
+	public static bool TryCreate(SKManagedStream stream, Action onFrameChanged, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out IFrameProvider? provider)
 	{
 		using var codec = SKCodec.Create(stream);
 
@@ -22,16 +25,20 @@ internal static class FrameProviderFactory
 			return false;
 		}
 
-		var imageInfo = codec.Info;
+		var origin = codec.EncodedOrigin;
+		var codecWidth = codec.Info.Width;
+		var codecHeight = codec.Info.Height;
+		var (decodeWidth, decodeHeight) = ComputeDecodeDimensions(codecWidth, codecHeight, origin, targetWidth, targetHeight);
+
+		var imageInfo = new SKImageInfo(decodeWidth, decodeHeight, SKColorType.Bgra8888, SKAlphaType.Premul);
 		var frameInfos = codec.FrameInfo;
-		imageInfo = new SKImageInfo(imageInfo.Width, imageInfo.Height, SKColorType.Bgra8888, SKAlphaType.Premul);
 		using var bitmap = new SKBitmap(imageInfo);
 
 		if (codec.FrameInfo.Length < 2)
 		{
 			// FrameInfo can be zero for single-frame images
 			codec.GetPixels(imageInfo, bitmap.GetPixels());
-			provider = new SingleFrameProvider(GetImage(bitmap, codec.EncodedOrigin));
+			provider = new SingleFrameProvider(GetImage(bitmap, origin));
 			return true;
 		}
 
@@ -62,7 +69,7 @@ internal static class FrameProviderFactory
 			var options = new SKCodecOptions(i, requiredFrame);
 			codec.GetPixels(imageInfo, bitmap.GetPixels(), options);
 
-			var currentBitmap = GetImage(bitmap, codec.EncodedOrigin);
+			var currentBitmap = GetImage(bitmap, origin);
 			if (currentBitmap is null)
 			{
 				provider = null;
@@ -80,6 +87,53 @@ internal static class FrameProviderFactory
 
 		provider = new AnimatedImageFrameProvider(images, durations, totalDuration, onFrameChanged);
 		return true;
+	}
+
+	/// <summary>
+	/// Computes the decode dimensions for an image, accounting for EXIF orientation.
+	/// The target dimensions are specified in post-rotation (display) space,
+	/// while the codec dimensions are in pre-rotation space.
+	/// </summary>
+	internal static (int Width, int Height) ComputeDecodeDimensions(
+		int codecWidth, int codecHeight,
+		SKEncodedOrigin origin,
+		int? requestedWidth, int? requestedHeight)
+	{
+		if (requestedWidth is null && requestedHeight is null)
+		{
+			return (codecWidth, codecHeight);
+		}
+
+		// The user specifies dimensions in post-rotation (display) space.
+		// The codec works in pre-rotation space. If EXIF swaps W/H, we need
+		// to swap the user's requested dimensions to match the codec's space.
+		bool swaps = SkEncodedOriginSwapsWidthHeight(origin);
+		int displayWidth = swaps ? codecHeight : codecWidth;
+		int displayHeight = swaps ? codecWidth : codecHeight;
+
+		int targetDisplayW, targetDisplayH;
+
+		if (requestedWidth is > 0 && requestedHeight is > 0)
+		{
+			targetDisplayW = requestedWidth.Value;
+			targetDisplayH = requestedHeight.Value;
+		}
+		else if (requestedWidth is > 0)
+		{
+			targetDisplayW = requestedWidth.Value;
+			targetDisplayH = (int)Math.Max(1, (long)displayHeight * targetDisplayW / displayWidth);
+		}
+		else // requestedHeight > 0
+		{
+			targetDisplayH = requestedHeight!.Value;
+			targetDisplayW = (int)Math.Max(1, (long)displayWidth * targetDisplayH / displayHeight);
+		}
+
+		// Convert back to codec (pre-rotation) space
+		int decodeW = swaps ? targetDisplayH : targetDisplayW;
+		int decodeH = swaps ? targetDisplayW : targetDisplayH;
+
+		return (Math.Max(1, decodeW), Math.Max(1, decodeH));
 	}
 
 	private static SKImage GetImage(SKBitmap bitmap, SKEncodedOrigin origin)
