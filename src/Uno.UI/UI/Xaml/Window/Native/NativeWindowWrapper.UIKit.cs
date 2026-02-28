@@ -1,4 +1,8 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using CoreGraphics;
 using Foundation;
 using Microsoft.UI.Dispatching;
@@ -9,56 +13,99 @@ using Uno.Foundation.Logging;
 using Uno.UI.Controls;
 using Windows.Foundation;
 using Windows.Graphics;
-using Windows.Graphics;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using static Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem;
 using MUXWindow = Microsoft.UI.Xaml.Window;
 using NativeWindow = Uno.UI.Controls.Window;
+using System.Collections.Concurrent;
+using System.Threading;
 
 namespace Uno.UI.Xaml.Controls;
 
 internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapper
 {
-	private NativeWindow _nativeWindow;
+	private NativeWindow? _nativeWindow;
 
 	private RootViewController _mainController;
 #if !__TVOS__
-	private NSObject _orientationRegistration;
+	private NSObject? _orientationRegistration;
 #endif
 	private readonly DisplayInformation _displayInformation;
+	private bool _isPendingShow;
 
 	public NativeWindowWrapper(MUXWindow window, XamlRoot xamlRoot) : base(window, xamlRoot)
 	{
-		_nativeWindow = new NativeWindow();
+		if (!UnoUISceneDelegate.HasSceneManifest())
+		{
+			SetNativeWindow(new NativeWindow());
+		}
 
 		_mainController = MUXWindow.ViewControllerGenerator?.Invoke() ?? new RootViewController();
 		_mainController.SetXamlRoot(xamlRoot);
+		_mainController.View ??= new UIView(CGRect.Empty);
 		_mainController.View.BackgroundColor = UIColor.Clear;
 		_mainController.NavigationBarHidden = true;
 
-		ObserveOrientationAndSize();
-
-		NativeWindowHelpers.TryCreateExtendedSplashScreen(_nativeWindow);
-
 		SubscribeBackgroundNotifications();
-
-#if __MACCATALYST__
-		_nativeWindow.SetOwner(CoreWindow.GetForCurrentThreadSafe());
-#endif
 
 		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
 		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
 		DispatchDpiChanged();
+
+		if (UnoUISceneDelegate.HasSceneManifest())
+		{
+			AwaitingScene.Enqueue(this);
+		}
 	}
 
-	public override NativeWindow NativeWindow => _nativeWindow;
+	public static ConcurrentQueue<NativeWindowWrapper> AwaitingScene { get; } = new();
+
+	private static int _visibleWindowCount;
+
+	[MemberNotNull(nameof(_nativeWindow))]
+	internal void SetNativeWindow(NativeWindow nativeWindow)
+	{
+		_nativeWindow = nativeWindow;
+
+#if __MACCATALYST__
+		_nativeWindow.SetOwner(CoreWindow.GetForCurrentThreadSafe());
+#endif
+		_nativeWindow.RootViewController = _mainController;
+		ObserveOrientationAndSize();
+		NativeWindowHelpers.TryCreateExtendedSplashScreen(_nativeWindow);
+
+		if (Window is null)
+		{
+			throw new InvalidOperationException("Window must be set before calling NotifyContentLoaded");
+		}
+		Window.NotifyContentLoaded();
+
+		if (_isPendingShow)
+		{
+			ShowCore();
+		}
+	}
+
+	public override NativeWindow? NativeWindow => _nativeWindow;
 
 	private void DispatchDpiChanged() =>
 		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
 
-	protected override void ShowCore() => NativeWindowHelpers.TransitionFromSplashScreen(_nativeWindow, _mainController);
+	protected override void ShowCore()
+	{
+		if (_nativeWindow is null)
+		{
+			// For scene delegate apps, the native window may be created after Show is called.
+			_isPendingShow = true;
+			return;
+		}
+
+		_isPendingShow = false;
+		Interlocked.Increment(ref _visibleWindowCount);
+		NativeWindowHelpers.TransitionFromSplashScreen(_nativeWindow, _mainController);
+	}
 
 	internal RootViewController MainController => _mainController;
 
@@ -68,6 +115,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	internal void RaiseNativeSizeChanged()
 	{
+		if (_nativeWindow is null)
+		{
+			throw new InvalidOperationException("Native window is not set.");
+		}
+
 		var newWindowSize = GetWindowSize();
 
 		SetBoundsAndVisibleBounds(new Rect(default, newWindowSize), GetVisibleBounds(_nativeWindow, newWindowSize));
@@ -77,6 +129,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	private void ObserveOrientationAndSize()
 	{
+		if (_nativeWindow is null)
+		{
+			throw new InvalidOperationException("Native window is not set.");
+		}
+
 #if !__TVOS__
 		_orientationRegistration = UIApplication
 			.Notifications
@@ -155,33 +212,47 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	private void SubscribeBackgroundNotifications()
 	{
-		if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
+		// For non-scene-manifest apps, the app delegate handles lifecycle events.
+		// For scene-manifest apps, we handle per-window with visible count tracking.
+		if (!UnoUISceneDelegate.HasSceneManifest())
 		{
-			NSNotificationCenter.DefaultCenter.AddObserver(UIScene.DidEnterBackgroundNotification, OnEnteredBackground);
-			NSNotificationCenter.DefaultCenter.AddObserver(UIScene.WillEnterForegroundNotification, OnLeavingBackground);
-			NSNotificationCenter.DefaultCenter.AddObserver(UIScene.DidActivateNotification, OnActivated);
-			NSNotificationCenter.DefaultCenter.AddObserver(UIScene.WillDeactivateNotification, OnDeactivated);
-		}
-		else
-		{
-			NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidEnterBackgroundNotification, OnEnteredBackground);
-			NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.WillEnterForegroundNotification, OnLeavingBackground);
+			// Subscribe to app-level notifications for activation state only
 			NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidBecomeActiveNotification, OnActivated);
 			NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.WillResignActiveNotification, OnDeactivated);
+			return;
 		}
+
+		NSNotificationCenter.DefaultCenter.AddObserver(UIScene.DidEnterBackgroundNotification, OnEnteredBackground);
+		NSNotificationCenter.DefaultCenter.AddObserver(UIScene.WillEnterForegroundNotification, OnLeavingBackground);
+		NSNotificationCenter.DefaultCenter.AddObserver(UIScene.DidActivateNotification, OnActivated);
+		NSNotificationCenter.DefaultCenter.AddObserver(UIScene.WillDeactivateNotification, OnDeactivated);
 	}
 
 	private void OnEnteredBackground(NSNotification notification)
 	{
 		OnNativeVisibilityChanged(false);
 
-		Application.Current.RaiseEnteredBackground(() => Application.Current.RaiseSuspending());
+		if (Interlocked.Decrement(ref _visibleWindowCount) == 0)
+		{
+			// Last window backgrounded - raise app-level events
+			Application.Current?.RaiseEnteredBackground(() => Application.Current?.RaiseSuspending());
+		}
 	}
 
 	private void OnLeavingBackground(NSNotification notification)
 	{
-		Application.Current.RaiseResuming();
-		Application.Current.RaiseLeavingBackground(() => OnNativeVisibilityChanged(true));
+		if (_visibleWindowCount == 0)
+		{
+			// First window returning to foreground - raise app-level events
+			Application.Current?.RaiseResuming();
+			Application.Current?.RaiseLeavingBackground(() => OnNativeVisibilityChanged(true));
+		}
+		else
+		{
+			OnNativeVisibilityChanged(true);
+		}
+
+		Interlocked.Increment(ref _visibleWindowCount);
 	}
 
 	private void OnActivated(NSNotification notification) => ActivationState = CoreWindowActivationState.CodeActivated;

@@ -1,18 +1,12 @@
-﻿using Foundation;
-using System;
-using System.Linq;
-using UIKit;
-using Windows.ApplicationModel.Activation;
-using Windows.ApplicationModel;
-using ObjCRuntime;
-using Windows.Globalization;
-using Windows.Graphics.Display;
-using Uno.Extensions;
-using Windows.UI.Core;
-using Uno.Foundation.Logging;
+﻿using System;
 using System.Globalization;
+using System.Linq;
 using System.Threading;
-using Uno.UI.Xaml.Controls;
+using Foundation;
+using ObjCRuntime;
+using UIKit;
+using Uno.Foundation.Logging;
+using Windows.ApplicationModel.Activation;
 
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 
@@ -38,6 +32,23 @@ namespace Microsoft.UI.Xaml
 		{
 			callback(new ApplicationInitializationCallbackParams());
 		}
+
+		internal static bool HasSceneManifest() =>
+			UnoUISceneDelegate.HasSceneManifest();
+
+		public override bool RespondsToSelector(Selector sel)
+		{
+			// if the app is not a multi-window app, then we cannot override the GetConfiguration method
+			if (sel?.Name == UnoUISceneDelegate.GetConfigurationSelectorName && !HasSceneManifest())
+			{
+				return false;
+			}
+
+			return base.RespondsToSelector(sel);
+		}
+
+		public override UISceneConfiguration GetConfiguration(UIApplication application, UISceneSession connectingSceneSession, UISceneConnectionOptions options) =>
+			new(UnoUISceneDelegate.UnoSceneConfigurationKey, connectingSceneSession.Role);
 
 		/// <summary>
 		/// Used to handle application launch. Previously used <see cref="FinishedLaunching(UIApplication)" />
