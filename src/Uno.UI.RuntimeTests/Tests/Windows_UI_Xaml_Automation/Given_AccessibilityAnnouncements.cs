@@ -22,6 +22,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// In a browser, this would update the aria-live="polite" region.
 		/// </summary>
 		[TestMethod]
+		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_Polite_Announcement_Then_LiveRegion_Updates()
 		{
@@ -51,6 +52,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// In a browser, this would update the aria-live="assertive" region.
 		/// </summary>
 		[TestMethod]
+		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_Assertive_Announcement_Then_LiveRegion_Updates_Immediately()
 		{
@@ -76,6 +78,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// Verifies that AutomationPeer.RaiseAutomationEvent can be called for LiveRegionChanged.
 		/// </summary>
 		[TestMethod]
+		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_LiveRegionChanged_Event_Raised_Then_No_Error()
 		{

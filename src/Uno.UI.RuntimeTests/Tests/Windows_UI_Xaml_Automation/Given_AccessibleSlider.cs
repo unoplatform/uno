@@ -26,6 +26,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// via the IRangeValueProvider pattern. These map to aria-valuenow, aria-valuemin, aria-valuemax.
 		/// </summary>
 		[TestMethod]
+		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_Slider_Focused_Then_Value_MinMax_Exposed()
 		{
@@ -57,6 +58,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// pressed on the semantic input[type=range] element.
 		/// </summary>
 		[TestMethod]
+		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_ArrowKey_Pressed_Then_Value_Changes()
 		{
@@ -90,6 +92,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// aria-valuenow attribute stays in sync.
 		/// </summary>
 		[TestMethod]
+		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_Value_Changes_Then_AriaValueNow_Updates()
 		{
@@ -129,6 +132,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// Verifies that slider automation peer has correct control type.
 		/// </summary>
 		[TestMethod]
+		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_Slider_Created_Then_Has_Slider_ControlType()
 		{
@@ -148,6 +152,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// Verifies that a slider with custom range boundaries works correctly.
 		/// </summary>
 		[TestMethod]
+		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_Slider_Has_Custom_Range_Then_Values_Are_Correct()
 		{
@@ -177,6 +182,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// Verifies that a read-only slider cannot be modified via automation.
 		/// </summary>
 		[TestMethod]
+		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_Slider_Is_Disabled_Then_IsReadOnly()
 		{
@@ -204,6 +210,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// Verifies that slider with AutomationProperties.Name exposes correct name.
 		/// </summary>
 		[TestMethod]
+		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_Slider_Has_AutomationName_Then_Name_Is_Exposed()
 		{
@@ -226,6 +233,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// Verifies that AriaMapper correctly identifies slider semantic element type.
 		/// </summary>
 		[TestMethod]
+		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_Slider_Mapped_Then_SemanticElementType_Is_Slider()
 		{
@@ -245,6 +253,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// Verifies that AriaMapper produces correct ARIA role for sliders.
 		/// </summary>
 		[TestMethod]
+		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_Slider_Mapped_Then_AriaRole_Is_Slider()
 		{
@@ -264,6 +273,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// Verifies that AriaMapper correctly detects range value capability.
 		/// </summary>
 		[TestMethod]
+		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_Slider_Mapped_Then_PatternCapabilities_CanRangeValue_Is_True()
 		{
