@@ -73,7 +73,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public static DependencyProperty SelectionFlyoutProperty { get; } =
 			DependencyProperty.Register(
 				nameof(SelectionFlyout), typeof(FlyoutBase), typeof(TextBlock),
-				new FrameworkPropertyMetadata(default(FlyoutBase)));
+				new FrameworkPropertyMetadata(default(FlyoutBase), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public FlyoutBase SelectionFlyout
 		{

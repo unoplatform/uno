@@ -449,6 +449,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 
 			Target = placementTarget;
+			ForwardTargetPropertiesToPresenter();
 
 			// Capture the input device that triggered this flyout (mirrors WinUI ValidateAndSetParameters)
 			var contentRoot = VisualTree.GetContentRootForElement(placementTarget);
@@ -621,6 +622,27 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			m_isTargetPositionSet = false;
 			InputDevicePrefersPrimaryCommands = false;
+
+			// Clear the presenter's DataContext to prevent memory leaks from shared flyouts.
+			// For non-shared flyouts (e.g., Button.Flyout with LogicalChild), the presenter
+			// falls back to inheriting DataContext from the Popup, which still has it via
+			// the FlyoutBase → Popup sync chain. So bindings continue to work correctly.
+			if (_popup?.Child is FrameworkElement presenter)
+			{
+				presenter.ClearValue(FrameworkElement.DataContextProperty);
+			}
+		}
+
+		/// <summary>
+		/// Forwards DataContext from the placement target to the presenter.
+		/// Ported from WinUI: FlyoutBase_partial.cpp ForwardTargetPropertiesToPresenter.
+		/// </summary>
+		private void ForwardTargetPropertiesToPresenter()
+		{
+			if (_popup?.Child is FrameworkElement presenter && Target is { } target)
+			{
+				presenter.DataContext = target.DataContext;
+			}
 		}
 
 		private protected virtual void OnOpened() { }
