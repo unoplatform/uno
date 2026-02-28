@@ -31,7 +31,7 @@ stages:
 - stage: docs_deploy_dev
   displayName: Docs Deploy - Dev
   dependsOn: docs_generation
-  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/legacy/4x'), eq(variables['Build.SourceBranch'], 'refs/heads/dev/agzi/docs-main-ci-migration-test-master')), not(eq(variables['Build.Reason'], 'PullRequest')))
+  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/dev/agzi/docs-main-ci-migration-test-master')), not(eq(variables['Build.Reason'], 'PullRequest')))
   jobs:
   - template: docs/.azure-devops-docs-deploy.yml
     parameters:
@@ -53,7 +53,7 @@ stages:
       deploymentName: Docs_Deploy_Staging
       displayName: Deploy Docs Staging
       environmentName: Uno UI Docs Staging
-      azureSubscription: Uno Platform - Operations (platformuno.onmicrosoft.com)
+      azureSubscription: Uno Platform - Operations (uno-platform-operations @ platformuno.onmicrosoft.com)
       storageAccountName: unoplatformdocstaging
 
 - stage: docs_deploy_prod
@@ -67,5 +67,5 @@ stages:
       deploymentName: Docs_Deploy_Prod
       displayName: Deploy Docs Prod
       environmentName: Uno UI Docs Production
-      azureSubscription: Uno Platform - Operations (platformuno.onmicrosoft.com)
+      azureSubscription: Uno Platform - Operations (uno-platform-operations @ platformuno.onmicrosoft.com)
       storageAccountName: unoplatformdocsprod
