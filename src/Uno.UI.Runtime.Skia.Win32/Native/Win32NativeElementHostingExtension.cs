@@ -31,7 +31,9 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 	private Rect _lastArrangeRect;
 	private string? _lastFinalSvgClipPath;
 	private HRGN _lastClipHrgn;
-	private bool _showWindowOnNextArrange;
+	// Tracks exactly which child HWND is allowed to do the first visible transition after attach.
+	// This prevents a stale arrange callback from showing a detached/replaced WebView window.
+	private HWND _showWindowOnNextArrangeHwnd;
 
 	public Win32NativeElementHostingExtension(ContentPresenter presenter)
 	{
@@ -81,20 +83,38 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 			throw new ArgumentException($"content is not a {nameof(Win32NativeWindow)} instance.", nameof(content));
 		}
 
-		var oldExStyleVal = PInvoke.GetWindowLong((HWND)window.Hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE);
-		var oldStyleVal = PInvoke.GetWindowLong((HWND)window.Hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE);
-		PInvoke.SetWindowLong((HWND)window.Hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE, oldExStyleVal | (int)WINDOW_EX_STYLE.WS_EX_LAYERED);
-		PInvoke.SetWindowLong((HWND)window.Hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE, (oldStyleVal | (int)WINDOW_STYLE.WS_CLIPSIBLINGS) & ~(int)WINDOW_STYLE.WS_CAPTION); // removes the title bar and borders
+		var hwnd = (HWND)window.Hwnd;
+		var oldExStyleVal = PInvoke.GetWindowLong(hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE);
+		var oldStyleVal = PInvoke.GetWindowLong(hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE);
+		var newExStyleVal = oldExStyleVal | (int)WINDOW_EX_STYLE.WS_EX_LAYERED;
+		// Keep hosted WebView HWND as a true child window; popup top-level style causes activation and placement issues.
+		// Specifically, they can get activated when clicking on them, which causes the focus to keep flickering between
+		// the host window and the WebView.
+		const int nonChildStyleMask =
+			unchecked((int)WINDOW_STYLE.WS_CAPTION)
+			| unchecked((int)WINDOW_STYLE.WS_POPUP);
+		var newStyleVal = (oldStyleVal | (int)(WINDOW_STYLE.WS_CLIPSIBLINGS | WINDOW_STYLE.WS_CHILD))
+			& ~nonChildStyleMask;
+		PInvoke.SetWindowLong(hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE, newExStyleVal);
+		PInvoke.SetWindowLong(hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE, newStyleVal); // removes the title bar and borders
+		this.LogTrace()?.Trace($"{nameof(AttachNativeElement)} child={hwnd.Value} host={Hwnd.Value} exStyle=0x{oldExStyleVal:X8}->0x{newExStyleVal:X8} style=0x{oldStyleVal:X8}->0x{newStyleVal:X8} active={PInvoke.GetActiveWindow().Value}");
 
-		_ = PInvoke.ShowWindow((HWND)window.Hwnd, SHOW_WINDOW_CMD.SW_HIDE);
-		_showWindowOnNextArrange = true; // only show the window after the first arrange to avoid the split-second flicker between showing the window and positioning/clipping it correctly.
+		// Keep the child hidden until first arrange applies final bounds and clipping to avoid first-frame flicker.
+		// Ordering is important: hide before reparenting, and only arm deferred show after SetParent succeeds.
+		_ = PInvoke.ShowWindow(hwnd, SHOW_WINDOW_CMD.SW_HIDE);
 
-		var oldParent = PInvoke.SetParent((HWND)window.Hwnd, Hwnd);
-		if (oldParent == HWND.Null && Marshal.GetLastWin32Error() != 0)
+		Marshal.SetLastPInvokeError(0);
+		var oldParent = PInvoke.SetParent(hwnd, Hwnd);
+		var setParentError = Marshal.GetLastPInvokeError();
+		if (oldParent == HWND.Null && setParentError != 0)
 		{
+			_showWindowOnNextArrangeHwnd = HWND.Null;
 			this.LogError()?.Error($"{nameof(PInvoke.SetParent)} failed: {Win32Helper.GetErrorMessage()}");
 			return;
 		}
+		_showWindowOnNextArrangeHwnd = hwnd;
+		this.LogTrace()?.Trace($"{nameof(AttachNativeElement)} scheduled first show for child={hwnd.Value}");
+		this.LogTrace()?.Trace($"{nameof(AttachNativeElement)} child={hwnd.Value} oldParent={oldParent.Value} newParent={Hwnd.Value} active={PInvoke.GetActiveWindow().Value}");
 
 		((Win32WindowWrapper)XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!).RenderingNegativePathReevaluated += OnRenderingNegativePathReevaluated;
 	}
@@ -271,13 +291,23 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 			throw new ArgumentException($"content is not a {nameof(Win32NativeWindow)} instance.", nameof(content));
 		}
 
-		_ = PInvoke.ShowWindow((HWND)window.Hwnd, SHOW_WINDOW_CMD.SW_HIDE);
+		var hwnd = (HWND)window.Hwnd;
+		this.LogTrace()?.Trace($"{nameof(DetachNativeElement)} child={hwnd.Value} active={PInvoke.GetActiveWindow().Value}");
+		_ = PInvoke.ShowWindow(hwnd, SHOW_WINDOW_CMD.SW_HIDE);
+		// Cancel any pending first-show for this HWND so later arrange calls cannot resurrect it as a visible orphan.
+		if (_showWindowOnNextArrangeHwnd.Value == hwnd.Value)
+		{
+			_showWindowOnNextArrangeHwnd = HWND.Null;
+		}
 
-		var oldParent = PInvoke.SetParent((HWND)window.Hwnd, HWND.Null);
-		if (oldParent == HWND.Null && Marshal.GetLastWin32Error() != 0)
+		Marshal.SetLastPInvokeError(0);
+		var oldParent = PInvoke.SetParent(hwnd, HWND.Null);
+		var setParentError = Marshal.GetLastPInvokeError();
+		if (oldParent == HWND.Null && setParentError != 0)
 		{
 			this.LogError()?.Error($"{nameof(PInvoke.SetParent)} failed: {Win32Helper.GetErrorMessage()}");
 		}
+		this.LogTrace()?.Trace($"{nameof(DetachNativeElement)} child={hwnd.Value} oldParent={oldParent.Value} detached=true active={PInvoke.GetActiveWindow().Value}");
 
 		((Win32WindowWrapper)XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!).RenderingNegativePathReevaluated -= OnRenderingNegativePathReevaluated;
 	}
@@ -288,6 +318,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		{
 			throw new ArgumentException($"content is not a {nameof(Win32NativeWindow)} instance.", nameof(content));
 		}
+		var hwnd = (HWND)window.Hwnd;
 
 		var scale = _presenter.XamlRoot?.RasterizationScale ?? 1;
 
@@ -303,7 +334,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 			double.IsFinite(height) ? height : 0);
 
 		var success = PInvoke.SetWindowPos(
-				(HWND)window.Hwnd,
+				hwnd,
 				HWND.Null,
 				(int)_lastArrangeRect.X,
 				(int)_lastArrangeRect.Y,
@@ -314,14 +345,25 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		{
 			this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
 		}
+		// Only the HWND currently armed by AttachNativeElement can perform the deferred first show.
+		// Rapid reload can queue arrange for old instances; hwnd token mismatch blocks those stale callbacks.
+		var showOnThisArrange = _showWindowOnNextArrangeHwnd.Value == hwnd.Value;
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			this.LogTrace()?.Trace($"{nameof(ArrangeNativeElement)} child={hwnd.Value} rect={_lastArrangeRect} scale={scale:0.###} setWindowPosSuccess={success} showOnNextArrangeFor={_showWindowOnNextArrangeHwnd.Value} showNow={showOnThisArrange} childRect={Win32WindowRectHelper.GetWindowRectSnapshot(hwnd)} hostRect={Win32WindowRectHelper.GetWindowRectSnapshot(Hwnd)} active={PInvoke.GetActiveWindow().Value}");
+		}
 
 		_lastFinalSvgClipPath = null; // force reapply clip path after arranging
 		OnRenderingNegativePathReevaluated(this, _lastClipPath);
 
-		if (_showWindowOnNextArrange)
+		if (showOnThisArrange)
 		{
-			_showWindowOnNextArrange = false;
-			_ = PInvoke.ShowWindow((HWND)window.Hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
+			_showWindowOnNextArrangeHwnd = HWND.Null;
+			_ = PInvoke.ShowWindow(hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.LogTrace()?.Trace($"{nameof(ArrangeNativeElement)} showed child={hwnd.Value} with {nameof(SHOW_WINDOW_CMD.SW_SHOWNORMAL)} childRect={Win32WindowRectHelper.GetWindowRectSnapshot(hwnd)} hostRect={Win32WindowRectHelper.GetWindowRectSnapshot(Hwnd)} active={PInvoke.GetActiveWindow().Value}");
+			}
 		}
 	}
 

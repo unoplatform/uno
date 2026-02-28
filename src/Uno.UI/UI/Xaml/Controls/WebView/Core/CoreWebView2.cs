@@ -26,6 +26,9 @@ public partial class CoreWebView2
 
 	private bool _scrollEnabled = true;
 	private INativeWebView? _nativeWebView;
+#if __SKIA__
+	private bool _recreateNativeWebViewOnNextLoad;
+#endif
 	private ISupportsWebResourceRequested? _webResourceRequestedSupport;
 	private readonly List<WebResourceRequestedFilter> _webResourceRequestedFilters = new();
 	internal long _navigationId;
@@ -42,9 +45,36 @@ public partial class CoreWebView2
 	internal IReadOnlyDictionary<string, string> HostToFolderMap { get; }
 
 #if __SKIA__
-	internal void OnLoaded() => (_nativeWebView as ICleanableNativeWebView)?.OnLoaded();
+	internal void OnLoaded()
+	{
+		// Only recreate after an explicit unload disposal.
+		// During first-time Win32 creation, the constructor pumps the event loop and can raise Loaded before
+		// OnOwnerApplyTemplate assigns _nativeWebView; recreating here would re-enter template application.
+		if (_recreateNativeWebViewOnNextLoad && _nativeWebView is null)
+		{
+			_recreateNativeWebViewOnNextLoad = false;
+			OnOwnerApplyTemplate();
+		}
 
-	internal void OnUnloaded() => (_nativeWebView as ICleanableNativeWebView)?.OnUnloaded();
+		(_nativeWebView as ICleanableNativeWebView)?.OnLoaded();
+	}
+
+	internal void OnUnloaded()
+	{
+		(_nativeWebView as ICleanableNativeWebView)?.OnUnloaded();
+
+		if (_nativeWebView is null)
+		{
+			return;
+		}
+
+		// Detach CoreWebView event bridging first so no native callbacks can race with disposal.
+		DetachWebResourceRequestedSupport();
+		_nativeWebView.Dispose();
+		_nativeWebView = null;
+		_recreateNativeWebViewOnNextLoad = true;
+		_nativeWebViewInitializedTcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
+	}
 #endif
 
 	/// <summary>
@@ -163,6 +193,9 @@ public partial class CoreWebView2
 	{
 		DetachWebResourceRequestedSupport();
 		_nativeWebView = GetNativeWebViewFromTemplate();
+#if __SKIA__
+		_recreateNativeWebViewOnNextLoad = false;
+#endif
 		AttachWebResourceRequestedSupport();
 
 		// Signal that native WebView is now initialized
@@ -300,7 +333,7 @@ public partial class CoreWebView2
 
 
 
-	private TaskCompletionSource<bool> _nativeWebViewInitializedTcs = new TaskCompletionSource<bool>();
+	private TaskCompletionSource<bool> _nativeWebViewInitializedTcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
 	internal Task EnsureNativeWebViewAsync() => _nativeWebViewInitializedTcs.Task;
 	internal static bool GetIsHistoryEntryValid(string url) =>
 		!url.IsNullOrWhiteSpace() &&
@@ -416,4 +449,3 @@ public partial class CoreWebView2
 		}
 	}
 }
-

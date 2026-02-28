@@ -29,6 +29,7 @@ internal sealed class WpfNativeWebView : INativeWebView, ISupportsVirtualHostMap
 	private List<Func<Task>> _actions = new();
 	private Dictionary<ulong, string> _navigationIdToUriMap = new();
 	private string _documentTitle = string.Empty;
+	private bool _isDisposed;
 
 	public WpfNativeWebView(WpfWebView2 nativeWebView, CoreWebView2 coreWebView2)
 	{
@@ -223,4 +224,29 @@ internal sealed class WpfNativeWebView : INativeWebView, ISupportsVirtualHostMap
 
 	public void SetVirtualHostNameToFolderMapping(string hostName, string folderPath, CoreWebView2HostResourceAccessKind accessKind)
 		=> ExecuteEnsuringCoreWebView2(() => _nativeWebView.CoreWebView2.SetVirtualHostNameToFolderMapping(hostName, folderPath, (WpfCoreWebView2HostResourceAccessKind)accessKind));
+
+	public void Dispose()
+	{
+		if (_isDisposed)
+		{
+			return;
+		}
+
+		_isDisposed = true;
+
+		_nativeWebView.NavigationCompleted -= NativeWebView_NavigationCompleted;
+		_nativeWebView.SourceChanged -= NativeWebView_SourceChanged;
+		_nativeWebView.WebMessageReceived -= NativeWebView_WebMessageReceived;
+		_nativeWebView.NavigationStarting -= NativeWebView_NavigationStarting;
+		_nativeWebView.CoreWebView2InitializationCompleted -= NativeWebView_CoreWebView2InitializationCompleted;
+
+		if (_nativeWebView.CoreWebView2 is { } coreWebView2)
+		{
+			coreWebView2.HistoryChanged -= CoreWebView2_HistoryChanged;
+			coreWebView2.DocumentTitleChanged -= OnNativeTitleChanged;
+		}
+
+		_actions.Clear();
+		_navigationIdToUriMap.Clear();
+	}
 }

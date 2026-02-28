@@ -58,10 +58,7 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, INativeWebView
 		_webview = NativeUno.uno_webview_create(_window.Handle, OkString, CancelString);
 		NativeHandle = _webview;
 
-		Unloaded += (s, e) =>
-		{
-			_webViews.Remove(NativeHandle);
-		};
+		Unloaded += OnElementUnloaded;
 
 		_webViews.Add(NativeHandle, new WeakReference<MacOSNativeWebView>(this));
 
@@ -240,6 +237,14 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, INativeWebView
 	public void Stop() => NativeUno.uno_webview_stop(_webview);
 
 	private static readonly Dictionary<nint, WeakReference<MacOSNativeWebView>> _webViews = [];
+
+	private void OnElementUnloaded(object? sender, global::Microsoft.UI.Xaml.RoutedEventArgs e)
+	{
+		_webViews.Remove(NativeHandle);
+		_webResourceFilters.Clear();
+		_pendingInjectedNavigationKeys.Clear();
+		WebResourceRequested = null;
+	}
 
 	private static MacOSNativeWebView? GetWebView(nint handle)
 	{

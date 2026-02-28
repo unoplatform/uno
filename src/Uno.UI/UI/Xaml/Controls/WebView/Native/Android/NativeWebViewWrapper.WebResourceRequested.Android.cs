@@ -298,5 +298,12 @@ internal partial class NativeWebViewWrapper : ISupportsWebResourceRequested
 		=> request.IsForMainFrame
 			? CoreWebView2WebResourceRequestSourceKinds.Document
 			: CoreWebView2WebResourceRequestSourceKinds.All;
+
+	internal void DisposeWebResourceRequested()
+	{
+		WebResourceRequested = null;
+		_webResourceFilters.Clear();
+		_interceptingClient = null;
+	}
 }
 #endif
