@@ -31,7 +31,7 @@ stages:
 - stage: docs_deploy_dev
   displayName: Docs Deploy - Dev
   dependsOn: docs_generation
-  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/legacy/4x')), not(eq(variables['Build.Reason'], 'PullRequest')))
+  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/legacy/4x'), eq(variables['Build.SourceBranch'], 'refs/heads/dev/agzi/docs-main-ci-migration-test-master')), not(eq(variables['Build.Reason'], 'PullRequest')))
   jobs:
   - template: docs/.azure-devops-docs-deploy.yml
     parameters:
@@ -45,7 +45,7 @@ stages:
 - stage: docs_deploy_staging
   displayName: Docs Deploy - Staging
   dependsOn: docs_generation
-  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/stable/'), not(eq(variables['Build.Reason'], 'PullRequest')))
+  condition: and(succeeded(), or(startsWith(variables['Build.SourceBranch'], 'refs/heads/release/stable/'), eq(variables['Build.SourceBranch'], 'refs/heads/dev/agzi/docs-main-ci-migration-test-release-6.5')), not(eq(variables['Build.Reason'], 'PullRequest')))
   jobs:
   - template: docs/.azure-devops-docs-deploy.yml
     parameters:
@@ -59,7 +59,7 @@ stages:
 - stage: docs_deploy_prod
   displayName: Docs Deploy - Prod
   dependsOn: docs_deploy_staging
-  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/stable/'), not(eq(variables['Build.Reason'], 'PullRequest')))
+  condition: and(succeeded(), or(startsWith(variables['Build.SourceBranch'], 'refs/heads/release/stable/'), eq(variables['Build.SourceBranch'], 'refs/heads/dev/agzi/docs-main-ci-migration-test-release-6.5')), not(eq(variables['Build.Reason'], 'PullRequest')))
   jobs:
   - template: docs/.azure-devops-docs-deploy.yml
     parameters:
