@@ -63,7 +63,7 @@ public partial class CoreWebView2
 		_processedSource = actualUri;
 		if (_owner.SwitchSourceBeforeNavigating)
 		{
-			Source = actualUri.ToString();
+			Source = actualUri.AbsoluteUri;
 		}
 
 		UpdateFromInternalSource();
@@ -124,7 +124,8 @@ public partial class CoreWebView2
 		_processedSource = requestMessage;
 		if (_owner.SwitchSourceBeforeNavigating)
 		{
-			Source = requestMessage.RequestUri.ToString();
+			var reqUri = requestMessage.RequestUri;
+			Source = reqUri.IsAbsoluteUri ? reqUri.AbsoluteUri : reqUri.OriginalString;
 		}
 
 		UpdateFromInternalSource();
