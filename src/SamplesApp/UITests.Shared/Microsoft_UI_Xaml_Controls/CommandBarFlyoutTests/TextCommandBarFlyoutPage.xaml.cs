@@ -21,6 +21,11 @@ using TextCommandBarFlyout = Microsoft.UI.Xaml.Controls.TextCommandBarFlyout;
 
 namespace MUXControlsTestApp;
 
+// RichEditBox and RichTextBlock code is commented out because Uno does not yet fully
+// support these controls (tracked by GitHub issue #81).
+// Re-enable the commented-out sections below when RichEditBox and RichTextBlock gain
+// support for ContextFlyout, SelectionFlyout, and text selection operations.
+
 [Sample("CommandBarFlyout", "WinUI")]
 public sealed partial class TextCommandBarFlyoutPage : TestPage
 {
@@ -28,20 +33,20 @@ public sealed partial class TextCommandBarFlyoutPage : TestPage
 	{
 		this.InitializeComponent();
 
-		RichEditBox1.Document.SetText(TextSetOptions.None, "Lorem ipsum ergo sum");
+		//RichEditBox1.Document.SetText(TextSetOptions.None, "Lorem ipsum ergo sum");
 		Clipboard.ContentChanged += OnClipboardContentChanged;
 
 		TextControlContextFlyout.Placement = FlyoutPlacementMode.BottomEdgeAlignedLeft;
 		TextControlSelectionFlyout.Placement = FlyoutPlacementMode.TopEdgeAlignedLeft;
 		TextBox1.ContextFlyout = TextControlContextFlyout;
 		TextBlock1.ContextFlyout = TextControlContextFlyout;
-		RichEditBox1.ContextFlyout = TextControlContextFlyout;
-		RichTextBlock1.ContextFlyout = TextControlContextFlyout;
+		//RichEditBox1.ContextFlyout = TextControlContextFlyout;
+		//RichTextBlock1.ContextFlyout = TextControlContextFlyout;
 		PasswordBox1.ContextFlyout = TextControlContextFlyout;
 		TextBox1.SelectionFlyout = TextControlSelectionFlyout;
 		TextBlock1.SelectionFlyout = TextControlSelectionFlyout;
-		RichEditBox1.SelectionFlyout = TextControlSelectionFlyout;
-		RichTextBlock1.SelectionFlyout = TextControlSelectionFlyout;
+		//RichEditBox1.SelectionFlyout = TextControlSelectionFlyout;
+		//RichTextBlock1.SelectionFlyout = TextControlSelectionFlyout;
 		PasswordBox1.SelectionFlyout = TextControlSelectionFlyout;
 	}
 
@@ -90,12 +95,12 @@ public sealed partial class TextCommandBarFlyoutPage : TestPage
 
 	private void OnRichEditBoxSelectAllClicked(object sender, object args)
 	{
-		RichEditBox1.Document.Selection.Expand(TextRangeUnit.Story);
+		//RichEditBox1.Document.Selection.Expand(TextRangeUnit.Story);
 	}
 
 	private void OnRichTextBlockSelectAllClicked(object sender, object args)
 	{
-		RichTextBlock1.SelectAll();
+		//RichTextBlock1.SelectAll();
 	}
 
 	private void OnTextBoxClearSelectionClicked(object sender, object args)
@@ -110,7 +115,7 @@ public sealed partial class TextCommandBarFlyoutPage : TestPage
 
 	private void OnRichEditBoxClearSelectionClicked(object sender, object args)
 	{
-		RichEditBox1.Document.Selection.Collapse(true);
+		//RichEditBox1.Document.Selection.Collapse(true);
 	}
 
 	private void OnTextBoxFillWithTextClicked(object sender, object args)
@@ -120,12 +125,12 @@ public sealed partial class TextCommandBarFlyoutPage : TestPage
 
 	private void OnRichEditBoxFillWithTextClicked(object sender, object args)
 	{
-		RichEditBox1.Document.SetText(TextSetOptions.None, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+		//RichEditBox1.Document.SetText(TextSetOptions.None, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 	}
 
 	private void OnRichTextBlockClearSelectionClicked(object sender, object args)
 	{
-		RichTextBlock1.Select(RichTextBlock1.ContentStart, RichTextBlock1.ContentStart);
+		//RichTextBlock1.Select(RichTextBlock1.ContentStart, RichTextBlock1.ContentStart);
 	}
 
 	private void OnShowTextControlFlyoutOnTextBoxClicked(object sender, object args)
@@ -140,12 +145,12 @@ public sealed partial class TextCommandBarFlyoutPage : TestPage
 
 	private void OnShowTextControlFlyoutOnRichEditBoxClicked(object sender, object args)
 	{
-		ShowTextControlContextFlyoutTransient(RichEditBox1);
+		//ShowTextControlContextFlyoutTransient(RichEditBox1);
 	}
 
 	private void OnShowTextControlFlyoutOnRichTextBlockClicked(object sender, object args)
 	{
-		ShowTextControlContextFlyoutTransient(RichTextBlock1);
+		//ShowTextControlContextFlyoutTransient(RichTextBlock1);
 	}
 
 	private void OnShowTextControlFlyoutOnPasswordBoxClicked(object sender, object args)
@@ -165,12 +170,12 @@ public sealed partial class TextCommandBarFlyoutPage : TestPage
 
 	private void OnShowStandardTextControlFlyoutOnRichEditBoxClicked(object sender, object args)
 	{
-		ShowTextControlContextFlyoutStandard(RichEditBox1);
+		//ShowTextControlContextFlyoutStandard(RichEditBox1);
 	}
 
 	private void OnShowStandardTextControlFlyoutOnRichTextBlockClicked(object sender, object args)
 	{
-		ShowTextControlContextFlyoutStandard(RichTextBlock1);
+		//ShowTextControlContextFlyoutStandard(RichTextBlock1);
 	}
 
 	private void OnShowStandardTextControlFlyoutOnPasswordBoxClicked(object sender, object args)

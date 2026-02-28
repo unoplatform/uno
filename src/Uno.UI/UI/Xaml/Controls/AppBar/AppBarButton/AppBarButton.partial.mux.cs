@@ -204,7 +204,7 @@ partial class AppBarButton : ICommandBarElement2, ICommandBarElement3, ICommandB
 		base.OnApplyTemplate();
 		AppBarButtonHelpers<AppBarButton>.OnApplyTemplate(this);
 
-#if HAS_UNO // Uno: Until ContentPresenter supports auto-fallback.
+#if HAS_UNO // Uno: Until ContentPresenter supports auto-fallback (https://github.com/unoplatform/uno/issues/21514)
 		SetupContentUpdate();
 #endif
 	}

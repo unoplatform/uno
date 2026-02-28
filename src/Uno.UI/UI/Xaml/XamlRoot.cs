@@ -1,7 +1,9 @@
 ﻿#nullable enable
 
 using System;
+using System.Diagnostics;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Islands;
 using Windows.Foundation;
@@ -88,10 +90,15 @@ public sealed partial class XamlRoot
 			return;
 		}
 
-		if (currentRoot is not null)
-		{
-			throw new InvalidOperationException("Cannot change XamlRoot for existing element");
-		}
+		// WinUI uses a debug-only ASSERT in CDependencyObject::SetVisualTree guarded
+		// by IsActive(): only elements currently in the live tree are checked, and
+		// FlyoutBase is explicitly exempted. After Hide(), a Popup is no longer active
+		// so the assert is naturally skipped for it. We mirror that with IsInLiveTree.
+		Debug.Assert(
+			currentRoot is null ||
+			element is FlyoutBase ||
+			(element is UIElement uiElement && !uiElement.IsInLiveTree),
+			"Unexpected XamlRoot change for active non-FlyoutBase element");
 
 		if (newRoot is not null)
 		{

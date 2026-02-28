@@ -9,6 +9,7 @@ using Microsoft.UI.Composition;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Internal;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
@@ -26,9 +27,11 @@ using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.Foundation;
+using Windows.ApplicationModel.DataTransfer;
 using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority;
 using Microsoft.UI.Xaml.Media.Media3D;
 using System.Numerics;
+using Uno.Disposables;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -42,6 +45,7 @@ public partial class TextBox
 	private CaretWithStemAndThumb _selectionEndThumbfulCaret;
 	private TextBoxView _textBoxView;
 	private static ITextBoxNotificationsProviderSingleton _textBoxNotificationsSingleton;
+	private SerialDisposable _clipboardChangeSubscription = new SerialDisposable();
 
 	private SelectionDetails _selection;
 	private float _caretXOffset; // this is not necessarily the visual offset of the caret, but where the caret is logically supposed to be when moving up and down with the keyboard, even if the caret is temporarily elsewhere
@@ -68,8 +72,7 @@ public partial class TextBox
 
 	private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(0.5) };
 
-	private MenuFlyout _contextMenu;
-	private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
+	private MenuFlyout _proofingMenu;
 
 	internal bool IsBackwardSelection => _selection.selectionEndsAtTheStart;
 
@@ -126,10 +129,147 @@ public partial class TextBox
 		private set => SetCanRedoValue(value);
 	}
 
+	[GeneratedDependencyProperty(DefaultValue = false)]
+	public static DependencyProperty CanPasteClipboardContentProperty { get; } = CreateCanPasteClipboardContentProperty();
+
+	public bool CanPasteClipboardContent
+	{
+		get => GetCanPasteClipboardContentValue();
+		private set => SetCanPasteClipboardContentValue(value);
+	}
+
+	public static DependencyProperty SelectionFlyoutProperty { get; } =
+		DependencyProperty.Register(
+			nameof(SelectionFlyout), typeof(FlyoutBase), typeof(TextBox),
+			new FrameworkPropertyMetadata(default(FlyoutBase)));
+
+	public FlyoutBase SelectionFlyout
+	{
+		get => (FlyoutBase)GetValue(SelectionFlyoutProperty);
+		set => SetValue(SelectionFlyoutProperty, value);
+	}
+
+	public static DependencyProperty ProofingMenuFlyoutProperty { get; } =
+		DependencyProperty.Register(
+			nameof(ProofingMenuFlyout), typeof(FlyoutBase), typeof(TextBox),
+			new FrameworkPropertyMetadata(default(FlyoutBase)));
+
+	// Ported from: TextBoxBase.cpp GetProofingMenuFlyoutNoRef (lines 5507-5520)
+	public FlyoutBase ProofingMenuFlyout
+	{
+		get
+		{
+			EnsureProofingMenu();
+			TextControlFlyoutHelper.AddProofingFlyout(_proofingMenu, this);
+			if (IsSpellCheckEnabled && (FocusState != FocusState.Unfocused || _forceFocusedVisualState))
+			{
+				UpdateProofingMenu();
+			}
+			SetValue(ProofingMenuFlyoutProperty, _proofingMenu);
+			return _proofingMenu;
+		}
+	}
+
 	private void UpdateCanUndoRedo()
 	{
 		CanUndo = _historyIndex > 0;
 		CanRedo = _historyIndex < _history.Count - 1;
+	}
+
+	private void UpdateCanPasteClipboardContent()
+	{
+		if (IsReadOnly)
+		{
+			CanPasteClipboardContent = false;
+			return;
+		}
+
+		try
+		{
+			var content = Clipboard.GetContent();
+			CanPasteClipboardContent = content?.Contains(StandardDataFormats.Text) ?? false;
+		}
+		catch
+		{
+			CanPasteClipboardContent = false;
+		}
+	}
+
+	// Ported from: TextBoxBase.cpp EnsureProofingMenu (line 5470)
+	private void EnsureProofingMenu()
+	{
+		_proofingMenu ??= new MenuFlyout();
+	}
+
+	// Ported from: TextBoxBase.cpp UpdateProofingMenu (line 5536)
+	private void UpdateProofingMenu()
+	{
+		_proofingMenu.Items.Clear();
+
+		if (!_isSkiaTextBox || TextBoxView?.DisplayBlock?.ParsedText is not UnicodeText unicodeText)
+		{
+			return;
+		}
+
+		// Find correction at cursor position
+		var correction = unicodeText.GetCorrectionAtIndex(SelectionStart);
+		if (correction is null)
+		{
+			return;
+		}
+
+		var (correctionStart, correctionEnd) = correction.Value;
+
+		// Get suggestions (matches WinUI AddSpellingSuggestions, max 3 suggestions)
+		var suggestionsResult = unicodeText.GetSpellCheckSuggestions(correctionStart, correctionEnd);
+		if (suggestionsResult is not { } result || result.suggestions.Count == 0)
+		{
+			return;
+		}
+
+		var (replaceStart, replaceEnd, suggestions) = result;
+		var maxSuggestions = Math.Min(suggestions.Count, 3); // WinUI uses maxSuggestionCount = 3
+
+		for (var i = 0; i < maxSuggestions; i++)
+		{
+			var suggestion = suggestions[i];
+			var item = new MenuFlyoutItem { Text = suggestion };
+			item.Click += (_, _) => ReplaceWithSuggestion(replaceStart, replaceEnd, suggestion);
+			_proofingMenu.Items.Add(item);
+		}
+	}
+
+	// Ported from: TextBoxBase.cpp pattern for applying text replacement (similar to PasteFromClipboardPartial)
+	private void ReplaceWithSuggestion(int replaceStart, int replaceEnd, string suggestion)
+	{
+		if (IsReadOnly || !_isSkiaTextBox)
+		{
+			return;
+		}
+
+		TrySetCurrentlyTyping(false);
+
+		var oldText = Text;
+		var newText = oldText.Remove(replaceStart, replaceEnd - replaceStart).Insert(replaceStart, suggestion);
+
+		CommitAction(new ReplaceAction(oldText, newText, replaceStart + suggestion.Length));
+
+		_clearHistoryOnTextChanged = false;
+		_pendingSelection = (replaceStart + suggestion.Length, 0);
+		ProcessTextInput(newText);
+		_clearHistoryOnTextChanged = true;
+	}
+
+	private void OnClipboardContentChanged(object sender, object e)
+	{
+		if (DispatcherQueue.HasThreadAccess)
+		{
+			UpdateCanPasteClipboardContent();
+		}
+		else
+		{
+			DispatcherQueue.TryEnqueue(() => UpdateCanPasteClipboardContent());
+		}
 	}
 
 	private void TrySetCurrentlyTyping(bool newValue)
@@ -164,11 +304,15 @@ public partial class TextBox
 
 	partial void OnUnloadedPartial()
 	{
+		_forceFocusedVisualState = false;
 		_timer.Stop();
 		_selectionStartThumbfulCaret?.Hide();
 		_selectionEndThumbfulCaret?.Hide();
 		CaretMode = CaretDisplayMode.ThumblessCaretHidden;
+		_clipboardChangeSubscription.Disposable = null;
 	}
+
+	partial void OnIsReadonlyChangedPartial() => UpdateCanPasteClipboardContent();
 
 	partial void OnForegroundColorChangedPartial(Brush newValue) => TextBoxView?.OnForegroundChanged(newValue);
 
@@ -302,6 +446,7 @@ public partial class TextBox
 
 	partial void OnFocusStateChangedPartial(FocusState focusState, bool initial)
 	{
+		_clipboardChangeSubscription.Disposable = null;
 		TextBoxView?.OnFocusStateChanged(focusState);
 
 		if (_isSkiaTextBox)
@@ -310,11 +455,34 @@ public partial class TextBox
 			{
 				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
 				_textBoxNotificationsSingleton?.OnFocused(this);
+				UpdateCanPasteClipboardContent();
+				Clipboard.ContentChanged += OnClipboardContentChanged;
+				_clipboardChangeSubscription.Disposable = Disposable.Create(() => Clipboard.ContentChanged -= OnClipboardContentChanged);
 			}
 			else
 			{
+				// Ported from: TextBoxBase.cpp UpdateFocusState (lines 4996-5008)
+				// Check if focus is moving to a text control flyout before deciding to unfocus.
+				_forceFocusedVisualState = ShouldForceFocusedVisualState();
+
+				// Ported from: TextBoxBase.cpp UpdateFocusState (lines 5009-5016)
+				// Hide touch caret thumbs when context flyout is opening.
+				if (_forceFocusedVisualState && ShouldHideGrippersOnFlyoutOpening()
+					&& CaretMode is CaretDisplayMode.CaretWithThumbsOnlyEndShowing
+						or CaretDisplayMode.CaretWithThumbsBothEndsShowing)
+				{
+					CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+				}
+			}
+
+			if (focusState == FocusState.Unfocused && !_forceFocusedVisualState)
+			{
 				TrySetCurrentlyTyping(false);
 				CaretMode = CaretDisplayMode.ThumblessCaretHidden;
+				if (SelectionFlyout?.IsOpen == true)
+				{
+					SelectionFlyout.Hide();
+				}
 				if (!initial)
 				{
 					_textBoxNotificationsSingleton?.OnUnfocused(this);
@@ -323,6 +491,36 @@ public partial class TextBox
 			}
 			UpdateDisplaySelection();
 		}
+	}
+
+	// Ported from: TextBoxBase.cpp ShouldForceFocusedVisualState (lines 5286-5290)
+	private bool ShouldForceFocusedVisualState()
+	{
+		return TextControlFlyoutHelper.IsGettingFocus(SelectionFlyout, this)
+			|| TextControlFlyoutHelper.IsGettingFocus(ContextFlyout, this);
+	}
+
+	// Ported from: TextBoxBase.cpp ShouldHideGrippersOnFlyoutOpening (lines 5291-5294)
+	private bool ShouldHideGrippersOnFlyoutOpening()
+	{
+		return TextControlFlyoutHelper.IsGettingFocus(ContextFlyout, this);
+	}
+
+	// Ported from: TextBoxBase.cpp DismissAllFlyouts (lines 5566-5574)
+	internal void DismissAllFlyouts()
+	{
+		TextControlFlyoutHelper.CloseIfOpen(_proofingMenu);
+		TextControlFlyoutHelper.CloseIfOpen(SelectionFlyout);
+		TextControlFlyoutHelper.CloseIfOpen(ContextFlyout);
+	}
+
+	// Ported from: TextBoxBase.cpp ForceFocusLoss (lines 5551-5560)
+	internal void ForceFocusLoss()
+	{
+		_forceFocusedVisualState = false;
+		// Trigger the unfocus behavior that was deferred
+		OnFocusStateChangedPartial(FocusState.Unfocused, initial: false);
+		UpdateVisualState();
 	}
 
 #if false // Removing temporarily. We'll need to add it back.
@@ -395,7 +593,7 @@ public partial class TextBox
 		if (_isSkiaTextBox && TextBoxView?.DisplayBlock is { } displayBlock)
 		{
 			displayBlock.Selection = new TextBlock.Range(SelectionStart, SelectionStart + SelectionLength);
-			var isFocused = FocusState != FocusState.Unfocused || (_contextMenu?.IsOpen ?? false);
+			var isFocused = FocusState != FocusState.Unfocused || _forceFocusedVisualState;
 			displayBlock.RenderSelection = isFocused;
 			if (CaretMode is CaretDisplayMode.ThumblessCaretShowing &&
 				SelectionLength == 0 &&
@@ -443,6 +641,117 @@ public partial class TextBox
 
 		return point;
 	}
+
+	#region SelectionFlyout Support
+
+	// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.h (lines 225-226)
+	// m_lastInputDeviceType, m_lastPointerPositionForFlyout, m_isSelectionFlyoutUpdateQueued
+	private PointerDeviceType _lastInputDeviceType;
+	private Point _lastPointerPosition;
+	private bool _isSelectionFlyoutUpdateQueued;
+
+	// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (lines 5292-5302)
+	private bool HasSelectionFlyout() => SelectionFlyout is not null;
+
+	// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (lines 5349-5377)
+	// QueueUpdateSelectionFlyoutVisibility - queues async visibility update
+	private void QueueUpdateSelectionFlyoutVisibility(PointerDeviceType deviceType, Point position)
+	{
+		_lastInputDeviceType = deviceType;
+		_lastPointerPosition = position;
+
+		// Line 5358-5360: Prevent duplicate queued updates
+		if (!_isSelectionFlyoutUpdateQueued)
+		{
+			_isSelectionFlyoutUpdateQueued = true;
+			DispatcherQueue.TryEnqueue(() => UpdateSelectionFlyoutVisibility());
+		}
+	}
+
+	// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (lines 5379-5452)
+	// UpdateSelectionFlyoutVisibility - shows/hides SelectionFlyout based on device type and selection
+	private void UpdateSelectionFlyoutVisibility()
+	{
+		// Line 5381: Reset the queued flag
+		_isSelectionFlyoutUpdateQueued = false;
+
+		// Line 5383: Only shows SelectionFlyout if ContextFlyout is NOT open
+		if (!HasSelectionFlyout() || TextControlFlyoutHelper.IsOpen(ContextFlyout))
+		{
+			return;
+		}
+
+		var selectionLength = SelectionLength;
+		var showMode = FlyoutShowMode.Transient;
+		var shouldShow = false;
+
+		switch (_lastInputDeviceType)
+		{
+			case PointerDeviceType.Mouse:
+				// Line 5389-5401: Mouse input - only for RichEditBox, NOT TextBox
+				shouldShow = false;
+				break;
+
+			case PointerDeviceType.Pen:
+			case PointerDeviceType.Touch:
+				// Line 5403-5411: Pen/Touch - show if selection exists
+				if (selectionLength > 0)
+				{
+					shouldShow = true;
+					showMode = FlyoutShowMode.Transient;
+				}
+				break;
+
+			default:
+				// Line 5413-5415: Keyboard/other - never show SelectionFlyout
+				shouldShow = false;
+				break;
+		}
+
+		if (shouldShow)
+		{
+			// Line 5424-5441: Get selection bounds and adjust flyout position
+			var position = _lastPointerPosition;
+
+			if (_isSkiaTextBox && TextBoxView?.DisplayBlock?.ParsedText is { } parsedText)
+			{
+				// Get selection bounding rect in DisplayBlock coordinates
+				var startRect = parsedText.GetRectForIndex(SelectionStart);
+				var endRect = parsedText.GetRectForIndex(SelectionStart + SelectionLength);
+
+				// Compute union of start and end rects for full selection bounds
+				var selectionTop = Math.Min(startRect.Top, endRect.Top);
+
+				// Transform from DisplayBlock coordinates to TextBox coordinates
+				var transform = TextBoxView.DisplayBlock.TransformToVisual(this);
+				var transformedTop = transform.TransformPoint(new Point(0, selectionTop));
+
+				// Set Y position to top of selection for consistent placement
+				// (WinUI: "We want the point to appear at a consistent location regardless of
+				// whether it overlaps the selection, so we'll set its vertical position to be
+				// the top of the exclusion rectangle.")
+				position = new Point(position.X, transformedTop.Y);
+			}
+
+			if (SelectionFlyout is { } selectionFlyout)
+			{
+				TextControlFlyoutHelper.ShowAt(selectionFlyout, this, position, showMode);
+			}
+		}
+		else
+		{
+			// Line 5444-5447: Close SelectionFlyout if it's open and we shouldn't show it
+			if (SelectionFlyout?.IsOpen == true)
+			{
+				SelectionFlyout.Hide();
+			}
+		}
+
+		// Line 5450: Reset input device type after processing
+		_lastInputDeviceType = default;
+	}
+
+	#endregion
 
 	/// <summary>
 	/// Scrolls the <see cref="_contentElement"/> so that the caret is inside the visible viewport
@@ -551,6 +860,11 @@ public partial class TextBox
 
 	private void OnKeyDownSkia(KeyRoutedEventArgs args)
 	{
+		if (SelectionFlyout?.IsOpen == true)
+		{
+			SelectionFlyout.Hide();
+		}
+
 		if (_selection.length != 0 &&
 			args.Key is not (VirtualKey.Up or VirtualKey.Down or VirtualKey.Left or VirtualKey.Right))
 		{
@@ -1195,6 +1509,10 @@ public partial class TextBox
 	{
 		if (_isSkiaTextBox)
 		{
+			// Ported from: TextBoxBase.cpp TxNotify EN_CHANGE (line 3113)
+			// Close the selection flyout when text changes.
+			TextControlFlyoutHelper.CloseIfOpen(SelectionFlyout);
+
 			if (_pendingSelection is { } selection)
 			{
 				SelectInternal(selection.start, selection.length);
@@ -1552,5 +1870,30 @@ public partial class TextBox
 				_popup.IsOpen = false;
 			}
 		}
+	}
+
+	/// <summary>
+	/// Fires the ContextMenuOpening event synchronously and returns whether it was handled.
+	/// </summary>
+	/// <remarks>
+	/// Ported from CTextBoxBase::FireContextMenuOpeningEventSynchronously (TextBoxBase.cpp:5304)
+	/// and TextControlHelper::OnContextMenuOpeningHandler (TextControlHelper.h:10).
+	///
+	/// WinUI does m_pView->TransformToRoot(point) then divides by rasterization scale
+	/// to convert physical pixels to DIPs. In Uno/Skia, TransformToVisual(null) already
+	/// yields DIP coordinates, so no rasterization scale division is needed.
+	/// </remarks>
+	internal bool FireContextMenuOpeningEventSynchronously(Point point)
+	{
+		// WinUI: m_pView->TransformToRoot + pointerPosition /= zoomScale
+		var rootPoint = TransformToVisual(null).TransformPoint(point);
+
+		// WinUI: TextControlHelper::OnContextMenuOpeningHandler
+		// — creates ContextMenuEventArgs, sets CursorLeft/CursorTop, Handled=false
+		// — raises event synchronously
+		// — reads back Handled
+		var args = new ContextMenuEventArgs(rootPoint.X, rootPoint.Y);
+		ContextMenuOpening?.Invoke(this, args);
+		return args.Handled;
 	}
 }

@@ -62,7 +62,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private bool m_openingCanceled;
 
-		[NotImplemented]
+		private bool m_shouldTakeFocus = true;
+
 		private InputDeviceType m_inputDeviceTypeUsedToOpen;
 
 		internal FlyoutPlacementMode EffectivePlacement => m_hasPlacementOverride ? m_placementOverride : Placement;
@@ -89,6 +90,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 				_popup.Opened += OnPopupOpened;
 				_popup.Closed += OnPopupClosed;
+				_popup.LostFocus += OnPopupLostFocus;
 				child.Loaded += OnPresenterLoaded;
 
 				_popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayMode));
@@ -116,7 +118,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			var focusState = contentRoot.FocusManager.GetRealFocusStateForFocusedElement();
 
-			if (focusState != FocusState.Unfocused)
+			if (m_shouldTakeFocus && focusState != FocusState.Unfocused)
 			{
 				var presenter = GetPresenter();
 				if (presenter.AllowFocusOnInteraction && _popup?.AssociatedFlyout.AllowFocusOnInteraction is true)
@@ -307,7 +309,37 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				nameof(ShowMode),
 				typeof(FlyoutShowMode),
 				typeof(FlyoutBase),
-				new FrameworkPropertyMetadata(FlyoutShowMode.Standard));
+				new FrameworkPropertyMetadata(FlyoutShowMode.Standard, OnShowModePropertyChanged));
+
+		private static void OnShowModePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+		{
+			// UpdateStateToShowMode normalizes Auto → Standard and writes back to ShowMode,
+			// but DependencyProperty coalescing prevents infinite recursion.
+			if (sender is FlyoutBase flyoutBase)
+			{
+				flyoutBase.UpdateStateToShowMode((FlyoutShowMode)args.NewValue);
+			}
+		}
+
+		/// <summary>
+		/// Gets a value that indicates whether the flyout should show commands
+		/// as primary (toolbar) based on the input device used to open it.
+		/// </summary>
+		public bool InputDevicePrefersPrimaryCommands
+		{
+			get => (bool)GetValue(InputDevicePrefersPrimaryCommandsProperty);
+			private set => SetValue(InputDevicePrefersPrimaryCommandsProperty, value);
+		}
+
+		/// <summary>
+		/// Identifies the InputDevicePrefersPrimaryCommands dependency property.
+		/// </summary>
+		public static DependencyProperty InputDevicePrefersPrimaryCommandsProperty { get; } =
+			DependencyProperty.Register(
+				nameof(InputDevicePrefersPrimaryCommands),
+				typeof(bool),
+				typeof(FlyoutBase),
+				new FrameworkPropertyMetadata(false));
 
 		private void OnAllowFocusOnInteractionChanged(bool oldValue, bool newValue) =>
 			SynchronizePropertyToPopup(Popup.AllowFocusOnInteractionProperty, AllowFocusOnInteraction);
@@ -417,6 +449,14 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 
 			Target = placementTarget;
+
+			// Capture the input device that triggered this flyout (mirrors WinUI ValidateAndSetParameters)
+			var contentRoot = VisualTree.GetContentRootForElement(placementTarget);
+			if (contentRoot is not null)
+			{
+				m_inputDeviceTypeUsedToOpen = contentRoot.InputManager.LastInputDeviceType;
+			}
+
 			XamlRoot = placementTarget?.XamlRoot;
 			_popup.XamlRoot = XamlRoot;
 			_popup.PlacementTarget = placementTarget;
@@ -482,12 +522,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				_ => PopupPlacementMode.Auto,
 			};
 
-			ShowMode = showOptions?.ShowMode ?? FlyoutShowMode.Standard;
-
-			if (ShowMode == FlyoutShowMode.Auto)
-			{
-				ShowMode = FlyoutShowMode.Standard;
-			}
+			UpdateStateToShowMode(showOptions?.ShowMode ?? FlyoutShowMode.Standard);
 
 			OnOpening();
 
@@ -531,8 +566,46 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 		}
 
+		private void UpdateStateToShowMode(FlyoutShowMode showMode)
+		{
+			// TODO Uno: m_shouldHideIfPointerMovesAway and m_shouldOverlayPassThroughAllInput not handled yet.
+
+			if (showMode == FlyoutShowMode.Auto)
+			{
+				showMode = FlyoutShowMode.Standard;
+			}
+
+			ShowMode = showMode;
+
+			switch (showMode)
+			{
+				case FlyoutShowMode.Standard:
+					m_shouldTakeFocus = true;
+					break;
+				case FlyoutShowMode.Transient:
+				case FlyoutShowMode.TransientWithDismissOnPointerMoveAway:
+					m_shouldTakeFocus = false;
+					break;
+			}
+		}
+
 		private protected virtual void OnOpening()
 		{
+			// Set InputDevicePrefersPrimaryCommands based on input device type (mirrors WinUI OnOpening)
+			switch (m_inputDeviceTypeUsedToOpen)
+			{
+				case InputDeviceType.None:
+				case InputDeviceType.Mouse:
+				case InputDeviceType.Keyboard:
+				case InputDeviceType.GamepadOrRemote:
+					InputDevicePrefersPrimaryCommands = false;
+					break;
+				case InputDeviceType.Touch:
+				case InputDeviceType.Pen:
+					InputDevicePrefersPrimaryCommands = true;
+					break;
+			}
+
 			m_openingCanceled = false;
 			Opening?.Invoke(this, EventArgs.Empty);
 		}
@@ -547,6 +620,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private protected virtual void OnClosed()
 		{
 			m_isTargetPositionSet = false;
+			InputDevicePrefersPrimaryCommands = false;
 		}
 
 		private protected virtual void OnOpened() { }
@@ -557,6 +631,56 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			Hide(canCancel: false);
 			_sizeChangedDisposable.Disposable = null;
+		}
+
+		// Ported from WinUI: FlyoutBase_partial.cpp OnPopupLostFocus (lines 2349-2434)
+		private void OnPopupLostFocus(object sender, RoutedEventArgs args)
+		{
+			if (_popup is not { IsOpen: true })
+			{
+				return;
+			}
+
+			var contentRoot = VisualTree.GetContentRootForElement(this);
+			if (contentRoot?.FocusManager.FocusedElement is not UIElement focusedElement)
+			{
+				return;
+			}
+
+			// Walk up from the focused element (WinUI: FlyoutBase_partial.cpp lines 2394-2420).
+			// GetUIElementAdjustedParentInternal handles the popup jump (PopupPanel -> Popup),
+			// so this walk correctly finds Popup ancestors.
+			var currentElement = focusedElement;
+			Popup popupAncestor = null;
+			bool popupRootExists = false;
+			bool popupAncestorIsLightDismiss = false;
+
+			while (currentElement != null)
+			{
+				// WinUI: FlyoutBase_partial.cpp lines 2396-2401
+				if (currentElement is PopupRoot)
+				{
+					popupRootExists = true;
+					currentElement = currentElement.GetUIElementAdjustedParentInternal(false);
+					continue;
+				}
+
+				if (currentElement is Popup popup)
+				{
+					popupAncestor = popup;
+					// WinUI: IsSelfOrAncestorLightDismiss() = m_fIsLightDismiss || m_fIsSubMenu
+					popupAncestorIsLightDismiss = popup.IsLightDismissEnabled || popup.IsSubMenu;
+					break;
+				}
+
+				currentElement = currentElement.GetUIElementAdjustedParentInternal(false);
+			}
+
+			// WinUI: FlyoutBase_partial.cpp lines 2422-2429
+			if (!popupRootExists && (popupAncestor == null || !popupAncestorIsLightDismiss))
+			{
+				Hide();
+			}
 		}
 
 		protected internal virtual void Close()
@@ -577,6 +701,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 			UpdatePopupPanelSizePartial();
 
+			_popup.SetShouldTakeFocus(m_shouldTakeFocus);
 			_popup.IsOpen = true;
 
 			AddToOpenFlyouts();

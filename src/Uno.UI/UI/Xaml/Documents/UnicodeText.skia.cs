@@ -1485,4 +1485,38 @@ internal readonly partial struct UnicodeText : IParsedText
 				return false;
 		}
 	}
+
+	/// <summary>
+	/// Returns the absolute text range of the misspelled word at the given text index,
+	/// or null if the index is not on a misspelled word.
+	/// </summary>
+	public (int correctionStart, int correctionEnd)? GetCorrectionAtIndex(int textIndex)
+	{
+		if (_corrections is null || _wordBoundaries.Count == 0 || textIndex < 0 || textIndex > _text.Length)
+		{
+			return null;
+		}
+
+		var wordStart = 0;
+		for (var i = 0; i < _wordBoundaries.Count; i++)
+		{
+			var wordEnd = _wordBoundaries[i];
+			if (textIndex >= wordStart && textIndex < wordEnd)
+			{
+				if (i < _corrections.Count && _corrections[i] is { } correction)
+				{
+					// Convert word-relative offsets to absolute (same as rendering at line 1041)
+					var absStart = wordStart + correction.correctionStart;
+					var absEnd = wordStart + correction.correctionEnd;
+					if (textIndex >= absStart && textIndex < absEnd)
+					{
+						return (absStart, absEnd);
+					}
+				}
+				return null;
+			}
+			wordStart = wordEnd;
+		}
+		return null;
+	}
 }

@@ -107,7 +107,7 @@ public partial class Popup : FrameworkElement, IPopup
 
 				// Usually, FrameworkElements handle focus management inside OnLoaded/OnUnloaded,
 				// but since popups are (un)loaded, we have to do it here.
-				if (Child is FrameworkElement fw && fw.AllowFocusOnInteraction)
+				if (m_shouldTakeFocus && Child is FrameworkElement fw && fw.AllowFocusOnInteraction)
 				{
 					// Give the child focus if allowed
 					Focus(FocusState.Programmatic);
@@ -124,7 +124,20 @@ public partial class Popup : FrameworkElement, IPopup
 
 				if (_lastFocusedElement != null && _lastFocusedElement.Target is UIElement target && focusedElement != target)
 				{
+#if __SKIA__
+					// Ported from: Popup.cpp Close (lines 1233-1244)
+					// When restoring focus to an element inside an opened text control flyout,
+					// use Keyboard focus instead of Pointer to preserve selection highlight.
+					var focusState = _lastFocusState;
+					if (focusState == FocusState.Pointer
+						&& Internal.TextControlFlyoutHelper.IsElementChildOfOpenedFlyout(target))
+					{
+						focusState = FocusState.Keyboard;
+					}
+					target.Focus(focusState);
+#else
 					target.Focus(_lastFocusState);
+#endif
 					_lastFocusedElement = null;
 				}
 			}

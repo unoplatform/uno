@@ -6,7 +6,6 @@ using System.Linq;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
 using System.Numerics;
-using System.Windows.Input;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
 using Microsoft.UI.Xaml.Documents;
@@ -17,9 +16,11 @@ using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Dispatching;
-using Uno.UI.Helpers.WinUI;
 using Uno.UI.Xaml.Media;
 using Uno.UI.Xaml.Core.Scaling;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Internal;
+using Microsoft.UI.Input;
 
 #nullable enable
 
@@ -31,9 +32,7 @@ namespace Microsoft.UI.Xaml.Controls
 		internal const float CaretThickness = 1;
 
 		private Action? _selectionHighlightColorChanged;
-		private MenuFlyout? _contextMenu;
 		private IDisposable? _selectionHighlightBrushChangedSubscription;
-		private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
 		private readonly VirtualKeyModifiers _platformCtrlKey = Uno.UI.Helpers.DeviceTargetHelper.PlatformCommandModifier;
 		private Size _lastInlinesArrangeWithPadding;
 		private readonly Dictionary<TextHighlighter, IDisposable> _textHighlighterDisposables = new();
@@ -42,6 +41,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private bool _renderSelection;
 		private (int index, CompositionBrush brush)? _caretPaint;
+		private bool _forceFocusedForContextFlyout;
 
 		internal IParsedText ParsedText { get; private set; } = Microsoft.UI.Xaml.Documents.ParsedText.Empty;
 
@@ -56,24 +56,49 @@ namespace Microsoft.UI.Xaml.Controls
 
 			Tapped += static (s, e) => ((TextBlock)s).OnTapped(e);
 			DoubleTapped += static (s, e) => ((TextBlock)s).OnDoubleTapped(e);
-			RightTapped += static (s, e) => ((TextBlock)s).OnRightTapped(e);
 			KeyDown += static (s, e) => ((TextBlock)s).OnKeyDown(e);
 
-			GotFocus += (_, _) => UpdateSelectionRendering();
-			LostFocus += (_, _) => UpdateSelectionRendering();
+			GotFocus += (_, _) =>
+			{
+				_forceFocusedForContextFlyout = false;
+				UpdateSelectionRendering();
+			};
+			LostFocus += (_, _) =>
+			{
+				_forceFocusedForContextFlyout = ShouldForceFocusedVisualState();
+				UpdateSelectionRendering();
+			};
+		}
+
+		public static DependencyProperty SelectionFlyoutProperty { get; } =
+			DependencyProperty.Register(
+				nameof(SelectionFlyout), typeof(FlyoutBase), typeof(TextBlock),
+				new FrameworkPropertyMetadata(default(FlyoutBase)));
+
+		public FlyoutBase SelectionFlyout
+		{
+			get => (FlyoutBase)GetValue(SelectionFlyoutProperty);
+			set => SetValue(SelectionFlyoutProperty, value);
 		}
 
 		internal TextBox? OwningTextBox { private get; init; }
 
 		internal bool IsSpellCheckEnabled { get; set; }
 
-#if DEBUG
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
+#if DEBUG
 			Visual.Comment = $"{Visual.Comment}#text";
-		}
 #endif
+		}
+
+		private protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+
+			_forceFocusedForContextFlyout = false;
+		}
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
@@ -134,14 +159,37 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			RecalculateSubscribeToPointerEvents();
 			UpdateSelectionRendering();
+
+			// Enable context menu gestures when text selection is enabled.
+			// This ensures ContextRequested is raised for the default TextCommandBarFlyout.
+			// We need to call this explicitly because TextBlock's default ContextFlyout is set via
+			// GetDefaultValue (not via SetValue), which doesn't trigger OnContextFlyoutChanged.
+			if (IsTextSelectionEnabled)
+			{
+				EnsureContextMenuGesturesEnabled();
+			}
 		}
 
 		private void UpdateSelectionRendering()
 		{
 			if (OwningTextBox is null) // TextBox manages RenderSelection itself
 			{
-				RenderSelection = IsTextSelectionEnabled && (IsFocused || (_contextMenu?.IsOpen ?? false));
+				RenderSelection = IsTextSelectionEnabled && (IsFocused || _forceFocusedForContextFlyout);
 			}
+		}
+
+		// Ported from: TextSelectionManager.cpp ShouldForceFocusedVisualState (lines 3422-3428)
+		private bool ShouldForceFocusedVisualState()
+		{
+			return TextControlFlyoutHelper.IsGettingFocus(SelectionFlyout, this)
+				|| TextControlFlyoutHelper.IsGettingFocus(ContextFlyout, this);
+		}
+
+		// Ported from: TextSelectionManager.cpp ForceFocusLoss (lines 3430-3444)
+		internal void ForceFocusLoss()
+		{
+			_forceFocusedForContextFlyout = false;
+			UpdateSelectionRendering();
 		}
 
 		protected override Size ArrangeOverride(Size finalSize)
@@ -344,35 +392,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		// TODO: remove this context menu when TextCommandBarFlyout is implemented
-		private void OnRightTapped(RightTappedRoutedEventArgs e)
-		{
-			if (IsTextSelectionEnabled)
-			{
-				e.Handled = true;
-
-				Focus(FocusState.Pointer);
-
-				if (_contextMenu is null)
-				{
-					_contextMenu = new MenuFlyout();
-
-					_flyoutItems.Add(ContextMenuItem.Copy, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_COPY"), Command = new StandardUICommand(StandardUICommandKind.Copy) { Command = new TextBlockCommand(CopySelectionToClipboard) } });
-					_flyoutItems.Add(ContextMenuItem.SelectAll, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_SELECT_ALL"), Command = new StandardUICommand(StandardUICommandKind.SelectAll) { Command = new TextBlockCommand(SelectAll) } });
-				}
-
-				_contextMenu.Items.Clear();
-
-				if (Selection.start != Selection.end)
-				{
-					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Copy]);
-				}
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.SelectAll]);
-
-				_contextMenu.ShowAt(this, e.GetPosition(this));
-			}
-		}
-
 		public void CopySelectionToClipboard()
 		{
 			if (Selection.start != Selection.end)
@@ -437,15 +456,125 @@ namespace Microsoft.UI.Xaml.Controls
 			);
 		}
 
-		private sealed class TextBlockCommand(Action action) : ICommand
+		#region SelectionFlyout Support
+		// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/text/common/TextSelectionManager.cpp (lines 3381-3420)
+		// TextSelectionManager::UpdateSelectionFlyoutVisibility
+
+		private PointerDeviceType _lastInputDeviceType;
+		private Point _lastPointerPosition;
+		private bool _isSelectionFlyoutUpdateQueued;
+
+		private bool HasSelectionFlyout() => SelectionFlyout is not null;
+
+		/// <summary>
+		/// Called from OnPointerReleased to queue SelectionFlyout visibility update for non-mouse input.
+		/// </summary>
+		partial void OnPointerReleasedForSelectionFlyout(PointerRoutedEventArgs e)
 		{
-			public bool CanExecute(object? parameter) => true;
+			// Only show SelectionFlyout for touch/pen input, not mouse (matching WinUI behavior)
+			if (e.Pointer.PointerDeviceType is not PointerDeviceType.Mouse && IsTextSelectionEnabled)
+			{
+				QueueUpdateSelectionFlyoutVisibility(e.Pointer.PointerDeviceType, e.GetCurrentPoint(this).Position);
+			}
+		}
 
-			public void Execute(object? parameter) => action();
+		private void QueueUpdateSelectionFlyoutVisibility(PointerDeviceType deviceType, Point position)
+		{
+			_lastInputDeviceType = deviceType;
+			_lastPointerPosition = position;
 
-#pragma warning disable 67 // An event was declared but never used in the class in which it was declared.
-			public event EventHandler? CanExecuteChanged;
-#pragma warning restore 67 // An event was declared but never used in the class in which it was declared.
+			// Prevent duplicate queued updates (matching TextBox behavior)
+			if (!_isSelectionFlyoutUpdateQueued)
+			{
+				_isSelectionFlyoutUpdateQueued = true;
+				DispatcherQueue.TryEnqueue(() => UpdateSelectionFlyoutVisibility());
+			}
+		}
+
+		private void UpdateSelectionFlyoutVisibility()
+		{
+			// Reset the queued flag
+			_isSelectionFlyoutUpdateQueued = false;
+
+			if (!HasSelectionFlyout() || TextControlFlyoutHelper.IsOpen(ContextFlyout))
+			{
+				return;
+			}
+
+			var selectionLength = Math.Abs(Selection.end - Selection.start);
+			var showMode = FlyoutShowMode.Transient;
+			var shouldShow = false;
+
+			switch (_lastInputDeviceType)
+			{
+				case PointerDeviceType.Mouse:
+					// Mouse doesn't show SelectionFlyout (matching WinUI behavior)
+					shouldShow = false;
+					break;
+				case PointerDeviceType.Pen:
+				case PointerDeviceType.Touch:
+					if (selectionLength > 0)
+					{
+						shouldShow = true;
+						showMode = FlyoutShowMode.Transient;
+					}
+					break;
+				default:
+					shouldShow = false;
+					break;
+			}
+
+			if (shouldShow)
+			{
+				// Get selection bounds and adjust flyout position (Y = top of selection)
+				var position = _lastPointerPosition;
+
+				var startIndex = Math.Min(Selection.start, Selection.end);
+				var endIndex = Math.Max(Selection.start, Selection.end);
+				var startRect = ParsedText.GetRectForIndex(startIndex);
+				var endRect = ParsedText.GetRectForIndex(endIndex);
+				var selectionTop = Math.Min(startRect.Top, endRect.Top);
+
+				// Adjust for padding
+				position = new Point(position.X, selectionTop + Padding.Top);
+
+				if (SelectionFlyout is { } selectionFlyout)
+				{
+					TextControlFlyoutHelper.ShowAt(selectionFlyout, this, position, showMode);
+				}
+			}
+			else
+			{
+				// Close SelectionFlyout if it's open and we shouldn't show it
+				if (SelectionFlyout?.IsOpen == true)
+				{
+					SelectionFlyout.Hide();
+				}
+			}
+
+			// Reset input device type after processing (matching WinUI behavior)
+			_lastInputDeviceType = default;
+		}
+		#endregion
+
+		/// <summary>
+		/// Fires the ContextMenuOpening event synchronously and returns whether it was handled.
+		/// </summary>
+		/// <remarks>
+		/// Ported from CTextBlock::FireContextMenuOpeningEventSynchronously (TextBlock.cpp:4107)
+		/// and TextControlHelper::OnContextMenuOpeningHandler (TextControlHelper.h:10).
+		///
+		/// WinUI does this->TransformToRoot(point) then divides by rasterization scale.
+		/// In Uno/Skia, TransformToVisual(null) already yields DIP coordinates.
+		/// </remarks>
+		internal bool FireContextMenuOpeningEventSynchronously(Point point)
+		{
+			// WinUI: TransformToRoot + pointerPosition /= zoomScale
+			var rootPoint = TransformToVisual(null).TransformPoint(point);
+
+			var args = new ContextMenuEventArgs(rootPoint.X, rootPoint.Y);
+			ContextMenuOpening?.Invoke(this, args);
+			return args.Handled;
 		}
 	}
 }

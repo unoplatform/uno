@@ -75,6 +75,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void OnSelectionChanged();
 
+		/// <summary>
+		/// Called from OnPointerReleased to handle SelectionFlyout visibility updates.
+		/// Implemented in TextBlock.skia.cs.
+		/// </summary>
+		partial void OnPointerReleasedForSelectionFlyout(PointerRoutedEventArgs e);
+
 #if !UNO_REFERENCE_API
 		public TextBlock()
 		{
@@ -763,6 +769,10 @@ namespace Microsoft.UI.Xaml.Controls
 		#region DependencyProperty: IsTextTrimmed
 		private TypedEventHandler<TextBlock, IsTextTrimmedChangedEventArgs> _isTextTrimmedChanged;
 
+#if __SKIA__
+		public event ContextMenuOpeningEventHandler ContextMenuOpening;
+#endif
+
 #if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
 		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 #endif
@@ -926,6 +936,30 @@ namespace Microsoft.UI.Xaml.Controls
 			=> args.Pointer.PointerDeviceType is PointerDeviceType.Mouse;
 #endif
 
+		// Ported from: TextSelectionManager.cpp OnRightTapped (lines 895-938)
+		// WinUI focuses the TextBlock on right-tap so that when the context flyout
+		// opens and steals focus, the LostFocus handler can set
+		// _forceFocusedForContextFlyout, keeping the selection highlight visible.
+		private static readonly RightTappedEventHandler OnRightTapped = (object sender, RightTappedRoutedEventArgs e) =>
+		{
+			if (sender is not TextBlock that || !that.IsTextSelectionEnabled)
+			{
+				return;
+			}
+
+			if (e.Handled)
+			{
+				return;
+			}
+
+#if __SKIA__
+			if (!that.IsFocused && !Internal.TextControlFlyoutHelper.IsOpen(that.ContextFlyout))
+			{
+				that.Focus(FocusState.Pointer);
+			}
+#endif
+		};
+
 		private static readonly PointerEventHandler OnPointerPressed = (object sender, PointerRoutedEventArgs e) =>
 		{
 			if (sender is not TextBlock that)
@@ -970,7 +1004,14 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				e.Handled = true;
-				that.Focus(FocusState.Pointer);
+				// Ported from: TextSelectionManager.cpp OnHolding/OnRightTapped
+				// Don't take focus if the context flyout is open.
+#if __SKIA__
+				if (!Internal.TextControlFlyoutHelper.IsOpen(that.ContextFlyout))
+#endif
+				{
+					that.Focus(FocusState.Pointer);
+				}
 
 				that.CapturePointer(e.Pointer);
 			}
@@ -1017,6 +1058,9 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
+			// Modeled after WinUI TextSelectionManager.cpp UpdateSelectionFlyoutVisibility:
+			// After pointer release, queue a SelectionFlyout visibility update for touch/pen input.
+			that.OnPointerReleasedForSelectionFlyout(e);
 #if !__WASM__
 			e.Handled |= that.IsTextSelectionEnabled;
 #endif
@@ -1197,6 +1241,7 @@ namespace Microsoft.UI.Xaml.Controls
 					InsertHandler(PointerEnteredEvent, OnPointerEntered);
 					InsertHandler(PointerExitedEvent, OnPointerExit);
 					InsertHandler(PointerCaptureLostEvent, OnPointerCaptureLost);
+					InsertHandler(RightTappedEvent, OnRightTapped);
 				}
 				else
 				{
@@ -1206,6 +1251,7 @@ namespace Microsoft.UI.Xaml.Controls
 					RemoveHandler(PointerEnteredEvent, OnPointerEntered);
 					RemoveHandler(PointerExitedEvent, OnPointerExit);
 					RemoveHandler(PointerCaptureLostEvent, OnPointerCaptureLost);
+					RemoveHandler(RightTappedEvent, OnRightTapped);
 				}
 			}
 		}
