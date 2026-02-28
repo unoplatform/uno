@@ -45,6 +45,15 @@ public sealed class HotReloadTracker(
 	/// </summary>
 	public HotReloadOperation? Current => _current;
 
+	/// <summary>
+	/// Gets the last hot reload operation that produced (or is about to produce) an update, if any.
+	/// </summary>
+	/// <remarks>
+	/// The operation might not yet be completed!
+	/// Make sure to use <see cref="HotReloadOperation.WaitForCompletionAsync"/> to await its completion before using it.
+	/// </remarks>
+	public HotReloadOperation? Last { get; private set; }
+
 	public async ValueTask SetStateAsync(HotReloadState state)
 	{
 		_globalState = state;
@@ -103,7 +112,12 @@ public sealed class HotReloadTracker(
 		=> Current?.Complete(HotReloadOperationResult.Aborted) ?? SendUpdate();
 
 	internal void ResignCurrent(HotReloadOperation operation)
-		=> Interlocked.CompareExchange(ref _current, null, operation);
+	{
+		if (Interlocked.CompareExchange(ref _current, null, operation) == operation)
+		{
+			Last = operation;
+		}
+	}
 
 	public async ValueTask SendUpdate(HotReloadOperation? completing = null, string? serverError = null)
 	{
