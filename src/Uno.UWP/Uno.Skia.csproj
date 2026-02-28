@@ -44,6 +44,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Generated\3.0.0.0\Windows.Devices.Geolocation\Geolocator.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PRIResource Include="Storage\Pickers\Strings\**\*.resw" />
 	</ItemGroup>
 
