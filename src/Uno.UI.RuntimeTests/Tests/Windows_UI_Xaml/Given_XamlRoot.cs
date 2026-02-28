@@ -15,6 +15,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if HAS_UNO_WINUI
 		[Ignore("Window.Current is null on WinUI")]
 #endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Loaded_Matches_Window_Root()
 		{
 			if (TestServices.WindowHelper.IsXamlIsland)

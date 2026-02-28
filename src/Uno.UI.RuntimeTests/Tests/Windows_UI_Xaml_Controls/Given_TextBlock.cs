@@ -331,6 +331,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Null_FontFamily()
 		{
 			var SUT = new TextBlock { Text = "Some text", FontFamily = null };
@@ -339,6 +340,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task Check_Single_Character_Run_With_Wrapping_Constrained()
 		{
 			var SUT = new TextBlock
@@ -1105,6 +1107,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_RENDER_TARGET_BITMAP
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21322")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Text_Set_By_Style_Setter()
 		{
 			var style = new Style(typeof(TextBlock));

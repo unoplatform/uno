@@ -43,6 +43,7 @@ namespace Microsoft.UI.Xaml.Tests.Controls.Grid_Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task CanPerformLayout()
 		{
 			TestCleanupWrapper cleanup;
@@ -231,6 +232,7 @@ namespace Microsoft.UI.Xaml.Tests.Controls.Grid_Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task VerifyGridLengthForRowsAndColumns()
 		{
 			TestCleanupWrapper cleanup;
@@ -300,6 +302,7 @@ namespace Microsoft.UI.Xaml.Tests.Controls.Grid_Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task VerifyPixelTakesPriorityOverStar()
 		{
 			TestCleanupWrapper cleanup;
@@ -337,6 +340,7 @@ namespace Microsoft.UI.Xaml.Tests.Controls.Grid_Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task VerifyAutoTakesPriorityOverStar()
 		{
 			TestCleanupWrapper cleanup;
@@ -796,6 +800,7 @@ namespace Microsoft.UI.Xaml.Tests.Controls.Grid_Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task CanSpanRowsAndColumns()
 		{
 			TestCleanupWrapper cleanup;
@@ -1113,6 +1118,7 @@ namespace Microsoft.UI.Xaml.Tests.Controls.Grid_Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task BorderChromeForComplexGrid()
 		{
 			TestCleanupWrapper cleanup;

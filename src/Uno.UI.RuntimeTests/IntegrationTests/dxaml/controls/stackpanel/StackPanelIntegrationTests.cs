@@ -109,6 +109,7 @@ public class StackPanelIntegrationTests
 
 	[TestMethod]
 	[RequiresScaling(1.0f)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task CanChangeOrientation()
 	{
 		WindowHelper.SetWindowSizeOverride(new Size(400, 400));
@@ -184,6 +185,7 @@ public class StackPanelIntegrationTests
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task VerifyDesiredSize_AutoLayout()
 	{
 		var stackPanel = await VerifyDesiredSize_Setup();
@@ -207,6 +209,7 @@ public class StackPanelIntegrationTests
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task VerifyDesiredSize_MinWidthHeight()
 	{
 		var stackPanel = await VerifyDesiredSize_Setup();
@@ -241,6 +244,7 @@ public class StackPanelIntegrationTests
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task VerifyDesiredSize_MaxWidthHeight()
 	{
 		var stackPanel = await VerifyDesiredSize_Setup();
@@ -430,6 +434,7 @@ public class StackPanelIntegrationTests
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task VerifySnapPoints()
 	{
 		LOG_OUTPUT("Validating horizontal SnapPoints.");

@@ -47,7 +47,23 @@ namespace Private.Infrastructure
 
 		internal static async Task RunOnUIThread(Action action)
 		{
-			await WindowHelper.RootElementDispatcher.RunAsync(() => action());
+			Exception exception = null;
+			await WindowHelper.RootElementDispatcher.RunAsync(() =>
+			{
+				try
+				{
+					action();
+				}
+				catch (Exception ex)
+				{
+					exception = ex;
+				}
+			});
+
+			if (exception != null)
+			{
+				throw new InvalidOperationException("Exception thrown by action on the UI thread", exception);
+			}
 		}
 
 		internal static async Task RunOnUIThread(Func<Task> asyncAction)

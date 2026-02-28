@@ -14,6 +14,7 @@ using Uno.UI.RuntimeTests.Helpers;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
 [TestClass]
+[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 public class Given_ItemsPresenter
 {
 	// Due to physical/logical pixel conversion on Android, measurements aren't exact
@@ -971,6 +972,7 @@ public class Given_ItemsPresenter
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Header_Binding()
 	{
 		var ic = (ItemsControl)XamlReader.Load(
@@ -1099,6 +1101,7 @@ public class Given_ItemsPresenter
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Header_Template()
 	{
 		var ic = (ItemsControl)XamlReader.Load(

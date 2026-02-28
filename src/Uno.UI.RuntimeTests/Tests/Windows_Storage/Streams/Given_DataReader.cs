@@ -10,6 +10,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 	public class When_DataReader
 	{
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_FromBuffer_Argument_Null()
 		{
 			Assert.ThrowsExactly<ArgumentNullException>(() => DataReader.FromBuffer(null));

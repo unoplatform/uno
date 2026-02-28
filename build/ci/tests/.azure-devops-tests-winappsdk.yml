@@ -1,5 +1,6 @@
 parameters:
   vmImage: ''
+  poolName: ''
 
 jobs:
 - job: WASDK_Build
@@ -29,6 +30,14 @@ jobs:
   # Required until Uno.Xaml can build without all targets enabled
   - template: ../templates/jdk-setup.yml
 
+  - pwsh: |
+      # Decode the base64-encoded signing certificate from the variable
+      $certBytes = [Convert]::FromBase64String('$(WINAPPSDK_SAMPLESAPP_SIGNING_CERTIFICATE)')
+      $certPath = "$(Build.SourcesDirectory)/src/SamplesApp/SamplesApp.Windows/SamplesApp.Windows_TemporaryKey.pfx"
+      [IO.File]::WriteAllBytes($certPath, $certBytes)
+      Write-Host "Certificate written to: $certPath"
+    displayName: Decode Signing Certificate
+
   - task: MSBuild@1
     inputs:
       solution: src\SamplesApp\SamplesApp.Windows\SamplesApp.Windows.csproj
@@ -43,13 +52,14 @@ jobs:
       # ---
       # NOTE: The error says to specify a RuntimeIdentifier *OR* platform other than AnyCPU.
       # We already specify RuntimeIdentifier=win-x64 in the build below. Still, the error pops up.
-      msbuildArguments: /r /t:Publish /m /v:m /p:Configuration=Release /p:Platform=x64 /p:RuntimeIdentifier=win-x64 /p:BuildGraphics3DGLForWindows=true /p:GenerateAppxPackageOnBuild=true /detailedsummary /bl:$(build.artifactstagingdirectory)/build-wasdk.binlog
+      msbuildArguments: /r /t:Publish /m /v:m /p:Configuration=Release /p:Platform=x64 /p:RuntimeIdentifier=win-x64 /p:BuildGraphics3DGLForWindows=true /p:GenerateAppxPackageOnBuild=true /p:PackageCertificateKeyFile=$(Build.SourcesDirectory)/src/SamplesApp/SamplesApp.Windows/SamplesApp.Windows_TemporaryKey.pfx /detailedsummary /bl:$(build.artifactstagingdirectory)/build-wasdk.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false
       createLogFile: false
 
   - task: CopyFiles@2
+    displayName: 'Copy MSIX Packages'
     condition: always()
     inputs:
       SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Windows/AppPackages
@@ -65,4 +75,110 @@ jobs:
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: WinAppSDK-Package
+      ArtifactType: Container
+
+##
+## WinUI Runtime Tests
+##
+## Note: If tests fail on WinUI, they should be excluded using the [PlatformCondition] attribute
+## in the test code itself. Example:
+##
+##   [TestMethod]
+##   [PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+##   public void When_Test_That_Fails_On_WinUI() { ... }
+##
+## See: doc/articles/uno-development/creating-runtime-tests.md
+##
+- job: WinUI_Runtime_Tests
+  displayName: 'Runtime Tests'
+  dependsOn: WASDK_Build
+  timeoutInMinutes: 30
+  cancelTimeoutInMinutes: 1
+
+  pool:
+    vmImage: 'windows-latest'
+
+  variables:
+    SamplesAppArtifactName: WinAppSDK-Package
+    SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - task: DownloadPipelineArtifact@2
+    displayName: Downloading $(SamplesAppArtifactName)
+    inputs:
+      artifact: $(SamplesAppArtifactName)
+      path: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+
+  - task: DownloadBuildArtifacts@0
+    condition: gt(variables['System.JobAttempt'], 1)
+    continueOnError: true
+    displayName: Download previous test runs failed tests
+    inputs:
+        artifactName: uitests-failure-results
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - template: ../templates/dotnet-install.yml
+
+  - pwsh: |
+      # Install Windows App Runtime 1.8
+      Write-Host "Installing Windows App Runtime 1.8..."
+      $runtimeUrl = "https://aka.ms/windowsappsdk/1.8/latest/windowsappruntimeinstall-x64.exe"
+      $runtimeInstaller = "$(Build.SourcesDirectory)/build/windowsappruntimeinstall-x64.exe"
+      
+      Write-Host "Downloading from: $runtimeUrl"
+      Invoke-WebRequest -Uri $runtimeUrl -OutFile $runtimeInstaller
+      
+      Write-Host "Running installer: $runtimeInstaller"
+      Start-Process -FilePath $runtimeInstaller -ArgumentList "--quiet" -Wait -NoNewWindow
+      Write-Host "Windows App Runtime 1.8 installed successfully"
+    displayName: Install Windows App Runtime
+  
+  - pwsh: |
+      # Decode and import the signing certificate to trusted stores
+      $certBytes = [Convert]::FromBase64String('$(WINAPPSDK_SAMPLESAPP_SIGNING_CERTIFICATE)')
+      $certPath = "$(Build.SourcesDirectory)/build/SamplesApp_SigningCert.pfx"
+      [IO.File]::WriteAllBytes($certPath, $certBytes)
+      
+      # Import the certificate to LocalMachine\Root (Trusted Root CAs) for MSIX installation
+      Import-PfxCertificate -FilePath $certPath -CertStoreLocation Cert:\LocalMachine\Root
+      Write-Host "Certificate imported to Trusted Root Certification Authorities store"
+      
+      # Find and install the MSIX bundle
+      $msixBundlePath = Get-ChildItem -Path "$(SamplesAppArtifactPath)/AppPackages" -Filter "*.msixbundle" -Recurse | Select-Object -First 1
+      if (-not $msixBundlePath) {
+        throw "Could not find MSIX bundle in $(SamplesAppArtifactPath)/AppPackages"
+      }
+      
+      Write-Host "Installing MSIX bundle: $($msixBundlePath.FullName)"
+      Add-AppxPackage -Path $msixBundlePath.FullName
+    displayName: Install MSIX Package
+
+  - pwsh: build/test-scripts/run-winui-runtime-tests.ps1
+    displayName: Run WinUI Runtime Tests
+
+  - pwsh: |
+      # Uninstall the MSIX package
+      Get-AppxPackage -Name "SamplesApp" | Remove-AppxPackage -ErrorAction SilentlyContinue
+    displayName: Uninstall MSIX Package
+    condition: always()
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testRunTitle: 'WinUI Runtime Tests'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/winui-runtime-tests-results.xml'
+      failTaskOnFailedTests: true
+      failTaskOnMissingResultsFile: true
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    displayName: Publish Failed Tests Results
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
+      ArtifactName: uitests-failure-results
       ArtifactType: Container

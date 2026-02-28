@@ -191,6 +191,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void TargetNullValue_Is_Correctly_Applied()
 		{
 			var SUT = new ImageSource_TargetNullValue();
@@ -274,6 +275,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Explicit_BitmapImage_Relative_NonRooted()
 		{
 			ImageControls.When_Image SUT = new();
@@ -287,6 +289,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Relative_NonRooted()
 		{
 			ImageControls.When_Image SUT = new();
@@ -482,6 +485,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_BitmapImage_Should_Have_Correct_Event_Sequence()
 		{
 			var logs = new List<string>();
@@ -518,6 +522,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Loaded_From_AppData_LocalFolder()
 		{
 			var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/test_image_100_150.png"));

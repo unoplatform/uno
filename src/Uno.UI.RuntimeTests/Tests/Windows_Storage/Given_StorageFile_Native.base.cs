@@ -260,6 +260,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_InputStreamFlush()
 		{
 			var rootFolder = await GetRootFolderAsync();

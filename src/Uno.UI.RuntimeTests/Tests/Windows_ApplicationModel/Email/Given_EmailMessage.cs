@@ -55,6 +55,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel.Email
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Body_Set_Null()
 		{
 			var emailMessage = new EmailMessage();
@@ -63,6 +64,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel.Email
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Subject_Set_Null()
 		{
 			var emailMessage = new EmailMessage();
@@ -80,6 +82,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel.Email
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Null_To_Recipient_Is_Added()
 		{
 			var emailMessage = new EmailMessage();
@@ -88,6 +91,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel.Email
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Null_CC_Recipient_Is_Added()
 		{
 			var emailMessage = new EmailMessage();
@@ -96,6 +100,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel.Email
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Null_Bcc_Recipient_Is_Added()
 		{
 			var emailMessage = new EmailMessage();

@@ -156,8 +156,8 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("ceb", "ArabExt", "fa")]
 		[DataRow("ceb-Latn", "ArabExt", "fa")]
 		[DataRow("ceb-Latn-PH", "ArabExt", "fa")]
-#endif
 		[DataRow("tzm-Arab-MA", "Latn", "tzm-Arab-MA")]
+#endif
 		[DataRow("tzm-Latn-MA", "Latn", "tzm-Latn-MA")]
 		[DataRow("ku", "Arab", "ku")]
 		[DataRow("ku-Arab", "Arab", "ku-Arab")]
@@ -199,8 +199,10 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("da", "Latn", "da")]
 		[DataRow("da-DK", "Latn", "da")]
 		[DataRow("da-GL", "Latn", "da-GL")]
+#if !WINAPPSDK
 		[DataRow("prs", "Arab", "prs-Arab")]
 		[DataRow("prs-AF", "Arab", "prs-Arab")]
+#endif
 		[DataRow("dv", "Latn", "dv")]
 		[DataRow("dv-MV", "Latn", "dv")]
 		[DataRow("dua", "Latn", "dua")]
@@ -530,7 +532,9 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("lag-TZ", "Latn", "lag-Latn-TZ")]
 		[DataRow("lo", "Latn", "lo")]
 		[DataRow("lo-LA", "Latn", "lo")]
+#if !WINAPPSDK
 		[DataRow("la-VA", "Latn", "la")]
+#endif
 		[DataRow("lv", "Latn", "lv")]
 		[DataRow("lv-LV", "Latn", "lv")]
 		[DataRow("ln", "Latn", "ln")]
@@ -640,7 +644,9 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("ps-PK", "ArabExt", "ps")]
 #endif
 		[DataRow("fa", "ArabExt", "fa")]
+#if !WINAPPSDK
 		[DataRow("fa-AF", "Arab", "fa-AF")]
+#endif
 		[DataRow("fa-IR", "ArabExt", "fa")]
 		[DataRow("pl", "Latn", "pl")]
 		[DataRow("pl-PL", "Latn", "pl")]
@@ -713,8 +719,10 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("sg-CF", "Latn", "sg-CF")]
 		[DataRow("sbp", "Latn", "sbp")]
 		[DataRow("sbp-TZ", "Latn", "sbp-Latn-TZ")]
+#if !WINAPPSDK
 		[DataRow("sa", "Latn", "sa")]
 		[DataRow("sa-IN", "Latn", "sa-Deva")]
+#endif
 		[DataRow("gd", "Latn", "gd")]
 		[DataRow("gd-GB", "Latn", "gd-Latn")]
 		[DataRow("seh", "Latn", "seh")]

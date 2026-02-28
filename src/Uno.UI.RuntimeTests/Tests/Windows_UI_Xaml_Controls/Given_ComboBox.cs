@@ -139,6 +139,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private TextBox GetEditableText(ComboBox comboBox) => comboBox.FindFirstChild<TextBox>(c => c.Name == "EditableText");
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ComboBox_MinWidth()
 		{
 			var source = Enumerable.Range(0, 5).ToArray();
@@ -456,6 +457,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_CB_Fluent_And_Theme_Changed()
 		{
 			var comboBox = new ComboBox
@@ -528,6 +530,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Tabbed()
 		{
 			var SUT = new ComboBox
@@ -563,6 +566,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Popup_Open_Tabbed()
 		{
 			var SUT = new ComboBox
@@ -666,6 +670,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Index_Is_Explicitly_Set_To_Negative_After_Out_Of_Range_Value()
 		{
 			var comboBox = new ComboBox();
@@ -1115,6 +1120,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_SelectedItem_TwoWay_Binding_Clear()
 		{
 			var root = new Grid();
@@ -1142,6 +1148,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[CombinatorialData]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ComboBox_IsTextSearchEnabled_DropDown_Closed(bool isTextSearchEnabled)
 		{
 			var comboBox = new ComboBox();
@@ -1172,6 +1179,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[CombinatorialData]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ComboBox_IsTextSearchEnabled_DropDown_Opened(bool isTextSearchEnabled)
 		{
 			var comboBox = new ComboBox();
@@ -1226,6 +1234,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if RUNTIME_NATIVE_AOT
 		[Ignore("DataRowAttribute.GetData() wraps data in an extra array under NativeAOT; not yet understood why.")]
 #endif  // RUNTIME_NATIVE_AOT
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Customized_Popup_Placement(PopupPlacementMode mode, double verticalOffset)
 		{
 			var grid = new Grid();
@@ -1413,11 +1422,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeAndroid)] // https://github.com/unoplatform/uno-private/issues/1297
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeWinUI)] // https://github.com/unoplatform/uno-private/issues/1297
 		public Task When_ComboBox_ScrollIntoView_SelectedItem() => When_ComboBox_ScrollIntoView_Selection(viaIndex: false);
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeAndroid)] // https://github.com/unoplatform/uno-private/issues/1297
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeWinUI)] // https://github.com/unoplatform/uno-private/issues/1297
 		public Task When_ComboBox_ScrollIntoView_SelectedIndex() => When_ComboBox_ScrollIntoView_Selection(viaIndex: true);
 
 		private async Task When_ComboBox_ScrollIntoView_Selection(bool viaIndex)

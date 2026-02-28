@@ -30,6 +30,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 	{
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_NoScrollViewer_Then_ShowMoreThanFirstItem()
 		{
 			var sut = new ItemsRepeater

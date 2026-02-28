@@ -47,6 +47,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __APPLE_UIKIT__
 	[Ignore("Disable all listview tests until crash is resolved https://github.com/unoplatform/uno/issues/17101")]
 #endif
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public partial class Given_ListViewBase // resources
 	{
 		private ResourceDictionary _testsResources;
@@ -454,6 +455,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_IsItsOwnItemContainer_FromSource_With_DataTemplate()
 		{
 			var SUT = new ListView()
@@ -692,6 +694,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __APPLE_UIKIT__
 		[Ignore("The test can't find MultiSelectSquare")]
 #endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Different_Selections_IsMultiSelectCheckBoxEnabled()
 		{
 			var singleList = new ListView
@@ -1288,6 +1291,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if NETFX_CORE
 		[Ignore("KeyboardHelper doesn't work on Windows")]
 #endif
@@ -1333,6 +1337,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_IsItsOwnItemContainer_Recycling()
 		{
 			var SUT = new ListView()
@@ -3280,6 +3285,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ItemTemplate_Selector_And_Clear_Then_Released()
 		{
 			var selector = new KeyedTemplateSelector<ItemColor>(o => (o as ItemColorViewModel)?.ItemType ?? ItemColor.None)
@@ -3343,6 +3349,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __WASM__
 		[Ignore] // https://github.com/unoplatform/uno/issues/7323
 #endif
@@ -3406,6 +3413,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __WASM__
 		[Ignore("Fails on WASM")]
 #endif
@@ -3637,6 +3645,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Binding_and_Item_Removed()
 		{
 			const int ITEMS_TO_ADD = 6;
@@ -3930,6 +3939,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_SelectionMode_Is_Multiple()
 		{
 			// #11971: It was too early to apply MultiSelectStates in PrepareContainerForItemOverride,
@@ -4235,6 +4245,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Header_DataContext()
 		{
 			TextBlock header = new TextBlock { Text = "empty" };
@@ -4279,6 +4290,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[RunsOnUIThread]
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Footer_DataContext()
 		{
 			TextBlock header = new TextBlock { Text = "empty" };
@@ -4532,6 +4544,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public Task When_SelectionChanged_Item_Is_BroughtIntoView_ListView() => When_SelectionChanged_Item_Is_BroughtIntoView<ListView>();
 
 		[TestMethod]
@@ -4931,6 +4944,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/257")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if !UNO_HAS_MANAGED_SCROLL_PRESENTER
 		[Ignore("This test is only for managed scrollers.")]
 #endif
@@ -4961,6 +4975,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __ANDROID__
 		[Ignore("droid: Scrollable/Extent-Height doesnt get updated until manually scroll occurs, but otherwise the visuals are good.")]
 #endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ScrollIntoView_FreshlyAddedOffscreenItem()
 		{
 			const int FixedItemHeight = 29;
@@ -5012,6 +5027,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_SelectionChanged_DuringRefresh()
 		{
 			var source = new ObservableCollection<string>(Enumerable.Range(0, 4).Select(x => $"Item {x}"));

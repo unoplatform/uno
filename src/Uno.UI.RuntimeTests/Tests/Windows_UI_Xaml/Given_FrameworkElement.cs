@@ -393,6 +393,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !WINAPPSDK
 		[Ignore]
 #endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Setting_Sizes_To_Invalid_Values_Then_Should_Throw(string variant)
 		{
 			using var _ = new AssertionScope();
@@ -496,6 +497,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public Task When_Measure_And_Invalidate() =>
 			RunOnUIThread.ExecuteAsync(() =>
 			{
@@ -518,6 +520,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __ANDROID__ // #9282 for macOS
 		[Ignore]
 #endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_InvalidateDuringMeasure_Then_GetReMeasured()
 		{
 			var sut = new ObservableLayoutingControl();
@@ -546,6 +549,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore]
 #endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_InvalidateDuringArrange_Then_GetReArranged()
 		{
 			var sut = new ObservableLayoutingControl();
@@ -617,6 +621,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public Task MeasureWithNan() =>
 			RunOnUIThread.ExecuteAsync(() =>
 			{
@@ -639,6 +644,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			});
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public Task MeasureOverrideWithNan() =>
 			RunOnUIThread.ExecuteAsync(() =>
 			{
@@ -655,6 +661,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __WASM__
 		[Ignore] // Failing on WASM - https://github.com/unoplatform/uno/issues/2314
 #endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public Task MeasureOverride_With_Nan_In_Grid() =>
 			RunOnUIThread.ExecuteAsync(() =>
 			{
@@ -704,6 +711,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("Layouter doesn't work properly")]
 #endif
@@ -792,6 +800,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow("Center", "Center", 25d, 5d, 100d, 50d, null, null, "46;17;108;66|50;25;100;50|58;38;84;24")]
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task TestVariousArrangedPosition(
 			string horizontal,
 			string vertical,
@@ -960,6 +969,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Add_Element_Then_Load_Raised()
 		{
 			var sut = new Border();
@@ -1013,6 +1023,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Add_Element_Then_Unload_Raised()
 		{
 			var sut = new Border();
@@ -1223,6 +1234,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20914")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_VisualStateTriggers_Reapplied()
 		{
 			var button = (Button)XamlReader.Load(

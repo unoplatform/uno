@@ -7,6 +7,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Globalization;
 public class Given_Calendar
 {
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Julian_Calendar()
 	{
 		// It's very important that this test doesn't crash, because that's what CalendarView does when using Julian calendar.

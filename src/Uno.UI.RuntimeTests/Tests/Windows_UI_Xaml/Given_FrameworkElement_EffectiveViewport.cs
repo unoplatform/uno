@@ -74,6 +74,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	{
 		[TestMethod]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task EffectiveViewport_When_BottomRightAligned()
 		{
 			var sut = new Border { Width = 42, Height = 42, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom };
@@ -199,6 +200,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		#region DataRows
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 100, double.NaN)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, double.NaN, 100)]
@@ -452,6 +454,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[RunsOnUIThread]
 		[RequiresFullWindow]
 		[CombinatorialData]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore(
 			"On Android and iOS the ScrollHost is not the (native)SCP but the SV, so alignments are not taken in consideration when computing the scrollport "
