@@ -1309,11 +1309,11 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 		switch (eventId)
 		{
 			case AutomationEvents.LiveRegionChanged:
-					if (this.Log().IsEnabled(LogLevel.Debug))
-					{
-						this.Log().Debug($"[A11y] AUTOMATION EVENT: LiveRegionChanged peer={peer.GetType().Name}");
-					}
-					_liveRegionManager?.HandleLiveRegionChanged(peer);
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"[A11y] AUTOMATION EVENT: LiveRegionChanged peer={peer.GetType().Name}");
+				}
+				_liveRegionManager?.HandleLiveRegionChanged(peer);
 				break;
 		}
 	}
