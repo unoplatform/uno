@@ -156,18 +156,18 @@
 						if (event.origin === window.location.origin ||
 							event.origin === redirectOrigin) {
 							const data = event.data;
-							if (typeof data === "string" && data.indexOf(urlRedirect) === 0) {
-								window.removeEventListener("message", messageHandler);
+							if (typeof data === 'string' && data.indexOf(urlRedirect) === 0) {
+								window.removeEventListener('message', messageHandler);
 								completeSuccessfully(data);
-							} else if (data && typeof data === "object" && data.type === "oauth-callback") {
-								window.removeEventListener("message", messageHandler);
-								if (data.url && data.url.indexOf(urlRedirect) === 0) {
-									completeSuccessfully(data.url);
+							} else if (data && typeof data === 'object' && data.type === 'oauth-callback') {
+								if (typeof (data as any).url === 'string' && (data as any).url.indexOf(urlRedirect) === 0) {
+									window.removeEventListener('message', messageHandler);
+									completeSuccessfully((data as any).url);
 								}
 							}
 						}
 					};
-					window.addEventListener("message", messageHandler);
+					window.addEventListener('message', messageHandler);
 
 					// open the window
 					win = window.open(urlNavigate,
