@@ -622,6 +622,8 @@
           href: features/working-with-themes.md
         - name: User inputs - Keyboard, Pointers, Gestures, Manipulations, Drag and drop
           href: features/pointers-keyboard-and-other-user-inputs.md
+        - name: Preventing Browser Keyboard Shortcuts (WASM)
+          href: features/browser-input-helper.md
         - name: Using Fluent styles in legacy apps
           href: features/using-winui2.md
         - name: Windowing
