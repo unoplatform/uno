@@ -65,6 +65,11 @@ internal sealed partial class WindowChrome : ContentControl
 
 	private void ResizeCaptionButtons()
 	{
+		if (_window.AppWindow?.NativeAppWindow is null)
+		{
+			return;
+		}
+
 		var scale = _window.AppWindow.NativeAppWindow.RasterizationScale;
 		var height = _window.AppWindow.TitleBar.Height / scale;
 		if (height > 0)
@@ -242,7 +247,7 @@ internal sealed partial class WindowChrome : ContentControl
 
 	private void UpdateAllNonClientRegions()
 	{
-		if (_window?.AppWindow is null)
+		if (_window?.AppWindow is null || _window.AppWindow.NativeAppWindow is null)
 		{
 			return;
 		}
@@ -473,6 +478,14 @@ internal sealed partial class WindowChrome : ContentControl
 	{
 		if (!AppWindowTitleBar.IsCustomizationSupported())
 		{
+			return;
+		}
+
+		if (_window.AppWindow.NativeAppWindow is null)
+		{
+			// NativeAppWindow is not yet available (e.g., iOS scene delegate multi-window
+			// where the native window wrapper is deferred). ConfigureWindowChrome will be
+			// called again when NativeAppWindow is set via the AppWindow.Changed event.
 			return;
 		}
 
