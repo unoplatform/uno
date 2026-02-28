@@ -482,6 +482,8 @@
         href: supported-features.md
       - name: Feature Flags
         href: feature-flags.md
+      - name: NuGet Packages
+        href: xref:Uno.Development.NuGetPackages
       - name: WinUI Compatibility
         items:
         - name: Differences From WinUI
