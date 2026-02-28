@@ -54,6 +54,19 @@
 		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.8.43" ExcludeAssets="runtime" />
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFramework)'=='net11.0'">
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.14.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.14.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.14.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.14.0" />
+		<PackageReference Include="Microsoft.Build" Version="17.7.2" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Framework" Version="17.8.43" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.8.43" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.8.43" ExcludeAssets="runtime" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI.RemoteControl.Server\Uno.UI.RemoteControl.Server.csproj" />
 	</ItemGroup>
