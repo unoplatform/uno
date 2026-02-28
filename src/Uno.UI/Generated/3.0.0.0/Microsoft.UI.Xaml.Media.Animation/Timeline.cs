@@ -26,20 +26,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared property FillBehavior
 		// Skipping already declared property Duration
 		// Skipping already declared property BeginTime
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AutoReverse
-		{
-			get
-			{
-				return (bool)this.GetValue(AutoReverseProperty);
-			}
-			set
-			{
-				this.SetValue(AutoReverseProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property AutoReverse
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool AllowDependentAnimations
@@ -54,14 +41,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty AutoReverseProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(AutoReverse), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Media.Animation.Timeline),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
+		// Skipping already declared property AutoReverseProperty
 		// Skipping already declared property BeginTimeProperty
 		// Skipping already declared property DurationProperty
 		// Skipping already declared property FillBehaviorProperty
