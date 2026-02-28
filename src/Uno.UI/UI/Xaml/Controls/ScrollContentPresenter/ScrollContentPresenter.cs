@@ -272,15 +272,43 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else if (canScrollHorizontally && (properties.IsHorizontalMouseWheel || e.KeyModifiers == VirtualKeyModifiers.Shift))
 				{
-					success = Set(
-						horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, delta),
-						disableAnimation: false);
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER
+					// On iOS with a trackpad (continuous scroll), the delta is already in pixels (1:1 mapping).
+					// Applying it directly without animation eliminates animation jank because the trackpad
+					// itself provides smooth high-frequency updates - no additional animation layer is needed.
+					if (OperatingSystem.IsIOS() && properties.IsTouchPad)
+					{
+						success = Set(
+							horizontalOffset: TargetHorizontalOffset - delta,
+							disableAnimation: true);
+					}
+					else
+#endif
+					{
+						success = Set(
+							horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, delta),
+							disableAnimation: false);
+					}
 				}
 				else if (canScrollVertically && !properties.IsHorizontalMouseWheel)
 				{
-					success = Set(
-						verticalOffset: TargetVerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
-						disableAnimation: false);
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER
+					// On iOS with a trackpad (continuous scroll), the delta is already in pixels (1:1 mapping).
+					// Applying it directly without animation eliminates animation jank because the trackpad
+					// itself provides smooth high-frequency updates - no additional animation layer is needed.
+					if (OperatingSystem.IsIOS() && properties.IsTouchPad)
+					{
+						success = Set(
+							verticalOffset: TargetVerticalOffset - delta,
+							disableAnimation: true);
+					}
+					else
+#endif
+					{
+						success = Set(
+							verticalOffset: TargetVerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
+							disableAnimation: false);
+					}
 				}
 
 				// This is not similar to what WinUI is doing, since we already differ quite a bit from
