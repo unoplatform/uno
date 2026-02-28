@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml;
 using UIKit;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.AppleUIKit;
 using Uno.UI.Runtime.Skia.AppleUIKit.UI.Xaml;
 using Windows.Foundation;
