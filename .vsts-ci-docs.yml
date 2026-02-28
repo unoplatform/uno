@@ -10,6 +10,8 @@ trigger:
     include:
       - doc/**
       - '**/*.md'
+      - build/ci/.azure-devops-stages-docs.yml
+      - build/ci/docs/**
 
 pr: 
   branches:
@@ -23,6 +25,8 @@ pr:
     include:
       - doc/**
       - '**/*.md'
+      - build/ci/.azure-devops-stages-docs.yml
+      - build/ci/docs/**
 
 variables:
   windowsScaledPool: 'Windows2022-20250720-1'
