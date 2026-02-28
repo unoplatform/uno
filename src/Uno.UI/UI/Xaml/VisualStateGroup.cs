@@ -560,7 +560,8 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var parent = this.GetParent() as IFrameworkElement;
-			GoToState(parent, newState, false, OnStateChanged);
+			RaiseCurrentStateChanging(oldState, newState);
+			GoToState(parent, newState, true, OnStateChanged);
 		}
 
 		private bool HasStateTriggers()
