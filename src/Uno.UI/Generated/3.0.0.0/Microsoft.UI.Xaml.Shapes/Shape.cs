@@ -9,90 +9,12 @@ namespace Microsoft.UI.Xaml.Shapes
 	public partial class Shape : global::Microsoft.UI.Xaml.FrameworkElement
 	{
 		// Skipping already declared property StrokeThickness
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.PenLineCap StrokeStartLineCap
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.PenLineCap)this.GetValue(StrokeStartLineCapProperty);
-			}
-			set
-			{
-				this.SetValue(StrokeStartLineCapProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double StrokeMiterLimit
-		{
-			get
-			{
-				return (double)this.GetValue(StrokeMiterLimitProperty);
-			}
-			set
-			{
-				this.SetValue(StrokeMiterLimitProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.PenLineJoin StrokeLineJoin
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.PenLineJoin)this.GetValue(StrokeLineJoinProperty);
-			}
-			set
-			{
-				this.SetValue(StrokeLineJoinProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.PenLineCap StrokeEndLineCap
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.PenLineCap)this.GetValue(StrokeEndLineCapProperty);
-			}
-			set
-			{
-				this.SetValue(StrokeEndLineCapProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double StrokeDashOffset
-		{
-			get
-			{
-				return (double)this.GetValue(StrokeDashOffsetProperty);
-			}
-			set
-			{
-				this.SetValue(StrokeDashOffsetProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.PenLineCap StrokeDashCap
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.PenLineCap)this.GetValue(StrokeDashCapProperty);
-			}
-			set
-			{
-				this.SetValue(StrokeDashCapProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property StrokeStartLineCap
+		// Skipping already declared property StrokeMiterLimit
+		// Skipping already declared property StrokeLineJoin
+		// Skipping already declared property StrokeEndLineCap
+		// Skipping already declared property StrokeDashOffset
+		// Skipping already declared property StrokeDashCap
 		// Skipping already declared property StrokeDashArray
 		// Skipping already declared property Stroke
 		// Skipping already declared property Stretch
@@ -110,55 +32,13 @@ namespace Microsoft.UI.Xaml.Shapes
 		// Skipping already declared property FillProperty
 		// Skipping already declared property StretchProperty
 		// Skipping already declared property StrokeDashArrayProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty StrokeDashCapProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(StrokeDashCap), typeof(global::Microsoft.UI.Xaml.Media.PenLineCap),
-			typeof(global::Microsoft.UI.Xaml.Shapes.Shape),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.PenLineCap)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty StrokeDashOffsetProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(StrokeDashOffset), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Shapes.Shape),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty StrokeEndLineCapProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(StrokeEndLineCap), typeof(global::Microsoft.UI.Xaml.Media.PenLineCap),
-			typeof(global::Microsoft.UI.Xaml.Shapes.Shape),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.PenLineCap)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty StrokeLineJoinProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(StrokeLineJoin), typeof(global::Microsoft.UI.Xaml.Media.PenLineJoin),
-			typeof(global::Microsoft.UI.Xaml.Shapes.Shape),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.PenLineJoin)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty StrokeMiterLimitProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(StrokeMiterLimit), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Shapes.Shape),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
+		// Skipping already declared property StrokeDashCapProperty
+		// Skipping already declared property StrokeDashOffsetProperty
+		// Skipping already declared property StrokeEndLineCapProperty
+		// Skipping already declared property StrokeLineJoinProperty
+		// Skipping already declared property StrokeMiterLimitProperty
 		// Skipping already declared property StrokeProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty StrokeStartLineCapProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(StrokeStartLineCap), typeof(global::Microsoft.UI.Xaml.Media.PenLineCap),
-			typeof(global::Microsoft.UI.Xaml.Shapes.Shape),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.PenLineCap)));
-#endif
+		// Skipping already declared property StrokeStartLineCapProperty
 		// Skipping already declared property StrokeThicknessProperty
 		// Skipping already declared method Microsoft.UI.Xaml.Shapes.Shape.Shape()
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.Shape()
