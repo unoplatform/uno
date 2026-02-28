@@ -361,8 +361,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			Interlocked.Decrement(ref _runningChildren);
 
-			// OnFailed is not called here because it relates to an individual
-			// child, where completed relates to all children being completed.
+			if (_runningChildren == 0)
+			{
+				State = TimelineState.Stopped;
+				OnCompleted();
+			}
 		}
 
 		void ITimelineListener.ChildCompleted(Timeline child)
