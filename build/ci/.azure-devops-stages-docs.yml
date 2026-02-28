@@ -53,7 +53,7 @@ stages:
       deploymentName: Docs_Deploy_Staging
       displayName: Deploy Docs Staging
       environmentName: Uno UI Docs Staging
-      azureSubscription: Uno Platform - Operations (platformuno.onmicrosoft.com)
+      azureSubscription: Uno Platform - Operations (uno-platform-operations @ platformuno.onmicrosoft.com)
       storageAccountName: unoplatformdocstaging
 
 - stage: docs_deploy_prod
@@ -67,5 +67,5 @@ stages:
       deploymentName: Docs_Deploy_Prod
       displayName: Deploy Docs Prod
       environmentName: Uno UI Docs Production
-      azureSubscription: Uno Platform - Operations (platformuno.onmicrosoft.com)
+      azureSubscription: Uno Platform - Operations (uno-platform-operations @ platformuno.onmicrosoft.com)
       storageAccountName: unoplatformdocsprod
