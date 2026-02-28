@@ -1283,5 +1283,64 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			oldPopupRect.Y.Should().BeLessThan(newPopupRect.Y);
 		}
 #endif
+
+#if !WINAPPSDK // GetTemplateChild is protected in UWP while public in Uno.
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task When_AutoSuggestBox_CornerRadius_With_Helper()
+		{
+			// This test verifies that AutoSuggestBoxHelper.KeepInteriorCornersSquare works correctly
+			// When the popup opens, interior corners should be squared off
+			var SUT = new AutoSuggestBox
+			{
+				CornerRadius = new CornerRadius(8),
+				Width = 400,
+				ItemsSource = new List<string> { "Item 1", "Item 2", "Item 3" }
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Keyboard);
+			SUT.Text = "Item";
+			SUT.MaxHeight = 32;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => SUT.IsSuggestionListOpen);
+
+			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
+			Assert.IsNotNull(textBox, "TextBox template child should exist");
+
+			// When popup is open, interior corners should be squared off
+			// The flyout might open up or down, so we check for either configuration
+			var textBoxCornerRadius = textBox.CornerRadius;
+			var isOpenDown = textBoxCornerRadius.BottomLeft == 0 && textBoxCornerRadius.BottomRight == 0;
+			var isOpenUp = textBoxCornerRadius.TopLeft == 0 && textBoxCornerRadius.TopRight == 0;
+
+			Assert.IsTrue(isOpenDown || isOpenUp,
+				$"TextBox corner radius should have squared interior corners. Actual: TL={textBoxCornerRadius.TopLeft}, TR={textBoxCornerRadius.TopRight}, BL={textBoxCornerRadius.BottomLeft}, BR={textBoxCornerRadius.BottomRight}");
+
+			// Get the popup border and verify its corners are also adjusted
+			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot);
+			Assert.IsTrue(popups.Count > 0, "Popup should be open");
+
+			var popup = popups.Last();
+			var popupBorder = popup.Child as Border;
+			if (popupBorder != null)
+			{
+				var popupCornerRadius = popupBorder.CornerRadius;
+				// Popup corners opposite to textbox should be squared
+				if (isOpenDown)
+				{
+					Assert.IsTrue(popupCornerRadius.TopLeft == 0 && popupCornerRadius.TopRight == 0,
+						$"Popup border should have squared top corners when opening down. Actual: TL={popupCornerRadius.TopLeft}, TR={popupCornerRadius.TopRight}");
+				}
+				else
+				{
+					Assert.IsTrue(popupCornerRadius.BottomLeft == 0 && popupCornerRadius.BottomRight == 0,
+						$"Popup border should have squared bottom corners when opening up. Actual: BL={popupCornerRadius.BottomLeft}, BR={popupCornerRadius.BottomRight}");
+				}
+			}
+		}
+#endif
 	}
 }
