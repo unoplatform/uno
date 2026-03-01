@@ -458,7 +458,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal void UpdateResourceBindingsForHotReload() => OnResourcesChanged(ResourceUpdateReason.HotReload);
+		internal void UpdateResourceBindingsForHotReload() => OnResourcesChanged(ResourceUpdateReason.HotReload | ResourceUpdateReason.ThemeResource);
 
 		internal void OnRequestedThemeChanged()
 		{

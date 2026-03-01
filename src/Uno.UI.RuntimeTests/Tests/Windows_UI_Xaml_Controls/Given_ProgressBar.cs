@@ -45,6 +45,8 @@ public class Given_ProgressBar
 		public bool Notified { get; private set; }
 
 		public bool ListenerExistsHelper(AutomationEvents eventId) => true;
+		public void OnAutomationEvent(AutomationPeer peer, AutomationEvents eventId) => Notified = true;
+
 		public void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue) =>
 			Notified = true;
 		public void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId) => Notified = true;
