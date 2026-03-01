@@ -431,6 +431,15 @@ namespace Microsoft.UI.Xaml
 			// This is replicating the UpdateAllThemeReferences call in Enter in WinUI.
 			// Updates theme references to account for new ancestor theme dictionaries.
 			this.UpdateResourceBindings();
+
+			// Propagate XamlRoot to ContextFlyout since it's no longer a LogicalChild
+			// (changed to ValueDoesNotInheritDataContext to prevent memory leaks).
+			// In WinUI, the visual tree association happens during EnterImpl's tree walk;
+			// here we do it explicitly when the element enters the tree.
+			if (ContextFlyout is { } contextFlyout && XamlRoot is { } xamlRoot)
+			{
+				contextFlyout.XamlRoot = xamlRoot;
+			}
 		}
 
 		partial void OnUnloadedPartial()
