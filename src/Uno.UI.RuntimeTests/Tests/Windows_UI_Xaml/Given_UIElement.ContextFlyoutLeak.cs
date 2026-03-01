@@ -64,6 +64,56 @@ partial class Given_UIElement
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_SharedSelectionFlyout_DoesNotLeak_ViewModel()
+	{
+		// Same as the ContextFlyout test but for SelectionFlyout on TextBox.
+		// SelectionFlyout (TextCommandBarFlyout) is also shared across controls.
+
+		var sharedFlyout = new MenuFlyout();
+		sharedFlyout.Items.Add(new MenuFlyoutItem { Text = "Cut" });
+		sharedFlyout.Items.Add(new MenuFlyoutItem { Text = "Copy" });
+
+		var viewModel = new object();
+		var weakViewModel = new WeakReference(viewModel);
+
+		var textBox = new TextBox
+		{
+			Text = "Hello",
+			DataContext = viewModel,
+			SelectionFlyout = sharedFlyout,
+		};
+
+		var root = new Grid();
+		root.Children.Add(textBox);
+
+		await UITestHelper.Load(root, x => x.IsLoaded);
+
+		// Open and close the flyout to simulate user interaction
+		sharedFlyout.ShowAt(textBox);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		sharedFlyout.Hide();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Remove the textbox from the tree and release all local references
+		root.Children.Clear();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Reassign the flyout to a different control to simulate the shared pattern
+		var textBox2 = new TextBox { Text = "World" };
+		textBox2.SelectionFlyout = sharedFlyout;
+
+		textBox = null;
+		viewModel = null;
+
+		var collected = await TestHelper.TryWaitUntilCollected(weakViewModel);
+
+		Assert.IsTrue(collected, "ViewModel should be collected after the control using the shared SelectionFlyout is removed from the tree.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public async Task When_ContextFlyout_PresenterGetsDataContext_WhileOpen()
 	{
 		// Verify that the flyout presenter still receives DataContext
