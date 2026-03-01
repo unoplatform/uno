@@ -31,8 +31,6 @@ namespace Uno.UI.Runtime.Skia {
 			console.log('[A11y] Accessibility.setup() — initializing accessibility subsystem');
 			const browserExports = WebAssemblyWindowWrapper.getAssemblyExports();
 
-			Accessibility.enableDebugMode(true);
-
 			// Wire up managed callbacks from WebAssemblyAccessibility.cs
 			const accessibilityExports = browserExports.Uno.UI.Runtime.Skia.WebAssemblyAccessibility;
 			this.managedEnableAccessibility = accessibilityExports.EnableAccessibility;
@@ -62,36 +60,29 @@ namespace Uno.UI.Runtime.Skia {
 			this.enableAccessibilityButton.setAttribute("tabindex", "0");
 			this.enableAccessibilityButton.setAttribute("aria-label", "Enable accessibility");
 			this.enableAccessibilityButton.addEventListener("click", this.onEnableAccessibilityButtonClicked.bind(this));
+
+			// Also add a keydown listener so keyboard users can activate it via Enter/Space
+			this.enableAccessibilityButton.addEventListener("keydown", (e) => {
+				if (e.key === "Enter" || e.key === " ") {
+					e.preventDefault();
+					this.onEnableAccessibilityButtonClicked(e as any);
+				}
+			});
+
 			this.containerElement.appendChild(this.enableAccessibilityButton);
 
 			// Create semantic DOM root container (hidden but accessible)
 			this.semanticsRoot = document.createElement("div");
 			this.semanticsRoot.id = "uno-semantics-root";
-			// Use clip-rect pattern instead of filter:opacity(0%) for better
-			// VoiceOver compatibility on Safari/macOS
 			this.semanticsRoot.style.position = "absolute";
 			this.semanticsRoot.style.top = "0";
 			this.semanticsRoot.style.left = "0";
 			this.semanticsRoot.style.overflow = "hidden";
 			this.semanticsRoot.style.opacity = "0";
+			this.semanticsRoot.style.pointerEvents = "none";
 			this.semanticsRoot.setAttribute("aria-label", "Application content");
 			this.containerElement.appendChild(this.semanticsRoot);
 
-			// Temporarily enable accessibility by default (development/debugging only).
-			// This calls into managed code to initialize the accessibility subsystem
-			// so the semantic DOM is active without requiring the user to press the
-			// "Enable accessibility" helper button. Remove once not needed.
-			if (this.managedEnableAccessibility) {
-				// If the button was added, remove it (we're enabling automatically)
-				if (this.enableAccessibilityButton && this.enableAccessibilityButton.parentElement) {
-					this.enableAccessibilityButton.parentElement.removeChild(this.enableAccessibilityButton);
-				}
-
-				this.managedEnableAccessibility();
-				// Initialize subsystem TypeScript modules
-				LiveRegion.initialize();
-				this.announceAssertive("Accessibility enabled by default.");
-			}
 		}
 
 		/// <summary>
