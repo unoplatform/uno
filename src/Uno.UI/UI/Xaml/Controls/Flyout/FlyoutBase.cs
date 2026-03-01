@@ -623,13 +623,23 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			m_isTargetPositionSet = false;
 			InputDevicePrefersPrimaryCommands = false;
 
-			// Clear the presenter's DataContext to prevent memory leaks from shared flyouts.
-			// For non-shared flyouts (e.g., Button.Flyout with LogicalChild), the presenter
-			// falls back to inheriting DataContext from the Popup, which still has it via
-			// the FlyoutBase → Popup sync chain. So bindings continue to work correctly.
-			if (_popup?.Child is FrameworkElement presenter)
+			// Clear Target and PlacementTarget to prevent memory leaks from shared flyouts.
+			// WinUI does this in SetPlacementTarget(nullptr) which calls put_Target(nullptr).
+			// Without this, the reference chain FlyoutBase → Target → DataContext keeps
+			// the ViewModel alive even after the target control is removed from the tree.
+			Target = null;
+			if (_popup is { } popup)
 			{
-				presenter.ClearValue(FrameworkElement.DataContextProperty);
+				popup.PlacementTarget = null;
+
+				// Also clear the presenter's DataContext. For non-shared flyouts
+				// (e.g., Button.Flyout with LogicalChild), the presenter falls back
+				// to inheriting DataContext from the Popup via the FlyoutBase → Popup
+				// sync chain. So bindings continue to work correctly.
+				if (popup.Child is FrameworkElement presenter)
+				{
+					presenter.ClearValue(FrameworkElement.DataContextProperty);
+				}
 			}
 		}
 
