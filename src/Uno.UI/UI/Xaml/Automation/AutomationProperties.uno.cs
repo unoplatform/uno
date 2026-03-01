@@ -54,6 +54,13 @@ public sealed partial class AutomationProperties
 #if __WASM__ || __SKIA__
 	internal static string FindHtmlRole(UIElement uIElement)
 	{
+		// Uno-specific: allow explicit role override via AutomationPropertiesExtensions.Role.
+		var roleOverride = AutomationPropertiesExtensions.GetRole(uIElement);
+		if (!string.IsNullOrEmpty(roleOverride))
+		{
+			return roleOverride;
+		}
+
 		if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Button_Available && uIElement is Button)
 		{
 			return "button";

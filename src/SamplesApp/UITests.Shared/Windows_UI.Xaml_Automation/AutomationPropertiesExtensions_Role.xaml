@@ -1,0 +1,52 @@
+<UserControl
+	x:Class="UITests.Shared.Windows_UI_Xaml_Automation.AutomationPropertiesExtensions_Role"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="using:Uno.UI.Samples.Controls"
+	xmlns:unoAutomation="using:Microsoft.UI.Xaml.Automation"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	d:DesignHeight="400"
+	d:DesignWidth="400">
+
+	<StackPanel Margin="16" Spacing="12">
+		<TextBlock
+			FontSize="16"
+			FontWeight="Bold"
+			Text="AutomationPropertiesExtensions.Role" />
+
+		<TextBlock
+			TextWrapping="Wrap"
+			Text="The Role attached property overrides the platform accessibility role for an element. On WASM it maps directly to the HTML 'role' attribute. On other platforms it is accepted but may be a no-op." />
+
+		<!-- tab role -->
+		<Border
+			Background="CornflowerBlue"
+			Padding="8"
+			unoAutomation:AutomationPropertiesExtensions.Role="tab">
+			<TextBlock Text="Border with role='tab'" Foreground="White" />
+		</Border>
+
+		<!-- tablist role -->
+		<Border
+			Background="SteelBlue"
+			Padding="8"
+			unoAutomation:AutomationPropertiesExtensions.Role="tablist">
+			<TextBlock Text="Border with role='tablist'" Foreground="White" />
+		</Border>
+
+		<!-- navigation role -->
+		<Border
+			Background="MediumSlateBlue"
+			Padding="8"
+			unoAutomation:AutomationPropertiesExtensions.Role="navigation">
+			<TextBlock Text="Border with role='navigation'" Foreground="White" />
+		</Border>
+
+		<!-- Button – role clears back to default (null/empty) -->
+		<Button
+			Content="Button with role cleared (default)"
+			unoAutomation:AutomationPropertiesExtensions.Role="" />
+	</StackPanel>
+</UserControl>
