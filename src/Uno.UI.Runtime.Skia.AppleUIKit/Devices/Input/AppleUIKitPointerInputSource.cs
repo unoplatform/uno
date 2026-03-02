@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using CoreAnimation;
 using CoreGraphics;
 using Foundation;
 using Microsoft.UI.Input;
@@ -25,6 +26,20 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 #if __IOS__
 	private const int ScrollWheelDeltaMultiplier = -45;
 	private const double MinTranslationThreshold = 1.0;
+	private const double InertiaDecelerationRate = 0.95;
+	private const double InertiaMagnitudeThreshold = 0.0001;
+	// Divide velocity (pts/s) by display refresh rate to get per-frame delta,
+	// matching the scale of active-scroll translation deltas for a smooth handoff.
+	private const double InertiaVelocityScale = 60.0;
+
+	private CADisplayLink? _momentumDisplayLink;
+	private double _momentumVelocityX;
+	private double _momentumVelocityY;
+	private CGPoint _cachedScrollLocation;
+	private bool _gestureIsNaturalScrolling;
+#endif
+#if __MACCATALYST__
+	private const double ScrollWheelDeltaMultiplier = 120.0;
 #endif
 
 	public static AppleUIKitCorePointerInputSource Instance { get; } = new();
@@ -168,40 +183,86 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 	}
 
 #if __IOS__
-	internal void HandleScrollFromGesture(UIView source, CGPoint translation, CGPoint location, UIGestureRecognizerState gestureState, bool isNaturalScrollingEnabled)
+	internal void HandleScrollFromGesture(UIView source, UIPanGestureRecognizer gesture, bool isNaturalScrollingEnabled)
 	{
 		try
 		{
 			if (!UIDevice.CurrentDevice.CheckSystemVersion(13, 4))
-			{
 				return;
-			}
 
-			if (gestureState != UIGestureRecognizerState.Changed)
+			switch (gesture.State)
 			{
-				return;
+				case UIGestureRecognizerState.Began:
+					StopInertiaScrolling();
+					_cachedScrollLocation = gesture.LocationInView(source);
+					_gestureIsNaturalScrolling = isNaturalScrollingEnabled;
+					return;
+
+				case UIGestureRecognizerState.Changed:
+					var translation = gesture.TranslationInView(source);
+					if (Math.Abs(translation.X) < MinTranslationThreshold && Math.Abs(translation.Y) < MinTranslationThreshold)
+						return;
+					_cachedScrollLocation = gesture.LocationInView(source);
+					_trace?.Invoke($"<ScrollGesture src={source.GetDebugName()} state={gesture.State}>");
+					PointerWheelChanged?.Invoke(this, CreateScrollGestureEventArgs(translation, _cachedScrollLocation, isNaturalScrollingEnabled));
+					_trace?.Invoke("</ScrollGesture>");
+					gesture.SetTranslation(CGPoint.Empty, source);
+					return;
+
+				case UIGestureRecognizerState.Ended:
+					_gestureIsNaturalScrolling = isNaturalScrollingEnabled;
+					StartInertiaScrolling(gesture.VelocityInView(source));
+					return;
+
+				case UIGestureRecognizerState.Cancelled:
+				case UIGestureRecognizerState.Failed:
+					StopInertiaScrolling();
+					return;
 			}
-
-			if (Math.Abs(translation.X) < MinTranslationThreshold && Math.Abs(translation.Y) < MinTranslationThreshold)
-			{
-				return;
-			}
-
-			_trace?.Invoke($"<ScrollGesture src={source.GetDebugName()} state={gestureState}>");
-
-			var args = CreateScrollGestureEventArgs(translation, location, isNaturalScrollingEnabled);
-
-			_trace?.Invoke($"ScrollGesture: {args}>");
-
-			_trace?.Invoke($"iOS HandleScrollFromGesture: Delta={args.CurrentPoint.Properties.MouseWheelDelta}, IsHorizontal={args.CurrentPoint.Properties.IsHorizontalMouseWheel}, Position=({args.CurrentPoint.Position.X}, {args.CurrentPoint.Position.Y}), Translation=({translation.X:F2}, {translation.Y:F2}), State={gestureState}");
-
-			PointerWheelChanged?.Invoke(this, args);
-
-			_trace?.Invoke("</ScrollGesture>");
 		}
 		catch (Exception e)
 		{
 			_trace?.Invoke($"</ScrollGesture error=true>\r\n" + e);
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	private void StartInertiaScrolling(CGPoint velocity)
+	{
+		StopInertiaScrolling();
+		_momentumVelocityX = velocity.X / InertiaVelocityScale;
+		_momentumVelocityY = velocity.Y / InertiaVelocityScale;
+		_momentumDisplayLink = CADisplayLink.Create(UpdateInertiaScrolling);
+		_momentumDisplayLink.AddToRunLoop(NSRunLoop.Main, NSRunLoopMode.Common);
+	}
+
+	private void StopInertiaScrolling()
+	{
+		_momentumDisplayLink?.Invalidate();
+		_momentumDisplayLink = null;
+		_momentumVelocityX = 0;
+		_momentumVelocityY = 0;
+	}
+
+	private void UpdateInertiaScrolling()
+	{
+		_momentumVelocityX *= InertiaDecelerationRate;
+		_momentumVelocityY *= InertiaDecelerationRate;
+
+		var magnitude = Math.Sqrt(_momentumVelocityX * _momentumVelocityX + _momentumVelocityY * _momentumVelocityY);
+		if (magnitude < InertiaMagnitudeThreshold)
+		{
+			StopInertiaScrolling();
+			return;
+		}
+
+		try
+		{
+			var translation = new CGPoint(_momentumVelocityX, _momentumVelocityY);
+			PointerWheelChanged?.Invoke(this, CreateScrollGestureEventArgs(translation, _cachedScrollLocation, _gestureIsNaturalScrolling));
+		}
+		catch (Exception e)
+		{
 			Application.Current.RaiseRecoverableUnhandledException(e);
 		}
 	}
@@ -212,11 +273,6 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 
 		var scrollDeltaX = (int)(translation.X * multiplier);
 		var scrollDeltaY = (int)(translation.Y * multiplier);
-
-		var position = location;
-
-		var pointerDevice = PointerDevice.For(Windows.Devices.Input.PointerDeviceType.Mouse);
-		var id = 1u;
 
 		var absX = Math.Abs(scrollDeltaX);
 		var absY = Math.Abs(scrollDeltaY);
@@ -247,10 +303,72 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 		var point = new PointerPoint(
 			frameId: PointerHelpers.ToFrameId(timestamp),
 			timestamp: timestamp,
-			device: pointerDevice,
-			pointerId: id,
-			rawPosition: new Point(position.X, position.Y),
-			position: new Point(position.X, position.Y),
+			device: PointerDevice.For(Windows.Devices.Input.PointerDeviceType.Mouse),
+			pointerId: 1u,
+			rawPosition: new Point(location.X, location.Y),
+			position: new Point(location.X, location.Y),
+			isInContact: false,
+			properties: properties
+		);
+
+		return new PointerEventArgs(point, VirtualKeyModifiers.None);
+	}
+#endif
+
+#if __MACCATALYST__
+	internal void HandleScrollEvent(double deltaX, double deltaY, CGPoint location)
+	{
+		try
+		{
+			_trace?.Invoke($"<ScrollEvent deltaX={deltaX:F2} deltaY={deltaY:F2}>");
+			PointerWheelChanged?.Invoke(this, CreateScrollEventArgs(deltaX, deltaY, location));
+			_trace?.Invoke("</ScrollEvent>");
+		}
+		catch (Exception e)
+		{
+			_trace?.Invoke($"</ScrollEvent error=true>\r\n" + e);
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	private PointerEventArgs CreateScrollEventArgs(double deltaX, double deltaY, CGPoint location)
+	{
+		var scaledDeltaX = (int)(deltaX * ScrollWheelDeltaMultiplier);
+		var scaledDeltaY = (int)(deltaY * ScrollWheelDeltaMultiplier);
+
+		var absX = Math.Abs(scaledDeltaX);
+		var absY = Math.Abs(scaledDeltaY);
+		var isHorizontal = absX > absY;
+		var wheelDelta = isHorizontal ? scaledDeltaX : scaledDeltaY;
+
+		var properties = new PointerPointProperties()
+		{
+			IsLeftButtonPressed = false,
+			IsRightButtonPressed = false,
+			IsMiddleButtonPressed = false,
+			IsXButton1Pressed = false,
+			IsXButton2Pressed = false,
+			PointerUpdateKind = PointerUpdateKind.Other,
+			IsBarrelButtonPressed = false,
+			IsEraser = false,
+			IsHorizontalMouseWheel = isHorizontal,
+			MouseWheelDelta = wheelDelta,
+			IsPrimary = true,
+			IsInRange = true,
+			Orientation = 0,
+			Pressure = 0,
+			TouchConfidence = false,
+		};
+
+		var timestamp = PointerHelpers.ToTimestamp(CoreAnimation.CAAnimation.CurrentMediaTime());
+
+		var point = new PointerPoint(
+			frameId: PointerHelpers.ToFrameId(timestamp),
+			timestamp: timestamp,
+			device: PointerDevice.For(Windows.Devices.Input.PointerDeviceType.Mouse),
+			pointerId: 1u,
+			rawPosition: new Point(location.X, location.Y),
+			position: new Point(location.X, location.Y),
 			isInContact: false,
 			properties: properties
 		);

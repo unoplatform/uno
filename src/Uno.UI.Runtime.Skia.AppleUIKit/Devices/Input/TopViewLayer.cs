@@ -72,16 +72,7 @@ internal partial class TopViewLayer : UIView
 
 	private void HandleScrollGesture(UIPanGestureRecognizer gesture)
 	{
-		var translation = gesture.TranslationInView(this);
-		var location = gesture.LocationInView(this);
-		var gestureState = gesture.State;
-
-		AppleUIKitCorePointerInputSource.Instance.HandleScrollFromGesture(this, translation, location, gestureState, _isNaturalScrollingEnabled);
-
-		if (gestureState == UIGestureRecognizerState.Changed)
-		{
-			gesture.SetTranslation(CGPoint.Empty, this);
-		}
+		AppleUIKitCorePointerInputSource.Instance.HandleScrollFromGesture(this, gesture, _isNaturalScrollingEnabled);
 	}
 
 	private void RemoveObserver()
