@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Net.Http;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Extensions;
@@ -175,7 +174,6 @@ public partial class CoreWebView2
 
 	internal void OnOwnerApplyTemplate()
 	{
-		_owner.LogTrace()?.Trace($"{nameof(CoreWebView2)}.{nameof(OnOwnerApplyTemplate)} currentNative={( _nativeWebView is null ? "null" : RuntimeHelpers.GetHashCode(_nativeWebView).ToString(CultureInfo.InvariantCulture))}");
 		SetNativeWebView(GetNativeWebViewFromTemplate());
 		ApplyNativeWebViewState();
 	}
@@ -311,8 +309,6 @@ public partial class CoreWebView2
 
 	private void SetNativeWebView(INativeWebView? nativeWebView)
 	{
-		_owner.LogTrace()?.Trace($"{nameof(CoreWebView2)}.{nameof(SetNativeWebView)} old={( _nativeWebView is null ? "null" : RuntimeHelpers.GetHashCode(_nativeWebView).ToString(CultureInfo.InvariantCulture))} new={( nativeWebView is null ? "null" : RuntimeHelpers.GetHashCode(nativeWebView).ToString(CultureInfo.InvariantCulture))}");
-
 		if (ReferenceEquals(_nativeWebView, nativeWebView))
 		{
 			return;
@@ -337,7 +333,6 @@ public partial class CoreWebView2
 
 	private void ReleaseNativeWebView()
 	{
-		_owner.LogTrace()?.Trace($"{nameof(CoreWebView2)}.{nameof(ReleaseNativeWebView)} target={( _nativeWebView is null ? "null" : RuntimeHelpers.GetHashCode(_nativeWebView).ToString(CultureInfo.InvariantCulture))}");
 #if __SKIA__
 		if (_nativeWebView is not null)
 		{

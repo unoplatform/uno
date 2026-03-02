@@ -1,6 +1,0 @@
-// This file is used by Microsoft.Windows.CSWin32 to generate WinAPI bindings.
-
-EnumChildWindows
-EnumWindows
-FindWindowEx
-GetClassName

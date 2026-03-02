@@ -127,7 +127,7 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 		{
 			throw new InvalidOperationException($"{nameof(PInvoke.CreateWindowEx)} failed: {Win32Helper.GetErrorMessage()}");
 		}
-		this.LogTrace()?.Trace($"Created child hwnd={_hwnd.Value} instance={RuntimeHelpers.GetHashCode(this)} appParent={ParentHwnd.Value}");
+		this.LogTrace()?.Trace($"Created child hwnd={_hwnd.Value} appParent={ParentHwnd.Value}");
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
@@ -218,7 +218,7 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 			return;
 		}
 
-		this.LogTrace()?.Trace($"Disposing child hwnd={_hwnd.Value} instance={RuntimeHelpers.GetHashCode(this)} disposing={disposing} parent={ParentHwnd.Value}");
+		this.LogTrace()?.Trace($"Disposing child hwnd={_hwnd.Value} disposing={disposing} parent={ParentHwnd.Value}");
 
 		void Cleanup()
 		{
@@ -248,7 +248,7 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 			}
 			else
 			{
-				this.LogTrace()?.Trace($"Destroyed child hwnd={_hwnd.Value} instance={RuntimeHelpers.GetHashCode(this)} parent={ParentHwnd.Value}");
+				this.LogTrace()?.Trace($"Destroyed child hwnd={_hwnd.Value} parent={ParentHwnd.Value}");
 			}
 
 			lock (_hwndToWebView)
