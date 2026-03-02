@@ -209,6 +209,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+#if HAS_UNO
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task BackButtonIntegration()
@@ -257,6 +258,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			handled = await TestServices.Utilities.InjectBackButtonPress();
 			TestServices.VERIFY_IS_FALSE(handled);
 		}
+#endif
 
 		private async Task<(Flyout flyout, Button button)> SetupBasicFlyoutTest()
 		{

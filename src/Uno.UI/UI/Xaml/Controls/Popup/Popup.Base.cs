@@ -228,6 +228,17 @@ public partial class Popup : FrameworkElement, IPopup, IBackButtonListener
 
 	partial void OnIsLightDismissEnabledChangedPartial(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled)
 	{
+		BackButtonIntegration.UnregisterListener(this);
+
+		if (!IsOpen || !DXamlCore.Current.BackButtonSupported)
+		{
+			return;
+		}
+
+		if (ShouldDismiss(DismissalTriggerFlags.BackPress))
+		{
+			BackButtonIntegration.RegisterListener(this);
+		}
 	}
 
 	event EventHandler<object> IPopup.Closed

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Uno.UI.DataBinding;
@@ -9,10 +11,15 @@ namespace DirectUI;
 internal static class BackButtonIntegration
 {
 	private readonly static List<ManagedWeakReference> _listeners = new();
+	private static bool _initialized;
 
 	internal static void Initialize()
 	{
-		// Register the back button press event handler
+		if (_initialized)
+		{
+			return;
+		}
+		_initialized = true;
 		SystemNavigationManager.GetForCurrentView().InternalBackRequested += OnBackButtonPressed;
 	}
 
@@ -23,7 +30,7 @@ internal static class BackButtonIntegration
 		return args.Handled;
 	}
 
-	internal static void OnBackButtonPressed(object sender, BackRequestedEventArgs args)
+	internal static void OnBackButtonPressed(object? sender, BackRequestedEventArgs args)
 	{
 		if (args.Handled)
 		{
@@ -32,8 +39,8 @@ internal static class BackButtonIntegration
 
 		bool removedDeadRefs = false;
 
-		// Notify all registered listeners of the back button press event
-		foreach (var weakListener in _listeners.ToArray())
+		// Notify all registered listeners of the back button press event (LIFO order)
+		foreach (var weakListener in _listeners.ToArray().Reverse())
 		{
 			if (weakListener.IsAlive)
 			{
@@ -63,12 +70,19 @@ internal static class BackButtonIntegration
 	/// Registers a listener for back button presses.
 	/// </summary>
 	/// <param name="listener">The listener to register.</param>
-	/// <returns>True if the listener was successfully registered, false otherwise.</returns>
 	public static void RegisterListener(IBackButtonListener listener)
 	{
 		if (listener == null)
 		{
 			throw new ArgumentNullException(nameof(listener));
+		}
+
+		// Prune dead references so isFirst reflects only live listeners
+		var deadRefs = _listeners.Where(wr => !wr.IsAlive).ToList();
+		foreach (var dead in deadRefs)
+		{
+			_listeners.Remove(dead);
+			WeakReferencePool.ReturnWeakReference(_listeners, dead);
 		}
 
 		if (_listeners.Any(wr => wr.IsAlive && wr.Target == listener))

@@ -13,7 +13,7 @@ namespace Windows.UI.Core
 
 		public static SystemNavigationManager GetForCurrentView() => Instance;
 
-		internal event EventHandler<BackRequestedEventArgs> InternalBackRequested = delegate { };
+		internal event EventHandler<BackRequestedEventArgs> InternalBackRequested;
 
 		private readonly object _backRequestedLock = new object();
 		private EventHandler<BackRequestedEventArgs> _backRequested;

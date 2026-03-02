@@ -116,6 +116,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			popup.IsOpen = false;
 		}
 
+#if HAS_UNO
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task VerifyBackButtonClosesLightDismissPopup()
@@ -182,6 +183,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 				VERIFY_IS_TRUE(popup1.IsOpen);
 			});
 		}
+#endif
 
 #if HAS_UNO
 		[TestMethod]
