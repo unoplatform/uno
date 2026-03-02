@@ -120,9 +120,9 @@ internal partial class SystemFocusVisual : Control
 
 		var transform = GetTransform(FocusedElement, XamlRoot.VisualTree.RootElement);
 
+		_spareRenderPath.Rewind();
 		FocusedElement.Visual.GetTotalClipPath(_spareRenderPath, true);
-		var totalClipRect = _spareRenderPath.Bounds.ToRect();
-		totalClipRect.Intersect(xamlRootBounds);
+		var totalClipRect = _spareRenderPath.Bounds.ToRect().IntersectWith(xamlRootBounds) ?? new Rect(0, 0, 0, 0);
 		var inverseMatrix = transform.Inverse();
 		var topLeft = inverseMatrix.Transform(new Point(totalClipRect.Left, totalClipRect.Top));
 		var topRight = inverseMatrix.Transform(new Point(totalClipRect.Right, totalClipRect.Top));
@@ -136,22 +136,17 @@ internal partial class SystemFocusVisual : Control
 
 		var clipRect = new Rect(minX, minY, maxX - minX, maxY - minY);
 		var layoutRect = new Rect(0, 0, FocusedElement.ActualSize.X, FocusedElement.ActualSize.Y);
-		var left = Math.Max(clipRect.Left, layoutRect.Left);
-		var top = Math.Max(clipRect.Top, layoutRect.Top);
-		var right = Math.Min(clipRect.Right, layoutRect.Right);
-		var bottom = Math.Min(clipRect.Bottom, layoutRect.Bottom);
+		var finalRect = clipRect.IntersectWith(layoutRect) ?? new Rect(0, 0, 0, 0);
 
-		var translatedMatrix = new Matrix(Matrix3x2.CreateTranslation((float)left, (float)top) * transform);
+		var translatedMatrix = new Matrix(Matrix3x2.CreateTranslation((float)finalRect.Left, (float)finalRect.Top) * transform);
 		if ((RenderTransform as MatrixTransform)?.Matrix != translatedMatrix)
 		{
 			RenderTransform = new MatrixTransform { Matrix = translatedMatrix };
 		}
 
-		var newWidth = Math.Max(0, right - left);
-		var newHeight = Math.Max(0, bottom - top);
-		Width = newWidth;
-		Height = newHeight;
-		Visibility = newWidth <= 0 || newHeight <= 0 ? Visibility.Collapsed : Visibility.Visible;
+		Width = finalRect.Width;
+		Height = finalRect.Height;
+		Visibility = finalRect.Width <= 0 || finalRect.Height <= 0 ? Visibility.Collapsed : Visibility.Visible;
 	}
 #else
 	private void OnLoaded(object sender, RoutedEventArgs e)
