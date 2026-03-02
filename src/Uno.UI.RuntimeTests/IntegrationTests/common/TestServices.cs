@@ -26,14 +26,16 @@ namespace Private.Infrastructure
 			{
 			}
 
-#if !WINAPPSDK
 			internal static async Task<bool> InjectBackButtonPress()
 			{
+#if !WINAPPSDK
 				var handled = false;
 				await RunOnUIThread(() => handled = BackButtonIntegration.InjectBackButtonPress());
 				return handled;
-			}
+#else
+				throw new NotSupportedException("Back button injection is only supported in Uno Platform targets");
 #endif
+			}
 
 			public static void SetTimeZone(string tzid)
 			{
