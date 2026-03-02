@@ -16,8 +16,8 @@ partial class Given_UIElement
 	public async Task When_SharedContextFlyout_DoesNotLeak_ViewModel()
 	{
 		// Simulate the shared TextCommandBarFlyout pattern: a single flyout instance
-		// assigned as ContextFlyout on multiple controls. When a control is removed
-		// from the tree, its DataContext (ViewModel) should be collectable.
+		// used as ContextFlyout. When the control is removed from the tree, its
+		// DataContext (ViewModel) should be collectable even though the flyout is still alive.
 
 		var sharedFlyout = new MenuFlyout();
 		sharedFlyout.Items.Add(new MenuFlyoutItem { Text = "Cut" });

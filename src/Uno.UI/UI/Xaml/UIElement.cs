@@ -797,14 +797,6 @@ namespace Microsoft.UI.Xaml
 				// This ensures the GestureRecognizer is created and configured to detect these gestures,
 				// which then raise ContextRequested via ContextMenuProcessor.
 				EnableContextMenuGestures();
-
-				// Propagate XamlRoot to the flyout since ContextFlyout is no longer a LogicalChild
-				// (to avoid memory leaks with shared flyouts). XamlRoot is needed for correct
-				// popup positioning and rendering even before the flyout is shown.
-				if (XamlRoot is { } xamlRoot)
-				{
-					newValue.XamlRoot = xamlRoot;
-				}
 			}
 		}
 
