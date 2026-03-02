@@ -111,6 +111,7 @@ partial class Given_UIElement
 		Assert.IsTrue(collected, "ViewModel should be collected after the control using the shared SelectionFlyout is removed from the tree.");
 	}
 
+#if HAS_UNO // flyout.GetPresenter() is Uno-specific helper to access the presenter while the flyout is open.
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
@@ -148,4 +149,5 @@ partial class Given_UIElement
 
 		root.Children.Clear();
 	}
+#endif
 }
