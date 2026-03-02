@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using Windows.Foundation;
@@ -163,6 +163,13 @@ namespace Microsoft.UI.Composition
 							dashValues, StrokeDashOffset * StrokeThickness);
 					}
 
+					// Add Triangle cap geometry at internal dash boundaries.
+					if (dashValues is not null && StrokeDashCap == CompositionStrokeCap.Triangle)
+					{
+						AddInternalTriangleDashCaps(strokeFillPath, geometryWithTransformations.Geometry,
+							StrokeThickness, dashValues, StrokeDashOffset * StrokeThickness);
+					}
+
 					// WinUI's Miter join uses miter-clip (truncates the miter protrusion at
 					// the limit), while Skia's Miter uses miter-or-bevel (full bevel fallback).
 					// Add clipped miter trapezoids for vertices where Skia produced a bevel.
@@ -281,6 +288,13 @@ namespace Microsoft.UI.Composition
 						FixDashEndpointCaps(hitTestStrokeFillPath, geometryWithTransformations.Geometry,
 							StrokeThickness, StrokeDashCap, StrokeStartCap, StrokeEndCap,
 							dashValues, StrokeDashOffset * StrokeThickness);
+					}
+
+					// Add Triangle cap geometry at internal dash boundaries (mirror of Paint logic).
+					if (dashValues is not null && StrokeDashCap == CompositionStrokeCap.Triangle)
+					{
+						AddInternalTriangleDashCaps(hitTestStrokeFillPath, geometryWithTransformations.Geometry,
+							StrokeThickness, dashValues, StrokeDashOffset * StrokeThickness);
 					}
 
 					// WinUI's Miter join uses miter-clip (see Paint() comment).
@@ -474,6 +488,104 @@ namespace Microsoft.UI.Composition
 						}
 					}
 					// else: InGap — endpoint in middle of a gap, nothing to render
+				}
+			} while (measure.NextContour());
+		}
+
+		/// <summary>
+		/// Adds Triangle cap geometry at every internal dash boundary. Skia maps Triangle
+		/// to Butt (flat), so internal dash starts/ends need filled polygon caps added manually.
+		/// Path start/end boundaries are excluded for open contours (handled by FixDashEndpointCaps).
+		/// </summary>
+		private static void AddInternalTriangleDashCaps(
+			SKPath fillPath,
+			SKPath originalGeometry,
+			float strokeWidth,
+			float[] dashValues,
+			float dashOffset)
+		{
+			var totalPattern = 0f;
+			for (int i = 0; i < dashValues.Length; i++)
+			{
+				totalPattern += dashValues[i];
+			}
+
+			if (totalPattern <= 0)
+			{
+				return;
+			}
+
+			using var measure = new SKPathMeasure(originalGeometry, false);
+			do
+			{
+				var pathLength = measure.Length;
+				if (pathLength <= 0)
+				{
+					continue;
+				}
+
+				var isClosed = measure.IsClosed;
+
+				var patternStart = -(dashOffset % totalPattern);
+				if (patternStart > 0)
+				{
+					patternStart -= totalPattern;
+				}
+
+				var pos = patternStart;
+				var idx = 0;
+
+				while (pos < pathLength)
+				{
+					var segLen = dashValues[idx % dashValues.Length];
+
+					if (segLen <= 0)
+					{
+						idx++;
+						continue;
+					}
+
+					var segEnd = pos + segLen;
+					var isDash = (idx % 2) == 0;
+
+					if (isDash)
+					{
+						var dashStart = Math.Max(pos, 0f);
+						var dashEnd = Math.Min(segEnd, pathLength);
+
+						if (dashStart < dashEnd)
+						{
+							// Dash start boundary: triangle faces backward (-tangent).
+							// Skip for open path start (StrokeStartLineCap covers it).
+							var isPathStart = !isClosed && dashStart <= 0f;
+							if (!isPathStart
+								&& measure.GetPositionAndTangent(dashStart, out var startPos, out var startTan))
+							{
+								var backDir = new SKPoint(-startTan.X, -startTan.Y);
+								using var capPath = BuildCapPath(startPos, backDir, strokeWidth, CompositionStrokeCap.Triangle);
+								if (capPath != null)
+								{
+									fillPath.AddPath(capPath);
+								}
+							}
+
+							// Dash end boundary: triangle faces forward (+tangent).
+							// Skip for open path end (StrokeEndLineCap covers it).
+							var isPathEnd = !isClosed && dashEnd >= pathLength;
+							if (!isPathEnd
+								&& measure.GetPositionAndTangent(dashEnd, out var endPos, out var endTan))
+							{
+								using var capPath = BuildCapPath(endPos, endTan, strokeWidth, CompositionStrokeCap.Triangle);
+								if (capPath != null)
+								{
+									fillPath.AddPath(capPath);
+								}
+							}
+						}
+					}
+
+					pos = segEnd;
+					idx++;
 				}
 			} while (measure.NextContour());
 		}
