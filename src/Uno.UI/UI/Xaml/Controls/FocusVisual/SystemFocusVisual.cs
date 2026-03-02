@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using System.Numerics;
+using Microsoft.UI.Composition;
 using Uno.Extensions;
 
 namespace Uno.UI.Xaml.Controls;
@@ -110,10 +111,17 @@ internal partial class SystemFocusVisual : Control
 			return;
 		}
 
+		var xamlRootBounds = XamlRoot.Bounds;
+		if (FocusedElement is FrameworkElement fe)
+		{
+			xamlRootBounds = xamlRootBounds.InflateBy(fe.FocusVisualMargin);
+		}
+
 		var transform = GetTransform(FocusedElement, XamlRoot.VisualTree.RootElement);
 
 		FocusedElement.Visual.GetTotalClipPath(_spareRenderPath, true);
-		var totalClipRect = _spareRenderPath.Bounds;
+		var totalClipRect = _spareRenderPath.Bounds.ToRect();
+		totalClipRect.Intersect(xamlRootBounds);
 		var inverseMatrix = transform.Inverse();
 		var topLeft = inverseMatrix.Transform(new Point(totalClipRect.Left, totalClipRect.Top));
 		var topRight = inverseMatrix.Transform(new Point(totalClipRect.Right, totalClipRect.Top));
