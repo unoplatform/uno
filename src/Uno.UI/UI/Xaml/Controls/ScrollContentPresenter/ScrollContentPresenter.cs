@@ -272,15 +272,45 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else if (canScrollHorizontally && (properties.IsHorizontalMouseWheel || e.KeyModifiers == VirtualKeyModifiers.Shift))
 				{
-					success = Set(
+#if __WASM__
+   					success = Set(
 						horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, delta),
 						disableAnimation: false);
+#else
+   					if (OperatingSystem.IsIOS() || OperatingSystem.IsMacCatalyst())
+   					{
+						success = Set(
+							horizontalOffset: HorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, delta),
+							options: new(DisableAnimation: true, IsIntermediate: false));
+   					}
+   					else
+   					{
+   						success = Set(
+							horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, delta),
+							disableAnimation: false);
+   					}
+#endif
 				}
 				else if (canScrollVertically && !properties.IsHorizontalMouseWheel)
 				{
-					success = Set(
-						verticalOffset: TargetVerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
-						disableAnimation: false);
+#if __WASM__
+   					success = Set(
+   						verticalOffset: TargetVerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
+   						disableAnimation: false);
+#else
+   					if (OperatingSystem.IsIOS() || OperatingSystem.IsMacCatalyst())
+   					{
+   						success = Set(
+   							verticalOffset: VerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
+   							options: new(DisableAnimation: true, IsIntermediate: false));
+   					}
+   					else
+   					{
+   						success = Set(
+   							verticalOffset: TargetVerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
+   							disableAnimation: false);
+   					}
+#endif
 				}
 
 				// This is not similar to what WinUI is doing, since we already differ quite a bit from
