@@ -90,7 +90,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 	});
 
-	private static readonly Dictionary<int, SKTypeface?> _SKFontManagerDefaultMatchCharacterCache = new();
+	private static readonly Dictionary<int, SKTypeface?> _skFontManagerDefaultMatchCharacterCache = new();
 	private static readonly Brush _blackBrush = new SolidColorBrush(Colors.Black);
 	private static readonly SKPaint _spareDrawPaint = new() { IsStroke = false, IsAntialias = true };
 	private static readonly SKPaint _spareSpellCheckPaint = new() { Color = SKColors.Red, Style = SKPaintStyle.Stroke, IsAntialias = true };
@@ -1386,9 +1386,9 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
-		if (!_SKFontManagerDefaultMatchCharacterCache.TryGetValue(codepoint, out var defaultSkiaFontTypeface))
+		if (!_skFontManagerDefaultMatchCharacterCache.TryGetValue(codepoint, out var defaultSkiaFontTypeface))
 		{
-			defaultSkiaFontTypeface = _SKFontManagerDefaultMatchCharacterCache[codepoint] = SKFontManager.Default.MatchCharacter(codepoint);
+			defaultSkiaFontTypeface = _skFontManagerDefaultMatchCharacterCache[codepoint] = SKFontManager.Default.MatchCharacter(codepoint);
 		}
 		if (defaultSkiaFontTypeface is { } typeface)
 		{
