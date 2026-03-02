@@ -886,7 +886,8 @@ internal readonly partial struct UnicodeText : IParsedText
 				}
 			}
 
-			var backgroundRect = new SKRect(unalignedX + alignmentOffset, y, unalignedX + alignmentOffset + cluster.Value.width, y + line.lineHeight);
+			// The rounding is to avoid 1-pixel gaps between adjacent clusters that have a background, even with antialiasing.
+			var backgroundRect = new SKRect((float)Math.Round(unalignedX + alignmentOffset), y, (float)Math.Round(unalignedX + alignmentOffset + cluster.Value.width), y + line.lineHeight);
 			highlighter.Value.background?.Paint(session.Canvas, session.Opacity, backgroundRect);
 
 			if (_corrections?[wordBoundariesIndex] is { } correction)
