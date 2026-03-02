@@ -344,7 +344,17 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private void OnAllowFocusOnInteractionChanged(bool oldValue, bool newValue) =>
 			SynchronizePropertyToPopup(Popup.AllowFocusOnInteractionProperty, AllowFocusOnInteraction);
 
-		public FrameworkElement Target { get; private set; }
+		// In WinUI, Target is declared as a back-reference (weak reference) in
+		// IsDependencyPropertyBackReference(). Using WeakReference here prevents
+		// shared flyouts from leaking the previous placement target's ViewModel
+		// via FlyoutBase → Target → DataContext.
+		private WeakReference<FrameworkElement> _targetWeakRef;
+
+		public FrameworkElement Target
+		{
+			get => _targetWeakRef is not null && _targetWeakRef.TryGetTarget(out var t) ? t : null;
+			private set => _targetWeakRef = value is not null ? new WeakReference<FrameworkElement>(value) : null;
+		}
 
 		/// <summary>
 		/// Defines an optional position of the popup in the <see cref="Target"/> element.
@@ -449,6 +459,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 
 			Target = placementTarget;
+			ForwardTargetPropertiesToPresenter();
 
 			// Capture the input device that triggered this flyout (mirrors WinUI ValidateAndSetParameters)
 			var contentRoot = VisualTree.GetContentRootForElement(placementTarget);
@@ -621,6 +632,34 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			m_isTargetPositionSet = false;
 			InputDevicePrefersPrimaryCommands = false;
+
+			// Clear PlacementTarget to break the strong reference chain
+			// FlyoutBase → Popup → PlacementTarget → control → DataContext → ViewModel.
+			// Target itself is a WeakReference (matching WinUI's back-reference), so it
+			// doesn't need explicit clearing — GC can collect the target once removed from tree.
+			// We intentionally do NOT clear Target here because commands (e.g., in
+			// TextCommandBarFlyout) may still access Target after the flyout closes.
+			if (_popup is { } popup)
+			{
+				popup.PlacementTarget = null;
+
+				if (popup.Child is FrameworkElement presenter)
+				{
+					presenter.ClearValue(FrameworkElement.DataContextProperty);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Forwards DataContext from the placement target to the presenter.
+		/// Ported from WinUI: FlyoutBase_partial.cpp ForwardTargetPropertiesToPresenter.
+		/// </summary>
+		private void ForwardTargetPropertiesToPresenter()
+		{
+			if (_popup?.Child is FrameworkElement presenter && Target is { } target)
+			{
+				presenter.DataContext = target.DataContext;
+			}
 		}
 
 		private protected virtual void OnOpened() { }
