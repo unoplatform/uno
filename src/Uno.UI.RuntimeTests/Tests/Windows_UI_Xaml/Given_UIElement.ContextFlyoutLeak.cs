@@ -50,8 +50,11 @@ partial class Given_UIElement
 		await TestServices.WindowHelper.WaitForIdle();
 
 		// Reassign the flyout to a different control to simulate the shared pattern
-		var textBox2 = new TextBox { Text = "World" };
-		textBox2.ContextFlyout = sharedFlyout;
+		_ = new TextBox
+		{
+			Text = "World",
+			ContextFlyout = sharedFlyout,
+		};
 
 		textBox = null;
 		viewModel = null;
@@ -100,8 +103,7 @@ partial class Given_UIElement
 		await TestServices.WindowHelper.WaitForIdle();
 
 		// Reassign the flyout to a different control to simulate the shared pattern
-		var textBox2 = new TextBox { Text = "World" };
-		textBox2.SelectionFlyout = sharedFlyout;
+		_ = new TextBox { Text = "World", SelectionFlyout = sharedFlyout };
 
 		textBox = null;
 		viewModel = null;
