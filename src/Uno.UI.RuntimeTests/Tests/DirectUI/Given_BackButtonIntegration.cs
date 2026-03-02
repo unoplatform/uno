@@ -1,4 +1,5 @@
-﻿using DirectUI;
+﻿#if HAS_UNO
+using DirectUI;
 using Windows.UI.Core;
 
 namespace Uno.UI.RuntimeTests.Tests.DirectUI;
@@ -6,7 +7,6 @@ namespace Uno.UI.RuntimeTests.Tests.DirectUI;
 [TestClass]
 public class Given_BackButtonIntegration
 {
-#if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
 	public void When_Back_Listener_Registered()
@@ -191,5 +191,5 @@ public class Given_BackButtonIntegration
 			return Handle;
 		}
 	}
-#endif
 }
+#endif
