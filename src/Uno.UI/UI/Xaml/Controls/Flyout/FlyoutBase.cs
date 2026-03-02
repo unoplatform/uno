@@ -349,9 +349,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// IsDependencyPropertyBackReference(). Using ManagedWeakReference (via WeakReferencePool)
 		// prevents shared flyouts from leaking the previous placement target's ViewModel
 		// via FlyoutBase → Target → DataContext, and avoids per-show allocations.
-		private ManagedWeakReference? _targetWeakRef;
+		private ManagedWeakReference _targetWeakRef;
 
-		public FrameworkElement? Target
+		public FrameworkElement Target
 		{
 			get => _targetWeakRef?.IsAlive == true ? _targetWeakRef.Target as FrameworkElement : null;
 			private set
