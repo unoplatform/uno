@@ -552,6 +552,15 @@ namespace Uno.UI
 			/// This option must be set on application startup before the cache is initialized.
 			/// </summary>
 			public static int JavaStringCachedCapacity { get; set; } = 1000;
+
+			/// <summary>
+			/// On Skia targets, determines if the TextBlock should render whitespace characters.
+			/// There's usually no effect between toggling this flag on and off, but it can have
+			/// an effect when the font used to draw the TextBlock doesn't have a glyph for the
+			/// whitespace characters, in which case disabling this flag will prevent the TextBlock
+			/// from rendering the font's "replacement character" symbol (e.g. �) instead of just a white space.
+			/// </summary>
+			public static bool RenderWhiteSpace { get; set; } = true;
 		}
 
 		public static class TextBox

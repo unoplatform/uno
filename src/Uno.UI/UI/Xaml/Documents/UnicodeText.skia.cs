@@ -858,7 +858,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			var positionAcc = new SKPoint(unalignedX + alignmentOffset, y + line.baselineOffset);
 			var fontDetails = cluster.Value.fontDetails;
 
-			if (!cluster.Value.containsTab)
+			if (!cluster.Value.containsTab && (!cluster.Value.containsOnlyWhitespace || FeatureConfiguration.TextBlock.RenderWhiteSpace))
 			{
 				var color = BrushToColor(highlighter.Value.foreground is { } h ? h : _runBreaks[runBreakIndex].foreground, session.Opacity);
 				if (!_colorToFontToGlyphs.TryGetValue(color, out var fontToGlyphs))
