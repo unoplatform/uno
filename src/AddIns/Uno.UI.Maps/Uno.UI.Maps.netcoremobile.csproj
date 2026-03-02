@@ -6,7 +6,7 @@
 	<Import Project="../../targetframework-override-netprevious.props" />
 
 	<PropertyGroup>
-		<Description>This package provides the ability for Uno Platform based apps to use the MapControl</Description>
+		<Description>This package is deprecated. Use MapsUI (https://github.com/Mapsui/Mapsui) instead for cross-platform map support in Uno Platform apps. This package previously provided the ability for Uno Platform based apps to use the MapControl on iOS and Android.</Description>
 	</PropertyGroup>
 	
 	<PropertyGroup>
