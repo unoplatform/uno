@@ -285,6 +285,22 @@
 		"MicrosoftIdentityClientVersion": {
 			"description": "Provides an explicit override for the version of Microsoft.Identity.Client to use.",
 			"type": "nuget-version"
+		},
+		"UnoSplashScreenFile": {
+			"description": "The path to the splash screen image file.",
+			"type": "file"
+		},
+		"UnoSplashScreenBaseSize": {
+			"description": "The base size of the splash screen image. e.g.: '300,300'.",
+			"type": "string"
+		},
+		"UnoSplashScreenColor": {
+			"description": "The background color of the splash screen.",
+			"type": "color"
+		},
+		"UnoSplashScreenScale": {
+			"description": "Used to scale the image that will be used as the SplashScreen.",
+			"type": "float"
 		}
 	},
 	"metadata": [
