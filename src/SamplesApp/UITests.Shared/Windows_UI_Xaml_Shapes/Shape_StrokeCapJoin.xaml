@@ -81,6 +81,12 @@
 					  Stroke="Green" StrokeThickness="8"
 					  StrokeDashArray="3 2"
 					  StrokeDashCap="Square" />
+
+				<TextBlock Text="Triangle dash cap" />
+				<Line X1="20" Y1="20" X2="280" Y2="20"
+					  Stroke="Red" StrokeThickness="8"
+					  StrokeDashArray="3 2"
+					  StrokeDashCap="Triangle" />
 			</StackPanel>
 
 			<!-- Dash Offset -->
