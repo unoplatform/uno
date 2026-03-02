@@ -29,6 +29,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await TestServices.WindowHelper.WaitForIdle();
 
 			var (viewRef, vmRef) = CreateXBindView(root);
+			await TestServices.WindowHelper.WaitForLoaded((FrameworkElement)root.Content);
 
 			root.Content = null;
 
@@ -43,6 +44,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await TestServices.WindowHelper.WaitForIdle();
 
 			var (viewRef, vmRef) = CreateXBindViewWithNullDC(root);
+			await TestServices.WindowHelper.WaitForLoaded((FrameworkElement)root.Content);
 
 			root.Content = null;
 
@@ -57,6 +59,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await TestServices.WindowHelper.WaitForIdle();
 
 			var (viewRef, vmRef) = CreateBindingView(root);
+			await TestServices.WindowHelper.WaitForLoaded((FrameworkElement)root.Content);
 
 			root.Content = null;
 
@@ -71,6 +74,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await TestServices.WindowHelper.WaitForIdle();
 
 			var (viewRef, vmRef) = CreateBindingViewWithNullDC(root);
+			await TestServices.WindowHelper.WaitForLoaded((FrameworkElement)root.Content);
 
 			root.Content = null;
 
@@ -85,6 +89,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await TestServices.WindowHelper.WaitForIdle();
 
 			var (viewRef, vmRef) = CreateBrushResourceView(root);
+			await TestServices.WindowHelper.WaitForLoaded((FrameworkElement)root.Content);
 
 			root.Content = null;
 
@@ -99,6 +104,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await TestServices.WindowHelper.WaitForIdle();
 
 			var (viewRef, vmRef) = CreateProgrammaticSharedBrushView(root);
+			await TestServices.WindowHelper.WaitForLoaded((FrameworkElement)root.Content);
 
 			root.Content = null;
 
@@ -109,7 +115,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		private static (WeakReference viewRef, WeakReference vmRef) CreateXBindView(ContentControl root)
 		{
 			var vm = new BindingLeak_ViewModel { Text = "xBind test" };
-			var view = new BindingLeak_xBind_View { ViewModel = vm };
+			var view = new BindingLeak_xBind_View() { Width = 100, Height = 100 };
 			view.DataContext = vm;
 			root.Content = view;
 
@@ -123,7 +129,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		private static (WeakReference viewRef, WeakReference vmRef) CreateXBindViewWithNullDC(ContentControl root)
 		{
 			var vm = new BindingLeak_ViewModel { Text = "xBind null DC test" };
-			var view = new BindingLeak_xBind_View { ViewModel = vm };
+			var view = new BindingLeak_xBind_View() { Width = 100, Height = 100 };
 			view.DataContext = vm;
 			root.Content = view;
 
@@ -140,7 +146,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		private static (WeakReference viewRef, WeakReference vmRef) CreateBindingView(ContentControl root)
 		{
 			var vm = new BindingLeak_ViewModel { Text = "Binding test" };
-			var view = new BindingLeak_Binding_View();
+			var view = new BindingLeak_Binding_View { Width = 100, Height = 100 };
 			view.DataContext = vm;
 			root.Content = view;
 
@@ -154,7 +160,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		private static (WeakReference viewRef, WeakReference vmRef) CreateBindingViewWithNullDC(ContentControl root)
 		{
 			var vm = new BindingLeak_ViewModel { Text = "Binding null DC test" };
-			var view = new BindingLeak_Binding_View();
+			var view = new BindingLeak_Binding_View { Width = 100, Height = 100 };
 			view.DataContext = vm;
 			root.Content = view;
 
@@ -171,7 +177,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		private static (WeakReference viewRef, WeakReference vmRef) CreateBrushResourceView(ContentControl root)
 		{
 			var vm = new BindingLeak_ViewModel { Text = "Brush resource test" };
-			var view = new BindingLeak_BrushResource_View();
+			var view = new BindingLeak_BrushResource_View { Width = 100, Height = 100 };
 			view.DataContext = vm;
 			root.Content = view;
 
@@ -193,7 +199,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var border1 = new Border { Background = sharedBrush, Width = 50, Height = 50 };
 			var border2 = new Border { Background = sharedBrush, Width = 50, Height = 50 };
 
-			var panel = new StackPanel();
+			var panel = new StackPanel { Width = 100, Height = 100 };
 			panel.Children.Add(border1);
 			panel.Children.Add(border2);
 			panel.DataContext = vm;
