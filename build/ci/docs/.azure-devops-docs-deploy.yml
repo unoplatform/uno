@@ -22,15 +22,17 @@ jobs:
 
         - task: DownloadPipelineArtifact@2
           displayName: Download Docs Artifacts
+          retryCountOnTaskFailure: 3
           inputs:
             artifactName: DocumentationArtifacts
             targetPath: $(Pipeline.Workspace)/DocumentationArtifacts
 
         - task: AzureCLI@2
           displayName: Upload site files
+          retryCountOnTaskFailure: 3
           inputs:
             azureSubscription: ${{ parameters.azureSubscription }}
             scriptType: pscore
             scriptLocation: inlineScript
             inlineScript: |
-              az storage blob upload-batch --account-name ${{ parameters.storageAccountName }} -s "$(Pipeline.Workspace)/DocumentationArtifacts/doc/_site" -d '$web' --overwrite
+              az storage blob upload-batch --account-name ${{ parameters.storageAccountName }} -s "$(Pipeline.Workspace)/DocumentationArtifacts/doc/_site" -d '$web' --overwrite --auth-mode login
