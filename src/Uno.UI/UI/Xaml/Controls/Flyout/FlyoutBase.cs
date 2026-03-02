@@ -22,6 +22,7 @@ using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using System.Runtime.CompilerServices;
 
 using Microsoft.UI.Dispatching;
+using Uno.UI.DataBinding;
 
 #if __APPLE_UIKIT__
 using View = UIKit.UIView;
@@ -345,15 +346,19 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			SynchronizePropertyToPopup(Popup.AllowFocusOnInteractionProperty, AllowFocusOnInteraction);
 
 		// In WinUI, Target is declared as a back-reference (weak reference) in
-		// IsDependencyPropertyBackReference(). Using WeakReference here prevents
-		// shared flyouts from leaking the previous placement target's ViewModel
-		// via FlyoutBase → Target → DataContext.
-		private WeakReference<FrameworkElement> _targetWeakRef;
+		// IsDependencyPropertyBackReference(). Using ManagedWeakReference (via WeakReferencePool)
+		// prevents shared flyouts from leaking the previous placement target's ViewModel
+		// via FlyoutBase → Target → DataContext, and avoids per-show allocations.
+		private ManagedWeakReference? _targetWeakRef;
 
-		public FrameworkElement Target
+		public FrameworkElement? Target
 		{
-			get => _targetWeakRef is not null && _targetWeakRef.TryGetTarget(out var t) ? t : null;
-			private set => _targetWeakRef = value is not null ? new WeakReference<FrameworkElement>(value) : null;
+			get => _targetWeakRef?.IsAlive == true ? _targetWeakRef.Target as FrameworkElement : null;
+			private set
+			{
+				WeakReferencePool.ReturnWeakReference(this, _targetWeakRef);
+				_targetWeakRef = value is not null ? WeakReferencePool.RentWeakReference(this, value) : null;
+			}
 		}
 
 		/// <summary>
