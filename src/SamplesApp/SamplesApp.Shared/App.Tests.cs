@@ -268,7 +268,19 @@ partial class App
 
 			args = args.Substring(samplePrefix.Length);
 
+			// Allow launching directly by metadata name:
+			// sample=Namespace.SamplePage
+			if (!args.Contains('/'))
+			{
+				_ = SampleControl.Presentation.SampleChooserViewModel.Instance.SetSelectedSample(CancellationToken.None, args);
+				return true;
+			}
+
 			var pathParts = args.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+			if (pathParts.Length < 2)
+			{
+				return false;
+			}
 			var category = pathParts[0];
 			var sampleName = pathParts[1];
 

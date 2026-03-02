@@ -195,6 +195,7 @@ GetObject
 GetMessage
 GetMessageTime
 GetMonitorInfo
+GetParent
 GetPointerInfo
 GetPointerPenInfo
 GetPointerTouchInfo

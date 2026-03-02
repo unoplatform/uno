@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Extensions;
@@ -30,6 +31,9 @@ public partial class CoreWebView2
 	private readonly List<WebResourceRequestedFilter> _webResourceRequestedFilters = new();
 	internal long _navigationId;
 	private object? _processedSource;
+#if __SKIA__
+	private CancellationTokenSource? _pendingReleaseNativeWebView;
+#endif
 
 	internal CoreWebView2(IWebView owner)
 	{
@@ -42,9 +46,19 @@ public partial class CoreWebView2
 	internal IReadOnlyDictionary<string, string> HostToFolderMap { get; }
 
 #if __SKIA__
-	internal void OnLoaded() => (_nativeWebView as ICleanableNativeWebView)?.OnLoaded();
+	internal void OnLoaded()
+	{
+		_pendingReleaseNativeWebView?.Cancel();
+		_pendingReleaseNativeWebView = null;
 
-	internal void OnUnloaded() => (_nativeWebView as ICleanableNativeWebView)?.OnUnloaded();
+		(_nativeWebView as ICleanableNativeWebView)?.OnLoaded();
+	}
+
+	internal void OnUnloaded()
+	{
+		(_nativeWebView as ICleanableNativeWebView)?.OnUnloaded();
+		ScheduleNativeWebViewRelease();
+	}
 #endif
 
 	/// <summary>
@@ -161,17 +175,9 @@ public partial class CoreWebView2
 
 	internal void OnOwnerApplyTemplate()
 	{
-		DetachWebResourceRequestedSupport();
-		_nativeWebView = GetNativeWebViewFromTemplate();
-		AttachWebResourceRequestedSupport();
-
-		// Signal that native WebView is now initialized
-		_nativeWebViewInitializedTcs.TrySetResult(true);
-
-		//The native WebView already navigate to a blank page if no source is set.
-		//Avoid a bug where invoke GoBack() on WebView do nothing in Android 4.4
-		UpdateFromInternalSource();
-		OnScrollEnabledChanged(_scrollEnabled);
+		_owner.LogTrace()?.Trace($"{nameof(CoreWebView2)}.{nameof(OnOwnerApplyTemplate)} currentNative={( _nativeWebView is null ? "null" : RuntimeHelpers.GetHashCode(_nativeWebView).ToString(CultureInfo.InvariantCulture))}");
+		SetNativeWebView(GetNativeWebViewFromTemplate());
+		ApplyNativeWebViewState();
 	}
 
 	internal void OnScrollEnabledChanged(bool newValue)
@@ -297,14 +303,117 @@ public partial class CoreWebView2
 	{
 		WebResourceRequested?.Invoke(this, eventArgs);
 	}
-
-
-
-	private TaskCompletionSource<bool> _nativeWebViewInitializedTcs = new TaskCompletionSource<bool>();
+	private TaskCompletionSource<bool> _nativeWebViewInitializedTcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
 	internal Task EnsureNativeWebViewAsync() => _nativeWebViewInitializedTcs.Task;
 	internal static bool GetIsHistoryEntryValid(string url) =>
 		!url.IsNullOrWhiteSpace() &&
 		!url.Equals(BlankUrl, StringComparison.OrdinalIgnoreCase);
+
+	private void SetNativeWebView(INativeWebView? nativeWebView)
+	{
+		_owner.LogTrace()?.Trace($"{nameof(CoreWebView2)}.{nameof(SetNativeWebView)} old={( _nativeWebView is null ? "null" : RuntimeHelpers.GetHashCode(_nativeWebView).ToString(CultureInfo.InvariantCulture))} new={( nativeWebView is null ? "null" : RuntimeHelpers.GetHashCode(nativeWebView).ToString(CultureInfo.InvariantCulture))}");
+
+		if (ReferenceEquals(_nativeWebView, nativeWebView))
+		{
+			return;
+		}
+
+		ReleaseNativeWebView();
+
+		_nativeWebView = nativeWebView;
+		AttachWebResourceRequestedSupport();
+
+		if (_nativeWebView is not null)
+		{
+			_nativeWebViewInitializedTcs.TrySetResult(true);
+		}
+
+#if __SKIA__
+		// Arm a delayed cleanup for newly-created native views.
+		// If the owner stays loaded, the scheduled check is a no-op; otherwise the view is released.
+		ScheduleNativeWebViewRelease();
+#endif
+	}
+
+	private void ReleaseNativeWebView()
+	{
+		_owner.LogTrace()?.Trace($"{nameof(CoreWebView2)}.{nameof(ReleaseNativeWebView)} target={( _nativeWebView is null ? "null" : RuntimeHelpers.GetHashCode(_nativeWebView).ToString(CultureInfo.InvariantCulture))}");
+#if __SKIA__
+		if (_nativeWebView is not null)
+		{
+			_pendingReleaseNativeWebView?.Cancel();
+			_pendingReleaseNativeWebView = null;
+		}
+#endif
+
+		DetachWebResourceRequestedSupport();
+
+		if (_nativeWebView is IDisposable disposable)
+		{
+			disposable.Dispose();
+		}
+
+		_nativeWebView = null;
+		_nativeWebViewInitializedTcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
+	}
+
+#if __SKIA__
+	private async void ScheduleNativeWebViewRelease()
+	{
+		var releaseTokenSource = new CancellationTokenSource();
+		_pendingReleaseNativeWebView?.Cancel();
+		_pendingReleaseNativeWebView = releaseTokenSource;
+
+		try
+		{
+			// Controls can transiently unload/reload during shell transitions; avoid tearing down native WebView for those.
+			await Task.Delay(200, releaseTokenSource.Token);
+		}
+		catch (OperationCanceledException)
+		{
+			return;
+		}
+
+		var isAttachedToHost = (_nativeWebView as IAttachableNativeWebView)?.IsAttachedToNativeHost;
+		if (releaseTokenSource.IsCancellationRequested)
+		{
+			return;
+		}
+
+		// Keep loaded and attached native views alive.
+		// Loaded-but-unattached views are abandoned instances that should be released.
+		if (_owner.IsLoaded && isAttachedToHost != false)
+		{
+			return;
+		}
+
+		if (_owner.Dispatcher.HasThreadAccess)
+		{
+			ReleaseNativeWebView();
+		}
+		else
+		{
+			await _owner.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, ReleaseNativeWebView);
+		}
+	}
+#endif
+
+	private void ApplyNativeWebViewState()
+	{
+		// Keep the current URL across template/native handle re-creation.
+		// Without this, rapid template churn can recreate a native view that stays at about:blank.
+		if (_processedSource is null &&
+			Uri.TryCreate(Source, UriKind.Absolute, out var currentSource) &&
+			GetIsHistoryEntryValid(currentSource.ToString()))
+		{
+			_processedSource = currentSource;
+		}
+
+		// The native WebView already navigates to a blank page if no source is set.
+		// Avoid a bug where invoking GoBack() on WebView does nothing in Android 4.4.
+		UpdateFromInternalSource();
+		OnScrollEnabledChanged(_scrollEnabled);
+	}
 
 	[MemberNotNullWhen(true, nameof(_nativeWebView))]
 	private bool VerifyWebViewAvailability()
@@ -416,4 +525,3 @@ public partial class CoreWebView2
 		}
 	}
 }
-

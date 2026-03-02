@@ -46,7 +46,7 @@ internal class Win32NativeWebViewProvider(CoreWebView2 owner) : INativeWebViewPr
 	}
 }
 
-internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping, ISupportsWebResourceRequested
+internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping, ISupportsWebResourceRequested, IAttachableNativeWebView, IDisposable
 {
 	private const string WindowClassName = "UnoPlatformWebViewWindow";
 	private const uint SC_MASK = 0xFFF0; // Mask to extract system command from wParam
@@ -69,8 +69,11 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 	private Dictionary<ulong, string> _navigationIdToUriMap = new();
 	private string _documentTitle = string.Empty;
 	private readonly NativeWebView.CoreWebView2Controller _controller;
+	private int _disposeState;
 
 	private HWND ParentHwnd => (_presenter.XamlRoot?.HostWindow?.NativeWindow as Win32NativeWindow)?.Hwnd is IntPtr hwnd ? (HWND)hwnd : HWND.Null;
+
+	bool IAttachableNativeWebView.IsAttachedToNativeHost => PInvoke.GetParent(_hwnd) != HWND.Null;
 
 	static unsafe Win32NativeWebView()
 	{
@@ -124,7 +127,7 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 		{
 			throw new InvalidOperationException($"{nameof(PInvoke.CreateWindowEx)} failed: {Win32Helper.GetErrorMessage()}");
 		}
-		this.LogTrace()?.Trace($"Created child hwnd={_hwnd.Value} appParent={ParentHwnd.Value}");
+		this.LogTrace()?.Trace($"Created child hwnd={_hwnd.Value} instance={RuntimeHelpers.GetHashCode(this)} appParent={ParentHwnd.Value}");
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
@@ -197,21 +200,82 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 		};
 	}
 
+	public void Dispose()
+	{
+		Dispose(disposing: true);
+		GC.SuppressFinalize(this);
+	}
+
 	~Win32NativeWebView()
 	{
-		_presenter.DispatcherQueue.TryEnqueue(() =>
+		Dispose(disposing: false);
+	}
+
+	private void Dispose(bool disposing)
+	{
+		if (Interlocked.Exchange(ref _disposeState, 1) != 0)
 		{
+			return;
+		}
+
+		this.LogTrace()?.Trace($"Disposing child hwnd={_hwnd.Value} instance={RuntimeHelpers.GetHashCode(this)} disposing={disposing} parent={ParentHwnd.Value}");
+
+		void Cleanup()
+		{
+			try
+			{
+				_nativeWebView.WebResourceRequested -= NativeWebView2_WebResourceRequested;
+			}
+			catch
+			{
+				// Ignore; object is shutting down.
+			}
+
+			try
+			{
+				_controller.Close();
+			}
+			catch
+			{
+				// Ignore; object is shutting down.
+			}
+
+			_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_HIDE);
 			var success = PInvoke.DestroyWindow(_hwnd);
 			if (!success && this.Log().IsEnabled(LogLevel.Error))
 			{
 				this.Log().Error($"{nameof(PInvoke.DestroyWindow)} failed: {Win32Helper.GetErrorMessage()}");
+			}
+			else
+			{
+				this.LogTrace()?.Trace($"Destroyed child hwnd={_hwnd.Value} instance={RuntimeHelpers.GetHashCode(this)} parent={ParentHwnd.Value}");
 			}
 
 			lock (_hwndToWebView)
 			{
 				_hwndToWebView.Remove(_hwnd);
 			}
-		});
+		}
+
+		var dispatcherQueue = _presenter.DispatcherQueue;
+
+		if (dispatcherQueue.HasThreadAccess)
+		{
+			Cleanup();
+			return;
+		}
+
+		if (dispatcherQueue.TryEnqueue(Cleanup))
+		{
+			return;
+		}
+
+		// During process shutdown the dispatcher queue can reject enqueues.
+		// Keep the static map coherent even when HWND teardown cannot be guaranteed.
+		lock (_hwndToWebView)
+		{
+			_hwndToWebView.Remove(_hwnd);
+		}
 	}
 
 	[UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
@@ -237,6 +301,11 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 
 	private LRESULT WndProcInner(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
 	{
+		if (Volatile.Read(ref _disposeState) != 0)
+		{
+			return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
+		}
+
 		Debug.Assert(_hwnd == HWND.Null || hwnd == _hwnd); // the null check is for when this method gets called inside CreateWindow before setting _hwnd
 		this.LogTrace()?.Trace($"WndProc {GetTrackedWndProcMessageName(msg)} hwnd={hwnd.Value} presenterParent={ParentHwnd.Value} wParam={wParam.Value} lParam={lParam.Value}{TryGetWindowPosPayload(msg, lParam)} active={PInvoke.GetActiveWindow().Value} childRect={GetWindowRectSnapshot(hwnd)} parentRect={GetWindowRectSnapshot(ParentHwnd)}");
 
@@ -447,7 +516,9 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 	}
 
 	public Task<string?> ExecuteScriptAsync(string script, CancellationToken token)
-		=> _nativeWebView.ExecuteScriptAsync(script);
+		=> Volatile.Read(ref _disposeState) == 0
+			? _nativeWebView.ExecuteScriptAsync(script)
+			: Task.FromResult<string?>(null);
 
 	public void GoBack()
 		=> _nativeWebView.GoBack();
@@ -481,11 +552,29 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 		return ExecuteScriptAsync(adjustedScript.ToString(), token);
 	}
 
-	public void ProcessNavigation(Uri uri) => _nativeWebView.Navigate(uri.ToString());
+	public void ProcessNavigation(Uri uri)
+	{
+		if (Volatile.Read(ref _disposeState) == 0)
+		{
+			_nativeWebView.Navigate(uri.ToString());
+		}
+	}
 
-	public void ProcessNavigation(string html) => _nativeWebView.NavigateToString(html);
+	public void ProcessNavigation(string html)
+	{
+		if (Volatile.Read(ref _disposeState) == 0)
+		{
+			_nativeWebView.NavigateToString(html);
+		}
+	}
 
-	public void ProcessNavigation(HttpRequestMessage httpRequestMessage) => ProcessNavigationCore(httpRequestMessage);
+	public void ProcessNavigation(HttpRequestMessage httpRequestMessage)
+	{
+		if (Volatile.Read(ref _disposeState) == 0)
+		{
+			ProcessNavigationCore(httpRequestMessage);
+		}
+	}
 
 	private void ProcessNavigationCore(HttpRequestMessage httpRequestMessage)
 	{
@@ -505,24 +594,54 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 	}
 
 	public void Reload()
-		=> _nativeWebView.Reload();
+	{
+		if (Volatile.Read(ref _disposeState) == 0)
+		{
+			_nativeWebView.Reload();
+		}
+	}
 
 	public void SetScrollingEnabled(bool isScrollingEnabled)
 	{
 	}
 
 	public void Stop()
-		=> _nativeWebView.Stop();
+	{
+		if (Volatile.Read(ref _disposeState) == 0)
+		{
+			_nativeWebView.Stop();
+		}
+	}
 
 	public void ClearVirtualHostNameToFolderMapping(string hostName)
-		=> _nativeWebView.ClearVirtualHostNameToFolderMapping(hostName);
+	{
+		if (Volatile.Read(ref _disposeState) == 0)
+		{
+			_nativeWebView.ClearVirtualHostNameToFolderMapping(hostName);
+		}
+	}
 
 	public void SetVirtualHostNameToFolderMapping(string hostName, string folderPath, CoreWebView2HostResourceAccessKind accessKind)
-		=> _nativeWebView.SetVirtualHostNameToFolderMapping(hostName, folderPath, (NativeWebView.CoreWebView2HostResourceAccessKind)accessKind);
+	{
+		if (Volatile.Read(ref _disposeState) == 0)
+		{
+			_nativeWebView.SetVirtualHostNameToFolderMapping(hostName, folderPath, (NativeWebView.CoreWebView2HostResourceAccessKind)accessKind);
+		}
+	}
 
 	public void AddWebResourceRequestedFilter(string uri, CoreWebView2WebResourceContext resourceContext, CoreWebView2WebResourceRequestSourceKinds requestSourceKinds)
-		=> _nativeWebView.AddWebResourceRequestedFilter(uri, (NativeWebView.CoreWebView2WebResourceContext)resourceContext, (NativeWebView.CoreWebView2WebResourceRequestSourceKinds)requestSourceKinds);
+	{
+		if (Volatile.Read(ref _disposeState) == 0)
+		{
+			_nativeWebView.AddWebResourceRequestedFilter(uri, (NativeWebView.CoreWebView2WebResourceContext)resourceContext, (NativeWebView.CoreWebView2WebResourceRequestSourceKinds)requestSourceKinds);
+		}
+	}
 
 	public void RemoveWebResourceRequestedFilter(string uri, CoreWebView2WebResourceContext resourceContext, CoreWebView2WebResourceRequestSourceKinds requestSourceKinds)
-		=> _nativeWebView.RemoveWebResourceRequestedFilter(uri, (NativeWebView.CoreWebView2WebResourceContext)resourceContext, (NativeWebView.CoreWebView2WebResourceRequestSourceKinds)requestSourceKinds);
+	{
+		if (Volatile.Read(ref _disposeState) == 0)
+		{
+			_nativeWebView.RemoveWebResourceRequestedFilter(uri, (NativeWebView.CoreWebView2WebResourceContext)resourceContext, (NativeWebView.CoreWebView2WebResourceRequestSourceKinds)requestSourceKinds);
+		}
+	}
 }

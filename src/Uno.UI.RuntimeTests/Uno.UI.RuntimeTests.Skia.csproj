@@ -32,6 +32,7 @@
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="MSTest.Analyzers" />
 		<PackageReference Include="Combinatorial.MSTest" />
+		<PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.106" />
 	</ItemGroup>
 
 	<ItemGroup>
