@@ -797,6 +797,13 @@ namespace Microsoft.UI.Xaml
 				// This ensures the GestureRecognizer is created and configured to detect these gestures,
 				// which then raise ContextRequested via ContextMenuProcessor.
 				EnableContextMenuGestures();
+
+				// Propagate VisualTree to the flyout (matches WinUI IsVisualTreeProperty behavior
+				// where EnterEffectiveValue calls Enter on the new value).
+				if (this.GetVisualTree() is { } visualTree)
+				{
+					newValue.SetVisualTree(visualTree);
+				}
 			}
 		}
 
