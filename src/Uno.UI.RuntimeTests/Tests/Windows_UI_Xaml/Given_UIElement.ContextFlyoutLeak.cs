@@ -8,7 +8,7 @@ using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
-partial class Given_UIElement
+public partial class Given_UIElement
 {
 	[TestMethod]
 	[RunsOnUIThread]
@@ -55,6 +55,7 @@ partial class Given_UIElement
 		var collected = await TestHelper.TryWaitUntilCollected(weakViewModel);
 
 		Assert.IsTrue(collected, "ViewModel should be collected after the control using the shared ContextFlyout is removed from the tree.");
+		GC.KeepAlive(sharedFlyout);
 	}
 
 	[TestMethod]
@@ -101,6 +102,7 @@ partial class Given_UIElement
 		var collected = await TestHelper.TryWaitUntilCollected(weakViewModel);
 
 		Assert.IsTrue(collected, "ViewModel should be collected after the control using the shared SelectionFlyout is removed from the tree.");
+		GC.KeepAlive(sharedFlyout);
 	}
 
 	[TestMethod]
@@ -141,6 +143,7 @@ partial class Given_UIElement
 
 		var collected = await TestHelper.TryWaitUntilCollected(weakViewModel);
 		Assert.IsTrue(collected, "ViewModel should be collected after removing TextBox with default ContextFlyout from the tree.");
+		GC.KeepAlive(flyout);
 	}
 
 	[TestMethod]
@@ -181,6 +184,7 @@ partial class Given_UIElement
 
 		var collected = await TestHelper.TryWaitUntilCollected(weakViewModel);
 		Assert.IsTrue(collected, "ViewModel should be collected after removing TextBox with default SelectionFlyout from the tree.");
+		GC.KeepAlive(flyout);
 	}
 
 #if HAS_UNO // flyout.GetPresenter() is Uno-specific helper to access the presenter while the flyout is open.
