@@ -599,7 +599,9 @@ namespace SamplesApp
 			Uno.WinRTFeatureConfiguration.StoreContext.TestMode = true;
 #endif
 
-			Uno.WinRTFeatureConfiguration.DebugOptions.ForceEnableBackButtonIntegration = true;
+	#if HAS_UNO
+		Uno.WinRTFeatureConfiguration.DebugOptions.ForceEnableBackButtonIntegration = true;
+#endif
 		}
 
 		/// <summary>
