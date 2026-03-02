@@ -35,7 +35,7 @@ internal partial class TopViewLayer : UIView
 		{
 			var scrollGesture = new UIPanGestureRecognizer(HandleScrollGesture)
 			{
-				AllowedScrollTypesMask = UIScrollTypeMask.Discrete,
+				AllowedScrollTypesMask = UIScrollTypeMask.All,
 				MaximumNumberOfTouches = 0,
 				AllowedTouchTypes = [],
 				AllowedPressTypes = [],
