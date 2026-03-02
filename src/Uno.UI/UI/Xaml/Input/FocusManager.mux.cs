@@ -3093,11 +3093,12 @@ namespace Microsoft.UI.Xaml.Input
 					using var focusLockGuard = new UnsafeFocusLockOverrideGuard(this);
 					DependencyObject? currentlyFocusedElement = _focusedElement;
 
+					DependencyObject? nullRef = null;
 					// Raise changing focus events. We cannot cancel or redirect focus here.
 					// RaiseAndProcessGettingAndLosingFocusEvents returns true if a focus change has been cancelled.
 					var focusChangeCancelled = RaiseAndProcessGettingAndLosingFocusEvents(
 						focusedElement,
-						ref Unsafe.NullRef<DependencyObject?>() /*focusTarget*/,
+						ref nullRef /*focusTarget*/,
 						FocusState.Unfocused,
 						FocusNavigationDirection.None,
 						false /*focusChangeCancellable*/,
