@@ -96,14 +96,14 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private void UpdateStrokeCaps()
 		{
-			_shape.StrokeStartCap = (Composition.CompositionStrokeCap)StrokeStartLineCap;
-			_shape.StrokeEndCap = (Composition.CompositionStrokeCap)StrokeEndLineCap;
-			_shape.StrokeDashCap = (Composition.CompositionStrokeCap)StrokeDashCap;
+			_shape.StrokeStartCap = (CompositionStrokeCap)StrokeStartLineCap;
+			_shape.StrokeEndCap = (CompositionStrokeCap)StrokeEndLineCap;
+			_shape.StrokeDashCap = (CompositionStrokeCap)StrokeDashCap;
 		}
 
 		private void UpdateStrokeLineJoin()
 		{
-			_shape.StrokeLineJoin = (Composition.CompositionStrokeLineJoin)StrokeLineJoin;
+			_shape.StrokeLineJoin = (CompositionStrokeLineJoin)StrokeLineJoin;
 		}
 
 		private void UpdateStrokeMiterLimit()

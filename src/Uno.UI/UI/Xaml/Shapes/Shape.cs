@@ -172,54 +172,54 @@ namespace Microsoft.UI.Xaml.Shapes
 		#endregion
 
 		#region StrokeStartLineCap Dependency Property
-		public Media.PenLineCap StrokeStartLineCap
+		public PenLineCap StrokeStartLineCap
 		{
-			get => (Media.PenLineCap)this.GetValue(StrokeStartLineCapProperty);
+			get => (PenLineCap)this.GetValue(StrokeStartLineCapProperty);
 			set => this.SetValue(StrokeStartLineCapProperty, value);
 		}
 
 		public static DependencyProperty StrokeStartLineCapProperty { get; } = DependencyProperty.Register(
 			nameof(StrokeStartLineCap),
-			typeof(Media.PenLineCap),
+			typeof(PenLineCap),
 			typeof(Shape),
 			new FrameworkPropertyMetadata(
-				defaultValue: Media.PenLineCap.Flat,
+				defaultValue: PenLineCap.Flat,
 				options: FrameworkPropertyMetadataOptions.AffectsArrange
 			)
 		);
 		#endregion
 
 		#region StrokeEndLineCap Dependency Property
-		public Media.PenLineCap StrokeEndLineCap
+		public PenLineCap StrokeEndLineCap
 		{
-			get => (Media.PenLineCap)this.GetValue(StrokeEndLineCapProperty);
+			get => (PenLineCap)this.GetValue(StrokeEndLineCapProperty);
 			set => this.SetValue(StrokeEndLineCapProperty, value);
 		}
 
 		public static DependencyProperty StrokeEndLineCapProperty { get; } = DependencyProperty.Register(
 			nameof(StrokeEndLineCap),
-			typeof(Media.PenLineCap),
+			typeof(PenLineCap),
 			typeof(Shape),
 			new FrameworkPropertyMetadata(
-				defaultValue: Media.PenLineCap.Flat,
+				defaultValue: PenLineCap.Flat,
 				options: FrameworkPropertyMetadataOptions.AffectsArrange
 			)
 		);
 		#endregion
 
 		#region StrokeLineJoin Dependency Property
-		public Media.PenLineJoin StrokeLineJoin
+		public PenLineJoin StrokeLineJoin
 		{
-			get => (Media.PenLineJoin)this.GetValue(StrokeLineJoinProperty);
+			get => (PenLineJoin)this.GetValue(StrokeLineJoinProperty);
 			set => this.SetValue(StrokeLineJoinProperty, value);
 		}
 
 		public static DependencyProperty StrokeLineJoinProperty { get; } = DependencyProperty.Register(
 			nameof(StrokeLineJoin),
-			typeof(Media.PenLineJoin),
+			typeof(PenLineJoin),
 			typeof(Shape),
 			new FrameworkPropertyMetadata(
-				defaultValue: Media.PenLineJoin.Miter,
+				defaultValue: PenLineJoin.Miter,
 				options: FrameworkPropertyMetadataOptions.AffectsArrange
 			)
 		);
@@ -244,18 +244,18 @@ namespace Microsoft.UI.Xaml.Shapes
 		#endregion
 
 		#region StrokeDashCap Dependency Property
-		public Media.PenLineCap StrokeDashCap
+		public PenLineCap StrokeDashCap
 		{
-			get => (Media.PenLineCap)this.GetValue(StrokeDashCapProperty);
+			get => (PenLineCap)this.GetValue(StrokeDashCapProperty);
 			set => this.SetValue(StrokeDashCapProperty, value);
 		}
 
 		public static DependencyProperty StrokeDashCapProperty { get; } = DependencyProperty.Register(
 			nameof(StrokeDashCap),
-			typeof(Media.PenLineCap),
+			typeof(PenLineCap),
 			typeof(Shape),
 			new FrameworkPropertyMetadata(
-				defaultValue: Media.PenLineCap.Flat,
+				defaultValue: PenLineCap.Flat,
 				options: FrameworkPropertyMetadataOptions.AffectsArrange
 			)
 		);
