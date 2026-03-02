@@ -31,6 +31,7 @@
 		<UnoSplashScreen Include="$(UnoSplashScreenFile)"
 			BaseSize="$(UnoSplashScreenBaseSize)"
 			Color="$(UnoSplashScreenColor)"
+			Scale="$(UnoSplashScreenScale)"
 			IsDefaultItem="true"
 			Exclude="@(UnoSplashScreen)"
 			Condition="Exists('$(UnoSplashScreenFile)')" />
