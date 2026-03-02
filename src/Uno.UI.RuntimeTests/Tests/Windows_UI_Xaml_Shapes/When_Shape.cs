@@ -264,9 +264,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			var screenshot = await UITestHelper.ScreenShot(container);
 
 			// With offset=4 (half pattern), the dash/gap pattern should be shifted.
-			// At the start of the line, one should have a dash and the other a gap.
-			// Verify both lines render (center point check)
+			// At x=100 (center), both lines are in a dash segment.
 			ImageAssert.HasColorAt(screenshot, 100, 15, Colors.Black, tolerance: 30);
+
+			// At x=12 (near start): line1 (offset=0) is in a dash, line2 (offset=4) is in a gap.
+			// Dash length = 4 * StrokeThickness = 32px, gap = 32px.
+			// line1 first dash: x=10–42  → x=12 is Black
+			// line2 offset=4 shifts 32px  → x=12 is in gap → White (container background)
+			ImageAssert.HasColorAt(screenshot, 12, 15, Colors.Black, tolerance: 30);
+			ImageAssert.HasColorAt(screenshot, 12, 45, Colors.White, tolerance: 30);
 		}
 
 		[TestMethod]
@@ -787,8 +793,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			var screenshot = await UITestHelper.ScreenShot(container);
 
 			// At 90 degrees, the miter tip extends about halfWidth/sin(45) ~ 14.14px
-			// above the vertex in the bisector direction. The full miter point at
-			// (100, ~16) should be colored.
+			// above the vertex in the bisector direction. The mitered stroke should
+			// be visible around (100, 20).
 			ImageAssert.HasColorAt(screenshot, 100, 20, Colors.Red, tolerance: 30);
 		}
 
