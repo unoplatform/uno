@@ -579,6 +579,15 @@ namespace Microsoft.UI.Composition
 			while (pos < pathLength)
 			{
 				var segLen = dashValues[idx % dashValues.Length];
+
+				// Guard: skip zero/negative segments so pos always advances.
+				// The totalPattern <= 0 check above handles the all-zeros case.
+				if (segLen <= 0)
+				{
+					idx++;
+					continue;
+				}
+
 				var segEnd = pos + segLen;
 				var isDash = (idx % 2) == 0;
 
