@@ -56,6 +56,7 @@ internal partial class SystemFocusVisual : Control
 #if __SKIA__
 			if (element.XamlRoot?.VisualTree.ContentRoot.CompositionTarget is { } compositionTarget)
 			{
+				focusVisual.OnFrameRendered();
 				compositionTarget.FrameRendered += focusVisual.OnFrameRendered;
 				focusVisual._focusedElementSubscriptions.Disposable = Disposable.Create(() =>
 				{
