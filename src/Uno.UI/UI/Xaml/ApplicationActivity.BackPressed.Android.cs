@@ -20,14 +20,15 @@ partial class ApplicationActivity
 		}
 
 		// On Android 16+ (API 36+), use OnBackPressedCallback for predictive back gesture support.
-		// The callback is enabled/disabled based on BackRequested subscription state.
+		// The callback is enabled/disabled based on combined back handler state
+		// (both public BackRequested subscribers and internal BackButtonIntegration listeners).
 		if ((int)Build.VERSION.SdkInt >= 36)
 		{
 			var systemNavigationManager = SystemNavigationManager.GetForCurrentView();
-			SystemNavigationManager.BackRequestedSubscribersChanged += OnBackRequestedSubscribersChanged;
+			SystemNavigationManager.BackHandlerStateChanged += OnBackHandlerStateChanged;
 			_backPressedCallback = new UnoOnBackPressedCallback();
 			OnBackPressedDispatcher.AddCallback(this, _backPressedCallback);
-			_backPressedCallback.Enabled = systemNavigationManager.HasBackRequestedSubscribers;
+			_backPressedCallback.Enabled = systemNavigationManager.HasAnyBackHandlers;
 		}
 	}
 
@@ -35,17 +36,17 @@ partial class ApplicationActivity
 	{
 		if (_backPressedCallback is not null)
 		{
-			SystemNavigationManager.BackRequestedSubscribersChanged -= OnBackRequestedSubscribersChanged;
+			SystemNavigationManager.BackHandlerStateChanged -= OnBackHandlerStateChanged;
 			_backPressedCallback.Remove();
 			_backPressedCallback = null;
 		}
 	}
 
-	private void OnBackRequestedSubscribersChanged(object? sender, bool hasSubscribers)
+	private void OnBackHandlerStateChanged(object? sender, bool hasHandlers)
 	{
 		if (_backPressedCallback is not null)
 		{
-			_backPressedCallback.Enabled = hasSubscribers;
+			_backPressedCallback.Enabled = hasHandlers;
 		}
 	}
 

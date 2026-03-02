@@ -255,12 +255,10 @@ namespace Windows.UI.Tests.Enterprise
 			TestCleanupWrapper cleanup;
 
 			Func<CommandBar, Task> openFunc = async (cmdBar) => await RunOnUIThread(() => cmdBar.IsOpen = true);
-			Func<CommandBar, Task> closeFunc = (cmdBar) =>
+			Func<CommandBar, Task> closeFunc = async (cmdBar) =>
 			{
-				bool backButtonPressHandled = false;
-				TestServices.Utilities.InjectBackButtonPress(ref backButtonPressHandled);
+				bool backButtonPressHandled = await TestServices.Utilities.InjectBackButtonPress();
 				VERIFY_IS_TRUE(backButtonPressHandled);
-				return Task.CompletedTask;
 			};
 
 			await ValidateOpenAndCloseWorker(openFunc, closeFunc);

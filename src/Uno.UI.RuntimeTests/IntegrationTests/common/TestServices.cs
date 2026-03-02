@@ -7,6 +7,9 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using System.Diagnostics.CodeAnalysis;
+#if !WINAPPSDK
+using DirectUI;
+#endif
 
 namespace Private.Infrastructure
 {
@@ -23,9 +26,14 @@ namespace Private.Infrastructure
 			{
 			}
 
-			internal static void InjectBackButtonPress(ref bool backButtonPressHandled)
+#if !WINAPPSDK
+			internal static async Task<bool> InjectBackButtonPress()
 			{
+				var handled = false;
+				await RunOnUIThread(() => handled = BackButtonIntegration.InjectBackButtonPress());
+				return handled;
 			}
+#endif
 
 			public static void SetTimeZone(string tzid)
 			{
