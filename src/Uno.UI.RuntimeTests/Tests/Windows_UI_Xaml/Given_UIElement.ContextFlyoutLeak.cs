@@ -49,13 +49,6 @@ partial class Given_UIElement
 		root.Children.Clear();
 		await TestServices.WindowHelper.WaitForIdle();
 
-		// Reassign the flyout to a different control to simulate the shared pattern
-		_ = new TextBox
-		{
-			Text = "World",
-			ContextFlyout = sharedFlyout,
-		};
-
 		textBox = null;
 		viewModel = null;
 
@@ -102,15 +95,92 @@ partial class Given_UIElement
 		root.Children.Clear();
 		await TestServices.WindowHelper.WaitForIdle();
 
-		// Reassign the flyout to a different control to simulate the shared pattern
-		_ = new TextBox { Text = "World", SelectionFlyout = sharedFlyout };
-
 		textBox = null;
 		viewModel = null;
 
 		var collected = await TestHelper.TryWaitUntilCollected(weakViewModel);
 
 		Assert.IsTrue(collected, "ViewModel should be collected after the control using the shared SelectionFlyout is removed from the tree.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_DefaultContextFlyout_DoesNotLeak_ViewModel()
+	{
+		// Verify that the default TextCommandBarFlyout created automatically by TextBox
+		// does not prevent the ViewModel from being collected after the TextBox is removed.
+
+		var viewModel = new object();
+		var weakViewModel = new WeakReference(viewModel);
+
+		var textBox = new TextBox
+		{
+			Text = "Hello",
+			DataContext = viewModel,
+		};
+
+		var root = new Grid();
+		root.Children.Add(textBox);
+		await UITestHelper.Load(root, x => x.IsLoaded);
+
+		// Get the default TextCommandBarFlyout and open/close it
+		var flyout = textBox.ContextFlyout;
+		Assert.IsNotNull(flyout, "TextBox should have a default ContextFlyout");
+		flyout.ShowAt(textBox);
+		await TestServices.WindowHelper.WaitForIdle();
+		flyout.Hide();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Remove from tree and release references
+		root.Children.Clear();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		textBox = null;
+		viewModel = null;
+
+		var collected = await TestHelper.TryWaitUntilCollected(weakViewModel);
+		Assert.IsTrue(collected, "ViewModel should be collected after removing TextBox with default ContextFlyout from the tree.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_DefaultSelectionFlyout_DoesNotLeak_ViewModel()
+	{
+		// Verify that the default SelectionFlyout created automatically by TextBox
+		// does not prevent the ViewModel from being collected after the TextBox is removed.
+
+		var viewModel = new object();
+		var weakViewModel = new WeakReference(viewModel);
+
+		var textBox = new TextBox
+		{
+			Text = "Hello",
+			DataContext = viewModel,
+		};
+
+		var root = new Grid();
+		root.Children.Add(textBox);
+		await UITestHelper.Load(root, x => x.IsLoaded);
+
+		// Get the default SelectionFlyout and open/close it
+		var flyout = textBox.SelectionFlyout;
+		Assert.IsNotNull(flyout, "TextBox should have a default SelectionFlyout");
+		flyout.ShowAt(textBox);
+		await TestServices.WindowHelper.WaitForIdle();
+		flyout.Hide();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Remove from tree and release references
+		root.Children.Clear();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		textBox = null;
+		viewModel = null;
+
+		var collected = await TestHelper.TryWaitUntilCollected(weakViewModel);
+		Assert.IsTrue(collected, "ViewModel should be collected after removing TextBox with default SelectionFlyout from the tree.");
 	}
 
 #if HAS_UNO // flyout.GetPresenter() is Uno-specific helper to access the presenter while the flyout is open.
