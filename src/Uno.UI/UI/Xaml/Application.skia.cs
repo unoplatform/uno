@@ -162,12 +162,12 @@ namespace Microsoft.UI.Xaml
 						textFontManifestSuccess = await FontFamilyHelper.PreloadAllFontsInManifest(uri);
 						if (!textFontManifestSuccess)
 						{
-							typeof(Application).LogDebug()?.Debug($"Failed to load ${nameof(FeatureConfiguration.Font.DefaultTextFontFamily)}=[{FeatureConfiguration.Font.DefaultTextFontFamily}] as a font manifest");
+							typeof(Application).LogDebug()?.Debug($"Failed to load {nameof(FeatureConfiguration.Font.DefaultTextFontFamily)}=[{FeatureConfiguration.Font.DefaultTextFontFamily}] as a font manifest");
 						}
 					}
 					catch (Exception e)
 					{
-						typeof(Application).LogError()?.Error($"Failed to load ${nameof(FeatureConfiguration.Font.DefaultTextFontFamily)}=[{FeatureConfiguration.Font.DefaultTextFontFamily}] as a font manifest", e);
+						typeof(Application).LogError()?.Error($"Failed to load {nameof(FeatureConfiguration.Font.DefaultTextFontFamily)}=[{FeatureConfiguration.Font.DefaultTextFontFamily}] as a font manifest", e);
 					}
 				}
 				if (!textFontManifestSuccess)
@@ -177,12 +177,12 @@ namespace Microsoft.UI.Xaml
 						textFontManifestSuccess = await FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.DefaultTextFontFamily), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
 						if (!textFontManifestSuccess)
 						{
-							typeof(Application).LogDebug()?.Debug($"Failed to load ${nameof(FeatureConfiguration.Font.DefaultTextFontFamily)}=[{FeatureConfiguration.Font.DefaultTextFontFamily}] as a non-manifest font");
+							typeof(Application).LogDebug()?.Debug($"Failed to load {nameof(FeatureConfiguration.Font.DefaultTextFontFamily)}=[{FeatureConfiguration.Font.DefaultTextFontFamily}] as a non-manifest font");
 						}
 					}
 					catch (Exception e)
 					{
-						typeof(Application).LogError()?.Error($"Failed to load ${nameof(FeatureConfiguration.Font.DefaultTextFontFamily)}=[{FeatureConfiguration.Font.DefaultTextFontFamily}] as a non-manifest font", e);
+						typeof(Application).LogError()?.Error($"Failed to load {nameof(FeatureConfiguration.Font.DefaultTextFontFamily)}=[{FeatureConfiguration.Font.DefaultTextFontFamily}] as a non-manifest font", e);
 					}
 				}
 
@@ -195,12 +195,12 @@ namespace Microsoft.UI.Xaml
 					}
 					else
 					{
-						typeof(Application).LogError()?.Error($"Failed to load ${nameof(FeatureConfiguration.Font.SymbolsFont)}=[{FeatureConfiguration.Font.SymbolsFont}]");
+						typeof(Application).LogError()?.Error($"Failed to load {nameof(FeatureConfiguration.Font.SymbolsFont)}=[{FeatureConfiguration.Font.SymbolsFont}]");
 					}
 				}
 				catch (Exception e)
 				{
-					typeof(Application).LogError()?.Error($"Failed to load ${nameof(FeatureConfiguration.Font.SymbolsFont)}=[{FeatureConfiguration.Font.SymbolsFont}]", e);
+					typeof(Application).LogError()?.Error($"Failed to load {nameof(FeatureConfiguration.Font.SymbolsFont)}=[{FeatureConfiguration.Font.SymbolsFont}]", e);
 				}
 			}
 			catch (Exception e)
