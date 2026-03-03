@@ -234,6 +234,224 @@ public class Given_InputInjector
 		Assert.IsNotNull(capturedDeviceType);
 		Assert.AreEqual(PointerDeviceType.Pen, capturedDeviceType);
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_PenPressure_PressureIsSet()
+	{
+		if (TestServices.WindowHelper.IsXamlIsland)
+		{
+			return;
+		}
+
+		var border = new Border
+		{
+			Background = new SolidColorBrush(Colors.DeepPink),
+			Width = 200,
+			Height = 200,
+		};
+
+		float? capturedPressure = null;
+		border.PointerPressed += (s, e) => capturedPressure = e.GetCurrentPoint(null).Properties.Pressure;
+
+		WindowContent = border;
+		await WaitForLoaded(border);
+		await WaitForIdle();
+
+		var injector = InputInjector.TryCreate();
+		Assert.IsNotNull(injector);
+
+		var center = border.GetAbsoluteBounds().GetCenter();
+		injector.InitializePenInjection(InjectedInputVisualizationMode.Default);
+		injector.InjectPenInput(new InjectedInputPenInfo
+		{
+			PointerInfo = new()
+			{
+				PointerId = 1,
+				PixelLocation = new() { PositionX = (int)center.X, PositionY = (int)center.Y },
+				PointerOptions = InjectedInputPointerOptions.New
+					| InjectedInputPointerOptions.FirstButton
+					| InjectedInputPointerOptions.PointerDown
+					| InjectedInputPointerOptions.InContact
+					| InjectedInputPointerOptions.InRange
+			},
+			PenParameters = InjectedInputPenParameters.Pressure,
+			Pressure = 0.75
+		});
+		injector.UninitializePenInjection();
+
+		await WaitForIdle();
+
+		Assert.IsNotNull(capturedPressure);
+		Assert.AreEqual(0.75f, capturedPressure.Value, 0.01f);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_PenTilt_TiltValuesAreSet()
+	{
+		if (TestServices.WindowHelper.IsXamlIsland)
+		{
+			return;
+		}
+
+		var border = new Border
+		{
+			Background = new SolidColorBrush(Colors.DeepPink),
+			Width = 200,
+			Height = 200,
+		};
+
+		float? capturedXTilt = null;
+		float? capturedYTilt = null;
+		border.PointerPressed += (s, e) =>
+		{
+			var props = e.GetCurrentPoint(null).Properties;
+			capturedXTilt = props.XTilt;
+			capturedYTilt = props.YTilt;
+		};
+
+		WindowContent = border;
+		await WaitForLoaded(border);
+		await WaitForIdle();
+
+		var injector = InputInjector.TryCreate();
+		Assert.IsNotNull(injector);
+
+		var center = border.GetAbsoluteBounds().GetCenter();
+		injector.InitializePenInjection(InjectedInputVisualizationMode.Default);
+		injector.InjectPenInput(new InjectedInputPenInfo
+		{
+			PointerInfo = new()
+			{
+				PointerId = 1,
+				PixelLocation = new() { PositionX = (int)center.X, PositionY = (int)center.Y },
+				PointerOptions = InjectedInputPointerOptions.New
+					| InjectedInputPointerOptions.FirstButton
+					| InjectedInputPointerOptions.PointerDown
+					| InjectedInputPointerOptions.InContact
+					| InjectedInputPointerOptions.InRange
+			},
+			PenParameters = InjectedInputPenParameters.Pressure
+				| InjectedInputPenParameters.TiltX
+				| InjectedInputPenParameters.TiltY,
+			Pressure = 0.5,
+			TiltX = 30,
+			TiltY = -15
+		});
+		injector.UninitializePenInjection();
+
+		await WaitForIdle();
+
+		Assert.IsNotNull(capturedXTilt);
+		Assert.IsNotNull(capturedYTilt);
+		Assert.AreEqual(30f, capturedXTilt.Value, 0.01f);
+		Assert.AreEqual(-15f, capturedYTilt.Value, 0.01f);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_PenBarrelButton_IsBarrelButtonPressed()
+	{
+		if (TestServices.WindowHelper.IsXamlIsland)
+		{
+			return;
+		}
+
+		var border = new Border
+		{
+			Background = new SolidColorBrush(Colors.DeepPink),
+			Width = 200,
+			Height = 200,
+		};
+
+		bool? capturedBarrelButton = null;
+		border.PointerPressed += (s, e) => capturedBarrelButton = e.GetCurrentPoint(null).Properties.IsBarrelButtonPressed;
+
+		WindowContent = border;
+		await WaitForLoaded(border);
+		await WaitForIdle();
+
+		var injector = InputInjector.TryCreate();
+		Assert.IsNotNull(injector);
+
+		var center = border.GetAbsoluteBounds().GetCenter();
+		injector.InitializePenInjection(InjectedInputVisualizationMode.Default);
+		injector.InjectPenInput(new InjectedInputPenInfo
+		{
+			PointerInfo = new()
+			{
+				PointerId = 1,
+				PixelLocation = new() { PositionX = (int)center.X, PositionY = (int)center.Y },
+				PointerOptions = InjectedInputPointerOptions.New
+					| InjectedInputPointerOptions.FirstButton
+					| InjectedInputPointerOptions.PointerDown
+					| InjectedInputPointerOptions.InContact
+					| InjectedInputPointerOptions.InRange
+			},
+			PenParameters = InjectedInputPenParameters.Pressure,
+			Pressure = 0.5,
+			PenButtons = InjectedInputPenButtons.Barrel
+		});
+		injector.UninitializePenInjection();
+
+		await WaitForIdle();
+
+		Assert.IsNotNull(capturedBarrelButton);
+		Assert.IsTrue(capturedBarrelButton.Value);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_PenEraser_IsEraserSet()
+	{
+		if (TestServices.WindowHelper.IsXamlIsland)
+		{
+			return;
+		}
+
+		var border = new Border
+		{
+			Background = new SolidColorBrush(Colors.DeepPink),
+			Width = 200,
+			Height = 200,
+		};
+
+		bool? capturedEraser = null;
+		border.PointerPressed += (s, e) => capturedEraser = e.GetCurrentPoint(null).Properties.IsEraser;
+
+		WindowContent = border;
+		await WaitForLoaded(border);
+		await WaitForIdle();
+
+		var injector = InputInjector.TryCreate();
+		Assert.IsNotNull(injector);
+
+		var center = border.GetAbsoluteBounds().GetCenter();
+		injector.InitializePenInjection(InjectedInputVisualizationMode.Default);
+		injector.InjectPenInput(new InjectedInputPenInfo
+		{
+			PointerInfo = new()
+			{
+				PointerId = 1,
+				PixelLocation = new() { PositionX = (int)center.X, PositionY = (int)center.Y },
+				PointerOptions = InjectedInputPointerOptions.New
+					| InjectedInputPointerOptions.FirstButton
+					| InjectedInputPointerOptions.PointerDown
+					| InjectedInputPointerOptions.InContact
+					| InjectedInputPointerOptions.InRange
+			},
+			PenParameters = InjectedInputPenParameters.Pressure,
+			Pressure = 0.5,
+			PenButtons = InjectedInputPenButtons.Eraser
+		});
+		injector.UninitializePenInjection();
+
+		await WaitForIdle();
+
+		Assert.IsNotNull(capturedEraser);
+		Assert.IsTrue(capturedEraser.Value);
+	}
 #endif
 }
 #endif
