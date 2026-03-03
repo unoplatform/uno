@@ -281,6 +281,64 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			ImageAssert.DoesNotHaveColorAt(screenshot, new Point(60, 60), Microsoft.UI.Colors.Red);
 		}
 
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19957")]
+#if !__SKIA__ && !WINAPPSDK
+		[Ignore("PolyLineSegment stroke rendering is validated on Skia and WinUI.")]
+#endif
+		public async Task When_PolyLineSegment_Is_Stroked_Renders_All_Points()
+		{
+			// A PathGeometry containing a LineSegment followed by a PolyLineSegment,
+			// both stroke-only (no fill).  Before the fix, the PolyLineSegment portion
+			// was invisible on Skia because the canvas Save() was missing before ClipPath().
+			var SUT = new Path
+			{
+				Width = 200,
+				Height = 100,
+				Stroke = new SolidColorBrush(Microsoft.UI.Colors.Black),
+				StrokeThickness = 4,
+				Data = new PathGeometry
+				{
+					Figures = new PathFigureCollection
+					{
+						new PathFigure
+						{
+							StartPoint = new Point(0, 50),
+							IsClosed = false,
+							Segments = new PathSegmentCollection
+							{
+								// Single LineSegment — always rendered correctly
+								new LineSegment { Point = new Point(60, 50) },
+								// PolyLineSegment — was silently dropped before the fix
+								new PolyLineSegment
+								{
+									Points = new PointCollection
+									{
+										new Point(120, 50),
+										new Point(200, 50),
+									}
+								},
+							}
+						}
+					}
+				}
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var screenshot = await UITestHelper.ScreenShot(SUT);
+
+			// Mid-point of the LineSegment portion — should be black
+			ImageAssert.HasColorAt(screenshot, new Point(30, 50), Microsoft.UI.Colors.Black);
+
+			// Mid-point of the PolyLineSegment portion — must also be black
+			ImageAssert.HasColorAt(screenshot, new Point(160, 50), Microsoft.UI.Colors.Black);
+
+			// Area well above the line — must NOT be black
+			ImageAssert.DoesNotHaveColorAt(screenshot, new Point(30, 10), Microsoft.UI.Colors.Black);
+			ImageAssert.DoesNotHaveColorAt(screenshot, new Point(160, 10), Microsoft.UI.Colors.Black);
+		}
+
 		private void Brush_ImageOpened(object sender, Microsoft.UI.Xaml.RoutedEventArgs e) => throw new NotImplementedException();
 	}
 }
