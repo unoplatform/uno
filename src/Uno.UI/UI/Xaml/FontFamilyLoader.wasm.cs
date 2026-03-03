@@ -80,7 +80,7 @@ internal partial class FontFamilyLoader
 
 				foreach (var waiting in loader._waitingList)
 				{
-					if (waiting.IsAlive && waiting.Target is UIElement ue)
+					if (waiting.TryGetTarget<UIElement>(out var ue))
 					{
 						ue.InvalidateMeasure();
 					}

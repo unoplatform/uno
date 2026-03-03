@@ -171,7 +171,7 @@ partial class AppBarButton : ICommandBarElement2, ICommandBarElement3, ICommandB
 
 		void FlyoutOpenStateChangedHandler(bool isOpen)
 		{
-			if (!wrThis.IsDisposed && wrThis.Target is AppBarButton appBarButton)
+			if (wrThis.TryGetTarget<AppBarButton>(out var appBarButton))
 			{
 				appBarButton.m_isFlyoutClosing = false;
 				appBarButton.UpdateVisualState();
