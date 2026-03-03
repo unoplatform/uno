@@ -3384,6 +3384,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			await KeyboardHelper.InputText("hello", SUT);
+			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual("hello", SUT.Text);
 

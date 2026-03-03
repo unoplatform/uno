@@ -67,6 +67,7 @@ namespace Uno.UI.Samples.Tests
 
 		private List<TestCaseResult> _testCases = new();
 		private TestRun _currentRun;
+		private long _scrollableHeightCallbackToken;
 
 		// On WinUI/UWP dependency properties cannot be accessed outside of
 		// UI thread. This field caches the current value so it can be accessed
@@ -89,10 +90,11 @@ namespace Uno.UI.Samples.Tests
 			this.InitializeComponent();
 			this.Loaded += OnLoaded;
 
-			testResultsScroller.RegisterPropertyChangedCallback(
+			_scrollableHeightCallbackToken = testResultsScroller.RegisterPropertyChangedCallback(
 				ScrollViewer.ScrollableHeightProperty,
 				OnTestResultsScrollableHeightChanged);
 			testResultsScroller.ViewChanged += OnTestResultsScrollerViewChanged;
+			this.Unloaded += OnUnloaded;
 
 			Private.Infrastructure.TestServices.WindowHelper.EmbeddedTestRoot =
 			(
@@ -133,6 +135,14 @@ namespace Uno.UI.Samples.Tests
 #else
 				false;
 #endif
+		}
+
+		private void OnUnloaded(object sender, RoutedEventArgs args)
+		{
+			testResultsScroller.UnregisterPropertyChangedCallback(
+				ScrollViewer.ScrollableHeightProperty,
+				_scrollableHeightCallbackToken);
+			testResultsScroller.ViewChanged -= OnTestResultsScrollerViewChanged;
 		}
 
 		private static void OverrideDebugProviderAsserts()
@@ -262,18 +272,23 @@ namespace Uno.UI.Samples.Tests
 		{
 			Interlocked.Exchange(ref _cts, new CancellationTokenSource())?.Cancel(); // cancel any previous CTS
 
-			// Apply test group settings from UI
-			if (int.TryParse(testGroupNumber.Text, out var groupNum) &&
-				int.TryParse(testGroupCount.Text, out var groupCount) &&
-				groupCount > 0 && groupNum >= 0 && groupNum < groupCount)
+			// Apply test group settings from UI only when the user has entered values.
+			// When both fields are empty, preserve existing DP values (which may have
+			// been injected by CI automation).
+			if (!string.IsNullOrEmpty(testGroupNumber.Text) || !string.IsNullOrEmpty(testGroupCount.Text))
 			{
-				CITestGroup = groupNum;
-				CITestGroupCount = groupCount;
-			}
-			else
-			{
-				CITestGroup = -1;
-				CITestGroupCount = -1;
+				if (int.TryParse(testGroupNumber.Text, out var groupNum) &&
+					int.TryParse(testGroupCount.Text, out var groupCount) &&
+					groupCount > 0 && groupNum >= 0 && groupNum < groupCount)
+				{
+					CITestGroup = groupNum;
+					CITestGroupCount = groupCount;
+				}
+				else
+				{
+					CITestGroup = -1;
+					CITestGroupCount = -1;
+				}
 			}
 
 			var config = BuildConfig();
