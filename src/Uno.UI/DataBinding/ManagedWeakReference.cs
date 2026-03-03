@@ -123,6 +123,7 @@ namespace Uno.UI.DataBinding
 		/// </summary>
 		public bool IsSelfReference { get; }
 
+#nullable enable
 		/// <summary>
 		/// Tries to retrieve the target of the weak reference and cast it to the specified type.
 		/// </summary>
@@ -155,6 +156,7 @@ namespace Uno.UI.DataBinding
 
 			return false;
 		}
+#nullable restore
 
 		/// <summary>
 		/// Check if the target is a managed peer whose underlying native object has been collected.
