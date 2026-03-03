@@ -65,14 +65,14 @@
                     </Button.Content>
                     <Button.Flyout>
                         <Flyout>
-                            <StackPanel Spacing="8">
+                            <StackPanel Spacing="8" Width="320">
                                 <!-- Options: 2x2 grid of toggles -->
                                 <TextBlock
                                     FontWeight="SemiBold"
                                     Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
                                     Style="{ThemeResource CaptionTextBlockStyle}"
                                     Text="OPTIONS" />
-                                <Grid ColumnSpacing="4" RowSpacing="4">
+                                <Grid ColumnSpacing="4" RowSpacing="4" HorizontalAlignment="Stretch">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="*" />
@@ -102,7 +102,7 @@
 									<ToggleButton x:Name="unloadTestContent" Grid.Row="1" Grid.Column="1" IsChecked="True" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" ToolTipService.ToolTip="Remove test UI content from the visual tree after each test completes">
 										<StackPanel Orientation="Horizontal" Spacing="6">
                                             <FontIcon Glyph="&#xE74D;" FontSize="14" />
-                                            <TextBlock Text="Unload content" />
+                                            <TextBlock Text="Content unload" />
                                         </StackPanel>
                                     </ToggleButton>
                                 </Grid>
@@ -114,7 +114,7 @@
                                     Fill="{ThemeResource SystemControlForegroundBaseLowBrush}" />
 
                                 <!-- Repeat + Test Grouping: side by side -->
-                                <Grid ColumnSpacing="12">
+								<Grid ColumnSpacing="12" HorizontalAlignment="Stretch">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="*" />
