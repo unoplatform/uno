@@ -41,6 +41,11 @@ public partial class InjectedInputPenInfo
 			point.Properties.YTilt = TiltY;
 		}
 
+		if (PenParameters.HasFlag(InjectedInputPenParameters.Rotation))
+		{
+			point.Properties.Twist = (float)Rotation;
+		}
+
 		// Handle pen barrel button
 		if (PenButtons.HasFlag(InjectedInputPenButtons.Barrel))
 		{
@@ -51,6 +56,11 @@ public partial class InjectedInputPenInfo
 		if (PenButtons.HasFlag(InjectedInputPenButtons.Eraser))
 		{
 			point.Properties.IsEraser = true;
+		}
+
+		if (PenButtons.HasFlag(InjectedInputPenButtons.Inverted))
+		{
+			point.Properties.IsInverted = true;
 		}
 
 		return new PointerEventArgs(point, VirtualKeyModifiers.None);

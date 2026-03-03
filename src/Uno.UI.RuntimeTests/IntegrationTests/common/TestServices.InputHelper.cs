@@ -133,7 +133,7 @@ namespace Private.Infrastructure
 				EnsureInputInjectorSupported();
 				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
 				{
-					var pen = InputInjector.TryCreate()?.GetPen() ?? throw new InvalidOperationException("Failed to create pen");
+					using var pen = InputInjector.TryCreate()?.GetPen() ?? throw new InvalidOperationException("Failed to create pen");
 					var topLeft = element.TransformToVisual(WindowHelper.XamlRoot.Content).TransformPoint(new Point(0, 0));
 					var center = new Point(topLeft.X + element.RenderSize.Width / 2, topLeft.Y + element.RenderSize.Height / 2);
 					pen.Tap(center);
@@ -143,10 +143,8 @@ namespace Private.Infrastructure
 			private static void EnsureInputInjectorSupported()
 			{
 #if !WINAPPSDK && !HAS_INPUT_INJECTOR
-				Assert.Inconclusive("InputInjector is not supported on this platform.");		
+				Assert.Inconclusive("InputInjector is not supported on this platform.");
 #endif
-				throw new System.NotImplementedException();
-			}
 			}
 		}
 	}

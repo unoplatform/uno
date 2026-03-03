@@ -3,14 +3,8 @@ using System.Collections.Generic;
 
 #nullable enable
 
-using System.Linq;
 using Windows.Foundation;
 using Windows.UI.Input.Preview.Injection;
-
-#if HAS_UNO_WINUI || WINAPPSDK
-#else
-using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
-#endif
 
 namespace Uno.UI.Toolkit.DevTools.Input;
 
