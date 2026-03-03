@@ -18,6 +18,7 @@ using static Private.Infrastructure.TestServices.WindowHelper;
 using Private.Infrastructure;
 using Windows.Foundation;
 using Uno.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Toolkit.DevTools.Input;
 
 #if HAS_UNO_WINUI

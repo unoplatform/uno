@@ -128,6 +128,7 @@ namespace Private.Infrastructure
 				throw new System.NotImplementedException();
 			}
 
+#if HAS_UNO
 			internal static void PenTap(FrameworkElement element)
 			{
 				EnsureInputInjectorSupported();
@@ -139,6 +140,7 @@ namespace Private.Infrastructure
 					pen.Tap(center);
 				});
 			}
+#endif
 
 			private static void EnsureInputInjectorSupported()
 			{
