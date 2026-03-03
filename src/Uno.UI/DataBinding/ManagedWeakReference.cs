@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Text;
 using Uno.Extensions;
@@ -128,7 +129,7 @@ namespace Uno.UI.DataBinding
 		/// <typeparam name="T">The type to cast the target to.</typeparam>
 		/// <param name="target">When this method returns, contains the target object cast to type T if the target is alive and the cast succeeds; otherwise, the default value for type T.</param>
 		/// <returns>true if the target is alive and was successfully cast to type T; otherwise, false.</returns>
-		public bool TryGetTarget<T>(out T target) where T : class
+		public bool TryGetTarget<T>([NotNullWhen(true)] out T? target) where T : class
 		{
 			target = default;
 

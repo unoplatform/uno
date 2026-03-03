@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -274,6 +275,7 @@ namespace Uno.UI.Tests
 			Assert.IsNull(retrieved);
 		}
 
+		[MethodImpl(MethodImplOptions.NoInlining)]
 		private ManagedWeakReference CreateWeakReferenceToCollectedObject()
 		{
 			var target = new MyClass { Value = 99 };
