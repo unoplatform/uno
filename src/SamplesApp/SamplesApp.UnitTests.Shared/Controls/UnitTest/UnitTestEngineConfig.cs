@@ -14,7 +14,7 @@ public class UnitTestEngineConfig
 
 	public bool IsRunningIgnored { get; set; }
 
-	public bool IsUnloadingTestContent { get; set; } = true;
+	public bool IsUnloadingTestContent { get; set; }
 
 	public int Iterations { get; set; } = 1;
 }
