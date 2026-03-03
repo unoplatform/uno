@@ -161,19 +161,35 @@
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)\*.*" />
 			<_OutputRefFiles Include="$(TargetDir)\ref\*.*" />
+			<_OutputTargetFiles Include="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+			<_OutputTargetRefFiles Include="@(_OutputRefFiles->'$(_TargetNugetRefFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+			<_ExistingTargetFiles Include="$(_TargetNugetFolder)\*.*" />
+			<_ExistingTargetRefFiles Include="$(_TargetNugetRefFolder)\*.*" />
+			<_StaleTargetFiles Include="@(_ExistingTargetFiles)" Exclude="@(_OutputTargetFiles);$(_TargetNugetFolder)\.packageoverride" />
+			<_StaleTargetRefFiles Include="@(_ExistingTargetRefFiles)" Exclude="@(_OutputTargetRefFiles)" />
 		</ItemGroup>
-		<MakeDir Directories="$(_TargetNugetFolder)" />
+		<MakeDir Directories="$(_TargetNugetFolder);$(_TargetNugetRefFolder)" />
 
 		<!-- Add override file to notify a developer that the used package is modified -->
 		<WriteLinestoFile File="$(_TargetNugetFolder)\.packageoverride"
-				 Lines="$([System.DateTime]::Now.ToString('yyyyMMddTHHmmss')) from $(MSBuildThisFileDirectory)"
-				 Overwrite="True" />
+				 Lines="override from $(MSBuildThisFileDirectory)"
+				 Overwrite="True"
+				 WriteOnlyWhenDifferent="true" />
 		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder) and $(_TargetNugetRefFolder)" />
 
+		<Delete Files="@(_StaleTargetFiles);@(_StaleTargetRefFiles)" ContinueOnError="true" />
 		<Copy SourceFiles="@(_OutputFiles)"
-			  DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+			  DestinationFiles="@(_OutputTargetFiles)"
+			  SkipUnchangedFiles="true"
+			  Retries="1"
+			  RetryDelayMilliseconds="500"
+			  ContinueOnError="true" />
 		<Copy SourceFiles="@(_OutputRefFiles)"
-			  DestinationFiles="@(_OutputRefFiles->'$(_TargetNugetRefFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+			  DestinationFiles="@(_OutputTargetRefFiles)"
+			  SkipUnchangedFiles="true"
+			  Retries="1"
+			  RetryDelayMilliseconds="500"
+			  ContinueOnError="true" />
 	</Target>
 
 
@@ -193,13 +209,19 @@
 
 		<ItemGroup>
 			<_OutputFiles Include="@(TargetPathWithTargetPlatformMoniker)" />
+			<_OutputDebugSymbols Include="@(_DebugSymbolsIntermediatePath)" />
+			<_CommonOverrideTargetFiles Include="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+			<_CommonOverrideTargetDebugFiles Include="@(_OutputDebugSymbols->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+			<_CommonOverrideExistingFiles Include="$(_TargetNugetFolder)\*.*" />
+			<_CommonOverrideStaleFiles Include="@(_CommonOverrideExistingFiles)" Exclude="@(_CommonOverrideTargetFiles);@(_CommonOverrideTargetDebugFiles)" />
 		</ItemGroup>
 
 		<MakeDir Directories="$(_TargetNugetFolder)" />
 
 		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
 
-		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
-		<Copy SourceFiles="@(_DebugSymbolsIntermediatePath)" DestinationFiles="@(_DebugSymbolsIntermediatePath->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Delete Files="@(_CommonOverrideStaleFiles)" ContinueOnError="true" />
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_CommonOverrideTargetFiles)" SkipUnchangedFiles="true" Retries="1" RetryDelayMilliseconds="500" ContinueOnError="true" />
+		<Copy SourceFiles="@(_OutputDebugSymbols)" DestinationFiles="@(_CommonOverrideTargetDebugFiles)" SkipUnchangedFiles="true" Retries="1" RetryDelayMilliseconds="500" ContinueOnError="true" />
 	</Target>
 </Project>
