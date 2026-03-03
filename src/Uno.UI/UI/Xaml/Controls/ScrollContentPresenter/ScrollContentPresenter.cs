@@ -277,28 +277,26 @@ namespace Microsoft.UI.Xaml.Controls
 						horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, delta),
 						disableAnimation: false);
 #else
-
-   					// On iOS/Mac Catalyst, trackpad scroll events arrive at display-refresh rate (60/s).
-   					// The 1-second composition animation is NOT suitable because:
-   					// 1. When many events have accumulated the target far ahead of the visual, the animation's
-   					//    first step jumps (target-visual)*0.149 pixels, causing a blank frame before items can be realized for the new position.
-   					// 2. VerticalOffset accumulates the target at 68px*60fps, hitting ScrollableHeight quickly and making scroll appear to stop prematurely.
-   					//
-   					// Immediate updates (DisableAnimation:true, IsIntermediate:false) resolve all three:
-   					// visual == logical == new position, one small per-event delta, no animation lag.
-   					// The same applies to vertical scrolling below.
-   					if (OperatingSystem.IsIOS())
-   					{
+					// On iOS/Mac Catalyst, trackpad scroll events arrive at display-refresh rate (60/s).
+					// The 1-second composition animation is NOT suitable because:
+					// 1. When many events have accumulated the target far ahead of the visual, the animation's
+					// first step jumps (target-visual)*0.149 pixels, causing a blank frame before items can be realized for the new position.
+					// 2. VerticalOffset accumulates the target at 68px*60fps, hitting ScrollableHeight quickly and making scroll appear to stop prematurely.
+					// Immediate updates (DisableAnimation:true, IsIntermediate:false) resolve all three:
+					// visual == logical == new position, one small per-event delta, no animation lag.
+					// The same applies to vertical scrolling below.
+					if (OperatingSystem.IsIOS())
+					{
 						success = Set(
 							horizontalOffset: HorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, delta),
 							options: new(DisableAnimation: true, IsIntermediate: false));
-   					}
-   					else
-   					{
-   						success = Set(
+					}
+					else
+					{
+						success = Set(
 							horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, delta),
 							disableAnimation: false);
-   					}
+					}
 #endif
 				}
 				else if (canScrollVertically && !properties.IsHorizontalMouseWheel)
@@ -308,18 +306,18 @@ namespace Microsoft.UI.Xaml.Controls
    						verticalOffset: TargetVerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
    						disableAnimation: false);
 #else
-   					if (OperatingSystem.IsIOS())
-   					{
-   						success = Set(
-   							verticalOffset: VerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
-   							options: new(DisableAnimation: true, IsIntermediate: false));
-   					}
-   					else
-   					{
-   						success = Set(
-   							verticalOffset: TargetVerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
-   							disableAnimation: false);
-   					}
+					if (OperatingSystem.IsIOS())
+					{
+						success = Set(
+							verticalOffset: VerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
+							options: new(DisableAnimation: true, IsIntermediate: false));
+					}
+					else
+					{
+						success = Set(
+							verticalOffset: TargetVerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
+							disableAnimation: false);
+					}
 #endif
 				}
 
