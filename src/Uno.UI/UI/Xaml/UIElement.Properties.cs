@@ -77,7 +77,7 @@ namespace Microsoft.UI.Xaml
 			private set => SetCalculatedFinalCursorValue(value);
 		}
 
-		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.LogicalChild)]
+		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext)]
 		public static DependencyProperty ContextFlyoutProperty { get; } = CreateContextFlyoutProperty();
 
 		public FlyoutBase ContextFlyout

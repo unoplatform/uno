@@ -141,7 +141,7 @@ public partial class TextBox
 	public static DependencyProperty SelectionFlyoutProperty { get; } =
 		DependencyProperty.Register(
 			nameof(SelectionFlyout), typeof(FlyoutBase), typeof(TextBox),
-			new FrameworkPropertyMetadata(default(FlyoutBase)));
+			new FrameworkPropertyMetadata(default(FlyoutBase), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 	public FlyoutBase SelectionFlyout
 	{
@@ -152,7 +152,7 @@ public partial class TextBox
 	public static DependencyProperty ProofingMenuFlyoutProperty { get; } =
 		DependencyProperty.Register(
 			nameof(ProofingMenuFlyout), typeof(FlyoutBase), typeof(TextBox),
-			new FrameworkPropertyMetadata(default(FlyoutBase)));
+			new FrameworkPropertyMetadata(default(FlyoutBase), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 	// Ported from: TextBoxBase.cpp GetProofingMenuFlyoutNoRef (lines 5507-5520)
 	public FlyoutBase ProofingMenuFlyout
