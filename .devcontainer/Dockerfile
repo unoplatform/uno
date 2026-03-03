@@ -1,66 +1,170 @@
-#-------------------------------------------------------------------------------------------------------------
-# Copyright (c) Microsoft Corporation. All rights reserved.
-# Licensed under the MIT License. See https://go.microsoft.com/fwlink/?linkid=2090316 for license information.
-#-------------------------------------------------------------------------------------------------------------
+FROM mcr.microsoft.com/dotnet/sdk:10.0
 
-# Update the VARIANT arg in devcontainer.json to pick a .NET Core version: 3.1-bionic, 2.1-bionic 
-ARG VARIANT="3.1-bionic"
-FROM unoplatform/wasm-build:2.2
+ARG TZ
+ENV TZ="$TZ"
 
-# This Dockerfile adds a non-root user with sudo access. Update the “remoteUser” property in
-# devcontainer.json to use it. More info: https://aka.ms/vscode-remote/containers/non-root-user.
-ARG USERNAME=vscode
-ARG USER_UID=1000
-ARG USER_GID=$USER_UID
+ARG CLAUDE_CODE_VERSION=latest
 
-# Options for common setup script
-ARG INSTALL_ZSH="true"
-ARG UPGRADE_PACKAGES="true"
-ARG COMMON_SCRIPT_SOURCE="https://raw.githubusercontent.com/microsoft/vscode-dev-containers/master/script-library/common-debian.sh"
-ARG COMMON_SCRIPT_SHA="dev-mode"
+# ---------------------------------------------------------------------------
+# System packages: core dev tools + firewall utilities
+# ---------------------------------------------------------------------------
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  less \
+  git \
+  procps \
+  sudo \
+  fzf \
+  zsh \
+  man-db \
+  unzip \
+  gnupg2 \
+  jq \
+  nano \
+  vim \
+  # DNS-based firewall
+  dnsmasq \
+  iptables \
+  iproute2 \
+  dnsutils \
+  # Uno / Skia desktop dependencies (from build/ci/templates/linux-install-deps.yml)
+  xvfb \
+  fluxbox \
+  vlc \
+  libvlc-dev \
+  libgtk-3-dev \
+  libwebkit2gtk-4.1-dev \
+  # Misc
+  curl \
+  wget \
+  ca-certificates \
+  && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# [Optional] Settings for installing Node.js.
-ARG INSTALL_NODE="true"
-ARG NODE_SCRIPT_SOURCE="https://raw.githubusercontent.com/microsoft/vscode-dev-containers/master/script-library/node-debian.sh"
-ARG NODE_SCRIPT_SHA="dev-mode"
-ARG NODE_VERSION="lts/*"
-ENV NVM_DIR=/usr/local/share/nvm
-ENV NVM_SYMLINK_CURRENT=true 
-ENV PATH=${NVM_DIR}/current/bin:${PATH}
+# ---------------------------------------------------------------------------
+# GitHub CLI (not in bookworm defaults)
+# ---------------------------------------------------------------------------
+RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+      | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+  && chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+  && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
+      > /etc/apt/sources.list.d/github-cli.list \
+  && apt-get update && apt-get install -y --no-install-recommends gh \
+  && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# [Optional] Install the Azure CLI
-ARG INSTALL_AZURE_CLI="false"
+# ---------------------------------------------------------------------------
+# Node.js 20 (required for Claude Code npm install)
+# ---------------------------------------------------------------------------
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+  && apt-get install -y --no-install-recommends nodejs \
+  && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install needed packages and setup non-root user. Use a separate RUN statement to add your own dependencies.
-RUN apt-get update \
-    && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends curl ca-certificates 2>&1 \
-    && curl -sSL ${COMMON_SCRIPT_SOURCE} -o /tmp/common-setup.sh \
-    && ([ "${COMMON_SCRIPT_SHA}" = "dev-mode" ] || (echo "${COMMON_SCRIPT_SHA} */tmp/common-setup.sh" | sha256sum -c -)) \
-    && /bin/bash /tmp/common-setup.sh "${INSTALL_ZSH}" "${USERNAME}" "${USER_UID}" "${USER_GID}" "${UPGRADE_PACKAGES}" \
-    #
-    # [Optional] Install Node.js for ASP.NET Core Web Applicationss
-    && if [ "$INSTALL_NODE" = "true" ]; then \
-        curl -sSL ${NODE_SCRIPT_SOURCE} -o /tmp/node-setup.sh \
-        && ([ "${NODE_SCRIPT_SHA}" = "dev-mode" ] || (echo "${COMMON_SCRIPT_SHA} */tmp/node-setup.sh" | sha256sum -c -)) \
-        && /bin/bash /tmp/node-setup.sh "${NVM_DIR}" "${NODE_VERSION}" "${USERNAME}"; \
-    fi \
-    #
-    # [Optional] Install the Azure CLI
-    && if [ "$INSTALL_AZURE_CLI" = "true" ]; then \
-        echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" > /etc/apt/sources.list.d/azure-cli.list \
-        && curl -sL https://packages.microsoft.com/keys/microsoft.asc | apt-key add - 2>/dev/null \
-        && apt-get update \
-        && apt-get install -y azure-cli; \
-    fi \
-    #
-    # Clean up
-    && apt-get autoremove -y \
-    && apt-get clean -y \
-    && rm -f /tmp/common-setup.sh /tmp/node-setup.sh \
-    && rm -rf /var/lib/apt/lists/*
+# ---------------------------------------------------------------------------
+# Playwright system dependencies (Chromium needs libnss3, libnspr4, etc.)
+# ---------------------------------------------------------------------------
+RUN npx playwright install-deps chromium
 
-# [Optional] Uncomment this section to install additional OS packages.
-# RUN apt-get update \
-#     && export DEBIAN_FRONTEND=noninteractive \
-#     && apt-get -y install --no-install-recommends <your-package-list-here>
+# ---------------------------------------------------------------------------
+# git-delta (better diffs)
+# ---------------------------------------------------------------------------
+ARG GIT_DELTA_VERSION=0.18.2
+RUN ARCH=$(dpkg --print-architecture) && \
+  wget -q "https://github.com/dandavison/delta/releases/download/${GIT_DELTA_VERSION}/git-delta_${GIT_DELTA_VERSION}_${ARCH}.deb" && \
+  dpkg -i "git-delta_${GIT_DELTA_VERSION}_${ARCH}.deb" && \
+  rm "git-delta_${GIT_DELTA_VERSION}_${ARCH}.deb"
+
+# ---------------------------------------------------------------------------
+# Non-root user: developer (uid 1000)
+# Container is the security boundary, not in-container privileges.
+# ---------------------------------------------------------------------------
+ARG USERNAME=developer
+RUN existing_user=$(getent passwd 1000 | cut -d: -f1 || true) && \
+  if [ -n "$existing_user" ] && [ "$existing_user" != "${USERNAME}" ]; then \
+    usermod -l ${USERNAME} -d /home/${USERNAME} -m "$existing_user" && \
+    groupmod -n ${USERNAME} "$existing_user" 2>/dev/null || true; \
+  elif [ -z "$existing_user" ]; then \
+    useradd -m -s /bin/zsh -u 1000 ${USERNAME}; \
+  fi && \
+  chsh -s /bin/zsh ${USERNAME} && \
+  echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME} && \
+  chmod 0440 /etc/sudoers.d/${USERNAME}
+
+# Persist shell history (env vars are set in the zsh-in-docker -a flag below)
+RUN mkdir -p /commandhistory && \
+  touch /commandhistory/.bash_history && \
+  chown -R ${USERNAME} /commandhistory
+
+# Set DEVCONTAINER env
+ENV DEVCONTAINER=true
+ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
+
+# Ensure non-root user owns /usr/local/share for npm global installs
+RUN mkdir -p /usr/local/share/npm-global && \
+  chown -R ${USERNAME}:${USERNAME} /usr/local/share
+
+# Create workspace and config directories
+RUN mkdir -p /uno /home/${USERNAME}/.claude /home/${USERNAME}/.nuget && \
+  chown -R ${USERNAME}:${USERNAME} /uno /home/${USERNAME}/.claude /home/${USERNAME}/.nuget
+
+WORKDIR /uno
+
+# ---------------------------------------------------------------------------
+# zsh + powerlevel10k (shell UX from reference)
+# ---------------------------------------------------------------------------
+ARG ZSH_IN_DOCKER_VERSION=1.2.0
+USER ${USERNAME}
+RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v${ZSH_IN_DOCKER_VERSION}/zsh-in-docker.sh)" -- \
+  -p git \
+  -p fzf \
+  -a "source /usr/share/doc/fzf/examples/key-bindings.zsh 2>/dev/null || true" \
+  -a "source /usr/share/doc/fzf/examples/completion.zsh 2>/dev/null || true" \
+  -a "export PROMPT_COMMAND='history -a' && export HISTFILE=/commandhistory/.bash_history" \
+  -x
+
+ENV SHELL=/bin/zsh
+ENV EDITOR=nano
+ENV VISUAL=nano
+
+# npm global prefix â€” writable by non-root user (matches Anthropic reference)
+ENV NPM_CONFIG_PREFIX=/usr/local/share/npm-global
+ENV PATH=$PATH:/usr/local/share/npm-global/bin
+
+# ---------------------------------------------------------------------------
+# Claude Code CLI
+# ---------------------------------------------------------------------------
+RUN npm install -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}
+
+# ---------------------------------------------------------------------------
+# .NET workloads (pre-install so builds work immediately)
+# ---------------------------------------------------------------------------
+USER root
+RUN dotnet workload install wasm-tools
+
+# ---------------------------------------------------------------------------
+# uno-check (validate environment, from build/ci/scripts/run-uno-check.sh)
+# ---------------------------------------------------------------------------
+RUN dotnet tool install --global uno.check
+ENV PATH="${PATH}:/root/.dotnet/tools:/home/${USERNAME}/.dotnet/tools"
+RUN uno-check -v --ci --non-interactive --fix \
+  --skip xcode --skip gtk3 --skip vswin --skip vswinworkloads --skip unosdk \
+  --skip dotnetnewunotemplates --skip vsmac --skip androidsdk --skip openjdk --skip androidemulator \
+  --tfm net10.0-desktop --tfm net10.0-browserwasm \
+  || true
+
+# ---------------------------------------------------------------------------
+# Neutralise VS Code git-credential forwarding
+# dpkg-divert moves the real binary to /usr/bin/git.distrib so that even
+# direct /usr/bin/git calls go through the wrapper.
+# ---------------------------------------------------------------------------
+RUN dpkg-divert --rename --add /usr/bin/git && \
+  printf '#!/bin/sh\nunset GIT_ASKPASS VSCODE_GIT_ASKPASS_MAIN VSCODE_GIT_ASKPASS_NODE VSCODE_GIT_IPC_HANDLE SSH_AUTH_SOCK\nexec /usr/bin/git.distrib -c credential.helper= "$@"\n' \
+  > /usr/bin/git && \
+  chmod +x /usr/bin/git
+
+# ---------------------------------------------------------------------------
+# Firewall script
+# ---------------------------------------------------------------------------
+COPY init-firewall.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/init-firewall.sh && \
+  echo "${USERNAME} ALL=(root) NOPASSWD: /usr/local/bin/init-firewall.sh" > /etc/sudoers.d/${USERNAME}-firewall && \
+  chmod 0440 /etc/sudoers.d/${USERNAME}-firewall
+
+USER ${USERNAME}
