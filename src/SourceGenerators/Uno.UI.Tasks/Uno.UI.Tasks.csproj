@@ -44,14 +44,15 @@
 			<_UnoTasksShadowOutputPath>$([System.IO.Path]::GetFullPath('$(_UnoTasksBuildOutputPath)\..\$(Configuration)_Shadow'))</_UnoTasksShadowOutputPath>
 		</PropertyGroup>
 		<ItemGroup>
+			<!-- Use the task project output as the source of truth for the local shadow copy. -->
 			<_UnoTasksSourceFiles Include="$(_UnoTasksBuildOutputPath)\*.*" />
 			<_UnoTasksShadowDestinationFiles Include="@(_UnoTasksSourceFiles->'$(_UnoTasksShadowOutputPath)\%(Filename)%(Extension)')" />
 			<_UnoTasksExistingShadowFiles Include="$(_UnoTasksShadowOutputPath)\*.*" />
 			<_UnoTasksStaleShadowFiles Include="@(_UnoTasksExistingShadowFiles)" Exclude="@(_UnoTasksShadowDestinationFiles)" />
 		</ItemGroup>
 		<!--
-		Copy the files to an alternal location, using deterministic build.
-		Don't fail the build if the file is locked
+		Copy the files to an alternate location using deterministic source/destination mapping.
+		Skip unchanged files and tolerate transient lock contention from external hosts.
 		-->
 		<MakeDir Directories="$(_UnoTasksShadowOutputPath)" />
 		<Delete Files="@(_UnoTasksStaleShadowFiles)" ContinueOnError="true" />
@@ -73,6 +74,7 @@
 		</ItemGroup>
 		<MakeDir Directories="$(_TargetNugetFolder)" />
 		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
+		<!-- Keep override cache consistent with current output and incremental for repeated local builds. -->
 		<Delete Files="@(_StaleTargetFiles)" ContinueOnError="true" />
 		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputDestinationFiles)" SkipUnchangedFiles="true" Retries="1" RetryDelayMilliseconds="500" ContinueOnError="true" />
 	</Target>

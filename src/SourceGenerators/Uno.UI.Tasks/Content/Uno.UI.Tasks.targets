@@ -10,10 +10,19 @@
 
 	<Import Project="uno.ui.tasks.assets.targets"/>
 
+	<!--
+		These core tasks always run through TaskHostFactory to avoid loading Uno.UI.Tasks.v0.dll
+		into long-lived MSBuild nodes directly.
+	-->
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerHintGeneratorTask_v0" TaskFactory="TaskHostFactory" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerDefinitionMergerTask_v0" TaskFactory="TaskHostFactory" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.BindableTypeLinkerGeneratorTask_v0" TaskFactory="TaskHostFactory" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.EmbeddedResourceInjector.EmbeddedResourceInjectorTask_v0" TaskFactory="TaskHostFactory" />
+
+	<!--
+		When consuming Uno from NuGet (outside the Uno repository), prefer default in-proc task loading.
+		The package payload is immutable during the build, so this keeps task startup overhead lower.
+	-->
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.ResourcesGenerationTask_v0" />
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.UpriFeaturesGeneratorTask_v0" />
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.UpriSubstitutionsGeneratorTask_v0" />
@@ -23,6 +32,10 @@
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.HotReloadInfo.HotReloadInfoTask_v0" />
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="BatchMergeXaml" />
 
+	<!--
+		Inside the Uno repo, run the remaining tasks out-of-proc as well so repeated local builds can
+		update Uno.UI.Tasks.v0.dll without requiring full build server shutdown between iterations.
+	-->
 	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.ResourcesGenerationTask_v0" TaskFactory="TaskHostFactory"/>
 	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.UpriFeaturesGeneratorTask_v0" TaskFactory="TaskHostFactory"/>
 	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.UpriSubstitutionsGeneratorTask_v0" TaskFactory="TaskHostFactory" />
