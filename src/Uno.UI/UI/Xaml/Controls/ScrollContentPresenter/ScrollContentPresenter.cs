@@ -282,7 +282,7 @@ namespace Microsoft.UI.Xaml.Controls
 					// 1. When many events have accumulated the target far ahead of the visual, the animation's
 					// first step jumps (target-visual)*0.149 pixels, causing a blank frame before items can be realized for the new position.
 					// 2. VerticalOffset accumulates the target at 68px*60fps, hitting ScrollableHeight quickly and making scroll appear to stop prematurely.
-					// Immediate updates (DisableAnimation:true, IsIntermediate:false) resolve all three:
+					// Immediate updates (DisableAnimation:true, IsIntermediate:false) ensure that:
 					// visual == logical == new position, one small per-event delta, no animation lag.
 					// The same applies to vertical scrolling below.
 					if (OperatingSystem.IsIOS())
