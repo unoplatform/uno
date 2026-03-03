@@ -46,10 +46,6 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 	private CGPoint _cachedScrollLocation;
 	private bool _gestureIsNaturalScrolling;
 #endif
-#if __MACCATALYST__
-	private const double ScrollWheelDeltaMultiplier = 120.0;
-#endif
-
 	public static AppleUIKitCorePointerInputSource Instance { get; } = new();
 
 	private AppleUIKitCorePointerInputSource()

@@ -273,11 +273,11 @@ namespace Microsoft.UI.Xaml.Controls
 				else if (canScrollHorizontally && (properties.IsHorizontalMouseWheel || e.KeyModifiers == VirtualKeyModifiers.Shift))
 				{
 #if __WASM__
-   					success = Set(
+					success = Set(
 						horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, delta),
 						disableAnimation: false);
 #else
-					// On iOS/Mac Catalyst, trackpad scroll events arrive at display-refresh rate (60/s).
+					// On iOS, trackpad scroll events arrive at display-refresh rate (60/s).
 					// The 1-second composition animation is NOT suitable because:
 					// 1. When many events have accumulated the target far ahead of the visual, the animation's
 					// first step jumps (target-visual)*0.149 pixels, causing a blank frame before items can be realized for the new position.
@@ -302,7 +302,7 @@ namespace Microsoft.UI.Xaml.Controls
 				else if (canScrollVertically && !properties.IsHorizontalMouseWheel)
 				{
 #if __WASM__
-   					success = Set(
+					success = Set(
    						verticalOffset: TargetVerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
    						disableAnimation: false);
 #else
