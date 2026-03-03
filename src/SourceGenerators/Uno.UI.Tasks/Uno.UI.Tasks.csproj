@@ -37,24 +37,25 @@
 		<Compile Include="..\..\Uno.UI.RemoteControl\HotReload\HotReloadInfoHelper.cs" Link="HotReloadInfo/%(Filename)%(Extension)" />
 	</ItemGroup>
 
-	<PropertyGroup>
-		<_UnoTasksShadowOutputPath>$(OutputPath)\..\$(Configuration)_Shadow</_UnoTasksShadowOutputPath>
-		<_UnoTasksShadowCopyStamp>$(_UnoTasksShadowOutputPath)\Uno.UI.Tasks.copy.stamp</_UnoTasksShadowCopyStamp>
-	</PropertyGroup>
-
 	<Target Name="_copyUnoTasksBuildTime"
-			AfterTargets="Build"
-			Inputs="$(TargetPath);$(TargetPath).pdb;$(TargetPath).config;$(TargetDir)$(TargetFileName).deps.json;@(ReferenceCopyLocalPaths)"
-			Outputs="$(_UnoTasksShadowCopyStamp)">
+			AfterTargets="Build">
+		<PropertyGroup>
+			<_UnoTasksBuildOutputPath>$([System.IO.Path]::GetFullPath('$(TargetDir)'))</_UnoTasksBuildOutputPath>
+			<_UnoTasksShadowOutputPath>$([System.IO.Path]::GetFullPath('$(_UnoTasksBuildOutputPath)\..\$(Configuration)_Shadow'))</_UnoTasksShadowOutputPath>
+		</PropertyGroup>
 		<ItemGroup>
-			<_unoTasksFiles Include="$(OutputPath)\*.*" />
+			<_UnoTasksSourceFiles Include="$(_UnoTasksBuildOutputPath)\*.*" />
+			<_UnoTasksShadowDestinationFiles Include="@(_UnoTasksSourceFiles->'$(_UnoTasksShadowOutputPath)\%(Filename)%(Extension)')" />
+			<_UnoTasksExistingShadowFiles Include="$(_UnoTasksShadowOutputPath)\*.*" />
+			<_UnoTasksStaleShadowFiles Include="@(_UnoTasksExistingShadowFiles)" Exclude="@(_UnoTasksShadowDestinationFiles)" />
 		</ItemGroup>
 		<!--
 		Copy the files to an alternal location, using deterministic build.
 		Don't fail the build if the file is locked
 		-->
-		<Copy SkipUnchangedFiles="true" SourceFiles="@(_unoTasksFiles)" DestinationFolder="$(_UnoTasksShadowOutputPath)" Retries="1" RetryDelayMilliseconds="500" ContinueOnError="true" />
-		<Touch Files="$(_UnoTasksShadowCopyStamp)" AlwaysCreate="true" />
+		<MakeDir Directories="$(_UnoTasksShadowOutputPath)" />
+		<Delete Files="@(_UnoTasksStaleShadowFiles)" ContinueOnError="true" />
+		<Copy SkipUnchangedFiles="true" SourceFiles="@(_UnoTasksSourceFiles)" DestinationFiles="@(_UnoTasksShadowDestinationFiles)" Retries="1" RetryDelayMilliseconds="500" ContinueOnError="true" />
 	</Target>
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
@@ -65,11 +66,14 @@
 			<_TargetNugetFolder>$(NuGetPackageRoot)\$(_PackageId)\$(UnoNugetOverrideVersion)\buildTransitive\Uno.UI.Tasks</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
-			<_OutputFiles Include="$(TargetDir)**" />
+			<_OutputFiles Include="$(TargetDir)**\*.*" />
+			<_OutputDestinationFiles Include="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+			<_ExistingTargetFiles Include="$(_TargetNugetFolder)\**\*.*" />
+			<_StaleTargetFiles Include="@(_ExistingTargetFiles)" Exclude="@(_OutputDestinationFiles)" />
 		</ItemGroup>
 		<MakeDir Directories="$(_TargetNugetFolder)" />
 		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
-		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
-		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
+		<Delete Files="@(_StaleTargetFiles)" ContinueOnError="true" />
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputDestinationFiles)" SkipUnchangedFiles="true" Retries="1" RetryDelayMilliseconds="500" ContinueOnError="true" />
 	</Target>
 </Project>
