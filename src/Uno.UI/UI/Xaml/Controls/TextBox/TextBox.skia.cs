@@ -609,6 +609,8 @@ public partial class TextBox
 				displayBlock.RenderCaret = null;
 			}
 			((IBlock)TextBoxView.DisplayBlock).Invalidate(false);
+
+			_textBoxNotificationsSingleton?.NotifySelectionChanged(this);
 		}
 	}
 

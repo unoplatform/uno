@@ -16,4 +16,6 @@ internal interface ITextBoxNotificationsProviderSingleton
 	void FinishAutofillContext(bool shouldSave);
 
 	void NotifyValueChanged(TextBox textBox);
+
+	void NotifySelectionChanged(TextBox textBox);
 }
