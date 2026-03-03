@@ -3383,15 +3383,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
-			await WindowHelper.WaitForIdle();
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
-			await WindowHelper.WaitForIdle();
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
-			await WindowHelper.WaitForIdle();
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
-			await WindowHelper.WaitForIdle();
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await KeyboardHelper.InputText("hello", SUT);
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual("hello", SUT.Text);
@@ -3411,15 +3403,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout);
 			var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
 
+			await WindowHelper.WaitFor(() => flyout.IsOpen);
+
 			var undoButton = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands)
 				.OfType<AppBarButton>()
 				.FirstOrDefault(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.Z && ka.Modifiers.HasFlag(_platformCtrlKey)));
 			Assert.IsNotNull(undoButton, "Undo button should be present in the context menu");
 
+			await WindowHelper.WaitFor(() => undoButton.IsLoaded);
+
 			mouse.MoveTo(undoButton.GetAbsoluteBounds().GetCenter());
 			mouse.Press();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => !flyout.IsOpen);
+
 			Assert.AreEqual("", SUT.Text);
 
 			mouse.MoveTo(SUT.GetAbsoluteBounds().GetCenter());
@@ -3431,10 +3429,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			await WindowHelper.WaitForIdle();
 
+			await WindowHelper.WaitFor(() => flyout.IsOpen);
+
 			var redoButton = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands)
 				.OfType<AppBarButton>()
 				.FirstOrDefault(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.Y && ka.Modifiers.HasFlag(_platformCtrlKey)));
 			Assert.IsNotNull(redoButton, "Redo button should be present in the context menu");
+			await WindowHelper.WaitFor(() => redoButton.IsLoaded);
 
 			mouse.MoveTo(redoButton.GetAbsoluteBounds().GetCenter());
 			mouse.Press();
