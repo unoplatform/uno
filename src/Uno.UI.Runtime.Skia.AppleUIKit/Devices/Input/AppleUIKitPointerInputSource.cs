@@ -267,6 +267,7 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 		}
 		catch (Exception e)
 		{
+			StopInertiaScrolling();
 			Application.Current.RaiseRecoverableUnhandledException(e);
 		}
 	}
