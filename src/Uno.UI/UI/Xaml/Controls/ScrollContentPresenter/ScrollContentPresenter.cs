@@ -303,8 +303,8 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 #if __WASM__
 					success = Set(
-   						verticalOffset: TargetVerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
-   						disableAnimation: false);
+						verticalOffset: TargetVerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
+						disableAnimation: false);
 #else
 					if (OperatingSystem.IsIOS())
 					{
