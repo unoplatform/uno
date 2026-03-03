@@ -14,7 +14,6 @@
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerDefinitionMergerTask_v0" TaskFactory="TaskHostFactory" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.BindableTypeLinkerGeneratorTask_v0" TaskFactory="TaskHostFactory" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.EmbeddedResourceInjector.EmbeddedResourceInjectorTask_v0" TaskFactory="TaskHostFactory" />
-
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.ResourcesGenerationTask_v0" />
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.UpriFeaturesGeneratorTask_v0" />
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.UpriSubstitutionsGeneratorTask_v0" />
@@ -22,6 +21,7 @@
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.RuntimeAssetsSelector.RuntimeAssetsSelectorTask_v0" />
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.RuntimeAssetsValidator.RuntimeAssetsValidatorTask_v0" />
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.HotReloadInfo.HotReloadInfoTask_v0" />
+	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="BatchMergeXaml" />
 
 	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.ResourcesGenerationTask_v0" TaskFactory="TaskHostFactory"/>
 	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.UpriFeaturesGeneratorTask_v0" TaskFactory="TaskHostFactory"/>
@@ -30,6 +30,7 @@
 	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.RuntimeAssetsSelector.RuntimeAssetsSelectorTask_v0" TaskFactory="TaskHostFactory" />
 	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.RuntimeAssetsValidator.RuntimeAssetsValidatorTask_v0" TaskFactory="TaskHostFactory" />
 	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.HotReloadInfo.HotReloadInfoTask_v0" TaskFactory="TaskHostFactory" />
+	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="BatchMergeXaml" TaskFactory="TaskHostFactory" />
 
 	<Target Name="_UnoLangSetup">
 		<!-- String resources -->

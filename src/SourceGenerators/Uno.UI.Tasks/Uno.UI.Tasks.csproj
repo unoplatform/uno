@@ -37,7 +37,15 @@
 		<Compile Include="..\..\Uno.UI.RemoteControl\HotReload\HotReloadInfoHelper.cs" Link="HotReloadInfo/%(Filename)%(Extension)" />
 	</ItemGroup>
 
-	<Target Name="_copyUnoTasksBuildTime" AfterTargets="Build">
+	<PropertyGroup>
+		<_UnoTasksShadowOutputPath>$(OutputPath)\..\$(Configuration)_Shadow</_UnoTasksShadowOutputPath>
+		<_UnoTasksShadowCopyStamp>$(_UnoTasksShadowOutputPath)\Uno.UI.Tasks.copy.stamp</_UnoTasksShadowCopyStamp>
+	</PropertyGroup>
+
+	<Target Name="_copyUnoTasksBuildTime"
+			AfterTargets="Build"
+			Inputs="$(TargetPath);$(TargetPath).pdb;$(TargetPath).config;$(TargetDir)$(TargetFileName).deps.json;@(ReferenceCopyLocalPaths)"
+			Outputs="$(_UnoTasksShadowCopyStamp)">
 		<ItemGroup>
 			<_unoTasksFiles Include="$(OutputPath)\*.*" />
 		</ItemGroup>
@@ -45,7 +53,8 @@
 		Copy the files to an alternal location, using deterministic build.
 		Don't fail the build if the file is locked
 		-->
-		<Copy SkipUnchangedFiles="true" SourceFiles="@(_unoTasksFiles)" DestinationFolder="$(OutputPath)\..\$(Configuration)_Shadow" Retries="1" RetryDelayMilliseconds="500" ContinueOnError="true" />
+		<Copy SkipUnchangedFiles="true" SourceFiles="@(_unoTasksFiles)" DestinationFolder="$(_UnoTasksShadowOutputPath)" Retries="1" RetryDelayMilliseconds="500" ContinueOnError="true" />
+		<Touch Files="$(_UnoTasksShadowCopyStamp)" AlwaysCreate="true" />
 	</Target>
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">

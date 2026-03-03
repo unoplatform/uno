@@ -4,8 +4,6 @@
 	<PageExclusions>$(MSBuildThisFileDirectory)Resources\**\*.xaml</PageExclusions>
   </PropertyGroup>
 
-  <UsingTask TaskName="BatchMergeXaml" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" />
-
   <!-- This task is temporarily placed in debug configuration to avoid parallel build concurrency issues -->
   <Target Name="GenerateThemeResourceV1File" DependsOnTargets="ResolveProjectReferences" BeforeTargets="BeforeBuild" Outputs="themeresources_v1.xaml" Condition="'$(Configuration)'=='Debug'">
 	<ItemGroup>
