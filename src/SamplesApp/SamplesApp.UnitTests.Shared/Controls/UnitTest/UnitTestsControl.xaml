@@ -65,37 +65,86 @@
                     </Button.Content>
                     <Button.Flyout>
                         <Flyout>
-                            <StackPanel>
-                                <ToggleButton x:Name="consoleOutput">
-                                    <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <FontIcon Glyph="&#xED0D;" />
-                                        <TextBlock Text="Console Output" />
+                            <StackPanel Spacing="8">
+                                <!-- Options: 2x2 grid of toggles -->
+                                <TextBlock
+                                    FontWeight="SemiBold"
+                                    Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                                    Style="{ThemeResource CaptionTextBlockStyle}"
+                                    Text="OPTIONS" />
+                                <Grid ColumnSpacing="4" RowSpacing="4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <ToggleButton x:Name="consoleOutput" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left">
+                                        <StackPanel Orientation="Horizontal" Spacing="6">
+                                            <FontIcon Glyph="&#xED0D;" FontSize="14" />
+                                            <TextBlock Text="Console" />
+                                        </StackPanel>
+                                    </ToggleButton>
+                                    <ToggleButton x:Name="runIgnored" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left">
+                                        <StackPanel Orientation="Horizontal" Spacing="6">
+                                            <FontIcon Glyph="&#xEE35;" FontSize="14" />
+                                            <TextBlock Text="Run ignored" />
+                                        </StackPanel>
+                                    </ToggleButton>
+                                    <ToggleButton x:Name="retry" Grid.Row="1" Grid.Column="0" IsChecked="True" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left">
+                                        <StackPanel Orientation="Horizontal" Spacing="6">
+                                            <FontIcon Glyph="&#xEC57;" FontSize="14" />
+                                            <TextBlock Text="Auto retry" />
+                                        </StackPanel>
+                                    </ToggleButton>
+                                    <ToggleButton x:Name="unloadTestContent" Grid.Row="1" Grid.Column="1" IsChecked="True" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left">
+                                        <StackPanel Orientation="Horizontal" Spacing="6">
+                                            <FontIcon Glyph="&#xE74D;" FontSize="14" />
+                                            <TextBlock Text="Unload" />
+                                        </StackPanel>
+                                    </ToggleButton>
+                                </Grid>
+
+                                <!-- Divider -->
+                                <Rectangle
+                                    Height="1"
+                                    HorizontalAlignment="Stretch"
+                                    Fill="{ThemeResource SystemControlForegroundBaseLowBrush}" />
+
+                                <!-- Repeat + Test Grouping: side by side -->
+                                <Grid ColumnSpacing="12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Left column: Repeat -->
+                                    <StackPanel Grid.Row="0" Grid.Column="0" Spacing="4">
+                                        <TextBlock
+                                            FontWeight="SemiBold"
+                                            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                                            Style="{ThemeResource CaptionTextBlockStyle}"
+                                            Text="REPEAT" />
+                                        <TextBox x:Name="iterationCount" Header="Iterations" PlaceholderText="1" HorizontalAlignment="Stretch" />
                                     </StackPanel>
-                                </ToggleButton>
-                                <ToggleButton x:Name="runIgnored">
-                                    <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <FontIcon Glyph="&#xEE35;" />
-                                        <TextBlock Text="Run ignored tests" />
+
+                                    <!-- Right column: Test Grouping -->
+                                    <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
+                                        <TextBlock
+                                            FontWeight="SemiBold"
+                                            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                                            Style="{ThemeResource CaptionTextBlockStyle}"
+                                            Text="TEST GROUPING" />
+                                        <TextBox x:Name="testGroupNumber" Header="Group ID" PlaceholderText="e.g. 0" HorizontalAlignment="Stretch" InputScope="Number" />
+                                        <TextBox x:Name="testGroupCount" Header="Group count" PlaceholderText="e.g. 12" HorizontalAlignment="Stretch" InputScope="Number" />
                                     </StackPanel>
-                                </ToggleButton>
-                                <ToggleButton x:Name="retry" IsChecked="True">
-                                    <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <FontIcon Glyph="&#xEC57;" />
-                                        <TextBlock Text="Auto retry" />
-                                    </StackPanel>
-                                </ToggleButton>
-                                <ToggleButton x:Name="unloadTestContent" IsChecked="True">
-                                    <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <FontIcon Glyph="&#xE74D;" />
-                                        <TextBlock Text="Unload test content" />
-                                    </StackPanel>
-                                </ToggleButton>
-                                <TextBox x:Name="iterationCount" Header="Iterations" PlaceholderText="1" Width="140" />
-                                <StackPanel Orientation="Vertical" Spacing="8">
-                                    <TextBlock Text="Run a specific test group:" />
-                                    <TextBox x:Name="testGroupNumber" Header="Group ID" PlaceholderText="Group # (e.g. 0)" Width="140" InputScope="Number" />
-                                    <TextBox x:Name="testGroupCount" Header="Group count" PlaceholderText="Group count (e.g. 12)" Width="160" InputScope="Number" />
-                                </StackPanel>
+                                </Grid>
                             </StackPanel>
                         </Flyout>
                     </Button.Flyout>
