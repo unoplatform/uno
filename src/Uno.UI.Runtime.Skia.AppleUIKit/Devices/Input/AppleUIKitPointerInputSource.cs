@@ -323,68 +323,6 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 	}
 #endif
 
-#if __MACCATALYST__
-	internal void HandleScrollEvent(double deltaX, double deltaY, CGPoint location)
-	{
-		try
-		{
-			_trace?.Invoke($"<ScrollEvent deltaX={deltaX:F2} deltaY={deltaY:F2}>");
-			PointerWheelChanged?.Invoke(this, CreateScrollEventArgs(deltaX, deltaY, location));
-			_trace?.Invoke("</ScrollEvent>");
-		}
-		catch (Exception e)
-		{
-			_trace?.Invoke($"</ScrollEvent error=true>\r\n" + e);
-			Application.Current.RaiseRecoverableUnhandledException(e);
-		}
-	}
-
-	private PointerEventArgs CreateScrollEventArgs(double deltaX, double deltaY, CGPoint location)
-	{
-		var scaledDeltaX = (int)(deltaX * ScrollWheelDeltaMultiplier);
-		var scaledDeltaY = (int)(deltaY * ScrollWheelDeltaMultiplier);
-
-		var absX = Math.Abs(scaledDeltaX);
-		var absY = Math.Abs(scaledDeltaY);
-		var isHorizontal = absX > absY;
-		var wheelDelta = isHorizontal ? scaledDeltaX : scaledDeltaY;
-
-		var properties = new PointerPointProperties()
-		{
-			IsLeftButtonPressed = false,
-			IsRightButtonPressed = false,
-			IsMiddleButtonPressed = false,
-			IsXButton1Pressed = false,
-			IsXButton2Pressed = false,
-			PointerUpdateKind = PointerUpdateKind.Other,
-			IsBarrelButtonPressed = false,
-			IsEraser = false,
-			IsHorizontalMouseWheel = isHorizontal,
-			MouseWheelDelta = wheelDelta,
-			IsPrimary = true,
-			IsInRange = true,
-			Orientation = 0,
-			Pressure = 0,
-			TouchConfidence = false,
-		};
-
-		var timestamp = PointerHelpers.ToTimestamp(CoreAnimation.CAAnimation.CurrentMediaTime());
-
-		var point = new PointerPoint(
-			frameId: PointerHelpers.ToFrameId(timestamp),
-			timestamp: timestamp,
-			device: PointerDevice.For(Windows.Devices.Input.PointerDeviceType.Mouse),
-			pointerId: 1u,
-			rawPosition: new Point(location.X, location.Y),
-			position: new Point(location.X, location.Y),
-			isInContact: false,
-			properties: properties
-		);
-
-		return new PointerEventArgs(point, VirtualKeyModifiers.None);
-	}
-#endif
-
 	private PointerEventArgs CreatePointerEventArgs(UIView source, UITouch touch)
 	{
 #if __TVOS__
