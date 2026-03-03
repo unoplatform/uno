@@ -157,16 +157,21 @@ public partial class InputInjector
 	{
 		if (_pen is not null)
 		{
-			var cancel = new InjectedInputPenInfo
-			{
-				PointerInfo = new()
-				{
-					PointerId = _pen.Value.state.PointerId,
-					PointerOptions = InjectedInputPointerOptions.Canceled
-				}
-			};
+			var pen = _pen.Value;
 
-			_target.InjectPointerRemoved(cancel.ToEventArgs(_pen.Value.state));
+			if (pen.isAdded)
+			{
+				var cancel = new InjectedInputPenInfo
+				{
+					PointerInfo = new()
+					{
+						PointerId = pen.state.PointerId,
+						PointerOptions = InjectedInputPointerOptions.Canceled
+					}
+				};
+
+				_target.InjectPointerRemoved(cancel.ToEventArgs(pen.state));
+			}
 
 			_pen = null;
 		}
