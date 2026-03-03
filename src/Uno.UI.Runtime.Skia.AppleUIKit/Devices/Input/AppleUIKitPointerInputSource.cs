@@ -263,6 +263,17 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 		try
 		{
 			var translation = new CGPoint(_momentumVelocityX, _momentumVelocityY);
+
+			// If the computed wheel deltas would round to zero on both axes,
+			// stop inertia to avoid unnecessary display-link callbacks.
+			var multiplier = _gestureIsNaturalScrolling ? -ScrollWheelDeltaMultiplier : ScrollWheelDeltaMultiplier;
+			var scrollDeltaX = (int)(translation.X * multiplier);
+			var scrollDeltaY = (int)(translation.Y * multiplier);
+			if (scrollDeltaX == 0 && scrollDeltaY == 0)
+			{
+				StopInertiaScrolling();
+				return;
+			}
 			PointerWheelChanged?.Invoke(this, CreateScrollGestureEventArgs(translation, _cachedScrollLocation, _gestureIsNaturalScrolling));
 		}
 		catch (Exception e)
