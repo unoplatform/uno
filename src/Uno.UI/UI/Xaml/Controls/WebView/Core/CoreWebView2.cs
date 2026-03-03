@@ -359,15 +359,9 @@ public partial class CoreWebView2
 		_pendingReleaseNativeWebView?.Cancel();
 		_pendingReleaseNativeWebView = releaseTokenSource;
 
-		try
-		{
-			// Controls can transiently unload/reload during shell transitions; avoid tearing down native WebView for those.
-			await Task.Delay(200, releaseTokenSource.Token);
-		}
-		catch (OperationCanceledException)
-		{
-			return;
-		}
+		// Let unload/reload + native attach/detach settle on the next UI turn.
+		// This avoids fixed delays while keeping release decisions deterministic.
+		await _owner.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { });
 
 		var isAttachedToHost = (_nativeWebView as IAttachableNativeWebView)?.IsAttachedToNativeHost;
 		if (releaseTokenSource.IsCancellationRequested)

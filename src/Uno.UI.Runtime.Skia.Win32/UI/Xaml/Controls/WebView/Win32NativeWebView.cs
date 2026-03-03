@@ -103,18 +103,20 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 		using var lpClassName = new Win32Helper.NativeNulTerminatedUtf16String(WindowClassName);
 
 		_webViewForNextCreateWindow = new WeakReference<Win32NativeWebView>(this);
+		var parentHwnd = ParentHwnd;
+		var windowStyle = parentHwnd != HWND.Null ? WINDOW_STYLE.WS_CHILD | WINDOW_STYLE.WS_CLIPSIBLINGS : 0;
 		unsafe
 		{
 			_hwnd = PInvoke.CreateWindowEx(
 				0,
 				lpClassName,
 				new PCWSTR(),
-				0,
+				windowStyle,
 				PInvoke.CW_USEDEFAULT,
 				PInvoke.CW_USEDEFAULT,
 				PInvoke.CW_USEDEFAULT,
 				PInvoke.CW_USEDEFAULT,
-				HWND.Null,
+				parentHwnd,
 				HMENU.Null,
 				Win32Helper.GetHInstance(),
 				null);

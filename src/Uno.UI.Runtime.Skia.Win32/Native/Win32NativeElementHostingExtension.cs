@@ -288,13 +288,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		var hwnd = (HWND)window.Hwnd;
 		this.LogTrace()?.Trace($"{nameof(DetachNativeElement)} child={hwnd.Value} {$"active={PInvoke.GetActiveWindow().Value}"}");
 		_ = PInvoke.ShowWindow(hwnd, SHOW_WINDOW_CMD.SW_HIDE);
-
-		var oldParent = PInvoke.SetParent(hwnd, HWND.Null);
-		if (oldParent == HWND.Null && Marshal.GetLastWin32Error() != 0)
-		{
-			this.LogError()?.Error($"{nameof(PInvoke.SetParent)} failed: {Win32Helper.GetErrorMessage()}");
-		}
-		this.LogTrace()?.Trace($"{nameof(DetachNativeElement)} child={hwnd.Value} oldParent={oldParent.Value} detached=true {$"active={PInvoke.GetActiveWindow().Value}"}");
+		this.LogTrace()?.Trace($"{nameof(DetachNativeElement)} child={hwnd.Value} detached=true keepParent=true {$"active={PInvoke.GetActiveWindow().Value}"}");
 
 		((Win32WindowWrapper)XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!).RenderingNegativePathReevaluated -= OnRenderingNegativePathReevaluated;
 	}
