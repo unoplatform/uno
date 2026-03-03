@@ -89,11 +89,6 @@ namespace Uno.UI.Samples.Tests
 
 			this.InitializeComponent();
 			this.Loaded += OnLoaded;
-
-			_scrollableHeightCallbackToken = testResultsScroller.RegisterPropertyChangedCallback(
-				ScrollViewer.ScrollableHeightProperty,
-				OnTestResultsScrollableHeightChanged);
-			testResultsScroller.ViewChanged += OnTestResultsScrollerViewChanged;
 			this.Unloaded += OnUnloaded;
 
 			Private.Infrastructure.TestServices.WindowHelper.EmbeddedTestRoot =
@@ -135,6 +130,11 @@ namespace Uno.UI.Samples.Tests
 #else
 				false;
 #endif
+
+			_scrollableHeightCallbackToken = testResultsScroller.RegisterPropertyChangedCallback(
+				ScrollViewer.ScrollableHeightProperty,
+				OnTestResultsScrollableHeightChanged);
+			testResultsScroller.ViewChanged += OnTestResultsScrollerViewChanged;
 		}
 
 		private void OnUnloaded(object sender, RoutedEventArgs args)
