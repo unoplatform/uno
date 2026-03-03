@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -450,19 +451,13 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			static byte[] GetLengthPrefixedArray(ImmutableArray<int> values)
 			{
-				if (values.Length == 0)
+				var result = new byte[sizeof(int) /* length */ + values.Length * sizeof(int)];
+				BinaryPrimitives.WriteInt32LittleEndian(result.AsSpan(0), values.Length);
+				for (var i = 0; i < values.Length; i++)
 				{
-					return [0, 0, 0, 0]; // length (empty)
+					BinaryPrimitives.WriteInt32LittleEndian(result.AsSpan((i + 1) * sizeof(int)), values[i]);
 				}
-
-				var stream = new MemoryStream(sizeof(int) /* length */ + values.Length * sizeof(int));
-				var writer = new BinaryWriter(stream);
-				writer.Write(values.Length);
-				foreach (var value in values)
-				{
-					writer.Write(value);
-				}
-				return stream.ToArray();
+				return result;
 			}
 		}
 
