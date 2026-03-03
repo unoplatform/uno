@@ -26,12 +26,11 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 #if __IOS__
 	// Multiplier for converting trackpad translation (pts/frame) to WinUI MouseWheelDelta.
 	// With DisableAnimation:true in PointerWheelScroll (see ScrollContentPresenter.cs),
-	// each event directly moves the scroll by: round(delta * scrollPerNotch / 120).
-	// For scrollPerNotch ≈ 90 (15% of a 600px viewport), multiplier=3 gives ~2:1 scroll ratio:
-	//   slow  (2 pts/frame)  → delta=6  → ~5 px/frame  → 300 px/s
-	//   normal(10 pts/frame) → delta=30 → ~23 px/frame → 1380 px/s
-	//   fast  (30 pts/frame) → delta=90 → ~68 px/frame → 4080 px/s
-	// Inertia uses the same multiplier (velocity/InertiaVelocityScale * this) for a seamless handoff.
+	// each event directly moves the scroll by: round(delta * scrollPerNotch / 120),
+	// where delta is the trackpad translation (pts/frame) multiplied by ScrollWheelDeltaMultiplier.
+	// For a typical scrollPerNotch (for example, ~15% of the viewport height), this value is tuned
+	// to yield a comfortable ratio between physical trackpad motion and content scroll distance.
+	// Inertia uses the same multiplier (velocity / InertiaVelocityScale * this) for a seamless handoff.
 	private const int ScrollWheelDeltaMultiplier = -60;
 	private const double MinTranslationThreshold = 1.0;
 	private const double InertiaDecelerationRate = 0.95;
