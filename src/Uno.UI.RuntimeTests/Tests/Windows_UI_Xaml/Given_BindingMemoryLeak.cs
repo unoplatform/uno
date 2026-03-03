@@ -115,8 +115,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		private static (WeakReference viewRef, WeakReference vmRef) CreateXBindView(ContentControl root)
 		{
 			var vm = new BindingLeak_ViewModel { Text = "xBind test" };
-			var view = new BindingLeak_xBind_View() { Width = 100, Height = 100 };
-			view.DataContext = vm;
+			var view = new BindingLeak_xBind_View() { Width = 100, Height = 100, ViewModel = vm };
 			root.Content = view;
 
 			var viewRef = new WeakReference(view);
@@ -129,12 +128,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		private static (WeakReference viewRef, WeakReference vmRef) CreateXBindViewWithNullDC(ContentControl root)
 		{
 			var vm = new BindingLeak_ViewModel { Text = "xBind null DC test" };
-			var view = new BindingLeak_xBind_View() { Width = 100, Height = 100 };
-			view.DataContext = vm;
+			var view = new BindingLeak_xBind_View() { Width = 100, Height = 100, ViewModel = vm };
 			root.Content = view;
 
 			// Null DataContext before removal
-			view.DataContext = null;
+			view.ViewModel = null;
 
 			var viewRef = new WeakReference(view);
 			var vmRef = new WeakReference(vm);
@@ -146,8 +144,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		private static (WeakReference viewRef, WeakReference vmRef) CreateBindingView(ContentControl root)
 		{
 			var vm = new BindingLeak_ViewModel { Text = "Binding test" };
-			var view = new BindingLeak_Binding_View { Width = 100, Height = 100 };
-			view.DataContext = vm;
+			var view = new BindingLeak_Binding_View { Width = 100, Height = 100, DataContext = vm };
 			root.Content = view;
 
 			var viewRef = new WeakReference(view);
@@ -160,8 +157,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		private static (WeakReference viewRef, WeakReference vmRef) CreateBindingViewWithNullDC(ContentControl root)
 		{
 			var vm = new BindingLeak_ViewModel { Text = "Binding null DC test" };
-			var view = new BindingLeak_Binding_View { Width = 100, Height = 100 };
-			view.DataContext = vm;
+			var view = new BindingLeak_Binding_View { Width = 100, Height = 100, DataContext = vm };
 			root.Content = view;
 
 			// Null DataContext before removal
@@ -177,8 +173,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		private static (WeakReference viewRef, WeakReference vmRef) CreateBrushResourceView(ContentControl root)
 		{
 			var vm = new BindingLeak_ViewModel { Text = "Brush resource test" };
-			var view = new BindingLeak_BrushResource_View { Width = 100, Height = 100 };
-			view.DataContext = vm;
+			var view = new BindingLeak_BrushResource_View { Width = 100, Height = 100, DataContext = vm };
 			root.Content = view;
 
 			var viewRef = new WeakReference(view);
