@@ -207,6 +207,8 @@
         href: xref:uno.development.using.markup
       - name: Platform-specific C# code
         href: platform-specific-csharp.md
+      - name: Implicit XAML Namespaces
+        href: xref:Uno.Features.ImplicitXamlNamespaces
       - name: Platform-specific XAML markup
         href: platform-specific-xaml.md
       - name: Auto-Generated Code-Behind
