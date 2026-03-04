@@ -168,11 +168,11 @@ public class Given_Window
 	[RunsOnUIThread]
 	public async Task When_Secondary_Window_Opens()
 	{
+		AssertSupportsMultipleWindows();
+
 		var sut = new Window();
 		try
 		{
-			AssertSupportsMultipleWindows();
-
 			bool activated = false;
 			sut.Content = new Border();
 			sut.Activated += (s, e) => activated = true;
