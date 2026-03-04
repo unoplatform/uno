@@ -62,6 +62,50 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.ToArray();
 		}
 
+		/// <summary>
+		/// Scans all referenced assemblies and the current assembly for all XmlnsDefinition
+		/// attributes, returning a dictionary mapping XML namespace URI to CLR namespaces.
+		/// This enables type resolution for any URI registered via XmlnsDefinition.
+		/// </summary>
+		public static Dictionary<string, List<string>> GetAllXmlnsDefinitions(Compilation compilation)
+		{
+			var result = new Dictionary<string, List<string>>(StringComparer.Ordinal);
+
+			foreach (var reference in compilation.References)
+			{
+				if (compilation.GetAssemblyOrModuleSymbol(reference) is IAssemblySymbol assembly)
+				{
+					CollectAllXmlnsDefinitions(assembly, result);
+				}
+			}
+
+			CollectAllXmlnsDefinitions(compilation.Assembly, result);
+			return result;
+		}
+
+		private static void CollectAllXmlnsDefinitions(IAssemblySymbol assembly, Dictionary<string, List<string>> result)
+		{
+			foreach (var attr in assembly.GetAttributes())
+			{
+				if (attr.AttributeClass?.Name == "XmlnsDefinitionAttribute"
+					&& attr.ConstructorArguments.Length >= 2
+					&& attr.ConstructorArguments[0].Value is string uri
+					&& attr.ConstructorArguments[1].Value is string clrNamespace)
+				{
+					if (!result.TryGetValue(uri, out var list))
+					{
+						list = new List<string>();
+						result[uri] = list;
+					}
+
+					if (!list.Contains(clrNamespace))
+					{
+						list.Add(clrNamespace);
+					}
+				}
+			}
+		}
+
 		private static void CollectXmlnsDefinitions(IAssemblySymbol assembly, string globalUri, List<string> namespaces)
 		{
 			foreach (var attr in assembly.GetAttributes())

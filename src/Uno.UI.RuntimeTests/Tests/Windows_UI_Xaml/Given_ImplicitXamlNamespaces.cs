@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.CustomGlobal;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.CustomPrefixed;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
@@ -133,6 +134,69 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			Assert.IsInstanceOfType(control.TestButton, typeof(Microsoft.UI.Xaml.Controls.Button),
 				"Standard WinUI Button should take precedence over any global namespace Button");
+		}
+
+		// --- Phase 5: User Story 3 - Third-Party Library Namespaces ---
+
+		[TestMethod]
+		public async Task When_Cross_Assembly_XmlnsDefinition_Resolves()
+		{
+			// T025: Verify types from a referenced assembly registered to the global URI
+			// resolve unprefixed. Since GlobalNamespaceResolver scans both compilation.References
+			// and compilation.Assembly, the same mechanism handles cross-assembly and
+			// current-assembly resolution. This test verifies the end-to-end resolution
+			// works for custom types alongside standard WinUI types.
+			var control = new ImplicitXamlNamespaces_CustomGlobal();
+			TestServices.WindowHelper.WindowContent = control;
+			await TestServices.WindowHelper.WaitForLoaded(control);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// CustomGlobalControl is resolved via XmlnsDefinition targeting the global URI
+			Assert.IsNotNull(control.MyCustomControl, "Cross-assembly style XmlnsDefinition should resolve");
+			Assert.IsInstanceOfType(control.MyCustomControl, typeof(CustomGlobalControl));
+
+			// Standard WinUI controls continue to work alongside custom global types
+			var noXmlns = new ImplicitXamlNamespaces_NoXmlns();
+			TestServices.WindowHelper.WindowContent = noXmlns;
+			await TestServices.WindowHelper.WaitForLoaded(noXmlns);
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.IsNotNull(noXmlns.TestButton, "Standard WinUI types should coexist with global custom types");
+		}
+
+		[TestMethod]
+		public async Task When_Library_Ships_Own_XmlnsDefinition()
+		{
+			// T026: Verify that when an assembly declares its own XmlnsDefinition
+			// targeting the global URI, its types are automatically discoverable.
+			// AnotherGlobalControl is in the same XmlnsDefinition-registered namespace
+			// as CustomGlobalControl, proving multiple types are discovered.
+			var control = new ImplicitXamlNamespaces_CustomGlobal();
+			TestServices.WindowHelper.WindowContent = control;
+			await TestServices.WindowHelper.WaitForLoaded(control);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull(control.MyAnotherControl, "Library-shipped XmlnsDefinition types should auto-discover");
+			Assert.IsInstanceOfType(control.MyAnotherControl, typeof(AnotherGlobalControl));
+			Assert.AreEqual(42, control.MyAnotherControl.CustomValue);
+		}
+
+		[TestMethod]
+		public async Task When_XmlnsPrefix_Registered_Prefix_Is_Implicitly_Available()
+		{
+			// T026b: Verify that a namespace registered with [assembly: XmlnsPrefix]
+			// associating a prefix (e.g., "tc") is implicitly available in XAML
+			// without an explicit xmlns:tc declaration.
+			var control = new ImplicitXamlNamespaces_XmlnsPrefix();
+			TestServices.WindowHelper.WindowContent = control;
+			await TestServices.WindowHelper.WaitForLoaded(control);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull(control.MyPrefixedControl, "XmlnsPrefix-registered prefix should be implicitly available");
+			Assert.IsInstanceOfType(control.MyPrefixedControl, typeof(PrefixedControl));
+			Assert.AreEqual("Prefixed Value", control.MyPrefixedControl.PrefixedLabel);
+
+			Assert.IsNotNull(control.StandardTextBlock, "Standard controls should work alongside prefixed controls");
+			Assert.AreEqual("Standard Control", control.StandardTextBlock.Text);
 		}
 	}
 }

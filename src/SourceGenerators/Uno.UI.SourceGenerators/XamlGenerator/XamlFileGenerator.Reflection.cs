@@ -513,6 +513,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
+				// When implicit namespaces are enabled, resolve types from XmlnsDefinition-registered URIs
+				// that are not already in _knownNamespaces (to avoid interfering with standard resolution)
+				if (_enableImplicitXamlNamespaces
+					&& _allXmlnsDefinitions != null
+					&& !_knownNamespaces.ContainsKey(trimmedNamespace)
+					&& _allXmlnsDefinitions.TryGetValue(trimmedNamespace, out var xmlnsDefNamespaces))
+				{
+					if (SearchNamespaces(type.Name, xmlnsDefNamespaces) is INamedTypeSymbol xmlnsDefResult)
+					{
+						return xmlnsDefResult;
+					}
+				}
+
 				if (
 					type.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace
 					&& type.Name == "Bind"

@@ -101,14 +101,14 @@
 
 ### Tests for User Story 3
 
-- [ ] T025 [US3] Add runtime test: `When_Cross_Assembly_XmlnsDefinition_Resolves` — verify types from a referenced assembly registered to the global URI resolve unprefixed (use an existing Uno assembly type as the cross-assembly reference)
-- [ ] T026 [US3] Add runtime test: `When_Library_Ships_Own_XmlnsDefinition` — verify that when a referenced assembly declares its own `XmlnsDefinition` targeting the global URI, its types are automatically discoverable
-- [ ] T026b [US3] Add runtime test: `When_XmlnsPrefix_Registered_Prefix_Is_Implicitly_Available` — register a namespace with `[assembly: XmlnsPrefix]` associating a prefix (e.g., `toolkit`), use that prefix in XAML without an explicit `xmlns:toolkit` declaration, verify the prefixed type resolves correctly (covers FR-010)
+- [X] T025 [US3] Add runtime test: `When_Cross_Assembly_XmlnsDefinition_Resolves` — verify types from a referenced assembly registered to the global URI resolve unprefixed (use an existing Uno assembly type as the cross-assembly reference)
+- [X] T026 [US3] Add runtime test: `When_Library_Ships_Own_XmlnsDefinition` — verify that when a referenced assembly declares its own `XmlnsDefinition` targeting the global URI, its types are automatically discoverable
+- [X] T026b [US3] Add runtime test: `When_XmlnsPrefix_Registered_Prefix_Is_Implicitly_Available` — register a namespace with `[assembly: XmlnsPrefix]` associating a prefix (e.g., `toolkit`), use that prefix in XAML without an explicit `xmlns:toolkit` declaration, verify the prefixed type resolves correctly (covers FR-010)
 
 ### Implementation for User Story 3
 
-- [ ] T027 [US3] Verify `GlobalNamespaceResolver.GetGlobalClrNamespaces()` correctly scans `XmlnsDefinition` attributes from **referenced assemblies** (via `Compilation.References` → `IAssemblySymbol.GetAttributes()`) and handles the `AssemblyName` constructor argument in `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/GlobalNamespaceResolver.cs`
-- [ ] T028 [US3] Add test XAML files that reference types from other assemblies without prefixes; register in `src/SamplesApp/UITests.Shared/UITests.Shared.projitems`
+- [X] T027 [US3] Verify `GlobalNamespaceResolver.GetGlobalClrNamespaces()` correctly scans `XmlnsDefinition` attributes from **referenced assemblies** (via `Compilation.References` → `IAssemblySymbol.GetAttributes()`) and handles the `AssemblyName` constructor argument in `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/GlobalNamespaceResolver.cs`
+- [X] T028 [US3] Add test XAML files that reference types from other assemblies without prefixes; register in `src/SamplesApp/UITests.Shared/UITests.Shared.projitems`
 
 **Checkpoint**: Third-party library types resolve unprefixed when their namespace is registered to the global URI.
 

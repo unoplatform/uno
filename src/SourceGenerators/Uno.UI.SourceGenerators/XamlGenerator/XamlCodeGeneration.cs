@@ -440,10 +440,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// Resolve implicit prefixes from XmlnsPrefix attributes when feature is enabled
 				(string Prefix, string Uri)[] implicitPrefixes = Array.Empty<(string, string)>();
 				string[] globalClrNamespaces = Array.Empty<string>();
+				Dictionary<string, string[]>? allXmlnsDefinitions = null;
 				if (_enableImplicitXamlNamespaces)
 				{
 					globalClrNamespaces = GlobalNamespaceResolver.GetGlobalClrNamespaces(_generatorContext.Compilation, _globalXamlNamespaceUri);
 					implicitPrefixes = GlobalNamespaceResolver.GetImplicitPrefixes(_generatorContext.Compilation);
+
+					// Collect all XmlnsDefinition URI→CLR namespace mappings for type resolution
+					var allDefs = GlobalNamespaceResolver.GetAllXmlnsDefinitions(_generatorContext.Compilation);
+					allXmlnsDefinitions = allDefs.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToArray());
 				}
 
 				// Parse XAML files
@@ -518,7 +523,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							xamlTypeToXamlTypeBaseMap: xamlTypeToXamlTypeBaseMap,
 							includeXamlNamespaces: includeXamlNamespaces,
 							enableImplicitXamlNamespaces: _enableImplicitXamlNamespaces,
-							globalClrNamespaces: globalClrNamespaces
+							globalClrNamespaces: globalClrNamespaces,
+							allXmlnsDefinitions: allXmlnsDefinitions
 						);
 
 						var (code, errors) = generator.GenerateFile();
