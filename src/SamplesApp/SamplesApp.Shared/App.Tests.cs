@@ -78,12 +78,29 @@ partial class App
 			runtimeTestIterations = parsedIterations;
 		}
 
+		int testStartIndex = 0;
+		if (argsPairs.TryGetValue("--runtime-tests-start", out var startStr)
+			&& int.TryParse(startStr, out var parsedStart)
+			&& parsedStart >= 0)
+		{
+			testStartIndex = parsedStart;
+		}
+
+		int testCount = -1;
+		if (argsPairs.TryGetValue("--runtime-tests-count", out var countStr)
+			&& int.TryParse(countStr, out var parsedCount)
+			&& parsedCount > 0)
+		{
+			testCount = parsedCount;
+		}
+
 		Console.WriteLine(
 			$"Automated runtime tests output file: {runtimeTestResultFilePath} (" +
 			$"UITEST_RUNTIME_TEST_GROUP: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP")}, " +
 			$"UITEST_RUNTIME_TEST_GROUP_COUNT: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP_COUNT")}, " +
 			$"UITEST_RUNTIME_TESTS_FILTER: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TESTS_FILTER")}, " +
-			$"iterations: {runtimeTestIterations}" +
+			$"iterations: {runtimeTestIterations}, " +
+			$"testStartIndex: {testStartIndex}, testCount: {testCount}" +
 			$")");
 
 		if (!string.IsNullOrEmpty(runtimeTestResultFilePath))
@@ -101,7 +118,9 @@ partial class App
 				CancellationToken.None,
 				runtimeTestResultFilePath,
 				() => System.Environment.Exit(0),
-				runtimeTestIterations);
+				runtimeTestIterations,
+				testStartIndex,
+				testCount);
 
 			return true;
 		}

@@ -67,6 +67,7 @@ namespace Uno.UI.Samples.Tests
 
 		private List<TestCaseResult> _testCases = new();
 		private TestRun _currentRun;
+		private bool _rangeExhausted;
 		private StreamWriter _testTracker;
 		private long _scrollableHeightCallbackToken;
 
@@ -747,6 +748,7 @@ namespace Uno.UI.Samples.Tests
 			{
 				StartTime = DateTimeOffset.UtcNow
 			};
+			_rangeExhausted = false;
 
 			try
 			{
@@ -760,9 +762,12 @@ namespace Uno.UI.Samples.Tests
 
 				foreach (var type in testTypes)
 				{
-					if (ct.IsCancellationRequested)
+					if (_rangeExhausted || ct.IsCancellationRequested)
 					{
-						_ = ReportMessage("Stopped by user.", false);
+						if (ct.IsCancellationRequested)
+						{
+							_ = ReportMessage("Stopped by user.", false);
+						}
 						break;
 					}
 
@@ -867,9 +872,12 @@ namespace Uno.UI.Samples.Tests
 
 				foreach (var testCase in test.GetCases())
 				{
-					if (ct.IsCancellationRequested)
+					if (_rangeExhausted || ct.IsCancellationRequested)
 					{
-						_ = ReportMessage("Stopped by user.", false);
+						if (ct.IsCancellationRequested)
+						{
+							_ = ReportMessage("Stopped by user.", false);
+						}
 						return;
 					}
 
@@ -880,7 +888,21 @@ namespace Uno.UI.Samples.Tests
 				{
 					var fullTestName = testName + testCase.ToString();
 
+					var currentIndex = _currentRun.Run;
 					_currentRun.Run++;
+
+					// Range-based skip: silently skip tests before the start index
+					if (config.TestStartIndex > 0 && currentIndex < config.TestStartIndex)
+					{
+						return;
+					}
+
+					// Range-based stop: stop executing once we've run enough tests
+					if (config.TestCount >= 0 && currentIndex >= config.TestStartIndex + config.TestCount)
+					{
+						_rangeExhausted = true;
+						return;
+					}
 
 					// We await this to make sure the UI is updated before running the test.
 					// This will help developpers to identify faulty tests when the app is crashing.

@@ -19,16 +19,25 @@
 .PARAMETER TestFilter
     Optional base64-encoded filter string to narrow test scope.
 
+.PARAMETER TestStartIndex
+    0-based global test index to start executing from (default 0).
+
+.PARAMETER TestCount
+    Number of tests to execute from TestStartIndex. -1 = run all (default -1).
+
 .EXAMPLE
     .\run-winui-runtime-tests-repeat.ps1 -TotalRuns 20 -Iterations 1
     .\run-winui-runtime-tests-repeat.ps1 -TotalRuns 10 -Iterations 3 -TimeoutSeconds 900
+    .\run-winui-runtime-tests-repeat.ps1 -TotalRuns 3 -TestStartIndex 0 -TestCount 500
 #>
 
 param(
     [int]$TotalRuns = 20,
     [int]$Iterations = 1,
     [int]$TimeoutSeconds = 600,
-    [string]$TestFilter = ""
+    [string]$TestFilter = "",
+    [int]$TestStartIndex = 0,
+    [int]$TestCount = -1
 )
 
 $ErrorActionPreference = 'Continue'
@@ -55,6 +64,7 @@ Write-Host "=========================================="
 Write-Host "Total runs:    $TotalRuns"
 Write-Host "Iterations:    $Iterations"
 Write-Host "Timeout:       ${TimeoutSeconds}s"
+Write-Host "Test range:    start=$TestStartIndex, count=$TestCount"
 Write-Host "Tracking dir:  $trackingDir"
 Write-Host "=========================================="
 Write-Host ""
@@ -79,6 +89,14 @@ for ($run = 1; $run -le $TotalRuns; $run++) {
 
     if ($TestFilter) {
         $runtimeTestArgs += "--runtime-test-filter=$TestFilter"
+    }
+
+    if ($TestStartIndex -gt 0) {
+        $runtimeTestArgs += "--runtime-tests-start=$TestStartIndex"
+    }
+
+    if ($TestCount -gt 0) {
+        $runtimeTestArgs += "--runtime-tests-count=$TestCount"
     }
 
     Write-Host "--- Run $run / $TotalRuns ---"

@@ -507,7 +507,7 @@ namespace SampleControl.Presentation
 			ContentPhone = content;
 		}
 
-		internal async Task RunRuntimeTests(CancellationToken ct, string testResultsFilePath, Action doneAction = null, int iterations = 1)
+		internal async Task RunRuntimeTests(CancellationToken ct, string testResultsFilePath, Action doneAction = null, int iterations = 1, int testStartIndex = 0, int testCount = -1)
 		{
 			try
 			{
@@ -526,6 +526,9 @@ namespace SampleControl.Presentation
 				{
 					engineConfig.Iterations = iterations;
 				}
+
+				engineConfig.TestStartIndex = testStartIndex;
+				engineConfig.TestCount = testCount;
 
 					// Used to perform test grouping on CI to reduce the impact of re-runs
 					if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable(TestGroupVariable)))

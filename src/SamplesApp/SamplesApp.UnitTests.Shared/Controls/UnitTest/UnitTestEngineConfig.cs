@@ -17,4 +17,8 @@ public class UnitTestEngineConfig
 	public bool IsUnloadingTestContent { get; set; }
 
 	public int Iterations { get; set; } = 1;
+
+	public int TestStartIndex { get; set; } = 0;
+
+	public int TestCount { get; set; } = -1; // -1 = run all
 }
