@@ -248,5 +248,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.IsNotNull(control.ExplicitButton, "Explicit xmlns should override implicit");
 			Assert.IsInstanceOfType(control.ExplicitButton, typeof(Button));
 		}
+
+		// --- Phase 8: Polish & Cross-Cutting Concerns ---
+
+		// T038: Hot Reload test - the Hot Reload XAML parsing path re-parses XAML
+		// at runtime using the same XamlFileParser with implicit namespace support.
+		// Full Hot Reload testing requires a running Skia app session. The implicit
+		// namespace injection in InjectImplicitXmlns handles any XAML content
+		// regardless of whether it comes from initial compilation or Hot Reload.
+		// Manual validation: modify a XAML file without xmlns during a running Skia
+		// app session and confirm the change is applied.
+
+		[TestMethod]
+		public async Task When_McIgnorable_Works_With_Implicit_Namespaces()
+		{
+			// T039: Verify mc:Ignorable and d:DesignHeight/d:DesignWidth patterns work
+			// correctly when declared alongside implicit namespaces.
+			var control = new ImplicitXamlNamespaces_McIgnorable();
+			TestServices.WindowHelper.WindowContent = control;
+			await TestServices.WindowHelper.WaitForLoaded(control);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull(control.McButton, "Button should work with mc:Ignorable alongside implicit namespaces");
+			Assert.AreEqual("MC Test", control.McButton.Content);
+
+			Assert.IsNotNull(control.McTextBlock, "TextBlock should work with mc:Ignorable alongside implicit namespaces");
+			Assert.AreEqual("MC Ignorable Works", control.McTextBlock.Text);
+		}
+
+		[TestMethod]
+		public async Task When_XBind_Resolves_Types_From_Global_Namespaces()
+		{
+			// T040: Verify x:Bind type resolution uses global namespaces.
+			// The x:Bind test (T013) already verifies that x:Bind expressions
+			// work without explicit xmlns:x. This test additionally confirms
+			// that the binding system correctly resolves the data context type.
+			var control = new ImplicitXamlNamespaces_XBind();
+			control.TestText = "Global Bind Test";
+			TestServices.WindowHelper.WindowContent = control;
+			await TestServices.WindowHelper.WaitForLoaded(control);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Global Bind Test", control.BoundTextBlock.Text,
+				"x:Bind should resolve types from global namespaces");
+		}
 	}
 }
