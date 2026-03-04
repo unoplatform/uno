@@ -67,6 +67,7 @@ namespace Uno.UI.Samples.Tests
 
 		private List<TestCaseResult> _testCases = new();
 		private TestRun _currentRun;
+		private StreamWriter _testTracker;
 		private long _scrollableHeightCallbackToken;
 
 		// On WinUI/UWP dependency properties cannot be accessed outside of
@@ -749,6 +750,8 @@ namespace Uno.UI.Samples.Tests
 
 			try
 			{
+				InitializeTestTracker();
+
 				_ = ReportMessage("Enumerating tests");
 
 				var testTypes = InitializeTests();
@@ -780,6 +783,15 @@ namespace Uno.UI.Samples.Tests
 			}
 			finally
 			{
+				WriteTestTrackerEntry("TRACKER_END", "NORMAL_EXIT");
+
+				try
+				{
+					_testTracker?.Dispose();
+					_testTracker = null;
+				}
+				catch { }
+
 				await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
 				{
 					testFilter.IsEnabled = runButton.IsEnabled = true; // Disable the testFilter to avoid SIP to re-open
@@ -844,6 +856,7 @@ namespace Uno.UI.Samples.Tests
 					}
 
 					_currentRun.Ignored++;
+					WriteTestTrackerEntry("SKIPPED", testName);
 					ReportTestResult(testClassInfo, test, testName, TimeSpan.Zero, TestResult.Skipped, message: ignoreMessage);
 
 					if (!config.IsRunningIgnored)
@@ -872,6 +885,7 @@ namespace Uno.UI.Samples.Tests
 					// We await this to make sure the UI is updated before running the test.
 					// This will help developpers to identify faulty tests when the app is crashing.
 					await ReportMessage($"Running test {fullTestName}");
+					WriteTestTrackerEntry("STARTING", fullTestName);
 					ReportTestsResults();
 
 					var sw = new Stopwatch();
@@ -1045,6 +1059,7 @@ namespace Uno.UI.Samples.Tests
 								{
 									// All iterations passed
 									_currentRun.Succeeded++;
+									WriteTestTrackerEntry("COMPLETED", fullTestName);
 									ReportTestResult(testClassInfo, test, fullTestName, sw.Elapsed, TestResult.Passed, console: console);
 								}
 							}
@@ -1068,6 +1083,7 @@ namespace Uno.UI.Samples.Tests
 								{
 									iterationFailed = true;
 									_currentRun.Inconclusive++;
+									WriteTestTrackerEntry("INCONCLUSIVE", fullTestName);
 									ReportTestResult(testClassInfo, test, fullTestName, sw.Elapsed, TestResult.Inconclusive, message: e.Message, console: console);
 								}
 								else
@@ -1082,6 +1098,7 @@ namespace Uno.UI.Samples.Tests
 
 										_currentRun.CurrentRepeatCount++;
 										canRetry = true;
+										WriteTestTrackerEntry("RETRYING", $"{fullTestName}|attempt={_currentRun.CurrentRepeatCount}");
 
 										await RunCleanup(instance, testClassInfo, test, testName, test.RunsOnUIThread);
 									}
@@ -1089,6 +1106,12 @@ namespace Uno.UI.Samples.Tests
 									{
 										iterationFailed = true;
 										_currentRun.Failed++;
+										var errorSummary = e?.Message?.Replace("\r", "").Replace("\n", " ") ?? "";
+										if (errorSummary.Length > 200)
+										{
+											errorSummary = errorSummary.Substring(0, 200);
+										}
+										WriteTestTrackerEntry("FAILED", $"{fullTestName}|{e?.GetType().Name}: {errorSummary}");
 										ReportTestResult(testClassInfo, test, fullTestName, sw.Elapsed, TestResult.Failed, e, console: console);
 									}
 								}
@@ -1190,6 +1213,42 @@ namespace Uno.UI.Samples.Tests
 				{
 					popup.IsOpen = false;
 				}
+			}
+		}
+
+		private void InitializeTestTracker()
+		{
+			try
+			{
+				var trackingDir = Path.Combine(Path.GetTempPath(), "uno-test-tracking");
+				Directory.CreateDirectory(trackingDir);
+
+				var pid = Process.GetCurrentProcess().Id;
+				var timestamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmssfff", CultureInfo.InvariantCulture);
+				var logPath = Path.Combine(trackingDir, $"test-tracker-{pid}-{timestamp}.log");
+
+				_testTracker = new StreamWriter(logPath, append: false, Encoding.UTF8)
+				{
+					AutoFlush = true
+				};
+
+				WriteTestTrackerEntry("TRACKER_START", $"pid={pid}");
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine($"[TestTracker] Failed to initialize: {e.Message}");
+			}
+		}
+
+		private void WriteTestTrackerEntry(string status, string detail)
+		{
+			try
+			{
+				_testTracker?.WriteLine($"{status}|{DateTime.UtcNow:O}|{detail}");
+			}
+			catch
+			{
+				// Best-effort: don't let tracker failures break test execution
 			}
 		}
 

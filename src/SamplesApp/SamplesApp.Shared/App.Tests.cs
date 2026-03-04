@@ -70,11 +70,20 @@ partial class App
 			Environment.SetEnvironmentVariable("UITEST_RUNTIME_TESTS_FILTER", runtimeTestFilter);
 		}
 
+		int runtimeTestIterations = 1;
+		if (argsPairs.TryGetValue("--runtime-tests-iterations", out var runtimeTestIterationsStr)
+			&& int.TryParse(runtimeTestIterationsStr, out var parsedIterations)
+			&& parsedIterations > 0)
+		{
+			runtimeTestIterations = parsedIterations;
+		}
+
 		Console.WriteLine(
 			$"Automated runtime tests output file: {runtimeTestResultFilePath} (" +
 			$"UITEST_RUNTIME_TEST_GROUP: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP")}, " +
 			$"UITEST_RUNTIME_TEST_GROUP_COUNT: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP_COUNT")}, " +
-			$"UITEST_RUNTIME_TESTS_FILTER: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TESTS_FILTER")}" +
+			$"UITEST_RUNTIME_TESTS_FILTER: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TESTS_FILTER")}, " +
+			$"iterations: {runtimeTestIterations}" +
 			$")");
 
 		if (!string.IsNullOrEmpty(runtimeTestResultFilePath))
@@ -91,7 +100,8 @@ partial class App
 			await SampleControl.Presentation.SampleChooserViewModel.Instance.RunRuntimeTests(
 				CancellationToken.None,
 				runtimeTestResultFilePath,
-				() => System.Environment.Exit(0));
+				() => System.Environment.Exit(0),
+				runtimeTestIterations);
 
 			return true;
 		}

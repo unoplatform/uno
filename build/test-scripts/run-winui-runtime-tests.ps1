@@ -34,6 +34,10 @@ if ($env:UITEST_RUNTIME_TESTS_FILTER) {
     $runtimeTestArgs += "--runtime-test-filter=$env:UITEST_RUNTIME_TESTS_FILTER"
 }
 
+if ($env:UITEST_RUNTIME_TESTS_ITERATIONS) {
+    $runtimeTestArgs += "--runtime-tests-iterations=$env:UITEST_RUNTIME_TESTS_ITERATIONS"
+}
+
 Write-Host "Runtime test arguments: $($runtimeTestArgs -join ' ')"
 
 # Ensure the failed tests directory exists before running tests

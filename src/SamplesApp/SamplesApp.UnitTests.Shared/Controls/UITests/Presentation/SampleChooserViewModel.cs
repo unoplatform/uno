@@ -507,7 +507,7 @@ namespace SampleControl.Presentation
 			ContentPhone = content;
 		}
 
-		internal async Task RunRuntimeTests(CancellationToken ct, string testResultsFilePath, Action doneAction = null)
+		internal async Task RunRuntimeTests(CancellationToken ct, string testResultsFilePath, Action doneAction = null, int iterations = 1)
 		{
 			try
 			{
@@ -521,6 +521,11 @@ namespace SampleControl.Presentation
 					unitTests.IsRunningOnCI = true;
 #endif
 					var engineConfig = new UnitTestEngineConfig();
+
+				if (iterations > 1)
+				{
+					engineConfig.Iterations = iterations;
+				}
 
 					// Used to perform test grouping on CI to reduce the impact of re-runs
 					if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable(TestGroupVariable)))
