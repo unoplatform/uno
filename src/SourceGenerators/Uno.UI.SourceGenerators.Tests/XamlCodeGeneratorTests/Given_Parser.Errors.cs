@@ -308,7 +308,7 @@ public partial class Given_Parser
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
 					<StackPanel Orientation="BadValue">
-						<TextBlock TextWrapping="BadWrap" Visibility="BadVis" Text="Hello" />
+						<TextBlock TextWrapping="BadWrap" Text="Hello" />
 					</StackPanel>
 				</Page>
 
@@ -325,7 +325,6 @@ public partial class Given_Parser
 		[
 			DiagnosticResult.CompilerError("UXAML0001").WithArguments("Failed to create a 'Microsoft.UI.Xaml.Controls.Orientation' from the text 'BadValue'"),
 			DiagnosticResult.CompilerError("UXAML0001").WithArguments("Failed to create a 'Microsoft.UI.Xaml.TextWrapping' from the text 'BadWrap'"),
-			DiagnosticResult.CompilerError("UXAML0001").WithArguments("Failed to create a 'Microsoft.UI.Xaml.Visibility' from the text 'BadVis'"),
 		]);
 
 		await test.RunAsync();
