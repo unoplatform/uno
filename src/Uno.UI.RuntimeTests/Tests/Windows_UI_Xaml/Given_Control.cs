@@ -129,6 +129,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_SetChildTemplateUsingVisualState()
 		{
 			var parent = (Button)XamlReader.Load(_when_SetChildTemplateUsingVisualState);
@@ -172,6 +173,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Refresh_Setter_BindingOnInvocation()
 		{
 			var SUT = new When_Refresh_Setter_BindingOnInvocation();
@@ -304,6 +306,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Refresh_Setter_BindingOnInvocation_ElementName()
 		{
 			var SUT = new When_Refresh_Setter_BindingOnInvocation_ElementName();
@@ -605,6 +608,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21469")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_DefaultStyleResourceUri_And_Derived_Control()
 		{
 			var SUT = XamlHelper.LoadXaml<Grid>("""

@@ -311,8 +311,9 @@ namespace Uno.UI.Samples.Tests
 
 		private async Task ReportMessage(string message, bool isRunning = true)
 		{
-#if HAS_UNO
 			_log?.Info(message);
+#if !HAS_UNO
+			global::System.Console.WriteLine(message);
 #endif
 
 			void Setter()
@@ -866,7 +867,7 @@ namespace Uno.UI.Samples.Tests
 					_currentRun.Run++;
 
 					// We await this to make sure the UI is updated before running the test.
-					// This will help developpers to identify faulty tests when the app is crashing.
+					// This will help developers to identify faulty tests when the app is crashing.
 					await ReportMessage($"Running test {fullTestName}");
 					ReportTestsResults();
 

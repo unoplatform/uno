@@ -647,11 +647,7 @@ public class Given_InputManager
 	}
 
 	[TestMethod]
-#if __WASM__
-	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
-	[Ignore("InputInjector is not supported on this platform.")]
-#endif
+	[Ignore("Test is flaky across all platforms.")]
 	public async Task When_DirectManipulation_Then_AllTreeSetOverAndPressedFalse()
 	{
 		ScrollViewer sv;

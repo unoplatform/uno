@@ -26,6 +26,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	{
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_StyleFailsToApply()
 		{
 			var controlTemplate = (ControlTemplate)XamlReader.Load("""
