@@ -1,5 +1,4 @@
 parameters:
-  vmImage: ''
   poolName: ''
 
 jobs:
@@ -39,6 +38,7 @@ jobs:
     displayName: Decode Signing Certificate
 
   - task: MSBuild@1
+    name: BuildMSIX
     inputs:
       solution: src\SamplesApp\SamplesApp.Windows\SamplesApp.Windows.csproj
       msbuildLocationMethod: version
@@ -57,6 +57,16 @@ jobs:
       restoreNugetPackages: false
       logProjectEvents: false
       createLogFile: false
+
+  - pwsh: |
+      # Clean up the build-time signing certificate
+      $certPath = "$(Build.SourcesDirectory)/src/SamplesApp/SamplesApp.Windows/SamplesApp.Windows_TemporaryKey.pfx"
+      if (Test-Path $certPath) {
+        Remove-Item $certPath -Force
+        Write-Host "Build signing certificate cleaned up"
+      }
+    displayName: Clean Up Build Signing Certificate
+    condition: always()
 
   - task: CopyFiles@2
     displayName: 'Copy MSIX Packages'
@@ -140,12 +150,20 @@ jobs:
       # Decode and import the signing certificate to trusted stores
       $certBytes = [Convert]::FromBase64String('$(WINAPPSDK_SAMPLESAPP_SIGNING_CERTIFICATE)')
       $certPath = "$(Build.SourcesDirectory)/build/SamplesApp_SigningCert.pfx"
-      [IO.File]::WriteAllBytes($certPath, $certBytes)
-      
-      # Import the certificate to LocalMachine\Root (Trusted Root CAs) for MSIX installation
-      Import-PfxCertificate -FilePath $certPath -CertStoreLocation Cert:\LocalMachine\Root
-      Write-Host "Certificate imported to Trusted Root Certification Authorities store"
-      
+      try {
+        [IO.File]::WriteAllBytes($certPath, $certBytes)
+
+        # Import the certificate to LocalMachine\Root (Trusted Root CAs) for MSIX installation
+        Import-PfxCertificate -FilePath $certPath -CertStoreLocation Cert:\LocalMachine\Root -ErrorAction Stop
+        Write-Host "Certificate imported to Trusted Root Certification Authorities store"
+      }
+      finally {
+        if (Test-Path $certPath) {
+          Remove-Item $certPath -Force
+          Write-Host "Certificate file cleaned up"
+        }
+      }
+
       # Find and install the MSIX bundle
       $msixBundlePath = Get-ChildItem -Path "$(SamplesAppArtifactPath)/AppPackages" -Filter "*.msixbundle" -Recurse | Select-Object -First 1
       if (-not $msixBundlePath) {

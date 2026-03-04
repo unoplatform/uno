@@ -1,5 +1,3 @@
-Set-PSDebug -Trace 1
-
 $ErrorActionPreference = 'Stop'
 
 function Assert-ExitCodeIsZero()
@@ -15,7 +13,7 @@ $TEST_RESULTS_FILE="$env:BUILD_SOURCESDIRECTORY\build\winui-runtime-tests-result
 
 # convert the content of the file UNO_TESTS_FAILED_LIST to base64 and set it to UITEST_RUNTIME_TESTS_FILTER, if the file exists
 if (Test-Path $UNO_TESTS_FAILED_LIST) {
-    $base64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes((Get-Content $UNO_TESTS_FAILED_LIST)))
+    $base64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes((Get-Content -Raw $UNO_TESTS_FAILED_LIST)))
     $env:UITEST_RUNTIME_TESTS_FILTER="$base64"
 }
 
@@ -64,14 +62,14 @@ while ($elapsed -lt $timeout) {
         Write-Host "App process has exited with code: $($process.ExitCode)"
         break
     }
-    
+
     if (Test-Path $TEST_RESULTS_FILE) {
         Write-Host "Test results file found!"
         # Wait a bit more for the app to finish writing and exit cleanly
         Start-Sleep -Seconds 5
         break
     }
-    
+
     Start-Sleep -Seconds $checkInterval
     $elapsed += $checkInterval
     Write-Host "Waiting for test results... ($elapsed seconds elapsed)"
@@ -79,13 +77,13 @@ while ($elapsed -lt $timeout) {
 
 if (-not (Test-Path $TEST_RESULTS_FILE)) {
     Write-Host "Test results file was not created within the timeout period"
-    
+
     # Try to get the app process logs if still running
     if (-not $process.HasExited) {
         Write-Host "Force stopping the app..."
         Stop-Process -Id $process.Id -Force -ErrorAction SilentlyContinue
     }
-    
+
     throw "Test results file was not created"
 }
 
@@ -93,7 +91,7 @@ if (-not (Test-Path $TEST_RESULTS_FILE)) {
 if (-not $process.HasExited) {
     Write-Host "Waiting for app to exit gracefully..."
     $process.WaitForExit(30000) # Wait up to 30 seconds
-    
+
     if (-not $process.HasExited) {
         Write-Host "Force stopping the app..."
         Stop-Process -Id $process.Id -Force -ErrorAction SilentlyContinue
@@ -113,5 +111,7 @@ dotnet run fail-empty $TEST_RESULTS_FILE
 Assert-ExitCodeIsZero
 
 dotnet run list-failed $TEST_RESULTS_FILE $UNO_TESTS_FAILED_LIST
+
+Assert-ExitCodeIsZero
 
 Pop-Location

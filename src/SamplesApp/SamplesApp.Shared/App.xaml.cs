@@ -124,9 +124,13 @@ namespace SamplesApp
 #if !HAS_UNO
 		private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
 		{
-			e.Handled = true;
 			_log?.Error("UnhandledException", e.Exception);
 			global::System.Console.WriteLine($"UnhandledException: {e.Exception}");
+
+			if (Debugger.IsAttached)
+			{
+				e.Handled = true;
+			}
 		}
 #endif
 
@@ -404,7 +408,7 @@ namespace SamplesApp
 		private async void HandleLaunchArguments(LaunchActivatedEventArgs launchActivatedEventArgs)
 		{
 #if !HAS_UNO
-			var args = Environment.GetCommandLineArgs().Skip(1).Aggregate("", (current, arg) => current + "&" + arg).Trim();
+			var args = string.Join("&", Environment.GetCommandLineArgs().Skip(1));
 #else
 			var args = launchActivatedEventArgs.Arguments ?? "";
 #endif

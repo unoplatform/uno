@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
@@ -28,8 +28,11 @@ namespace MUXControlsTestApp.Utilities
 {
 	public class RunOnUIThread
 	{
+		private static readonly TimeSpan DispatcherTimeout = TimeSpan.FromSeconds(60);
+
 		public static void Execute(Action action)
 		{
+			Verify.IsNotNull(TestServices.WindowHelper.CurrentTestWindow, "CurrentTestWindow must not be null");
 			Execute(TestServices.WindowHelper.CurrentTestWindow.DispatcherQueue, action);
 		}
 
@@ -43,14 +46,8 @@ namespace MUXControlsTestApp.Utilities
 			}
 			else
 			{
-				// We're not on the UI thread, queue the work. Make sure that the action is not run until
-				// the splash screen is dismissed (i.e. that the window content is present).
 				var workComplete = new AutoResetEvent(false);
-#if false
-				App.RunAfterSplashScreenDismissed(() =>
-#endif
 				{
-					// If the Splash screen dismissal happens on the UI thread, run the action right now.
 					if (dispatcherQueue.HasThreadAccess)
 					{
 						try
@@ -60,7 +57,6 @@ namespace MUXControlsTestApp.Utilities
 						catch (Exception e)
 						{
 							exception = e;
-							throw;
 						}
 						finally // Unblock calling thread even if action() throws
 						{
@@ -70,7 +66,7 @@ namespace MUXControlsTestApp.Utilities
 					else
 					{
 						// Otherwise queue the work to the UI thread and then set the completion event on that thread.
-						var ignore = dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal,
+						var enqueued = dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal,
 							() =>
 							{
 								try
@@ -80,17 +76,25 @@ namespace MUXControlsTestApp.Utilities
 								catch (Exception e)
 								{
 									exception = e;
-									throw;
 								}
 								finally // Unblock calling thread even if action() throws
 								{
 									workComplete.Set();
 								}
 							});
+
+						if (!enqueued)
+						{
+							Verify.Fail("TryEnqueue returned false — the dispatcher queue may have been shut down.");
+						}
 					}
 				}
 
-				workComplete.WaitOne();
+				if (!workComplete.WaitOne(DispatcherTimeout))
+				{
+					Verify.Fail($"Timed out after {DispatcherTimeout} waiting for UI thread work to complete.");
+				}
+
 				if (exception != null)
 				{
 					Verify.Fail("Exception thrown by action on the UI thread: " + exception.ToString());
@@ -193,14 +197,8 @@ namespace MUXControlsTestApp.Utilities
 			}
 			else
 			{
-				// We're not on the UI thread, queue the work. Make sure that the action is not run until
-				// the splash screen is dismissed (i.e. that the window content is present).
 				var workComplete = new AutoResetEvent(false);
-#if false
-				App.RunAfterSplashScreenDismissed(() =>
-#endif
 				{
-					// If the Splash screen dismissal happens on the UI thread, run the action right now.
 					if (dispatcherQueue.HasThreadAccess)
 					{
 						try
@@ -210,7 +208,6 @@ namespace MUXControlsTestApp.Utilities
 						catch (Exception e)
 						{
 							exception = e;
-							throw;
 						}
 						finally // Unblock calling thread even if action() throws
 						{
@@ -220,7 +217,7 @@ namespace MUXControlsTestApp.Utilities
 					else
 					{
 						// Otherwise queue the work to the UI thread and then set the completion event on that thread.
-						var ignore = dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal,
+						var enqueued = dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal,
 							async () =>
 							{
 								try
@@ -230,17 +227,25 @@ namespace MUXControlsTestApp.Utilities
 								catch (Exception e)
 								{
 									exception = e;
-									throw;
 								}
 								finally // Unblock calling thread even if action() throws
 								{
 									workComplete.Set();
 								}
 							});
+
+						if (!enqueued)
+						{
+							Verify.Fail("TryEnqueue returned false — the dispatcher queue may have been shut down.");
+						}
 					}
 				}
 
-				workComplete.WaitOne();
+				if (!workComplete.WaitOne(DispatcherTimeout))
+				{
+					Verify.Fail($"Timed out after {DispatcherTimeout} waiting for UI thread work to complete.");
+				}
+
 				if (exception != null)
 				{
 					Verify.Fail("Exception thrown by action on the UI thread: " + exception.ToString());
