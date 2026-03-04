@@ -6198,7 +6198,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					else if (HasInitializer(xamlObjectDefinition))
 					{
 						BuildInitializer(writer, xamlObjectDefinition, owner);
-						BuildLiteralProperties(writer, xamlObjectDefinition);
+						Safely(() => BuildLiteralProperties(writer, xamlObjectDefinition));
 					}
 					// TODO: Remove this else if in Uno 6 as a breaking change.
 					else if (fullTypeName == XamlConstants.Types.Setter && CurrentStyleTargetType is { } currentStyleTargetType && IsLegacySetter(xamlObjectDefinition, out var propertyName))
@@ -6216,7 +6216,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					else if (fullTypeName == XamlConstants.Types.ResourceDictionary)
 					{
 						InitializeAndBuildResourceDictionary(writer, xamlObjectDefinition, setIsParsing: true);
-						BuildExtendedProperties(writer, xamlObjectDefinition);
+						Safely(() => BuildExtendedProperties(writer, xamlObjectDefinition));
 					}
 					else
 					{
@@ -6253,9 +6253,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								{
 									TrySetParsing(writer, knownType, isInitializer: true);
 									RegisterAndBuildResources(writer, xamlObjectDefinition, isInInitializer: true);
-									BuildLiteralProperties(writer, xamlObjectDefinition);
+									Safely(() => BuildLiteralProperties(writer, xamlObjectDefinition));
 									Safely(() => BuildProperties(writer, xamlObjectDefinition));
-									BuildInlineLocalizedProperties(writer, xamlObjectDefinition, knownType);
+									Safely(() => BuildInlineLocalizedProperties(writer, xamlObjectDefinition, knownType));
 								}
 
 								if (fullTypeName == XamlConstants.Types.Setter && FindMember(xamlObjectDefinition, "Value") is { } valueNode &&
@@ -6286,7 +6286,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									}
 								}
 
-								BuildExtendedProperties(writer, xamlObjectDefinition);
+								Safely(() => BuildExtendedProperties(writer, xamlObjectDefinition));
 							}
 
 							if (isStyle)
