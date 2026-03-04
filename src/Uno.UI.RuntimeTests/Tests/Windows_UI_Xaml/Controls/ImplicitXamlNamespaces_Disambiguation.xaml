@@ -1,0 +1,19 @@
+<UserControl
+	x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ImplicitXamlNamespaces_Disambiguation"
+	xmlns:ambA="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.AmbiguousA"
+	xmlns:ambB="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.AmbiguousB">
+
+	<StackPanel>
+		<!-- Unique types resolve from global namespace without prefix -->
+		<UniqueControlA x:Name="ControlA"
+						x:FieldModifier="public"
+						LabelA="From A" />
+		<UniqueControlB x:Name="ControlB"
+						x:FieldModifier="public"
+						LabelB="From B" />
+		<!-- Explicit prefix resolves ambiguity when needed -->
+		<ambA:UniqueControlA x:Name="ExplicitA"
+							 x:FieldModifier="public"
+							 LabelA="Explicit A" />
+	</StackPanel>
+</UserControl>

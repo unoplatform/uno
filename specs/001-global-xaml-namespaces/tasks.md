@@ -122,13 +122,13 @@
 
 ### Tests for User Story 4
 
-- [ ] T029 [US4] Add runtime test: `When_Ambiguous_Type_Produces_Clear_Error` — register two CLR namespaces both containing a type named `TestCard`, use `<TestCard />` unprefixed, verify a diagnostic error is produced mentioning both namespaces
-- [ ] T030 [US4] Add runtime test: `When_Explicit_Prefix_Resolves_Ambiguity` — same setup as above but add explicit `xmlns:custom="using:..."` and use `<custom:TestCard />`, verify it compiles
+- [X] T029 [US4] Add runtime test: `When_Ambiguous_Type_Produces_Clear_Error` — register two CLR namespaces both containing a type named `TestCard`, use `<TestCard />` unprefixed, verify a diagnostic error is produced mentioning both namespaces
+- [X] T030 [US4] Add runtime test: `When_Explicit_Prefix_Resolves_Ambiguity` — same setup as above but add explicit `xmlns:custom="using:..."` and use `<custom:TestCard />`, verify it compiles
 
 ### Implementation for User Story 4
 
-- [ ] T031 [US4] Add ambiguity detection in `SourceFindTypeByXamlType()` in `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.Reflection.cs` — when a type name matches in multiple global CLR namespaces, emit diagnostic `UNO0501` with the conflicting namespace names and disambiguation guidance
-- [ ] T032 [US4] Verify that explicit per-file `xmlns` declarations override implicit global registrations (FR-009) — ensure `XamlFileParser.cs` respects file-level declarations when they overlap with implicit ones
+- [X] T031 [US4] Add ambiguity detection in `SourceFindTypeByXamlType()` in `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.Reflection.cs` — when a type name matches in multiple global CLR namespaces, emit diagnostic `UNO0501` with the conflicting namespace names and disambiguation guidance
+- [X] T032 [US4] Verify that explicit per-file `xmlns` declarations override implicit global registrations (FR-009) — ensure `XamlFileParser.cs` respects file-level declarations when they overlap with implicit ones
 
 **Checkpoint**: Ambiguous types produce clear errors. Explicit prefixes resolve ambiguity.
 

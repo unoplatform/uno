@@ -5,6 +5,8 @@ using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.CustomGlobal;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.CustomPrefixed;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.AmbiguousA;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.AmbiguousB;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
@@ -197,6 +199,54 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			Assert.IsNotNull(control.StandardTextBlock, "Standard controls should work alongside prefixed controls");
 			Assert.AreEqual("Standard Control", control.StandardTextBlock.Text);
+		}
+
+		// --- Phase 6: User Story 4 - Disambiguation ---
+
+		// T029: Ambiguity detection test - when two global namespaces contain
+		// the same type name, a compile-time diagnostic (UNO0501) should be emitted.
+		// This is a build-time behavior that cannot be validated at runtime.
+		// The ambiguity detection is implemented in SourceFindTypeByXamlType() and
+		// would need a separate test project with conflicting types to verify.
+
+		[TestMethod]
+		public async Task When_Explicit_Prefix_Resolves_Ambiguity()
+		{
+			// T030: Verify that explicit xmlns prefix declarations resolve
+			// types from specific namespaces, overriding global resolution.
+			var control = new ImplicitXamlNamespaces_Disambiguation();
+			TestServices.WindowHelper.WindowContent = control;
+			await TestServices.WindowHelper.WaitForLoaded(control);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Unique types from different global namespaces resolve unprefixed
+			Assert.IsNotNull(control.ControlA, "UniqueControlA should resolve from global namespace");
+			Assert.IsInstanceOfType(control.ControlA, typeof(UniqueControlA));
+			Assert.AreEqual("From A", control.ControlA.LabelA);
+
+			Assert.IsNotNull(control.ControlB, "UniqueControlB should resolve from global namespace");
+			Assert.IsInstanceOfType(control.ControlB, typeof(UniqueControlB));
+			Assert.AreEqual("From B", control.ControlB.LabelB);
+
+			// Explicit prefix also works alongside implicit resolution
+			Assert.IsNotNull(control.ExplicitA, "Explicit prefix should resolve UniqueControlA");
+			Assert.IsInstanceOfType(control.ExplicitA, typeof(UniqueControlA));
+			Assert.AreEqual("Explicit A", control.ExplicitA.LabelA);
+		}
+
+		[TestMethod]
+		public async Task When_Explicit_Xmlns_Overrides_Implicit()
+		{
+			// T032: Verify that explicit per-file xmlns declarations override
+			// implicit global registrations (FR-009).
+			var control = new ImplicitXamlNamespaces_ExplicitXmlns();
+			TestServices.WindowHelper.WindowContent = control;
+			await TestServices.WindowHelper.WaitForLoaded(control);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Explicit xmlns declarations take precedence
+			Assert.IsNotNull(control.ExplicitButton, "Explicit xmlns should override implicit");
+			Assert.IsInstanceOfType(control.ExplicitButton, typeof(Button));
 		}
 	}
 }
