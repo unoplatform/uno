@@ -4,7 +4,11 @@ set -euo pipefail
 sudo /usr/local/bin/init-firewall.sh
 
 mkdir -p "$HOME/.local/share/Uno Platform"
-find /tmp/uno-platform-host -maxdepth 1 -type f -exec cp {} "$HOME/.local/share/Uno Platform/" \;
+if [ -d /tmp/uno-platform-host ]; then
+  find /tmp/uno-platform-host -maxdepth 1 -type f -exec cp {} "$HOME/.local/share/Uno Platform/" \;
+else
+  echo "Note: /tmp/uno-platform-host not found — skipping Uno Platform license copy"
+fi
 
 dotnet dev-certs https --trust || true
 

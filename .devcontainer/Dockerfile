@@ -63,15 +63,6 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 RUN npx playwright install-deps chromium
 
 # ---------------------------------------------------------------------------
-# git-delta (better diffs)
-# ---------------------------------------------------------------------------
-ARG GIT_DELTA_VERSION=0.18.2
-RUN ARCH=$(dpkg --print-architecture) && \
-  wget -q "https://github.com/dandavison/delta/releases/download/${GIT_DELTA_VERSION}/git-delta_${GIT_DELTA_VERSION}_${ARCH}.deb" && \
-  dpkg -i "git-delta_${GIT_DELTA_VERSION}_${ARCH}.deb" && \
-  rm "git-delta_${GIT_DELTA_VERSION}_${ARCH}.deb"
-
-# ---------------------------------------------------------------------------
 # Non-root user: developer (uid 1000)
 # Container is the security boundary, not in-container privileges.
 # ---------------------------------------------------------------------------
@@ -140,9 +131,12 @@ RUN dotnet workload install wasm-tools
 
 # ---------------------------------------------------------------------------
 # uno-check (validate environment, from build/ci/scripts/run-uno-check.sh)
+# Installed as developer so the tool is usable interactively.
 # ---------------------------------------------------------------------------
+USER ${USERNAME}
+ENV PATH="${PATH}:/home/${USERNAME}/.dotnet/tools"
 RUN dotnet tool install --global uno.check
-ENV PATH="${PATH}:/root/.dotnet/tools:/home/${USERNAME}/.dotnet/tools"
+USER root
 RUN uno-check -v --ci --non-interactive --fix \
   --skip xcode --skip gtk3 --skip vswin --skip vswinworkloads --skip unosdk \
   --skip dotnetnewunotemplates --skip vsmac --skip androidsdk --skip openjdk --skip androidemulator \
@@ -160,7 +154,7 @@ RUN dpkg-divert --rename --add /usr/bin/git && \
   chmod +x /usr/bin/git
 
 # ---------------------------------------------------------------------------
-# Firewall script
+# DNS allowlist filter
 # ---------------------------------------------------------------------------
 COPY init-firewall.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/init-firewall.sh && \

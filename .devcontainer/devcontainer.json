@@ -1,11 +1,12 @@
 {
+  // Linux / WSL host only — Windows-native Docker hosts are not supported
+  // (mounts rely on $HOME which is unset on Windows).
   "name": "Uno Platform — Agent Sandbox",
   "build": {
     "dockerfile": "Dockerfile",
     "args": {
       "TZ": "${localEnv:TZ:America/Los_Angeles}",
       "CLAUDE_CODE_VERSION": "latest",
-      "GIT_DELTA_VERSION": "0.18.2",
       "ZSH_IN_DOCKER_VERSION": "1.2.0"
     }
   },

@@ -1,9 +1,15 @@
 #!/bin/bash
 # ==========================================================================
-# init-firewall.sh — DNS-based network firewall for the dev container
+# init-firewall.sh — DNS allowlist filter for the dev container
 #
 # Uses dnsmasq as a local DNS proxy that only resolves allowed domain
-# patterns. Unmatched domains get REFUSED — no IP chasing needed.
+# patterns. Unmatched domains get REFUSED.
+#
+# NOTE: This is a DNS-layer filter, not an IP-layer firewall. Direct-IP
+# egress is not blocked. Full iptables egress rules are impractical here
+# because the allowed services (NuGet, Azure CDN, GitHub, etc.) resolve
+# to large, dynamic IP ranges. The DNS allowlist is sufficient to prevent
+# accidental or automated access to unauthorized services.
 # ==========================================================================
 set -euo pipefail
 IFS=$'\n\t'
@@ -12,8 +18,15 @@ DNSMASQ_LISTEN="127.0.0.53"
 
 # --------------------------------------------------------------------------
 # 1. Upstream DNS for allowed domains
+#    Priority: $UPSTREAM_DNS env var > first nameserver in /etc/resolv.conf > 8.8.8.8
 # --------------------------------------------------------------------------
-UPSTREAM_DNS="8.8.8.8"
+if [ -z "${UPSTREAM_DNS:-}" ]; then
+  UPSTREAM_DNS=$(grep -m1 '^nameserver' /etc/resolv.conf | awk '{print $2}' || true)
+  # Skip loopback (would point back at ourselves after resolv.conf rewrite)
+  if [ -z "$UPSTREAM_DNS" ] || echo "$UPSTREAM_DNS" | grep -qE '^127\.'; then
+    UPSTREAM_DNS="8.8.8.8"
+  fi
+fi
 echo "Upstream DNS: ${UPSTREAM_DNS}"
 
 # --------------------------------------------------------------------------
@@ -130,10 +143,11 @@ fi
 # --------------------------------------------------------------------------
 # 4. Point resolver at dnsmasq
 # --------------------------------------------------------------------------
-# Docker bind-mounts resolv.conf; take control for DNS filtering
+# Docker bind-mounts resolv.conf; back it up, then replace nameserver lines
+# while preserving search/options/sortlist directives.
 cp /etc/resolv.conf /etc/resolv.conf.docker.bak
 umount /etc/resolv.conf 2>/dev/null || true
-echo "nameserver ${DNSMASQ_LISTEN}" > /etc/resolv.conf
+{ grep -v '^nameserver' /etc/resolv.conf.docker.bak || true; echo "nameserver ${DNSMASQ_LISTEN}"; } > /etc/resolv.conf
 
 # Verify resolv.conf was actually changed — fail hard if not
 if grep -q "${DNSMASQ_LISTEN}" /etc/resolv.conf; then
@@ -147,7 +161,7 @@ fi
 
 echo ""
 echo "========================================="
-echo " DNS-based firewall configured"
+echo " DNS allowlist filter configured"
 echo "========================================="
 
 # --------------------------------------------------------------------------
