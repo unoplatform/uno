@@ -48,7 +48,7 @@ internal static class SkiaRenderHelper
 		return (picture, path, nativeVisualsInZOrder);
 	}
 
-	internal static void RenderPicture(SKCanvas canvas, IntPtr picture, SKColor background, FpsHelper fpsHelper)
+	internal static void RenderPicture(SKCanvas canvas, IntPtr picture, SKColor background, FpsHelper fpsHelper, bool skipCanvasFlush = false)
 	{
 		using var fpsHelperDisposable = fpsHelper.BeginFrame();
 		using (new SKAutoCanvasRestore(canvas, true))
@@ -66,8 +66,12 @@ internal static class SkiaRenderHelper
 			fpsHelper.DrawFps(canvas);
 		}
 
-		// update the control
-		canvas.Flush();
+		// Skip the canvas flush when the caller will perform a GRContext.Flush()
+		// which already submits all pending GPU work (e.g. Metal path).
+		if (!skipCanvasFlush)
+		{
+			canvas.Flush();
+		}
 	}
 
 	private static readonly SKPath _spareParentClipPath = new();
