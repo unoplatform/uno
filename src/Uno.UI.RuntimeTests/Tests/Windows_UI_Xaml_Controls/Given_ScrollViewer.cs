@@ -812,6 +812,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #elif !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.IOS)] // uno-private#1740 changed the way mouse wheel events are processed on iOS: Not using animations
 		public async Task When_LotOfWheelEvents_Then_IgnoreIrrelevant()
 		{
 			// This test make sure than when using a "free wheel" mouse or a touch-pad (which both produces a lot of events),
@@ -1970,6 +1971,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #elif !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.IOS)] // uno-private#1740 changed the way mouse wheel events are processed on iOS: Not processing them as discrete events
 		public async Task When_ViewChanged_From_MouseWheel()
 		{
 			// setup is a 100x100 ScrollViewer with a 2000px tall Border
