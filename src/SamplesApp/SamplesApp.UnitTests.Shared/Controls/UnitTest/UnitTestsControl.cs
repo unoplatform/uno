@@ -315,9 +315,6 @@ namespace Uno.UI.Samples.Tests
 #if !HAS_UNO
 			global::System.Console.WriteLine(message);
 #endif
-#if DEBUG
-			global::System.Diagnostics.Debug.WriteLine(message);
-#endif
 
 			void Setter()
 			{
