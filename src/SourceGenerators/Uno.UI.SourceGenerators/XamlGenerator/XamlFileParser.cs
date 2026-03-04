@@ -40,9 +40,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private readonly RoslynMetadataHelper _metadataHelper;
 
+		private readonly bool _enableImplicitNamespaces;
+		private readonly (string Prefix, string Uri)[] _implicitPrefixes;
+
 		private int _depth;
 
-		public XamlFileParser(string excludeXamlNamespacesProperty, string includeXamlNamespacesProperty, string[] excludeXamlNamespaces, string[] includeXamlNamespaces, RoslynMetadataHelper roslynMetadataHelper)
+		public XamlFileParser(
+			string excludeXamlNamespacesProperty,
+			string includeXamlNamespacesProperty,
+			string[] excludeXamlNamespaces,
+			string[] includeXamlNamespaces,
+			RoslynMetadataHelper roslynMetadataHelper,
+			bool enableImplicitNamespaces = false,
+			(string Prefix, string Uri)[]? implicitPrefixes = null)
 		{
 			_excludeXamlNamespacesProperty = excludeXamlNamespacesProperty;
 			_excludeXamlNamespaces = excludeXamlNamespaces;
@@ -51,6 +61,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_includeXamlNamespaces = includeXamlNamespaces;
 
 			_metadataHelper = roslynMetadataHelper;
+			_enableImplicitNamespaces = enableImplicitNamespaces;
+			_implicitPrefixes = implicitPrefixes ?? Array.Empty<(string, string)>();
 		}
 
 		public ParallelQuery<XamlFileDefinition> ParseFiles(IEnumerable<XamlSource> xamlSourceFiles, string projectDirectory, CancellationToken ct)
@@ -176,19 +188,53 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var hasxBind = originalString.Contains("{x:Bind", StringComparison.Ordinal);
 
+			string content;
 			if (!hasxBind)
 			{
-				// No need to modify file
-				return XmlReader.Create(new StringReader(originalString));
+				content = originalString;
+			}
+			else
+			{
+				// Apply replacements to avoid having issues with the XAML parser which does not
+				// support quotes in positional markup extensions parameters.
+				// Note that the UWP preprocessor does not need to apply those replacements as the
+				// x:Bind expressions are being removed during the first phase and replaced by "connections".
+				content = XBindExpressionParser.RewriteDocumentPaths(originalString);
 			}
 
-			// Apply replacements to avoid having issues with the XAML parser which does not
-			// support quotes in positional markup extensions parameters.
-			// Note that the UWP preprocessor does not need to apply those replacements as the
-			// x:Bind expressions are being removed during the first phase and replaced by "connections".
-			var adjusted = XBindExpressionParser.RewriteDocumentPaths(originalString);
+			if (_enableImplicitNamespaces)
+			{
+				return CreateImplicitNamespaceReader(content);
+			}
 
-			return XmlReader.Create(new StringReader(adjusted));
+			return XmlReader.Create(new StringReader(content));
+		}
+
+		/// <summary>
+		/// Creates an XmlReader pre-populated with implicit namespace mappings via XmlParserContext,
+		/// matching MAUI's approach of using ConformanceLevel.Fragment.
+		/// </summary>
+		private XmlReader CreateImplicitNamespaceReader(string content)
+		{
+			var nameTable = new NameTable();
+			var nsmgr = new XmlNamespaceManager(nameTable);
+
+			// Add the default presentation namespace (empty prefix)
+			nsmgr.AddNamespace("", XamlConstants.PresentationXamlXmlNamespace);
+
+			// Add the x: XAML namespace
+			nsmgr.AddNamespace("x", XamlConstants.XamlXmlNamespace);
+
+			// Add any XmlnsPrefix-registered prefixes
+			foreach (var (prefix, uri) in _implicitPrefixes)
+			{
+				nsmgr.AddNamespace(prefix, uri);
+			}
+
+			var parserContext = new XmlParserContext(nameTable, nsmgr, null, XmlSpace.None);
+			var settings = new XmlReaderSettings { ConformanceLevel = ConformanceLevel.Fragment };
+
+			return XmlReader.Create(new StringReader(content), settings, parserContext);
 		}
 
 		private static bool IsSkiaNotConditional(string localName, string namespaceUri)

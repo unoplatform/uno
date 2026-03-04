@@ -143,6 +143,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private readonly bool _disableBindableTypeProvidersGeneration;
 
+		private readonly bool _enableImplicitXamlNamespaces;
+		private readonly string[] _globalClrNamespaces;
+
 		/// <summary>
 		/// Information about types used in .Apply() scenarios
 		/// </summary>
@@ -225,7 +228,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			GeneratorExecutionContext generatorContext,
 			bool xamlResourcesTrimming,
 			IDictionary<INamedTypeSymbol, XamlType> xamlTypeToXamlTypeBaseMap,
-			string[] includeXamlNamespaces)
+			string[] includeXamlNamespaces,
+			bool enableImplicitXamlNamespaces = false,
+			string[]? globalClrNamespaces = null)
 		{
 			Generation = generation;
 			_fileDefinition = file;
@@ -249,6 +254,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_xamlTypeToXamlTypeBaseMap = xamlTypeToXamlTypeBaseMap;
 			_includeXamlNamespaces = includeXamlNamespaces;
 			_disableBindableTypeProvidersGeneration = disableBindableTypeProvidersGeneration;
+			_enableImplicitXamlNamespaces = enableImplicitXamlNamespaces;
+			_globalClrNamespaces = globalClrNamespaces ?? Array.Empty<string>();
 
 			InitCaches();
 

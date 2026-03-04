@@ -104,6 +104,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private readonly bool _disableBindableTypeProvidersGeneration;
 
+		private readonly bool _enableImplicitXamlNamespaces;
+		private readonly string _globalXamlNamespaceUri;
+
 		private readonly GeneratorExecutionContext _generatorContext;
 
 		private bool IsUnoAssembly
@@ -258,6 +261,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (!bool.TryParse(context.GetMSBuildPropertyValue("UnoDisableBindableTypeProvidersGeneration"), out _disableBindableTypeProvidersGeneration))
 			{
 				_disableBindableTypeProvidersGeneration = false;
+			}
+
+			if (!bool.TryParse(context.GetMSBuildPropertyValue("UnoEnableImplicitXamlNamespaces"), out _enableImplicitXamlNamespaces))
+			{
+				_enableImplicitXamlNamespaces = false;
+			}
+
+			_globalXamlNamespaceUri = context.GetMSBuildPropertyValue("UnoGlobalXamlNamespaceUri");
+			if (string.IsNullOrEmpty(_globalXamlNamespaceUri))
+			{
+				_globalXamlNamespaceUri = XamlConstants.GlobalNamespaceUri;
 			}
 
 			_targetPath = Path.Combine(
@@ -423,8 +437,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var excludeXamlNamespaces = _excludeXamlNamespaces.Split(_commaArray, StringSplitOptions.RemoveEmptyEntries);
 				var includeXamlNamespaces = _includeXamlNamespaces.Split(_commaArray, StringSplitOptions.RemoveEmptyEntries);
 
+				// Resolve implicit prefixes from XmlnsPrefix attributes when feature is enabled
+				(string Prefix, string Uri)[] implicitPrefixes = Array.Empty<(string, string)>();
+				string[] globalClrNamespaces = Array.Empty<string>();
+				if (_enableImplicitXamlNamespaces)
+				{
+					globalClrNamespaces = GlobalNamespaceResolver.GetGlobalClrNamespaces(_generatorContext.Compilation, _globalXamlNamespaceUri);
+					implicitPrefixes = GlobalNamespaceResolver.GetImplicitPrefixes(_generatorContext.Compilation);
+				}
+
 				// Parse XAML files
-				var xamlParser = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces, excludeXamlNamespaces, includeXamlNamespaces, _metadataHelper);
+				var xamlParser = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces, excludeXamlNamespaces, includeXamlNamespaces, _metadataHelper, _enableImplicitXamlNamespaces, implicitPrefixes);
 				var xamlFiles = xamlParser
 					.ParseFiles(_xamlSources, _projectDirectory, ct)
 					.OrderBy(file => file.UniqueID)
@@ -493,7 +516,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							generatorContext: _generatorContext,
 							xamlResourcesTrimming: _xamlResourcesTrimming,
 							xamlTypeToXamlTypeBaseMap: xamlTypeToXamlTypeBaseMap,
-							includeXamlNamespaces: includeXamlNamespaces
+							includeXamlNamespaces: includeXamlNamespaces,
+							enableImplicitXamlNamespaces: _enableImplicitXamlNamespaces,
+							globalClrNamespaces: globalClrNamespaces
 						);
 
 						var (code, errors) = generator.GenerateFile();

@@ -38,6 +38,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				?.Namespace ?? "";
 
 			_clrNamespaces = _knownNamespaces.UnoGetValueOrDefault(defaultXmlNamespace, Array.Empty<string>());
+
+			// When implicit namespaces are enabled and no default xmlns is declared in the file,
+			// use the presentation namespaces as the implicit default
+			if (_enableImplicitXamlNamespaces && string.IsNullOrEmpty(defaultXmlNamespace))
+			{
+				_clrNamespaces = XamlConstants.Namespaces.PresentationNamespaces;
+			}
 		}
 
 		/// <summary>
@@ -491,6 +498,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					if (_metadataHelper.FindTypeByFullName(clrNamespace + "." + type.Name) is INamedTypeSymbol result)
 					{
 						return result;
+					}
+				}
+
+				// When implicit namespaces are enabled, search global CLR namespaces
+				// for types registered via XmlnsDefinition to the global URI
+				if (_enableImplicitXamlNamespaces
+					&& _globalClrNamespaces.Length > 0
+					&& (trimmedNamespace == XamlConstants.PresentationXamlXmlNamespace || string.IsNullOrEmpty(trimmedNamespace)))
+				{
+					if (SearchNamespaces(type.Name, _globalClrNamespaces) is INamedTypeSymbol globalResult)
+					{
+						return globalResult;
 					}
 				}
 
