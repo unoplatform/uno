@@ -289,7 +289,7 @@ public partial class Given_Parser
 
 		test.ExpectedDiagnostics.AddRange(
 		[
-			DiagnosticResult.CompilerError("UXAML0001").WithArguments("Failed to create a 'Microsoft.UI.Xaml.Controls.Orientation' from the text 'InvalidOrientation'"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 6, 3, 6, 3).WithArguments("Failed to create a 'Microsoft.UI.Xaml.Controls.Orientation' from the text 'InvalidOrientation'"),
 		]);
 
 		await test.RunAsync();
@@ -323,8 +323,8 @@ public partial class Given_Parser
 
 		test.ExpectedDiagnostics.AddRange(
 		[
-			DiagnosticResult.CompilerError("UXAML0001").WithArguments("Failed to create a 'Microsoft.UI.Xaml.Controls.Orientation' from the text 'BadValue'"),
-			DiagnosticResult.CompilerError("UXAML0001").WithArguments("Failed to create a 'Microsoft.UI.Xaml.TextWrapping' from the text 'BadWrap'"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 6, 3, 6, 3).WithArguments("Failed to create a 'Microsoft.UI.Xaml.Controls.Orientation' from the text 'BadValue'"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 7, 4, 7, 4).WithArguments("Failed to create a 'Microsoft.UI.Xaml.TextWrapping' from the text 'BadWrap'"),
 		]);
 
 		await test.RunAsync();
