@@ -4,8 +4,19 @@
 	<PageExclusions>$(MSBuildThisFileDirectory)Resources\**\*.xaml</PageExclusions>
   </PropertyGroup>
 
+  <ItemGroup>
+	<!-- Expand merge inputs at evaluation time so target incremental checks can compare timestamps. -->
+	<ThemeResourceV1MergeInput Include="$(MSBuildThisFileDirectory)Resources\Version1\**\*.xaml" />
+	<ThemeResourceV1MergeInput Include="$(MSBuildThisFileFullPath)" />
+  </ItemGroup>
+
   <!-- This task is temporarily placed in debug configuration to avoid parallel build concurrency issues -->
-  <Target Name="GenerateThemeResourceV1File" DependsOnTargets="ResolveProjectReferences" BeforeTargets="BeforeBuild" Outputs="themeresources_v1.xaml" Condition="'$(Configuration)'=='Debug'">
+  <Target Name="GenerateThemeResourceV1File"
+          DependsOnTargets="ResolveProjectReferences"
+          BeforeTargets="BeforeBuild"
+          Inputs="@(ThemeResourceV1MergeInput)"
+          Outputs="$(IntermediateOutputPath)\Version1\GenerateThemeResourceFile.write.1u.tlog"
+          Condition="'$(Configuration)'=='Debug'">
 	<ItemGroup>
 	  <WinUIStylePage
 		  Include="$(MSBuildThisFileDirectory)Resources\Version1\**\*.xaml" />
@@ -15,7 +26,7 @@
 	<MakeDir Directories="$(IntermediateOutputPath)\Version1" />
 	<BatchMergeXaml
 	  Pages="@(WinUIStylePage)"
-	  MergedXamlFile="themeresources_v1.xaml"
+	  MergedXamlFile="$(MSBuildThisFileDirectory)themeresources_v1.xaml"
 	  TlogReadFilesOutputPath="$(IntermediateOutputPath)\Version1\GenerateThemeResourceFile.read.1u.tlog"
 	  TlogWriteFilesOutputPath="$(IntermediateOutputPath)\Version1\GenerateThemeResourceFile.write.1u.tlog" />
 	<Message Text="Theme resources XAML file was generated" />
