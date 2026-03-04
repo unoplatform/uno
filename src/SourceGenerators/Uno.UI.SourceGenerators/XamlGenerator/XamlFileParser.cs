@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Xml;
 using Microsoft.CodeAnalysis;
@@ -204,37 +205,112 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (_enableImplicitNamespaces)
 			{
-				return CreateImplicitNamespaceReader(content);
+				content = InjectImplicitXmlns(content);
 			}
 
 			return XmlReader.Create(new StringReader(content));
 		}
 
 		/// <summary>
-		/// Creates an XmlReader pre-populated with implicit namespace mappings via XmlParserContext,
-		/// matching MAUI's approach of using ConformanceLevel.Fragment.
+		/// Injects missing xmlns declarations into the root element of a XAML document.
+		/// This ensures XAML files without explicit xmlns/xmlns:x declarations can be
+		/// parsed by the standard XmlReader without requiring ConformanceLevel.Fragment.
+		/// Only modifies files that are missing the default xmlns declaration.
 		/// </summary>
-		private XmlReader CreateImplicitNamespaceReader(string content)
+		private string InjectImplicitXmlns(string content)
 		{
-			var nameTable = new NameTable();
-			var nsmgr = new XmlNamespaceManager(nameTable);
-
-			// Add the default presentation namespace (empty prefix)
-			nsmgr.AddNamespace("", XamlConstants.PresentationXamlXmlNamespace);
-
-			// Add the x: XAML namespace
-			nsmgr.AddNamespace("x", XamlConstants.XamlXmlNamespace);
-
-			// Add any XmlnsPrefix-registered prefixes
-			foreach (var (prefix, uri) in _implicitPrefixes)
+			// Quick check: if the file already has a default xmlns, skip injection entirely
+			if (content.Contains("xmlns=\"", StringComparison.Ordinal))
 			{
-				nsmgr.AddNamespace(prefix, uri);
+				return content;
 			}
 
-			var parserContext = new XmlParserContext(nameTable, nsmgr, null, XmlSpace.None);
-			var settings = new XmlReaderSettings { ConformanceLevel = ConformanceLevel.Fragment };
+			// Find the root element opening tag, skipping XML declarations, comments, and whitespace.
+			// The root element starts with '<' followed by a letter or underscore (not '?', '!', or '/').
+			var rootTagStart = -1;
+			for (var i = 0; i < content.Length - 1; i++)
+			{
+				if (content[i] == '<')
+				{
+					var next = content[i + 1];
+					if (next == '?' || next == '!')
+					{
+						// Skip XML declaration (<?...?>) or comment/CDATA (<!...>)
+						if (next == '?')
+						{
+							i = content.IndexOf("?>", i, StringComparison.Ordinal);
+							if (i < 0) return content;
+							i++; // skip past '>'
+						}
+						else
+						{
+							// Skip <!-- ... --> comments
+							if (i + 3 < content.Length && content[i + 2] == '-' && content[i + 3] == '-')
+							{
+								i = content.IndexOf("-->", i, StringComparison.Ordinal);
+								if (i < 0) return content;
+								i += 2; // skip past '-->'
+							}
+							else
+							{
+								i = content.IndexOf('>', i);
+								if (i < 0) return content;
+							}
+						}
+					}
+					else if (char.IsLetter(next) || next == '_')
+					{
+						rootTagStart = i;
+						break;
+					}
+				}
+			}
 
-			return XmlReader.Create(new StringReader(content), settings, parserContext);
+			if (rootTagStart < 0)
+			{
+				return content;
+			}
+
+			// Find the end of the root element opening tag
+			var rootTagEnd = content.IndexOf('>', rootTagStart);
+			if (rootTagEnd < 0)
+			{
+				return content;
+			}
+
+			var rootTag = content.AsSpan(rootTagStart, rootTagEnd - rootTagStart);
+			var injections = new StringBuilder();
+
+			// Inject default xmlns
+			injections.Append(" xmlns=\"");
+			injections.Append(XamlConstants.PresentationXamlXmlNamespace);
+			injections.Append('"');
+
+			// Inject xmlns:x if missing
+			if (rootTag.IndexOf("xmlns:x=\"".AsSpan(), StringComparison.Ordinal) < 0)
+			{
+				injections.Append(" xmlns:x=\"");
+				injections.Append(XamlConstants.XamlXmlNamespace);
+				injections.Append('"');
+			}
+
+			// Inject any XmlnsPrefix-registered prefixes if missing
+			foreach (var (prefix, uri) in _implicitPrefixes)
+			{
+				var prefixDecl = $"xmlns:{prefix}=\"";
+				if (rootTag.IndexOf(prefixDecl.AsSpan(), StringComparison.Ordinal) < 0)
+				{
+					injections.Append(' ');
+					injections.Append(prefixDecl);
+					injections.Append(uri);
+					injections.Append('"');
+				}
+			}
+
+			// Insert injections just before the closing '>' of the root element
+			var isSelfClosing = rootTagEnd > 0 && content[rootTagEnd - 1] == '/';
+			var insertPos = isSelfClosing ? rootTagEnd - 1 : rootTagEnd;
+			return content.Insert(insertPos, injections.ToString());
 		}
 
 		private static bool IsSkiaNotConditional(string localName, string namespaceUri)
