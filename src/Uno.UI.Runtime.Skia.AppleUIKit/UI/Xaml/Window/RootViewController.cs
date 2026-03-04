@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using CoreAnimation;
 using CoreGraphics;
 using Foundation;
@@ -17,6 +16,7 @@ using Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
 using Uno.UI.Dispatching;
 using System.Threading;
 using Uno.UI.Xaml.Core;
+using Windows.Foundation;
 using SkiaCanvas = Uno.UI.Runtime.Skia.AppleUIKit.UnoSKMetalView;
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
@@ -28,7 +28,37 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	private UIView? _textInputLayer;
 	private UIView? _topViewLayer;
 	private UIView? _nativeOverlayLayer;
-	private string? _lastSvgClipPath;
+
+	/// <summary>
+	/// Canvas reference used by <see cref="_getCanvasDelegate"/> to avoid
+	/// per-frame closure allocations in <see cref="OnRenderFrameRequested"/>.
+	/// Set on the render thread before the delegate is invoked.
+	/// </summary>
+	private SKCanvas? _currentCanvas;
+
+	/// <summary>
+	/// Cached delegate that returns <see cref="_currentCanvas"/>. Created once
+	/// to eliminate the per-frame lambda closure + delegate allocation.
+	/// </summary>
+	private Func<Size, SKCanvas>? _getCanvasDelegate;
+
+	/// <summary>
+	/// Set when native overlay subviews change to force a clip path update
+	/// on the next frame regardless of the change detection heuristic.
+	/// </summary>
+	private bool _clipPathDirty;
+
+	/// <summary>
+	/// Point count of the last native clipping path applied, used for
+	/// change detection. -1 means no clipping has been applied yet.
+	/// </summary>
+	private int _lastClipPathPointCount = -1;
+
+	/// <summary>
+	/// Bounds of the last native clipping path applied, used together
+	/// with <see cref="_lastClipPathPointCount"/> for change detection.
+	/// </summary>
+	private SKRect _lastClipPathBounds;
 
 	public RootViewController()
 	{
@@ -104,7 +134,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		}
 	}
 
-	private void NativeOverlayLayer_SubviewsChanged(object? sender, EventArgs e) => _lastSvgClipPath = null; // Ensure the clip path is invalidated for next render.
+	private void NativeOverlayLayer_SubviewsChanged(object? sender, EventArgs e) => _clipPathDirty = true; // Ensure the clip path is invalidated for next render.
 
 	internal event Action? VisibleBoundsChanged;
 
@@ -112,7 +142,12 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 
 	internal void OnRenderFrameRequested(SKCanvas canvas)
 	{
-		var clipPath = (RootElement?.Visual.CompositionTarget as CompositionTarget)?.OnNativePlatformFrameRequested(canvas, _ => canvas);
+		// Cache the delegate to avoid a closure + delegate allocation on every
+		// frame. The delegate reads _currentCanvas which is set just below.
+		_currentCanvas = canvas;
+		_getCanvasDelegate ??= _ => _currentCanvas!;
+
+		var clipPath = (RootElement?.Visual.CompositionTarget as CompositionTarget)?.OnNativePlatformFrameRequested(canvas, _getCanvasDelegate);
 
 		if (clipPath is not null)
 		{
@@ -122,29 +157,110 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 
 	private void UpdateNativeClipping(SKPath path)
 	{
-		string? svgPath = null;
-		if (!path.IsEmpty)
+		var pointCount = path.IsEmpty ? 0 : path.PointCount;
+		var bounds = path.IsEmpty ? SKRect.Empty : path.Bounds;
+
+		// Quick change detection using point count + bounds.
+		// The _clipPathDirty flag is set when native overlay subviews change,
+		// forcing a re-conversion regardless of the heuristic.
+		if (!_clipPathDirty && pointCount == _lastClipPathPointCount && bounds == _lastClipPathBounds)
 		{
-			svgPath = path.ToSvgPathData();
+			return;
 		}
 
-		if (svgPath != _lastSvgClipPath)
-		{
-			var oldPath = _lastSvgClipPath;
-			_lastSvgClipPath = svgPath;
+		_clipPathDirty = false;
+		_lastClipPathPointCount = pointCount;
+		_lastClipPathBounds = bounds;
 
-			NativeDispatcher.Main.Enqueue(() =>
+		if (path.IsEmpty)
+		{
+			NativeDispatcher.Main.Enqueue(ClearNativeClipping);
+		}
+		else
+		{
+			var cgPath = ConvertSKPathToCGPath(path);
+			NativeDispatcher.Main.Enqueue(() => ApplyNativeClipping(cgPath));
+		}
+	}
+
+	/// <summary>
+	/// Converts an <see cref="SKPath"/> directly to a <see cref="CGPath"/> by
+	/// iterating verbs and points, avoiding the intermediate SVG string
+	/// serialization/parsing and its associated allocations.
+	/// </summary>
+	private CGPath ConvertSKPathToCGPath(SKPath skPath)
+	{
+		var scale = (nfloat)UIScreen.MainScreen.Scale;
+		var view = _nativeOverlayLayer!;
+		var vx = view.Frame.X;
+		var vy = view.Frame.Y;
+
+		var cgPath = new CGPath();
+		var iter = skPath.CreateIterator(forceClose: false);
+
+		Span<SKPoint> points = stackalloc SKPoint[4];
+		SKPathVerb verb;
+
+		while ((verb = iter.Next(points)) != SKPathVerb.Done)
+		{
+			switch (verb)
 			{
-				if (svgPath is not null)
-				{
-					ClipBySvgPath(svgPath);
-				}
-				else if (_lastSvgClipPath is not null)
-				{
-					ClearNativeClipping();
-				}
-			});
+				case SKPathVerb.Move:
+					cgPath.MoveToPoint(
+						points[0].X / scale - vx,
+						points[0].Y / scale - vy);
+					break;
+
+				case SKPathVerb.Line:
+					cgPath.AddLineToPoint(
+						points[1].X / scale - vx,
+						points[1].Y / scale - vy);
+					break;
+
+				case SKPathVerb.Quad:
+					cgPath.AddQuadCurveToPoint(
+						points[1].X / scale - vx,
+						points[1].Y / scale - vy,
+						points[2].X / scale - vx,
+						points[2].Y / scale - vy);
+					break;
+
+				case SKPathVerb.Cubic:
+					cgPath.AddCurveToPoint(
+						points[1].X / scale - vx,
+						points[1].Y / scale - vy,
+						points[2].X / scale - vx,
+						points[2].Y / scale - vy,
+						points[3].X / scale - vx,
+						points[3].Y / scale - vy);
+					break;
+
+				case SKPathVerb.Conic:
+					// Approximate conic sections with quadratic curves.
+					// CGPath has no native conic support.
+					var conicWeight = iter.ConicWeight();
+					var conicPoints = new SKPoint[5];
+					var quadCount = SKPath.ConvertConicToQuads(
+						points[0], points[1], points[2],
+						conicWeight, conicPoints, 1);
+					for (int q = 0; q < quadCount; q++)
+					{
+						var qi = q * 2;
+						cgPath.AddQuadCurveToPoint(
+							conicPoints[qi + 1].X / scale - vx,
+							conicPoints[qi + 1].Y / scale - vy,
+							conicPoints[qi + 2].X / scale - vx,
+							conicPoints[qi + 2].Y / scale - vy);
+					}
+					break;
+
+				case SKPathVerb.Close:
+					cgPath.CloseSubpath();
+					break;
+			}
 		}
+
+		return cgPath;
 	}
 
 	private void ClearNativeClipping()
@@ -153,8 +269,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		{
 			// If the path is empty, we need to clear the mask of the native overlay layer
 			// to avoid showing the previous clip.
-			var mask = view.Layer.Mask as CAShapeLayer;
-			if (mask != null)
+			if (view.Layer.Mask is CAShapeLayer mask)
 			{
 				mask.Path = null;
 				mask.FillColor = UIColor.Clear.CGColor;
@@ -162,76 +277,11 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		}
 	}
 
-	private void ClipBySvgPath(string svg)
+	private void ApplyNativeClipping(CGPath cgPath)
 	{
-		if (svg != null && _nativeOverlayLayer is { } view)
+		if (_nativeOverlayLayer is { } view)
 		{
-			var cgPath = new CGPath();
-			var length = svg.Length;
-
-			var scale = UIScreen.MainScreen.Scale;
-
-			var vx = view.Frame.X;
-			var vy = view.Frame.Y;
-
-			for (int index = 0; index < length;)
-			{
-				nfloat x, y, x2, y2;
-				char op = svg[index];
-				switch (op)
-				{
-					case 'M':
-						index++; // skip M
-						x = ReadNextSvgCoord(svg, ref index, length);
-						index++; // skip separator
-						y = ReadNextSvgCoord(svg, ref index, length);
-
-						x = (x / scale - vx);
-						y = (y / scale - vy);
-						cgPath.MoveToPoint(x, y);
-						break;
-
-					case 'Q':
-						index++; // skip Z
-						x = ReadNextSvgCoord(svg, ref index, length);
-						index++; // skip separator
-						y = ReadNextSvgCoord(svg, ref index, length);
-						index++; // skip separator
-						x2 = ReadNextSvgCoord(svg, ref index, length);
-						index++; // skip separator
-						y2 = ReadNextSvgCoord(svg, ref index, length);
-						// there might not be a separator (not required before the next op)
-						x = (x / scale - vx);
-						y = (y / scale - vy);
-						x2 = (x2 / scale - vx);
-						y2 = (y2 / scale - vy);
-						cgPath.AddQuadCurveToPoint(x, y, x2, y2);
-						break;
-
-					case 'L':
-						index++; // skip L
-						x = ReadNextSvgCoord(svg, ref index, length);
-						index++; // skip separator
-						y = ReadNextSvgCoord(svg, ref index, length);
-
-						x = (x / scale - vx);
-						y = (y / scale - vy);
-						cgPath.AddLineToPoint(x, y);
-						break;
-
-					case 'Z':
-						index++; // skip Z
-						cgPath.CloseSubpath();
-						break;
-
-					default:
-						index++; // skip unknown op
-						break;
-				}
-			}
-
-			var mask = view.Layer.Mask as CAShapeLayer;
-			if (mask == null)
+			if (view.Layer.Mask is not CAShapeLayer mask)
 			{
 				mask = new CAShapeLayer();
 				view.Layer.Mask = mask;
@@ -241,32 +291,6 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 			mask.Path = cgPath;
 			mask.FillRule = CAShapeLayer.FillRuleEvenOdd;
 		}
-	}
-
-	private float ReadNextSvgCoord(string svg, ref int position, long length)
-	{
-		float result = float.NaN;
-		if (position >= length)
-		{
-			return result;
-		}
-
-		if (svg[position] == ' ')
-		{
-			position++;
-		}
-
-		var endPos = position;
-		while (endPos < svg.Length && (char.IsDigit(svg[endPos]) || svg[endPos] == '.' || svg[endPos] == '-'))
-		{
-			endPos++;
-		}
-		var reading = svg.Substring(position, endPos - position).Trim();
-
-		var coord = float.Parse(reading, CultureInfo.InvariantCulture);
-
-		position = endPos;
-		return coord;
 	}
 
 	public void InvalidateRender()
