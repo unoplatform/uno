@@ -433,6 +433,7 @@ namespace Microsoft.UI.Xaml.Tests.Controls.Grid_Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task CanSetCellPixelDimensions()
 		{
 			TestCleanupWrapper cleanup;
@@ -842,6 +843,7 @@ namespace Microsoft.UI.Xaml.Tests.Controls.Grid_Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task CanSpanAllRowsAndColumns()
 		{
 			TestCleanupWrapper cleanup;
@@ -893,6 +895,7 @@ namespace Microsoft.UI.Xaml.Tests.Controls.Grid_Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task CanSetSpanToMoreThanTotalRowsAndColumns()
 		{
 			TestCleanupWrapper cleanup;

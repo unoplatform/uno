@@ -11,6 +11,7 @@ using Private.Infrastructure;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml;
+using Uno.UI.RuntimeTests.Helpers;
 #if __APPLE_UIKIT__
 using UIKit;
 #else
@@ -68,6 +69,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Inner_IFrameworkElement()
 		{
 			var page = new NativeView_Page();

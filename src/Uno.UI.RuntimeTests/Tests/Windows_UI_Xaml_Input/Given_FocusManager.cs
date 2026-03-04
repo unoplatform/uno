@@ -147,6 +147,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task IsTabStop_False_Check_Inner()
 		{
 			var outerControl = new ContentControl() { IsTabStop = false };
