@@ -21,6 +21,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 
 [TestClass]
 [RunsOnUIThread]
+[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 public partial class Given_InteractionTracker
 {
 	private static InteractionTracker SetupTracker(Compositor compositor)
