@@ -188,7 +188,7 @@
 			<_StaleOwnedTargetFiles Include="@(_PreviouslyOwnedTargetFiles)" Exclude="@(_OutputTargetFiles)" />
 			<_StaleOwnedTargetRefFiles Include="@(_PreviouslyOwnedTargetRefFiles)" Exclude="@(_OutputTargetRefFiles)" />
 		</ItemGroup>
-		<Delete Files="@(_StaleOwnedTargetFiles);@(_StaleOwnedTargetRefFiles)" />
+		<Delete Files="@(_StaleOwnedTargetFiles);@(_StaleOwnedTargetRefFiles)" ContinueOnError="true" />
 
 		<Copy SourceFiles="@(_OutputFiles)"
 			  DestinationFiles="@(_OutputTargetFiles)"
@@ -247,7 +247,7 @@
 			<_CommonOverrideCurrentOwnedFiles Include="@(_CommonOverrideTargetFiles);@(_CommonOverrideTargetDebugFiles)" />
 			<_CommonOverrideStaleOwnedFiles Include="@(_PreviouslyOwnedCommonFiles)" Exclude="@(_CommonOverrideCurrentOwnedFiles)" />
 		</ItemGroup>
-		<Delete Files="@(_CommonOverrideStaleOwnedFiles)" />
+		<Delete Files="@(_CommonOverrideStaleOwnedFiles)" ContinueOnError="true" />
 
 		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_CommonOverrideTargetFiles)" SkipUnchangedFiles="true" Retries="1" RetryDelayMilliseconds="500" />
 		<Copy SourceFiles="@(_OutputDebugSymbols)" DestinationFiles="@(_CommonOverrideTargetDebugFiles)" SkipUnchangedFiles="true" Retries="1" RetryDelayMilliseconds="500" />
