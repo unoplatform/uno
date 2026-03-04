@@ -1,0 +1,12 @@
+<UserControl
+	x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ImplicitXamlNamespaces_CustomGlobal">
+
+	<StackPanel>
+		<CustomGlobalControl x:Name="MyCustomControl"
+							 x:FieldModifier="public"
+							 CustomLabel="Test Label" />
+		<AnotherGlobalControl x:Name="MyAnotherControl"
+							  x:FieldModifier="public"
+							  CustomValue="42" />
+	</StackPanel>
+</UserControl>

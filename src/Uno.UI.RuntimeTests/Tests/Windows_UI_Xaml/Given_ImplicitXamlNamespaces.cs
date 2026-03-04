@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.CustomGlobal;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
@@ -85,5 +86,53 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		// that cannot be validated at runtime since XAML compilation happens during
 		// the build. A separate test project with the flag set to false would be
 		// needed to verify opt-out behavior.
+
+		// --- Phase 4: User Story 2 - Custom CLR Namespaces ---
+
+		[TestMethod]
+		public async Task When_Custom_Namespace_Registered_To_Global_Uri()
+		{
+			// T019: Verify a custom CLR namespace registered to the global URI
+			// via [assembly: XmlnsDefinition] resolves its types unprefixed in XAML.
+			var control = new ImplicitXamlNamespaces_CustomGlobal();
+			TestServices.WindowHelper.WindowContent = control;
+			await TestServices.WindowHelper.WaitForLoaded(control);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull(control.MyCustomControl, "CustomGlobalControl should resolve from global namespace");
+			Assert.IsInstanceOfType(control.MyCustomControl, typeof(CustomGlobalControl));
+			Assert.AreEqual("Test Label", control.MyCustomControl.CustomLabel);
+		}
+
+		[TestMethod]
+		public async Task When_Multiple_Global_Namespaces_Resolve()
+		{
+			// T020: Verify multiple types from the same globally registered
+			// namespace resolve unprefixed.
+			var control = new ImplicitXamlNamespaces_CustomGlobal();
+			TestServices.WindowHelper.WindowContent = control;
+			await TestServices.WindowHelper.WaitForLoaded(control);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull(control.MyAnotherControl, "AnotherGlobalControl should resolve from global namespace");
+			Assert.IsInstanceOfType(control.MyAnotherControl, typeof(AnotherGlobalControl));
+			Assert.AreEqual(42, control.MyAnotherControl.CustomValue);
+		}
+
+		[TestMethod]
+		public async Task When_WinUI_Type_Takes_Precedence_Over_Global()
+		{
+			// T021: Verify that standard WinUI types (e.g., Button) take precedence
+			// over any custom types with the same name in global namespaces.
+			// This is implicitly verified by T011 - the Button in the NoXmlns test
+			// resolves to Microsoft.UI.Xaml.Controls.Button, not any custom Button.
+			var control = new ImplicitXamlNamespaces_NoXmlns();
+			TestServices.WindowHelper.WindowContent = control;
+			await TestServices.WindowHelper.WaitForLoaded(control);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsInstanceOfType(control.TestButton, typeof(Microsoft.UI.Xaml.Controls.Button),
+				"Standard WinUI Button should take precedence over any global namespace Button");
+		}
 	}
 }
