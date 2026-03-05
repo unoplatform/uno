@@ -58,6 +58,7 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 	private double _inertiaPendingX;
 	private double _inertiaPendingY;
 	private double _lastGestureEndTime;
+	private double _gestureBeganTime;
 	private CGPoint _cachedScrollLocation;
 	private bool _gestureIsNaturalScrolling;
 	private double _activeScrollPendingX;
@@ -229,6 +230,7 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 
 					_activeScrollPendingX = 0;
 					_activeScrollPendingY = 0;
+					_gestureBeganTime = CoreAnimation.CAAnimation.CurrentMediaTime();
 					_cachedScrollLocation = gesture.LocationInView(source);
 					_gestureIsNaturalScrolling = isNaturalScrollingEnabled;
 					// Pre-position the scroll pointer (ID=1) at the cursor location so that
@@ -269,6 +271,14 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 
 				case UIGestureRecognizerState.Ended:
 					_gestureIsNaturalScrolling = isNaturalScrollingEnabled;
+					// If the gesture lasted longer than the rapid-flick window, the preserved
+					// momentum is unrelated to the current scroll — discard it to avoid an
+					// unexpected inertia kick at the end of a deliberate slow scroll.
+					if (CoreAnimation.CAAnimation.CurrentMediaTime() - _gestureBeganTime > RapidFlickWindowSeconds)
+					{
+						_momentumVelocityX = 0;
+						_momentumVelocityY = 0;
+					}
 					AccumulateInertiaScrolling(gesture.VelocityInView(source));
 					return;
 
