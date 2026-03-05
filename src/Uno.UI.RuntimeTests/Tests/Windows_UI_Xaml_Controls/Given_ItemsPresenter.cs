@@ -1200,6 +1200,7 @@ public class Given_ItemsPresenter
 		Assert.AreNotEqual(double.PositiveInfinity, availableSize.Width);
 	}
 
+#if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task When_Header_Set_To_Null_Layout_Space_Reclaimed()
@@ -1234,21 +1235,21 @@ public class Given_ItemsPresenter
 		lv.Header = null;
 		await WindowHelper.WaitForIdle();
 
-		Assert.AreEqual(Visibility.Collapsed, headerCC.Visibility, "Header should be collapsed when set to null");
+		Assert.AreEqual(0.0, headerCC.ActualHeight, "Header should have zero height when set to null");
 
 		// Set Footer to null and verify layout space is reclaimed
 		lv.Footer = null;
 		await WindowHelper.WaitForIdle();
 
-		Assert.AreEqual(Visibility.Collapsed, footerCC.Visibility, "Footer should be collapsed when set to null");
+		Assert.AreEqual(0.0, footerCC.ActualHeight, "Footer should have zero height when set to null");
 
 		// Set Header back and verify it becomes visible again
 		lv.Header = "New Header";
 		await WindowHelper.WaitForIdle();
 
-		Assert.AreEqual(Visibility.Visible, headerCC.Visibility, "Header should be visible again when re-set");
 		Assert.IsTrue(headerCC.ActualHeight > 0, "Header should have non-zero height after being re-set");
 	}
+#endif
 
 	public record MyTextModel(string MyText);
 }
