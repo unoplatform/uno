@@ -28,13 +28,23 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 	// With DisableAnimation:true in PointerWheelScroll (see ScrollContentPresenter.cs),
 	// each event directly moves the scroll by: round(delta * scrollPerNotch / 120),
 	// where delta is the trackpad translation (pts/frame) multiplied by ScrollWheelDeltaMultiplier.
-	// For a typical scrollPerNotch (for example, ~15% of the viewport height), this value is tuned
-	// to yield a comfortable ratio between physical trackpad motion and content scroll distance.
+	// A value of -1 yields a near 1:1 ratio between physical trackpad pts and logical scroll pts
+	// (for a typical viewport where scrollPerNotch ≈ 120). Using a large value like -60 over-amplifies
+	// because GetScrollWheelDelta already normalizes by the 120-notch baseline.
 	// Inertia uses the same multiplier (velocity / InertiaVelocityScale * this) for a seamless handoff.
-	private const int ScrollWheelDeltaMultiplier = -60;
+	private const int ScrollWheelDeltaMultiplier = -1;
 	private const double MinTranslationThreshold = 1.0;
 	private const double InertiaDecelerationRate = 0.95;
-	private const double InertiaMagnitudeThreshold = 0.0001;
+	// Stop the display link once velocity drops below ~30 pt/s (0.5 pt/frame).
+	// Sub-pixel accumulation handles smooth deceleration down to this point.
+	// Using a higher threshold avoids running the display link for 2+ seconds of
+	// imperceptible movement, which could delay gesture recognition callbacks.
+	private const double InertiaMagnitudeThreshold = 0.5;
+	// Cap accumulated momentum so repeated rapid flicks cannot over-accelerate.
+	private const double InertiaMaxVelocity = 50.0;
+	// Maximum time between gesture end and next gesture start for momentum to be
+	// preserved across the two gestures (rapid back-to-back flicking).
+	private const double RapidFlickWindowSeconds = 0.35;
 	// Divide velocity (pts/s) by display refresh rate to get per-frame delta,
 	// matching the scale of active-scroll translation deltas for a smooth handoff.
 	private const double InertiaVelocityScale = 60.0;
@@ -42,8 +52,16 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 	private CADisplayLink? _momentumDisplayLink;
 	private double _momentumVelocityX;
 	private double _momentumVelocityY;
+	// Sub-pixel accumulator: collects fractional pts across frames so inertia
+	// decelerates smoothly all the way to InertiaMagnitudeThreshold instead of
+	// stopping abruptly when velocity drops below 1 pt/frame.
+	private double _inertiaPendingX;
+	private double _inertiaPendingY;
+	private double _lastGestureEndTime;
 	private CGPoint _cachedScrollLocation;
 	private bool _gestureIsNaturalScrolling;
+	private double _activeScrollPendingX;
+	private double _activeScrollPendingY;
 #endif
 	public static AppleUIKitCorePointerInputSource Instance { get; } = new();
 
@@ -196,25 +214,62 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 			switch (gesture.State)
 			{
 				case UIGestureRecognizerState.Began:
-					StopInertiaScrolling();
+					// Only preserve momentum for rapid back-to-back flicks (within the
+					// time window). For slower starts the previous inertia is stale and
+					// fighting it causes the noticeable delay the user reported.
+					var timeSinceLastEnd = CoreAnimation.CAAnimation.CurrentMediaTime() - _lastGestureEndTime;
+					if (timeSinceLastEnd <= RapidFlickWindowSeconds)
+					{
+						PauseInertiaScrolling();
+					}
+					else
+					{
+						StopInertiaScrolling();
+					}
+
+					_activeScrollPendingX = 0;
+					_activeScrollPendingY = 0;
 					_cachedScrollLocation = gesture.LocationInView(source);
 					_gestureIsNaturalScrolling = isNaturalScrollingEnabled;
+					// Pre-position the scroll pointer (ID=1) at the cursor location so that
+					// the first PointerWheelChanged event does not trigger a PointerExited /
+					// PointerEntered visual-state transition on the item under the cursor.
+					// Without this, OnPointerWheelChanged's RaiseLeaveEnter sees the item as
+					// stale (it was PointerOver via a UITouch hover pointer, a different ID)
+					// and fires Leave then Enter — briefly flashing the item as selected and
+					// causing a layout pass that delays the first scroll frame.
+					PointerMoved?.Invoke(this, CreateScrollGestureEventArgs(CGPoint.Empty, _cachedScrollLocation, isNaturalScrollingEnabled));
 					return;
 
 				case UIGestureRecognizerState.Changed:
 					var translation = gesture.TranslationInView(source);
 					if (Math.Abs(translation.X) < MinTranslationThreshold && Math.Abs(translation.Y) < MinTranslationThreshold)
+					{
 						return;
+					}
+
+					_activeScrollPendingX += (double)translation.X;
+					_activeScrollPendingY += (double)translation.Y;
+					var activeScrollX = (nfloat)Math.Truncate(_activeScrollPendingX);
+					var activeScrollY = (nfloat)Math.Truncate(_activeScrollPendingY);
+					_activeScrollPendingX -= (double)activeScrollX;
+					_activeScrollPendingY -= (double)activeScrollY;
+					gesture.SetTranslation(CGPoint.Empty, source);
+
+					if (activeScrollX == 0 && activeScrollY == 0)
+					{
+						return;
+					}
+
 					_cachedScrollLocation = gesture.LocationInView(source);
 					_trace?.Invoke($"<ScrollGesture src={source.GetDebugName()} state={gesture.State}>");
-					PointerWheelChanged?.Invoke(this, CreateScrollGestureEventArgs(translation, _cachedScrollLocation, isNaturalScrollingEnabled));
+					PointerWheelChanged?.Invoke(this, CreateScrollGestureEventArgs(new CGPoint(activeScrollX, activeScrollY), _cachedScrollLocation, isNaturalScrollingEnabled));
 					_trace?.Invoke("</ScrollGesture>");
-					gesture.SetTranslation(CGPoint.Empty, source);
 					return;
 
 				case UIGestureRecognizerState.Ended:
 					_gestureIsNaturalScrolling = isNaturalScrollingEnabled;
-					StartInertiaScrolling(gesture.VelocityInView(source));
+					AccumulateInertiaScrolling(gesture.VelocityInView(source));
 					return;
 
 				case UIGestureRecognizerState.Cancelled:
@@ -230,11 +285,40 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 		}
 	}
 
-	private void StartInertiaScrolling(CGPoint velocity)
+	// Pause the display link but preserve velocity so the next gesture's Ended
+	// can accumulate momentum rather than starting from zero.
+	private void PauseInertiaScrolling()
 	{
-		StopInertiaScrolling();
-		_momentumVelocityX = velocity.X / InertiaVelocityScale;
-		_momentumVelocityY = velocity.Y / InertiaVelocityScale;
+		_momentumDisplayLink?.Invalidate();
+		_momentumDisplayLink = null;
+		_inertiaPendingX = 0;
+		_inertiaPendingY = 0;
+	}
+
+	// Add the new gesture velocity to any preserved momentum, then (re)start the
+	// display link. Called on gesture Ended so repeated quick flicks accumulate.
+	private void AccumulateInertiaScrolling(CGPoint velocity)
+	{
+		var newVX = velocity.X / InertiaVelocityScale;
+		var newVY = velocity.Y / InertiaVelocityScale;
+
+		// If the new gesture ends in the opposite direction from preserved momentum,
+		// discard the old momentum so it does not fight the user's intended direction.
+		if (newVX != 0 && Math.Sign(newVX) != Math.Sign(_momentumVelocityX))
+		{
+			_momentumVelocityX = 0;
+		}
+
+		if (newVY != 0 && Math.Sign(newVY) != Math.Sign(_momentumVelocityY))
+		{
+			_momentumVelocityY = 0;
+		}
+
+		_momentumVelocityX += newVX;
+		_momentumVelocityY += newVY;
+		_momentumVelocityX = Math.Clamp(_momentumVelocityX, -InertiaMaxVelocity, InertiaMaxVelocity);
+		_momentumVelocityY = Math.Clamp(_momentumVelocityY, -InertiaMaxVelocity, InertiaMaxVelocity);
+		_lastGestureEndTime = CoreAnimation.CAAnimation.CurrentMediaTime();
 		_momentumDisplayLink = CADisplayLink.Create(UpdateInertiaScrolling);
 		_momentumDisplayLink.AddToRunLoop(NSRunLoop.Main, NSRunLoopMode.Common);
 	}
@@ -245,6 +329,8 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 		_momentumDisplayLink = null;
 		_momentumVelocityX = 0;
 		_momentumVelocityY = 0;
+		_inertiaPendingX = 0;
+		_inertiaPendingY = 0;
 	}
 
 	private void UpdateInertiaScrolling()
@@ -259,21 +345,25 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 			return;
 		}
 
+		// Accumulate sub-pixel motion so inertia decelerates smoothly all the way
+		// to InertiaMagnitudeThreshold instead of stopping abruptly when velocity
+		// drops below 1 pt/frame (the old integer-truncation early-stop at ~60 pt/s).
+		_inertiaPendingX += _momentumVelocityX;
+		_inertiaPendingY += _momentumVelocityY;
+
+		var scrollX = (nfloat)Math.Truncate(_inertiaPendingX);
+		var scrollY = (nfloat)Math.Truncate(_inertiaPendingY);
+
+		if (scrollX == 0 && scrollY == 0)
+			return; // sub-pixel this frame — keep display link running
+
+		_inertiaPendingX -= (double)scrollX;
+		_inertiaPendingY -= (double)scrollY;
+
 		try
 		{
-			var translation = new CGPoint(_momentumVelocityX, _momentumVelocityY);
-
-			// If the computed wheel deltas would round to zero on both axes,
-			// stop inertia to avoid unnecessary display-link callbacks.
-			var multiplier = _gestureIsNaturalScrolling ? -ScrollWheelDeltaMultiplier : ScrollWheelDeltaMultiplier;
-			var scrollDeltaX = (int)(translation.X * multiplier);
-			var scrollDeltaY = (int)(translation.Y * multiplier);
-			if (scrollDeltaX == 0 && scrollDeltaY == 0)
-			{
-				StopInertiaScrolling();
-				return;
-			}
-			PointerWheelChanged?.Invoke(this, CreateScrollGestureEventArgs(translation, _cachedScrollLocation, _gestureIsNaturalScrolling));
+			PointerWheelChanged?.Invoke(this,
+				CreateScrollGestureEventArgs(new CGPoint(scrollX, scrollY), _cachedScrollLocation, _gestureIsNaturalScrolling));
 		}
 		catch (Exception e)
 		{
