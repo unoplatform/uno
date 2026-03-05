@@ -197,13 +197,6 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 
 			using var _ = WithCurrent(args);
 			_recognizer.ProcessDownEvent(args.CurrentPoint);
-
-			// If the recognizer immediately rejected the manipulation (e.g. settings = None from PreventDirectManipulation),
-			// and we haven't transitioned out of Preparing (e.g. via ManipulationAborted), force completion.
-			if (_state is States.Preparing && _recognizer.PendingManipulation is null)
-			{
-				OnDirectManipulationAborted(_recognizer, null!);
-			}
 		}
 	}
 

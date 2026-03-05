@@ -1419,6 +1419,7 @@ public class Given_InputManager
 		var svBounds = sv.GetAbsoluteBounds();
 		finger.Drag(from: svBounds.GetCenter(), to: svBounds.GetCenter().Offset(y: -100));
 		sv.VerticalOffset.Should().BeGreaterThan(0, because: "scrolling should work before toggling");
+		await TestServices.WindowHelper.WaitForIdle();
 
 		// 2. Scroll back to top so the toggle is visible
 		sv.ChangeView(null, 0, null, disableAnimation: true);
@@ -1431,6 +1432,7 @@ public class Given_InputManager
 			to: new Point(toggleBounds.Right - 10, toggleBounds.GetCenter().Y),
 			steps: 5);
 		await TestServices.WindowHelper.WaitForIdle();
+		toggle.IsOn.Should().BeTrue(because: "the horizontal drag should have toggled the switch on");
 
 		// 4. Try to scroll again - this is the actual test: scrolling must still work after toggle
 		sv.ChangeView(null, 0, null, disableAnimation: true);
@@ -1438,6 +1440,7 @@ public class Given_InputManager
 		svBounds = sv.GetAbsoluteBounds();
 		finger.Drag(from: svBounds.GetCenter(), to: svBounds.GetCenter().Offset(y: -100));
 		sv.VerticalOffset.Should().BeGreaterThan(0, because: "scrolling should still work after toggling a ToggleSwitch");
+		await TestServices.WindowHelper.WaitForIdle();
 	}
 
 	private static void SetCursorShape(CoreCursor cursor)
