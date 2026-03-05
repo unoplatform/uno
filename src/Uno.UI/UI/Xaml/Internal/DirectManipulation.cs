@@ -197,6 +197,13 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 
 			using var _ = WithCurrent(args);
 			_recognizer.ProcessDownEvent(args.CurrentPoint);
+
+			// If the recognizer immediately rejected the manipulation (e.g. settings = None from PreventDirectManipulation),
+			// complete directly without going through ManipulationAborted (which has different WinUI semantics).
+			if (_state is States.Preparing && _recognizer.PendingManipulation is null)
+			{
+				OnDirectManipulationCompleting();
+			}
 		}
 	}
 
@@ -491,13 +498,21 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 	private void OnDirectManipulationAborted(GestureRecognizer recognizer, GestureRecognizer.Manipulation manip)
 	{
 		Trace?.Invoke("[DirectManipulation] Aborted");
+		OnDirectManipulationCompleting();
+	}
 
+	/// <summary>
+	/// Completes the direct manipulation, notifying handlers and transitioning to the Completed state.
+	/// Used both when the manipulation is aborted via event and when the recognizer immediately rejects it.
+	/// </summary>
+	private void OnDirectManipulationCompleting()
+	{
 		_state = States.Completed;
 
 		// Even if cancelled we still want to notify the handlers that the manipulation has completed to avoid leaking state.
 		foreach (var handler in Handlers)
 		{
-			handler.OnCompleted(recognizer, null);
+			handler.OnCompleted(_recognizer, null);
 		}
 	}
 	#endregion

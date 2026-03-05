@@ -119,8 +119,6 @@ namespace Windows.UI.Input
 				if (manipulation._status == ManipulationStatus.Completed)
 				{
 					// The new manipulation has been cancelled in the ManipStarting handler, throw it away.
-					// Fire ManipulationAborted so listeners (e.g. DirectManipulation) can properly transition state.
-					recognizer.ManipulationAborted?.Invoke(recognizer, manipulation);
 					manipulation.Complete(); // Should not do anything, safety only
 				}
 				else
