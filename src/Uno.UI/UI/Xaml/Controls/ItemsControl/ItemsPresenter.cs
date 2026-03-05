@@ -36,7 +36,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static object GetHeaderDefaultValue() => null;
 
-		[GeneratedDependencyProperty(ChangedCallback = true)]
+		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 		public static DependencyProperty HeaderProperty { get; } = CreateHeaderProperty();
 
 		private void OnHeaderChanged(DependencyPropertyChangedEventArgs args)
@@ -55,7 +55,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static object GetFooterDefaultValue() => null;
 
-		[GeneratedDependencyProperty(ChangedCallback = true)]
+		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 		public static DependencyProperty FooterProperty { get; } = CreateFooterProperty();
 
 		private void OnFooterChanged(DependencyPropertyChangedEventArgs args)
@@ -74,7 +74,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetHeaderTemplateValue(value);
 		}
 
-		[GeneratedDependencyProperty(ChangedCallback = true)]
+		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 		public static DependencyProperty HeaderTemplateProperty { get; } = CreateHeaderTemplateProperty();
 
 		private void OnHeaderTemplateChanged(DependencyPropertyChangedEventArgs args)
@@ -93,7 +93,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static DataTemplate GetFooterTemplateDefaultValue() => null;
 
-		[GeneratedDependencyProperty(ChangedCallback = true)]
+		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 		public static DependencyProperty FooterTemplateProperty { get; } = CreateFooterTemplateProperty();
 
 		private void OnFooterTemplateChanged(DependencyPropertyChangedEventArgs args)
@@ -414,6 +414,21 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override Size MeasureOverride(Size size)
 		{
 			// Most of this is inspired by StackPanel's MeasureOverride
+
+			// Collapse header/footer when they have no content and no template (matching WinUI)
+			if (HeaderFooterEnabled && HeaderContentControl is { } headerCC)
+			{
+				headerCC.Visibility = (Header is null && HeaderTemplate is null)
+					? Visibility.Collapsed
+					: Visibility.Visible;
+			}
+
+			if (HeaderFooterEnabled && FooterContentControl is { } footerCC)
+			{
+				footerCC.Visibility = (Footer is null && FooterTemplate is null)
+					? Visibility.Collapsed
+					: Visibility.Visible;
+			}
 
 			var padding = AppliedPadding;
 
