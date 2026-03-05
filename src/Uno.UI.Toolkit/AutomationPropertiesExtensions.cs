@@ -1,10 +1,16 @@
-using Uno;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
 
-namespace Microsoft.UI.Xaml.Automation;
+#if HAS_UNO
+using Uno;
+#endif
+
+namespace Uno.UI.Toolkit;
 
 /// <summary>
-/// Provides Uno-specific attached properties that extend the standard
-/// <see cref="AutomationProperties"/> metadata for accessibility.
+/// Provides attached properties that extend the standard
+/// <see cref="Microsoft.UI.Xaml.Automation.AutomationProperties"/>
+/// metadata for accessibility.
 /// </summary>
 /// <remarks>
 /// These properties are <b>not</b> part of the WinUI contract. They exist because
@@ -15,11 +21,10 @@ namespace Microsoft.UI.Xaml.Automation;
 ///
 /// XAML usage:
 /// <code>
-/// xmlns:unoAutomation="using:Microsoft.UI.Xaml.Automation"
-/// &lt;Button unoAutomation:AutomationPropertiesExtensions.Role="tab" /&gt;
+/// xmlns:uut="using:Uno.UI.Toolkit"
+/// &lt;Button uut:AutomationPropertiesExtensions.Role="tab" /&gt;
 /// </code>
 /// </remarks>
-[UnoOnly]
 public static class AutomationPropertiesExtensions
 {
 	/// <summary>
@@ -39,7 +44,7 @@ public static class AutomationPropertiesExtensions
 			"Role",
 			typeof(string),
 			typeof(AutomationPropertiesExtensions),
-			new FrameworkPropertyMetadata(default(string), OnRoleChanged));
+			new PropertyMetadata(default(string), OnRoleChanged));
 
 	/// <summary>
 	/// Gets the accessibility role override for the specified element.
@@ -72,34 +77,31 @@ public static class AutomationPropertiesExtensions
 	/// </summary>
 	private static void OnRoleChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 	{
-#if __WASM__
+#if __WASM__ || __SKIA__
 		if (dependencyObject is UIElement uiElement)
 		{
 			var role = (string)args.NewValue;
+
+			// Populate the internal bridge property so that AutomationProperties.FindHtmlRole
+			// can resolve the override on both native WASM and Skia-WASM accessibility paths.
+			AutomationProperties.SetRoleOverride(uiElement, role);
+
+#if __WASM__
+			// On native WASM the element maps to a real DOM node, so push the value
+			// directly to the HTML role attribute as well.
 			if (!string.IsNullOrEmpty(role))
 			{
 				uiElement.SetAttribute("role", role);
 			}
 			else
 			{
-				// Clearing the override — re-derive from the element type.
-				var defaultRole = AutomationProperties.FindHtmlRole(uiElement);
-				if (defaultRole != null)
-				{
-					uiElement.SetAttribute("role", defaultRole);
-				}
-				else
-				{
-					uiElement.RemoveAttribute("role");
-				}
+				// Clearing the override — remove the explicit role attribute.
+				// The default role will be re-applied by AutomationProperties
+				// when the automation ID or name is next evaluated.
+				uiElement.RemoveAttribute("role");
 			}
+#endif
 		}
 #endif
-		// Skia: the accessibility tree reads the role via FindHtmlRole,
-		//       which already checks this property. No extra push needed.
-		// Windows (WinUI): no native equivalent; property accepted but ignored.
-		// Android / iOS: platform-specific mapping could be applied through
-		//       FrameworkElementAutomationPeer on the respective platform files
-		//       in a future iteration.
 	}
 }

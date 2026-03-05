@@ -68,11 +68,26 @@ public static class AriaMapper
 
 	/// <summary>
 	/// Gets the semantic element type for an automation peer based on its control type and patterns.
+	/// When a role override is set via <c>AutomationPropertiesExtensions.Role</c>, returns
+	/// <see cref="SemanticElementType.Generic"/> so the element uses a plain div with the
+	/// overridden role attribute instead of a type-specific HTML element (e.g. input[type=checkbox]).
 	/// </summary>
 	/// <param name="peer">The automation peer.</param>
+	/// <param name="owner">The owner UIElement, used to check for role overrides.</param>
 	/// <returns>The semantic element type to create.</returns>
-	public static SemanticElementType GetSemanticElementType(AutomationPeer peer)
+	public static SemanticElementType GetSemanticElementType(AutomationPeer peer, UIElement? owner = null)
 	{
+		// If the element has an explicit role override, use a generic div so the
+		// overridden role string is applied instead of the native HTML element type.
+		if (owner is not null)
+		{
+			var roleOverride = AutomationProperties.GetRoleOverride(owner);
+			if (!string.IsNullOrEmpty(roleOverride))
+			{
+				return SemanticElementType.Generic;
+			}
+		}
+
 		var controlType = peer.GetAutomationControlType();
 
 		// Determine element type based on control type and available patterns

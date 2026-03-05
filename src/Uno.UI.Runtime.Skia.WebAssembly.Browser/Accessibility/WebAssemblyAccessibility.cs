@@ -840,9 +840,16 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 
 	private static bool IsAccessibilityFocusable(DependencyObject dependencyObject, bool isFocusable)
 	{
+		// Elements with an explicit role override are always accessibility-focusable
+		// so screen readers can navigate to them (e.g. Border with role="main").
+		// This is consistent with WinUI where accessibility focus can target elements
+		// that aren't keyboard-focusable.
+		var hasRoleOverride = dependencyObject is UIElement roleElement &&
+			!string.IsNullOrEmpty(AutomationProperties.GetRoleOverride(roleElement));
+
 		// We'll consider TextBlock and RichTextBlock as accessibility focusable, even if they are not focusable.
 		// Screen readers should read them.
-		if (!isFocusable && dependencyObject is not (TextBlock or RichTextBlock))
+		if (!isFocusable && !hasRoleOverride && dependencyObject is not (TextBlock or RichTextBlock))
 		{
 			return false;
 		}
@@ -851,6 +858,12 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 		if (accessibilityView == AccessibilityView.Raw)
 		{
 			return false;
+		}
+
+		// Elements with a role override don't need an automation peer to be focusable
+		if (hasRoleOverride)
+		{
+			return true;
 		}
 
 		// TODO: Adjust when TextElement's automation peers are supported.
@@ -1052,7 +1065,7 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 		// This provides better keyboard support and screen reader compatibility
 		if (automationPeer is not null)
 		{
-			var elementType = AriaMapper.GetSemanticElementType(automationPeer);
+			var elementType = AriaMapper.GetSemanticElementType(automationPeer, child);
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				var label = automationPeer.GetName();
@@ -1067,7 +1080,8 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 				totalOffset.X,
 				totalOffset.Y,
 				child.Visual.Size.X,
-				child.Visual.Size.Y);
+				child.Visual.Size.Y,
+				child);
 
 			if (created)
 			{

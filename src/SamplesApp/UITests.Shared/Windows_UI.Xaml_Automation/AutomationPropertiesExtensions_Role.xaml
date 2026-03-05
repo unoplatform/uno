@@ -3,50 +3,88 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="using:Uno.UI.Samples.Controls"
-	xmlns:unoAutomation="using:Microsoft.UI.Xaml.Automation"
+	xmlns:uut="using:Uno.UI.Toolkit"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d"
 	d:DesignHeight="400"
 	d:DesignWidth="400">
 
-	<StackPanel Margin="16" Spacing="12">
-		<TextBlock
-			FontSize="16"
-			FontWeight="Bold"
-			Text="AutomationPropertiesExtensions.Role" />
+	<ScrollViewer>
+		<StackPanel Margin="16" Spacing="12">
+			<TextBlock
+				FontSize="16"
+				FontWeight="Bold"
+				Text="AutomationPropertiesExtensions.Role" />
 
-		<TextBlock
-			TextWrapping="Wrap"
-			Text="The Role attached property overrides the platform accessibility role for an element. On WASM it maps directly to the HTML 'role' attribute. On other platforms it is accepted but may be a no-op." />
+			<TextBlock
+				TextWrapping="Wrap"
+				Text="The Role attached property overrides the platform accessibility role for an element. On WASM it maps directly to the HTML 'role' attribute. On Skia-WASM it is read by the accessibility overlay." />
 
-		<!-- tab role -->
-		<Border
-			Background="CornflowerBlue"
-			Padding="8"
-			unoAutomation:AutomationPropertiesExtensions.Role="tab">
-			<TextBlock Text="Border with role='tab'" Foreground="White" />
-		</Border>
+			<!-- Landmark roles -->
+			<Border
+				Background="CornflowerBlue"
+				Padding="8"
+				uut:AutomationPropertiesExtensions.Role="main">
+				<TextBlock Text="Border with role='main'" Foreground="White" />
+			</Border>
 
-		<!-- tablist role -->
-		<Border
-			Background="SteelBlue"
-			Padding="8"
-			unoAutomation:AutomationPropertiesExtensions.Role="tablist">
-			<TextBlock Text="Border with role='tablist'" Foreground="White" />
-		</Border>
+			<Border
+				Background="SteelBlue"
+				Padding="8"
+				uut:AutomationPropertiesExtensions.Role="navigation">
+				<TextBlock Text="Border with role='navigation'" Foreground="White" />
+			</Border>
 
-		<!-- navigation role -->
-		<Border
-			Background="MediumSlateBlue"
-			Padding="8"
-			unoAutomation:AutomationPropertiesExtensions.Role="navigation">
-			<TextBlock Text="Border with role='navigation'" Foreground="White" />
-		</Border>
+			<Border
+				Background="MediumSlateBlue"
+				Padding="8"
+				uut:AutomationPropertiesExtensions.Role="region">
+				<TextBlock Text="Border with role='region'" Foreground="White" />
+			</Border>
 
-		<!-- Button – role clears back to default (null/empty) -->
-		<Button
-			Content="Button with role cleared (default)"
-			unoAutomation:AutomationPropertiesExtensions.Role="" />
-	</StackPanel>
+			<!-- Non-landmark overrides -->
+			<Border
+				Background="DarkSlateBlue"
+				Padding="8"
+				uut:AutomationPropertiesExtensions.Role="application">
+				<TextBlock Text="Border with role='application'" Foreground="White" />
+			</Border>
+
+			<Border
+				Background="SlateGray"
+				Padding="8"
+				uut:AutomationPropertiesExtensions.Role="presentation">
+				<TextBlock Text="Border with role='presentation'" Foreground="White" />
+			</Border>
+
+			<!-- Widget-level overrides -->
+			<Border
+				Background="Teal"
+				Padding="8"
+				uut:AutomationPropertiesExtensions.Role="tablist">
+				<TextBlock Text="Border with role='tablist'" Foreground="White" />
+			</Border>
+
+			<Border
+				Background="CadetBlue"
+				Padding="8"
+				uut:AutomationPropertiesExtensions.Role="tab">
+				<TextBlock Text="Border with role='tab'" Foreground="White" />
+			</Border>
+
+			<!-- Button – role clears back to default (null/empty) -->
+			<Button Content="Button with role cleared (default)" uut:AutomationPropertiesExtensions.Role="" />
+
+			<ComboBox uut:AutomationPropertiesExtensions.Role="listbox">
+				<ComboBoxItem Content="ComboBox with role='listbox'" />
+				<ComboBoxItem Content="Item 2" />
+				<ComboBoxItem Content="Item 3" />
+				<ComboBoxItem Content="Item 4" />
+			</ComboBox>
+
+			<CheckBox Content="CheckBox with role='application'" uut:AutomationPropertiesExtensions.Role="application" />
+		</StackPanel>
+	</ScrollViewer>
+
 </UserControl>

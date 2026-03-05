@@ -3,6 +3,7 @@
 using System;
 using System.Globalization;
 using System.Runtime.InteropServices.JavaScript;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
@@ -35,9 +36,10 @@ internal static partial class SemanticElementFactory
 		float x,
 		float y,
 		float width,
-		float height)
+		float height,
+		UIElement? owner = null)
 	{
-		var elementType = AriaMapper.GetSemanticElementType(peer);
+		var elementType = AriaMapper.GetSemanticElementType(peer, owner);
 		var attributes = AriaMapper.GetAriaAttributes(peer);
 		var capabilities = AriaMapper.GetPatternCapabilities(peer);
 
