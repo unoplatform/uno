@@ -71,12 +71,17 @@ namespace Uno.UI.Runtime.Skia {
 
 			this.containerElement.appendChild(this.enableAccessibilityButton);
 
-			// Create semantic DOM root container (hidden but accessible)
+			// Create semantic DOM root container (hidden but accessible).
+			// Uses position:fixed to match the canvas coordinate system (which is also
+			// position:fixed). Width/height:100% ensures the container covers the full
+			// viewport so overflow:hidden doesn't clip semantic elements at 0×0.
 			this.semanticsRoot = document.createElement("div");
 			this.semanticsRoot.id = "uno-semantics-root";
-			this.semanticsRoot.style.position = "absolute";
+			this.semanticsRoot.style.position = "fixed";
 			this.semanticsRoot.style.top = "0";
 			this.semanticsRoot.style.left = "0";
+			this.semanticsRoot.style.width = "100%";
+			this.semanticsRoot.style.height = "100%";
 			this.semanticsRoot.style.overflow = "hidden";
 			this.semanticsRoot.style.opacity = "0";
 			this.semanticsRoot.style.pointerEvents = "none";
@@ -442,6 +447,14 @@ namespace Uno.UI.Runtime.Skia {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
 				element.setAttribute("aria-roledescription", roleDescription);
+			}
+		}
+
+		public static updatePositionInSet(handle: number, positionInSet: number, sizeOfSet: number): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				element.setAttribute("aria-posinset", String(positionInSet));
+				element.setAttribute("aria-setsize", String(sizeOfSet));
 			}
 		}
 

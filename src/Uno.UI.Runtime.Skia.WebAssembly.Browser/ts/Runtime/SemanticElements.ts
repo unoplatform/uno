@@ -571,8 +571,8 @@ namespace Uno.UI.Runtime.Skia {
 		/**
 		 * Updates the value of a slider element and its ARIA attributes.
 		 */
-		public static updateSliderValue(handle: number, value: number, min: number, max: number): void {
-			console.log(`[A11y] TS updateSliderValue: handle=${handle} value=${value} min=${min} max=${max}`);
+		public static updateSliderValue(handle: number, value: number, min: number, max: number, valueText: string | null): void {
+			console.log(`[A11y] TS updateSliderValue: handle=${handle} value=${value} min=${min} max=${max} valueText='${valueText}'`);
 			const element = document.getElementById(`uno-semantics-${handle}`) as HTMLInputElement;
 			if (element && element.type === 'range') {
 				element.min = String(min);
@@ -581,6 +581,11 @@ namespace Uno.UI.Runtime.Skia {
 				element.setAttribute('aria-valuenow', String(value));
 				element.setAttribute('aria-valuemin', String(min));
 				element.setAttribute('aria-valuemax', String(max));
+				if (valueText) {
+					element.setAttribute('aria-valuetext', valueText);
+				} else {
+					element.removeAttribute('aria-valuetext');
+				}
 			}
 		}
 

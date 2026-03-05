@@ -301,14 +301,19 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 				}
 			}
 
-			// Always recurse into children — if this element was skipped,
-			// its children will be parented to the nearest semantic ancestor.
-			// The _semanticParentMap guard above prevents duplicate additions
-			// when the same element is visited via both ExternalOnChildAdded
-			// (fired per-child by UIElement) and this recursion.
-			foreach (var childChild in child._children)
+			// Don't recurse into virtualized containers — their items are managed
+			// by VirtualizedSemanticRegion via ContainerContentChanging/ElementPrepared.
+			if (child is not (ListViewBase or ItemsRepeater))
 			{
-				OnChildAdded(child, childChild, null);
+				// Recurse into children — if this element was skipped,
+				// its children will be parented to the nearest semantic ancestor.
+				// The _semanticParentMap guard above prevents duplicate additions
+				// when the same element is visited via both ExternalOnChildAdded
+				// (fired per-child by UIElement) and this recursion.
+				foreach (var childChild in child._children)
+				{
+					OnChildAdded(child, childChild, null);
+				}
 			}
 		}
 	}
@@ -1043,6 +1048,13 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 			}
 		}
 
+		// Don't recurse into virtualized containers — their items are managed
+		// by VirtualizedSemanticRegion via ContainerContentChanging/ElementPrepared.
+		if (child is ListViewBase or ItemsRepeater)
+		{
+			return;
+		}
+
 		// Always recurse into children
 		foreach (var childChild in child.GetChildren())
 		{
@@ -1099,8 +1111,12 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 			}
 		}
 
-		// Fall back to generic semantic element for unsupported control types
-		var role = AutomationProperties.FindHtmlRole(child);
+		// Fall back to generic semantic element for unsupported control types.
+		// Prefer AriaMapper role (covers Image, Group, etc.) over FindHtmlRole.
+		var role = (automationPeer is not null
+			? AriaMapper.GetAriaRole(automationPeer.GetAutomationControlType())
+			: null)
+			?? AutomationProperties.FindHtmlRole(child);
 		var automationId = AutomationProperties.GetAutomationId(child);
 		var horizontallyScrollable = false;
 		var verticallyScrollable = false;
@@ -1290,14 +1306,26 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 			automationProperty == RangeValuePatternIdentifiers.MaximumProperty) &&
 			TryGetPeerOwner(peer, out element))
 		{
-			// Sync slider value/min/max to semantic DOM element
+			// Sync slider value/min/max and aria-valuetext to semantic DOM element
 			if (peer.GetPattern(PatternInterface.RangeValue) is IRangeValueProvider rangeValueProvider)
 			{
+				// Recompute aria-valuetext so VoiceOver announces the updated value
+				string? valueText = null;
+				if (element is Slider slider)
+				{
+					var headerText = slider.Header?.ToString();
+					if (!string.IsNullOrEmpty(headerText))
+					{
+						valueText = $"{headerText}: {rangeValueProvider.Value}";
+					}
+				}
+
 				NativeMethods.UpdateSliderValue(
 					element.Visual.Handle,
 					rangeValueProvider.Value,
 					rangeValueProvider.Minimum,
-					rangeValueProvider.Maximum);
+					rangeValueProvider.Maximum,
+					valueText);
 			}
 		}
 		else if ((automationProperty == ScrollPatternIdentifiers.HorizontalScrollPercentProperty ||
@@ -1417,7 +1445,7 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 		// ===== New State Update Methods =====
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateSliderValue")]
-		internal static partial void UpdateSliderValue(IntPtr handle, double value, double min, double max);
+		internal static partial void UpdateSliderValue(IntPtr handle, double value, double min, double max, string? valueText);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateTextBoxValue")]
 		internal static partial void UpdateTextBoxValue(IntPtr handle, string value, int selectionStart, int selectionEnd);

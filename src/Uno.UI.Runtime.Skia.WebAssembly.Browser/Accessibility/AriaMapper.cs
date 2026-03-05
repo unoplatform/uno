@@ -88,6 +88,13 @@ public static class AriaMapper
 			}
 		}
 
+		// TextBlocks with a HeadingLevel set should be headings, even though their
+		// AutomationControlType is Text (not Header). Check heading level first.
+		if (peer.GetHeadingLevel() != AutomationHeadingLevel.None)
+		{
+			return SemanticElementType.Heading;
+		}
+
 		var controlType = peer.GetAutomationControlType();
 
 		// Determine element type based on control type and available patterns

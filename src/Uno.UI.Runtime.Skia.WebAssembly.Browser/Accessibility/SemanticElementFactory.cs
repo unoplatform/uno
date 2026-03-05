@@ -88,6 +88,13 @@ internal static partial class SemanticElementFactory
 			NativeMethods.UpdateAriaRoleDescription(handle, attributes.RoleDescription);
 		}
 
+		// Apply aria-posinset/aria-setsize for non-ListItem elements (e.g. buttons with PositionInSet)
+		if (created && elementType != SemanticElementType.ListItem &&
+			attributes.PositionInSet is > 0 && attributes.SizeOfSet is > 0)
+		{
+			NativeMethods.UpdatePositionInSet(handle, attributes.PositionInSet.Value, attributes.SizeOfSet.Value);
+		}
+
 		return created;
 	}
 
@@ -492,5 +499,8 @@ internal static partial class SemanticElementFactory
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaRoleDescription")]
 		internal static partial void UpdateAriaRoleDescription(IntPtr handle, string roleDescription);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updatePositionInSet")]
+		internal static partial void UpdatePositionInSet(IntPtr handle, int positionInSet, int sizeOfSet);
 	}
 }
