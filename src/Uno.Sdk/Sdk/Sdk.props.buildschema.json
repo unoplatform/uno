@@ -355,27 +355,27 @@
 					"description": "The path to the image file used in the foreground for your icon."
 				},
 				"ForegroundScale": {
-					"type": "int",
+					"type": "float",
 					"description": "The scale factor for the foreground image."
 				},
 				"AndroidForegroundScale": {
-					"type": "int",
+					"type": "float",
 					"description": "The scale factor for the foreground image on Android."
 				},
 				"WasmForegroundScale": {
-					"type": "int",
+					"type": "float",
 					"description": "The scale factor for the foreground image on WebAssembly."
 				},
 				"WindowsForegroundScale": {
-					"type": "int",
+					"type": "float",
 					"description": "The scale factor for the foreground image on Windows."
 				},
 				"IOSForegroundScale": {
-					"type": "int",
+					"type": "float",
 					"description": "The scale factor for the foreground image on iOS."
 				},
 				"SkiaForegroundScale": {
-					"type": "int",
+					"type": "float",
 					"description": "The scale factor for the foreground image on Skia."
 				}
 			}
@@ -385,27 +385,27 @@
 			"description": "Provides a splash screen asset for Uno.Resizetizer to use for the application.",
 			"metadata": {
 				"Scale": {
-					"type": "int",
+					"type": "float",
 					"description": "Used to scale the image that will be used as SplashScreen. This property will be overridden by any platform-specific scale."
 				},
 				"AndroidScale": {
-					"type": "int",
+					"type": "float",
 					"description": "Used to scale the image that will be used as SplashScreen on Android."
 				},
 				"IOSScale": {
-					"type": "int",
+					"type": "float",
 					"description": "Used to scale the image that will be used as SplashScreen on iOS."
 				},
 				"WindowsScale": {
-					"type": "int",
+					"type": "float",
 					"description": "Used to scale the image that will be used as SplashScreen on Windows."
 				},
 				"WasmScale": {
-					"type": "int",
+					"type": "float",
 					"description": "Used to scale the image that will be used as SplashScreen on WebAssembly."
 				},
 				"SkiaScale": {
-					"type": "int",
+					"type": "float",
 					"description": "Used to scale the image that will be used as SplashScreen on Skia."
 				}
 			}
