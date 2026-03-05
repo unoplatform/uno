@@ -199,7 +199,7 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 			_recognizer.ProcessDownEvent(args.CurrentPoint);
 
 			// If the recognizer immediately rejected the manipulation (e.g. settings = None from PreventDirectManipulation),
-			// complete directly without going through ManipulationAborted (which has different WinUI semantics).
+			// complete directly. ManipulationAborted is not used here as it implies ManipulationConfigured was received.
 			if (_state is States.Preparing && _recognizer.PendingManipulation is null)
 			{
 				OnDirectManipulationCompleting();

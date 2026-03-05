@@ -1426,13 +1426,14 @@ public class Given_InputManager
 		await TestServices.WindowHelper.WaitForIdle();
 
 		// 3. Toggle the ToggleSwitch by dragging horizontally across it (simulates touch toggle)
+		var initialIsOn = toggle.IsOn;
 		var toggleBounds = toggle.GetAbsoluteBounds();
 		finger.Drag(
 			from: new Point(toggleBounds.Left + 10, toggleBounds.GetCenter().Y),
 			to: new Point(toggleBounds.Right - 10, toggleBounds.GetCenter().Y),
 			steps: 5);
 		await TestServices.WindowHelper.WaitForIdle();
-		toggle.IsOn.Should().BeTrue(because: "the horizontal drag should have toggled the switch on");
+		toggle.IsOn.Should().NotBe(initialIsOn, because: "the horizontal drag should toggle the ToggleSwitch");
 
 		// 4. Try to scroll again - this is the actual test: scrolling must still work after toggle
 		sv.ChangeView(null, 0, null, disableAnimation: true);
