@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests
 {
-	[Sample("Scrolling", Name = nameof(ScrollViewer_ToggleSwitch_ScrollLock))]
+	[Sample("Scrolling", Name = nameof(ScrollViewer_ToggleSwitch_ScrollLock), IsManualTest = true, IgnoreInSnapshotTests = true)]
 	public sealed partial class ScrollViewer_ToggleSwitch_ScrollLock : Page
 	{
 		public ScrollViewer_ToggleSwitch_ScrollLock()
