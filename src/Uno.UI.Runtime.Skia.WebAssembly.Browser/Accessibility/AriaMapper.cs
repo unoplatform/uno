@@ -88,12 +88,28 @@ public static class AriaMapper
 			}
 		}
 
+		// TextBlocks with a HeadingLevel set should be headings, even though their
+		// AutomationControlType is Text (not Header). Check heading level first.
+		if (peer.GetHeadingLevel() != AutomationHeadingLevel.None)
+		{
+			return SemanticElementType.Heading;
+		}
+
 		var controlType = peer.GetAutomationControlType();
+
+		// ToggleSwitch has AutomationControlType.Button but implements IToggleProvider.
+		// In ARIA, this maps to role="switch" with aria-checked, matching WinUI3 behavior
+		// where Narrator announces it as a toggle switch with on/off state.
+		if (controlType == AutomationControlType.Button &&
+			owner is ToggleSwitch)
+		{
+			return SemanticElementType.Switch;
+		}
 
 		// Determine element type based on control type and available patterns
 		return controlType switch
 		{
-			AutomationControlType.Button => SemanticElementType.Button,
+			AutomationControlType.Button => GetButtonType(peer),
 			AutomationControlType.CheckBox => SemanticElementType.Checkbox,
 			AutomationControlType.RadioButton => SemanticElementType.RadioButton,
 			AutomationControlType.Slider => SemanticElementType.Slider,
@@ -105,6 +121,21 @@ public static class AriaMapper
 			AutomationControlType.Header => SemanticElementType.Heading,
 			_ => SemanticElementType.Generic
 		};
+	}
+
+	/// <summary>
+	/// Determines the appropriate button type.
+	/// Buttons with IToggleProvider (e.g., ToggleButton, AppBarToggleButton) use aria-pressed.
+	/// </summary>
+	private static SemanticElementType GetButtonType(AutomationPeer peer)
+	{
+		// Buttons with IToggleProvider should have aria-pressed (toggle button pattern)
+		if (peer.GetPattern(PatternInterface.Toggle) is IToggleProvider)
+		{
+			return SemanticElementType.ToggleButton;
+		}
+
+		return SemanticElementType.Button;
 	}
 
 	/// <summary>
@@ -149,10 +180,37 @@ public static class AriaMapper
 		};
 
 		// HelpText → aria-description (VoiceOver reads this as secondary context)
+		// FullDescription takes precedence when both are set, matching WinUI3 behavior
+		// where FullDescription is the extended description and HelpText is short help.
+		var fullDescription = peer.GetFullDescription();
 		var helpText = peer.GetHelpText();
-		if (!string.IsNullOrEmpty(helpText))
+		if (!string.IsNullOrEmpty(fullDescription))
+		{
+			attributes.Description = fullDescription;
+		}
+		else if (!string.IsNullOrEmpty(helpText))
 		{
 			attributes.Description = helpText;
+		}
+
+		// IsRequiredForForm → aria-required (screen readers announce "required")
+		if (peer.IsRequiredForForm())
+		{
+			attributes.Required = true;
+		}
+
+		// For TextBox/PasswordBox with both Header and PlaceholderText:
+		// PlaceholderText becomes aria-description (matches WinUI3 DescribedBy behavior)
+		if (string.IsNullOrEmpty(attributes.Description) && peer is FrameworkElementAutomationPeer feap)
+		{
+			if (feap.Owner is TextBox tb && !string.IsNullOrEmpty(tb.Header?.ToString()) && !string.IsNullOrEmpty(tb.PlaceholderText))
+			{
+				attributes.Description = tb.PlaceholderText;
+			}
+			else if (feap.Owner is PasswordBox pb && !string.IsNullOrEmpty(pb.Header?.ToString()) && !string.IsNullOrEmpty(pb.PlaceholderText))
+			{
+				attributes.Description = pb.PlaceholderText;
+			}
 		}
 
 		// Landmark type → ARIA landmark role (VoiceOver rotor landmark navigation)
@@ -276,7 +334,7 @@ public static class AriaMapper
 	/// </summary>
 	private static string? ResolveLabel(AutomationPeer peer)
 	{
-		// 1. Standard automation peer name
+		// 1. Standard automation peer name (covers AutomationProperties.Name, LabeledBy, Header for some controls)
 		var name = peer.GetName();
 		if (!string.IsNullOrEmpty(name))
 		{
@@ -298,7 +356,44 @@ public static class AriaMapper
 			return automationName;
 		}
 
-		// 3. For ContentControls, try Content.ToString()
+		// 3. For TextBox/PasswordBox, resolve Header → PlaceholderText (matching WinUI3 behavior)
+		if (owner is TextBox textBox)
+		{
+			var header = textBox.Header?.ToString();
+			if (!string.IsNullOrEmpty(header))
+			{
+				return header;
+			}
+
+			if (!string.IsNullOrEmpty(textBox.PlaceholderText))
+			{
+				return textBox.PlaceholderText;
+			}
+		}
+		else if (owner is PasswordBox passwordBox)
+		{
+			var header = passwordBox.Header?.ToString();
+			if (!string.IsNullOrEmpty(header))
+			{
+				return header;
+			}
+
+			if (!string.IsNullOrEmpty(passwordBox.PlaceholderText))
+			{
+				return passwordBox.PlaceholderText;
+			}
+		}
+		// 4. For ComboBox, resolve Header
+		else if (owner is ComboBox comboBox)
+		{
+			var header = comboBox.Header?.ToString();
+			if (!string.IsNullOrEmpty(header))
+			{
+				return header;
+			}
+		}
+
+		// 5. For ContentControls, try Content.ToString()
 		if (owner is ContentControl contentControl && contentControl.Content is not null)
 		{
 			var contentString = contentControl.Content switch
@@ -314,7 +409,7 @@ public static class AriaMapper
 			}
 		}
 
-		// 4. Walk immediate children looking for a TextBlock with text
+		// 6. Walk immediate children looking for a TextBlock with text
 		if (owner is UIElement uiElement)
 		{
 			foreach (var child in uiElement.GetChildren())
@@ -333,7 +428,7 @@ public static class AriaMapper
 	/// Maps AutomationLandmarkType to ARIA landmark role.
 	/// VoiceOver uses landmarks for rotor navigation.
 	/// </summary>
-	private static string? GetLandmarkRole(AutomationLandmarkType landmarkType)
+	public static string? GetLandmarkRole(AutomationLandmarkType landmarkType)
 	{
 		return landmarkType switch
 		{
@@ -396,7 +491,11 @@ public enum SemanticElementType
 	/// <summary>div with role="option"</summary>
 	ListItem,
 	/// <summary>anchor element</summary>
-	Link
+	Link,
+	/// <summary>button with role="switch" and aria-checked (ToggleSwitch)</summary>
+	Switch,
+	/// <summary>button with aria-pressed (ToggleButton)</summary>
+	ToggleButton
 }
 
 /// <summary>

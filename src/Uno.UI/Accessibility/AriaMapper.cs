@@ -32,7 +32,6 @@ public static class AriaMapper
 		{ AutomationControlType.TreeItem, "treeitem" },
 		{ AutomationControlType.ProgressBar, "progressbar" },
 		{ AutomationControlType.ScrollBar, "scrollbar" },
-		{ AutomationControlType.Text, "label" },
 		{ AutomationControlType.Hyperlink, "link" },
 		{ AutomationControlType.Image, "img" },
 		{ AutomationControlType.Group, "group" },
@@ -57,10 +56,16 @@ public static class AriaMapper
 
 	public static SemanticElementType GetSemanticElementType(AutomationPeer peer)
 	{
+		// TextBlocks with a HeadingLevel set should be headings
+		if (peer.GetHeadingLevel() != AutomationHeadingLevel.None)
+		{
+			return SemanticElementType.Heading;
+		}
+
 		var controlType = peer.GetAutomationControlType();
 		return controlType switch
 		{
-			AutomationControlType.Button => SemanticElementType.Button,
+			AutomationControlType.Button => GetButtonType(peer),
 			AutomationControlType.CheckBox => SemanticElementType.Checkbox,
 			AutomationControlType.RadioButton => SemanticElementType.RadioButton,
 			AutomationControlType.Slider => SemanticElementType.Slider,
@@ -69,8 +74,19 @@ public static class AriaMapper
 			AutomationControlType.List => SemanticElementType.ListBox,
 			AutomationControlType.ListItem => SemanticElementType.ListItem,
 			AutomationControlType.Hyperlink => SemanticElementType.Link,
+			AutomationControlType.Header => SemanticElementType.Heading,
 			_ => SemanticElementType.Generic
 		};
+	}
+
+	private static SemanticElementType GetButtonType(AutomationPeer peer)
+	{
+		if (peer.GetPattern(PatternInterface.Toggle) is IToggleProvider)
+		{
+			return SemanticElementType.ToggleButton;
+		}
+
+		return SemanticElementType.Button;
 	}
 
 	private static SemanticElementType GetTextBoxType(AutomationPeer peer)
@@ -101,6 +117,24 @@ public static class AriaMapper
 			Label = peer.GetName(),
 			Disabled = !peer.IsEnabled(),
 		};
+
+		// FullDescription → aria-description
+		var fullDescription = peer.GetFullDescription();
+		var helpText = peer.GetHelpText();
+		if (!string.IsNullOrEmpty(fullDescription))
+		{
+			attributes.Description = fullDescription;
+		}
+		else if (!string.IsNullOrEmpty(helpText))
+		{
+			attributes.Description = helpText;
+		}
+
+		// IsRequiredForForm → aria-required
+		if (peer.IsRequiredForForm())
+		{
+			attributes.Required = true;
+		}
 
 		var positionInSet = peer.GetPositionInSet();
 		if (positionInSet > 0)
@@ -190,6 +224,7 @@ public enum SemanticElementType
 {
 	Generic,
 	Button,
+	Heading,
 	Checkbox,
 	RadioButton,
 	Slider,
@@ -199,7 +234,9 @@ public enum SemanticElementType
 	ComboBox,
 	ListBox,
 	ListItem,
-	Link
+	Link,
+	Switch,
+	ToggleButton
 }
 
 public class AriaAttributes
@@ -222,6 +259,10 @@ public class AriaAttributes
 	public string? Controls { get; set; }
 	public string? DescribedBy { get; set; }
 	public string? LabelledBy { get; set; }
+	public string? Description { get; set; }
+	public string? ValueText { get; set; }
+	public string? LandmarkRole { get; set; }
+	public string? RoleDescription { get; set; }
 }
 
 public class PatternCapabilities

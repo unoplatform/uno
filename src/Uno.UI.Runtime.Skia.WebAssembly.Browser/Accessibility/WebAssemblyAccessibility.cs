@@ -301,14 +301,19 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 				}
 			}
 
-			// Always recurse into children — if this element was skipped,
-			// its children will be parented to the nearest semantic ancestor.
-			// The _semanticParentMap guard above prevents duplicate additions
-			// when the same element is visited via both ExternalOnChildAdded
-			// (fired per-child by UIElement) and this recursion.
-			foreach (var childChild in child._children)
+			// Don't recurse into virtualized containers — their items are managed
+			// by VirtualizedSemanticRegion via ContainerContentChanging/ElementPrepared.
+			if (child is not (ListViewBase or ItemsRepeater))
 			{
-				OnChildAdded(child, childChild, null);
+				// Recurse into children — if this element was skipped,
+				// its children will be parented to the nearest semantic ancestor.
+				// The _semanticParentMap guard above prevents duplicate additions
+				// when the same element is visited via both ExternalOnChildAdded
+				// (fired per-child by UIElement) and this recursion.
+				foreach (var childChild in child._children)
+				{
+					OnChildAdded(child, childChild, null);
+				}
 			}
 		}
 	}
@@ -934,6 +939,14 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 	/// </summary>
 	private static bool IsSemanticElement(UIElement element)
 	{
+		// Elements with AccessibilityView="Raw" are excluded from the accessibility tree entirely.
+		// This matches WinUI3 behavior where Raw elements are not exposed to UIA.
+		var accessibilityView = AutomationProperties.GetAccessibilityView(element);
+		if (accessibilityView == AccessibilityView.Raw)
+		{
+			return false;
+		}
+
 		// Elements with an automation peer are always semantic
 		var peer = element.GetOrCreateAutomationPeer();
 		if (peer is not null)
@@ -951,6 +964,30 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 		// Elements with an automationId are semantic (used for testing/identification)
 		var automationId = AutomationProperties.GetAutomationId(element);
 		if (!string.IsNullOrEmpty(automationId))
+		{
+			return true;
+		}
+
+		// Containers with an explicit AutomationProperties.Name act as accessible groups.
+		// This matches WinUI3 behavior where named containers create UIA groups.
+		var automationName = AutomationProperties.GetName(element);
+		if (!string.IsNullOrEmpty(automationName))
+		{
+			return true;
+		}
+
+		// Elements with a LandmarkType (Navigation, Main, Search, etc.) are semantic.
+		// In WinUI3, landmarks create UIA landmark regions for screen reader rotor navigation.
+		var landmarkType = AutomationProperties.GetLandmarkType(element);
+		if (landmarkType != AutomationLandmarkType.None)
+		{
+			return true;
+		}
+
+		// Elements with a LiveSetting (Polite/Assertive) are semantic.
+		// They need to be in the DOM tree so live region announcements work.
+		var liveSetting = AutomationProperties.GetLiveSetting(element);
+		if (liveSetting != AutomationLiveSetting.Off)
 		{
 			return true;
 		}
@@ -1043,6 +1080,13 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 			}
 		}
 
+		// Don't recurse into virtualized containers — their items are managed
+		// by VirtualizedSemanticRegion via ContainerContentChanging/ElementPrepared.
+		if (child is ListViewBase or ItemsRepeater)
+		{
+			return;
+		}
+
 		// Always recurse into children
 		foreach (var childChild in child.GetChildren())
 		{
@@ -1099,18 +1143,51 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 			}
 		}
 
-		// Fall back to generic semantic element for unsupported control types
-		var role = AutomationProperties.FindHtmlRole(child);
+		// Fall back to generic semantic element for unsupported control types.
+		// Prefer AriaMapper role (covers Image, Group, etc.) over FindHtmlRole.
+		var role = (automationPeer is not null
+			? AriaMapper.GetAriaRole(automationPeer.GetAutomationControlType())
+			: null)
+			?? AutomationProperties.FindHtmlRole(child);
+
+		// Containers with AutomationProperties.Name but no peer/role act as accessible groups.
+		// This matches WinUI3 where named containers create UIA Group elements.
+		if (string.IsNullOrEmpty(role))
+		{
+			var automationName = AutomationProperties.GetName(child);
+			if (!string.IsNullOrEmpty(automationName))
+			{
+				role = "group";
+			}
+		}
+
+		// Elements with a LandmarkType get the corresponding ARIA landmark role.
+		// This overrides any other role since landmarks are a higher-level semantic.
+		var landmarkType = AutomationProperties.GetLandmarkType(child);
+		if (landmarkType != AutomationLandmarkType.None)
+		{
+			var landmarkRole = AriaMapper.GetLandmarkRole(landmarkType);
+			if (!string.IsNullOrEmpty(landmarkRole))
+			{
+				role = landmarkRole;
+			}
+		}
+
 		var automationId = AutomationProperties.GetAutomationId(child);
 		var horizontallyScrollable = false;
 		var verticallyScrollable = false;
 		if (automationPeer is not null)
 		{
-			// TODO: Verify if this is the right behavior.
 			if (string.IsNullOrEmpty(automationId))
 			{
 				automationId = automationPeer.GetName();
 			}
+		}
+		else if (string.IsNullOrEmpty(automationId))
+		{
+			// For elements without an automation peer (e.g., named StackPanel/Border groups),
+			// use AutomationProperties.Name as the label
+			automationId = AutomationProperties.GetName(child);
 		}
 
 		if (automationPeer is IScrollProvider scrollProvider)
@@ -1166,6 +1243,30 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 		if (!result && this.Log().IsEnabled(LogLevel.Warning))
 		{
 			this.Log().Warn($"[A11y] AddSemanticElement: NativeMethods.AddSemanticElement returned false for {child.GetType().Name} handle={child.Visual.Handle} — parent handle {parentHandle} not found in JS DOM");
+		}
+
+		// Apply additional ARIA attributes for generic elements (landmarks, live regions, custom role descriptions)
+		if (result)
+		{
+			var handle = child.Visual.Handle;
+
+			// Custom landmark → aria-roledescription
+			if (landmarkType == AutomationLandmarkType.Custom)
+			{
+				var localizedLandmarkType = AutomationProperties.GetLocalizedLandmarkType(child);
+				if (!string.IsNullOrEmpty(localizedLandmarkType))
+				{
+					NativeMethods.UpdateAriaRoleDescription(handle, localizedLandmarkType);
+				}
+			}
+
+			// Live regions → aria-live attribute on the element itself
+			var childLiveSetting = AutomationProperties.GetLiveSetting(child);
+			if (childLiveSetting != AutomationLiveSetting.Off)
+			{
+				var ariaLive = childLiveSetting == AutomationLiveSetting.Assertive ? "assertive" : "polite";
+				NativeMethods.UpdateAriaLive(handle, ariaLive);
+			}
 		}
 
 		return result;
@@ -1224,7 +1325,18 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 			{
 				this.Log().Debug($"[A11y] PROP CHANGE: ToggleState handle={element.Visual.Handle} element={element.GetType().Name} old={oldValue} new={newValue} ariaChecked={ariaChecked}");
 			}
-			NativeMethods.UpdateAriaChecked(element.Visual.Handle, ariaChecked);
+
+			// ToggleButton uses aria-pressed, ToggleSwitch uses role="switch" + aria-checked,
+			// CheckBox/RadioButton use native checked property + aria-checked
+			var elementType = AriaMapper.GetSemanticElementType(peer, element);
+			if (elementType == SemanticElementType.ToggleButton)
+			{
+				NativeMethods.UpdateAriaPressed(element.Visual.Handle, ariaChecked ?? "false");
+			}
+			else
+			{
+				NativeMethods.UpdateAriaChecked(element.Visual.Handle, ariaChecked);
+			}
 		}
 		else if (automationProperty == AutomationElementIdentifiers.NameProperty &&
 			TryGetPeerOwner(peer, out element))
@@ -1234,6 +1346,19 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 				this.Log().Debug($"[A11y] PROP CHANGE: Name handle={element.Visual.Handle} element={element.GetType().Name} old='{oldValue}' new='{newValue}'");
 			}
 			OnAutomationNameChanged(element, (string)newValue);
+
+			// When the accessible name changes on a live region element, trigger
+			// the announcement. In WinUI3, the OS UIA framework monitors content
+			// changes on live regions automatically. We replicate that here.
+			var liveSetting = peer.GetLiveSetting();
+			if (liveSetting != AutomationLiveSetting.Off)
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"[A11y] PROP CHANGE: Name on LiveRegion — triggering announcement liveSetting={liveSetting} content='{newValue}'");
+				}
+				_liveRegionManager?.HandleLiveRegionChanged(peer);
+			}
 		}
 		else if (automationProperty == AutomationElementIdentifiers.HelpTextProperty &&
 			TryGetPeerOwner(peer, out element))
@@ -1290,14 +1415,26 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 			automationProperty == RangeValuePatternIdentifiers.MaximumProperty) &&
 			TryGetPeerOwner(peer, out element))
 		{
-			// Sync slider value/min/max to semantic DOM element
+			// Sync slider value/min/max and aria-valuetext to semantic DOM element
 			if (peer.GetPattern(PatternInterface.RangeValue) is IRangeValueProvider rangeValueProvider)
 			{
+				// Recompute aria-valuetext so VoiceOver announces the updated value
+				string? valueText = null;
+				if (element is Slider slider)
+				{
+					var headerText = slider.Header?.ToString();
+					if (!string.IsNullOrEmpty(headerText))
+					{
+						valueText = $"{headerText}: {rangeValueProvider.Value}";
+					}
+				}
+
 				NativeMethods.UpdateSliderValue(
 					element.Visual.Handle,
 					rangeValueProvider.Value,
 					rangeValueProvider.Minimum,
-					rangeValueProvider.Maximum);
+					rangeValueProvider.Maximum,
+					valueText);
 			}
 		}
 		else if ((automationProperty == ScrollPatternIdentifiers.HorizontalScrollPercentProperty ||
@@ -1417,7 +1554,7 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 		// ===== New State Update Methods =====
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateSliderValue")]
-		internal static partial void UpdateSliderValue(IntPtr handle, double value, double min, double max);
+		internal static partial void UpdateSliderValue(IntPtr handle, double value, double min, double max, string? valueText);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateTextBoxValue")]
 		internal static partial void UpdateTextBoxValue(IntPtr handle, string value, int selectionStart, int selectionEnd);
@@ -1444,6 +1581,25 @@ internal partial class WebAssemblyAccessibility : IUnoAccessibility, IAutomation
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createHeadingElement")]
 		internal static partial void CreateHeadingElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, int level, string? label);
+
+		// ===== Toggle Button / Switch Element Creation =====
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createToggleButtonElement")]
+		internal static partial void CreateToggleButtonElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, string pressed, bool disabled);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createSwitchElement")]
+		internal static partial void CreateSwitchElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, string isOn, bool disabled);
+
+		// ===== Additional ARIA Attribute Updates =====
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaRequired")]
+		internal static partial void UpdateAriaRequired(IntPtr handle, bool required);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaPressed")]
+		internal static partial void UpdateAriaPressed(IntPtr handle, string pressed);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaLive")]
+		internal static partial void UpdateAriaLive(IntPtr handle, string ariaLive);
 
 		// ===== Debug Mode =====
 

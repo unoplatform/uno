@@ -6,6 +6,8 @@ namespace Uno.UI.Runtime.Skia {
 	export type SemanticElementType =
 		| 'generic'      // <div> with ARIA role
 		| 'button'       // <button>
+		| 'togglebutton' // <button aria-pressed>
+		| 'switch'       // <button role="switch" aria-checked>
 		| 'heading'      // <h1>-<h6> (VoiceOver rotor heading navigation)
 		| 'checkbox'     // <input type="checkbox">
 		| 'radio'        // <input type="radio">
@@ -162,6 +164,121 @@ namespace Uno.UI.Runtime.Skia {
 					e.preventDefault();
 					if (callbacks.onInvoke) {
 						callbacks.onInvoke(handle);
+					}
+				}
+			});
+
+			this.appendToParent(element, parentHandle, index);
+		}
+
+		/**
+		 * Creates a toggle button semantic element (button with aria-pressed).
+		 * Used for ToggleButton, AppBarToggleButton, etc.
+		 * Called from C# via JSImport.
+		 */
+		public static createToggleButtonElement(
+			parentHandle: number,
+			handle: number,
+			index: number | null,
+			x: number,
+			y: number,
+			width: number,
+			height: number,
+			label: string | null,
+			pressed: string,
+			disabled: boolean
+		): void {
+			console.log(`[A11y] TS createToggleButtonElement: handle=${handle} parent=${parentHandle} label='${label}' pressed=${pressed} disabled=${disabled}`);
+			const element = document.createElement('button');
+			this.applyCommonStyles(element, x, y, width, height, handle);
+
+			element.tabIndex = 0;
+			element.style.pointerEvents = 'none';
+
+			// aria-pressed for toggle button pattern (distinct from aria-checked for checkboxes)
+			element.setAttribute('aria-pressed', pressed);
+
+			if (label) {
+				element.setAttribute('aria-label', label);
+			}
+
+			if (disabled) {
+				element.disabled = true;
+				element.setAttribute('aria-disabled', 'true');
+			}
+
+			const callbacks = this.getCallbacks();
+
+			element.addEventListener('click', (e) => {
+				e.preventDefault();
+				if (callbacks.onToggle) {
+					callbacks.onToggle(handle);
+				}
+			});
+
+			element.addEventListener('keydown', (e) => {
+				if (e.key === 'Enter' || e.key === ' ') {
+					e.preventDefault();
+					if (callbacks.onToggle) {
+						callbacks.onToggle(handle);
+					}
+				}
+			});
+
+			this.appendToParent(element, parentHandle, index);
+		}
+
+		/**
+		 * Creates a switch semantic element (role="switch" with aria-checked).
+		 * Used for ToggleSwitch which maps to the ARIA switch pattern.
+		 * Called from C# via JSImport.
+		 */
+		public static createSwitchElement(
+			parentHandle: number,
+			handle: number,
+			index: number | null,
+			x: number,
+			y: number,
+			width: number,
+			height: number,
+			label: string | null,
+			isOn: string,
+			disabled: boolean
+		): void {
+			console.log(`[A11y] TS createSwitchElement: handle=${handle} parent=${parentHandle} label='${label}' checked=${isOn} disabled=${disabled}`);
+			const element = document.createElement('button');
+			this.applyCommonStyles(element, x, y, width, height, handle);
+
+			element.tabIndex = 0;
+			element.style.pointerEvents = 'none';
+
+			// role="switch" with aria-checked for ToggleSwitch (ARIA switch pattern)
+			element.setAttribute('role', 'switch');
+			element.setAttribute('aria-checked', isOn);
+
+			if (label) {
+				element.setAttribute('aria-label', label);
+			}
+
+			if (disabled) {
+				element.disabled = true;
+				element.setAttribute('aria-disabled', 'true');
+			}
+
+			const callbacks = this.getCallbacks();
+
+			element.addEventListener('click', (e) => {
+				e.preventDefault();
+				if (callbacks.onToggle) {
+					callbacks.onToggle(handle);
+				}
+			});
+
+			element.addEventListener('keydown', (e) => {
+				if (e.key === 'Enter' || e.key === ' ') {
+					e.preventDefault();
+					if (callbacks.onToggle) {
+						callbacks.onToggle(handle);
 					}
 				}
 			});
@@ -571,8 +688,8 @@ namespace Uno.UI.Runtime.Skia {
 		/**
 		 * Updates the value of a slider element and its ARIA attributes.
 		 */
-		public static updateSliderValue(handle: number, value: number, min: number, max: number): void {
-			console.log(`[A11y] TS updateSliderValue: handle=${handle} value=${value} min=${min} max=${max}`);
+		public static updateSliderValue(handle: number, value: number, min: number, max: number, valueText: string | null): void {
+			console.log(`[A11y] TS updateSliderValue: handle=${handle} value=${value} min=${min} max=${max} valueText='${valueText}'`);
 			const element = document.getElementById(`uno-semantics-${handle}`) as HTMLInputElement;
 			if (element && element.type === 'range') {
 				element.min = String(min);
@@ -581,6 +698,11 @@ namespace Uno.UI.Runtime.Skia {
 				element.setAttribute('aria-valuenow', String(value));
 				element.setAttribute('aria-valuemin', String(min));
 				element.setAttribute('aria-valuemax', String(max));
+				if (valueText) {
+					element.setAttribute('aria-valuetext', valueText);
+				} else {
+					element.removeAttribute('aria-valuetext');
+				}
 			}
 		}
 
