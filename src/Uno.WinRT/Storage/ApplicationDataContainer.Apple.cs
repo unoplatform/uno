@@ -18,16 +18,62 @@ namespace Windows.Storage
 
 		private class NSUserDefaultsPropertySet : IPropertySet
 		{
+			private static readonly NSUserDefaults _userDefaults = new NSUserDefaults("UnoApplicationData", NSUserDefaultsType.SuiteName);
+			private static bool _migrated;
+			private const string MigrationKey = "__uno_migrated";
 
 			public NSUserDefaultsPropertySet()
 			{
+				MigrateIfNeeded();
+			}
+
+			private static void MigrateIfNeeded()
+			{
+				if (_migrated)
+				{
+					return;
+				}
+
+				_migrated = true;
+
+				if (_userDefaults.BoolForKey(MigrationKey))
+				{
+					return;
+				}
+
+				var standardDefaults = NSUserDefaults.StandardUserDefaults;
+				foreach (var pair in standardDefaults.ToDictionary())
+				{
+					var value = pair.Value?.ToString();
+					if (value != null && IsUnoSerializedValue(value))
+					{
+						_userDefaults.SetValueForKey(pair.Value, pair.Key);
+						standardDefaults.RemoveObject(pair.Key.ToString());
+					}
+				}
+
+				_userDefaults.SetBool(true, MigrationKey);
+				_userDefaults.Synchronize();
+				standardDefaults.Synchronize();
+			}
+
+			private static bool IsUnoSerializedValue(string value)
+			{
+				var index = value.IndexOf(':');
+				if (index <= 0)
+				{
+					return false;
+				}
+
+				var typeName = value.Substring(0, index);
+				return DataTypeSerializer.SupportedTypes.Any(t => t.FullName == typeName);
 			}
 
 			public object this[string key]
 			{
 				get
 				{
-					var value = NSUserDefaults.StandardUserDefaults.ValueForKey((NSString)key)?.ToString();
+					var value = _userDefaults.ValueForKey((NSString)key)?.ToString();
 
 					return DataTypeSerializer.Deserialize(value);
 				}
@@ -36,7 +82,7 @@ namespace Windows.Storage
 					if (value != null)
 					{
 						var nativeObject = NSObject.FromObject(DataTypeSerializer.Serialize(value));
-						NSUserDefaults.StandardUserDefaults.SetValueForKey(nativeObject, (NSString)key);
+						_userDefaults.SetValueForKey(nativeObject, (NSString)key);
 					}
 					else
 					{
@@ -46,17 +92,17 @@ namespace Windows.Storage
 			}
 
 			public ICollection<string> Keys
-				=> NSUserDefaults.StandardUserDefaults.ToDictionary().Keys.Select(k => k.ToString()).ToList();
+				=> _userDefaults.ToDictionary().Keys.Select(k => k.ToString()).ToList();
 
 			public ICollection<object> Values
-				=> NSUserDefaults.StandardUserDefaults
+				=> _userDefaults
 				.ToDictionary()
 				.Values
 				.Select(k => DataTypeSerializer.Deserialize(k?.ToString()))
 				.ToList();
 
 			public int Count
-				=> (int)NSUserDefaults.StandardUserDefaults.ToDictionary().Count;
+				=> (int)_userDefaults.ToDictionary().Count;
 
 			public bool IsReadOnly => false;
 
@@ -73,7 +119,7 @@ namespace Windows.Storage
 				if (value != null)
 				{
 					var nativeObject = NSObject.FromObject(DataTypeSerializer.Serialize(value));
-					NSUserDefaults.StandardUserDefaults.SetValueForKey(nativeObject, (NSString)key);
+					_userDefaults.SetValueForKey(nativeObject, (NSString)key);
 				}
 			}
 
@@ -82,7 +128,7 @@ namespace Windows.Storage
 
 			public void Clear()
 			{
-				foreach (var pair in NSUserDefaults.StandardUserDefaults.ToDictionary())
+				foreach (var pair in _userDefaults.ToDictionary())
 				{
 					Remove(pair.Key.ToString());
 				}
@@ -92,16 +138,16 @@ namespace Windows.Storage
 				=> throw new NotSupportedException();
 
 			public bool ContainsKey(string key)
-				=> NSUserDefaults.StandardUserDefaults.ToDictionary().ContainsKey((NSString)key);
+				=> _userDefaults.ToDictionary().ContainsKey((NSString)key);
 
 			public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
 				=> throw new NotSupportedException();
 
 			public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
 			{
-				return NSUserDefaults.StandardUserDefaults
+				return _userDefaults
 					.ToDictionary()
-					.Select(k => new KeyValuePair<string, object>(k.Key.ToString(), DataTypeSerializer.Deserialize(k.Key.ToString())))
+					.Select(k => new KeyValuePair<string, object>(k.Key.ToString(), DataTypeSerializer.Deserialize(k.Value?.ToString())))
 					.GetEnumerator();
 			}
 
@@ -112,8 +158,8 @@ namespace Windows.Storage
 					return false;
 				}
 
-				NSUserDefaults.StandardUserDefaults.RemoveObject((NSString)key);
-				NSUserDefaults.StandardUserDefaults.Synchronize();
+				_userDefaults.RemoveObject((NSString)key);
+				_userDefaults.Synchronize();
 
 				return true;
 			}
@@ -122,7 +168,7 @@ namespace Windows.Storage
 
 			public bool TryGetValue(string key, out object value)
 			{
-				if (NSUserDefaults.StandardUserDefaults.ToDictionary().TryGetValue((NSString)key, out var nsvalue))
+				if (_userDefaults.ToDictionary().TryGetValue((NSString)key, out var nsvalue))
 				{
 					value = DataTypeSerializer.Deserialize(nsvalue?.ToString());
 					return true;
