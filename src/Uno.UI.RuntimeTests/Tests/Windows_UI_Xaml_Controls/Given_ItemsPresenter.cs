@@ -1,20 +1,19 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Windows.Foundation;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using MUXControlsTestApp.Utilities;
-using static Private.Infrastructure.TestServices;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Data;
 using Uno.UI.RuntimeTests.Helpers;
+using Windows.Foundation;
+using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
 [TestClass]
-[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 public class Given_ItemsPresenter
 {
 	// Due to physical/logical pixel conversion on Android, measurements aren't exact
@@ -27,6 +26,7 @@ public class Given_ItemsPresenter
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Vertical_With_Padding_Only_Panel()
 	{
 		var grid = (Grid)XamlReader.Load(
@@ -133,6 +133,7 @@ public class Given_ItemsPresenter
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Vertical_With_Padding_Header_Footer()
 	{
 		var grid = (Grid)XamlReader.Load(
@@ -232,6 +233,7 @@ public class Given_ItemsPresenter
 	[TestMethod]
 	[RunsOnUIThread]
 	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Big_Elements_Horizontal_Many_Margins()
 	{
 
@@ -339,6 +341,7 @@ public class Given_ItemsPresenter
 	[TestMethod]
 	[RunsOnUIThread]
 	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Big_Elements_Vertical_Many_Margins()
 	{
 		var grid = (Grid)XamlReader.Load(
@@ -445,6 +448,7 @@ public class Given_ItemsPresenter
 	[TestMethod]
 	[RunsOnUIThread]
 	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Small_Elements_Horizontal_Many_Margins()
 	{
 		var grid = (Grid)XamlReader.Load(
@@ -551,6 +555,7 @@ public class Given_ItemsPresenter
 	[TestMethod]
 	[RunsOnUIThread]
 	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Small_Elements_Vertical_Many_Margins()
 	{
 		var grid = (Grid)XamlReader.Load(
@@ -657,6 +662,7 @@ public class Given_ItemsPresenter
 	[TestMethod]
 	[RunsOnUIThread]
 	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Small_Elements_Horizontal_Many_Margins_No_Footer()
 	{
 		var grid = (Grid)XamlReader.Load(
@@ -755,6 +761,7 @@ public class Given_ItemsPresenter
 	[TestMethod]
 	[RunsOnUIThread]
 	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Small_Elements_Horizontal_Many_Margins_No_Header()
 	{
 		var grid = (Grid)XamlReader.Load(
@@ -853,6 +860,7 @@ public class Given_ItemsPresenter
 	[TestMethod]
 	[RunsOnUIThread]
 	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Small_Elements_Horizontal_Many_Margins_No_Items()
 	{
 		var grid = (Grid)XamlReader.Load(
@@ -932,6 +940,7 @@ public class Given_ItemsPresenter
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Footer_Binding()
 	{
 		var ic = (ItemsControl)XamlReader.Load(
@@ -1013,6 +1022,7 @@ public class Given_ItemsPresenter
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Header_Height_Changed()
 	{
 		var grid = (Grid)XamlReader.Load(
@@ -1057,6 +1067,7 @@ public class Given_ItemsPresenter
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Footer_Height_Changed()
 	{
 		var grid = (Grid)XamlReader.Load(
@@ -1143,6 +1154,7 @@ public class Given_ItemsPresenter
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Footer_Template()
 	{
 		var ic = (ItemsControl)XamlReader.Load(
@@ -1184,6 +1196,7 @@ public class Given_ItemsPresenter
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Inside_ScrollContentPresenter()
 	{
 		var lv = new ListView();
