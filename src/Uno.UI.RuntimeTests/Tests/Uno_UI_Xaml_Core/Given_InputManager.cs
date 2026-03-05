@@ -1378,6 +1378,68 @@ public class Given_InputManager
 		return cursor?.Type;
 	}
 
+	[TestMethod]
+#if __WASM__
+	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task When_ToggleSwitchToggledInScrollViewer_Then_ScrollStillWorks()
+	{
+		ScrollViewer sv;
+		ToggleSwitch toggle;
+		var root = new Grid
+		{
+			Width = 300,
+			Height = 300,
+			Children =
+			{
+				(sv = new ScrollViewer
+				{
+					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+					IsScrollInertiaEnabled = false,
+					Content = new StackPanel
+					{
+						Children =
+						{
+							(toggle = new ToggleSwitch { Header = "Toggle" }),
+							new Border { Height = 2000, Background = new SolidColorBrush(Colors.LightGray) }
+						}
+					}
+				})
+			}
+		};
+
+		await UITestHelper.Load(root);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var finger = injector.GetFinger();
+
+		// 1. Verify scrolling works initially
+		var svBounds = sv.GetAbsoluteBounds();
+		finger.Drag(from: svBounds.GetCenter(), to: svBounds.GetCenter().Offset(y: -100));
+		sv.VerticalOffset.Should().BeGreaterThan(0, because: "scrolling should work before toggling");
+
+		// 2. Scroll back to top so the toggle is visible
+		sv.ChangeView(null, 0, null, disableAnimation: true);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// 3. Toggle the ToggleSwitch by dragging horizontally across it (simulates touch toggle)
+		var toggleBounds = toggle.GetAbsoluteBounds();
+		finger.Drag(
+			from: new Point(toggleBounds.Left + 10, toggleBounds.GetCenter().Y),
+			to: new Point(toggleBounds.Right - 10, toggleBounds.GetCenter().Y),
+			steps: 5);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// 4. Try to scroll again - this is the actual test: scrolling must still work after toggle
+		sv.ChangeView(null, 0, null, disableAnimation: true);
+		await TestServices.WindowHelper.WaitForIdle();
+		svBounds = sv.GetAbsoluteBounds();
+		finger.Drag(from: svBounds.GetCenter(), to: svBounds.GetCenter().Offset(y: -100));
+		sv.VerticalOffset.Should().BeGreaterThan(0, because: "scrolling should still work after toggling a ToggleSwitch");
+	}
+
 	private static void SetCursorShape(CoreCursor cursor)
 	{
 		if (TestServices.WindowHelper
