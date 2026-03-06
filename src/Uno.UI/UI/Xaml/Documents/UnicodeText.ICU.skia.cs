@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -43,10 +44,34 @@ internal readonly partial struct UnicodeText
 			if (OperatingSystem.IsWindows())
 			{
 				// On Windows, we get the ICU binaries from the uno.icu-win package.
+				const string libName = "icuuc77";
 				_icuVersion = 77;
-				if (!NativeLibrary.TryLoad("icuuc77", typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
+
+				var assemblyLocation = typeof(ICU).Assembly.Location;
+				var assemblyDir = Path.GetDirectoryName(assemblyLocation) ?? string.Empty;
+				var processPath = Environment.ProcessPath ?? string.Empty;
+				var processDir = Path.GetDirectoryName(processPath) ?? string.Empty;
+				var osVersion = Environment.OSVersion.VersionString;
+
+				typeof(ICU).LogDebug()?.Debug(
+					$"Attempting to load {libName}.dll. " +
+					$"OS: '{osVersion}', " +
+					$"Assembly location: '{assemblyLocation}', " +
+					$"Process path: '{processPath}', " +
+					$"Exists at assembly dir ('{assemblyDir}'): {File.Exists(Path.Combine(assemblyDir, $"{libName}.dll"))}, " +
+					$"Exists at process dir ('{processDir}'): {File.Exists(Path.Combine(processDir, $"{libName}.dll"))}.");
+
+				if (!NativeLibrary.TryLoad(libName, typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
 				{
-					throw new Exception("Failed to load libicuuc.");
+					var win32Error = Marshal.GetLastWin32Error();
+					throw new Exception(
+						$"Failed to load {libName}.dll. " +
+						$"Win32 error: {win32Error} (0x{win32Error:X8}). " +
+						$"OS: '{osVersion}'. " +
+						$"Assembly location: '{assemblyLocation}'. " +
+						$"Process path: '{processPath}'. " +
+						$"Exists at assembly dir ('{assemblyDir}'): {File.Exists(Path.Combine(assemblyDir, $"{libName}.dll"))}. " +
+						$"Exists at process dir ('{processDir}'): {File.Exists(Path.Combine(processDir, $"{libName}.dll"))}.");
 				}
 			}
 			else if (OperatingSystem.IsIOS())
