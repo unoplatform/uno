@@ -350,7 +350,8 @@
 			"Uno.Toolkit.WinUI.Material",
 			"Uno.Toolkit.WinUI.Material.Markup",
 			"Uno.Toolkit.WinUI.Markup",
-			"Uno.Toolkit.Skia.WinUI"
+			"Uno.Toolkit.Skia.WinUI",
+			"Uno.Toolkit.WinUI.Simple"
 		]
 	},
 	{
@@ -360,7 +361,9 @@
 			"Uno.Material.WinUI",
 			"Uno.Material.WinUI.Markup",
 			"Uno.Themes.WinUI.Markup",
-			"Uno.Cupertino.WinUI"
+			"Uno.Cupertino.WinUI",
+			"Uno.Simple.WinUI",
+			"Uno.Simple.WinUI.Markup"
 		]
 	},
 	{
