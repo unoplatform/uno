@@ -819,6 +819,68 @@ public class Given_InputManager
 #elif !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
+	public async Task When_DirectManipulationInertial_Then_ReverseScrollWorks()
+	{
+		// Repro: At the top of a list, flick up fast (no scroll room), then immediately flick down.
+		// Without the fix, the old inertial DM's completion clears _touchInertia set by the new DM,
+		// killing the downward inertia and causing jitter/stuck scroll.
+		// Key: both flicks must happen back-to-back so their inertia timers overlap.
+		ScrollViewer sv;
+		var root = new Grid
+		{
+			Width = 200,
+			Height = 500,
+			Children =
+			{
+				(sv = new ScrollViewer
+				{
+					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+					Background = new SolidColorBrush(Colors.DeepPink),
+					Content = new Border
+					{
+						Background = new SolidColorBrush(Colors.DeepSkyBlue),
+						Margin = new Thickness(10),
+						Width = 800,
+						Height = 80000,
+					}
+				}),
+			}
+		};
+
+		var bounds = await UITestHelper.Load(root);
+
+		sv.VerticalOffset.Should().Be(0, because: "we start at the top");
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var finger = injector.GetFinger();
+
+		// Flick UP fast while already at the top (no scroll room in that direction).
+		// This triggers inertia on the DM (States.Inertial) even though SCP declines it
+		// (no scroll room → _inertiaHandler stays null, but recognizer's inertia timer runs).
+		finger.Drag(from: bounds.GetCenter(), to: bounds.GetCenter().Offset(y: 150), steps: 1, stepOffsetInMilliseconds: 100);
+
+		// Do NOT await WaitForIdle here — we need the old DM's inertia timer to still be running
+		// when the second flick starts. This matches the real scenario where the user
+		// immediately touches again while inertia is active.
+
+		// Immediately flick DOWN fast (the valid scroll direction).
+		// Without the fix, the old inertial DM coexists with the new one:
+		//  - Old DM's inertial updates go through the else branch (no _inertiaHandler)
+		//    and apply old-direction deltas via SCP since _touchInertia is now set by the new DM.
+		//  - When the old DM completes, it clears _touchInertia, killing the new inertia entirely.
+		finger.Drag(from: bounds.GetCenter(), to: bounds.GetCenter().Offset(y: -150), steps: 1, stepOffsetInMilliseconds: 100);
+
+		await UITestHelper.WaitForIdle(waitForCompositionAnimations: false); // Let both inertias process
+
+		sv.VerticalOffset.Should().BeGreaterThan(50, because: "downward flick should scroll without being blocked by the previous upward inertia");
+	}
+
+	[TestMethod]
+#if __WASM__
+	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
 	public async Task When_DirectManipulationMultiple_Then_RunsIndependently()
 	{
 		ScrollViewer sv1, sv2;
