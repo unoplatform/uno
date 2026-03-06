@@ -25,9 +25,7 @@ internal static class BackButtonIntegration
 
 	internal static bool InjectBackButtonPress()
 	{
-		var args = new BackRequestedEventArgs();
-		OnBackButtonPressed(null, args);
-		return args.Handled;
+		return SystemNavigationManager.GetForCurrentView().RequestBack();
 	}
 
 	internal static void OnBackButtonPressed(object? sender, BackRequestedEventArgs args)
