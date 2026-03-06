@@ -5,6 +5,7 @@
 using System;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Automation;
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
 
@@ -39,7 +40,7 @@ public partial class ToggleMenuFlyoutItemAutomationPeer : FrameworkElementAutoma
 	{
 		var returnValue = base.GetAcceleratorKeyCore();
 
-		if (returnValue is null)
+		if (string.IsNullOrEmpty(returnValue))
 		{
 			// If AutomationProperties.AcceleratorKey hasn't been set, then return the value of our KeyboardAcceleratorTextOverride property.
 			var ownerAsToggleMenuFlyoutItem = (ToggleMenuFlyoutItem)Owner;
@@ -86,7 +87,7 @@ public partial class ToggleMenuFlyoutItemAutomationPeer : FrameworkElementAutoma
 		var isEnabled = IsEnabled();
 		if (!isEnabled)
 		{
-			throw new InvalidOperationException("Element is not enabled");
+			throw new ElementNotEnabledException();
 		}
 
 		((ToggleMenuFlyoutItem)Owner).Invoke();

@@ -55,7 +55,7 @@ public class CommandingHelpers
 
 		public object Convert(object value, Type targetType, object parameter, string language)
 		{
-			if (value != null && _targetWeakRef.IsAlive && _targetWeakRef.Target is DependencyObject element)
+			if (value != null && _targetWeakRef is not null && _targetWeakRef.IsAlive && _targetWeakRef.Target is DependencyObject element)
 			{
 				object valueAsI = value;
 
@@ -63,6 +63,12 @@ public class CommandingHelpers
 				var returnValueAsKeyboardAcceleratorCollection = new KeyboardAcceleratorCollection(element);
 
 				valueAsKeyboardAccelerators = valueAsI as IList<KeyboardAccelerator>;
+
+				if (valueAsKeyboardAccelerators is null)
+				{
+					return null;
+				}
+
 				int keyboardAcceleratorCount;
 
 				keyboardAcceleratorCount = valueAsKeyboardAccelerators.Count;

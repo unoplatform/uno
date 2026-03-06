@@ -3,10 +3,6 @@
 // MUX Reference dxaml\xcp\dxaml\lib\MenuFlyoutItemBaseCollection_Partial.cpp, tag winui3/release/1.8.1, commit cd3b7ad0eca
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Microsoft.UI.Xaml.Controls;
 
