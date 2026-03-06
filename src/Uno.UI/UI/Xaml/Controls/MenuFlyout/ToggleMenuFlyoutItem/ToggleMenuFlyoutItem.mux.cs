@@ -4,15 +4,9 @@
 
 #nullable enable
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DirectUI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
-using Windows.Devices.Input;
 
 namespace Microsoft.UI.Xaml.Controls;
 

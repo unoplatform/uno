@@ -100,11 +100,11 @@ namespace Microsoft.UI.Xaml
 #if HAS_UNO // TODO: Uno specific - WinUI does analogous action in Enter/LeaveEffectiveValue
 			if (oldValue is KeyboardAcceleratorCollection oldCollection)
 			{
-				oldCollection.Leave(null, new LeaveParams(false) { IsForKeyboardAccelerator = true });
+				oldCollection.Leave(this, new LeaveParams(false) { IsForKeyboardAccelerator = true });
 			}
 			if (newValue is KeyboardAcceleratorCollection newCollection)
 			{
-				newCollection.Enter(null, new EnterParams(false) { IsForKeyboardAccelerator = true });
+				newCollection.Enter(this, new EnterParams(false) { IsForKeyboardAccelerator = true });
 			}
 #endif
 		}

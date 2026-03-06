@@ -43,7 +43,7 @@ partial class Flyout
 			{
 				if (uiElement.KeyboardAccelerators is KeyboardAcceleratorCollection kac)
 				{
-					kac.Enter(pNamescopeOwner, parameters);
+					kac.Enter(pNamescopeOwner, newParams);
 				}
 			}
 		}
@@ -55,14 +55,14 @@ partial class Flyout
 
 		if (content is not null)
 		{
-			var newParams = new EnterParams { IsForKeyboardAccelerator = true, IsLive = false };
+			var newParams = new LeaveParams { IsForKeyboardAccelerator = true, IsLive = false };
 
 			var uiElements = FindAllUIElements(content);
 			foreach (var uiElement in uiElements)
 			{
 				if (uiElement.KeyboardAccelerators is KeyboardAcceleratorCollection kac)
 				{
-					kac.Leave(pNamescopeOwner, parameters);
+					kac.Leave(pNamescopeOwner, newParams);
 				}
 			}
 		}
