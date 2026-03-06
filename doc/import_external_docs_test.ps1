@@ -11,8 +11,8 @@ param(
 )
 
 Write-Host 'Updating docfx tool...' -ForegroundColor Black -BackgroundColor Green
-# Intentionally pinned for template compatibility (toc.html.primary.tmpl behavior in docfx 2.73.x)
-# so local validation reproduces CI/doc generation consistently.
+# Intentionally pinned to match the CI docs build toolchain (build/Uno.UI.Build.csproj)
+# so local validation reproduces doc generation behavior consistently.
 dotnet tool update --global docfx --version 2.73.2
 
 Write-Host 'Updating dotnet-serve tool...' -ForegroundColor Black -BackgroundColor Green
