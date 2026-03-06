@@ -27,6 +27,7 @@ internal readonly partial struct UnicodeText
 			  DllImportSearchPath.ApplicationDirectory
 			| DllImportSearchPath.AssemblyDirectory
 			| DllImportSearchPath.UserDirectories
+			| DllImportSearchPath.System32
 			;
 
 		public static void SetDataAssembly(Assembly assembly)
