@@ -46,8 +46,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		/// <summary>
 		/// Per-file GenerateCodeBehind metadata values, keyed by normalized file path.
+		/// Populated in the constructor from _xamlSources metadata. Used for O(1) lookup during code-behind generation.
 		/// </summary>
-		private readonly Dictionary<string, string?> _perFileGenerateCodeBehind = new(StringComparer.OrdinalIgnoreCase);
+		private readonly Dictionary<string, string?> _perFileGenerateCodeBehind;
 
 		/// <summary>
 		/// Set of XAML file unique IDs that had code-behind auto-generated.
@@ -285,14 +286,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_generateCodeBehindEnabled = string.IsNullOrEmpty(generateCodeBehindValue)
 				|| string.Equals(generateCodeBehindValue, "true", StringComparison.OrdinalIgnoreCase);
 
-			// Build per-file GenerateCodeBehind metadata map
+			// Build per-file GenerateCodeBehind metadata map for O(1) lookup
+			_perFileGenerateCodeBehind = new Dictionary<string, string?>(_xamlSources.Length, StringComparer.OrdinalIgnoreCase);
 			foreach (var source in _xamlSources)
 			{
 				var perFileValue = source.Item.GetMetadataValue("GenerateCodeBehind");
-				if (!string.IsNullOrEmpty(perFileValue))
-				{
-					_perFileGenerateCodeBehind[source.Item.Identity] = perFileValue;
-				}
+				_perFileGenerateCodeBehind[source.Item.Identity] = string.IsNullOrEmpty(perFileValue) ? null : perFileValue;
 			}
 
 			_isWasm = context.GetMSBuildPropertyValue("DefineConstantsProperty")?.Contains("__WASM__") ?? false;
@@ -607,16 +606,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				// Check per-file and project-level configuration (FR-007, FR-008, FR-009)
-				string? perFileValue = null;
-				foreach (var source in _xamlSources)
-				{
-					if (file.FilePath.Equals(source.Item.Identity, StringComparison.OrdinalIgnoreCase)
-						|| file.FilePath.EndsWith(source.Item.Identity, StringComparison.OrdinalIgnoreCase))
-					{
-						perFileValue = source.Item.GetMetadataValue("GenerateCodeBehind");
-						break;
-					}
-				}
+				_perFileGenerateCodeBehind.TryGetValue(file.FilePath, out var perFileValue);
 
 				if (!XamlCodeBehindParser.ShouldGenerateCodeBehind(perFileValue, _generateCodeBehindEnabled ? "true" : "false"))
 				{

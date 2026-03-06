@@ -13,17 +13,20 @@
 		<UnoCodeBehindGeneratorOnly>true</UnoCodeBehindGeneratorOnly>
 	</PropertyGroup>
 
+	<!-- CompilerVisible items must be outside targets so GenerateMSBuildEditorConfigFile sees them -->
+	<ItemGroup Condition="'$(UnoCodeBehindGeneratorOnly)'=='true'">
+		<CompilerVisibleProperty Include="UnoGenerateCodeBehind" />
+		<CompilerVisibleProperty Include="UnoCodeBehindGeneratorOnly" />
+		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="SourceItemGroup" />
+		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="GenerateCodeBehind" />
+	</ItemGroup>
+
 	<Target Name="_AddCodeBehindGeneratorForWinUI"
 			BeforeTargets="CoreCompile"
 			Condition="'$(UnoCodeBehindGeneratorOnly)'=='true'">
 		<ItemGroup>
 			<Analyzer Include="$(MSBuildThisFileDirectory)../analyzers/dotnet/cs/Uno.UI.SourceGenerators.dll"
 					  Condition="Exists('$(MSBuildThisFileDirectory)../analyzers/dotnet/cs/Uno.UI.SourceGenerators.dll')" />
-
-			<CompilerVisibleProperty Include="UnoGenerateCodeBehind" />
-			<CompilerVisibleProperty Include="UnoCodeBehindGeneratorOnly" />
-			<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="SourceItemGroup" />
-			<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="GenerateCodeBehind" />
 		</ItemGroup>
 	</Target>
 
