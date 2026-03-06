@@ -66,7 +66,7 @@ The following XAML root elements are supported with their corresponding base typ
 | `Window` | `Microsoft.UI.Xaml.Window` |
 | `ContentDialog` | `Microsoft.UI.Xaml.Controls.ContentDialog` |
 | `Application` | `Microsoft.UI.Xaml.Application` |
-| `SwapChainPanel` | `Microsoft.UI.Xaml.Controls.SwapChainPanel` |
+| `ResourceDictionary` | `Microsoft.UI.Xaml.ResourceDictionary` |
 
 Custom root elements using `using:` or `clr-namespace:` xmlns prefixes are also supported.
 
@@ -115,10 +115,10 @@ You can override the project-level setting for individual XAML files using the `
 
 ```xml
 <!-- Disable auto code-behind for a specific file -->
-<Page Include="MainPage.xaml" GenerateCodeBehind="false" />
+<Page Update="MainPage.xaml" GenerateCodeBehind="false" />
 
 <!-- Enable auto code-behind for a specific file even when globally disabled -->
-<Page Include="SimplePage.xaml" GenerateCodeBehind="true" />
+<Page Update="SimplePage.xaml" GenerateCodeBehind="true" />
 ```
 
 Per-file metadata always takes precedence over the project-level property.
