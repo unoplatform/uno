@@ -387,7 +387,7 @@ namespace Uno.UI.Runtime.Skia {
 			password: boolean,
 			isReadOnly: boolean
 		): void {
-			console.log(`[A11y] TS createTextBoxElement: handle=${handle} parent=${parentHandle} multiline=${multiline} password=${password} readOnly=${isReadOnly} valueLen=${value?.length ?? 0}`);
+			console.log(`[A11y] TS createTextBoxElement: handle=${handle} parent=${parentHandle} multiline=${multiline} readOnly=${isReadOnly}`);
 			let element: HTMLInputElement | HTMLTextAreaElement;
 
 			if (multiline) {
