@@ -89,7 +89,7 @@
 			// Handle Enter key from Android virtual keyboards which don't fire keydown events.
 			// Android keyboards typically fire beforeinput with inputType "insertLineBreak" instead.
 			input.addEventListener("beforeinput", (ev: InputEvent) => {
-				if (ev.inputType === "insertLineBreak" && !BrowserInvisibleTextBoxViewExtension.acceptsReturn) {
+				if ((ev.inputType === "insertLineBreak" || ev.inputType === "insertParagraph") && !BrowserInvisibleTextBoxViewExtension.acceptsReturn) {
 					ev.preventDefault();
 
 					BrowserInvisibleTextBoxViewExtension._exports.OnEnterKeyPressed();
@@ -110,6 +110,16 @@
 				// This enables focus navigation (e.g., Uno.Toolkit's AutoFocusNext) on mobile browsers
 				if ((ev.key === "Enter" || ev.keyCode === 13) && !BrowserInvisibleTextBoxViewExtension.acceptsReturn) {
 					// Don't call preventDefault() to allow the key event to propagate to document listeners
+					return;
+				}
+
+				// Android soft keyboards fire all keys as keyCode 229 / key "Unidentified".
+				// The C# side cannot identify these (maps to VirtualKey.None), so let the browser
+				// handle them natively. Text changes sync via the oninput handler.
+				// stopPropagation prevents the document-level BrowserKeyboardInputSource from
+				// calling preventDefault() on the event.
+				if (ev.keyCode === 229) {
+					ev.stopPropagation();
 					return;
 				}
 
