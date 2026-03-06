@@ -18,7 +18,6 @@ using Uno.UI.Xaml.Islands;
 using Windows.Foundation;
 using Windows.UI;
 using static Microsoft.UI.Xaml.Controls._Tracing;
-using static Microsoft.UI.Xaml.Controls.CollectionChangedOperation;
 
 #if __APPLE_UIKIT__
 using UIKit;
@@ -935,7 +934,7 @@ namespace Uno.UI.Xaml.Core
 			VisualTree? result = VisualTree.GetForElement(element);
 			if (result is null)
 			{
-#if !HAS_UNO // Concpt of Mentor is not in Uno yet
+#if !HAS_UNO // Concept of Mentor is not in Uno yet
 				// For a flyout that's on a button via e.g. Button.Flyout, we need to follow the mentor
 				// pointer to the Button and find the tree it belongs to.
 				result = VisualTree.GetForElementNoRef(element.GetMentor());

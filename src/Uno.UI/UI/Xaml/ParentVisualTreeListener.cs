@@ -11,10 +11,10 @@ internal class ParentVisualTreeListener
 {
 	private readonly DependencyObject _owner;
 	private readonly Action _onLoaded;
-	private readonly Action _onUnloaded;
+	private readonly Action? _onUnloaded;
 	private readonly SerialDisposable _registrations = new();
 
-	public ParentVisualTreeListener(DependencyObject owner, Action onLoaded, Action onUnloaded)
+	public ParentVisualTreeListener(DependencyObject owner, Action onLoaded, Action? onUnloaded)
 	{
 		_owner = owner;
 		_onLoaded = onLoaded;

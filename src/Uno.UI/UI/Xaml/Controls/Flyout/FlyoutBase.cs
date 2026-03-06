@@ -17,11 +17,11 @@ using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Dispatching;
-using static Uno.UI.FeatureConfiguration;
 using Windows.System;
 #if __APPLE_UIKIT__
 using View = UIKit.UIView;
