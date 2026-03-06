@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<!--
+		Auto Code-Behind Generation for WinUI targets.
+
+		On WinUI builds (ShouldRunGenerator=false), the Uno.UI.SourceGenerators analyzer is removed.
+		This targets file re-adds it specifically for code-behind generation when UnoGenerateCodeBehind is not false.
+		The standalone XamlCodeBehindGenerator checks UnoCodeBehindGeneratorOnly=true to know it should run.
+	-->
+
+	<PropertyGroup Condition="'$(ShouldRunGenerator)'!='true' and '$(UnoGenerateCodeBehind)'!='false'">
+		<UnoCodeBehindGeneratorOnly>true</UnoCodeBehindGeneratorOnly>
+	</PropertyGroup>
+
+	<Target Name="_AddCodeBehindGeneratorForWinUI"
+			BeforeTargets="CoreCompile"
+			Condition="'$(UnoCodeBehindGeneratorOnly)'=='true'">
+		<ItemGroup>
+			<Analyzer Include="$(MSBuildThisFileDirectory)../analyzers/dotnet/cs/Uno.UI.SourceGenerators.dll"
+					  Condition="Exists('$(MSBuildThisFileDirectory)../analyzers/dotnet/cs/Uno.UI.SourceGenerators.dll')" />
+
+			<CompilerVisibleProperty Include="UnoGenerateCodeBehind" />
+			<CompilerVisibleProperty Include="UnoCodeBehindGeneratorOnly" />
+			<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="SourceItemGroup" />
+			<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="GenerateCodeBehind" />
+		</ItemGroup>
+	</Target>
+
+</Project>
