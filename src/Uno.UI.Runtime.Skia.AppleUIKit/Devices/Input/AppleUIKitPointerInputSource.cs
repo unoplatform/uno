@@ -285,8 +285,8 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 					// Continuous (trackpad): dispatch immediately with sub-pixel accumulation.
 					var activeScrollX = (nfloat)Math.Truncate(_activeScrollPendingX);
 					var activeScrollY = (nfloat)Math.Truncate(_activeScrollPendingY);
-					_activeScrollPendingX -= (double)activeScrollX;
-					_activeScrollPendingY -= (double)activeScrollY;
+					_activeScrollPendingX = 0;
+					_activeScrollPendingY = 0;
 
 					if (activeScrollX == 0 && activeScrollY == 0)
 					{

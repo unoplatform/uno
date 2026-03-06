@@ -51,8 +51,9 @@ internal partial class TopViewLayer : UIView
 
 	private UIPanGestureRecognizer CreateScrollGesture(UIScrollTypeMask scrollTypeMask, bool isDiscrete)
 	{
-		return new UIPanGestureRecognizer(gesture =>
-			AppleUIKitCorePointerInputSource.Instance.HandleScrollFromGesture(this, gesture, _isNaturalScrollingEnabled, isDiscrete))
+		void HandleScrollGesture(UIPanGestureRecognizer gesture) =>
+			AppleUIKitCorePointerInputSource.Instance.HandleScrollFromGesture(this, gesture, _isNaturalScrollingEnabled, isDiscrete);
+		return new UIPanGestureRecognizer(HandleScrollGesture)
 		{
 			AllowedScrollTypesMask = scrollTypeMask,
 			MaximumNumberOfTouches = 0,

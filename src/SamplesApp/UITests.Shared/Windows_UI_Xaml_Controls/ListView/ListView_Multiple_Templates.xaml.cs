@@ -73,8 +73,8 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 	// ── View ────────────────────────────────────────────────────────────────────
 
 	[Sample("ListView", Name = "ListView_Multiple_Templates",
-	IsManualTest = true,
-	Description = "Grouped ListView with 5 DataTemplates and a DataTemplateSelector. 100+ mock items across 5 groups.")]
+		IsManualTest = true,
+		Description = "Grouped ListView with 5 DataTemplates and a DataTemplateSelector. 100+ mock items across 5 groups.")]
 	public sealed partial class ListView_Multiple_Templates : UserControl
 	{
 		public ListView_Multiple_Templates()
