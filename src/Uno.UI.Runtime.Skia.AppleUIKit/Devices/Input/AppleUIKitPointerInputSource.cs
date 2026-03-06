@@ -38,7 +38,6 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 	// GetScrollWheelDelta produces the same per-notch scroll distance as on Windows.
 	private const double DiscreteScrollLineSize = 10.0;
 	private const double DiscreteScrollScale = 120.0 / DiscreteScrollLineSize; // = 12
-	private const double MinTranslationThreshold = 1.0;
 	private const double InertiaDecelerationRate = 0.95;
 	// Stop the display link once velocity drops below ~30 pt/s (0.5 pt/frame).
 	// Sub-pixel accumulation handles smooth deceleration down to this point.
@@ -265,10 +264,6 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 
 				case UIGestureRecognizerState.Changed:
 					var translation = gesture.TranslationInView(source);
-					if (Math.Abs(translation.X) < MinTranslationThreshold && Math.Abs(translation.Y) < MinTranslationThreshold)
-					{
-						return;
-					}
 
 					_activeScrollPendingX += (double)translation.X;
 					_activeScrollPendingY += (double)translation.Y;
