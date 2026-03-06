@@ -1,7 +1,4 @@
-﻿using System;
-using CoreAnimation;
-using CoreGraphics;
-using Foundation;
+﻿using Foundation;
 using UIKit;
 using Uno.UI.Runtime.Skia.AppleUIKit;
 
