@@ -822,9 +822,14 @@ public class Given_InputManager
 	public async Task When_DirectManipulationInertial_Then_ReverseScrollWorks()
 	{
 		// Repro: At the top of a list, flick up fast (no scroll room), then immediately flick down.
-		// Without the fix, the old inertial DM's completion clears _touchInertia set by the new DM,
-		// killing the downward inertia and causing jitter/stuck scroll.
-		// Key: both flicks must happen back-to-back so their inertia timers overlap.
+		// Without the fix, the old inertial DM (DM1) lingers in States.Inertial with no _inertiaHandler.
+		// When DM2 starts and claims inertia (setting _touchInertia), DM1's unclaimed inertial updates
+		// leak through SCP's OnUpdated (because _touchInertia is now set). When DM1 completes,
+		// it clears _touchInertia via OnCompleted, killing DM2's inertia entirely.
+		//
+		// This test verifies that DM2's inertia actually contributes scroll beyond the direct finger drag.
+		// The second flick uses a small drag distance so direct scroll alone is insufficient;
+		// only working inertia can push the offset past the threshold.
 		ScrollViewer sv;
 		var root = new Grid
 		{
@@ -854,25 +859,37 @@ public class Given_InputManager
 		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 		using var finger = injector.GetFinger();
 
-		// Flick UP fast while already at the top (no scroll room in that direction).
+		// Flick UP VERY fast while already at the top (no scroll room in that direction).
 		// This triggers inertia on the DM (States.Inertial) even though SCP declines it
 		// (no scroll room → _inertiaHandler stays null, but recognizer's inertia timer runs).
-		finger.Drag(from: bounds.GetCenter(), to: bounds.GetCenter().Offset(y: 150), steps: 1, stepOffsetInMilliseconds: 100);
+		// The high velocity creates a long-running inertia that outlasts DM2's, ensuring
+		// DM1's completion kills DM2's inertia in the buggy code path.
+		finger.Drag(from: bounds.GetCenter(), to: bounds.GetCenter().Offset(y: 200), steps: 1, stepOffsetInMilliseconds: 50);
 
 		// Do NOT await WaitForIdle here — we need the old DM's inertia timer to still be running
-		// when the second flick starts. This matches the real scenario where the user
-		// immediately touches again while inertia is active.
+		// when the second flick starts.
 
-		// Immediately flick DOWN fast (the valid scroll direction).
-		// Without the fix, the old inertial DM coexists with the new one:
-		//  - Old DM's inertial updates go through the else branch (no _inertiaHandler)
-		//    and apply old-direction deltas via SCP since _touchInertia is now set by the new DM.
-		//  - When the old DM completes, it clears _touchInertia, killing the new inertia entirely.
-		finger.Drag(from: bounds.GetCenter(), to: bounds.GetCenter().Offset(y: -150), steps: 1, stepOffsetInMilliseconds: 100);
+		// Immediately flick DOWN (the valid scroll direction) with a SHORT drag distance.
+		// Direct scroll is only ~40px. The velocity (~1 px/ms) generates inertia lasting ~500ms.
+		// DM1's inertia lasts ~1000ms (velocity ~2 px/ms), so it outlasts and kills DM2's inertia.
+		// Without the fix: DM1's inertia fights (upward deltas) and its completion clears
+		//   _touchInertia, so the offset stays near 0 (DM1's stronger upward force wins).
+		// With the fix: DM1 is force-completed immediately → DM2's inertia runs fully → offset >> 200.
+		finger.Drag(from: bounds.GetCenter(), to: bounds.GetCenter().Offset(y: -40), steps: 3, stepOffsetInMilliseconds: 10);
 
-		await UITestHelper.WaitForIdle(waitForCompositionAnimations: false); // Let both inertias process
+		// Capture offset right after both drags (before async inertia timers fire).
+		var offsetAfterDrag = sv.VerticalOffset;
 
-		sv.VerticalOffset.Should().BeGreaterThan(50, because: "downward flick should scroll without being blocked by the previous upward inertia");
+		// Wait long enough for inertia timers to process (they fire asynchronously).
+		await Task.Delay(3000);
+		await UITestHelper.WaitForIdle(waitForCompositionAnimations: false);
+
+		// With the fix, DM2's full inertia adds ~250px on top of the ~40px direct scroll → ~290px total.
+		// Without the fix, DM1's stronger upward inertia fights and eventually kills DM2's inertia,
+		// resulting in much less scroll (often near 0 since DM1 pushes offset back to the top).
+		sv.VerticalOffset.Should().BeGreaterThan(200,
+			because: "downward flick inertia should continue scrolling beyond the direct drag distance; " +
+			$"offset after drag was {offsetAfterDrag}, after inertia is {sv.VerticalOffset}");
 	}
 
 	[TestMethod]
