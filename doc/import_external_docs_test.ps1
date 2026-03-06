@@ -44,5 +44,21 @@ if (-not $NoFetch) {
 # Generate the documentation
 docfx
 
+if ($LASTEXITCODE -ne 0) {
+    throw "DocFX generation failed with exit code $LASTEXITCODE."
+}
+
+$algoliaCheckFile = Join-Path $PSScriptRoot "_site/articles/intro.html"
+if (-not (Test-Path $algoliaCheckFile)) {
+    throw "Algolia verification failed: generated file not found at $algoliaCheckFile"
+}
+
+$algoliaHtml = Get-Content -Raw -Path $algoliaCheckFile
+if ($algoliaHtml -notmatch "@docsearch/js@3" -or $algoliaHtml -notmatch "docsearch\s*\(") {
+    throw "Algolia verification failed: expected DocSearch script and initializer were not found in generated output."
+}
+
+Write-Host 'Algolia DocSearch wiring verified in generated docs output.' -ForegroundColor Black -BackgroundColor Green
+
 # Serve it
 dotnet-serve --open-browser:_site/articles/intro.html
