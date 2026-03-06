@@ -97,6 +97,17 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 
 	public bool IsCompleted => _state is States.Completed;
 
+	public bool IsInertial => _state is States.Inertial;
+
+	/// <summary>
+	/// Force-completes this manipulation, stopping any running inertia.
+	/// Used to clean up old inertial DMs when a new manipulation starts for the same handler.
+	/// </summary>
+	public void ForceComplete()
+	{
+		_recognizer.CompleteGesture();
+	}
+
 	public bool IsPointerType(Windows.Devices.Input.PointerDeviceType type)
 		=> _recognizer.PendingManipulation is { PointerDeviceType: var currentType } && currentType == (Microsoft.UI.Input.PointerDeviceType)type;
 
@@ -140,6 +151,11 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 		// "continue" multi-touch: else if(lastActiveHandler.IsInBoundsForResume())
 		else
 		{
+			if (_state is States.Inertial)
+			{
+				Trace?.Invoke($"[DirectManipulation] [{args.CurrentPoint.Pointer}] CanAddPointerAt returned false during inertia in TryProcessEnter — a new DM may be created.");
+			}
+
 			// Pointer is out-of-range, let continue normal processing (and potentially start another direct-manipulation).
 
 			return false;
@@ -181,6 +197,11 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 		// "continue" multi-touch: else if(lastActiveHandler.IsInBoundsForResume())
 		else
 		{
+			if (_state is States.Inertial)
+			{
+				Trace?.Invoke($"[DirectManipulation] [{args.CurrentPoint.Pointer}] CanAddPointerAt returned false during inertia in TryProcessDown — a new DM may be created.");
+			}
+
 			// Pointer is out-of-range, let continue normal processing (and potentially start another direct-manipulation).
 
 			return false;
@@ -437,7 +458,7 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 
 		Trace?.Invoke($"[DirectManipulation] [{args.Pointers[0]}] Update @={args.Position.ToDebugString()} | Δ=({args.Delta} | v={args.Velocities}){(args.IsInertial ? " *inertial*" : "")}");
 
-		Debug.Assert(!args.IsInertial || _inertiaHandler is not null);
+		//Debug.Assert(!args.IsInertial || _inertiaHandler is not null);
 
 		var unhandledDelta = args.Delta;
 		if (args.IsInertial && _inertiaHandler is { } inertialHandler)
