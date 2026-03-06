@@ -2021,5 +2021,51 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			CollectionAssert.AreEqual(new bool[] { true, false, true, false }, sequence);
 		}
 #endif
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_TouchFlickOnNonScrollable_Then_InertiaDoesNotAssert()
+		{
+			// Repro: flicking on a ScrollViewer that has nothing to scroll
+			// triggers inertia in the GestureRecognizer, but no handler claims it.
+			// This used to cause a Debug.Assert failure.
+			var sut = new ScrollViewer
+			{
+				Width = 200,
+				Height = 400,
+				IsScrollInertiaEnabled = true,
+				Content = new Border
+				{
+					Width = 180,
+					Height = 100, // Smaller than SV → nothing to scroll
+					Background = new SolidColorBrush(Colors.DeepPink),
+				}
+			};
+
+			var center = (await UITestHelper.Load(sut)).GetCenter();
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var finger = input.GetFinger();
+
+			Assert.AreEqual(0d, sut.VerticalOffset);
+			Assert.AreEqual(0d, sut.ScrollableHeight, "Content is smaller than viewport, nothing to scroll");
+
+			// Fast flick down (drag upward) — should trigger inertia in the gesture recognizer
+			finger.Drag(
+				from: center,
+				to: new(center.X, center.Y - 200),
+				steps: 1,
+				stepOffsetInMilliseconds: 1);
+
+			// Wait for inertia to run and complete (or be stopped)
+			await UITestHelper.WaitForIdle();
+
+			// The scroll offset should remain 0 — there's nothing to scroll
+			Assert.AreEqual(0d, sut.VerticalOffset, "Should not have scrolled");
+		}
 	}
 }
