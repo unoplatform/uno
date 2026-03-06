@@ -1,5 +1,8 @@
-﻿namespace Uno.UI.Xaml.Controls;
+﻿using System;
 
+namespace Uno.UI.Xaml.Controls;
+
+[Flags]
 internal enum DismissalTriggerFlags : uint
 {
 	None = 0x0,

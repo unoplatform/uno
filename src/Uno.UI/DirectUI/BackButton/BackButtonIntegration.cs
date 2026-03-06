@@ -113,11 +113,19 @@ internal static class BackButtonIntegration
 		{
 			_listeners.Remove(weakListener);
 			WeakReferencePool.ReturnWeakReference(_listeners, weakListener);
+		}
 
-			if (_listeners.Count == 0)
-			{
-				SystemNavigationManager.Instance.SetHasInternalBackListeners(false);
-			}
+		// Prune any dead weak references
+		var deadRefs = _listeners.Where(wr => !wr.IsAlive).ToList();
+		foreach (var dead in deadRefs)
+		{
+			_listeners.Remove(dead);
+			WeakReferencePool.ReturnWeakReference(_listeners, dead);
+		}
+
+		if (!_listeners.Any(wr => wr.IsAlive))
+		{
+			SystemNavigationManager.Instance.SetHasInternalBackListeners(false);
 		}
 	}
 }

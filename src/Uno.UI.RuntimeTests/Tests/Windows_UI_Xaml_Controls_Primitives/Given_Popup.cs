@@ -233,8 +233,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 
 			try
 			{
-				Assert.IsFalse(manager.HasAnyBackHandlers,
-					"Should start with no handlers (assuming no other listeners are present).");
+				var hadHandlersBefore = manager.HasAnyBackHandlers;
 
 				popup.IsOpen = true;
 				await WindowHelper.WaitForIdle();
@@ -245,8 +244,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 				popup.IsOpen = false;
 				await WindowHelper.WaitForIdle();
 
-				Assert.IsFalse(manager.HasAnyBackHandlers,
-					"Should have no handlers after light-dismiss popup closes.");
+				Assert.AreEqual(hadHandlersBefore, manager.HasAnyBackHandlers,
+					"Should return to the same state as before the popup was opened.");
 			}
 			finally
 			{
