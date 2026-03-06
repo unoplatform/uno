@@ -209,6 +209,8 @@
         href: platform-specific-csharp.md
       - name: Platform-specific XAML markup
         href: platform-specific-xaml.md
+      - name: Auto-Generated Code-Behind
+        href: xref:Uno.Features.AutoCodeBehind
       - name: Creating Custom Controls
         href: guides/creating-custom-controls.md
       - name: Control Libraries
