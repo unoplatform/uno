@@ -15,10 +15,11 @@ namespace Microsoft.UI.Xaml.Controls;
 #if IS_UNIT_TESTS || __SKIA__ || __NETSTD_REFERENCE__
 [Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 #endif
-public partial class WebView2 : Control, IWebView
+public partial class WebView2 : Control, IWebView, IDisposable
 {
 	private bool _sourceChangeFromCore;
 	private bool _coreWebView2Initialized;
+	private bool _isDisposed;
 
 	/// <summary>
 	/// Initializes a new instance of the WebView2 class.
@@ -48,10 +49,23 @@ public partial class WebView2 : Control, IWebView
 
 	CoreDispatcher IWebView.Dispatcher => Dispatcher;
 
-	protected override void OnApplyTemplate() => CoreWebView2.OnOwnerApplyTemplate();
+	protected override void OnApplyTemplate()
+	{
+		if (_isDisposed)
+		{
+			return;
+		}
+
+		CoreWebView2.OnOwnerApplyTemplate();
+	}
 
 	private void WebView2_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
 	{
+		if (_isDisposed)
+		{
+			return;
+		}
+
 		if (!_coreWebView2Initialized)
 		{
 			EnsureCoreWebView2();
@@ -69,6 +83,11 @@ public partial class WebView2 : Control, IWebView
 	public IAsyncAction EnsureCoreWebView2Async() =>
 		AsyncAction.FromTask(async ct =>
 		{
+			if (_isDisposed)
+			{
+				throw new ObjectDisposedException(nameof(WebView2));
+			}
+
 			if (!_coreWebView2Initialized)
 			{
 				EnsureCoreWebView2();
@@ -88,8 +107,27 @@ public partial class WebView2 : Control, IWebView
 
 	public void NavigateToString(string htmlContent) => CoreWebView2.NavigateToString(htmlContent);
 
+	// FrameworkElement already exposes a non-virtual Dispose(), so WebView2 intentionally hides it
+	// to provide meaningful WebView2 cleanup semantics.
+	// Loaded/Unloaded only drives visual hosting (show/hide), not resource destruction.
+	public new void Dispose()
+	{
+		if (_isDisposed)
+		{
+			return;
+		}
+
+		_isDisposed = true;
+		CoreWebView2.Close();
+	}
+
 	private void EnsureCoreWebView2()
 	{
+		if (_isDisposed)
+		{
+			return;
+		}
+
 		if (!_coreWebView2Initialized)
 		{
 			CoreWebView2Initialized?.Invoke(this, new());
