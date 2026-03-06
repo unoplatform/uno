@@ -11,7 +11,7 @@ param(
 )
 
 Write-Host 'Updating docfx tool...' -ForegroundColor Black -BackgroundColor Green
-dotnet tool update --global docfx
+dotnet tool update --global docfx --version 2.73.2
 
 Write-Host 'Updating dotnet-serve tool...' -ForegroundColor Black -BackgroundColor Green
 dotnet tool update --global dotnet-serve
