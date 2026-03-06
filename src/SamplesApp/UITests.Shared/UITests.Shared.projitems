@@ -2628,6 +2628,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ScrollViewerTests\ScrollViewer_InertiaDirectionChange.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ScrollViewerTests\ScrollViewer_IsIntermediate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -10018,6 +10022,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ScrollViewerTests\ScrollViewer_ToggleSwitch_ScrollLock.xaml.cs">
       <DependentUpon>ScrollViewer_ToggleSwitch_ScrollLock.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ScrollViewerTests\ScrollViewer_InertiaDirectionChange.xaml.cs">
+      <DependentUpon>ScrollViewer_InertiaDirectionChange.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ScrollViewerTests\ScrollViewer_IsIntermediate.xaml.cs">
       <DependentUpon>ScrollViewer_IsIntermediate.xaml</DependentUpon>
