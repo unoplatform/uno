@@ -91,9 +91,12 @@ mermaid.init(undefined, ".lang-mermaid");
                                     return (item.url || '').split('#')[0].split('?')[0]
                                         .split('/').filter(Boolean);
                                 });
+                                var maxSegments = segArrays.reduce(function(max, segments) {
+                                    return Math.max(max, segments.length);
+                                }, 0);
                                 // Find the first segment index that differs
                                 var diffIdx = -1;
-                                for (var s = 0; s < segArrays[0].length; s++) {
+                                for (var s = 0; s < maxSegments; s++) {
                                     var val = segArrays[0][s];
                                     for (var g = 1; g < segArrays.length; g++) {
                                         if (!segArrays[g][s] || segArrays[g][s] !== val) {
