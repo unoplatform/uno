@@ -337,17 +337,14 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 	private void FlushDiscreteScroll()
 	{
 		if (_activeScrollPendingX == 0 && _activeScrollPendingY == 0)
+		{
 			return;
+		}
 
 		var scrollX = (nfloat)(_activeScrollPendingX * DiscreteScrollScale);
 		var scrollY = (nfloat)(_activeScrollPendingY * DiscreteScrollScale);
 		_activeScrollPendingX = 0;
 		_activeScrollPendingY = 0;
-
-		if (scrollX == 0 && scrollY == 0)
-		{
-			return;
-		}
 
 		try
 		{
