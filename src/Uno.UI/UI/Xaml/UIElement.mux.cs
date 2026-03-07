@@ -1108,6 +1108,13 @@ namespace Microsoft.UI.Xaml
 			}
 			// ----------------------- UNO-specific END -----------------------
 
+			// Propagate Enter to KeyboardAccelerators collection so it registers with ContentRoot.
+			// In WinUI, this is handled by EnterSparseProperties walking all sparse property values.
+			if ((@params.IsLive || @params.IsForKeyboardAccelerator)
+				&& KeyboardAccelerators is KeyboardAcceleratorCollection kac)
+			{
+				kac.Enter(null, @params);
+			}
 
 			//if (@params.IsLive && m_bitFields.fWantsInheritanceContextChanged)
 			//{
@@ -1236,17 +1243,12 @@ namespace Microsoft.UI.Xaml
 			// Pass updated params to children.
 			DependencyObject_EnterImpl(@params);
 
-			//// Extends EnterImpl to the ContextFlyout
-			//FlyoutBase pFlyoutBase = this.ContextFlyout;
-			//if (pFlyoutBase is not null)
-			//{
-			//	// This FlyoutBase can be shared between ContentRoots -- remove the VisualTree
-			//	// pointer here for this enter.  TODO: figure out why this happens
-			//	// Bug 19548424: Investigate places where an element entering the tree doesn't have a unique VisualTree ptr
-			//	EnterParams newParams = @params;
-			//	newParams.VisualTree = null;
-			//	pFlyoutBase.Enter(pNamescopeOwner, newParams/*EnterParams*/);
-			//}
+			// Extends EnterImpl to the ContextFlyout
+			FlyoutBase pFlyoutBase = this.ContextFlyout;
+			if (pFlyoutBase is not null)
+			{
+				pFlyoutBase.Enter(null, @params);
+			}
 
 			//// Work on the children
 			//if (m_pChildren is not null)
@@ -1400,7 +1402,7 @@ namespace Microsoft.UI.Xaml
 		// then the object is leaving the "Live" tree, and the object can no
 		// longer respond to OM requests related to being Live.   Actions
 		// like downloads and animation will be halted.
-		private void Leave(LeaveParams @params)
+		internal void Leave(LeaveParams @params)
 		{
 			// If IsProcessingEnterLeave is true, then this element is already part of the
 			// Enter/Leave walk.  This can happen, for instance, if a custom DP's value has
@@ -1647,6 +1649,15 @@ namespace Microsoft.UI.Xaml
 			//}
 
 			//LeaveSparseProperties(pNamescopeOwner, @params);
+
+			// Propagate Leave to KeyboardAccelerators collection so it unregisters from ContentRoot.
+			// In WinUI, this is handled by LeaveSparseProperties walking all sparse property values.
+			if ((@params.IsLive || @params.IsForKeyboardAccelerator)
+				&& KeyboardAccelerators is KeyboardAcceleratorCollection kac)
+			{
+				kac.Leave(null, @params);
+			}
+
 			//if (@params.IsLive)
 			//{
 			//	// If we're currently the focused element, remove ourselves from being focused
@@ -1882,12 +1893,12 @@ namespace Microsoft.UI.Xaml
 
 			DependencyObject_LeaveImpl(@params);
 
-			//// Extends LeaveImpl to the ContextFlyout.
-			//FlyoutBase pFlyoutBase = ContextFlyout;
-			//if (pFlyoutBase is not null)
-			//{
-			//	pFlyoutBase.Leave(pNamescopeOwner, @params /*LeaveParams*/);
-			//}
+			// Extends LeaveImpl to the ContextFlyout.
+			FlyoutBase pFlyoutBase = ContextFlyout;
+			if (pFlyoutBase is not null)
+			{
+				pFlyoutBase.Leave(null, @params);
+			}
 
 			//if (EventEnabledElementRemovedInfo() && @params.fIsLive)
 			//{

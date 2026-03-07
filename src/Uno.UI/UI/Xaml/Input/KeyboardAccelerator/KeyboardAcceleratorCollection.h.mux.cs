@@ -1,6 +1,6 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference dxaml\xcp\core\inc\CKeyboardAcceleratorCollection.h, 
+// MUX Reference dxaml\xcp\core\inc\CKeyboardAcceleratorCollection.h,
 
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
@@ -9,17 +9,9 @@ namespace Microsoft.UI.Xaml.Input;
 
 internal class KeyboardAcceleratorCollection : DependencyObjectCollection<KeyboardAccelerator>
 {
-#if HAS_UNO // TODO: Uno specific - workaround for the lack of support for Enter/Leave on DOs.
-	//private ParentVisualTreeListener _parentVisualTreeListener;
-
 	public KeyboardAcceleratorCollection(DependencyObject parent) : base(parent, true)
 	{
-		//_parentVisualTreeListener = new ParentVisualTreeListener(
-		//	this,
-		//	() => Enter(null, new EnterParams(true)),
-		//	() => Leave(null, new LeaveParams(true)));
 	}
-#endif
 
 	internal void Enter(DependencyObject pNamescopeOwner, EnterParams enterParams)
 	{
@@ -31,6 +23,16 @@ internal class KeyboardAcceleratorCollection : DependencyObjectCollection<Keyboa
 			if (pContentRoot != null)
 			{
 				pContentRoot.AddToLiveKeyboardAccelerators(this);
+			}
+		}
+
+		// In WinUI, CDOCollection::EnterImpl propagates Enter to each child.
+		// Propagate to individual KeyboardAccelerators so they can set up tooltips.
+		if (enterParams.IsLive)
+		{
+			foreach (var ka in this)
+			{
+				ka.EnterImpl(pNamescopeOwner, enterParams);
 			}
 		}
 	}
