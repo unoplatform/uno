@@ -111,22 +111,35 @@ public partial class TextBox
 		}
 	}
 
-	[GeneratedDependencyProperty(DefaultValue = false)]
-	public static DependencyProperty CanUndoProperty { get; } = CreateCanUndoProperty();
+	public static DependencyProperty CanUndoProperty { get; } = DependencyProperty.Register(
+		nameof(CanUndo),
+		typeof(bool),
+		typeof(TextBox),
+		new FrameworkPropertyMetadata(defaultValue: false)
+		{
+			PropMethodCall = GetCanUndo,
+		});
 
-	public bool CanUndo
+	public bool CanUndo => (bool)GetValue(CanUndoProperty);
+
+	private static object GetCanUndo(DependencyObject @do, bool isGet, object valueToSet)
+		=> Uno.UI.Helpers.Boxes.Box(((TextBox)@do)._historyIndex > 0);
+
+	public static DependencyProperty CanRedoProperty { get; } = DependencyProperty.Register(
+		nameof(CanRedo),
+		typeof(bool),
+		typeof(TextBox),
+		new FrameworkPropertyMetadata(defaultValue: false)
+		{
+			PropMethodCall = GetCanRedo,
+		});
+
+	public bool CanRedo => (bool)GetValue(CanRedoProperty);
+
+	private static object GetCanRedo(DependencyObject @do, bool isGet, object valueToSet)
 	{
-		get => GetCanUndoValue();
-		private set => SetCanUndoValue(value);
-	}
-
-	[GeneratedDependencyProperty(DefaultValue = false)]
-	public static DependencyProperty CanRedoProperty { get; } = CreateCanRedoProperty();
-
-	public bool CanRedo
-	{
-		get => GetCanRedoValue();
-		private set => SetCanRedoValue(value);
+		var @this = (TextBox)@do;
+		return Uno.UI.Helpers.Boxes.Box(@this._historyIndex < @this._history.Count - 1);
 	}
 
 	[GeneratedDependencyProperty(DefaultValue = false)]
@@ -168,12 +181,6 @@ public partial class TextBox
 			SetValue(ProofingMenuFlyoutProperty, _proofingMenu);
 			return _proofingMenu;
 		}
-	}
-
-	private void UpdateCanUndoRedo()
-	{
-		CanUndo = _historyIndex > 0;
-		CanRedo = _historyIndex < _history.Count - 1;
 	}
 
 	private void UpdateCanPasteClipboardContent()
@@ -296,7 +303,6 @@ public partial class TextBox
 				_selectionWhenTypingStarted.start,
 				_selectionWhenTypingStarted.length,
 				_selectionWhenTypingStarted.selectionEndsAtTheStart));
-			UpdateCanUndoRedo();
 		}
 
 		_currentlyTyping = newValue;
@@ -1615,7 +1621,6 @@ public partial class TextBox
 			_history.Add(new HistoryRecord(SentinelAction.Instance, _selection.start, _selection.length, _selection.selectionEndsAtTheStart));
 		}
 		_historyIndex = Math.Max(0, Math.Min(_history.Count - 1, _historyIndex));
-		UpdateCanUndoRedo();
 	}
 
 	public void ClearUndoRedoHistory()
@@ -1633,7 +1638,6 @@ public partial class TextBox
 		_historyIndex++;
 		_history.RemoveAllAt(_historyIndex);
 		_history.Add(new HistoryRecord(action, _selection.start, _selection.length, _selection.selectionEndsAtTheStart));
-		UpdateCanUndoRedo();
 	}
 
 	public void Undo()
@@ -1673,7 +1677,6 @@ public partial class TextBox
 				break;
 		}
 		_clearHistoryOnTextChanged = true;
-		UpdateCanUndoRedo();
 	}
 
 	public void Redo()
@@ -1711,7 +1714,6 @@ public partial class TextBox
 				break;
 		}
 		_clearHistoryOnTextChanged = true;
-		UpdateCanUndoRedo();
 	}
 
 	internal override bool IsDelegatingFocusToTemplateChild()
