@@ -75,6 +75,22 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 		}
 
+		/// <summary>
+		/// Propagates Enter to the flyout's content for keyboard accelerator registration.
+		/// Subclasses (Flyout, MenuFlyout) override to propagate to their specific content.
+		/// </summary>
+		internal virtual void Enter(DependencyObject pNamescopeOwner, EnterParams @params)
+		{
+		}
+
+		/// <summary>
+		/// Propagates Leave to the flyout's content for keyboard accelerator unregistration.
+		/// Subclasses (Flyout, MenuFlyout) override to propagate to their specific content.
+		/// </summary>
+		internal virtual void Leave(DependencyObject pNamescopeOwner, LeaveParams @params)
+		{
+		}
+
 		internal static IReadOnlyList<FlyoutBase> OpenFlyouts => _openFlyouts.AsReadOnly();
 
 		internal void EnsurePopupAndPresenter() => EnsurePopupCreated(); // TODO Uno: Approximation of WinUI EnsurePopupAndPresenter

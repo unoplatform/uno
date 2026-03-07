@@ -14,7 +14,7 @@ partial class KeyboardAccelerator
 {
 	//  Add our events to the global event request list.
 	//  Need to do this ourselves since we don't derive from CUIElement.
-	private void EnterImpl(
+	internal void EnterImpl(
 		DependencyObject pNamescopeOwner,
 		EnterParams enterParams)
 	{

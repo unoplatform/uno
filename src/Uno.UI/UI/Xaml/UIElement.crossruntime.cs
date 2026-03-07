@@ -129,6 +129,11 @@ namespace Microsoft.UI.Xaml
 			{
 				child.EnterImpl(@params, this.Depth + 1);
 			}
+			else if (@params.IsForKeyboardAccelerator)
+			{
+				// Dead enter to propagate keyboard accelerator registration through the subtree.
+				child.Enter(@params, int.MinValue);
+			}
 		}
 #endif
 
