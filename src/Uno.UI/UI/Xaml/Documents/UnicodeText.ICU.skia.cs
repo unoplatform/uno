@@ -69,10 +69,8 @@ internal readonly partial struct UnicodeText
 
 				if (!NativeLibrary.TryLoad(libName, typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
 				{
-					var win32Error = Marshal.GetLastWin32Error();
 					throw new Exception(
 						$"Failed to load {libName}.dll. " +
-						$"Win32 error: {win32Error} (0x{win32Error:X8}). " +
 						$"OS: '{osVersion}'. " +
 						$"Assembly location: '{assemblyLocation}'. " +
 						$"Process path: '{processPath}'. " +
