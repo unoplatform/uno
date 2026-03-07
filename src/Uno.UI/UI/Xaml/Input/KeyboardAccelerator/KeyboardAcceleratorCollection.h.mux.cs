@@ -20,6 +20,15 @@ internal class KeyboardAcceleratorCollection : DependencyObjectCollection<Keyboa
 		if (enterParams.IsLive || enterParams.IsForKeyboardAccelerator)
 		{
 			ContentRoot pContentRoot = VisualTree.GetContentRootForElement(this);
+
+			// If the parent chain doesn't lead to a content root (e.g., for elements inside
+			// flyout content that isn't in the visual tree), fall back to the VisualTree
+			// from the EnterParams, which was resolved at the live ancestor that started the Enter walk.
+			if (pContentRoot is null && enterParams.VisualTree is not null)
+			{
+				pContentRoot = enterParams.VisualTree.ContentRoot;
+			}
+
 			if (pContentRoot != null)
 			{
 				pContentRoot.AddToLiveKeyboardAccelerators(this);
@@ -44,6 +53,12 @@ internal class KeyboardAcceleratorCollection : DependencyObjectCollection<Keyboa
 		if (leaveParams.IsLive || leaveParams.IsForKeyboardAccelerator)
 		{
 			ContentRoot pContentRoot = VisualTree.GetContentRootForElement(this);
+
+			if (pContentRoot is null && leaveParams.VisualTree is not null)
+			{
+				pContentRoot = leaveParams.VisualTree.ContentRoot;
+			}
+
 			if (pContentRoot != null)
 			{
 				pContentRoot.RemoveFromLiveKeyboardAccelerators(this);
