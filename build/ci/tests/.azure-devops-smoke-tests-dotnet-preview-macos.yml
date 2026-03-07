@@ -1,0 +1,178 @@
+parameters:
+  vmImage: ''
+  UNO_UWP_BUILD: ''
+  XAML_FLAVOR_BUILD: 'SmokeTest'
+  netCurrent: 'net11.0'
+  netPrevious: 'net10.0'
+  netSdkVersion: '11.0.100-preview.1.26104.118'
+  globalJsonSubdir: 'net11'
+  xCodeRoot: ''
+
+jobs:
+- job: smoke_test_dotnet_preview
+  displayName: Smoke Test - .NET Preview ${{ parameters.netSdkVersion }}
+  timeoutInMinutes: 240
+  cancelTimeoutInMinutes: 0
+
+  pool: ${{ parameters.vmImage }}
+
+  variables:
+    - group: uno-codesign-vault
+
+    - name: CombinedConfiguration
+      value: Release|Any CPU
+
+    - name: CI_Build
+      value: true
+
+    # Disable trimming for packages creation
+    - name: PublishTrimmed
+      value: false
+
+    # Disable AOT for this job
+    - name: RunAOTCompilation
+      value: false
+
+    - name: UNO_UWP_BUILD
+      value: ${{ parameters.UNO_UWP_BUILD }}
+
+    - name: XAML_FLAVOR_BUILD`
+      value: ${{ parameters.XAML_FLAVOR_BUILD }}
+
+    - name: CombinedConfiguration
+      value: 'Release|Any CPU'
+
+    - name: SamplesAppArtifactPath
+      value: $(Build.SourcesDirectory)/src/SamplesApp/SamplesApp.Skia.Generic/bin/Release/${{ parameters.netCurrent }}
+
+    - name: UnoEnableHRuntimeTests
+      value: true
+
+  steps:
+  - pwsh: echo 'BEGIN STEPS CRIBBED FROM job- .azure-devops-build-managed.yml > binaries_win_build'
+    displayName: 'BEGIN STEPS CRIBBED FROM: Build - Managed Binaries'
+
+  - checkout: self
+    clean: true
+
+  - template: ../templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
+  - template: ../templates/gitversion.yml
+
+  - template: ../templates/dotnet-install.yml
+    parameters:
+      defaultDotNetSdkVersion: ${{ parameters.netSdkVersion }}
+      globalJsonSubdir: ${{ parameters.globalJsonSubdir }}
+  
+  ## Restore skia-macos native assets
+  - task: DownloadPipelineArtifact@2
+    displayName: Restoring macOS native assets
+    inputs:
+      artifact: NugetPackages-Artifacts-skia-macos-native-$(XAML_FLAVOR_BUILD)
+      path: $(Build.SourcesDirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/Release
+
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: custom
+      custom: 'workload'
+      arguments: install android ios maccatalyst tvos
+      workingDirectory: Build
+    displayName: Install required workloads
+
+  # This task is required to run in separately to avoid hitting targets file
+  # caching issues with msbuild 17.3 or later
+  - task: DotNetCoreCLI@2
+    inputs:
+      workingDirectory: Build
+      arguments: Uno.UI.Build.csproj /nr:false /r /m /t:PrepareBuildAssets "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(NBGV_SemVer2)-netcoremobile-prepare-$(XAML_FLAVOR_BUILD).binlog -p:UnoEnablePreviewFeatures=true
+    displayName: Preparing assets
+
+  - task: DotNetCoreCLI@2
+    inputs:
+      workingDirectory: Build
+      arguments: Uno.UI.Build.csproj /r /m /t:BuildCIPackages "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(NBGV_SemVer2)-packages-$(XAML_FLAVOR_BUILD).binlog -p:UnoEnablePreviewFeatures=true
+    displayName: Building Managed binaries
+
+  - task: MSBuild@1
+    displayName: Building WinAppSDK and Graphics3DGL package binaries
+    inputs:
+      solution: build/filters/Uno.UI-packages-windows.slnf
+      msbuildLocationMethod: version
+      msbuildVersion: latest
+      msbuildArguments: /r /m /v:m /p:Configuration=Release /p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true /p:BuildGraphics3DGLForWindows=true /p:PackageVersion=$(NBGV_SemVer2) /p:InformationalVersion=$(NBGV_AssemblyInformationalVersion) /p:PackageOutputPath=$(build.artifactstagingdirectory)/vslatest /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(NBGV_SemVer2)-windows-$(XAML_FLAVOR_BUILD)-binaries.binlog -p:UnoEnablePreviewFeatures=true
+      clean: false
+      restoreNugetPackages: false
+      logProjectEvents: false
+      createLogFile: false
+
+  - pwsh: echo 'BEGIN STEPS CRIBBED FROM job- .azure-devops-tests-skia-build.yml > Skia_Tests_Build'
+    displayName: 'BEGIN STEPS CRIBBED FROM: Build - Skia Runtime Tests - Build Samples App'
+
+  - powershell: dotnet msbuild src/SamplesApp/UnoIslandsSamplesApp.Skia.WPF/UnoIslandsSamplesApp.Skia.Wpf.csproj /r /m /p:UnoTargetFrameworkOverride=${{ parameters.netPrevious }} /p:Configuration=Release /p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true /detailedsummary /m /bl:$(build.artifactstagingdirectory)/build-wpf-islands.binlog -p:UnoEnablePreviewFeatures=true
+    displayName: Build WPF Islands Head
+
+  - powershell: dotnet build src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -p:UnoTargetFrameworkOverride=${{ parameters.netCurrent }} -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true -f ${{ parameters.netCurrent }} /bl:$(build.artifactstagingdirectory)/logs/build-generic.binlog -p:UnoEnablePreviewFeatures=true
+    displayName: Build Generic Skia Head
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Generic Binaries'
+    retryCountOnTaskFailure: 3
+    inputs:
+      targetPath: $(Build.SourcesDirectory)/src/SamplesApp/SamplesApp.Skia.Generic/bin/Release/${{ parameters.netCurrent }}
+      artifactName: skia-generic-samples-app-$(XAML_FLAVOR_BUILD)
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Wpf Islands Binaries'
+    retryCountOnTaskFailure: 3
+    inputs:
+      targetPath: $(Build.SourcesDirectory)/src/SamplesApp/UnoIslandsSamplesApp.Skia.WPF/bin/Release/${{ parameters.netPrevious }}-windows
+      artifactName: uno-islands-skia-wpf-samples-app-$(XAML_FLAVOR_BUILD)
+
+  - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)/logs
+      ArtifactName: skia-samples-app-binlog-smoketest
+      ArtifactType: Container
+
+  - pwsh: echo 'BEGIN STEPS CRIBBED FROM job- .azure-devops-tests-macos-skia.yml > Skia_Windows_Runtime_Tests_Build'
+    displayName: 'BEGIN STEPS CRIBBED FROM: Tests - Desktop Skia macOS - Run macOS Runtime Tests'
+
+  - script: |
+      # Build source generators for hot reload runtime tests
+      # Used to build the hot reload test secondary app during runtime tests
+      cd $(build.sourcesdirectory)/src/SourceGenerators/Uno.UI.Tasks
+      dotnet build -c Debug -p:UnoEnablePreviewFeatures=true
+      cd $(build.sourcesdirectory)/src/SourceGenerators/Uno.UI.SourceGenerators
+      dotnet build -c Debug -p:UnoEnablePreviewFeatures=true
+      cd $(build.sourcesdirectory)/src/Uno.UI.RemoteControl.Host
+      dotnet build -c Debug -p:UnoEnablePreviewFeatures=true
+    displayName: Build HR dependencies
+
+  - script: |
+      chmod +x build/test-scripts/macos-skia-runtime-tests.sh
+      build/test-scripts/macos-skia-runtime-tests.sh
+    displayName: Run macOS Runtime Tests
+    env:
+      SamplesAppArtifactPath: $(SamplesAppArtifactPath)
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testRunTitle: 'macOS Skia Runtime Tests'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/skia-macos-runtime-tests-results.xml'
+      failTaskOnFailedTests: true
+      failTaskOnMissingResultsFile: true
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    displayName: Publish Failed Tests Results
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
+      ArtifactName: uitests-failure-results-smoke-test
+      ArtifactType: Container

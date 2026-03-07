@@ -1,5 +1,19 @@
 ﻿<Project>
 
+	<PropertyGroup Condition=" '$(UnoEnablePreviewFeatures)' != 'true' ">
+		<NetPrevious>net9.0</NetPrevious>
+		<NetCurrent>net10.0</NetCurrent>
+		<NetPreviousAppleOSVersion>18.0</NetPreviousAppleOSVersion>
+		<NetCurrentAppleOSVersion>26.0</NetCurrentAppleOSVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(UnoEnablePreviewFeatures)' == 'true' ">
+		<NetPrevious>net10.0</NetPrevious>
+		<NetCurrent>net11.0</NetCurrent>
+		<NetPreviousAppleOSVersion>26.0</NetPreviousAppleOSVersion>
+		<NetCurrentAppleOSVersion>26.2</NetCurrentAppleOSVersion>
+	</PropertyGroup>
+
 	<PropertyGroup>
 		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
@@ -18,11 +32,8 @@
 
 		<UNO_UWP_BUILD>false</UNO_UWP_BUILD>
 
-		<NetCurrent>net10.0</NetCurrent>
-		<NetPrevious>net9.0</NetPrevious>
-
-		<NetCurrentNetCoreMobile>$(NetCurrent)-android;$(NetCurrent)-ios26.0;$(NetCurrent)-maccatalyst26.0;$(NetCurrent)-tvos26.0</NetCurrentNetCoreMobile>
-		<NetPreviousNetCoreApple>$(NetPrevious)-ios18.0;$(NetPrevious)-maccatalyst18.0;$(NetPrevious)-tvos18.0</NetPreviousNetCoreApple>
+		<NetCurrentNetCoreMobile>$(NetCurrent)-android;$(NetCurrent)-ios$(NetCurrentAppleOSVersion);$(NetCurrent)-maccatalyst$(NetCurrentAppleOSVersion);$(NetCurrent)-tvos$(NetCurrentAppleOSVersion)</NetCurrentNetCoreMobile>
+		<NetPreviousNetCoreApple>$(NetPrevious)-ios$(NetPreviousAppleOSVersion);$(NetPrevious)-maccatalyst$(NetPreviousAppleOSVersion);$(NetPrevious)-tvos$(NetPreviousAppleOSVersion)</NetPreviousNetCoreApple>
 		<NetPreviousNetCoreMobile>$(NetPrevious)-android;$(NetPreviousNetCoreApple)</NetPreviousNetCoreMobile>
 
 		<NetPreviousWpf>$(NetPrevious)-windows</NetPreviousWpf>

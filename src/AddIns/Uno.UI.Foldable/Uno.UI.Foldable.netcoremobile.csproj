@@ -35,6 +35,9 @@
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net10.0-android'">
 		<PackageReference Include="Xamarin.AndroidX.Window.WindowJava" Version="1.3.0.7" />
 	</ItemGroup>
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net11.0-android'">
+		<PackageReference Include="Xamarin.AndroidX.Window.WindowJava" Version="1.3.0.7" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<!-- Make the package installable on net7.0 targets as a noop -->

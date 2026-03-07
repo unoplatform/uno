@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>$(NetPrevious)-android;$(NetPrevious)-ios18.0;$(NetPrevious)-maccatalyst18.0</TargetFrameworks>
+		<TargetFrameworks>$(NetPrevious)-android;$(NetPrevious)-ios$(NetPreviousAppleOSVersion);$(NetPrevious)-maccatalyst$(NetPreviousAppleOSVersion)</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../../targetframework-override-netprevious.props" />
@@ -51,6 +51,11 @@
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net10.0-android'">
+		<PackageReference Include="Xamarin.GooglePlayServices.Location" Version="121.3.0.6" />
+		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="119.2.0.2" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net11.0-android'">
 		<PackageReference Include="Xamarin.GooglePlayServices.Location" Version="121.3.0.6" />
 		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="119.2.0.2" />
 	</ItemGroup>
