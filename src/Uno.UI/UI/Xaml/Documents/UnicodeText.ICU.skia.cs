@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -22,10 +23,16 @@ internal readonly partial struct UnicodeText
 		private static IntPtr _libicuuc;
 		private static readonly Dictionary<Type, object> _lookupCache = new();
 
+		// System32 must be included explicitly: when any LOAD_LIBRARY_SEARCH_* flag is passed to
+		// LoadLibraryEx, Windows replaces the default search order entirely with only the specified
+		// paths. Without System32, the loader cannot find CRT dependencies (e.g. VCRUNTIME140.dll)
+		// that icuuc77.dll requires, causing intermittent load failures on machines where those
+		// DLLs are not also present in the application or assembly directory.
 		private const DllImportSearchPath NativeLibrarySearchDirectories =
 			  DllImportSearchPath.ApplicationDirectory
 			| DllImportSearchPath.AssemblyDirectory
 			| DllImportSearchPath.UserDirectories
+			| DllImportSearchPath.System32
 			;
 
 		public static void SetDataAssembly(Assembly assembly)
@@ -43,10 +50,35 @@ internal readonly partial struct UnicodeText
 			if (OperatingSystem.IsWindows())
 			{
 				// On Windows, we get the ICU binaries from the uno.icu-win package.
+				const string libName = "icuuc77";
 				_icuVersion = 77;
-				if (!NativeLibrary.TryLoad("icuuc77", typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
+
+				// AppContext.BaseDirectory is used instead of Assembly.Location because Assembly.Location
+				// always returns an empty string for assemblies embedded in a single-file app (IL3000).
+				var appBaseDir = AppContext.BaseDirectory;
+				var processPath = Environment.ProcessPath ?? string.Empty;
+				var processDir = Path.GetDirectoryName(processPath) ?? string.Empty;
+				var osVersion = Environment.OSVersion.VersionString;
+				var existsInAppBaseDir = File.Exists(Path.Combine(appBaseDir, $"{libName}.dll"));
+				var existsInProcessDir = File.Exists(Path.Combine(processDir, $"{libName}.dll"));
+
+				typeof(ICU).LogDebug()?.Debug(
+					$"Attempting to load {libName}.dll. " +
+					$"OS: '{osVersion}', " +
+					$"App base dir: '{appBaseDir}', " +
+					$"Process path: '{processPath}', " +
+					$"Exists at app base dir: {existsInAppBaseDir}, " +
+					$"Exists at process dir ('{processDir}'): {existsInProcessDir}.");
+
+				if (!NativeLibrary.TryLoad(libName, typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
 				{
-					throw new Exception("Failed to load libicuuc.");
+					throw new Exception(
+						$"Failed to load {libName}.dll. " +
+						$"OS: '{osVersion}'. " +
+						$"App base dir: '{appBaseDir}'. " +
+						$"Process path: '{processPath}'. " +
+						$"Exists at app base dir: {existsInAppBaseDir}. " +
+						$"Exists at process dir ('{processDir}'): {existsInProcessDir}.");
 				}
 			}
 			else if (OperatingSystem.IsIOS())
