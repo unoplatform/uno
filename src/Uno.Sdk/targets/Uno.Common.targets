@@ -87,6 +87,8 @@
 	<Import Project="Uno.Common.WinAppSdk.targets"
 		Condition=" $(TargetFramework.Contains('windows10')) " />
 
+	<Import Project="Uno.CodeBehind.targets" />
+
 	<Import Project="Uno.GenerateAot.targets"
 		Condition=" $(UnoGenerateAotProfile) == 'true' AND $(IsUnoHead) == 'true' " />
 
