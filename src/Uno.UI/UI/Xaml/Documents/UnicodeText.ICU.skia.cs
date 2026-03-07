@@ -68,7 +68,7 @@ internal readonly partial struct UnicodeText
 					$"App base dir: '{appBaseDir}', " +
 					$"Process path: '{processPath}', " +
 					$"Exists at app base dir: {existsInAppBaseDir}, " +
-					$"Exists at process dir: {existsInProcessDir}.");
+					$"Exists at process dir ('{processDir}'): {existsInProcessDir}.");
 
 				if (!NativeLibrary.TryLoad(libName, typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
 				{
