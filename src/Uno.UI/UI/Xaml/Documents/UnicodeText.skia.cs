@@ -25,7 +25,6 @@ using FontWeights = Microsoft.UI.Text.FontWeights;
 
 namespace Microsoft.UI.Xaml.Documents;
 
-// TODO tab stop handling with trimming etc
 internal readonly partial struct UnicodeText : IParsedText
 {
 	// Measured by hand from WinUI. Oddly enough, it doesn't depend on the font size.
@@ -127,6 +126,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		TextTrimming textTrimming,
 		bool isSpellCheckEnabled,
 		IFontCacheUpdateListener fontListener,
+		bool includeTrailingWhitespaceInMeasurement,
 		out Size calculatedSize)
 	{
 		CI.Assert(maxLines >= 0);
@@ -594,13 +594,13 @@ internal readonly partial struct UnicodeText : IParsedText
 		_endingNewLineLineHeight = lines[^1].end == _text.Length && textEndsInLineBreak ? GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, defaultFontDetails, false, true).lineHeight : null;
 		totalHeight += _endingNewLineLineHeight ?? 0;
 
-		float maxLineWidthWithoutTrailingSpaces = 0;
+		float maxLineWidth = 0;
 		_indexToCluster = new List<(int start, int end, LinkedListNode<Cluster> cluster)>();
 		_clustersInLogicalOrder = new();
 		for (var lineIndex = 0; lineIndex < lines.Count; lineIndex++)
 		{
 			var line = lines[lineIndex];
-			maxLineWidthWithoutTrailingSpaces = Math.Max(maxLineWidthWithoutTrailingSpaces, line.widthWithoutTrailingSpaces);
+			maxLineWidth = Math.Max(maxLineWidth, includeTrailingWhitespaceInMeasurement ? line.width : line.widthWithoutTrailingSpaces);
 			for (var node = line.clusterStart; ; node = node.Next!)
 			{
 				node.Value = node.Value with { lineIndex = lineIndex };
@@ -711,7 +711,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		_textAlignment = textAlignment!.Value;
 		_wordBoundaries = GetWords(_text);
 		_corrections = isSpellCheckEnabled ? _spellCheckingService.Value?.SpellCheck(_wordBoundaries, _text) : null;
-		calculatedSize = new Size(maxLineWidthWithoutTrailingSpaces, totalHeight);
+		calculatedSize = new Size(maxLineWidth, totalHeight);
 		_availableSize = availableSize;
 	}
 

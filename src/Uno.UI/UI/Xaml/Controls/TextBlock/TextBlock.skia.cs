@@ -130,6 +130,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private UnicodeText ParseText(Size availableSizeWithoutPadding, out Size size)
 		{
+			var isTextBoxOwned = OwningTextBox is not null;
 			var adjustedTextAlignment = GetAdjustedTextAlignment();
 			var ret = new UnicodeText(
 				availableSizeWithoutPadding,
@@ -144,7 +145,14 @@ namespace Microsoft.UI.Xaml.Controls
 				TextTrimming,
 				IsSpellCheckEnabled,
 				this,
+				isTextBoxOwned,
 				out size);
+
+			if (isTextBoxOwned)
+			{
+				size.Width += CaretThickness;
+			}
+
 			_lastParsedTextCreationValues = (availableSizeWithoutPadding, size, adjustedTextAlignment);
 			return ret;
 		}
