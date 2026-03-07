@@ -125,8 +125,16 @@ namespace Microsoft.UI.Xaml
 		private void ChildEnter(UIElement child, EnterParams @params)
 		{
 			// Uno TODO: WinUI has much more complex logic than this.
+			// WinUI's CDOCollection::ChildEnter always calls child->Enter() (the outer Enter),
+			// which calls SetVisualTree. We call EnterImpl directly for live children here,
+			// so we must call SetVisualTree explicitly to match WinUI behavior.
 			if (@params.IsLive)
 			{
+				if (@params.VisualTree is not null)
+				{
+					child.SetVisualTree(@params.VisualTree);
+				}
+
 				child.EnterImpl(@params, this.Depth + 1);
 			}
 			else if (@params.IsForKeyboardAccelerator)

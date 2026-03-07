@@ -865,24 +865,18 @@ namespace Microsoft.UI.Xaml
 
 			try
 			{
-				// UNO TODO: We naively call EnterImpl right away.
-				EnterImpl(@params, depth);
-
 				//if (this is XamlIslandRoot xamlIsland)
 				//{
-				//	// The CXamlIslandRoot can enter the tree in a few different ways, and we need to make sure
-				//	// that however it enters, we override the params.visualTree with the one from the CXamlIslandRoot.
-				//	// CXamlIslandRoot always defines its own visual tree, so we must set it here.  Note that after
-				//	// the tree refactoring, this won't be necessary because the XamlIslandRoot won't be in the tree
-				//	// anymore.
 				//	@params.VisualTree = xamlIsland.GetVisualTreeNoRef();
 				//}
 
-				//if (@params.IsLive && @params.VisualTree is not null)
-				//{
-				//	// As the DO enters the live tree, we call SetVisualTree to remember which one it's associated with
-				//	SetVisualTree(@params.VisualTree);
-				//}
+				if (@params.IsLive && @params.VisualTree is not null)
+				{
+					// As the DO enters the live tree, we call SetVisualTree to remember which one it's associated with
+					this.SetVisualTree(@params.VisualTree);
+				}
+
+				EnterImpl(@params, depth);
 
 				//DependencyObject pAdjustedNamescopeOwner = pNamescopeOwner;
 
