@@ -20,7 +20,7 @@ partial class MenuFlyout
 		{
 			// This is a dead enter to register any keyboard accelerators that may be present in the MenuFlyout items
 			// to the list of live accelerators
-			parameters = new EnterParams { IsForKeyboardAccelerator = true, IsLive = false };
+			parameters = new EnterParams { IsForKeyboardAccelerator = true, IsLive = false, VisualTree = parameters.VisualTree };
 			//params.fSkipNameRegistration = true;
 			//params.fUseLayoutRounding = false;
 			//params.fCoercedIsEnabled = false;
@@ -53,7 +53,7 @@ partial class MenuFlyout
 		{
 			// This is a dead leave to remove any keyboard accelerators that may be present in the MenuFlyout items
 			// from the list of live accelerators
-			parameters = new LeaveParams { IsForKeyboardAccelerator = true, IsLive = false };
+			parameters = new LeaveParams { IsForKeyboardAccelerator = true, IsLive = false, VisualTree = parameters.VisualTree };
 			//params.fSkipNameRegistration = true;
 			//params.fUseLayoutRounding = false;
 			//params.fCoercedIsEnabled = false;

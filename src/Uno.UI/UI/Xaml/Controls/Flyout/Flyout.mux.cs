@@ -12,7 +12,7 @@ partial class Flyout
 		var content = Content;
 		if (content is not null)
 		{
-			var newParams = new EnterParams { IsForKeyboardAccelerator = true, IsLive = false };
+			var newParams = new EnterParams { IsForKeyboardAccelerator = true, IsLive = false, VisualTree = @params.VisualTree };
 			content.Enter(newParams, 0);
 		}
 	}
@@ -24,7 +24,7 @@ partial class Flyout
 		var content = Content;
 		if (content is not null)
 		{
-			var newParams = new LeaveParams { IsForKeyboardAccelerator = true, IsLive = false };
+			var newParams = new LeaveParams { IsForKeyboardAccelerator = true, IsLive = false, VisualTree = @params.VisualTree };
 			content.Leave(newParams);
 		}
 	}
