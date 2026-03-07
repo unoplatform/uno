@@ -31,23 +31,7 @@ partial class MenuFlyout
 		m_inputDeviceTypeUsedToOpen = Uno.UI.Xaml.Input.InputDeviceType.None;
 
 		PrepareState();
-
-#if HAS_UNO // Uno specific: Simulate enter/leave lifecycle events
-		ListenToParentLifecycle();
-#endif
 	}
-
-#if HAS_UNO // TODO: Uno specific - workaround for the lack of support for Enter/Leave on DOs.
-	private ParentVisualTreeListener _parentVisualTreeListener;
-
-	private void ListenToParentLifecycle()
-	{
-		_parentVisualTreeListener = new ParentVisualTreeListener(
-			this,
-			() => EnterImpl(null, new EnterParams(true)),
-			() => LeaveImpl(null, new LeaveParams(true)));
-	}
-#endif
 
 	// Prepares object's state
 	private void PrepareState()
