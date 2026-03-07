@@ -541,8 +541,10 @@
               href: controls/ListViewBase.md
             - name: Lottie animations
               href: features/Lottie.md
-            - name: MapControl
+            - name: MapControl (Deprecated)
               href: controls/map-control-support.md
+            - name: Maps with MapsUI
+              href: controls/mapsui.md
             - name: MediaPlayerElement
               href: controls/MediaPlayerElement.md
             - name: MenuFlyout
