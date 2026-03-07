@@ -1157,6 +1157,14 @@ namespace Microsoft.UI.Xaml
 		{
 			Depth = depth;
 
+			// Ensure VisualTree is propagated through the Enter walk.
+			// ChildEnter may call EnterImpl directly (bypassing UIElement.Enter),
+			// so we resolve the VisualTree here as a fallback.
+			if (@params.VisualTree is null)
+			{
+				@params.VisualTree = Uno.UI.Xaml.Core.VisualTree.GetForElement(this, Uno.UI.Xaml.Core.VisualTree.LookupOptions.NoFallback);
+			}
+
 			var core = this.GetContext();
 			//bool isParentEnabled = @params.CoercedIsEnabled;
 
@@ -1250,6 +1258,18 @@ namespace Microsoft.UI.Xaml
 			if (pFlyoutBase is not null)
 			{
 				pFlyoutBase.Enter(null, @params);
+			}
+
+			// Propagate Enter to KeyboardAccelerators collection.
+			// In WinUI, CDependencyObject::EnterImpl propagates Enter to all effective sparse values.
+			// In Uno, we need to do this explicitly for the KeyboardAccelerators collection.
+			// Use GetValue with IsDependencyPropertyValueSet to avoid creating default empty collections.
+			if (this.IsDependencyPropertySet(KeyboardAcceleratorsProperty))
+			{
+				if (GetValue(KeyboardAcceleratorsProperty) is KeyboardAcceleratorCollection kac)
+				{
+					kac.Enter(null, @params);
+				}
 			}
 
 			//// Work on the children
@@ -1692,6 +1712,12 @@ namespace Microsoft.UI.Xaml
 
 		internal virtual void LeaveImpl(LeaveParams @params)
 		{
+			// Ensure VisualTree is propagated through the Leave walk.
+			if (@params.VisualTree is null)
+			{
+				@params.VisualTree = Uno.UI.Xaml.Core.VisualTree.GetForElement(this, Uno.UI.Xaml.Core.VisualTree.LookupOptions.NoFallback);
+			}
+
 			// --------- UNO Specific BEGIN ---------
 			// This should be done in FrameworkElement's override of LeaveImpl.
 			// But:
@@ -1900,6 +1926,17 @@ namespace Microsoft.UI.Xaml
 			if (pFlyoutBase is not null)
 			{
 				pFlyoutBase.Leave(null, @params);
+			}
+
+			// Propagate Leave to KeyboardAccelerators collection.
+			// In WinUI, CDependencyObject::LeaveImpl propagates Leave to all effective sparse values.
+			// In Uno, we need to do this explicitly for the KeyboardAccelerators collection.
+			if (this.IsDependencyPropertySet(KeyboardAcceleratorsProperty))
+			{
+				if (GetValue(KeyboardAcceleratorsProperty) is KeyboardAcceleratorCollection kac)
+				{
+					kac.Leave(null, @params);
+				}
 			}
 
 			//if (EventEnabledElementRemovedInfo() && @params.fIsLive)
