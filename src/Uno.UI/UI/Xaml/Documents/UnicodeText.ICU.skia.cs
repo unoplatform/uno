@@ -53,30 +53,31 @@ internal readonly partial struct UnicodeText
 				const string libName = "icuuc77";
 				_icuVersion = 77;
 
-				var assemblyLocation = typeof(ICU).Assembly.Location;
-				var assemblyDir = Path.GetDirectoryName(assemblyLocation) ?? string.Empty;
+				// AppContext.BaseDirectory is used instead of Assembly.Location because Assembly.Location
+				// always returns an empty string for assemblies embedded in a single-file app (IL3000).
+				var appBaseDir = AppContext.BaseDirectory;
 				var processPath = Environment.ProcessPath ?? string.Empty;
 				var processDir = Path.GetDirectoryName(processPath) ?? string.Empty;
 				var osVersion = Environment.OSVersion.VersionString;
-				var existsInAssemblyDir = File.Exists(Path.Combine(assemblyDir, $"{libName}.dll"));
+				var existsInAppBaseDir = File.Exists(Path.Combine(appBaseDir, $"{libName}.dll"));
 				var existsInProcessDir = File.Exists(Path.Combine(processDir, $"{libName}.dll"));
 
 				typeof(ICU).LogDebug()?.Debug(
 					$"Attempting to load {libName}.dll. " +
 					$"OS: '{osVersion}', " +
-					$"Assembly location: '{assemblyLocation}', " +
+					$"App base dir: '{appBaseDir}', " +
 					$"Process path: '{processPath}', " +
-					$"Exists at assembly dir ('{assemblyDir}'): {existsInAssemblyDir}, " +
-					$"Exists at process dir ('{processDir}'): {existsInProcessDir}.");
+					$"Exists at app base dir: {existsInAppBaseDir}, " +
+					$"Exists at process dir: {existsInProcessDir}.");
 
 				if (!NativeLibrary.TryLoad(libName, typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
 				{
 					throw new Exception(
 						$"Failed to load {libName}.dll. " +
 						$"OS: '{osVersion}'. " +
-						$"Assembly location: '{assemblyLocation}'. " +
+						$"App base dir: '{appBaseDir}'. " +
 						$"Process path: '{processPath}'. " +
-						$"Exists at assembly dir ('{assemblyDir}'): {existsInAssemblyDir}. " +
+						$"Exists at app base dir: {existsInAppBaseDir}. " +
 						$"Exists at process dir ('{processDir}'): {existsInProcessDir}.");
 				}
 			}
