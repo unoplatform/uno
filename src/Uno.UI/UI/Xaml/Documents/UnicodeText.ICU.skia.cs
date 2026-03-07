@@ -58,14 +58,16 @@ internal readonly partial struct UnicodeText
 				var processPath = Environment.ProcessPath ?? string.Empty;
 				var processDir = Path.GetDirectoryName(processPath) ?? string.Empty;
 				var osVersion = Environment.OSVersion.VersionString;
+				var existsInAssemblyDir = File.Exists(Path.Combine(assemblyDir, $"{libName}.dll"));
+				var existsInProcessDir = File.Exists(Path.Combine(processDir, $"{libName}.dll"));
 
 				typeof(ICU).LogDebug()?.Debug(
 					$"Attempting to load {libName}.dll. " +
 					$"OS: '{osVersion}', " +
 					$"Assembly location: '{assemblyLocation}', " +
 					$"Process path: '{processPath}', " +
-					$"Exists at assembly dir ('{assemblyDir}'): {File.Exists(Path.Combine(assemblyDir, $"{libName}.dll"))}, " +
-					$"Exists at process dir ('{processDir}'): {File.Exists(Path.Combine(processDir, $"{libName}.dll"))}.");
+					$"Exists at assembly dir ('{assemblyDir}'): {existsInAssemblyDir}, " +
+					$"Exists at process dir ('{processDir}'): {existsInProcessDir}.");
 
 				if (!NativeLibrary.TryLoad(libName, typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
 				{
@@ -74,8 +76,8 @@ internal readonly partial struct UnicodeText
 						$"OS: '{osVersion}'. " +
 						$"Assembly location: '{assemblyLocation}'. " +
 						$"Process path: '{processPath}'. " +
-						$"Exists at assembly dir ('{assemblyDir}'): {File.Exists(Path.Combine(assemblyDir, $"{libName}.dll"))}. " +
-						$"Exists at process dir ('{processDir}'): {File.Exists(Path.Combine(processDir, $"{libName}.dll"))}.");
+						$"Exists at assembly dir ('{assemblyDir}'): {existsInAssemblyDir}. " +
+						$"Exists at process dir ('{processDir}'): {existsInProcessDir}.");
 				}
 			}
 			else if (OperatingSystem.IsIOS())
