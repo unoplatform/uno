@@ -86,13 +86,28 @@ namespace Microsoft.UI.Xaml
 			set => SetContextFlyoutValue(value);
 		}
 
-		[GeneratedDependencyProperty(DefaultValue = null)]
+		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
 		internal static DependencyProperty KeyboardAcceleratorsProperty { get; } = CreateKeyboardAcceleratorsProperty();
 
 		public IList<KeyboardAccelerator> KeyboardAccelerators
 		{
 			get => GetKeyboardAcceleratorsValue();
 			private set => SetKeyboardAcceleratorsValue(value);
+		}
+
+		private void OnKeyboardAcceleratorsChanged(IList<KeyboardAccelerator> oldValue, IList<KeyboardAccelerator> newValue)
+		{
+#if HAS_UNO // TODO: Uno specific - WinUI does analogous action in Enter/LeaveEffectiveValue
+			var visualTree = Uno.UI.Xaml.Core.VisualTree.GetForElement(this, Uno.UI.Xaml.Core.VisualTree.LookupOptions.NoFallback);
+			if (oldValue is KeyboardAcceleratorCollection oldCollection)
+			{
+				oldCollection.Leave(this, new LeaveParams(false) { IsForKeyboardAccelerator = true, VisualTree = visualTree });
+			}
+			if (newValue is KeyboardAcceleratorCollection newCollection)
+			{
+				newCollection.Enter(this, new EnterParams(false) { IsForKeyboardAccelerator = true, VisualTree = visualTree });
+			}
+#endif
 		}
 
 		/// <summary>

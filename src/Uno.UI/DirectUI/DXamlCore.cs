@@ -6,15 +6,14 @@
 
 using System;
 using System.Collections.Generic;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Helpers.WinUI;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
-using Windows.ApplicationModel.Resources;
-using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core.Scaling;
 using Windows.Devices.Input;
 using Uno;
+using Windows.Foundation;
 
 namespace DirectUI
 {
