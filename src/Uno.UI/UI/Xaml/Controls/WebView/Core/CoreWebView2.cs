@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -92,14 +93,22 @@ public partial class CoreWebView2
 			throw new ArgumentNullException(nameof(folderPath));
 		}
 
-		if (_nativeWebView is ISupportsVirtualHostMapping supportsVirtualHostMapping)
+		if (!Directory.Exists(folderPath))
 		{
-			supportsVirtualHostMapping.SetVirtualHostNameToFolderMapping(hostName, folderPath, accessKind);
+			throw new ArgumentException($"The specified folder path '{Path.GetFullPath(folderPath)}' does not exist.");
 		}
-		else
-		{
-			_hostToFolderMap.Add(hostName.ToLowerInvariant(), folderPath);
-		}
+
+		throw new ArgumentException($"{hostName}, {folderPath}, {accessKind}");
+
+
+		// if (_nativeWebView is ISupportsVirtualHostMapping supportsVirtualHostMapping)
+		// {
+		// 	supportsVirtualHostMapping.SetVirtualHostNameToFolderMapping(hostName, folderPath, accessKind);
+		// }
+		// else
+		// {
+		// 	_hostToFolderMap.Add(hostName.ToLowerInvariant(), folderPath);
+		// }
 	}
 
 	public void ClearVirtualHostNameToFolderMapping(string hostName)
