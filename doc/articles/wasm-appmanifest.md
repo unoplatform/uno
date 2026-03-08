@@ -8,7 +8,7 @@ The `[AppName]` project in your solution typically includes a manifest file cont
 
 ## AppManifest properties
 
-This app manifest file allows you to customize certain aspects of the WebAssembly application, including its loading screen. This loading UI is often referred to as the "splash screen" in documentation. For more information, see [How to manually add a splash screen](xref:Uno.Development.SplashScreen#5-webassembly).
+This app manifest file allows you to customize certain aspects of the WebAssembly application, including its loading screen. This loading UI is often referred to as the "splash screen" in documentation. For more information, see [Splash Screen Customization](xref:Uno.Development.SplashScreen#webassembly).
 
 ## Add a missing manifest file
 
@@ -29,6 +29,6 @@ var UnoAppManifest = {
 
 ## See also
 
-- [WebAssembly: Supported AppManifest properties](xref:Uno.Development.SplashScreen#5-webassembly)
+- [Splash Screen Customization: WebAssembly Configuration](xref:Uno.Development.SplashScreen#webassembly)
 - [Deep-dive: How Uno works on WebAssembly](xref:Uno.Contributing.Wasm#web-webassembly)
 - [Get Started: Get the Uno Platform templates](xref:Uno.GetStarted)
