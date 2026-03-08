@@ -36,6 +36,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			private int _replayCount = 1;
 			private T? _startingValue;
 			private T? _endValue;
+			private bool _isReversing = false; // Track if we're in the reverse phase of AutoReverse
+			private bool _playingInReverse = false; // Track if Storyboard requested reverse playback (persists through cycles)
 
 			// Initialize the field with zero capacity, as it may stay empty more often than it is being used.
 			private readonly CompositeDisposable _subscriptions = new CompositeDisposable(0);
@@ -61,6 +63,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			private TimeSpan? BeginTime => _owner?.BeginTime;
 			private Duration Duration => _owner?.Duration ?? default(Duration);
 			private FillBehavior FillBehavior => _owner?.FillBehavior ?? default(FillBehavior);
+			private bool AutoReverse => _owner?.AutoReverse ?? false;
 
 			private T? From => AnimationOwner?.From;
 			private T? To => AnimationOwner?.To;
@@ -94,6 +97,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 				_activeDuration.Restart();
 				_replayCount = 1;
+				_isReversing = false; // Reset reversing state when beginning
+				_playingInReverse = false; // Reset Storyboard reverse flag when beginning normally
+				_startingValue = null; // Clear so values are recomputed fresh
+				_endValue = null;
 
 				//Start the animation
 				Play();
@@ -188,22 +195,72 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				if (_animator is { IsRunning: true })
 				{
 					_animator.Cancel(); // Stop the animator if it is running
-					_startingValue = null;
 				}
 
-				// Set property to its final value
-				var value = ComputeToValue();
+				// Determine what the final value should be:
+				// - AutoReverse: animation ends at starting value
+				// - _playingInReverse: Storyboard reversed, so swap again
+				// XOR to get effective behavior
+				var endsAtStart = AutoReverse ^ _playingInReverse;
+				var value = endsAtStart ? ComputeFromValue() : ComputeToValue();
 				SetValue(value);
 
-				OnEnd();
+				// Skip to fill should complete, not trigger more cycles
+				State = FillBehavior == FillBehavior.HoldEnd ? TimelineState.Filling : TimelineState.Stopped;
+				_owner.OnCompleted();
 			}
 
 			public void Deactivate()
 			{
 				_animator?.Cancel(); // Stop the animator if it is running
-				_startingValue = null;
 
 				State = TimelineState.Stopped;
+			}
+
+			/// <summary>
+			/// Begins the animation in reverse, playing from the end value back to the start value.
+			/// Used by Storyboard-level AutoReverse to signal child animations to play in reverse.
+			/// </summary>
+			public void BeginReversed()
+			{
+				// If the animation hasn't been played yet, we need to compute the values first
+				if (!_startingValue.HasValue || !_endValue.HasValue)
+				{
+					_startingValue = ComputeFromValue();
+					_endValue = ComputeToValue();
+				}
+
+				// Set the Storyboard reverse flag - this persists through all cycles and AutoReverse phases
+				_playingInReverse = true;
+				_isReversing = false; // Reset animation's own AutoReverse state
+				_replayCount = 1;
+				_activeDuration.Restart();
+
+				Play();
+			}
+
+			/// <summary>
+			/// Skips to the fill state as if the animation had played in reverse.
+			/// Sets the animated property to its starting value (the "reversed" end state).
+			/// </summary>
+			public void SkipToFillReversed()
+			{
+				if (_animator is { IsRunning: true })
+				{
+					_animator.Cancel();
+				}
+
+				// Compute values if not already computed
+				if (!_startingValue.HasValue)
+				{
+					_startingValue = ComputeFromValue();
+				}
+
+				// Set to the starting value (the "reversed" end state)
+				SetValue(_startingValue.Value);
+
+				State = TimelineState.Filling;
+				_owner.OnCompleted();
 			}
 
 			/// <summary>
@@ -221,11 +278,25 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			/// </summary>
 			private void InitializeAnimator()
 			{
-				_startingValue = ComputeFromValue();
+				// Compute values only if not already set (they're set in Begin/BeginReversed)
+				if (!_startingValue.HasValue)
+				{
+					_startingValue = ComputeFromValue();
+				}
+				if (!_endValue.HasValue)
+				{
+					_endValue = ComputeToValue();
+				}
 
-				_endValue = ComputeToValue();
+				// Determine effective direction:
+				// - _playingInReverse: Storyboard requested reverse playback (persists through cycles)
+				// - _isReversing: Animation's own AutoReverse phase
+				// XOR these to get effective direction: if both are true, they cancel out
+				var effectiveReverse = _playingInReverse ^ _isReversing;
+				var fromValue = effectiveReverse ? _endValue.Value : _startingValue.Value;
+				var toValue = effectiveReverse ? _startingValue.Value : _endValue.Value;
 
-				_animator = AnimatorFactory.Create(_owner, _startingValue.Value, _endValue.Value);
+				_animator = AnimatorFactory.Create(_owner, fromValue, toValue);
 
 				_animator.SetEasingFunction(this.EasingFunction); //Set the Easing Function of the animator
 
@@ -337,6 +408,22 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			{
 				_animator?.Dispose();
 
+				// Handle AutoReverse: if enabled and we just finished the forward animation, reverse it
+				if (AutoReverse && !_isReversing)
+				{
+					_isReversing = true;
+					// Use Play() instead of Replay() to avoid incrementing _replayCount during the reverse phase.
+					// This ensures RepeatBehavior counts complete cycles (forward + reverse) as single iterations.
+					Play();
+					return;
+				}
+
+				// If we were reversing, we've now completed both forward and reverse
+				if (_isReversing)
+				{
+					_isReversing = false;
+				}
+
 				// If the animation was GPU based, remove the animated value
 
 				if (NeedsRepeat(_activeDuration, _replayCount))
@@ -369,7 +456,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				}
 
 				_owner.OnCompleted();
-				_startingValue = null;
+				// Note: Don't clear _startingValue here - it's cleared in Begin() when the animation starts fresh
 			}
 
 			/// <summary>
