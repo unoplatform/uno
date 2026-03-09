@@ -74,10 +74,6 @@ public sealed partial class AutomationProperties
 		{
 			return "checkbox";
 		}
-		if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_TextBlock_Available && uIElement is TextBlock)
-		{
-			return "label";
-		}
 		if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_TextBox_Available && uIElement is TextBox)
 		{
 			return "textbox";
@@ -95,8 +91,7 @@ public sealed partial class AutomationProperties
 				AutomationControlType.Button => "button",
 				AutomationControlType.RadioButton => "radio",
 				AutomationControlType.CheckBox => "checkbox",
-				AutomationControlType.Text => "label",
-				AutomationControlType.Edit => "label",
+				AutomationControlType.Edit => "textbox",
 				AutomationControlType.Slider => "slider",
 				_ => null,
 			};

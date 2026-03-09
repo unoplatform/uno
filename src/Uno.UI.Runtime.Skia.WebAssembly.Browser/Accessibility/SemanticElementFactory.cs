@@ -4,6 +4,7 @@ using System;
 using System.Globalization;
 using System.Runtime.InteropServices.JavaScript;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
@@ -48,6 +49,8 @@ internal static partial class SemanticElementFactory
 		var created = elementType switch
 		{
 			SemanticElementType.Button => CreateButtonElement(peer, handle, parentHandle, index, x, y, width, height, attributes),
+			SemanticElementType.ToggleButton => CreateToggleButtonElement(peer, handle, parentHandle, index, x, y, width, height, attributes),
+			SemanticElementType.Switch => CreateSwitchElement(peer, handle, parentHandle, index, x, y, width, height, attributes),
 			SemanticElementType.Checkbox => CreateCheckboxElement(peer, handle, parentHandle, index, x, y, width, height, attributes, false),
 			SemanticElementType.RadioButton => CreateCheckboxElement(peer, handle, parentHandle, index, x, y, width, height, attributes, true),
 			SemanticElementType.Slider => CreateSliderElement(peer, handle, parentHandle, index, x, y, width, height, attributes),
@@ -86,6 +89,44 @@ internal static partial class SemanticElementFactory
 		if (created && !string.IsNullOrEmpty(attributes.RoleDescription))
 		{
 			NativeMethods.UpdateAriaRoleDescription(handle, attributes.RoleDescription);
+		}
+
+		// Apply aria-posinset/aria-setsize for element types whose ARIA role supports them
+		// (option, listitem, menuitem, tab, treeitem, row, radio).
+		// For other roles (e.g. button), screen readers ignore these attributes,
+		// so we append position info to the label instead.
+		if (created && attributes.PositionInSet is > 0 && attributes.SizeOfSet is > 0)
+		{
+			if (SupportsAriaPositionInSet(elementType))
+			{
+				NativeMethods.UpdatePositionInSet(handle, attributes.PositionInSet.Value, attributes.SizeOfSet.Value);
+			}
+			else
+			{
+				// Append position info to the label for roles that don't support aria-posinset
+				var label = attributes.Label ?? "";
+				var positionLabel = string.IsNullOrEmpty(label)
+					? $"{attributes.PositionInSet.Value} of {attributes.SizeOfSet.Value}"
+					: $"{label}, {attributes.PositionInSet.Value} of {attributes.SizeOfSet.Value}";
+				NativeMethods.UpdateAriaLabel(handle, positionLabel);
+			}
+		}
+
+		// Apply aria-required for form fields (WCAG 3.3.2, matches WinUI3 IsRequiredForForm)
+		if (created && attributes.Required)
+		{
+			NativeMethods.UpdateAriaRequired(handle, true);
+		}
+
+		// Apply aria-live for live region elements (screen readers monitor content changes)
+		if (created && owner is not null)
+		{
+			var liveSetting = AutomationProperties.GetLiveSetting(owner);
+			if (liveSetting != AutomationLiveSetting.Off)
+			{
+				var ariaLive = liveSetting == AutomationLiveSetting.Assertive ? "assertive" : "polite";
+				NativeMethods.UpdateAriaLive(handle, ariaLive);
+			}
 		}
 
 		return created;
@@ -428,6 +469,68 @@ internal static partial class SemanticElementFactory
 	}
 
 	/// <summary>
+	/// Creates a toggle button semantic element (button with aria-pressed).
+	/// Used for ToggleButton, AppBarToggleButton, etc.
+	/// </summary>
+	private static bool CreateToggleButtonElement(
+		AutomationPeer peer,
+		IntPtr handle,
+		IntPtr parentHandle,
+		int? index,
+		float x,
+		float y,
+		float width,
+		float height,
+		AriaAttributes attributes)
+	{
+		var pressed = attributes.Checked ?? "false";
+		Console.WriteLine($"[A11y] CREATE TOGGLE BUTTON: handle={handle} parent={parentHandle} label='{attributes.Label}' pressed='{pressed}' disabled={attributes.Disabled} pos=({x},{y}) size={width}x{height}");
+		NativeMethods.CreateToggleButtonElement(
+			parentHandle,
+			handle,
+			index,
+			x,
+			y,
+			width,
+			height,
+			attributes.Label,
+			pressed,
+			attributes.Disabled);
+		return true;
+	}
+
+	/// <summary>
+	/// Creates a switch semantic element (role="switch" with aria-checked).
+	/// Used for ToggleSwitch which maps to the ARIA switch pattern.
+	/// </summary>
+	private static bool CreateSwitchElement(
+		AutomationPeer peer,
+		IntPtr handle,
+		IntPtr parentHandle,
+		int? index,
+		float x,
+		float y,
+		float width,
+		float height,
+		AriaAttributes attributes)
+	{
+		var isOn = attributes.Checked ?? "false";
+		Console.WriteLine($"[A11y] CREATE SWITCH: handle={handle} parent={parentHandle} label='{attributes.Label}' checked='{isOn}' disabled={attributes.Disabled} pos=({x},{y}) size={width}x{height}");
+		NativeMethods.CreateSwitchElement(
+			parentHandle,
+			handle,
+			index,
+			x,
+			y,
+			width,
+			height,
+			attributes.Label,
+			isOn,
+			attributes.Disabled);
+		return true;
+	}
+
+	/// <summary>
 	/// Creates a generic div semantic element with ARIA role.
 	/// Falls back to this for unsupported control types.
 	/// </summary>
@@ -447,6 +550,15 @@ internal static partial class SemanticElementFactory
 
 		// Returns false to signal caller should use the existing AddSemanticElement for backward compatibility
 		return false;
+	}
+
+	/// <summary>
+	/// Returns true if the given element type maps to an ARIA role that supports aria-posinset/aria-setsize.
+	/// Per WAI-ARIA, these are: option, listitem, menuitem, menuitemcheckbox, menuitemradio, radio, row, tab, treeitem.
+	/// </summary>
+	private static bool SupportsAriaPositionInSet(SemanticElementType elementType)
+	{
+		return elementType is SemanticElementType.ListItem or SemanticElementType.RadioButton;
 	}
 
 	private static partial class NativeMethods
@@ -481,6 +593,12 @@ internal static partial class SemanticElementFactory
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createHeadingElement")]
 		internal static partial void CreateHeadingElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, int level, string? label);
 
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createToggleButtonElement")]
+		internal static partial void CreateToggleButtonElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, string pressed, bool disabled);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createSwitchElement")]
+		internal static partial void CreateSwitchElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, string isOn, bool disabled);
+
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaLabel")]
 		internal static partial void UpdateAriaLabel(IntPtr handle, string label);
 
@@ -492,5 +610,17 @@ internal static partial class SemanticElementFactory
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaRoleDescription")]
 		internal static partial void UpdateAriaRoleDescription(IntPtr handle, string roleDescription);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updatePositionInSet")]
+		internal static partial void UpdatePositionInSet(IntPtr handle, int positionInSet, int sizeOfSet);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaRequired")]
+		internal static partial void UpdateAriaRequired(IntPtr handle, bool required);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaPressed")]
+		internal static partial void UpdateAriaPressed(IntPtr handle, string pressed);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaLive")]
+		internal static partial void UpdateAriaLive(IntPtr handle, string ariaLive);
 	}
 }

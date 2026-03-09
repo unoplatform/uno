@@ -71,12 +71,17 @@ namespace Uno.UI.Runtime.Skia {
 
 			this.containerElement.appendChild(this.enableAccessibilityButton);
 
-			// Create semantic DOM root container (hidden but accessible)
+			// Create semantic DOM root container (hidden but accessible).
+			// Uses position:fixed to match the canvas coordinate system (which is also
+			// position:fixed). Width/height:100% ensures the container covers the full
+			// viewport so overflow:hidden doesn't clip semantic elements at 0×0.
 			this.semanticsRoot = document.createElement("div");
 			this.semanticsRoot.id = "uno-semantics-root";
-			this.semanticsRoot.style.position = "absolute";
+			this.semanticsRoot.style.position = "fixed";
 			this.semanticsRoot.style.top = "0";
 			this.semanticsRoot.style.left = "0";
+			this.semanticsRoot.style.width = "100%";
+			this.semanticsRoot.style.height = "100%";
 			this.semanticsRoot.style.overflow = "hidden";
 			this.semanticsRoot.style.opacity = "0";
 			this.semanticsRoot.style.pointerEvents = "none";
@@ -442,6 +447,58 @@ namespace Uno.UI.Runtime.Skia {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
 				element.setAttribute("aria-roledescription", roleDescription);
+			}
+		}
+
+		public static updatePositionInSet(handle: number, positionInSet: number, sizeOfSet: number): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				element.setAttribute("aria-posinset", String(positionInSet));
+				element.setAttribute("aria-setsize", String(sizeOfSet));
+			}
+		}
+
+		/**
+		 * Updates aria-required on a semantic element.
+		 * Screen readers announce the field as "required".
+		 */
+		public static updateAriaRequired(handle: number, required: boolean): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				if (required) {
+					element.setAttribute("aria-required", "true");
+					// Also set the native required attribute for input elements
+					if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
+						element.required = true;
+					}
+				} else {
+					element.removeAttribute("aria-required");
+					if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
+						element.required = false;
+					}
+				}
+			}
+		}
+
+		/**
+		 * Updates aria-pressed on a toggle button semantic element.
+		 */
+		public static updateAriaPressed(handle: number, pressed: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				element.setAttribute("aria-pressed", pressed);
+			}
+		}
+
+		/**
+		 * Updates aria-live on a semantic element for live region announcements.
+		 * Screen readers monitor elements with aria-live for content changes.
+		 */
+		public static updateAriaLive(handle: number, ariaLive: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				element.setAttribute("aria-live", ariaLive);
+				element.setAttribute("aria-atomic", "true");
 			}
 		}
 
