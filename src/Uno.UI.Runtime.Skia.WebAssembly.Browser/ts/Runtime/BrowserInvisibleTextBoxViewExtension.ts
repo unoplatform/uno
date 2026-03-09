@@ -87,7 +87,7 @@
 			};
 
 			// Handle Enter key from Android virtual keyboards which don't fire keydown events.
-			// Android keyboards typically fire beforeinput with inputType "insertLineBreak" instead.
+			// Android keyboards typically fire beforeinput with inputType "insertLineBreak" or "insertParagraph" instead.
 			input.addEventListener("beforeinput", (ev: InputEvent) => {
 				if ((ev.inputType === "insertLineBreak" || ev.inputType === "insertParagraph") && !BrowserInvisibleTextBoxViewExtension.acceptsReturn) {
 					ev.preventDefault();
@@ -124,6 +124,12 @@
 				}
 
 				ev.preventDefault();
+			};
+
+			input.onkeyup = ev => {
+				if (ev.keyCode === 229) {
+					ev.stopPropagation();
+				}
 			};
 
 			document.body.appendChild(input);
