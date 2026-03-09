@@ -23,16 +23,10 @@ internal readonly partial struct UnicodeText
 		private static IntPtr _libicuuc;
 		private static readonly Dictionary<Type, object> _lookupCache = new();
 
-		// System32 must be included explicitly: when any LOAD_LIBRARY_SEARCH_* flag is passed to
-		// LoadLibraryEx, Windows replaces the default search order entirely with only the specified
-		// paths. Without System32, the loader cannot find CRT dependencies (e.g. VCRUNTIME140.dll)
-		// that icuuc77.dll requires, causing intermittent load failures on machines where those
-		// DLLs are not also present in the application or assembly directory.
 		private const DllImportSearchPath NativeLibrarySearchDirectories =
 			  DllImportSearchPath.ApplicationDirectory
 			| DllImportSearchPath.AssemblyDirectory
 			| DllImportSearchPath.UserDirectories
-			| DllImportSearchPath.System32
 			;
 
 		public static void SetDataAssembly(Assembly assembly)
