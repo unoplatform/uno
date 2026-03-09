@@ -974,6 +974,15 @@ namespace Uno.UI
 			/// If null (default) use Metal if available, otherwise fallback to Software rendering.
 			/// </summary>
 			public static bool? UseMetalOnMacOS { get; set; }
+
+			/// <summary>
+			/// (Skia only)
+			/// When true, uses the CompositionEffectBrush-based implementation for AcrylicBrush
+			/// which goes through the full composition effect graph (blur, luminosity blend, tint blend, noise).
+			/// When false (default), uses an optimized Skia-Based implementation that renders
+			/// similar but not identical output.
+			/// </summary>
+			public static bool UseCompositionEffectBrushForAcrylicBrush { get; set; }
 		}
 
 		public static class DependencyProperty
