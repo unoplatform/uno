@@ -84,8 +84,8 @@ internal sealed class Win32TextBoxNotificationsProviderSingleton : ITextBoxNotif
 			return (0, 0);
 		}
 
-		// Get the character index at the caret position
-		var index = textBox.SelectionStart + textBox.SelectionLength;
+		// Get the character index at the caret position (caret is at SelectionStart for backward selections)
+		var index = textBox.IsBackwardSelection ? textBox.SelectionStart : textBox.SelectionStart + textBox.SelectionLength;
 
 		// Get the rect for the character at the caret position (in DisplayBlock-local DIPs)
 		var rect = textBoxView.DisplayBlock.ParsedText.GetRectForIndex(index);
