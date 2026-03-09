@@ -1340,11 +1340,11 @@ public class Given_ElementTheme
 		Assert.IsNotNull(darkBrush);
 
 		// Light region should get Yellow (from Light theme dictionary)
-		Assert.AreEqual(Windows.UI.Colors.Yellow, lightBrush.Color,
+		Assert.AreEqual(Microsoft.UI.Colors.Yellow, lightBrush.Color,
 			$"Light region should use Yellow from Light theme dictionary, got {lightBrush.Color}");
 
 		// Dark region should get Blue (from Dark theme dictionary)
-		Assert.AreEqual(Windows.UI.Colors.Blue, darkBrush.Color,
+		Assert.AreEqual(Microsoft.UI.Colors.Blue, darkBrush.Color,
 			$"Dark region should use Blue from Dark theme dictionary, got {darkBrush.Color}");
 	}
 
