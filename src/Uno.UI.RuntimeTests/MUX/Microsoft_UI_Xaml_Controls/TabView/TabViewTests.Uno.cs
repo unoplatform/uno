@@ -57,7 +57,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Assert.AreEqual(1, containerContentChangingCounter);
 			});
 		}
-#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
