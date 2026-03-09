@@ -12,6 +12,10 @@
 		private static nextSelectionEnd: number;
 		private static nextSelectionDirection: "forward" | "backward" | "none";
 
+		// Android soft keyboards report all key events with keyCode 229 ("Unidentified").
+		// Text changes are synced via the oninput handler instead.
+		private static readonly ANDROID_IME_KEYCODE = 229;
+
 		public static initialize() {
 			if (BrowserInvisibleTextBoxViewExtension._exports == undefined) {
 				const browserExports = WebAssemblyWindowWrapper.getAssemblyExports();
@@ -118,7 +122,7 @@
 				// handle them natively. Text changes sync via the oninput handler.
 				// stopPropagation prevents the document-level BrowserKeyboardInputSource from
 				// calling preventDefault() on the event.
-				if (ev.keyCode === 229) {
+				if (ev.keyCode === BrowserInvisibleTextBoxViewExtension.ANDROID_IME_KEYCODE) {
 					ev.stopPropagation();
 					return;
 				}
@@ -127,7 +131,7 @@
 			};
 
 			input.onkeyup = ev => {
-				if (ev.keyCode === 229) {
+				if (ev.keyCode === BrowserInvisibleTextBoxViewExtension.ANDROID_IME_KEYCODE) {
 					ev.stopPropagation();
 				}
 			};
