@@ -6,9 +6,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
-using System.Text;
 
 namespace Microsoft.UI.Xaml.Documents;
 
@@ -47,9 +47,9 @@ internal readonly partial struct UnicodeText
 				// On Windows, we get the ICU binaries from the uno.icu-win package.
 				_icuVersion = 77;
 
-				LoadAssembly("icuuc77", typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc);
+				LoadNativeLibrary("icuuc77", typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc);
 
-				void LoadAssembly(string libraryPath, Assembly assembly, DllImportSearchPath? searchPath, out nint handle)
+				void LoadNativeLibrary(string libraryPath, Assembly assembly, DllImportSearchPath? searchPath, out nint handle)
 				{
 					try
 					{
