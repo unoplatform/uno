@@ -1,8 +1,10 @@
 using System.Threading.Tasks;
+using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
@@ -1346,6 +1348,269 @@ public class Given_ElementTheme
 		// Dark region should get Blue (from Dark theme dictionary)
 		Assert.AreEqual(Microsoft.UI.Colors.Blue, darkBrush.Color,
 			$"Dark region should use Blue from Dark theme dictionary, got {darkBrush.Color}");
+	}
+
+	#endregion
+
+	#region WinUI Ported Tests
+
+	/// <summary>
+	/// Ported from WinUI DoesDefaultForegroundBrushMatchAppTheme (WINTH:2673490).
+	/// Verifies that a TextBlock outside a themed region still uses the app theme foreground,
+	/// even when a sibling element has a different RequestedTheme.
+	/// </summary>
+	[TestMethod]
+	public async Task When_Sibling_Has_Different_Theme_TextBlock_Foreground_Matches_App_Theme()
+	{
+		var root = (StackPanel)XamlReader.Load(
+			"""
+			<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+						Width="200" Height="200">
+				<Grid x:Name="grid" Width="200" Height="100" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+					<TextBlock Text="some text" />
+				</Grid>
+				<TextBlock x:Name="textblock" Text="some other text" />
+			</StackPanel>
+			""");
+
+		var grid = (Grid)root.FindName("grid");
+		var textblock = (TextBlock)root.FindName("textblock");
+
+		// Set grid to opposite of app theme
+		var appTheme = Application.Current.RequestedTheme;
+		grid.RequestedTheme = appTheme == ApplicationTheme.Dark
+			? ElementTheme.Light
+			: ElementTheme.Dark;
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+		await WindowHelper.WaitForIdle();
+
+		var foreground = textblock.Foreground as SolidColorBrush;
+		Assert.IsNotNull(foreground, "TextBlock should have a SolidColorBrush foreground");
+
+		// The textblock outside the themed grid should match the app theme:
+		// Dark app theme → white-ish text, Light app theme → black-ish text
+		if (appTheme == ApplicationTheme.Dark)
+		{
+			Assert.IsTrue(foreground.Color.R > 128,
+				$"In Dark app theme, default foreground should be light colored, got {foreground.Color}");
+		}
+		else
+		{
+			Assert.IsTrue(foreground.Color.R < 128,
+				$"In Light app theme, default foreground should be dark colored, got {foreground.Color}");
+		}
+	}
+
+	/// <summary>
+	/// Ported from WinUI DoesTemplateBindingMatchThemeWhenChangedDuringAnimation.
+	/// Verifies that after going to a visual state and back, and changing theme in between,
+	/// the TemplateBinding-bound property reflects the updated theme.
+	/// </summary>
+	[TestMethod]
+	public async Task When_TemplateBinding_Theme_Changes_During_VisualState()
+	{
+		var style = (Style)XamlReader.Load(
+			"""
+			<Style xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				   TargetType="ContentControl">
+				<Setter Property="Background" Value="{ThemeResource ApplicationPageBackgroundThemeBrush}" />
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="ContentControl">
+							<Grid>
+								<VisualStateManager.VisualStateGroups>
+									<VisualStateGroup x:Name="TestStates">
+										<VisualState x:Name="Default" />
+										<VisualState x:Name="SomeState">
+											<Storyboard>
+												<ObjectAnimationUsingKeyFrames Storyboard.TargetName="rect" Storyboard.TargetProperty="Fill">
+													<DiscreteObjectKeyFrame KeyTime="0" Value="Orange" />
+												</ObjectAnimationUsingKeyFrames>
+											</Storyboard>
+										</VisualState>
+									</VisualStateGroup>
+								</VisualStateManager.VisualStateGroups>
+								<Rectangle x:Name="rect" Fill="{TemplateBinding Background}" />
+							</Grid>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
+			""");
+
+		var control = new ContentControl { Width = 100, Height = 100 };
+		control.Style = style;
+		control.RequestedTheme = ElementTheme.Light;
+
+		WindowHelper.WindowContent = control;
+		await WindowHelper.WaitForLoaded(control);
+		await WindowHelper.WaitForIdle();
+
+		// Go to SomeState (rect.Fill becomes Orange)
+		VisualStateManager.GoToState(control, "SomeState", false);
+		await WindowHelper.WaitForIdle();
+
+		// Change theme while in SomeState
+		control.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		// Go back to Default (rect.Fill should revert to TemplateBinding Background)
+		VisualStateManager.GoToState(control, "Default", false);
+		await WindowHelper.WaitForIdle();
+
+		// Find 'rect' via VisualTreeHelper
+		var rect = FindDescendant<Rectangle>(control);
+		Assert.IsNotNull(rect, "Should find Rectangle 'rect' in template");
+
+		var rectFill = rect.Fill as SolidColorBrush;
+		var controlBg = control.Background as SolidColorBrush;
+		Assert.IsNotNull(rectFill, "rect.Fill should be a SolidColorBrush");
+		Assert.IsNotNull(controlBg, "control.Background should be a SolidColorBrush");
+
+		Assert.AreEqual(controlBg.Color, rectFill.Color,
+			$"After returning to Default state, rect.Fill ({rectFill.Color}) should match control.Background ({controlBg.Color})");
+	}
+
+	/// <summary>
+	/// Ported from WinUI ThemeExpressionEvaluationDoesNotOverwriteBaseValueSource (WINTH:2323479).
+	/// Verifies that re-evaluating ThemeResource expressions on theme change doesn't overwrite the
+	/// base value source, so switching styles still works correctly.
+	/// </summary>
+	[TestMethod]
+	public async Task When_Theme_Changes_ThemeResource_In_Style_Preserves_BaseValue()
+	{
+		var root = (Grid)XamlReader.Load(
+			"""
+			<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				  Width="100" Height="100"
+				  RequestedTheme="Dark">
+				<Grid.Resources>
+					<SolidColorBrush x:Key="redBrush" Color="Red" />
+					<SolidColorBrush x:Key="blueBrush" Color="Blue" />
+					<Style x:Key="redStyle" TargetType="Rectangle">
+						<Setter Property="Fill" Value="{ThemeResource redBrush}" />
+					</Style>
+					<Style x:Key="blueStyle" TargetType="Rectangle">
+						<Setter Property="Fill" Value="{ThemeResource blueBrush}" />
+					</Style>
+				</Grid.Resources>
+				<Rectangle x:Name="myRectangle" Width="50" Height="50" Style="{StaticResource redStyle}" />
+			</Grid>
+			""");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+		await WindowHelper.WaitForIdle();
+
+		var rectangle = (Rectangle)root.FindName("myRectangle");
+		var fill = rectangle.Fill as SolidColorBrush;
+		Assert.IsNotNull(fill);
+		Assert.AreEqual(Colors.Red, fill.Color, $"Initial fill should be Red, got {fill.Color}");
+
+		// Change theme — ThemeResource re-evaluates but redBrush is not theme-dependent, so still Red
+		root.RequestedTheme = ElementTheme.Light;
+		await WindowHelper.WaitForIdle();
+
+		fill = rectangle.Fill as SolidColorBrush;
+		Assert.IsNotNull(fill);
+		Assert.AreEqual(Colors.Red, fill.Color, $"After theme change, fill should still be Red, got {fill.Color}");
+
+		// Switch style to blueStyle — should work correctly despite ThemeResource re-evaluation
+		rectangle.Style = (Style)root.Resources["blueStyle"];
+		await WindowHelper.WaitForIdle();
+
+		fill = rectangle.Fill as SolidColorBrush;
+		Assert.IsNotNull(fill);
+		Assert.AreEqual(Colors.Blue, fill.Color, $"After style change, fill should be Blue, got {fill.Color}");
+	}
+
+	/// <summary>
+	/// Ported from WinUI NewStyleClearsThemeResourceExpression (WINTH:3366504).
+	/// Verifies that applying a new style with a plain (non-ThemeResource) value clears the old
+	/// ThemeResource expression, so subsequent theme changes don't revert the value.
+	/// </summary>
+	[TestMethod]
+	public async Task When_New_Style_Without_ThemeResource_Clears_Old_ThemeExpression()
+	{
+		var root = (Grid)XamlReader.Load(
+			"""
+			<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				  Width="100" Height="100"
+				  RequestedTheme="Dark">
+				<Grid.Resources>
+					<SolidColorBrush x:Key="redBrush" Color="Red" />
+					<Style x:Key="redStyle" TargetType="Rectangle">
+						<Setter Property="Fill" Value="{ThemeResource redBrush}" />
+					</Style>
+					<Style x:Key="blueStyle" TargetType="Rectangle">
+						<Setter Property="Fill" Value="Blue" />
+					</Style>
+				</Grid.Resources>
+				<Rectangle x:Name="myRectangle" Width="50" Height="50" Style="{StaticResource redStyle}" />
+			</Grid>
+			""");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+		await WindowHelper.WaitForIdle();
+
+		var rectangle = (Rectangle)root.FindName("myRectangle");
+		var fill = rectangle.Fill as SolidColorBrush;
+		Assert.IsNotNull(fill);
+		Assert.AreEqual(Colors.Red, fill.Color, $"Initial fill should be Red, got {fill.Color}");
+
+		// Change theme — redBrush is not theme-dependent, so still Red
+		root.RequestedTheme = ElementTheme.Light;
+		await WindowHelper.WaitForIdle();
+
+		fill = rectangle.Fill as SolidColorBrush;
+		Assert.IsNotNull(fill);
+		Assert.AreEqual(Colors.Red, fill.Color, $"After theme change, fill should still be Red, got {fill.Color}");
+
+		// Switch to blueStyle which uses a plain value (not ThemeResource)
+		rectangle.Style = (Style)root.Resources["blueStyle"];
+		await WindowHelper.WaitForIdle();
+
+		fill = rectangle.Fill as SolidColorBrush;
+		Assert.IsNotNull(fill);
+		Assert.AreEqual(Colors.Blue, fill.Color, $"After style change, fill should be Blue, got {fill.Color}");
+
+		// Change theme again — the old ThemeResource expression should be cleared,
+		// so fill should remain Blue (from the plain style setter)
+		root.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		fill = rectangle.Fill as SolidColorBrush;
+		Assert.IsNotNull(fill);
+		Assert.AreEqual(Colors.Blue, fill.Color,
+			$"After second theme change, fill should still be Blue (old ThemeResource cleared), got {fill.Color}");
+	}
+
+	private static T FindDescendant<T>(DependencyObject parent) where T : DependencyObject
+	{
+		var count = VisualTreeHelper.GetChildrenCount(parent);
+		for (var i = 0; i < count; i++)
+		{
+			var child = VisualTreeHelper.GetChild(parent, i);
+			if (child is T match)
+			{
+				return match;
+			}
+
+			var result = FindDescendant<T>(child);
+			if (result is not null)
+			{
+				return result;
+			}
+		}
+
+		return default;
 	}
 
 	#endregion
