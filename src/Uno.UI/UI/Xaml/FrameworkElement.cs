@@ -46,6 +46,18 @@ namespace Microsoft.UI.Xaml
 		, ILayouterElement
 #endif
 	{
+		// MUX Reference: corep.h TextFormatting::m_pForeground / m_freezeForeground
+		// In WinUI, every FrameworkElement has a TextFormatting structure that stores
+		// an inherited foreground brush and a freeze flag. The freeze flag prevents
+		// parent foreground inheritance at theme boundaries (RequestedTheme != Default).
+		// Children pull the parent's frozen foreground lazily via EnsureTextFormatting.
+		//
+		// In Uno, we emulate this with two fields on FrameworkElement:
+		// - _themeForeground: the frozen brush from the nearest themed ancestor
+		// - _isForegroundFrozen: whether this element's foreground is frozen (theme boundary)
+		private Brush _themeForeground;
+		private bool _isForegroundFrozen;
+
 		public static class TraceProvider
 		{
 			public readonly static Guid Id = Guid.Parse("{DDDCCA61-5CB7-4585-95D7-58C5528AABE6}");
@@ -456,13 +468,22 @@ namespace Microsoft.UI.Xaml
 				// Updates theme references to account for new ancestor theme dictionaries.
 				this.UpdateResourceBindings();
 
-				// If this element is loading into a themed subtree (RequestedTheme == Default
-				// but we inherited a theme), apply the themed Foreground if we have Foreground
-				// property at default value. This matches WinUI behavior where children inherit
-				// the themed subtree's DefaultTextForegroundThemeBrush.
+				// MUX Reference: CUIElement::Enter / EnsureTextFormatting
+				// Pull inherited theme foreground from parent when entering the visual tree.
 				if (RequestedTheme == ElementTheme.Default && effectiveTheme != Theme.None)
 				{
-					ApplyInheritedThemeForeground(effectiveTheme);
+					var parent = this.GetParent() as FrameworkElement;
+					if (parent?._themeForeground is { } parentFg)
+					{
+						EnsureThemeForeground(parentFg);
+					}
+					else
+					{
+						// No parent with frozen foreground; look up the theme brush directly.
+						var brush = (Brush)ResourceResolver.ResolveTopLevelResource(
+							"DefaultTextForegroundThemeBrush", null);
+						EnsureThemeForeground(brush);
+					}
 				}
 			}
 			finally
@@ -474,12 +495,28 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		// MUX Reference: CFrameworkElement::PullInheritedTextFormatting / EnsureTextFormatting
+		// In WinUI, when a child's TextFormatting is out of date (generation counter mismatch),
+		// it pulls the parent's foreground unless freezeForeground is set.
+		// In Uno, we apply the parent's frozen foreground to this element's Foreground DP.
 		/// <summary>
-		/// Applies theme-aware Foreground when loading into a themed subtree,
-		/// if this element has Foreground property and it's at default value.
+		/// Applies the inherited theme foreground from the nearest themed ancestor.
+		/// Mirrors WinUI's PullInheritedTextFormatting for the Foreground property.
 		/// </summary>
-		private void ApplyInheritedThemeForeground(Theme effectiveTheme)
+		/// <param name="parentThemeForeground">The foreground brush from the parent's theme context.</param>
+		private void EnsureThemeForeground(Brush parentThemeForeground)
 		{
+			if (parentThemeForeground is null)
+			{
+				return;
+			}
+
+			// MUX Reference: CControl::PullInheritedTextFormatting (Control.cpp line 134)
+			//   if (IsPropertyDefaultByIndex(KnownPropertyIndex::Control_Foreground)
+			//       && !m_pTextFormatting->m_freezeForeground)
+			// MUX Reference: CTextBlock::PullInheritedTextFormatting (TextBlock.cpp line 647)
+			//   if (IsPropertyDefaultByIndex(KnownPropertyIndex::TextBlock_Foreground)
+			//       && !m_pTextFormatting->m_freezeForeground)
 			DependencyProperty foregroundProperty = null;
 			if (this is Controls.Control)
 			{
@@ -490,25 +527,32 @@ namespace Microsoft.UI.Xaml
 				foregroundProperty = Controls.TextBlock.ForegroundProperty;
 			}
 
-			if (foregroundProperty == null)
+			if (foregroundProperty is null)
+			{
+				// Elements without Foreground (e.g., Panel, Border) just store
+				// the inherited brush so their children can pull it.
+				_themeForeground = parentThemeForeground;
+				return;
+			}
+
+			// Only inherit if Foreground is at default and this element's foreground is not frozen.
+			// Matches WinUI: IsPropertyDefaultByIndex(Foreground) && !m_freezeForeground
+			if (_isForegroundFrozen)
 			{
 				return;
 			}
 
-			// Only apply if Foreground is at default value (not set locally or by style)
 			var precedence = this.GetCurrentHighestValuePrecedence(foregroundProperty);
-			if (precedence != DependencyPropertyValuePrecedences.DefaultValue &&
-			    precedence != DependencyPropertyValuePrecedences.Inheritance)
+			if (precedence != DependencyPropertyValuePrecedences.DefaultValue
+				&& precedence != DependencyPropertyValuePrecedences.Inheritance)
 			{
 				return;
 			}
 
-			// The theme context is already pushed, so lookup will use the correct theme
-			var brush = (Brush)ResourceResolver.ResolveTopLevelResource("DefaultTextForegroundThemeBrush", null);
-			if (brush != null)
-			{
-				SetValue(foregroundProperty, brush);
-			}
+			// Store the inherited foreground and apply to the DP at Inheritance precedence.
+			// Using Inheritance precedence ensures Local/Style values take priority.
+			_themeForeground = parentThemeForeground;
+			this.SetValue(foregroundProperty, parentThemeForeground, DependencyPropertyValuePrecedences.Inheritance);
 		}
 
 		partial void OnUnloadedPartial()
@@ -768,6 +812,19 @@ namespace Microsoft.UI.Xaml
 				{
 					NotifyThemeChangedForInheritedProperties(theme, freeze: true);
 				}
+				else if (themeChanged)
+				{
+					// MUX Reference: CUIElement/CControl/CTextBlock::PullInheritedTextFormatting
+					// For children inheriting theme (RequestedTheme == Default),
+					// pull the frozen foreground from the parent, just as WinUI children
+					// pull from parent's TextFormatting during EnsureTextFormatting.
+					var parent = this.GetParent() as FrameworkElement;
+					var parentFg = parent?._themeForeground;
+					if (parentFg is not null)
+					{
+						EnsureThemeForeground(parentFg);
+					}
+				}
 
 				// 6. Propagate to children (they may push their own context)
 				PropagateThemeToChildren(theme);
@@ -825,16 +882,17 @@ namespace Microsoft.UI.Xaml
 		// MUX Reference framework.cpp, lines 3401-3492
 		/// <summary>
 		/// Handles inherited property behavior at theme boundaries.
-		/// When freeze is true, sets theme-appropriate Foreground on this element
-		/// so it doesn't inherit from ancestors outside the themed subtree.
-		/// Children will handle their own Foreground via OnLoadingPartial when they load.
-		/// When freeze is false, clears the locally-set Foreground to allow normal inheritance.
+		/// When freeze is true, resolves and freezes the theme's default foreground brush
+		/// so children inherit it instead of the foreground from ancestors outside this subtree.
+		/// When freeze is false, clears the freeze to allow normal inheritance.
 		/// </summary>
 		/// <remarks>
-		/// WinUI uses TextFormatting storage which exists on all FrameworkElements.
-		/// In Uno, Foreground property only exists on Control and TextBlock.
-		/// For elements without Foreground (like Panel), children handle their own
-		/// Foreground via ApplyInheritedThemeForeground in OnLoadingPartial.
+		/// Mirrors WinUI's TextFormatting freeze mechanism:
+		/// - SetFreezeForeground(true): store brush in TextFormatting, block parent inheritance
+		/// - SetFreezeForeground(false): unblock, children re-inherit from parent
+		/// - MarkInheritedPropertyDirty: bumps generation counter so children re-pull
+		/// In Uno, we store the brush in _themeForeground and the flag in _isForegroundFrozen,
+		/// then propagate to children during the theme walk (PropagateThemeToChildren).
 		/// </remarks>
 		internal void NotifyThemeChangedForInheritedProperties(Theme theme, bool freeze)
 		{
@@ -844,50 +902,49 @@ namespace Microsoft.UI.Xaml
 				themeAware.OnThemeChanged();
 			}
 
-			// MUX: Currently only handles Foreground property
-			// Get the Foreground property for this element (only Control and TextBlock have it)
-			DependencyProperty foregroundProperty = null;
-			if (this is Controls.Control)
-			{
-				foregroundProperty = Controls.Control.ForegroundProperty;
-			}
-			else if (this is Controls.TextBlock)
-			{
-				foregroundProperty = Controls.TextBlock.ForegroundProperty;
-			}
-
-			// If this element doesn't have Foreground property (e.g., Panel),
-			// children will handle their own Foreground via OnLoadingPartial
-			if (foregroundProperty == null)
-			{
-				return;
-			}
-
-			// If Foreground is already set locally, by style, or animated,
-			// there's nothing to do because that value will be used.
-			var precedence = this.GetCurrentHighestValuePrecedence(foregroundProperty);
-			if (precedence == DependencyPropertyValuePrecedences.Local ||
-			    precedence == DependencyPropertyValuePrecedences.ExplicitStyle ||
-			    precedence == DependencyPropertyValuePrecedences.ImplicitStyle ||
-			    precedence == DependencyPropertyValuePrecedences.Animations)
-			{
-				return;
-			}
-
 			if (freeze)
 			{
-				// Freeze: Set the theme's default text foreground brush at this element's level
-				var themeKey = Theming.GetBaseValue(theme) == Theme.Light ? "Light" : "Dark";
+				// MUX Reference framework.cpp line 3415-3451:
+				// EnsureTextFormatting, SetRequestedThemeForSubTree, LookupThemeResource,
+				// SetForeground, SetFreezeForeground(true), MarkInheritedPropertyDirty
 
-				// Push theme context for resource lookup
+				// Check if the Foreground DP is explicitly set (locally, by style, or animated).
+				// If so, that value takes priority and we don't need to freeze.
+				// Matches WinUI: HasLocalOrModifierValue || IsPropertySetByStyle
+				DependencyProperty foregroundProperty = GetForegroundProperty();
+				if (foregroundProperty is not null)
+				{
+					var precedence = this.GetCurrentHighestValuePrecedence(foregroundProperty);
+					if (precedence == DependencyPropertyValuePrecedences.Local
+						|| precedence == DependencyPropertyValuePrecedences.ExplicitStyle
+						|| precedence == DependencyPropertyValuePrecedences.ImplicitStyle
+						|| precedence == DependencyPropertyValuePrecedences.Animations)
+					{
+						return;
+					}
+				}
+
+				// Resolve the theme's default text foreground brush
+				var themeKey = Theming.GetBaseValue(theme) == Theme.Light ? "Light" : "Dark";
 				ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
 				try
 				{
-					// Look up DefaultTextForegroundThemeBrush with the current theme context
-					var brush = (Brush)ResourceResolver.ResolveTopLevelResource("DefaultTextForegroundThemeBrush", null);
-					if (brush != null)
+					var brush = (Brush)ResourceResolver.ResolveTopLevelResource(
+						"DefaultTextForegroundThemeBrush", null);
+					if (brush is not null)
 					{
-						SetValue(foregroundProperty, brush);
+						// Store frozen state (matches WinUI TextFormatting fields)
+						_themeForeground = brush;
+						_isForegroundFrozen = true;
+
+						// Apply to the DP at Inheritance precedence so it's visible
+						// to the rendering system while being overridable by Local/Style.
+						if (foregroundProperty is not null)
+						{
+							this.SetValue(
+								foregroundProperty, brush,
+								DependencyPropertyValuePrecedences.Inheritance);
+						}
 					}
 				}
 				finally
@@ -897,10 +954,37 @@ namespace Microsoft.UI.Xaml
 			}
 			else
 			{
-				// Unfreeze: Clear the locally-set Foreground to allow normal inheritance
-				// Only clear if we set it (at Local precedence)
-				ClearValue(foregroundProperty);
+				// MUX Reference framework.cpp line 3453-3465:
+				// SetFreezeForeground(false), m_cInheritedPropGenerationCounter++
+				_isForegroundFrozen = false;
+				_themeForeground = null;
+
+				// Clear the value we set at Inheritance precedence
+				DependencyProperty foregroundProperty = GetForegroundProperty();
+				if (foregroundProperty is not null)
+				{
+					DependencyObjectExtensions.SetValue(
+						this, foregroundProperty, DependencyProperty.UnsetValue,
+						DependencyPropertyValuePrecedences.Inheritance);
+				}
 			}
+		}
+
+		/// <summary>
+		/// Gets the Foreground DependencyProperty for this element, if it has one.
+		/// Only Control and TextBlock have Foreground in Uno.
+		/// </summary>
+		private DependencyProperty GetForegroundProperty()
+		{
+			if (this is Controls.Control)
+			{
+				return Controls.Control.ForegroundProperty;
+			}
+			else if (this is Controls.TextBlock)
+			{
+				return Controls.TextBlock.ForegroundProperty;
+			}
+			return null;
 		}
 
 		#endregion

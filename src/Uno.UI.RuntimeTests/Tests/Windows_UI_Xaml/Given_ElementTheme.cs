@@ -1614,4 +1614,114 @@ public class Given_ElementTheme
 	}
 
 	#endregion
+
+	#region Runtime RequestedTheme Change Foreground Update
+
+	/// <summary>
+	/// Tests the BasicThemeResources sample scenario where clicking "Local Dark" button
+	/// dynamically sets RequestedTheme=Dark on the page. In WinUI, TextBlocks in the
+	/// first column (RequestedTheme=Default) turn white because they inherit the dark
+	/// theme's foreground. This verifies that foreground is updated on already-loaded
+	/// elements when their ancestor's RequestedTheme changes at runtime.
+	/// </summary>
+	[TestMethod]
+	public async Task When_RequestedTheme_Changes_At_Runtime_TextBlock_Foreground_Updates()
+	{
+		// Structure: root StackPanel with a child StackPanel (RequestedTheme=Default)
+		// containing a TextBlock. Initially in Light theme, then we change root to Dark.
+		var root = (StackPanel)XamlReader.Load(
+			"""
+			<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+						RequestedTheme="Light">
+				<StackPanel x:Name="defaultColumn" RequestedTheme="Default">
+					<TextBlock x:Name="textBlock">Test Text</TextBlock>
+				</StackPanel>
+			</StackPanel>
+			""");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+
+		var textBlock = (TextBlock)root.FindName("textBlock");
+
+		// Initially in Light theme, TextBlock should have dark foreground
+		var initialForeground = (textBlock.Foreground as SolidColorBrush)?.Color;
+		Assert.IsNotNull(initialForeground, "TextBlock should have a SolidColorBrush foreground");
+
+		// Now change the root's RequestedTheme to Dark at runtime
+		root.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		// After theme change, TextBlock should have light (white) foreground
+		var updatedForeground = (textBlock.Foreground as SolidColorBrush)?.Color;
+		Assert.IsNotNull(updatedForeground, "TextBlock should still have a SolidColorBrush foreground after theme change");
+
+		Assert.AreNotEqual(initialForeground, updatedForeground,
+			$"TextBlock foreground should change when ancestor's RequestedTheme changes at runtime. " +
+			$"Initial: {initialForeground}, After Dark theme: {updatedForeground}. " +
+			$"Expected white/light foreground in Dark theme.");
+	}
+
+	/// <summary>
+	/// Tests that when a page-level RequestedTheme changes at runtime, TextBlocks
+	/// in child regions with RequestedTheme=Default get the correct foreground,
+	/// while TextBlocks in regions with explicit RequestedTheme keep theirs.
+	/// This matches the full BasicThemeResources sample behavior.
+	/// </summary>
+	[TestMethod]
+	public async Task When_Page_Theme_Changes_Runtime_Default_Column_Inherits_And_Explicit_Column_Keeps()
+	{
+		var root = (StackPanel)XamlReader.Load(
+			"""
+			<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+						RequestedTheme="Light">
+				<StackPanel x:Name="defaultColumn" RequestedTheme="Default">
+					<TextBlock x:Name="defaultText">Default Column</TextBlock>
+				</StackPanel>
+				<StackPanel x:Name="darkColumn" RequestedTheme="Dark">
+					<TextBlock x:Name="darkText">Dark Column</TextBlock>
+				</StackPanel>
+				<StackPanel x:Name="lightColumn" RequestedTheme="Light">
+					<TextBlock x:Name="lightText">Light Column</TextBlock>
+				</StackPanel>
+			</StackPanel>
+			""");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+
+		var defaultText = (TextBlock)root.FindName("defaultText");
+		var darkText = (TextBlock)root.FindName("darkText");
+		var lightText = (TextBlock)root.FindName("lightText");
+
+		// Record initial foregrounds
+		var initialDefaultFg = (defaultText.Foreground as SolidColorBrush)?.Color;
+		var initialDarkFg = (darkText.Foreground as SolidColorBrush)?.Color;
+		var initialLightFg = (lightText.Foreground as SolidColorBrush)?.Color;
+
+		// Change root to Dark theme at runtime (simulating "Local Dark" button click)
+		root.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		var updatedDefaultFg = (defaultText.Foreground as SolidColorBrush)?.Color;
+		var updatedDarkFg = (darkText.Foreground as SolidColorBrush)?.Color;
+		var updatedLightFg = (lightText.Foreground as SolidColorBrush)?.Color;
+
+		// Default column should now inherit Dark theme → white foreground
+		Assert.AreNotEqual(initialDefaultFg, updatedDefaultFg,
+			$"Default column TextBlock should change foreground when root switches to Dark. " +
+			$"Was: {initialDefaultFg}, Now: {updatedDefaultFg}");
+
+		// Dark column already had Dark theme → foreground should remain unchanged
+		Assert.AreEqual(initialDarkFg, updatedDarkFg,
+			"Dark column TextBlock should keep its foreground when root switches to Dark");
+
+		// Light column has explicit Light theme → foreground should remain unchanged
+		Assert.AreEqual(initialLightFg, updatedLightFg,
+			"Light column TextBlock should keep its foreground when root switches to Dark");
+	}
+
+	#endregion
 }
