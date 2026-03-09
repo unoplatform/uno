@@ -53,7 +53,7 @@ internal readonly partial struct UnicodeText
 				{
 					try
 					{
-						// NativeLibrary.TryLoad will consume the GetLastError, and swallow the exception
+						// Use NativeLibrary.Load instead of TryLoad so that the OS error (GetLastError) is preserved and surfaced through the thrown exception.
 						handle = NativeLibrary.Load(libraryPath, assembly, searchPath);
 					}
 					catch (Exception e)
