@@ -102,19 +102,26 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 			{
 				NativeDispatcher.Main.Enqueue(() =>
 				{
-					// queue twice to ensure that a layout cycle happens after the fonts are loaded
-					NativeDispatcher.Main.Enqueue(() =>
+					if (XamlRoot?.Content is FrameworkElement content)
 					{
-						var compositionTarget = (CompositionTarget)XamlRoot?.Content?.Visual.CompositionTarget!;
-						var host = (WebAssemblyBrowserHost)XamlRootMap.GetHostForRoot(XamlRoot!)!;
-						compositionTarget.FrameRendered += CompositionTargetOnFrameRendered;
-						((IXamlRootHost)host).InvalidateRender();
-						void CompositionTargetOnFrameRendered()
+						content.InvalidateArrange();
+						content.LayoutUpdated += OnContentLayoutUpdated;
+
+						void OnContentLayoutUpdated(object? sender, object e)
 						{
-							compositionTarget.FrameRendered -= CompositionTargetOnFrameRendered;
-							host.RemoveSplashScreen();
+							content.LayoutUpdated -= OnContentLayoutUpdated;
+
+							var compositionTarget = (CompositionTarget)XamlRoot?.Content?.Visual.CompositionTarget!;
+							var host = (WebAssemblyBrowserHost)XamlRootMap.GetHostForRoot(XamlRoot!)!;
+							compositionTarget.FrameRendered += CompositionTargetOnFrameRendered;
+							((IXamlRootHost)host).InvalidateRender();
+							void CompositionTargetOnFrameRendered()
+							{
+								compositionTarget.FrameRendered -= CompositionTargetOnFrameRendered;
+								host.RemoveSplashScreen();
+							}
 						}
-					});
+					}
 				});
 			});
 		}

@@ -17,7 +17,6 @@ using Uno.UI.Xaml.Controls.Extensions;
 using Windows.Graphics.Display;
 using Windows.Media.Playback;
 using Microsoft.UI.Xaml.Media;
-using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia.WebAssembly.Browser;
 
