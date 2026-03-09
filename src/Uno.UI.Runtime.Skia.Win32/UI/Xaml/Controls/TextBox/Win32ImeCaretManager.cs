@@ -38,7 +38,11 @@ internal sealed class Win32ImeCaretManager
 		// Create a 1x1 invisible system caret. The system caret is not rendered
 		// (Skia draws the visual caret), but its position is queried by the OS
 		// for popup placement (emoji picker, clipboard history).
-		PInvoke.CreateCaret(_hwnd, HBITMAP.Null, 1, 1);
+		if (!PInvoke.CreateCaret(_hwnd, HBITMAP.Null, 1, 1))
+		{
+			return;
+		}
+
 		PInvoke.SetCaretPos(x, y);
 		_isActive = true;
 

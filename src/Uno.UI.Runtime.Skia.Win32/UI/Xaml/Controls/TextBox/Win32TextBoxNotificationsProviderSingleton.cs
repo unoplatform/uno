@@ -20,6 +20,9 @@ internal sealed class Win32TextBoxNotificationsProviderSingleton : ITextBoxNotif
 
 	public void OnFocused(TextBox textBox)
 	{
+		_activeManager?.Deactivate();
+		_activeManager = null;
+
 		if (!TryGetHwnd(textBox, out var hwnd))
 		{
 			return;

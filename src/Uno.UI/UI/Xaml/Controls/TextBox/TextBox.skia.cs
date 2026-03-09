@@ -68,6 +68,7 @@ public partial class TextBox
 	private string _textWhenTypingStarted;
 
 	private int _historyIndex;
+	private (int start, int length) _lastNotifiedSelection = (-1, -1);
 	private readonly List<HistoryRecord> _history = new(); // the selection of an action is what was selected right before it happened. Might turn out to be unnecessary.
 
 	private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(0.5) };
@@ -610,7 +611,12 @@ public partial class TextBox
 			}
 			((IBlock)TextBoxView.DisplayBlock).Invalidate(false);
 
-			_textBoxNotificationsSingleton?.NotifySelectionChanged(this);
+			var currentSelection = (SelectionStart, SelectionLength);
+			if (currentSelection != _lastNotifiedSelection)
+			{
+				_lastNotifiedSelection = currentSelection;
+				_textBoxNotificationsSingleton?.NotifySelectionChanged(this);
+			}
 		}
 	}
 
@@ -1398,7 +1404,6 @@ public partial class TextBox
 			{
 				CaretMode = CaretDisplayMode.ThumblessCaretHidden;
 			}
-			UpdateDisplaySelection();
 		}
 	}
 
