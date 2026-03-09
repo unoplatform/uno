@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using System.Text;
 
 namespace Microsoft.UI.Xaml.Documents;
 
@@ -44,27 +45,36 @@ internal readonly partial struct UnicodeText
 			if (OperatingSystem.IsWindows())
 			{
 				// On Windows, we get the ICU binaries from the uno.icu-win package.
-				const string libName = "icuuc77";
 				_icuVersion = 77;
 
-				if (!NativeLibrary.TryLoad(libName, typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
-				{
-					// AppContext.BaseDirectory is used instead of Assembly.Location because
-					// Assembly.Location returns an empty string for single-file apps (IL3000).
-					var appBaseDir = AppContext.BaseDirectory;
-					var processPath = Environment.ProcessPath ?? string.Empty;
-					var processDir = Path.GetDirectoryName(processPath) ?? string.Empty;
-					var osVersion = Environment.OSVersion.VersionString;
-					var existsInAppBaseDir = File.Exists(Path.Combine(appBaseDir, $"{libName}.dll"));
-					var existsInProcessDir = File.Exists(Path.Combine(processDir, $"{libName}.dll"));
+				LoadAssembly("icuuc77", typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc);
 
-					throw new Exception(
-						$"Failed to load {libName}.dll. " +
-						$"OS: '{osVersion}'. " +
-						$"App base dir: '{appBaseDir}'. " +
-						$"Process path: '{processPath}'. " +
-						$"Exists at app base dir: {existsInAppBaseDir}. " +
-						$"Exists at process dir ('{processDir}'): {existsInProcessDir}.");
+				void LoadAssembly(string libraryPath, Assembly assembly, DllImportSearchPath? searchPath, out nint handle)
+				{
+					try
+					{
+						// NativeLibrary.TryLoad will consume the GetLastError, and swallow the exception
+						handle = NativeLibrary.Load(libraryPath, assembly, searchPath);
+					}
+					catch (Exception e)
+					{
+						var builder = new StringBuilder()
+							.AppendLine($"Failed to load '{libraryPath}'.")
+							.AppendLine($"- Environment.OSVersion: {Environment.OSVersion.VersionString}")
+							.AppendLine($"- DllImportSearchPath: {searchPath}");
+						CheckAsmPath(DllImportSearchPath.ApplicationDirectory, AppContext.BaseDirectory);
+#pragma warning disable IL3000
+						CheckAsmPath(DllImportSearchPath.AssemblyDirectory, Path.GetDirectoryName(assembly.Location));
+#pragma warning restore IL3000
+						CheckAsmPath(DllImportSearchPath.UserDirectories, "(AddDllDirectory cannot be retroactively retrieved)", ignore: true);
+						void CheckAsmPath(DllImportSearchPath flag, string? path, bool ignore = false)
+						{
+							if (searchPath?.HasFlag(flag) is not true) return;
+							var hit = !ignore && Path.Exists(path) && File.Exists(Path.Combine(path, libraryPath) + ".dll");
+							builder.AppendLine($"  - {flag}: {(ignore ? "N/A" : (hit ? "HIT" : "MISS"))} {path}");
+						}
+						throw new Exception(builder.ToString(), e);
+					}
 				}
 			}
 			else if (OperatingSystem.IsIOS())
