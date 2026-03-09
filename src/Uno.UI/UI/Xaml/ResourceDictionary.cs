@@ -208,7 +208,7 @@ namespace Microsoft.UI.Xaml
 		{
 			return _values.ContainsKey(resourceKey)
 			|| ContainsKeyMerged(resourceKey)
-			|| ContainsKeyTheme(resourceKey, Themes.Active)
+			|| ContainsKeyTheme(resourceKey, GetActiveTheme())
 			|| (shouldCheckSystem && !IsSystemDictionary && ResourceResolver.ContainsKeySystem(resourceKey));
 		}
 
@@ -263,7 +263,7 @@ namespace Microsoft.UI.Xaml
 				return true;
 			}
 
-			if (GetActiveThemeDictionary(Themes.Active) is { } activeThemeDictionary
+			if (GetActiveThemeDictionary(GetActiveTheme()) is { } activeThemeDictionary
 				&& activeThemeDictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
 			{
 				return true;
@@ -713,7 +713,13 @@ namespace Microsoft.UI.Xaml
 
 		internal static object GetStaticResourceAliasPassthrough(string resourceKey, XamlParseContext parseContext) => new StaticResourceAliasRedirect(resourceKey, parseContext);
 
-		internal static ResourceKey GetActiveTheme() => Themes.Active;
+		internal static ResourceKey GetActiveTheme() => Themes.RequestedThemeForSubTree;
+
+		internal static void PushRequestedThemeForSubTree(ResourceKey theme)
+			=> Themes.PushRequestedThemeForSubTree(theme);
+
+		internal static void PopRequestedThemeForSubTree()
+			=> Themes.PopRequestedThemeForSubTree();
 
 		internal static void SetActiveTheme(SpecializedResourceDictionary.ResourceKey key)
 			=> Themes.Active = key;
@@ -761,8 +767,37 @@ namespace Microsoft.UI.Xaml
 		private static class Themes
 		{
 			public static SpecializedResourceDictionary.ResourceKey Light { get; } = "Light";
+			public static SpecializedResourceDictionary.ResourceKey Dark { get; } = "Dark";
 			public static SpecializedResourceDictionary.ResourceKey Default { get; } = "Default";
 			public static SpecializedResourceDictionary.ResourceKey Active { get; set; } = Default;
+
+			// Stack for element-level theme context (matching WinUI's m_requestedThemeForSubTree pattern)
+			private static readonly Stack<SpecializedResourceDictionary.ResourceKey> _requestedThemeForSubTree = new();
+
+			/// <summary>
+			/// Gets the currently active theme for resource lookups.
+			/// If an element has pushed its theme onto the stack, that theme is used.
+			/// Otherwise, falls back to the application's active theme.
+			/// </summary>
+			public static SpecializedResourceDictionary.ResourceKey RequestedThemeForSubTree =>
+				_requestedThemeForSubTree.Count > 0 ? _requestedThemeForSubTree.Peek() : Active;
+
+			/// <summary>
+			/// Pushes a theme onto the stack for the current element's subtree processing.
+			/// </summary>
+			public static void PushRequestedThemeForSubTree(SpecializedResourceDictionary.ResourceKey theme)
+				=> _requestedThemeForSubTree.Push(theme);
+
+			/// <summary>
+			/// Pops the theme from the stack after processing an element's subtree.
+			/// </summary>
+			public static void PopRequestedThemeForSubTree()
+			{
+				if (_requestedThemeForSubTree.Count > 0)
+				{
+					_requestedThemeForSubTree.Pop();
+				}
+			}
 		}
 	}
 }

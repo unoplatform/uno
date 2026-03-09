@@ -55,8 +55,42 @@ namespace Uno.UI.Xaml
 		{
 			if (instance is IDependencyObjectStoreProvider provider)
 			{
-				provider.Store.ApplyElementNameBindings();
-				provider.Store.UpdateResourceBindings(ResourceUpdateReason.ResolvedOnLoading, resourceContextProvider);
+				// Push the element's theme context for resource resolution.
+				// This ensures ThemeResource bindings resolve with the correct theme
+				// when called from event handlers (like Loading) that don't have
+				// the theme context already pushed.
+				// Try the instance first, then fall back to resourceContextProvider.
+				var needsPush = false;
+				var effectiveTheme = Theme.None;
+
+				if (instance is UIElement uiElement)
+				{
+					effectiveTheme = uiElement.GetTheme();
+				}
+				else if (resourceContextProvider is UIElement contextElement)
+				{
+					effectiveTheme = contextElement.GetTheme();
+				}
+
+				if (effectiveTheme != Theme.None)
+				{
+					var themeKey = Theming.GetBaseValue(effectiveTheme) == Theme.Light ? "Light" : "Dark";
+					ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
+					needsPush = true;
+				}
+
+				try
+				{
+					provider.Store.ApplyElementNameBindings();
+					provider.Store.UpdateResourceBindings(ResourceUpdateReason.ResolvedOnLoading, resourceContextProvider);
+				}
+				finally
+				{
+					if (needsPush)
+					{
+						ResourceDictionary.PopRequestedThemeForSubTree();
+					}
+				}
 			}
 		}
 	}
