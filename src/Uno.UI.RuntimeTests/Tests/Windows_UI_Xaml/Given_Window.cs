@@ -109,7 +109,10 @@ public class Given_Window
 	{
 		AssertSupportsMultipleWindows();
 
-		using var _ = ThemeHelper.UseDarkTheme();
+		// Use application-level dark theme. Element-level theming on the main
+		// window root no longer syncs to Application.Current.RequestedTheme,
+		// so secondary windows must be tested with the application theme API.
+		using var _ = ThemeHelper.UseApplicationDarkTheme();
 		var sut = new NoBackgroundWindow();
 
 		await VerifyWindowBackgroundAsync(sut, false, Colors.Black);
@@ -136,7 +139,9 @@ public class Given_Window
 
 		await VerifyWindowBackgroundAsync(sut, false, Colors.White);
 
-		using var _ = ThemeHelper.UseDarkTheme();
+		// Use application-level dark theme to test that secondary window root
+		// backgrounds update when the application theme changes.
+		using var _ = ThemeHelper.UseApplicationDarkTheme();
 		await VerifyWindowBackgroundAsync(sut, true, Colors.Black);
 	}
 
