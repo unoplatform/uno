@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using MUXControlsTestApp.Utilities;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 
@@ -1950,6 +1951,493 @@ public class Given_ElementTheme
 		finally
 		{
 			flyout.Hide();
+			await WindowHelper.WaitForIdle();
+		}
+	}
+
+	#endregion
+
+	#region Visual State Theme Resource Re-evaluation
+
+	[TestMethod]
+	public async Task When_Setter_VisualState_Entered_After_Element_Theme_Change()
+	{
+		// KEY FAILING SCENARIO: Element is in Normal state when theme changes to Dark.
+		// User then hovers (PointerOver). The setter resolves {ThemeResource} but may
+		// use the GLOBAL theme (Light) instead of the element's ActualTheme (Dark).
+		// This matches: flyout open → theme changes → user hovers over item.
+		var xaml = """
+			<ContentControl
+				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<ContentControl.Template>
+					<ControlTemplate TargetType="ContentControl">
+						<Grid>
+							<VisualStateManager.VisualStateGroups>
+								<VisualStateGroup x:Name="CommonStates">
+									<VisualState x:Name="Normal" />
+									<VisualState x:Name="PointerOver">
+										<VisualState.Setters>
+											<Setter Target="ContentText.Foreground" Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}" />
+										</VisualState.Setters>
+									</VisualState>
+								</VisualStateGroup>
+							</VisualStateManager.VisualStateGroups>
+							<Grid x:Name="Root">
+								<TextBlock x:Name="ContentText" Text="Test Item" />
+							</Grid>
+						</Grid>
+					</ControlTemplate>
+				</ContentControl.Template>
+			</ContentControl>
+			""";
+
+		var control = (ContentControl)XamlReader.Load(xaml);
+		var root = new StackPanel { Width = 200, Height = 200 };
+		root.Children.Add(control);
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(control);
+
+		// Change theme while in NORMAL state (no PointerOver setters applied yet)
+		root.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(ElementTheme.Dark, control.ActualTheme, "Control should be Dark");
+
+		// NOW enter PointerOver — the setter should resolve ThemeResource using Dark theme
+		VisualStateManager.GoToState(control, "PointerOver", false);
+		await WindowHelper.WaitForIdle();
+
+		var contentText = control.FindVisualChildByName("ContentText") as TextBlock;
+		Assert.IsNotNull(contentText, "Should find ContentText TextBlock");
+
+		var fg = (contentText.Foreground as SolidColorBrush)?.Color;
+		// SystemControlHighlightAltBaseHighBrush in Dark = White (#FFFFFFFF)
+		// SystemControlHighlightAltBaseHighBrush in Light = Black (#FF000000)
+		Assert.IsNotNull(fg, "Foreground should be set");
+		Assert.AreNotEqual(Colors.Black, fg,
+			$"Setter ThemeResource should resolve to Dark theme value (White), got {fg}. " +
+			"GoToState must push the element's theme context for ThemeResource resolution.");
+	}
+
+	[TestMethod]
+	public async Task When_Theme_Changes_Active_Setter_Based_VisualState_Reapplies()
+	{
+		// This is the actual failing scenario: MenuFlyoutItem (and similar controls)
+		// use VisualState.Setters (not Storyboard) for PointerOver foreground.
+		// When theme changes, the Setter's Value ThemeResource binding updates,
+		// but the setter is NOT re-applied to the target element.
+		// MUX Reference: CVisualStateGroupCollection::NotifyThemeChangedCore →
+		// RefreshAllAppliedPropertySetters
+		//
+		// We use XamlReader to create a control with Setter-based visual states.
+		var xaml = """
+			<ContentControl
+				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<ContentControl.Template>
+					<ControlTemplate TargetType="ContentControl">
+						<Grid>
+							<VisualStateManager.VisualStateGroups>
+								<VisualStateGroup x:Name="CommonStates">
+									<VisualState x:Name="Normal" />
+									<VisualState x:Name="PointerOver">
+										<VisualState.Setters>
+											<Setter Target="Root.Background" Value="{ThemeResource SystemControlHighlightListLowBrush}" />
+											<Setter Target="ContentText.Foreground" Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}" />
+										</VisualState.Setters>
+									</VisualState>
+								</VisualStateGroup>
+							</VisualStateManager.VisualStateGroups>
+							<Grid x:Name="Root" Background="Transparent">
+								<TextBlock x:Name="ContentText" Text="Test Item" />
+							</Grid>
+						</Grid>
+					</ControlTemplate>
+				</ContentControl.Template>
+			</ContentControl>
+			""";
+
+		var control = (ContentControl)XamlReader.Load(xaml);
+		var root = new StackPanel { Width = 200, Height = 200, RequestedTheme = ElementTheme.Light };
+		root.Children.Add(control);
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(control);
+
+		// Go to PointerOver — setters apply ThemeResource values for Light theme
+		VisualStateManager.GoToState(control, "PointerOver", false);
+		await WindowHelper.WaitForIdle();
+
+		var contentText = control.FindVisualChildByName("ContentText") as TextBlock;
+		Assert.IsNotNull(contentText, "Should find ContentText TextBlock");
+
+		var lightFg = (contentText.Foreground as SolidColorBrush)?.Color;
+
+		// Change theme while in PointerOver — the setter's ThemeResource value should
+		// re-resolve AND re-apply to the target.
+		root.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		var darkFg = (contentText.Foreground as SolidColorBrush)?.Color;
+
+		Assert.IsNotNull(lightFg, "Should have foreground in Light PointerOver");
+		Assert.IsNotNull(darkFg, "Should have foreground in Dark PointerOver");
+		Assert.AreNotEqual(lightFg, darkFg,
+			$"Setter-based PointerOver foreground must update on theme change. " +
+			$"Light={lightFg}, Dark={darkFg}. " +
+			"VisualStateGroup must re-apply active setters when theme resources update.");
+	}
+
+	[TestMethod]
+	public async Task When_Theme_Changes_Then_Enter_VisualState_Uses_New_Theme()
+	{
+		// User repro: Change theme, then focus a TextBox. The focused visual state
+		// should use the new theme's resources. This tests that theme resource bindings
+		// on VSM storyboard keyframes are updated before the state is entered.
+		var root = new StackPanel { Width = 200, Height = 200, RequestedTheme = ElementTheme.Light };
+		var button = new Button { Content = "Test Button" };
+		root.Children.Add(button);
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(button);
+
+		// Record the Light-theme PointerOver background
+		VisualStateManager.GoToState(button, "PointerOver", false);
+		await WindowHelper.WaitForIdle();
+
+		var contentPresenter = button.FindVisualChildByName("ContentPresenter") as ContentPresenter;
+		Assert.IsNotNull(contentPresenter, "Button should have a ContentPresenter template child");
+		var lightBg = (contentPresenter.Background as SolidColorBrush)?.Color;
+
+		// Return to Normal
+		VisualStateManager.GoToState(button, "Normal", false);
+		await WindowHelper.WaitForIdle();
+
+		// Change theme FIRST
+		root.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		// THEN enter PointerOver — should pick up Dark theme resources
+		VisualStateManager.GoToState(button, "PointerOver", false);
+		await WindowHelper.WaitForIdle();
+
+		var darkBg = (contentPresenter.Background as SolidColorBrush)?.Color;
+
+		Assert.IsNotNull(lightBg, "Should have background in Light PointerOver");
+		Assert.IsNotNull(darkBg, "Should have background in Dark PointerOver");
+		Assert.AreNotEqual(lightBg, darkBg,
+			$"Entering PointerOver after theme change should use new theme resources. " +
+			$"Light={lightBg}, Dark={darkBg}");
+	}
+
+	[TestMethod]
+	public async Task When_Theme_Changes_Active_VisualState_Background_Reapplies()
+	{
+		// MUX Reference: CVisualStateGroupCollection::NotifyThemeChangedCore →
+		// CVisualStateManager2::OnVisualStateGroupCollectionNotifyThemeChanged →
+		// RefreshAllAppliedPropertySetters
+		// The Button's PointerOver state sets ContentPresenter.Background to
+		// {ThemeResource ButtonBackgroundPointerOver} via ObjectAnimationUsingKeyFrames.
+		// When theme changes while in PointerOver, the background must update immediately.
+		var root = new StackPanel { Width = 200, Height = 200, RequestedTheme = ElementTheme.Light };
+		var button = new Button { Content = "Test Button" };
+		root.Children.Add(button);
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(button);
+
+		// Go to PointerOver state BEFORE theme change
+		VisualStateManager.GoToState(button, "PointerOver", false);
+		await WindowHelper.WaitForIdle();
+
+		// The ContentPresenter is the template root of the default Button style.
+		// Use FindVisualChildByName to locate it by its x:Name="ContentPresenter".
+		var contentPresenter = button.FindVisualChildByName("ContentPresenter") as ContentPresenter;
+		Assert.IsNotNull(contentPresenter, "Button should have a ContentPresenter template child");
+
+		var bgBeforeThemeChange = (contentPresenter.Background as SolidColorBrush)?.Color;
+
+		// Change theme while in PointerOver state
+		root.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		// The background should have updated automatically — no GoToState needed
+		var bgAfterThemeChange = (contentPresenter.Background as SolidColorBrush)?.Color;
+
+		Assert.IsNotNull(bgBeforeThemeChange, "ContentPresenter should have background in Light PointerOver");
+		Assert.IsNotNull(bgAfterThemeChange, "ContentPresenter should have background in Dark PointerOver");
+		Assert.AreNotEqual(bgBeforeThemeChange, bgAfterThemeChange,
+			$"Active PointerOver background should change on theme switch. " +
+			$"Was {bgBeforeThemeChange} in Light, got {bgAfterThemeChange} in Dark.");
+	}
+
+	[TestMethod]
+	public async Task When_Theme_Changes_Active_VisualState_Foreground_Reapplies()
+	{
+		// Same as above but for Foreground — the PointerOver state sets
+		// ContentPresenter.Foreground to {ThemeResource ButtonForegroundPointerOver}.
+		var root = new StackPanel { Width = 200, Height = 200, RequestedTheme = ElementTheme.Light };
+		var button = new Button { Content = "Test Button" };
+		root.Children.Add(button);
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(button);
+
+		VisualStateManager.GoToState(button, "PointerOver", false);
+		await WindowHelper.WaitForIdle();
+
+		var contentPresenter = button.FindVisualChildByName("ContentPresenter") as ContentPresenter;
+		Assert.IsNotNull(contentPresenter, "Button should have a ContentPresenter template child");
+
+		var fgBeforeThemeChange = (contentPresenter.Foreground as SolidColorBrush)?.Color;
+
+		root.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		var fgAfterThemeChange = (contentPresenter.Foreground as SolidColorBrush)?.Color;
+
+		Assert.IsNotNull(fgBeforeThemeChange, "ContentPresenter should have foreground in Light PointerOver");
+		Assert.IsNotNull(fgAfterThemeChange, "ContentPresenter should have foreground in Dark PointerOver");
+		Assert.AreNotEqual(fgBeforeThemeChange, fgAfterThemeChange,
+			$"Active PointerOver foreground should change on theme switch. " +
+			$"Was {fgBeforeThemeChange} in Light, got {fgAfterThemeChange} in Dark.");
+	}
+
+	[TestMethod]
+	public async Task When_Page_Theme_Changes_TextBox_Focused_BorderBrush_Updates()
+	{
+		// Exact user repro: Page.RequestedTheme changes, then TextBox is focused.
+		// The Focused state visual should use new theme resources.
+		// Uses Frame→Page structure like SamplesApp.
+		var frame = new Frame { Width = 200, Height = 200 };
+
+		WindowHelper.WindowContent = frame;
+		await WindowHelper.WaitForLoaded(frame);
+
+		// Create a page with a TextBox
+		var page = new Page();
+		var sp = new StackPanel();
+		var textBox = new TextBox { Width = 150 };
+		sp.Children.Add(textBox);
+		page.Content = sp;
+
+		frame.Content = page;
+		await WindowHelper.WaitForLoaded(textBox);
+
+		// Get the TextBox background in Normal state (Default/Light theme)
+		var bgElement = textBox.FindVisualChildByName("BackgroundElement") as Border;
+		var borderElement = textBox.FindVisualChildByName("BorderElement") as Border;
+
+		// Focus the TextBox to get the Focused visual state
+		textBox.Focus(FocusState.Programmatic);
+		await WindowHelper.WaitForIdle();
+
+		var lightFocusedBg = bgElement?.Background;
+		var lightFocusedBorder = borderElement?.BorderBrush;
+
+		// Go back to Normal
+		VisualStateManager.GoToState(textBox, "Normal", false);
+		await WindowHelper.WaitForIdle();
+
+		// Change Page theme (matching BasicThemeResources sample behavior)
+		page.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		// Focus again in Dark theme
+		textBox.Focus(FocusState.Programmatic);
+		await WindowHelper.WaitForIdle();
+
+		var darkFocusedBg = bgElement?.Background;
+		var darkFocusedBorder = borderElement?.BorderBrush;
+
+		// The TextBox background/border in Focused state should differ between themes
+		// (TextControlBackgroundFocused, SystemControlHighlightAccentBrush)
+		Assert.AreEqual(ElementTheme.Dark, textBox.ActualTheme,
+			"TextBox should have Dark theme after Page.RequestedTheme change");
+	}
+
+	[TestMethod]
+	public async Task When_Theme_Changes_Button_Normal_Foreground_Updates()
+	{
+		// Basic test: does a Button's normal (non-hovered) Foreground update
+		// when its parent's theme changes?
+		var root = new StackPanel { Width = 200, Height = 200 };
+		var button = new Button { Content = "Test" };
+		root.Children.Add(button);
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(button);
+
+		var contentPresenter = button.FindVisualChildByName("ContentPresenter") as ContentPresenter;
+		Assert.IsNotNull(contentPresenter, "Button should have ContentPresenter");
+
+		var defaultFg = (contentPresenter.Foreground as SolidColorBrush)?.Color;
+
+		root.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		var darkFg = (contentPresenter.Foreground as SolidColorBrush)?.Color;
+
+		Assert.IsNotNull(defaultFg, "Should have foreground in Default theme");
+		Assert.IsNotNull(darkFg, "Should have foreground in Dark theme");
+		Assert.AreNotEqual(defaultFg, darkFg,
+			$"Button normal foreground should change. Default={defaultFg}, Dark={darkFg}");
+	}
+
+	[TestMethod]
+	public async Task When_Theme_Changes_TextBlock_Foreground_Updates()
+	{
+		// Basic test: does a TextBlock's Foreground update when parent theme changes?
+		var root = new StackPanel { Width = 200, Height = 200 };
+		var textBlock = new TextBlock { Text = "Hello" };
+		root.Children.Add(textBlock);
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(textBlock);
+
+		var defaultFg = (textBlock.Foreground as SolidColorBrush)?.Color;
+
+		root.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		var darkFg = (textBlock.Foreground as SolidColorBrush)?.Color;
+
+		Assert.IsNotNull(defaultFg, "Should have foreground in Default theme");
+		Assert.IsNotNull(darkFg, "Should have foreground in Dark theme");
+		Assert.AreNotEqual(defaultFg, darkFg,
+			$"TextBlock foreground should change. Default={defaultFg}, Dark={darkFg}");
+	}
+
+	[TestMethod]
+	public async Task When_Theme_Default_To_Dark_Button_PointerOver_Updates()
+	{
+		// Matches SamplesApp behavior: page starts with Default theme (Light app theme),
+		// then user switches to Dark. The button in PointerOver should update.
+		var root = new StackPanel { Width = 200, Height = 200 }; // No explicit RequestedTheme (= Default)
+		var button = new Button { Content = "Test Button" };
+		root.Children.Add(button);
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(button);
+
+		// Go to PointerOver while in Default (Light) theme
+		VisualStateManager.GoToState(button, "PointerOver", false);
+		await WindowHelper.WaitForIdle();
+
+		var contentPresenter = button.FindVisualChildByName("ContentPresenter") as ContentPresenter;
+		Assert.IsNotNull(contentPresenter, "Button should have a ContentPresenter template child");
+
+		var defaultBg = (contentPresenter.Background as SolidColorBrush)?.Color;
+
+		// Switch from Default → Dark (like SamplesApp's LocalDark button)
+		root.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		var darkBg = (contentPresenter.Background as SolidColorBrush)?.Color;
+
+		Assert.IsNotNull(defaultBg, "Should have background in Default PointerOver");
+		Assert.IsNotNull(darkBg, "Should have background in Dark PointerOver");
+		Assert.AreNotEqual(defaultBg, darkBg,
+			$"PointerOver background should change from Default to Dark. " +
+			$"Default={defaultBg}, Dark={darkBg}");
+	}
+
+	[TestMethod]
+	public async Task When_MenuFlyout_Opened_After_Theme_Change_Items_Use_New_Theme()
+	{
+		// User repro: MenuFlyout items hovered show old theme foreground (black)
+		// after switching to dark theme. The flyout presenter and items should
+		// pick up the new theme when opened.
+		var root = new StackPanel { Width = 200, Height = 200, RequestedTheme = ElementTheme.Light };
+		var button = new Button { Content = "Click me" };
+		var menuFlyout = new MenuFlyout();
+		menuFlyout.Items.Add(new MenuFlyoutItem { Text = "Item 1" });
+		menuFlyout.Items.Add(new MenuFlyoutItem { Text = "Item 2" });
+		button.Flyout = menuFlyout;
+		root.Children.Add(button);
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(button);
+
+		// Change to Dark theme BEFORE opening flyout
+		root.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		try
+		{
+			// Open flyout
+			menuFlyout.ShowAt(button);
+			await WindowHelper.WaitForIdle();
+
+			// The flyout presenter should have Dark theme
+			var presenter = menuFlyout.Items[0].FindVisualChildByName("LayoutRoot");
+			if (presenter == null)
+			{
+				// Try getting the item directly
+				var item = menuFlyout.Items[0] as MenuFlyoutItem;
+				Assert.AreEqual(ElementTheme.Dark, item.ActualTheme,
+					"MenuFlyoutItem should have Dark theme after parent theme change");
+			}
+			else
+			{
+				Assert.AreEqual(ElementTheme.Dark, (presenter as FrameworkElement)?.ActualTheme,
+					"MenuFlyoutItem layout root should have Dark theme");
+			}
+		}
+		finally
+		{
+			menuFlyout.Hide();
+			await WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
+	public async Task When_MenuFlyout_Open_During_Theme_Change_PointerOver_Updates()
+	{
+		// When a MenuFlyout is open and theme changes, items in PointerOver state
+		// should update their foreground to match the new theme.
+		var root = new StackPanel { Width = 200, Height = 200, RequestedTheme = ElementTheme.Light };
+		var button = new Button { Content = "Click me" };
+		var menuFlyout = new MenuFlyout();
+		menuFlyout.Items.Add(new MenuFlyoutItem { Text = "Item 1" });
+		button.Flyout = menuFlyout;
+		root.Children.Add(button);
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(button);
+
+		try
+		{
+			// Open flyout in Light theme
+			menuFlyout.ShowAt(button);
+			await WindowHelper.WaitForIdle();
+
+			var item = menuFlyout.Items[0] as MenuFlyoutItem;
+
+			// Put item in PointerOver state
+			VisualStateManager.GoToState(item, "PointerOver", false);
+			await WindowHelper.WaitForIdle();
+
+			var lightFg = (item.Foreground as SolidColorBrush)?.Color;
+
+			// Change theme while flyout is open and item is in PointerOver
+			root.RequestedTheme = ElementTheme.Dark;
+			await WindowHelper.WaitForIdle();
+
+			var darkFg = (item.Foreground as SolidColorBrush)?.Color;
+
+			// The item's foreground should reflect the new theme
+			Assert.IsNotNull(lightFg, "Item should have foreground in Light PointerOver");
+			Assert.IsNotNull(darkFg, "Item should have foreground in Dark PointerOver");
+			Assert.AreNotEqual(lightFg, darkFg,
+				$"MenuFlyoutItem PointerOver foreground should differ between themes. " +
+				$"Light={lightFg}, Dark={darkFg}");
+		}
+		finally
+		{
+			menuFlyout.Hide();
 			await WindowHelper.WaitForIdle();
 		}
 	}
