@@ -151,6 +151,19 @@ public partial class Popup
 	partial void OnHorizontalOffsetChangedPartial(double oldHorizontalOffset, double newHorizontalOffset) =>
 		PopupPanel?.InvalidateMeasure();
 
+	// MUX Reference: Popup.cpp CPopup::NotifyThemeChangedCore (lines 3589-3610)
+	// Popup's Child is reparented to PopupRoot's visual tree, so the normal
+	// PropagateThemeToChildren walk won't reach it. We must explicitly propagate.
+	private protected override void NotifyThemeChangedCore(Theme theme)
+	{
+		base.NotifyThemeChangedCore(theme);
+
+		if (Child is FrameworkElement child)
+		{
+			child.NotifyThemeChanged(theme);
+		}
+	}
+
 	internal override void UpdateThemeBindings(Data.ResourceUpdateReason updateReason)
 	{
 		base.UpdateThemeBindings(updateReason);

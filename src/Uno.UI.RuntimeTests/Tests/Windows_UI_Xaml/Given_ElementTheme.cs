@@ -1,10 +1,13 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
@@ -1721,6 +1724,234 @@ public class Given_ElementTheme
 		// Light column has explicit Light theme → foreground should remain unchanged
 		Assert.AreEqual(initialLightFg, updatedLightFg,
 			"Light column TextBlock should keep its foreground when root switches to Dark");
+	}
+
+	#endregion
+
+	#region Popup and Flyout Theme Propagation
+
+	[TestMethod]
+	public async Task When_Popup_Child_Inherits_Theme_From_Popup_Owner()
+	{
+		// MUX Reference: CPopup::NotifyThemeChangedCore propagates to m_pChild
+		// Popup's Child is visually reparented to PopupRoot, but the Popup
+		// should still propagate theme changes to its Child.
+		var root = new StackPanel { Width = 200, Height = 200, RequestedTheme = ElementTheme.Dark };
+		var popup = new Popup();
+		var popupContent = new Border { Width = 50, Height = 50 };
+		popup.Child = popupContent;
+		root.Children.Add(popup);
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+
+		popup.IsOpen = true;
+		await WindowHelper.WaitForIdle();
+
+		try
+		{
+			Assert.AreEqual(ElementTheme.Dark, popupContent.ActualTheme,
+				"Popup content should inherit Dark theme from popup owner");
+		}
+		finally
+		{
+			popup.IsOpen = false;
+			await WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Popup_Owner_Theme_Changes_At_Runtime_Popup_Content_Updates()
+	{
+		// When a parent's RequestedTheme changes, open popup content should update.
+		var root = new StackPanel { Width = 200, Height = 200, RequestedTheme = ElementTheme.Light };
+		var popup = new Popup();
+		var popupContent = new Border { Width = 50, Height = 50 };
+		popup.Child = popupContent;
+		root.Children.Add(popup);
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+
+		popup.IsOpen = true;
+		await WindowHelper.WaitForIdle();
+
+		try
+		{
+			Assert.AreEqual(ElementTheme.Light, popupContent.ActualTheme);
+
+			// Change theme at runtime
+			root.RequestedTheme = ElementTheme.Dark;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(ElementTheme.Dark, popupContent.ActualTheme,
+				"Popup content should update when popup owner's theme changes at runtime");
+		}
+		finally
+		{
+			popup.IsOpen = false;
+			await WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
+	public async Task When_ComboBox_In_Dark_Region_Dropdown_Has_Dark_Theme()
+	{
+		// ComboBox's popup is a template child. Its dropdown content should
+		// inherit the ComboBox's theme via Popup.NotifyThemeChangedCore.
+		var root = new Border { Width = 200, Height = 200, RequestedTheme = ElementTheme.Dark };
+		var comboBox = new ComboBox { ItemsSource = "abcdef".ToArray() };
+		root.Child = comboBox;
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(comboBox);
+
+		try
+		{
+			comboBox.IsDropDownOpen = true;
+			var firstItem = await WindowHelper.WaitForNonNull(
+				() => comboBox.ContainerFromIndex(1) as ComboBoxItem);
+			await WindowHelper.WaitForLoaded(firstItem);
+
+			Assert.AreEqual(ElementTheme.Dark, firstItem.ActualTheme,
+				"ComboBox dropdown item should have Dark theme when ComboBox is in Dark region");
+		}
+		finally
+		{
+			comboBox.IsDropDownOpen = false;
+			await WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
+	public async Task When_ComboBox_Theme_Changes_At_Runtime_Dropdown_Updates()
+	{
+		// Simulates ThemeHelper.UseDarkTheme() scenario: root content theme changes
+		// and open ComboBox dropdown should reflect the new theme.
+		var comboBox = new ComboBox { ItemsSource = "abcdef".ToArray() };
+		WindowHelper.WindowContent = comboBox;
+		await WindowHelper.WaitForLoaded(comboBox);
+
+		using (ThemeHelper.UseDarkTheme())
+		{
+			try
+			{
+				comboBox.IsDropDownOpen = true;
+				var firstItem = await WindowHelper.WaitForNonNull(
+					() => comboBox.ContainerFromIndex(1) as ComboBoxItem);
+				await WindowHelper.WaitForLoaded(firstItem);
+
+				Assert.AreEqual(Colors.White, (firstItem.Foreground as SolidColorBrush)?.Color,
+					"ComboBox item foreground should be white in dark theme");
+			}
+			finally
+			{
+				comboBox.IsDropDownOpen = false;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Flyout_Opened_From_Dark_Region_Has_Dark_Theme()
+	{
+		// MUX Reference: FlyoutBase::ForwardThemeToPresenter walks up from placement
+		// target to find the nearest non-Default RequestedTheme and applies it to
+		// the presenter and popup.
+		var root = new Border { Width = 200, Height = 200, RequestedTheme = ElementTheme.Dark };
+		var button = new Button { Content = "Open Flyout" };
+		var flyout = new Flyout();
+		var flyoutContent = new TextBlock { Text = "Flyout Content" };
+		flyout.Content = flyoutContent;
+		FlyoutBase.SetAttachedFlyout(button, flyout);
+		root.Child = button;
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(button);
+
+		try
+		{
+			FlyoutBase.ShowAttachedFlyout(button);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(ElementTheme.Dark, flyoutContent.ActualTheme,
+				"Flyout content should have Dark theme when opened from Dark-themed region");
+		}
+		finally
+		{
+			flyout.Hide();
+			await WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Flyout_Target_Theme_Changes_Flyout_Updates()
+	{
+		// MUX Reference: FlyoutBase hooks ActualThemeChanged on placement target
+		// and calls ForwardThemeToPresenter when it fires.
+		var root = new Border { Width = 200, Height = 200, RequestedTheme = ElementTheme.Light };
+		var button = new Button { Content = "Open Flyout" };
+		var flyout = new Flyout();
+		var flyoutContent = new TextBlock { Text = "Flyout Content" };
+		flyout.Content = flyoutContent;
+		FlyoutBase.SetAttachedFlyout(button, flyout);
+		root.Child = button;
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(button);
+
+		try
+		{
+			FlyoutBase.ShowAttachedFlyout(button);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(ElementTheme.Light, flyoutContent.ActualTheme);
+
+			// Change theme while flyout is open
+			root.RequestedTheme = ElementTheme.Dark;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(ElementTheme.Dark, flyoutContent.ActualTheme,
+				"Flyout content should update when placement target's theme changes");
+		}
+		finally
+		{
+			flyout.Hide();
+			await WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Nested_Theme_Boundary_Flyout_Gets_Nearest_Theme()
+	{
+		// When a flyout is opened from inside a nested theme boundary,
+		// ForwardThemeToPresenter should find the nearest ancestor's theme.
+		var root = new Border { Width = 200, Height = 200, RequestedTheme = ElementTheme.Light };
+		var innerBorder = new Border { RequestedTheme = ElementTheme.Dark };
+		var button = new Button { Content = "Open Flyout" };
+		var flyout = new Flyout();
+		var flyoutContent = new TextBlock { Text = "Flyout Content" };
+		flyout.Content = flyoutContent;
+		FlyoutBase.SetAttachedFlyout(button, flyout);
+		innerBorder.Child = button;
+		root.Child = innerBorder;
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(button);
+
+		try
+		{
+			FlyoutBase.ShowAttachedFlyout(button);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(ElementTheme.Dark, flyoutContent.ActualTheme,
+				"Flyout should get Dark theme from nearest ancestor, not Light from outer");
+		}
+		finally
+		{
+			flyout.Hide();
+			await WindowHelper.WaitForIdle();
+		}
 	}
 
 	#endregion
