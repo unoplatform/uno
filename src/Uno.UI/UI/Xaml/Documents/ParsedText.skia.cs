@@ -741,6 +741,8 @@ internal readonly struct ParsedText : IParsedText
 
 	public bool IsBaseDirectionRightToLeft => false;
 
+	internal int LineCount => _renderLines.Count;
+
 	#endregion
 
 	private void HandleSelection(SelectionDetails selection, int lineIndex,

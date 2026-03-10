@@ -33,6 +33,9 @@ namespace Microsoft.UI.Xaml.Documents
 				case Inline inline:
 					inline.InvalidateInlines(true);
 					break;
+				case Block block:
+					block.InvalidateInlines();
+					break;
 				default:
 					break;
 			}
