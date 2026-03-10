@@ -94,7 +94,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 				// If we don't have a solution, we can't start a DevServer yet.
 				// Search recursively (up to 3 levels deep) so solutions in
 				// subdirectories like src/MyProject.slnx are found.
-				var solutionFiles = FindSolutionFiles(_currentDirectory);
+				var solutionFiles = SolutionFileFinder.FindSolutionFiles(_currentDirectory);
 
 				_logger.LogTrace(
 					"DevServerMonitor scan found {Count} solution files in {Directory}",
@@ -537,53 +537,5 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 	/// up to <paramref name="maxDepth"/> levels deep. Results are sorted by depth
 	/// (shallowest first) so the closest solution to the root is preferred.
 	/// </summary>
-	internal static string[] FindSolutionFiles(string directory, int maxDepth = 3)
-	{
-		var results = new List<string>();
-		SearchDirectory(directory, 0, maxDepth, results);
-		return results.ToArray();
-	}
-
-	private static void SearchDirectory(string directory, int currentDepth, int maxDepth, List<string> results)
-	{
-		try
-		{
-			foreach (var file in Directory.EnumerateFiles(directory, "*.sln"))
-			{
-				results.Add(file);
-			}
-			foreach (var file in Directory.EnumerateFiles(directory, "*.slnx"))
-			{
-				results.Add(file);
-			}
-		}
-		catch (UnauthorizedAccessException)
-		{
-			// Skip directories we can't access
-		}
-
-		if (currentDepth >= maxDepth)
-		{
-			return;
-		}
-
-		try
-		{
-			foreach (var subDir in Directory.EnumerateDirectories(directory))
-			{
-				// Skip common large directories that won't contain solutions
-				var dirName = Path.GetFileName(subDir);
-				if (dirName is "node_modules" or ".git" or "bin" or "obj" or ".vs" or ".idea" or "packages")
-				{
-					continue;
-				}
-				SearchDirectory(subDir, currentDepth + 1, maxDepth, results);
-			}
-		}
-		catch (UnauthorizedAccessException)
-		{
-			// Skip directories we can't access
-		}
-	}
 
 }

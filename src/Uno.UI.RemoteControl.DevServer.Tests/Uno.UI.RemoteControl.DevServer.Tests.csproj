@@ -40,6 +40,7 @@
 		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\NuGetCacheHelper.cs" Link="Helpers\NuGetCacheHelper.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\ProjectAssetsParser.cs" Link="Helpers\ProjectAssetsParser.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\DiscoveryInfo.cs" Link="Helpers\DiscoveryInfo.cs" />
+		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\SolutionFileFinder.cs" Link="Helpers\SolutionFileFinder.cs" />
 
 		<!-- Link MCP sources for unit testing -->
 		<!-- TODO: MCP tests that only depend on CLI types should be migrated to Uno.UI.DevServer.Cli.Tests -->
