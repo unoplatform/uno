@@ -153,6 +153,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private readonly bool _isWasm;
 
+		private readonly string _preserveProperties;
+
 		/// <summary>
 		/// If set, code generated from XAML will be annotated with the source method and line # in this file, for easier debugging.
 		/// </summary>
@@ -257,6 +259,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			_isUnoAssembly = isUnoAssembly;
 			_isUnoFluentAssembly = isUnoFluentAssembly;
+
+			_preserveProperties = $"{GlobalPrefix}{_defaultNamespace}.GlobalStaticResources.__PreserveProperties";
 		}
 
 		private void TryGenerateWarningForInconsistentBaseType(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
@@ -6024,6 +6028,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// Override the using with the type that was found in the list of loaded assemblies
 				fullTypeName = knownType.GetFullyQualifiedTypeExcludingGlobal();
 			}
+
+			IDisposable? endPreservePropertiesIndent = null;
+			if (fullTypeName != "NullExtension")
+			{
+				writer.AppendLineIndented($"{_preserveProperties}(");
+				endPreservePropertiesIndent = writer.Indent();
+			}
+			using var endPreserveProperties = (fullTypeName == "NullExtension") ? null : new DisposableAction(() =>
+			{
+				endPreservePropertiesIndent?.Dispose();
+				writer.AppendLineIndented(")");
+			});
 
 			using (TrySetDefaultBindMode(xamlObjectDefinition))
 			{
