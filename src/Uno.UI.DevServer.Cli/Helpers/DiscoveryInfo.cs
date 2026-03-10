@@ -129,4 +129,10 @@ public sealed class ActiveServerInfo
 	public int ParentProcessId { get; init; }
 	public DateTime StartTime { get; init; }
 	public string? IdeChannelId { get; init; }
+	public string? SolutionPath { get; init; }
+
+	/// <summary>
+	/// True when this server's solution matches the current working directory's solution.
+	/// </summary>
+	public bool IsLocal { get; init; }
 }

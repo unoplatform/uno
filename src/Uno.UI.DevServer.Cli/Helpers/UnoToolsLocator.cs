@@ -175,24 +175,23 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 		}
 
 		// Lookup active DevServers via AmbientRegistry
+		// Show all servers on this machine, with IsLocal flag for matching solution or directory.
 		var activeServers = new List<ActiveServerInfo>();
 		try
 		{
-			var solutionFiles = Directory.EnumerateFiles(workDirectory, "*.sln")
+			var localSolutions = Directory.EnumerateFiles(workDirectory, "*.sln")
 				.Concat(Directory.EnumerateFiles(workDirectory, "*.slnx"))
-				.ToArray();
-			var solution = solutionFiles.FirstOrDefault();
-			if (solution is not null)
-			{
-				var solutionFull = Path.GetFullPath(solution);
-				var ambient = new AmbientRegistry(NullLogger.Instance);
-				activeServers = ambient.GetActiveDevServers()
-					.Where(s =>
-						!string.IsNullOrWhiteSpace(s.SolutionPath)
-						&& Path.GetFullPath(s.SolutionPath).Equals(solutionFull, StringComparison.OrdinalIgnoreCase)
-						&& s.MachineName == Environment.MachineName
-						&& s.UserName == Environment.UserName)
-					.Select(s => new ActiveServerInfo
+				.Select(f => Path.GetFullPath(f))
+				.ToHashSet(StringComparer.OrdinalIgnoreCase);
+			var workDirFull = Path.GetFullPath(workDirectory);
+
+			var ambient = new AmbientRegistry(NullLogger.Instance);
+			activeServers = ambient.GetActiveDevServers()
+				.Where(s => s.MachineName == Environment.MachineName && s.UserName == Environment.UserName)
+				.Select(s =>
+				{
+					var isLocal = IsServerLocal(s.SolutionPath, localSolutions, workDirFull);
+					return new ActiveServerInfo
 					{
 						ProcessId = s.ProcessId,
 						Port = s.Port,
@@ -200,9 +199,11 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 						ParentProcessId = s.ParentProcessId,
 						StartTime = s.StartTime,
 						IdeChannelId = s.IdeChannelId,
-					})
-					.ToList();
-			}
+						SolutionPath = s.SolutionPath,
+						IsLocal = isLocal,
+					};
+				})
+				.ToList();
 		}
 		catch (Exception ex)
 		{
@@ -409,6 +410,42 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 		{
 			_logger.LogDebug("Package {SdkPackage} version {Version} installed successfully", packageId, version);
 		}
+	}
+
+	/// <summary>
+	/// Determines if a server is "local" to the working directory by matching
+	/// its solution against any solution in the directory, or by checking if
+	/// the solution resides within the working directory (for solution-less or
+	/// multi-solution repos).
+	/// </summary>
+	private static bool IsServerLocal(string? serverSolutionPath, HashSet<string> localSolutions, string workDirFull)
+	{
+		if (string.IsNullOrWhiteSpace(serverSolutionPath))
+		{
+			return false;
+		}
+
+		var serverSolutionFull = Path.GetFullPath(serverSolutionPath);
+
+		// Direct match: server's solution is one of the solutions in the working directory
+		if (localSolutions.Contains(serverSolutionFull))
+		{
+			return true;
+		}
+
+		// Directory match: server's solution is inside the working directory tree
+		var serverDir = Path.GetDirectoryName(serverSolutionFull);
+		if (serverDir is not null)
+		{
+			var normalizedServerDir = serverDir.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+			var normalizedWorkDir = workDirFull.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+			if (normalizedServerDir.StartsWith(normalizedWorkDir, StringComparison.OrdinalIgnoreCase))
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	internal static IReadOnlyList<string> GetNuGetCachePaths(string? workingDirectory = null)

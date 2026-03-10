@@ -167,6 +167,8 @@ internal class HealthService(
 					ParentProcessId = s.ParentProcessId,
 					StartTime = s.StartTime,
 					IdeChannelId = s.IdeChannelId,
+					SolutionPath = s.SolutionPath,
+					IsLocal = s.IsLocal,
 				}).ToList()
 				: null,
 		};

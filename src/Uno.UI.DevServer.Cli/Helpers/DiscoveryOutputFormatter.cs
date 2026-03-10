@@ -61,9 +61,13 @@ internal static class DiscoveryOutputFormatter
 		{
 			foreach (var server in info.ActiveServers)
 			{
-				AddRow(table, "processId", server.ProcessId.ToString(CultureInfo.InvariantCulture));
+				var localTag = server.IsLocal ? " [green][local][/]" : " [grey][other][/]";
+				table.AddRow(
+					new Markup($"[white]processId[/]"),
+					new Markup($"[grey]{server.ProcessId}[/]{localTag}"));
 				AddRow(table, "port", server.Port.ToString(CultureInfo.InvariantCulture));
 				AddRow(table, "mcpEndpoint", server.McpEndpoint);
+				AddRow(table, "solution", server.SolutionPath);
 				AddRow(table, "parentProcessId", server.ParentProcessId.ToString(CultureInfo.InvariantCulture));
 				AddRow(table, "startTime", server.StartTime.ToString("yyyy-MM-dd HH:mm:ss UTC", CultureInfo.InvariantCulture));
 				AddRow(table, "ideChannelId", server.IdeChannelId);

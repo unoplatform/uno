@@ -39,6 +39,8 @@ internal sealed record ActiveServerSummary
 	public int ParentProcessId { get; init; }
 	public DateTime StartTime { get; init; }
 	public string? IdeChannelId { get; init; }
+	public string? SolutionPath { get; init; }
+	public bool IsLocal { get; init; }
 }
 
 internal sealed record AddInSummary
