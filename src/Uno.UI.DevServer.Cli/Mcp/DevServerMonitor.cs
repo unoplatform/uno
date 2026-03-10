@@ -42,6 +42,14 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 	/// </summary>
 	public bool SolutionNotFound { get; private set; }
 
+	/// <summary>
+	/// The list of solution files discovered during the last scan, stored as
+	/// paths relative to <see cref="_currentDirectory"/>. Exposed via
+	/// <see cref="HealthService"/> so the MCP agent can see which solutions
+	/// were found.
+	/// </summary>
+	public IReadOnlyList<string> DiscoveredSolutions { get; private set; } = [];
+
 	internal void StartMonitoring(string currentDirectory, int port, List<string> forwardedArgs)
 	{
 		if (_monitor is not null)
@@ -102,6 +110,9 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 					_currentDirectory);
 
 				SolutionNotFound = solutionFiles.Length == 0;
+				DiscoveredSolutions = solutionFiles
+					.Select(f => Path.GetRelativePath(_currentDirectory, f))
+					.ToArray();
 
 				if (solutionFiles.Length != 0)
 				{
@@ -531,11 +542,5 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 		tcp.Stop();
 		return port;
 	}
-
-	/// <summary>
-	/// Finds .sln and .slnx files in the given directory, searching recursively
-	/// up to <paramref name="maxDepth"/> levels deep. Results are sorted by depth
-	/// (shallowest first) so the closest solution to the root is preferred.
-	/// </summary>
 
 }

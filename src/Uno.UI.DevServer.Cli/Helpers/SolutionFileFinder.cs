@@ -118,16 +118,9 @@ internal static class SolutionFileFinder
 				return null; // git not available
 			}
 
-			var ignored = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-			while (process.StandardOutput.ReadLine() is { } line)
-			{
-				var trimmed = line.Trim();
-				if (trimmed.Length > 0 && relativeToAbsolute.TryGetValue(trimmed, out var absolutePath))
-				{
-					ignored.Add(absolutePath);
-				}
-			}
-
+			// Kill the process after a timeout to prevent hanging. This
+			// ensures that the subsequent synchronous ReadToEnd() will
+			// return promptly because killing closes the stdout pipe.
 			if (!process.WaitForExit(2000))
 			{
 				// git hung — kill it and fall back
@@ -140,6 +133,18 @@ internal static class SolutionFileFinder
 			if (process.ExitCode is not (0 or 1))
 			{
 				return null;
+			}
+
+			// Safe to read synchronously: the process has exited, so stdout is closed.
+			var output = process.StandardOutput.ReadToEnd();
+			var ignored = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+			foreach (var line in output.Split('\n', StringSplitOptions.RemoveEmptyEntries))
+			{
+				var trimmed = line.Trim();
+				if (trimmed.Length > 0 && relativeToAbsolute.TryGetValue(trimmed, out var absolutePath))
+				{
+					ignored.Add(absolutePath);
+				}
 			}
 
 			return ignored;

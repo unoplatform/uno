@@ -439,7 +439,9 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 		{
 			var normalizedServerDir = serverDir.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 			var normalizedWorkDir = workDirFull.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-			if (normalizedServerDir.StartsWith(normalizedWorkDir, StringComparison.OrdinalIgnoreCase))
+			if (normalizedServerDir.StartsWith(normalizedWorkDir, StringComparison.OrdinalIgnoreCase)
+				&& (normalizedServerDir.Length == normalizedWorkDir.Length
+					|| normalizedServerDir[normalizedWorkDir.Length] is '/' or '\\'))
 			{
 				return true;
 			}

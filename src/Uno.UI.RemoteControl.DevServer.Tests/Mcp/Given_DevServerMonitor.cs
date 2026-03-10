@@ -521,16 +521,34 @@ public class Given_DevServerMonitor
 
 	private static void RunGit(string workingDir, string args)
 	{
-		var psi = new System.Diagnostics.ProcessStartInfo("git", args)
+		System.Diagnostics.Process process;
+		try
 		{
-			WorkingDirectory = workingDir,
-			RedirectStandardOutput = true,
-			RedirectStandardError = true,
-			UseShellExecute = false,
-			CreateNoWindow = true,
-		};
-		using var process = System.Diagnostics.Process.Start(psi)!;
-		process.WaitForExit(5000);
+			var psi = new System.Diagnostics.ProcessStartInfo("git", args)
+			{
+				WorkingDirectory = workingDir,
+				RedirectStandardOutput = true,
+				RedirectStandardError = true,
+				UseShellExecute = false,
+				CreateNoWindow = true,
+			};
+			process = System.Diagnostics.Process.Start(psi)
+				?? throw new InvalidOperationException("Failed to start git process");
+		}
+		catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException)
+		{
+			Assert.Inconclusive($"git is not available: {ex.Message}");
+			return; // unreachable, but satisfies the compiler
+		}
+
+		using (process)
+		{
+			if (!process.WaitForExit(10000))
+			{
+				try { process.Kill(); } catch { /* best effort */ }
+				Assert.Inconclusive("git process timed out");
+			}
+		}
 	}
 
 	private static void ForceDeleteDirectory(string path)

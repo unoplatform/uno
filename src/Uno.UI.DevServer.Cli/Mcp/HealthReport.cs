@@ -15,6 +15,7 @@ internal sealed record HealthReport
 	public string? UnoSdkVersion { get; init; }
 	public long DiscoveryDurationMs { get; init; }
 	public ConnectionState? ConnectionState { get; init; }
+	public IReadOnlyList<string>? DiscoveredSolutions { get; init; }
 	public required IReadOnlyList<ValidationIssue> Issues { get; init; }
 	public DiscoverySummary? Discovery { get; init; }
 }

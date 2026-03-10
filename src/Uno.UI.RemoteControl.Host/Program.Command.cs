@@ -127,7 +127,14 @@ partial class Program
 			var ready = await WaitForDevServerReadyAsync(httpPort, timeoutMs);
 			if (!ready)
 			{
-				await Console.Error.WriteLineAsync($"DevServer did not become ready within {timeoutMs}ms");
+				if (process.HasExited)
+				{
+					await Console.Error.WriteLineAsync($"DevServer process died (exit code {process.ExitCode}) before becoming ready");
+				}
+				else
+				{
+					await Console.Error.WriteLineAsync($"DevServer did not become ready within {timeoutMs}ms");
+				}
 
 				await TerminateProcessAsync(process);
 				await DrainProcessOutputAsync(outputTask, errorTask);

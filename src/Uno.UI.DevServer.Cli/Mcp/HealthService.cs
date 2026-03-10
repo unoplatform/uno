@@ -122,6 +122,10 @@ internal class HealthService(
 				? HealthStatus.Degraded
 				: HealthStatus.Healthy;
 
+		var discoveredSolutions = devServerMonitor.DiscoveredSolutions is { Count: > 0 }
+			? devServerMonitor.DiscoveredSolutions
+			: null;
+
 		return new HealthReport
 		{
 			Status = status,
@@ -131,6 +135,7 @@ internal class HealthService(
 			UnoSdkVersion = devServerMonitor.UnoSdkVersion,
 			DiscoveryDurationMs = devServerMonitor.DiscoveryDurationMs,
 			ConnectionState = ConnectionState,
+			DiscoveredSolutions = discoveredSolutions,
 			Issues = issues,
 			Discovery = MapDiscovery(devServerMonitor.LastDiscoveryInfo),
 		};

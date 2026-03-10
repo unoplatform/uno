@@ -240,16 +240,18 @@ internal class ProxyLifecycleManager
 			_solutionDirectory,
 			_currentDirectory);
 
-		if (string.IsNullOrWhiteSpace(_solutionDirectory))
+		if (!string.IsNullOrWhiteSpace(_solutionDirectory))
 		{
-			// No explicit --solution-dir was provided. Defer startup until we receive
-			// roots from the MCP client (in EnsureRootsInitialized). For clients that
-			// don't support roots, the fallback to currentDirectory happens there.
-			_logger.LogTrace("No explicit solution directory; deferring DevServer start until MCP roots are received");
+			StartDevServerMonitor(_solutionDirectory);
 			return;
 		}
 
-		StartDevServerMonitor(_solutionDirectory);
+		// No explicit --solution-dir was provided. Use the current directory
+		// so the monitor can scan for solutions immediately. MCP roots received
+		// later will be processed via ProcessRoots() which can trigger the
+		// monitor if it hasn't started yet (StartOnceGuard prevents duplicates).
+		_logger.LogTrace("No explicit solution directory; using current directory {Directory}", _currentDirectory);
+		StartDevServerMonitor(_currentDirectory);
 	}
 
 	private void StartDevServerMonitor(string? directory)
