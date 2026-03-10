@@ -49,29 +49,37 @@ namespace TestRepro
 			var __that = this;
 			base.IsParsing = true;
 			Resources["ImportantNumber"] = 
-			12d
+			global::MyProject.GlobalStaticResources.__PreserveProperties(
+				12d
+			)
 			;
 			Resources["ImportantMessage"] = 
-			"Do more testing"
+			global::MyProject.GlobalStaticResources.__PreserveProperties(
+				"Do more testing"
+			)
 			;
 			Resources["MyTextBlockResource"] = 
-			new global::Microsoft.UI.Xaml.Controls.TextBlock
-			{
-				IsParsing = true,
-				Text = "use me",
-				// Source 0\MainPage.xaml (Line 9:3)
-			}
-			.GenericApply(__that, __nameScope, ApplyTo_Pag_ResΞ2_TexBlo)
+			global::MyProject.GlobalStaticResources.__PreserveProperties(
+				new global::Microsoft.UI.Xaml.Controls.TextBlock
+				{
+					IsParsing = true,
+					Text = "use me",
+					// Source 0\MainPage.xaml (Line 9:3)
+				}
+				.GenericApply(__that, __nameScope, ApplyTo_Pag_ResΞ2_TexBlo)
+			)
 			;
 			// Source 0\MainPage.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.TextBlock
-			{
-				IsParsing = true,
-				Text = "Some content",
-				// Source 0\MainPage.xaml (Line 11:4)
-			}
-			.GenericApply(__that, __nameScope, ApplyTo_PagΞ0_TexBlo)
+			global::MyProject.GlobalStaticResources.__PreserveProperties(
+				new global::Microsoft.UI.Xaml.Controls.TextBlock
+				{
+					IsParsing = true,
+					Text = "Some content",
+					// Source 0\MainPage.xaml (Line 11:4)
+				}
+				.GenericApply(__that, __nameScope, ApplyTo_PagΞ0_TexBlo)
+			)
 			;
 			
 			this

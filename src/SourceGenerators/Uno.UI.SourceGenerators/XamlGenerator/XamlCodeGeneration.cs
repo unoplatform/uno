@@ -910,6 +910,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					writer.AppendLineIndented(";");
 					writer.AppendLine();
 
+					BuildPreservePropertiesMethod(writer);
+
 					using (writer.BlockInvariant("static GlobalStaticResources()"))
 					{
 						writer.AppendLineIndented("Initialize();");
@@ -1080,6 +1082,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// Fallback to assembly version
 			var assemblyVersion = assembly.GetName().Version;
 			return assemblyVersion != null ? $"{assemblyVersion.Major}.{assemblyVersion.Minor}" : "0.0";
+		}
+
+		private static void BuildPreservePropertiesMethod(IIndentedStringBuilder writer)
+		{
+			writer.AppendLineIndented("internal static T __PreserveProperties<");
+			var genericTypeParameters = writer.Indent();
+			writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(global::System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicProperties)]");
+			writer.AppendLineIndented("T");
+			genericTypeParameters.Dispose();
+			writer.AppendLineIndented(">(T value) => value;");
+			writer.AppendLine();
 		}
 	}
 }

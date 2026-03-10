@@ -50,86 +50,90 @@ namespace TestRepro
 			base.IsParsing = true;
 			// Source 0\MainPage.xaml (Line 1:2)
 			base.Content = 
-			new Microsoft.UI.Xaml.ElementStub( () => 
-			new global::Microsoft.UI.Xaml.Controls.ContentControl
-			{
-				IsParsing = true,
-				Name = "topLevelContent",
-				// Source 0\MainPage.xaml (Line 9:3)
-				Content = 
-				new global::Microsoft.UI.Xaml.Controls.TextBlock
+			global::MyProject.GlobalStaticResources.__PreserveProperties(
+				new Microsoft.UI.Xaml.ElementStub( () => 
+				new global::Microsoft.UI.Xaml.Controls.ContentControl
 				{
 					IsParsing = true,
-					Name = "innerTextBlock",
-					// Source 0\MainPage.xaml (Line 10:4)
+					Name = "topLevelContent",
+					// Source 0\MainPage.xaml (Line 9:3)
+					Content = 
+					global::MyProject.GlobalStaticResources.__PreserveProperties(
+						new global::Microsoft.UI.Xaml.Controls.TextBlock
+						{
+							IsParsing = true,
+							Name = "innerTextBlock",
+							// Source 0\MainPage.xaml (Line 10:4)
+						}
+						.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+						{
+						/* _isTopLevelDictionary:False */
+						__that._component_0 = __p1;
+						__nameScope.RegisterName("innerTextBlock", __p1);
+						__that.innerTextBlock = __p1;
+						// FieldModifier public
+						__p1.SetBinding(
+							global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
+							new Microsoft.UI.Xaml.Data.Binding()
+							{
+								Mode = global::Microsoft.UI.Xaml.Data.BindingMode.OneWay,
+							}
+								.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime InnerText*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? (TryGetInstance_xBind_1(___tctx, out var bindResult1) ? (true, bindResult1) : (false, default)) : (false, default), null , new [] {"InnerText"}))
+						);
+						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+						__p1.CreationComplete();
+						}
+						))
+					)
+					,
 				}
-				.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+				.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 				{
-				/* _isTopLevelDictionary:False */
-				__that._component_0 = __p1;
-				__nameScope.RegisterName("innerTextBlock", __p1);
-				__that.innerTextBlock = __p1;
+				__nameScope.RegisterName("topLevelContent", __p1);
+				__that.topLevelContent = __p1;
 				// FieldModifier public
-				__p1.SetBinding(
-					global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
-					new Microsoft.UI.Xaml.Data.Binding()
-					{
-						Mode = global::Microsoft.UI.Xaml.Data.BindingMode.OneWay,
-					}
-						.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime InnerText*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? (TryGetInstance_xBind_1(___tctx, out var bindResult1) ? (true, bindResult1) : (false, default)) : (false, default), null , new [] {"InnerText"}))
-				);
+				// Load false
 				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
 				__p1.CreationComplete();
 				}
 				))
-				,
-			}
-			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
-			{
-			__nameScope.RegisterName("topLevelContent", __p1);
-			__that.topLevelContent = __p1;
-			// FieldModifier public
-			// Load false
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-			__p1.CreationComplete();
-			}
-			))
-			)			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
-			{
-			__p1.Name = "topLevelContent";
-			_topLevelContentSubject.ElementInstance = __p1;
-			__that._component_1 = __p1;
-			var _component_1_update_That = (this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;
-			void _component_1_update(global::Microsoft.UI.Xaml.ElementStub sender)
-			{
-				if (_component_1_update_That.Target is global::TestRepro.MainPage that)
+				)				.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 				{
-					if (sender.IsMaterialized)
+				__p1.Name = "topLevelContent";
+				_topLevelContentSubject.ElementInstance = __p1;
+				__that._component_1 = __p1;
+				var _component_1_update_That = (this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;
+				void _component_1_update(global::Microsoft.UI.Xaml.ElementStub sender)
+				{
+					if (_component_1_update_That.Target is global::TestRepro.MainPage that)
 					{
-						that.Bindings.UpdateResources();
-						that.Bindings.NotifyXLoad("topLevelContent");
-					}
-					else
-					{
-						that._topLevelContentSubject.ElementInstance = null;
-						that._innerTextBlockSubject.ElementInstance = null;
-						that._innerTextBlockSubject.ElementInstance = null;
+						if (sender.IsMaterialized)
+						{
+							that.Bindings.UpdateResources();
+							that.Bindings.NotifyXLoad("topLevelContent");
+						}
+						else
+						{
+							that._topLevelContentSubject.ElementInstance = null;
+							that._innerTextBlockSubject.ElementInstance = null;
+							that._innerTextBlockSubject.ElementInstance = null;
+						}
 					}
 				}
-			}
-			__p1.MaterializationChanged += _component_1_update;
-			var owner = this;
-			void _component_1_materializing(object sender)
-			{
-				if (_component_1_update_That.Target is global::TestRepro.MainPage that)
+				__p1.MaterializationChanged += _component_1_update;
+				var owner = this;
+				void _component_1_materializing(object sender)
 				{
-					that._component_0.ApplyXBind();
-					that._component_0.UpdateResourceBindings();
+					if (_component_1_update_That.Target is global::TestRepro.MainPage that)
+					{
+						that._component_0.ApplyXBind();
+						that._component_0.UpdateResourceBindings();
+					}
 				}
-			}
-			__p1.Materializing += _component_1_materializing;
-			}
-			))
+				__p1.Materializing += _component_1_materializing;
+				}
+				))
+			)
 			;
 			
 			this

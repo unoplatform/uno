@@ -50,79 +50,81 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 			base.IsParsing = true;
 			// Source 0\Grid_Uses_New_Succinct_Syntax.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.Grid
-			{
-				IsParsing = true,
-				Name = "grid",
-				ColumnDefinitions = 
+			global::MyProject.GlobalStaticResources.__PreserveProperties(
+				new global::Microsoft.UI.Xaml.Controls.Grid
 				{
-					new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
+					IsParsing = true,
+					Name = "grid",
+					ColumnDefinitions = 
 					{
-						Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star)
+						new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
+						{
+							Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star)
+						}
+						,
+						new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
+						{
+							Width = new global::Microsoft.UI.Xaml.GridLength(2f, global::Microsoft.UI.Xaml.GridUnitType.Star)
+						}
+						,
+						new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
+						{
+							Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Auto)
+						}
+						,
+						new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
+						{
+							Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star)
+						}
+						,
+						new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
+						{
+							Width = new global::Microsoft.UI.Xaml.GridLength(300f, global::Microsoft.UI.Xaml.GridUnitType.Pixel)
+						}
+						,
 					}
 					,
-					new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
+					RowDefinitions = 
 					{
-						Width = new global::Microsoft.UI.Xaml.GridLength(2f, global::Microsoft.UI.Xaml.GridUnitType.Star)
+						new global::Microsoft.UI.Xaml.Controls.RowDefinition
+						{
+							Height = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star)
+						}
+						,
+						new global::Microsoft.UI.Xaml.Controls.RowDefinition
+						{
+							Height = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Auto)
+						}
+						,
+						new global::Microsoft.UI.Xaml.Controls.RowDefinition
+						{
+							Height = new global::Microsoft.UI.Xaml.GridLength(25f, global::Microsoft.UI.Xaml.GridUnitType.Pixel)
+						}
+						,
+						new global::Microsoft.UI.Xaml.Controls.RowDefinition
+						{
+							Height = new global::Microsoft.UI.Xaml.GridLength(14f, global::Microsoft.UI.Xaml.GridUnitType.Pixel)
+						}
+						,
+						new global::Microsoft.UI.Xaml.Controls.RowDefinition
+						{
+							Height = new global::Microsoft.UI.Xaml.GridLength(20f, global::Microsoft.UI.Xaml.GridUnitType.Pixel)
+						}
+						,
 					}
 					,
-					new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
-					{
-						Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Auto)
-					}
-					,
-					new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
-					{
-						Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star)
-					}
-					,
-					new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
-					{
-						Width = new global::Microsoft.UI.Xaml.GridLength(300f, global::Microsoft.UI.Xaml.GridUnitType.Pixel)
-					}
-					,
+					// Source 0\Grid_Uses_New_Succinct_Syntax.xaml (Line 10:6)
 				}
-				,
-				RowDefinitions = 
+				.Grid_Uses_New_Succinct_Syntax_cc38332c9fd4c0da9c1fa0270bbd3609_XamlApply((Grid_Uses_New_Succinct_Syntax_cc38332c9fd4c0da9c1fa0270bbd3609XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 				{
-					new global::Microsoft.UI.Xaml.Controls.RowDefinition
-					{
-						Height = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star)
-					}
-					,
-					new global::Microsoft.UI.Xaml.Controls.RowDefinition
-					{
-						Height = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Auto)
-					}
-					,
-					new global::Microsoft.UI.Xaml.Controls.RowDefinition
-					{
-						Height = new global::Microsoft.UI.Xaml.GridLength(25f, global::Microsoft.UI.Xaml.GridUnitType.Pixel)
-					}
-					,
-					new global::Microsoft.UI.Xaml.Controls.RowDefinition
-					{
-						Height = new global::Microsoft.UI.Xaml.GridLength(14f, global::Microsoft.UI.Xaml.GridUnitType.Pixel)
-					}
-					,
-					new global::Microsoft.UI.Xaml.Controls.RowDefinition
-					{
-						Height = new global::Microsoft.UI.Xaml.GridLength(20f, global::Microsoft.UI.Xaml.GridUnitType.Pixel)
-					}
-					,
+				__nameScope.RegisterName("grid", __p1);
+				__that.grid = __p1;
+				// FieldModifier public
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Grid_Uses_New_Succinct_Syntax_cc38332c9fd4c0da9c1fa0270bbd3609);
+				__p1.CreationComplete();
 				}
-				,
-				// Source 0\Grid_Uses_New_Succinct_Syntax.xaml (Line 10:6)
-			}
-			.Grid_Uses_New_Succinct_Syntax_cc38332c9fd4c0da9c1fa0270bbd3609_XamlApply((Grid_Uses_New_Succinct_Syntax_cc38332c9fd4c0da9c1fa0270bbd3609XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
-			{
-			__nameScope.RegisterName("grid", __p1);
-			__that.grid = __p1;
-			// FieldModifier public
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Grid_Uses_New_Succinct_Syntax_cc38332c9fd4c0da9c1fa0270bbd3609);
-			__p1.CreationComplete();
-			}
-			))
+				))
+			)
 			;
 			
 			this

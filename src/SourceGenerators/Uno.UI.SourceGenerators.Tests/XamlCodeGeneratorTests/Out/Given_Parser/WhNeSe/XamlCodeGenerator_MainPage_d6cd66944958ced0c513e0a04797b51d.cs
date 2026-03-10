@@ -52,33 +52,41 @@ namespace TestRepro
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 			{
 				return 
-					new global::Microsoft.UI.Xaml.Style
-					{
-						TargetType = typeof(global::TestRepro.MyGrid),
-						// Source 0\MainPage.xaml (Line 8:4)
-						Setters = 
+					global::MyProject.GlobalStaticResources.__PreserveProperties(
+						new global::Microsoft.UI.Xaml.Style
 						{
-							new global::Microsoft.UI.Xaml.Setter
+							TargetType = typeof(global::TestRepro.MyGrid),
+							// Source 0\MainPage.xaml (Line 8:4)
+							Setters = 
 							{
-								Property = global::TestRepro.MyGrid.FirstStyleProperty,
-								Value = 								new global::Microsoft.UI.Xaml.Style
-								{
-									TargetType = typeof(global::Microsoft.UI.Xaml.Controls.Button),
-									// Source 0\MainPage.xaml (Line 11:7)
-								}
+								global::MyProject.GlobalStaticResources.__PreserveProperties(
+									new global::Microsoft.UI.Xaml.Setter
+									{
+										Property = global::TestRepro.MyGrid.FirstStyleProperty,
+										Value = 										global::MyProject.GlobalStaticResources.__PreserveProperties(
+											new global::Microsoft.UI.Xaml.Style
+											{
+												TargetType = typeof(global::Microsoft.UI.Xaml.Controls.Button),
+												// Source 0\MainPage.xaml (Line 11:7)
+											}
+										)
+										,
+										// Source 0\MainPage.xaml (Line 9:5)
+									}
+								)
 								,
-								// Source 0\MainPage.xaml (Line 9:5)
+								global::MyProject.GlobalStaticResources.__PreserveProperties(
+									new global::Microsoft.UI.Xaml.Setter
+									{
+										Property = global::TestRepro.MyGrid.SecondProperty,
+										Value = "Hello",
+										// Source 0\MainPage.xaml (Line 14:5)
+									}
+								)
+								,
 							}
-							,
-							new global::Microsoft.UI.Xaml.Setter
-							{
-								Property = global::TestRepro.MyGrid.SecondProperty,
-								Value = "Hello",
-								// Source 0\MainPage.xaml (Line 14:5)
-							}
-							,
 						}
-					}
+					)
 				;
 			}
 			)
