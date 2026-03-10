@@ -380,6 +380,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Trailing_Space_Overflows_ScrollViewer_Viewport()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "some text that is longer than the width of the text box"
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var scrollableWidthWithoutTrailingSpaces = ((ScrollViewer)SUT.ContentElement).ScrollableWidth;
+
+			SUT.Text += new string(' ', 20);
+			await UITestHelper.WaitForIdle();
+			Assert.IsGreaterThan(scrollableWidthWithoutTrailingSpaces + 50, ((ScrollViewer)SUT.ContentElement).ScrollableWidth);
+		}
+
+		[TestMethod]
 		public async Task When_Ctrl_A()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
