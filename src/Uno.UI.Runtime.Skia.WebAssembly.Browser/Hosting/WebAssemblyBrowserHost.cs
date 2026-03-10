@@ -51,12 +51,6 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 	protected async override Task InitializeAsync()
 	{
 		NativeMethods.PersistBootstrapperLoader();
-		CompositionTarget.Rendering += OnCompositionTargetOnRendering;
-		void OnCompositionTargetOnRendering(object? sender, object o)
-		{
-			NativeMethods.RemoveLoading();
-			CompositionTarget.Rendering -= OnCompositionTargetOnRendering;
-		}
 
 		ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => _coreApplicationExtension!);
 		ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => new BrowserPointerInputSource());
@@ -118,6 +112,8 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 		_renderer?.InvalidateRender();
 		Window.CurrentSafe!.RootElement?.XamlRoot?.InvalidateOverlays();
 	}
+
+	internal void RemoveSplashScreen() => NativeMethods.RemoveLoading();
 
 	UIElement? IXamlRootHost.RootElement => Window.CurrentSafe!.RootElement;
 
