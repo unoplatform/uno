@@ -35,6 +35,13 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 	public long DiscoveryDurationMs => _discoveryDurationMs;
 	public DiscoveryInfo? LastDiscoveryInfo => _lastDiscoveryInfo;
 
+	/// <summary>
+	/// Set to true when the monitor has scanned for solutions and found none.
+	/// Reset to false when a solution is found. Used by HealthService to report
+	/// a clear message to the agent.
+	/// </summary>
+	public bool SolutionNotFound { get; private set; }
+
 	internal void StartMonitoring(string currentDirectory, int port, List<string> forwardedArgs)
 	{
 		if (_monitor is not null)
@@ -85,14 +92,16 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 			try
 			{
 				// If we don't have a solution, we can't start a DevServer yet.
-				var solutionFiles = Directory
-					.EnumerateFiles(_currentDirectory, "*.sln")
-					.Concat(Directory.EnumerateFiles(_currentDirectory, "*.slnx")).ToArray();
+				// Search recursively (up to 3 levels deep) so solutions in
+				// subdirectories like src/MyProject.slnx are found.
+				var solutionFiles = FindSolutionFiles(_currentDirectory);
 
 				_logger.LogTrace(
 					"DevServerMonitor scan found {Count} solution files in {Directory}",
 					solutionFiles.Length,
 					_currentDirectory);
+
+				SolutionNotFound = solutionFiles.Length == 0;
 
 				if (solutionFiles.Length != 0)
 				{
@@ -519,6 +528,60 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 		var port = ((IPEndPoint)tcp.LocalEndpoint).Port;
 		tcp.Stop();
 		return port;
+	}
+
+	/// <summary>
+	/// Finds .sln and .slnx files in the given directory, searching recursively
+	/// up to <paramref name="maxDepth"/> levels deep. Results are sorted by depth
+	/// (shallowest first) so the closest solution to the root is preferred.
+	/// </summary>
+	internal static string[] FindSolutionFiles(string directory, int maxDepth = 3)
+	{
+		var results = new List<string>();
+		SearchDirectory(directory, 0, maxDepth, results);
+		return results.ToArray();
+	}
+
+	private static void SearchDirectory(string directory, int currentDepth, int maxDepth, List<string> results)
+	{
+		try
+		{
+			foreach (var file in Directory.EnumerateFiles(directory, "*.sln"))
+			{
+				results.Add(file);
+			}
+			foreach (var file in Directory.EnumerateFiles(directory, "*.slnx"))
+			{
+				results.Add(file);
+			}
+		}
+		catch (UnauthorizedAccessException)
+		{
+			// Skip directories we can't access
+		}
+
+		if (currentDepth >= maxDepth)
+		{
+			return;
+		}
+
+		try
+		{
+			foreach (var subDir in Directory.EnumerateDirectories(directory))
+			{
+				// Skip common large directories that won't contain solutions
+				var dirName = Path.GetFileName(subDir);
+				if (dirName is "node_modules" or ".git" or "bin" or "obj" or ".vs" or ".idea" or "packages")
+				{
+					continue;
+				}
+				SearchDirectory(subDir, currentDepth + 1, maxDepth, results);
+			}
+		}
+		catch (UnauthorizedAccessException)
+		{
+			// Skip directories we can't access
+		}
 	}
 
 }

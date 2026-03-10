@@ -91,4 +91,5 @@ internal enum IssueCode
 	AddInLoadFailed,
 	AddInDiscoveryFallback,
 	UpstreamError,
+	NoSolutionFound,
 }

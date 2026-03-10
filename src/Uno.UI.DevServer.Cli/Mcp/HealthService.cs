@@ -58,6 +58,17 @@ internal class HealthService(
 			});
 		}
 
+		if (devServerMonitor.SolutionNotFound)
+		{
+			issues.Add(new ValidationIssue
+			{
+				Code = IssueCode.NoSolutionFound,
+				Severity = ValidationSeverity.Warning,
+				Message = "No .sln or .slnx file found in the working directory or its subdirectories.",
+				Remediation = "Create an Uno Platform project first (e.g. 'dotnet new unoapp'), then tools will become available automatically.",
+			});
+		}
+
 		if (ConnectionState == ConnectionState.Reconnecting)
 		{
 			issues.Add(new ValidationIssue

@@ -157,11 +157,9 @@ internal class ProxyLifecycleManager
 	{
 		_logger.LogTrace("Processing MCP Client Roots: {Roots}", string.Join(", ", _roots));
 
-		if (_devServerStartGuard.IsStarted)
-		{
-			_logger.LogTrace("DevServer monitor already running; skipping additional root processing");
-			return;
-		}
+		// The StartOnceGuard inside StartDevServerMonitor() prevents concurrent starts.
+		// We don't early-return here so that roots from the MCP client can trigger
+		// the monitor when no --solution-dir was provided.
 
 		if (_roots.FirstOrDefault() is { } rootUri)
 		{
@@ -237,22 +235,21 @@ internal class ProxyLifecycleManager
 			return;
 		}
 
-		var directory = string.IsNullOrWhiteSpace(_solutionDirectory)
-			? _currentDirectory
-			: _solutionDirectory;
-
 		_logger.LogTrace(
 			"EnsureDevServerStartedFromSolutionDirectory (solutionDir: {SolutionDir}, currentDir: {CurrentDir})",
 			_solutionDirectory,
 			_currentDirectory);
 
-		if (string.IsNullOrWhiteSpace(directory))
+		if (string.IsNullOrWhiteSpace(_solutionDirectory))
 		{
-			_logger.LogTrace("No directory available to start the DevServer monitor; skipping initial start");
+			// No explicit --solution-dir was provided. Defer startup until we receive
+			// roots from the MCP client (in EnsureRootsInitialized). For clients that
+			// don't support roots, the fallback to currentDirectory happens there.
+			_logger.LogTrace("No explicit solution directory; deferring DevServer start until MCP roots are received");
 			return;
 		}
 
-		StartDevServerMonitor(directory);
+		StartDevServerMonitor(_solutionDirectory);
 	}
 
 	private void StartDevServerMonitor(string? directory)
