@@ -1,0 +1,156 @@
+<UserControl
+	x:Class="Uno.UI.Samples.Content.UITests.RichTextBlockControl.RichTextBlock_TextLayout"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	d:DesignHeight="1000"
+	d:DesignWidth="400">
+
+	<ScrollViewer>
+		<StackPanel Spacing="16" Padding="16">
+			<TextBlock Text="Text Layout Properties" FontSize="20" FontWeight="Bold" />
+
+			<!-- TextWrapping: Wrap (default for RichTextBlock) -->
+			<TextBlock Text="TextWrapping=Wrap (default):" FontWeight="SemiBold" />
+			<Border BorderBrush="Gray" BorderThickness="1" Width="250">
+				<RichTextBlock x:Name="WrapSample" TextWrapping="Wrap">
+					<Paragraph>
+						<Run Text="This is a long text that should wrap at the container boundary. RichTextBlock defaults to Wrap unlike TextBlock." />
+					</Paragraph>
+				</RichTextBlock>
+			</Border>
+
+			<!-- TextWrapping: NoWrap -->
+			<TextBlock Text="TextWrapping=NoWrap:" FontWeight="SemiBold" />
+			<Border BorderBrush="Gray" BorderThickness="1" Width="250">
+				<RichTextBlock x:Name="NoWrapSample" TextWrapping="NoWrap">
+					<Paragraph>
+						<Run Text="This text should not wrap and will overflow the container boundary." />
+					</Paragraph>
+				</RichTextBlock>
+			</Border>
+
+			<!-- TextTrimming: None -->
+			<TextBlock Text="TextTrimming=None:" FontWeight="SemiBold" />
+			<Border BorderBrush="Gray" BorderThickness="1" Width="250" Height="40">
+				<RichTextBlock x:Name="TrimNone" TextTrimming="None" TextWrapping="NoWrap">
+					<Paragraph>
+						<Run Text="This text is not trimmed and may overflow." />
+					</Paragraph>
+				</RichTextBlock>
+			</Border>
+
+			<!-- TextTrimming: CharacterEllipsis -->
+			<TextBlock Text="TextTrimming=CharacterEllipsis:" FontWeight="SemiBold" />
+			<Border BorderBrush="Gray" BorderThickness="1" Width="250">
+				<RichTextBlock x:Name="TrimCharEllipsis" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap">
+					<Paragraph>
+						<Run Text="This text should be trimmed with an ellipsis character." />
+					</Paragraph>
+				</RichTextBlock>
+			</Border>
+
+			<!-- TextTrimming: WordEllipsis -->
+			<TextBlock Text="TextTrimming=WordEllipsis:" FontWeight="SemiBold" />
+			<Border BorderBrush="Gray" BorderThickness="1" Width="250">
+				<RichTextBlock x:Name="TrimWordEllipsis" TextTrimming="WordEllipsis" TextWrapping="NoWrap">
+					<Paragraph>
+						<Run Text="This text should be trimmed with word ellipsis at word boundaries." />
+					</Paragraph>
+				</RichTextBlock>
+			</Border>
+
+			<!-- MaxLines -->
+			<TextBlock Text="MaxLines=2:" FontWeight="SemiBold" />
+			<Border BorderBrush="Gray" BorderThickness="1" Width="250">
+				<RichTextBlock x:Name="MaxLinesSample" MaxLines="2">
+					<Paragraph>
+						<Run Text="This text has MaxLines=2. It should show at most two lines of text even though there is much more content that would normally display across many more lines." />
+					</Paragraph>
+				</RichTextBlock>
+			</Border>
+
+			<!-- MaxLines with multiple paragraphs -->
+			<TextBlock Text="MaxLines=3 with multiple paragraphs:" FontWeight="SemiBold" />
+			<Border BorderBrush="Gray" BorderThickness="1" Width="250">
+				<RichTextBlock x:Name="MaxLinesMultiPara" MaxLines="3">
+					<Paragraph>
+						<Run Text="First paragraph line one. First paragraph line two." />
+					</Paragraph>
+					<Paragraph>
+						<Run Text="Second paragraph line one. Second paragraph line two." />
+					</Paragraph>
+					<Paragraph>
+						<Run Text="Third paragraph that should not appear." />
+					</Paragraph>
+				</RichTextBlock>
+			</Border>
+
+			<!-- TextAlignment -->
+			<TextBlock Text="TextAlignment:" FontWeight="SemiBold" />
+			<Border BorderBrush="Gray" BorderThickness="1" Width="300">
+				<RichTextBlock x:Name="AlignLeft" TextAlignment="Left">
+					<Paragraph><Run Text="Left aligned text" /></Paragraph>
+				</RichTextBlock>
+			</Border>
+			<Border BorderBrush="Gray" BorderThickness="1" Width="300">
+				<RichTextBlock x:Name="AlignCenter" TextAlignment="Center">
+					<Paragraph><Run Text="Center aligned text" /></Paragraph>
+				</RichTextBlock>
+			</Border>
+			<Border BorderBrush="Gray" BorderThickness="1" Width="300">
+				<RichTextBlock x:Name="AlignRight" TextAlignment="Right">
+					<Paragraph><Run Text="Right aligned text" /></Paragraph>
+				</RichTextBlock>
+			</Border>
+			<Border BorderBrush="Gray" BorderThickness="1" Width="300">
+				<RichTextBlock x:Name="AlignJustify" TextAlignment="Justify">
+					<Paragraph>
+						<Run Text="Justify aligned text that should spread evenly across the available width when text wraps to multiple lines." />
+					</Paragraph>
+				</RichTextBlock>
+			</Border>
+
+			<!-- Padding -->
+			<TextBlock Text="Padding=20:" FontWeight="SemiBold" />
+			<Border BorderBrush="Gray" BorderThickness="1">
+				<RichTextBlock x:Name="PaddingSample" Padding="20">
+					<Paragraph>
+						<Run Text="This text has 20px padding on all sides." />
+					</Paragraph>
+				</RichTextBlock>
+			</Border>
+
+			<!-- TextIndent (per paragraph) -->
+			<TextBlock Text="TextIndent=30 on paragraph:" FontWeight="SemiBold" />
+			<Border BorderBrush="Gray" BorderThickness="1" Width="300">
+				<RichTextBlock x:Name="TextIndentSample">
+					<Paragraph TextIndent="30">
+						<Run Text="This paragraph has a 30px text indent. The first line should be indented while subsequent wrapped lines are not." />
+					</Paragraph>
+					<Paragraph>
+						<Run Text="This paragraph has no indent." />
+					</Paragraph>
+				</RichTextBlock>
+			</Border>
+
+			<!-- Paragraph Margin -->
+			<TextBlock Text="Paragraph Margin:" FontWeight="SemiBold" />
+			<Border BorderBrush="Gray" BorderThickness="1" Width="300">
+				<RichTextBlock x:Name="ParagraphMarginSample">
+					<Paragraph Margin="0,0,0,20">
+						<Run Text="Paragraph with bottom margin of 20." />
+					</Paragraph>
+					<Paragraph Margin="20,0,0,0">
+						<Run Text="Paragraph with left margin of 20." />
+					</Paragraph>
+					<Paragraph>
+						<Run Text="Paragraph with no margin." />
+					</Paragraph>
+				</RichTextBlock>
+			</Border>
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

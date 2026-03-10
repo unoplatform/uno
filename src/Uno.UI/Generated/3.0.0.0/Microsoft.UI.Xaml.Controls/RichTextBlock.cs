@@ -8,132 +8,15 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class RichTextBlock : global::Microsoft.UI.Xaml.FrameworkElement
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.TextAlignment HorizontalTextAlignment
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.TextAlignment)this.GetValue(HorizontalTextAlignmentProperty);
-			}
-			set
-			{
-				this.SetValue(HorizontalTextAlignmentProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double LineHeight
-		{
-			get
-			{
-				return (double)this.GetValue(LineHeightProperty);
-			}
-			set
-			{
-				this.SetValue(LineHeightProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.Brush Foreground
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.Brush)this.GetValue(ForegroundProperty);
-			}
-			set
-			{
-				this.SetValue(ForegroundProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Text.FontWeight FontWeight
-		{
-			get
-			{
-				return (global::Windows.UI.Text.FontWeight)this.GetValue(FontWeightProperty);
-			}
-			set
-			{
-				this.SetValue(FontWeightProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Text.FontStyle FontStyle
-		{
-			get
-			{
-				return (global::Windows.UI.Text.FontStyle)this.GetValue(FontStyleProperty);
-			}
-			set
-			{
-				this.SetValue(FontStyleProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Text.FontStretch FontStretch
-		{
-			get
-			{
-				return (global::Windows.UI.Text.FontStretch)this.GetValue(FontStretchProperty);
-			}
-			set
-			{
-				this.SetValue(FontStretchProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double FontSize
-		{
-			get
-			{
-				return (double)this.GetValue(FontSizeProperty);
-			}
-			set
-			{
-				this.SetValue(FontSizeProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.FontFamily FontFamily
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.FontFamily)this.GetValue(FontFamilyProperty);
-			}
-			set
-			{
-				this.SetValue(FontFamilyProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsTextSelectionEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsTextSelectionEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsTextSelectionEnabledProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property HorizontalTextAlignment
+		// Skipping already declared property LineHeight
+		// Skipping already declared property Foreground
+		// Skipping already declared property FontWeight
+		// Skipping already declared property FontStyle
+		// Skipping already declared property FontStretch
+		// Skipping already declared property FontSize
+		// Skipping already declared property FontFamily
+		// Skipping already declared property IsTextSelectionEnabled
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsTextScaleFactorEnabled
@@ -148,20 +31,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int CharacterSpacing
-		{
-			get
-			{
-				return (int)this.GetValue(CharacterSpacingProperty);
-			}
-			set
-			{
-				this.SetValue(CharacterSpacingProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property CharacterSpacing
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsColorFontEnabled
@@ -176,48 +46,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.TextWrapping TextWrapping
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.TextWrapping)this.GetValue(TextWrappingProperty);
-			}
-			set
-			{
-				this.SetValue(TextWrappingProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.LineStackingStrategy LineStackingStrategy
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.LineStackingStrategy)this.GetValue(LineStackingStrategyProperty);
-			}
-			set
-			{
-				this.SetValue(LineStackingStrategyProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.TextTrimming TextTrimming
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.TextTrimming)this.GetValue(TextTrimmingProperty);
-			}
-			set
-			{
-				this.SetValue(TextTrimmingProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property TextWrapping
+		// Skipping already declared property LineStackingStrategy
+		// Skipping already declared property TextTrimming
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.TextReadingOrder TextReadingOrder
@@ -246,104 +77,13 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double TextIndent
-		{
-			get
-			{
-				return (double)this.GetValue(TextIndentProperty);
-			}
-			set
-			{
-				this.SetValue(TextIndentProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Text.TextDecorations TextDecorations
-		{
-			get
-			{
-				return (global::Windows.UI.Text.TextDecorations)this.GetValue(TextDecorationsProperty);
-			}
-			set
-			{
-				this.SetValue(TextDecorationsProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.TextAlignment TextAlignment
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.TextAlignment)this.GetValue(TextAlignmentProperty);
-			}
-			set
-			{
-				this.SetValue(TextAlignmentProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.SolidColorBrush SelectionHighlightColor
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.SolidColorBrush)this.GetValue(SelectionHighlightColorProperty);
-			}
-			set
-			{
-				this.SetValue(SelectionHighlightColorProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase SelectionFlyout
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase)this.GetValue(SelectionFlyoutProperty);
-			}
-			set
-			{
-				this.SetValue(SelectionFlyoutProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Thickness Padding
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Thickness)this.GetValue(PaddingProperty);
-			}
-			set
-			{
-				this.SetValue(PaddingProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow OverflowContentTarget
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow)this.GetValue(OverflowContentTargetProperty);
-			}
-			set
-			{
-				this.SetValue(OverflowContentTargetProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property TextIndent
+		// Skipping already declared property TextDecorations
+		// Skipping already declared property TextAlignment
+		// Skipping already declared property SelectionHighlightColor
+		// Skipping already declared property SelectionFlyout
+		// Skipping already declared property Padding
+		// Skipping already declared property OverflowContentTarget
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.OpticalMarginAlignment OpticalMarginAlignment
@@ -358,20 +98,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int MaxLines
-		{
-			get
-			{
-				return (int)this.GetValue(MaxLinesProperty);
-			}
-			set
-			{
-				this.SetValue(MaxLinesProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property MaxLines
 		// Skipping already declared property Blocks
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -393,36 +120,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool HasOverflowContent
-		{
-			get
-			{
-				return (bool)this.GetValue(HasOverflowContentProperty);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsTextTrimmed
-		{
-			get
-			{
-				return (bool)this.GetValue(IsTextTrimmedProperty);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string SelectedText
-		{
-			get
-			{
-				return (string)this.GetValue(SelectedTextProperty);
-			}
-		}
-#endif
+		// Skipping already declared property HasOverflowContent
+		// Skipping already declared property IsTextTrimmed
+		// Skipping already declared property SelectedText
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Documents.TextPointer SelectionEnd
@@ -443,16 +143,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Documents.TextHighlighter> TextHighlighters
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<TextHighlighter> RichTextBlock.TextHighlighters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CTextHighlighter%3E%20RichTextBlock.TextHighlighters");
-			}
-		}
-#endif
+		// Skipping already declared property TextHighlighters
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public double BaselineOffset
@@ -463,78 +154,15 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty CharacterSpacingProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(CharacterSpacing), typeof(int),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlock),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(int)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty FontFamilyProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(FontFamily), typeof(global::Microsoft.UI.Xaml.Media.FontFamily),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlock),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.FontFamily)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty FontSizeProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(FontSize), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlock),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty FontStretchProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(FontStretch), typeof(global::Windows.UI.Text.FontStretch),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlock),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontStretch)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty FontStyleProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(FontStyle), typeof(global::Windows.UI.Text.FontStyle),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlock),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontStyle)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty FontWeightProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(FontWeight), typeof(global::Windows.UI.Text.FontWeight),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlock),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontWeight)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ForegroundProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Foreground), typeof(global::Microsoft.UI.Xaml.Media.Brush),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlock),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Brush)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty HasOverflowContentProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(HasOverflowContent), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlock),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty HorizontalTextAlignmentProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(HorizontalTextAlignment), typeof(global::Microsoft.UI.Xaml.TextAlignment),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlock),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.TextAlignment)));
-#endif
+		// Skipping already declared property CharacterSpacingProperty
+		// Skipping already declared property FontFamilyProperty
+		// Skipping already declared property FontSizeProperty
+		// Skipping already declared property FontStretchProperty
+		// Skipping already declared property FontStyleProperty
+		// Skipping already declared property FontWeightProperty
+		// Skipping already declared property ForegroundProperty
+		// Skipping already declared property HasOverflowContentProperty
+		// Skipping already declared property HorizontalTextAlignmentProperty
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty IsColorFontEnabledProperty { get; } =
@@ -551,46 +179,11 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlock),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsTextSelectionEnabledProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(IsTextSelectionEnabled), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlock),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsTextTrimmedProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(IsTextTrimmed), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlock),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty LineHeightProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(LineHeight), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlock),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty LineStackingStrategyProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(LineStackingStrategy), typeof(global::Microsoft.UI.Xaml.LineStackingStrategy),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlock),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.LineStackingStrategy)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty MaxLinesProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(MaxLines), typeof(int),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlock),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(int)));
-#endif
+		// Skipping already declared property IsTextSelectionEnabledProperty
+		// Skipping already declared property IsTextTrimmedProperty
+		// Skipping already declared property LineHeightProperty
+		// Skipping already declared property LineStackingStrategyProperty
+		// Skipping already declared property MaxLinesProperty
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty OpticalMarginAlignmentProperty { get; } =
@@ -599,70 +192,14 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlock),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.OpticalMarginAlignment)));
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty OverflowContentTargetProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(OverflowContentTarget), typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlock),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty PaddingProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Padding), typeof(global::Microsoft.UI.Xaml.Thickness),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlock),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Thickness)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty SelectedTextProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedText), typeof(string),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlock),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(string)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty SelectionFlyoutProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionFlyout), typeof(global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlock),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty SelectionHighlightColorProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionHighlightColor), typeof(global::Microsoft.UI.Xaml.Media.SolidColorBrush),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlock),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.SolidColorBrush)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty TextAlignmentProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(TextAlignment), typeof(global::Microsoft.UI.Xaml.TextAlignment),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlock),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.TextAlignment)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty TextDecorationsProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(TextDecorations), typeof(global::Windows.UI.Text.TextDecorations),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlock),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Text.TextDecorations)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty TextIndentProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(TextIndent), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlock),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
+		// Skipping already declared property OverflowContentTargetProperty
+		// Skipping already declared property PaddingProperty
+		// Skipping already declared property SelectedTextProperty
+		// Skipping already declared property SelectionFlyoutProperty
+		// Skipping already declared property SelectionHighlightColorProperty
+		// Skipping already declared property TextAlignmentProperty
+		// Skipping already declared property TextDecorationsProperty
+		// Skipping already declared property TextIndentProperty
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty TextLineBoundsProperty { get; } =
@@ -679,22 +216,8 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlock),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.TextReadingOrder)));
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty TextTrimmingProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(TextTrimming), typeof(global::Microsoft.UI.Xaml.TextTrimming),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlock),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.TextTrimming)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty TextWrappingProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(TextWrapping), typeof(global::Microsoft.UI.Xaml.TextWrapping),
-			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlock),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.TextWrapping)));
-#endif
+		// Skipping already declared property TextTrimmingProperty
+		// Skipping already declared property TextWrappingProperty
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.RichTextBlock.RichTextBlock()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.RichTextBlock()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.FontSize.get
@@ -757,19 +280,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.TextHighlighters.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.SelectionFlyout.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.SelectionFlyout.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.SelectionChanged.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.SelectionChanged.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.ContextMenuOpening.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.ContextMenuOpening.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.IsTextTrimmedChanged.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.IsTextTrimmedChanged.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void SelectAll()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichTextBlock", "void RichTextBlock.SelectAll()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RichTextBlock.SelectAll()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Select(global::Microsoft.UI.Xaml.Documents.TextPointer start, global::Microsoft.UI.Xaml.Documents.TextPointer end)
@@ -784,13 +295,7 @@ namespace Microsoft.UI.Xaml.Controls
 			throw new global::System.NotImplementedException("The member TextPointer RichTextBlock.GetPositionFromPoint(Point point) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextPointer%20RichTextBlock.GetPositionFromPoint%28Point%20point%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void CopySelectionToClipboard()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichTextBlock", "void RichTextBlock.CopySelectionToClipboard()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.RichTextBlock.CopySelectionToClipboard()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.TextIndent.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.TextIndent.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.FontSizeProperty.get
@@ -822,53 +327,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.HorizontalTextAlignmentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.SelectionFlyoutProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlock.TextIndentProperty.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public event global::Microsoft.UI.Xaml.Controls.ContextMenuOpeningEventHandler ContextMenuOpening
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichTextBlock", "event ContextMenuOpeningEventHandler RichTextBlock.ContextMenuOpening");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichTextBlock", "event ContextMenuOpeningEventHandler RichTextBlock.ContextMenuOpening");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.RichTextBlock, global::Microsoft.UI.Xaml.Controls.IsTextTrimmedChangedEventArgs> IsTextTrimmedChanged
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichTextBlock", "event TypedEventHandler<RichTextBlock, IsTextTrimmedChangedEventArgs> RichTextBlock.IsTextTrimmedChanged");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichTextBlock", "event TypedEventHandler<RichTextBlock, IsTextTrimmedChangedEventArgs> RichTextBlock.IsTextTrimmedChanged");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public event global::Microsoft.UI.Xaml.RoutedEventHandler SelectionChanged
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichTextBlock", "event RoutedEventHandler RichTextBlock.SelectionChanged");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichTextBlock", "event RoutedEventHandler RichTextBlock.SelectionChanged");
-			}
-		}
-#endif
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.RichTextBlock.ContextMenuOpening
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.RichTextBlock.IsTextTrimmedChanged
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.RichTextBlock.SelectionChanged
 	}
 }

@@ -1996,6 +1996,34 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichTextBlockControl\RichTextBlock_Basic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichTextBlockControl\RichTextBlock_Typography.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichTextBlockControl\RichTextBlock_TextLayout.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichTextBlockControl\RichTextBlock_Hyperlinks.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichTextBlockControl\RichTextBlock_Selection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichTextBlockControl\RichTextBlock_Programmatic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichTextBlockControl\RichTextBlock_TextHighlighters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_ImplicitParentTextBlockStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -7168,6 +7196,27 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Simple_Text_Arabic.xaml.cs">
       <DependentUpon>Simple_Text_Arabic.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichTextBlockControl\RichTextBlock_Basic.xaml.cs">
+      <DependentUpon>RichTextBlock_Basic.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichTextBlockControl\RichTextBlock_Typography.xaml.cs">
+      <DependentUpon>RichTextBlock_Typography.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichTextBlockControl\RichTextBlock_TextLayout.xaml.cs">
+      <DependentUpon>RichTextBlock_TextLayout.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichTextBlockControl\RichTextBlock_Hyperlinks.xaml.cs">
+      <DependentUpon>RichTextBlock_Hyperlinks.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichTextBlockControl\RichTextBlock_Selection.xaml.cs">
+      <DependentUpon>RichTextBlock_Selection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichTextBlockControl\RichTextBlock_Programmatic.xaml.cs">
+      <DependentUpon>RichTextBlock_Programmatic.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichTextBlockControl\RichTextBlock_TextHighlighters.xaml.cs">
+      <DependentUpon>RichTextBlock_TextHighlighters.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_VerticalAlignment.xaml.cs">
       <DependentUpon>TextBox_VerticalAlignment.xaml</DependentUpon>
