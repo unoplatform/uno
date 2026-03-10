@@ -87,6 +87,29 @@ internal partial class PopupRoot : Canvas
 		}
 	}
 
+	// MUX Reference: Popup.cpp CPopupRoot::NotifyThemeChanged
+	// In WinUI, PopupRoot iterates all open popups and explicitly calls
+	// NotifyThemeChanged on each, because popup children are visually
+	// parented under PopupRoot but their logical parent is the Popup itself.
+	// Without this, theme walks that reach PopupRoot via the visual tree
+	// would not propagate to popup content.
+	private protected override void NotifyThemeChangedCore(Theme theme)
+	{
+		base.NotifyThemeChangedCore(theme);
+
+		// Propagate theme to all open popups
+		var node = _openPopups.First;
+		while (node != null)
+		{
+			var next = node.Next;
+			if (node.Value.TryGetTarget<Popup>(out var popup))
+			{
+				popup.NotifyThemeChanged(theme);
+			}
+			node = next;
+		}
+	}
+
 	protected override void OnChildrenChanged()
 	{
 		base.OnChildrenChanged();
