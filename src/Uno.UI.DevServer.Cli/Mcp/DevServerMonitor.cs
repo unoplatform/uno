@@ -248,7 +248,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 			$"http://[::1]:{port}/mcp"
 		};
 
-		var maxAttempts = 30; // 30 seconds
+		var maxAttempts = 40; // ~30 seconds total (fast probes then slower)
 
 		using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(1) };
 
@@ -291,7 +291,9 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 				return true;
 			}
 
-			await Task.Delay(1000, ct);
+			// Probe aggressively for the first 5 seconds (200ms), then slow to 1s
+			var delay = i < 10 ? 200 : 1000;
+			await Task.Delay(delay, ct);
 		}
 
 		_logger.LogError("DevServer did not become ready within timeout period on any of: {Endpoints}", string.Join(", ", endpoints));

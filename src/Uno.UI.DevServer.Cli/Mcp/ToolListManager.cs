@@ -25,7 +25,7 @@ internal class ToolListManager(
 	private const string ToolCacheFileName = "tools-cache.json";
 
 	/// <summary>Maximum time to wait for upstream list_tools before returning cached/empty result.</summary>
-	internal const int ListToolsTimeoutMs = 30_000;
+	internal const int ListToolsTimeoutMs = 60_000;
 
 	public string? WorkspaceHash { get; set; }
 
