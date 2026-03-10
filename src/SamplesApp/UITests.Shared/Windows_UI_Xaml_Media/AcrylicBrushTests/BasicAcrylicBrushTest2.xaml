@@ -1,0 +1,286 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Media.AcrylicBrushTests.BasicAcrylicBrushTest2"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Media.AcrylicBrushTests"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<Page.Resources>
+        <!-- In-App Acrylic (blurs content behind the element within the app) -->
+        <AcrylicBrush x:Key="CustomAcrylicInApp"
+                       TintColor="#2E86C1"
+                       TintOpacity="0.7"
+                       FallbackColor="#2E86C1" />
+
+        <AcrylicBrush x:Key="AccentAcrylicBrush"
+                       TintColor="#E74C3C"
+                       TintOpacity="0.6"
+                       FallbackColor="#E74C3C" />
+
+        <AcrylicBrush x:Key="DarkAcrylicBrush"
+                       TintColor="#1C1C1C"
+                       TintOpacity="0.8"
+                       FallbackColor="#1C1C1C" />
+
+        <AcrylicBrush x:Key="LightAcrylicBrush"
+                       TintColor="#FFFFFF"
+                       TintOpacity="0.5"
+                       FallbackColor="#F0F0F0" />
+
+        <AcrylicBrush x:Key="GreenAcrylicBrush"
+                       TintColor="#27AE60"
+                       TintOpacity="0.65"
+                       FallbackColor="#27AE60" />
+
+        <AcrylicBrush x:Key="PurpleAcrylicBrush"
+                       TintColor="#8E44AD"
+                       TintOpacity="0.6"
+                       FallbackColor="#8E44AD" />
+    </Page.Resources>
+
+    <ScrollViewer>
+        <Grid Padding="24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Title -->
+            <TextBlock Grid.Row="0"
+                       Text="AcrylicBrush Showcase"
+                       FontSize="32"
+                       FontWeight="Bold"
+                       Margin="0,0,0,24"
+                       HorizontalAlignment="Center" />
+
+            <!-- Section 1: Side-by-side acrylic cards over a colorful background -->
+            <TextBlock Grid.Row="1"
+                       Text="Acrylic Cards over Gradient Background"
+                       FontSize="20"
+                       FontWeight="SemiBold"
+                       Margin="0,0,0,12" />
+
+            <Grid Grid.Row="2"
+                  Height="320"
+                  CornerRadius="12"
+                  Margin="0,0,0,32">
+                <!-- Colorful background to show the blur-through effect -->
+                <Grid.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#FF6F61" Offset="0.0" />
+                        <GradientStop Color="#6B5B95" Offset="0.3" />
+                        <GradientStop Color="#88B04B" Offset="0.6" />
+                        <GradientStop Color="#F7CAC9" Offset="1.0" />
+                    </LinearGradientBrush>
+                </Grid.Background>
+
+                <!-- Some shapes behind the acrylic to demonstrate transparency -->
+                <Ellipse Width="200" Height="200"
+                         Fill="#FFFFFF" Opacity="0.3"
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Top"
+                         Margin="40,20,0,0" />
+                <Ellipse Width="160" Height="160"
+                         Fill="#FFD700" Opacity="0.4"
+                         HorizontalAlignment="Right"
+                         VerticalAlignment="Bottom"
+                         Margin="0,0,60,20" />
+                <Rectangle Width="180" Height="120"
+                           Fill="#00CED1" Opacity="0.35"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           RadiusX="8" RadiusY="8" />
+
+                <!-- Acrylic cards floating on top -->
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Spacing="20">
+
+                    <!-- Blue Acrylic Card -->
+                    <Grid Width="200" Height="220"
+                          CornerRadius="16"
+                          Background="{StaticResource CustomAcrylicInApp}"
+                          Padding="16">
+                        <StackPanel VerticalAlignment="Center" Spacing="8">
+                            <FontIcon Glyph="&#xE790;" FontSize="36" Foreground="White" HorizontalAlignment="Center" />
+                            <TextBlock Text="Blue Acrylic" FontSize="16" FontWeight="SemiBold"
+                                       Foreground="White" HorizontalAlignment="Center" />
+                            <TextBlock Text="TintOpacity: 0.7" FontSize="12"
+                                       Foreground="White" Opacity="0.8" HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Red Acrylic Card -->
+                    <Grid Width="200" Height="220"
+                          CornerRadius="16"
+                          Background="{StaticResource AccentAcrylicBrush}"
+                          Padding="16">
+                        <StackPanel VerticalAlignment="Center" Spacing="8">
+                            <FontIcon Glyph="&#xE80F;" FontSize="36" Foreground="White" HorizontalAlignment="Center" />
+                            <TextBlock Text="Red Acrylic" FontSize="16" FontWeight="SemiBold"
+                                       Foreground="White" HorizontalAlignment="Center" />
+                            <TextBlock Text="TintOpacity: 0.6" FontSize="12"
+                                       Foreground="White" Opacity="0.8" HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Dark Acrylic Card -->
+                    <Grid Width="200" Height="220"
+                          CornerRadius="16"
+                          Background="{StaticResource DarkAcrylicBrush}"
+                          Padding="16">
+                        <StackPanel VerticalAlignment="Center" Spacing="8">
+                            <FontIcon Glyph="&#xE793;" FontSize="36" Foreground="White" HorizontalAlignment="Center" />
+                            <TextBlock Text="Dark Acrylic" FontSize="16" FontWeight="SemiBold"
+                                       Foreground="White" HorizontalAlignment="Center" />
+                            <TextBlock Text="TintOpacity: 0.8" FontSize="12"
+                                       Foreground="White" Opacity="0.8" HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+
+            <!-- Section 2: Interactive TintOpacity demo with a Slider -->
+            <TextBlock Grid.Row="3"
+                       Text="Interactive Acrylic — Adjust TintOpacity"
+                       FontSize="20"
+                       FontWeight="SemiBold"
+                       Margin="0,0,0,12" />
+
+            <Grid Grid.Row="4" Margin="0,0,0,32">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="300" />
+                </Grid.RowDefinitions>
+
+                <!-- Slider to control TintOpacity -->
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="16" Margin="0,0,0,12"
+                            VerticalAlignment="Center">
+                    <TextBlock Text="TintOpacity:" VerticalAlignment="Center" FontSize="14" />
+                    <Slider x:Name="OpacitySlider"
+                            Minimum="0" Maximum="1" StepFrequency="0.05"
+                            Value="0.6" Width="300"
+                            ValueChanged="OpacitySlider_ValueChanged" />
+                    <TextBlock VerticalAlignment="Center" FontSize="14">
+                        <Run Text="Value: " />
+                        <Run Text="{Binding Value, ElementName=OpacitySlider}" />
+                    </TextBlock>
+                </StackPanel>
+
+                <!-- Background with content to blur through -->
+                <Grid Grid.Row="1" CornerRadius="12">
+                    <Grid.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#FC5C7D" Offset="0.0" />
+                            <GradientStop Color="#6A82FB" Offset="1.0" />
+                        </LinearGradientBrush>
+                    </Grid.Background>
+
+                    <!-- Background decoration -->
+                    <TextBlock Text="🌟 ✨ 🎨 🌈 💎 🔮"
+                               FontSize="48"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Opacity="0.5" />
+
+                    <!-- Row of colored rectangles behind acrylic -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom" Margin="0,0,0,20" Spacing="10">
+                        <Rectangle Width="60" Height="60" Fill="Yellow" RadiusX="8" RadiusY="8" Opacity="0.6"/>
+                        <Rectangle Width="60" Height="60" Fill="Cyan" RadiusX="8" RadiusY="8" Opacity="0.6"/>
+                        <Rectangle Width="60" Height="60" Fill="Magenta" RadiusX="8" RadiusY="8" Opacity="0.6"/>
+                        <Rectangle Width="60" Height="60" Fill="Lime" RadiusX="8" RadiusY="8" Opacity="0.6"/>
+                    </StackPanel>
+
+                    <!-- Acrylic overlay controlled by slider -->
+                    <Grid HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Width="400" Height="180"
+                          CornerRadius="16"
+                          Padding="24">
+                        <Grid.Background>
+                            <AcrylicBrush x:Name="InteractiveAcrylic"
+                                          TintColor="#1B1B2F"
+                                          TintOpacity="0.6"
+                                          FallbackColor="#1B1B2F" />
+                        </Grid.Background>
+
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="8">
+                            <TextBlock Text="Interactive Acrylic Panel"
+                                       FontSize="20" FontWeight="Bold"
+                                       Foreground="White" HorizontalAlignment="Center" />
+                            <TextBlock Text="Drag the slider above to change the TintOpacity."
+                                       FontSize="14" Foreground="White" Opacity="0.85"
+                                       HorizontalAlignment="Center" TextWrapping="Wrap"
+                                       TextAlignment="Center" />
+                            <TextBlock Text="Lower values = more transparent / more blur visible"
+                                       FontSize="12" Foreground="White" Opacity="0.65"
+                                       HorizontalAlignment="Center" TextWrapping="Wrap"
+                                       TextAlignment="Center" />
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Grid>
+
+            <!-- Section 3: Acrylic Notification Banners -->
+            <TextBlock Grid.Row="5"
+                       Text="Acrylic Notification Banners"
+                       FontSize="20"
+                       FontWeight="SemiBold"
+                       Margin="0,0,0,12" />
+
+            <StackPanel Grid.Row="6" Spacing="12" Margin="0,0,0,32">
+                <!-- Light Acrylic Banner -->
+                <Grid Height="80" CornerRadius="12"
+                      Background="{StaticResource LightAcrylicBrush}"
+                      Padding="20,0">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="16">
+                        <FontIcon Glyph="&#xE946;" FontSize="28" Foreground="#333333" />
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Light Acrylic" FontSize="16" FontWeight="SemiBold" Foreground="#222222" />
+                            <TextBlock Text="TintColor: #FFFFFF — TintOpacity: 0.5 — Ideal for light themes"
+                                       FontSize="12" Foreground="#555555" />
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Green Acrylic Banner -->
+                <Grid Height="80" CornerRadius="12"
+                      Background="{StaticResource GreenAcrylicBrush}"
+                      Padding="20,0">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="16">
+                        <FontIcon Glyph="&#xE73E;" FontSize="28" Foreground="White" />
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Green Acrylic" FontSize="16" FontWeight="SemiBold" Foreground="White" />
+                            <TextBlock Text="TintColor: #27AE60 — TintOpacity: 0.65 — Great for success states"
+                                       FontSize="12" Foreground="White" Opacity="0.85" />
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Purple Acrylic Banner -->
+                <Grid Height="80" CornerRadius="12"
+                      Background="{StaticResource PurpleAcrylicBrush}"
+                      Padding="20,0">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="16">
+                        <FontIcon Glyph="&#xE734;" FontSize="28" Foreground="White" />
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Purple Acrylic" FontSize="16" FontWeight="SemiBold" Foreground="White" />
+                            <TextBlock Text="TintColor: #8E44AD — TintOpacity: 0.6 — Perfect for accent highlights"
+                                       FontSize="12" Foreground="White" Opacity="0.85" />
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</Page>
