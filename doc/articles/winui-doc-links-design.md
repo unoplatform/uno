@@ -29,8 +29,8 @@ Some of the points of guidance may be specific to Windows 10's [Fluent design la
 ## Patterns
 
 * [Forms](https://learn.microsoft.com/windows/apps/design/controls/forms)
-* [Master/details pattern](https://learn.microsoft.com/en-us/windows/apps/design/controls/list-details)
-* [Integrating search](https://learn.microsoft.com/windows/apps/design-and-patterns/search) <!-- TODO: Update link to new location. There is no "search" control or path available. Could be AutoSuggestBox or TitleBar-->
+* [Master/details pattern](https://learn.microsoft.com/windows/apps/design/controls/list-details)
+* [Integrating search](https://learn.microsoft.com/windows/apps/design/controls/auto-suggest-box)
 
 ## Writing
 

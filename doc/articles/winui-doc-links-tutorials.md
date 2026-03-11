@@ -11,6 +11,8 @@ You can work through these tutorials either as single-platform WinUI application
 * [Navigate between two pages](https://learn.microsoft.com/windows/apps/design/basics/navigate-between-two-pages)
 * [Create a simple weather app with Grid and StackPanel](https://learn.microsoft.com/windows/apps/design/layout/grid-tutorial)
 * [BoxPanel, an example custom panel](https://learn.microsoft.com/windows/apps/design/layout/boxpanel-example-custom-panel)
-* [WebView](https://learn.microsoft.com/windows/apps/design/controls/web-view) and [WebView2](https://learn.microsoft.com/microsoft-edge/webview2/get-started/winui#step-6-add-a-webview2-control)
+* [WebView](https://learn.microsoft.com/windows/apps/design/controls/web-view)
+* [WebView2](https://learn.microsoft.com/microsoft-edge/webview2/get-started/winui#step-6-add-a-webview2-control)
 
-  Find out about the Uno specifics to remark on this in the [Uno Specifics for WebView2](xref:Uno.Controls.WebView2) and the [implemented Views for the supported or not supported properties and events in your Uno Apps](./implemented/microsoft-ui-xaml-controls-webview2.md)
+* [Uno Specifics for WebView2](xref:Uno.Controls.WebView2)
+* [Implemented Views for the supported or not supported properties and events in your Uno Apps](./implemented/microsoft-ui-xaml-controls-webview2.md)
