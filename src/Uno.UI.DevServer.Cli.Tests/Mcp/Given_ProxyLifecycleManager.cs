@@ -342,13 +342,19 @@ public class Given_ProxyLifecycleManager
 			var workspace = await CreateUnoWorkspaceAsync(root, "src", "App.slnx", "6.6.0-dev.1");
 			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
 			var resolvedWorkspace = await resolver.ResolveAsync(workspace);
+			var unresolvedWorkspace = new WorkspaceResolution
+			{
+				RequestedWorkingDirectory = root,
+				ResolutionKind = WorkspaceResolutionKind.NoCandidates,
+				CandidateSolutions = [],
+			};
 
 			var created = CreateSubject();
 			subject = created.Subject;
 			var healthService = created.HealthService;
 			var monitor = created.Monitor;
 			SetPrivateField(subject, "_currentDirectory", root);
-			SetPrivateField(subject, "_workspaceResolution", resolvedWorkspace);
+			SetPrivateField(subject, "_workspaceResolution", unresolvedWorkspace);
 			SetPrivateField(subject, "_devServerPort", 0);
 			SetPrivateField(subject, "_forwardedArgs", new List<string>());
 
@@ -374,6 +380,345 @@ public class Given_ProxyLifecycleManager
 				{
 					// Ignore cleanup errors for test teardown.
 				}
+			}
+
+			Directory.Delete(root, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	[Description("A live workspace watcher starts the DevServer when a non-Uno workspace becomes a valid Uno workspace")]
+	public async Task WhenWatcherSeesGlobalJsonBecomeUno_DevServerStarts()
+	{
+		var root = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
+
+		try
+		{
+			var workspace = await CreateNonUnoWorkspaceAsync(root, "src", "App.slnx");
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
+			var unresolvedWorkspace = await resolver.ResolveAsync(workspace);
+
+			var created = CreateSubject();
+			subject = created.Subject;
+			var healthService = created.HealthService;
+			var monitor = created.Monitor;
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_workspaceResolution", unresolvedWorkspace);
+			SetPrivateField(subject, "_devServerPort", 0);
+			SetPrivateField(subject, "_forwardedArgs", new List<string>());
+
+			subject.StartWorkspaceMutationWatcher();
+			await File.WriteAllTextAsync(
+				Path.Combine(workspace, "global.json"),
+				"""{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.1"}}""");
+
+			await WaitUntilAsync(() => healthService.DevServerStarted && subject.ConnectionState == ConnectionState.Discovering);
+
+			GetPrivateField<Task?>(monitor, "_monitor").Should().NotBeNull();
+			GetPrivateField<WorkspaceResolution>(subject, "_workspaceResolution").EffectiveWorkspaceDirectory.Should().Be(workspace);
+		}
+		finally
+		{
+			if (subject is not null)
+			{
+				await StopWatcherAndMonitorAsync(subject);
+			}
+
+			Directory.Delete(root, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	[Description("A live workspace watcher stays diagnostic when a non-Uno solution appears but no Uno workspace can be resolved")]
+	public async Task WhenWatcherSeesNonUnoSolutionAppear_HealthStaysDiagnostic()
+	{
+		var root = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
+
+		try
+		{
+			var unresolvedWorkspace = new WorkspaceResolution
+			{
+				RequestedWorkingDirectory = root,
+				ResolutionKind = WorkspaceResolutionKind.NoCandidates,
+				CandidateSolutions = [],
+			};
+
+			var created = CreateSubject();
+			subject = created.Subject;
+			var healthService = created.HealthService;
+			var monitor = created.Monitor;
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_workspaceResolution", unresolvedWorkspace);
+			SetPrivateField(subject, "_devServerPort", 0);
+			SetPrivateField(subject, "_forwardedArgs", new List<string>());
+
+			subject.StartWorkspaceMutationWatcher();
+			await CreateNonUnoWorkspaceAsync(root, "src", "App.slnx");
+
+			await WaitUntilAsync(() => subject.ConnectionState == ConnectionState.Degraded);
+
+			healthService.DevServerStarted.Should().BeFalse();
+			GetPrivateField<Task?>(monitor, "_monitor").Should().BeNull();
+			GetPrivateField<WorkspaceResolution>(subject, "_workspaceResolution").ResolutionKind.Should().Be(WorkspaceResolutionKind.NoValidWorkspace);
+		}
+		finally
+		{
+			if (subject is not null)
+			{
+				await StopWatcherAndMonitorAsync(subject);
+			}
+
+			Directory.Delete(root, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	[Description("A live workspace watcher stops the DevServer when the active solution file disappears")]
+	public async Task WhenWatcherSeesSolutionDeleted_DevServerStops()
+	{
+		var root = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
+
+		try
+		{
+			var workspace = await CreateUnoWorkspaceAsync(root, "src", "App.slnx", "6.6.0-dev.1");
+			var solutionPath = Path.Combine(workspace, "App.slnx");
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
+			var resolvedWorkspace = await resolver.ResolveAsync(workspace);
+			var unresolvedWorkspace = new WorkspaceResolution
+			{
+				RequestedWorkingDirectory = root,
+				ResolutionKind = WorkspaceResolutionKind.NoCandidates,
+				CandidateSolutions = [],
+			};
+
+			var created = CreateSubject();
+			subject = created.Subject;
+			var healthService = created.HealthService;
+			var monitor = created.Monitor;
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_workspaceResolution", unresolvedWorkspace);
+			SetPrivateField(subject, "_devServerPort", 0);
+			SetPrivateField(subject, "_forwardedArgs", new List<string>());
+
+			await subject.ApplyWorkspaceResolutionAsync(resolvedWorkspace, WorkspaceTransitionTrigger.FileSystem);
+			subject.StartWorkspaceMutationWatcher();
+
+			File.Delete(solutionPath);
+
+			await WaitUntilAsync(() => !healthService.DevServerStarted && subject.ConnectionState == ConnectionState.Degraded);
+
+			GetPrivateField<Task?>(monitor, "_monitor").Should().BeNull();
+			GetPrivateField<WorkspaceResolution>(subject, "_workspaceResolution").ResolutionKind.Should().Be(WorkspaceResolutionKind.NoCandidates);
+		}
+		finally
+		{
+			if (subject is not null)
+			{
+				await StopWatcherAndMonitorAsync(subject);
+			}
+
+			Directory.Delete(root, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	[Description("A live workspace watcher restarts the DevServer when repo mutations replace workspace A with workspace B")]
+	public async Task WhenWatcherSeesWorkspaceSwitch_DevServerRestarts()
+	{
+		var root = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
+
+		try
+		{
+			var workspaceA = await CreateUnoWorkspaceAsync(root, "srcA", "AppA.slnx", "6.6.0-dev.1");
+			var workspaceB = await CreateUnoWorkspaceAsync(root, "srcB", "AppB.slnx", "6.6.0-dev.2");
+			var workspaceBGlobalJson = Path.Combine(workspaceB, "global.json");
+			File.Delete(workspaceBGlobalJson);
+
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
+			var resolvedWorkspaceA = await resolver.ResolveAsync(workspaceA);
+			var unresolvedWorkspace = new WorkspaceResolution
+			{
+				RequestedWorkingDirectory = root,
+				ResolutionKind = WorkspaceResolutionKind.NoCandidates,
+				CandidateSolutions = [],
+			};
+
+			var created = CreateSubject();
+			subject = created.Subject;
+			var healthService = created.HealthService;
+			var monitor = created.Monitor;
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_workspaceResolution", unresolvedWorkspace);
+			SetPrivateField(subject, "_devServerPort", 0);
+			SetPrivateField(subject, "_forwardedArgs", new List<string>());
+
+			await subject.ApplyWorkspaceResolutionAsync(resolvedWorkspaceA, WorkspaceTransitionTrigger.FileSystem);
+			subject.StartWorkspaceMutationWatcher();
+
+			File.Delete(Path.Combine(workspaceA, "global.json"));
+			await File.WriteAllTextAsync(workspaceBGlobalJson, """{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.2"}}""");
+
+			await WaitUntilAsync(() => healthService.DevServerStarted
+				&& subject.ConnectionState == ConnectionState.Discovering
+				&& GetPrivateField<string>(monitor, "_currentDirectory") == workspaceB);
+
+			GetPrivateField<WorkspaceResolution>(subject, "_workspaceResolution").EffectiveWorkspaceDirectory.Should().Be(workspaceB);
+		}
+		finally
+		{
+			if (subject is not null)
+			{
+				await StopWatcherAndMonitorAsync(subject);
+			}
+
+			Directory.Delete(root, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	[Description("A live workspace watcher does not restart the DevServer for unrelated file changes when the effective workspace remains the same")]
+	public async Task WhenWatcherSeesUnrelatedChange_DevServerDoesNotRestart()
+	{
+		var root = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
+
+		try
+		{
+			var workspace = await CreateUnoWorkspaceAsync(root, "src", "App.slnx", "6.6.0-dev.1");
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
+			var resolvedWorkspace = await resolver.ResolveAsync(workspace);
+			var unresolvedWorkspace = new WorkspaceResolution
+			{
+				RequestedWorkingDirectory = root,
+				ResolutionKind = WorkspaceResolutionKind.NoCandidates,
+				CandidateSolutions = [],
+			};
+
+			var created = CreateSubject();
+			subject = created.Subject;
+			var healthService = created.HealthService;
+			var monitor = created.Monitor;
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_workspaceResolution", unresolvedWorkspace);
+			SetPrivateField(subject, "_devServerPort", 0);
+			SetPrivateField(subject, "_forwardedArgs", new List<string>());
+
+			await subject.ApplyWorkspaceResolutionAsync(resolvedWorkspace, WorkspaceTransitionTrigger.FileSystem);
+			subject.StartWorkspaceMutationWatcher();
+			var runningMonitor = GetPrivateField<Task?>(monitor, "_monitor");
+
+			await File.WriteAllTextAsync(Path.Combine(root, "README.md"), "updated");
+			await Task.Delay(750);
+
+			healthService.DevServerStarted.Should().BeTrue();
+			subject.ConnectionState.Should().Be(ConnectionState.Discovering);
+			GetPrivateField<Task?>(monitor, "_monitor").Should().BeSameAs(runningMonitor);
+			GetPrivateField<WorkspaceResolution>(subject, "_workspaceResolution").EffectiveWorkspaceDirectory.Should().Be(workspace);
+		}
+		finally
+		{
+			if (subject is not null)
+			{
+				await StopWatcherAndMonitorAsync(subject);
+			}
+
+			Directory.Delete(root, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	[Description("A live workspace watcher stops the DevServer and moves to diagnostics when an equally valid second Uno workspace appears")]
+	public async Task WhenWatcherSeesAmbiguousWorkspace_DevServerStopsAndDegrades()
+	{
+		var root = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
+
+		try
+		{
+			var workspaceA = await CreateUnoWorkspaceAsync(root, "srcA", "AppA.slnx", "6.6.0-dev.1");
+			var workspaceB = Path.Combine(root, "srcB");
+			Directory.CreateDirectory(workspaceB);
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
+			var resolvedWorkspaceA = await resolver.ResolveAsync(workspaceA);
+			var unresolvedWorkspace = new WorkspaceResolution
+			{
+				RequestedWorkingDirectory = root,
+				ResolutionKind = WorkspaceResolutionKind.NoCandidates,
+				CandidateSolutions = [],
+			};
+
+			var created = CreateSubject();
+			subject = created.Subject;
+			var healthService = created.HealthService;
+			var monitor = created.Monitor;
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_workspaceResolution", unresolvedWorkspace);
+			SetPrivateField(subject, "_devServerPort", 0);
+			SetPrivateField(subject, "_forwardedArgs", new List<string>());
+
+			await subject.ApplyWorkspaceResolutionAsync(resolvedWorkspaceA, WorkspaceTransitionTrigger.FileSystem);
+			subject.StartWorkspaceMutationWatcher();
+
+			await File.WriteAllTextAsync(Path.Combine(workspaceB, "global.json"), """{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.2"}}""");
+			await File.WriteAllTextAsync(Path.Combine(workspaceB, "AppB.slnx"), string.Empty);
+
+			await WaitUntilAsync(() => !healthService.DevServerStarted && subject.ConnectionState == ConnectionState.Degraded);
+
+			GetPrivateField<Task?>(monitor, "_monitor").Should().BeNull();
+			GetPrivateField<WorkspaceResolution>(subject, "_workspaceResolution").ResolutionKind.Should().Be(WorkspaceResolutionKind.Ambiguous);
+		}
+		finally
+		{
+			if (subject is not null)
+			{
+				await StopWatcherAndMonitorAsync(subject);
+			}
+
+			Directory.Delete(root, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	[Description("A live workspace watcher starts the DevServer when an ambiguous repo becomes a single clear Uno workspace")]
+	public async Task WhenWatcherSeesAmbiguousBecomeSingle_DevServerStarts()
+	{
+		var root = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
+
+		try
+		{
+			var workspaceA = await CreateUnoWorkspaceAsync(root, "srcA", "AppA.slnx", "6.6.0-dev.1");
+			var workspaceB = await CreateUnoWorkspaceAsync(root, "srcB", "AppB.slnx", "6.6.0-dev.2");
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
+			var ambiguousResolution = await resolver.ResolveAsync(root);
+			ambiguousResolution.ResolutionKind.Should().Be(WorkspaceResolutionKind.Ambiguous);
+
+			var created = CreateSubject();
+			subject = created.Subject;
+			var healthService = created.HealthService;
+			var monitor = created.Monitor;
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_workspaceResolution", ambiguousResolution);
+			SetPrivateField(subject, "_devServerPort", 0);
+			SetPrivateField(subject, "_forwardedArgs", new List<string>());
+
+			subject.StartWorkspaceMutationWatcher();
+			File.Delete(Path.Combine(workspaceB, "global.json"));
+
+			await WaitUntilAsync(() => healthService.DevServerStarted && subject.ConnectionState == ConnectionState.Discovering);
+
+			GetPrivateField<Task?>(monitor, "_monitor").Should().NotBeNull();
+			GetPrivateField<WorkspaceResolution>(subject, "_workspaceResolution").EffectiveWorkspaceDirectory.Should().Be(workspaceA);
+		}
+		finally
+		{
+			if (subject is not null)
+			{
+				await StopWatcherAndMonitorAsync(subject);
 			}
 
 			Directory.Delete(root, recursive: true);
@@ -449,6 +794,15 @@ public class Given_ProxyLifecycleManager
 		return workspace;
 	}
 
+	private static async Task<string> CreateNonUnoWorkspaceAsync(string root, string directoryName, string solutionFileName)
+	{
+		var workspace = Path.Combine(root, directoryName);
+		Directory.CreateDirectory(workspace);
+		await File.WriteAllTextAsync(Path.Combine(workspace, "global.json"), """{"sdk":{"version":"10.0.100"}}""");
+		await File.WriteAllTextAsync(Path.Combine(workspace, solutionFileName), string.Empty);
+		return workspace;
+	}
+
 	private static async Task WaitUntilAsync(Func<bool> condition, int timeoutMs = 5000, int pollingIntervalMs = 100)
 	{
 		using var cts = new CancellationTokenSource(timeoutMs);
@@ -456,5 +810,20 @@ public class Given_ProxyLifecycleManager
 		{
 			await Task.Delay(pollingIntervalMs, cts.Token);
 		}
+	}
+
+	private static async Task StopWatcherAndMonitorAsync(ProxyLifecycleManager subject)
+	{
+		try
+		{
+			await subject.StopWorkspaceMutationWatcherAsync();
+		}
+		catch
+		{
+			// Ignore cleanup errors for test teardown.
+		}
+
+		var monitor = GetPrivateField<DevServerMonitor>(subject, "_devServerMonitor");
+		await monitor.StopMonitoringAsync();
 	}
 }
