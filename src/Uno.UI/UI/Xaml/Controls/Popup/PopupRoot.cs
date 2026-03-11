@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI;
@@ -104,7 +105,13 @@ internal partial class PopupRoot : Canvas
 			var next = node.Next;
 			if (node.Value.TryGetTarget<Popup>(out var popup))
 			{
-				popup.NotifyThemeChanged(theme, forceRefresh);
+				// MUX Reference: Popup.cpp ShouldPopupRootNotifyThemeChange (lines 3551-3563)
+				// Skip parented popups — they receive theme from their parent walk.
+				// Only notify popups whose visual parent is null or PopupRoot itself.
+				if (VisualTreeHelper.GetParent(popup) is null or PopupRoot)
+				{
+					popup.NotifyThemeChanged(theme, forceRefresh);
+				}
 			}
 			node = next;
 		}
