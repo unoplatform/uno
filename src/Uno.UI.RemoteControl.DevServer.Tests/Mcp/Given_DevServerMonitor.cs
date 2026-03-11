@@ -105,7 +105,7 @@ public class Given_DevServerMonitor
 
 	[TestMethod]
 	[Description("ServerFailed event fires after exhausting all retry attempts")]
-	public void SolutionFileFinder_RetryLogic_FailsAfterMaxAttempts()
+	public void DevServerMonitor_RetryLogic_FailsAfterMaxAttempts()
 	{
 		const int maxRetries = 3;
 		int retryCount = 0;
@@ -563,7 +563,7 @@ public class Given_DevServerMonitor
 
 
 	/// <summary>
-	/// Mirrors the arg-building logic in <see cref="SolutionFileFinder.StartProcess"/>
+	/// Mirrors the arg-building logic in DevServerMonitor.StartProcess
 	/// to verify that the direct launch path produces the expected arguments.
 	/// </summary>
 	private static List<string> BuildDirectLaunchArgs(int port, string? solution, string? addins = null)
