@@ -31,6 +31,17 @@ public class Given_CliManager
 	}
 
 	[TestMethod]
+	public void DetermineMcpSetupExitCode_AllFailures_ReturnsOne()
+	{
+		var result = new OperationResponse("1.0", [
+			new OperationEntry("UnoApp", "cursor", "error", "/project/.cursor/mcp.json", "File is read-only"),
+			new OperationEntry("UnoDocs", "cursor", "not_found", null, null),
+		]);
+
+		CliManager.DetermineMcpSetupExitCode(result).Should().Be(1);
+	}
+
+	[TestMethod]
 	public void ParseMcpSetupArgs_MissingVersionValue_ReturnsNull()
 	{
 		var manager = CreateManager();
@@ -38,6 +49,17 @@ public class Given_CliManager
 		var result = manager.ParseMcpSetupArgs(["--version"], "status");
 
 		result.Should().BeNull();
+	}
+
+	[TestMethod]
+	public void ParseMcpSetupArgs_AllScopes_SetsFlag()
+	{
+		var manager = CreateManager();
+
+		var result = manager.ParseMcpSetupArgs(["cursor", "--all-scopes"], "uninstall");
+
+		result.Should().NotBeNull();
+		result!.Value.AllScopes.Should().BeTrue();
 	}
 
 	[TestMethod]

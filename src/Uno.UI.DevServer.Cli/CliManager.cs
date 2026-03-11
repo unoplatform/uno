@@ -575,7 +575,7 @@ internal class CliManager
 	private static int RunMcpUninstall(
 		McpSetupOrchestrator orchestrator, Definitions defs, string workspace, McpSetupParsedArgs parsed)
 	{
-		var result = orchestrator.Uninstall(defs, workspace, parsed.Ide!, parsed.Servers);
+		var result = orchestrator.Uninstall(defs, workspace, parsed.Ide!, parsed.Servers, parsed.AllScopes);
 		if (parsed.JsonOutput)
 		{
 			Console.WriteLine(JsonSerializer.Serialize(result, McpSetupJson.OutputOptions));
@@ -589,9 +589,10 @@ internal class CliManager
 	}
 
 	internal static int DetermineMcpSetupExitCode(OperationResponse result) =>
-		// Payload-first: once a command produced an operation payload, callers should inspect it
-		// for partial failures instead of losing the result behind a process-level failure code.
-		0;
+		result.Operations.Count > 0
+		&& result.Operations.All(static op => op.Action is "error" or "not_found")
+			? 1
+			: 0;
 
 	internal record struct McpSetupParsedArgs(
 		string? Ide,
@@ -601,6 +602,7 @@ internal class CliManager
 		string? VersionFlag,
 		List<string>? Servers,
 		bool JsonOutput,
+		bool AllScopes,
 		string? IdeDefinitionsPath,
 		string? ServerDefinitionsPath);
 
@@ -613,6 +615,7 @@ internal class CliManager
 		string? versionFlag = null;
 		List<string>? servers = null;
 		var jsonOutput = false;
+		var allScopes = false;
 		string? ideDefinitionsPath = null;
 		string? serverDefinitionsPath = null;
 
@@ -641,6 +644,9 @@ internal class CliManager
 					break;
 				case "--json":
 					jsonOutput = true;
+					break;
+				case "--all-scopes":
+					allScopes = true;
 					break;
 				case "--ide-definitions":
 					if (i + 1 >= args.Length) { _logger.LogError("Missing value for --ide-definitions"); return null; }
@@ -671,7 +677,7 @@ internal class CliManager
 		}
 
 		return new McpSetupParsedArgs(ide, workspace, releaseFlag, prereleaseFlag, versionFlag,
-			servers, jsonOutput, ideDefinitionsPath, serverDefinitionsPath);
+			servers, jsonOutput, allScopes, ideDefinitionsPath, serverDefinitionsPath);
 	}
 
 	private ProcessStartInfo BuildHostArgs(string hostPath, string[] originalArgs, string workingDirectory, bool redirectOutput = true, string? addins = null)

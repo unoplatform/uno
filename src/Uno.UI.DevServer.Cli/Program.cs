@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Globalization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -54,6 +54,7 @@ internal class Program
 			WriteOption("--prerelease", "Use prerelease variant");
 			WriteOption("--version <ver>", "Pin to specific version");
 			WriteOption("--servers <list>", "Comma-separated server names (default: all)");
+			WriteOption("--all-scopes", "For mcp uninstall, remove matching registrations from every configured scope");
 			WriteOption("--json", "Emit JSON output");
 			WriteOption("--ide-definitions <path>", "Override embedded IDE profiles");
 			WriteOption("--server-definitions <path>", "Override embedded server definitions");

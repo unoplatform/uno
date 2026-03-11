@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using AwesomeAssertions;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Uno.UI.DevServer.Cli.Mcp.Setup;
 
 namespace Uno.UI.DevServer.Cli.Tests.Mcp.Setup;
@@ -9,6 +9,8 @@ namespace Uno.UI.DevServer.Cli.Tests.Mcp.Setup;
 [TestClass]
 public class Given_McpSetupOrchestrator
 {
+	private static readonly NullLogger<McpSetupOrchestrator> _logger = NullLogger<McpSetupOrchestrator>.Instance;
+
 	private static Definitions TestDefs => new(
 		Ides: new Dictionary<string, IdeProfile>(StringComparer.OrdinalIgnoreCase)
 		{
@@ -69,8 +71,8 @@ public class Given_McpSetupOrchestrator
 
 	private static McpSetupOrchestrator CreateOrchestrator(IFileSystem fs)
 	{
-		using var loggerFactory = LoggerFactory.Create(b => { });
-		return new McpSetupOrchestrator(fs, loggerFactory.CreateLogger<McpSetupOrchestrator>());
+		var logger = _logger;
+		return new McpSetupOrchestrator(fs, logger);
 	}
 
 	// ── Status ──
@@ -535,7 +537,7 @@ public class Given_McpSetupOrchestrator
 	}
 
 	[TestMethod]
-	public void Uninstall_MultipleScopes_RemovesFromAll()
+	public void Uninstall_DefaultScope_RemovesOnlyWriteTarget()
 	{
 		var fs = new InMemoryFileSystem { HomePath = "/home/user" };
 		fs.AddFile("/project/.cursor/mcp.json", """
@@ -555,6 +557,34 @@ public class Given_McpSetupOrchestrator
 
 		var orch = CreateOrchestrator(fs);
 		var result = orch.Uninstall(TestDefs, "/project", "cursor", serverFilter: ["UnoApp"]);
+
+		var removedOps = result.Operations.Where(o => o.Server == "UnoApp" && o.Action == "removed").ToList();
+		removedOps.Should().ContainSingle();
+		removedOps[0].Path!.Replace('\\', '/').Should().Be("/project/.cursor/mcp.json");
+		fs.GetFileContent("/home/user/.cursor/mcp.json").Should().NotBeNull();
+	}
+
+	[TestMethod]
+	public void Uninstall_MultipleScopes_RemovesFromAll()
+	{
+		var fs = new InMemoryFileSystem { HomePath = "/home/user" };
+		fs.AddFile("/project/.cursor/mcp.json", """
+		{
+		  "mcpServers": {
+		    "UnoApp": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]}
+		  }
+		}
+		""");
+		fs.AddFile("/home/user/.cursor/mcp.json", """
+		{
+		  "mcpServers": {
+		    "UnoApp": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]}
+		  }
+		}
+		""");
+
+		var orch = CreateOrchestrator(fs);
+		var result = orch.Uninstall(TestDefs, "/project", "cursor", serverFilter: ["UnoApp"], allScopes: true);
 
 		var removedOps = result.Operations.Where(o => o.Server == "UnoApp" && o.Action == "removed").ToList();
 		removedOps.Should().HaveCount(2);
