@@ -259,6 +259,7 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 					// stale (it was PointerOver via a UITouch hover pointer, a different ID)
 					// and fires Leave then Enter — briefly flashing the item as selected and
 					// causing a layout pass that delays the first scroll frame.
+
 					PointerMoved?.Invoke(this, CreateScrollGestureEventArgs(CGPoint.Empty, _cachedScrollLocation, isNaturalScrollingEnabled));
 					return;
 
@@ -267,7 +268,6 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 
 					_activeScrollPendingX += (double)translation.X;
 					_activeScrollPendingY += (double)translation.Y;
-					_cachedScrollLocation = gesture.LocationInView(source);
 					gesture.SetTranslation(CGPoint.Empty, source);
 
 					if (_isDiscreteScroll)
@@ -277,21 +277,17 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 						return;
 					}
 
-					// Continuous (trackpad): dispatch immediately with sub-pixel accumulation.
-					var activeScrollX = (nfloat)Math.Truncate(_activeScrollPendingX);
-					var activeScrollY = (nfloat)Math.Truncate(_activeScrollPendingY);
-					// Preserve fractional remainder for sub-pixel accumulation.
-					_activeScrollPendingX -= (double)activeScrollX;
-					_activeScrollPendingY -= (double)activeScrollY;
-
-					if (activeScrollX == 0 && activeScrollY == 0)
+					// Continuous (trackpad): defer dispatch to a display link so that
+					// scroll events are processed once per vsync frame. This prevents
+					// gesture callbacks from starving the Uno Render() pass on the main
+					// thread — a CADisplayLink on NSRunLoop.Main fires at vsync with high
+					// priority, interleaving naturally with gesture events and giving
+					// layout + render a chance to run each frame.
+					if (_activeScrollDisplayLink is null)
 					{
-						return;
+						_activeScrollDisplayLink = CADisplayLink.Create(FlushContinuousScroll);
+						_activeScrollDisplayLink.AddToRunLoop(NSRunLoop.Main, NSRunLoopMode.Common);
 					}
-
-					_trace?.Invoke($"<ScrollGesture src={source.GetDebugName()} state={gesture.State}>");
-					PointerWheelChanged?.Invoke(this, CreateScrollGestureEventArgs(new CGPoint(activeScrollX, activeScrollY), _cachedScrollLocation, isNaturalScrollingEnabled));
-					_trace?.Invoke("</ScrollGesture>");
 					return;
 
 				case UIGestureRecognizerState.Ended:
@@ -300,8 +296,13 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 					{
 						// Flush any pending discrete scroll before starting inertia.
 						FlushDiscreteScroll();
-						StopActiveScrollDisplayLink();
 					}
+					else
+					{
+						// Flush any pending continuous scroll before starting inertia.
+						FlushContinuousScroll();
+					}
+					StopActiveScrollDisplayLink();
 					// If the gesture lasted longer than the rapid-flick window, the preserved
 					// momentum is unrelated to the current scroll — discard it to avoid an
 					// unexpected inertia kick at the end of a deliberate slow scroll.
@@ -341,6 +342,38 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 		var scrollY = (nfloat)(_activeScrollPendingY * DiscreteScrollScale);
 		_activeScrollPendingX = 0;
 		_activeScrollPendingY = 0;
+
+		try
+		{
+			PointerWheelChanged?.Invoke(this,
+				CreateScrollGestureEventArgs(new CGPoint(scrollX, scrollY), _cachedScrollLocation, _gestureIsNaturalScrolling));
+		}
+		catch (Exception e)
+		{
+			StopActiveScrollDisplayLink();
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	// Dispatch accumulated continuous (trackpad) scroll deltas as a single
+	// PointerWheelChanged event, once per vsync frame. Uses sub-pixel accumulation
+	// so fractional remainders carry over to the next frame.
+	private void FlushContinuousScroll()
+	{
+		if (_activeScrollPendingX == 0 && _activeScrollPendingY == 0)
+		{
+			return;
+		}
+
+		var scrollX = (nfloat)Math.Truncate(_activeScrollPendingX);
+		var scrollY = (nfloat)Math.Truncate(_activeScrollPendingY);
+		_activeScrollPendingX -= (double)scrollX;
+		_activeScrollPendingY -= (double)scrollY;
+
+		if (scrollX == 0 && scrollY == 0)
+		{
+			return;
+		}
 
 		try
 		{

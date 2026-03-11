@@ -283,6 +283,18 @@ internal partial class InputManager
 		}
 		#endregion
 
+		// Stores the last wheel args so a future PointerMoved can reconcile hover state
+		// after scrolling changed the content under the pointer.
+		private Windows.UI.Core.PointerEventArgs? _deferredAfterWheelArgs;
+
+		// Cached hit-test result for iOS trackpad scroll.
+		// During continuous trackpad scroll the cursor position doesn't change — only content
+		// moves underneath — so we cache the originalSource from the first hit-test and reuse
+		// it for subsequent wheel events at the same position. This avoids a ~17ms visual tree
+		// traversal on every single scroll event.
+		private UIElement? _cachedWheelHitTestSource;
+		private Point _cachedWheelHitTestPosition;
+
 		private void OnPointerWheelChanged(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
 			if (IsRedirectedToManipulations(args.CurrentPoint.Pointer))
@@ -291,16 +303,41 @@ internal partial class InputManager
 				return;
 			}
 
-			if (!HitTestOrRoot(args, out var originalSource))
-			{
-				TraceIgnoredAsNoTree(args);
-				return;
-			}
+			UIElement? originalSource;
+			var pointerPosition = args.CurrentPoint.Position;
 
-			if (originalSource is null)
+			// On iOS, reuse the cached hit-test result when the pointer position hasn't changed
+			// AND the cached element is still in the visual tree. During continuous trackpad
+			// scroll the cursor stays still; only the content moves. If the cached element
+			// has been virtualized away (e.g. during a long scroll through a ListView),
+			// we must re-hit-test so the event routes to an element that can still bubble
+			// to the ScrollViewer.
+			if (OperatingSystem.IsIOS()
+				&& _cachedWheelHitTestSource is not null
+				&& _cachedWheelHitTestSource.IsLoaded
+				&& pointerPosition == _cachedWheelHitTestPosition)
 			{
-				TraceIgnoredAsNoTree(args);
-				return;
+				originalSource = _cachedWheelHitTestSource;
+			}
+			else
+			{
+				if (!HitTestOrRoot(args, out originalSource))
+				{
+					TraceIgnoredAsNoTree(args);
+					return;
+				}
+
+				if (originalSource is null)
+				{
+					TraceIgnoredAsNoTree(args);
+					return;
+				}
+
+				if (OperatingSystem.IsIOS())
+				{
+					_cachedWheelHitTestSource = originalSource;
+					_cachedWheelHitTestPosition = pointerPosition;
+				}
 			}
 
 			TraceHandling(originalSource);
@@ -327,9 +364,20 @@ internal partial class InputManager
 
 			// First raise the event, either on the OriginalSource or on the capture owners if any
 			var result = RaiseUsingCaptures(Wheel, originalSource, routedArgs, setCursor: true);
-			// Scrolling can change the element underneath the pointer, so we need to update over state
-			HitTestOrRoot(args, _isOver, out originalSource, out var staleBranch, reason: "after_wheel");
-			result += RaiseLeaveEnter(routedArgs, staleBranch, ref originalSource!, needsNonStaleOriginalSource: false);
+
+			// On iOS (trackpad scroll), skip the expensive post-scroll hit-test during active scrolling.
+			// The pointer hasn't physically moved — only the content underneath has scrolled.
+			// Hover state will be reconciled when the next PointerMoved event fires (user moves cursor).
+			if (OperatingSystem.IsIOS())
+			{
+				_deferredAfterWheelArgs = args;
+			}
+			else
+			{
+				// Scrolling can change the element underneath the pointer, so we need to update over state
+				HitTestOrRoot(args, _isOver, out originalSource, out var staleBranch, reason: "after_wheel");
+				result += RaiseLeaveEnter(routedArgs, staleBranch, ref originalSource!, needsNonStaleOriginalSource: false);
+			}
 
 			if (!PointerCapture.TryGet(routedArgs.Pointer, out var capture) || capture.IsImplicitOnly)
 			{
@@ -366,6 +414,8 @@ internal partial class InputManager
 
 		private void OnPointerExited(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
+			_cachedWheelHitTestSource = null;
+
 			if (IsRedirectedToManipulations(args.CurrentPoint.Pointer))
 			{
 				TraceIgnoredForManipulations(args);
@@ -512,6 +562,12 @@ internal partial class InputManager
 
 		private void OnPointerMoved(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
+			// Clear wheel caches — pointer has moved, so the cached hit-test and
+			// deferred hover reconciliation are stale. PointerMoved already does a full
+			// hit-test + RaiseLeaveEnter which will reconcile hover state.
+			_deferredAfterWheelArgs = null;
+			_cachedWheelHitTestSource = null;
+
 			if (BeforeMoveTryRedirectToManipulations(args))
 			{
 				TraceIgnoredForManipulations(args);
