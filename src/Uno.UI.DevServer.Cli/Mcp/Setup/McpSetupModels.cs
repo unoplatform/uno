@@ -85,7 +85,8 @@ internal sealed record ScanResult(
 internal sealed record ServerScanResult(
 	string Status, // "registered", "missing", "outdated"
 	IReadOnlyList<LocationEntry> Locations,
-	IReadOnlyList<string> Warnings);
+	IReadOnlyList<string> Warnings,
+	JsonObject? EffectiveEntry);
 
 // ──────────────────────────────────────────────
 // JSON output options

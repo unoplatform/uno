@@ -153,7 +153,10 @@ internal static class McpSetupOutputFormatter
 		}
 
 		// Fall back to home-relative paths
-		if (!string.IsNullOrEmpty(home) && path.StartsWith(home, comparison))
+		if (!string.IsNullOrEmpty(home)
+			&& path.StartsWith(home, comparison)
+			&& path.Length > home.Length
+			&& path[home.Length] == Path.DirectorySeparatorChar)
 		{
 			return "~" + path[home.Length..];
 		}

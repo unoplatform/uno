@@ -31,6 +31,18 @@ public class Given_McpSetupOutputFormatter
 	}
 
 	[TestMethod]
+	public void ShortenPath_HomePrefixWithoutBoundary_DoesNotShorten()
+	{
+		var result = McpSetupOutputFormatter.ShortenPath(
+			"/home/testuser2/.cursor/mcp.json",
+			"/project",
+			"/home/testuser",
+			isWindows: false);
+
+		result.Should().Be($"{Path.DirectorySeparatorChar}home{Path.DirectorySeparatorChar}testuser2{Path.DirectorySeparatorChar}.cursor{Path.DirectorySeparatorChar}mcp.json");
+	}
+
+	[TestMethod]
 	public void ShortenPath_LinuxCaseMismatch_DoesNotShorten()
 	{
 		var result = McpSetupOutputFormatter.ShortenPath(
