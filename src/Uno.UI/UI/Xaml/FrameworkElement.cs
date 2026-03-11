@@ -824,6 +824,21 @@ namespace Microsoft.UI.Xaml
 					{
 						EnsureThemeForeground(parentFg);
 					}
+					else if (_themeForeground is not null)
+					{
+						// Parent no longer has a frozen foreground (e.g., root switched
+						// from Dark back to Default). Clear our stale inherited value.
+						_themeForeground = null;
+						_isForegroundFrozen = false;
+
+						var fgProp = GetForegroundProperty();
+						if (fgProp is not null)
+						{
+							DependencyObjectExtensions.SetValue(
+								this, fgProp, DependencyProperty.UnsetValue,
+								DependencyPropertyValuePrecedences.Inheritance);
+						}
+					}
 				}
 
 				// 6. Propagate to children (they may push their own context)
