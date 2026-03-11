@@ -28,6 +28,11 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	// Legacy override for the default singleton client.
 	private static IFrameTransport? _defaultConnectionTransportOverride;
 
+	// All clients created via Initialize/CreateAdditional, tracked as weak references
+	// so disposed/collected clients are automatically pruned.
+	private static readonly List<WeakReference<RemoteControlClient>> _clients = new();
+	private static readonly object _clientsLock = new();
+
 	private readonly string? _additionalServerProcessorsDiscoveryPath;
 	private readonly bool _autoRegisterAppIdentity;
 	private readonly IFrameTransport? _connectionTransportOverride;
@@ -54,6 +59,33 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 						action(value);
 					}
 				}
+			}
+		}
+	}
+
+	/// <summary>
+	/// Gets all currently active (non-disposed, non-collected) remote control clients,
+	/// including both the default <see cref="Instance"/> and additional clients created
+	/// for secondary apps loaded in shared ALCs.
+	/// </summary>
+	public static IReadOnlyList<RemoteControlClient> ActiveClients
+	{
+		get
+		{
+			lock (_clientsLock)
+			{
+				// Prune dead references and return alive clients
+				var alive = new List<RemoteControlClient>(_clients.Count);
+				_clients.RemoveAll(wr => !wr.TryGetTarget(out _));
+				foreach (var wr in _clients)
+				{
+					if (wr.TryGetTarget(out var client))
+					{
+						alive.Add(client);
+					}
+				}
+
+				return alive;
 			}
 		}
 	}
@@ -109,12 +141,21 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	public static RemoteControlClient Initialize(Type appType)
 	{
 		// When a transport override is pending, this Initialize call is for a nested/secondary app
-		// and should NOT replace the singleton Instance.
-		var options = _defaultConnectionTransportOverride is not null
-			? RemoteControlClientOptions.AdditionalClient
-			: RemoteControlClientOptions.DefaultClient;
+		// loaded in a shared ALC. Use AdditionalClient options so we don't replace/dispose the
+		// host's Instance, but enable hot reload and pass the transport explicitly.
+		var overrideTransport = Interlocked.Exchange(ref _defaultConnectionTransportOverride, null);
+		RemoteControlClient client;
+		if (overrideTransport is not null)
+		{
+			var options = RemoteControlClientOptions.AdditionalClient with { EnableHotReloadProcessor = true };
+			client = CreateClient(appType, endpoints: null, additionalServerProcessorsDiscoveryPath: null, options: options, connectionTransportOverride: overrideTransport);
+		}
+		else
+		{
+			client = CreateClient(appType, endpoints: null, additionalServerProcessorsDiscoveryPath: null, options: RemoteControlClientOptions.DefaultClient, connectionTransportOverride: null);
+		}
 
-		return CreateClient(appType, endpoints: null, additionalServerProcessorsDiscoveryPath: null, options: options, connectionTransportOverride: null);
+		return client;
 	}
 
 	/// <summary>
@@ -193,6 +234,14 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 			additionalServerProcessorsDiscoveryPath,
 			options,
 			connectionTransportOverride);
+
+		// Track every client as a weak reference for ActiveClients enumeration.
+		lock (_clientsLock)
+		{
+			// Prune dead references while we're here
+			_clients.RemoveAll(wr => !wr.TryGetTarget(out _));
+			_clients.Add(new WeakReference<RemoteControlClient>(client));
+		}
 
 		if (options.SetAsDefaultInstance)
 		{
@@ -1079,6 +1128,12 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 
 		// Stop the keep alive timer
 		Interlocked.Exchange(ref _keepAliveTimer, null)?.Dispose();
+
+		// Remove from the active clients list
+		lock (_clientsLock)
+		{
+			_clients.RemoveAll(wr => !wr.TryGetTarget(out var c) || ReferenceEquals(c, this));
+		}
 
 		// Remove the instance if it's the current one (should not happen in regular usage)
 		if (ReferenceEquals(Instance, this))
