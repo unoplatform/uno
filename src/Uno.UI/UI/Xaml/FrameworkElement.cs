@@ -766,6 +766,9 @@ namespace Microsoft.UI.Xaml
 			try
 			{
 				NotifyThemeChangedCore(theme, forceRefresh);
+
+				// MUX Reference: Theming.cpp line 155 - persist AFTER core walk
+				SetTheme(theme);
 			}
 			finally
 			{
@@ -802,10 +805,7 @@ namespace Microsoft.UI.Xaml
 
 			try
 			{
-				// 3. Store the new theme BEFORE updating resources
-				SetTheme(theme);
-
-				// 4. Update theme resources (uses pushed global context)
+				// 3. Update theme resources (uses pushed global context)
 				if (themeChanged)
 				{
 					RaiseActualThemeChanged();
