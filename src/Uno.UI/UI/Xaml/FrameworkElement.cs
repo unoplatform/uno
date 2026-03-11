@@ -805,14 +805,7 @@ namespace Microsoft.UI.Xaml
 
 			try
 			{
-				// 3. Update theme resources (uses pushed global context)
-				if (themeChanged)
-				{
-					RaiseActualThemeChanged();
-					UpdateThemeBindings(ResourceUpdateReason.ThemeResource);
-				}
-
-				// 5. Handle inherited property freezing at theme boundary
+				// 3. FREEZE inherited properties first (WinUI: framework.cpp line 3301-3307)
 				if (RequestedTheme != ElementTheme.Default)
 				{
 					NotifyThemeChangedForInheritedProperties(theme, freeze: true);
@@ -846,8 +839,20 @@ namespace Microsoft.UI.Xaml
 					}
 				}
 
-				// 6. Propagate to children (they may push their own context)
+				// 4. Update theme resources (uses pushed global context)
+				if (themeChanged)
+				{
+					UpdateThemeBindings(ResourceUpdateReason.ThemeResource);
+				}
+
+				// 5. Propagate to children (they may push their own context)
 				PropagateThemeToChildren(theme, forceRefresh);
+
+				// 6. Raise event LAST (WinUI: framework.cpp line 3317)
+				if (themeChanged)
+				{
+					RaiseActualThemeChanged();
+				}
 			}
 			finally
 			{
