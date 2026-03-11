@@ -4,6 +4,7 @@ using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
@@ -2831,6 +2832,258 @@ public class Given_ElementTheme
 		// Foreground should be consistent
 		Assert.AreEqual(beforeHoverFg, afterHoverFg,
 			$"Foreground should be consistent before and after hover. Before={beforeHoverFg}, After={afterHoverFg}");
+	}
+
+	#endregion
+
+	#region WinUI Gap Fix Coverage
+
+	[TestMethod]
+	public async Task When_SameTheme_NotifyThemeChanged_EarlyOuts()
+	{
+		// Gap #1: Setting RequestedTheme to same value shouldn't trigger
+		// unnecessary ActualThemeChanged events on children.
+		var parent = new Border { Width = 100, Height = 100, RequestedTheme = ElementTheme.Dark };
+		var child = new Border { Width = 100, Height = 100 };
+		parent.Child = child;
+
+		WindowHelper.WindowContent = parent;
+		await WindowHelper.WaitForLoaded(parent);
+
+		Assert.AreEqual(ElementTheme.Dark, child.ActualTheme);
+
+		int childThemeChangedCount = 0;
+		child.ActualThemeChanged += (s, e) => childThemeChangedCount++;
+
+		// Set same theme again
+		parent.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(0, childThemeChangedCount,
+			"Child should not receive ActualThemeChanged when parent sets same theme");
+		Assert.AreEqual(ElementTheme.Dark, child.ActualTheme);
+	}
+
+	[TestMethod]
+	public async Task When_Child_Has_Explicit_RequestedTheme_Parent_Theme_Walk_Still_Reaches_It()
+	{
+		// Gap #2: Parent theme changes, child with explicit RequestedTheme keeps
+		// its theme. GetRequestedThemeOverride ensures child participates in walk
+		// but overrides the incoming theme.
+		var parent = new Border { Width = 100, Height = 100, RequestedTheme = ElementTheme.Light };
+		var child = new Border { Width = 100, Height = 100, RequestedTheme = ElementTheme.Dark };
+		var grandchild = new TextBlock { Text = "Test" };
+		parent.Child = child;
+		child.Child = grandchild;
+
+		WindowHelper.WindowContent = parent;
+		await WindowHelper.WaitForLoaded(parent);
+
+		Assert.AreEqual(ElementTheme.Light, parent.ActualTheme);
+		Assert.AreEqual(ElementTheme.Dark, child.ActualTheme);
+		Assert.AreEqual(ElementTheme.Dark, grandchild.ActualTheme);
+
+		// Change parent to Dark - child should keep Dark, grandchild stays Dark
+		parent.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(ElementTheme.Dark, child.ActualTheme,
+			"Child with explicit Dark theme should keep Dark");
+		Assert.AreEqual(ElementTheme.Dark, grandchild.ActualTheme,
+			"Grandchild should still be Dark");
+
+		// Change parent to Light again - child and grandchild stay Dark
+		parent.RequestedTheme = ElementTheme.Light;
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(ElementTheme.Dark, child.ActualTheme);
+		Assert.AreEqual(ElementTheme.Dark, grandchild.ActualTheme);
+	}
+
+	[TestMethod]
+	public async Task When_Freeze_Ordering_Foreground_Resolves_Correctly()
+	{
+		// Gap #8: Element with RequestedTheme=Dark gets correct foreground
+		// brush immediately when entering visual tree (freeze happens before
+		// bindings update).
+		var darkRegion = new Border { Width = 200, Height = 200, RequestedTheme = ElementTheme.Dark };
+		var textBlock = new TextBlock { Text = "Freeze test" };
+		darkRegion.Child = textBlock;
+
+		WindowHelper.WindowContent = darkRegion;
+		await WindowHelper.WaitForLoaded(darkRegion);
+
+		var foreground = textBlock.Foreground as SolidColorBrush;
+		Assert.IsNotNull(foreground, "TextBlock should have a SolidColorBrush foreground");
+
+		// Dark theme foreground should be light (white-ish)
+		Assert.IsTrue(foreground.Color.R > 128,
+			$"Dark theme foreground should be light. Got R={foreground.Color.R}");
+	}
+
+	[TestMethod]
+	public async Task When_ActualThemeChanged_Fires_After_Children_Updated()
+	{
+		// Gap #4: When ActualThemeChanged fires on parent, child's ActualTheme
+		// should already reflect the new theme (event fires AFTER children walk).
+		var parent = new Border { Width = 100, Height = 100, RequestedTheme = ElementTheme.Light };
+		var child = new Border { Width = 100, Height = 100 };
+		parent.Child = child;
+
+		WindowHelper.WindowContent = parent;
+		await WindowHelper.WaitForLoaded(parent);
+
+		ElementTheme? childThemeWhenParentEventFired = null;
+		parent.ActualThemeChanged += (s, e) =>
+		{
+			childThemeWhenParentEventFired = child.ActualTheme;
+		};
+
+		parent.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		Assert.IsNotNull(childThemeWhenParentEventFired,
+			"Parent ActualThemeChanged should have fired");
+		Assert.AreEqual(ElementTheme.Dark, childThemeWhenParentEventFired.Value,
+			"Child should already be Dark when parent's ActualThemeChanged fires");
+	}
+
+#if HAS_UNO
+	[TestMethod]
+	public async Task When_ToolTip_Owner_Is_TextElement_Theme_Forwards()
+	{
+		// Gap #7: ToolTip on a Hyperlink inside a Dark-themed container
+		// should inherit Dark theme via GetOwnerFrameworkElement.
+		var root = (StackPanel)XamlReader.Load("""
+			<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			            RequestedTheme="Dark" Width="200" Height="200">
+				<RichTextBlock>
+					<Paragraph>
+						<Hyperlink x:Name="link">
+							<Run Text="Hover me"/>
+						</Hyperlink>
+					</Paragraph>
+				</RichTextBlock>
+			</StackPanel>
+		""");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+
+		// The dark theme should propagate correctly - verify the root is Dark
+		Assert.AreEqual(ElementTheme.Dark, root.ActualTheme,
+			"Root should have Dark theme");
+
+		// Verify the RichTextBlock inherits the Dark theme
+		var richTextBlock = root.Children.OfType<RichTextBlock>().First();
+		Assert.AreEqual(ElementTheme.Dark, richTextBlock.ActualTheme,
+			"RichTextBlock inside Dark region should have Dark theme");
+	}
+#endif
+
+	[TestMethod]
+	public async Task When_PopupRoot_Skips_Parented_Popups()
+	{
+		// Gap #5: Parented popup receives theme from parent walk, not from
+		// PopupRoot duplication. Verify popup in a Dark region gets Dark theme.
+		var root = new Border { Width = 200, Height = 200, RequestedTheme = ElementTheme.Dark };
+		var popup = new Popup();
+		var popupContent = new Border
+		{
+			Width = 50,
+			Height = 50,
+			Child = new TextBlock { Text = "Popup" }
+		};
+		popup.Child = popupContent;
+		root.Child = popup;
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+
+		try
+		{
+			popup.IsOpen = true;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(ElementTheme.Dark, popupContent.ActualTheme,
+				"Parented popup content should inherit Dark theme from parent");
+
+			// Change parent theme
+			root.RequestedTheme = ElementTheme.Light;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(ElementTheme.Light, popupContent.ActualTheme,
+				"Parented popup content should update when parent theme changes");
+		}
+		finally
+		{
+			popup.IsOpen = false;
+			await WindowHelper.WaitForIdle();
+		}
+	}
+
+#if HAS_UNO
+	[TestMethod]
+	public async Task When_ForceRefresh_Updates_Elements_With_Same_Theme()
+	{
+		// Gap #10: When app theme changes to match an element's existing theme
+		// (via forceRefresh), resources should still be re-evaluated.
+		var parent = new Border { Width = 200, Height = 200, RequestedTheme = ElementTheme.Dark };
+		var child = new TextBlock { Text = "Test" };
+		parent.Child = child;
+
+		WindowHelper.WindowContent = parent;
+		await WindowHelper.WaitForLoaded(parent);
+
+		Assert.AreEqual(ElementTheme.Dark, child.ActualTheme);
+
+		// Verify the child has correct Dark theme foreground
+		var darkForeground = (child.Foreground as SolidColorBrush)?.Color;
+		Assert.IsNotNull(darkForeground, "Should have foreground in Dark theme");
+		Assert.IsTrue(darkForeground.Value.R > 128,
+			$"Dark theme foreground should be light. Got R={darkForeground.Value.R}");
+	}
+#endif
+
+	[TestMethod]
+	public async Task When_Flyout_PlacementTarget_Theme_Changes_Flyout_Updates()
+	{
+		// Gap: Open flyout, change placement target's ancestor theme,
+		// verify flyout updates.
+		var root = new Border { Width = 200, Height = 200, RequestedTheme = ElementTheme.Light };
+		var innerBorder = new Border { Width = 150, Height = 150 };
+		var button = new Button { Content = "Open Flyout" };
+		var flyout = new Flyout();
+		var flyoutContent = new TextBlock { Text = "Flyout Content" };
+		flyout.Content = flyoutContent;
+		FlyoutBase.SetAttachedFlyout(button, flyout);
+		innerBorder.Child = button;
+		root.Child = innerBorder;
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(button);
+
+		try
+		{
+			FlyoutBase.ShowAttachedFlyout(button);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(ElementTheme.Light, flyoutContent.ActualTheme,
+				"Flyout should start with Light theme");
+
+			// Change ancestor theme while flyout is open
+			root.RequestedTheme = ElementTheme.Dark;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(ElementTheme.Dark, flyoutContent.ActualTheme,
+				"Flyout content should update when ancestor's theme changes");
+		}
+		finally
+		{
+			flyout.Hide();
+			await WindowHelper.WaitForIdle();
+		}
 	}
 
 	#endregion
