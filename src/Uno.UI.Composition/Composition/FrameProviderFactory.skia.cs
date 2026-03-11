@@ -28,9 +28,13 @@ internal static class FrameProviderFactory
 		var origin = codec.EncodedOrigin;
 		var codecWidth = codec.Info.Width;
 		var codecHeight = codec.Info.Height;
-		var (decodeWidth, decodeHeight) = ComputeDecodeDimensions(codecWidth, codecHeight, origin, targetWidth, targetHeight);
 
-		var imageInfo = new SKImageInfo(decodeWidth, decodeHeight, SKColorType.Bgra8888, SKAlphaType.Premul);
+		// Use the smallest codec-supported decode size that covers the target.
+		// JPEG codecs support native downscaling (1/2, 1/4, 1/8) which saves memory.
+		// PNG and other codecs that don't support scaling return the native size.
+		// After decoding at the supported size, we scale to the exact target.
+		var decodeSize = GetSupportedDecodeDimensions(codec, origin, targetWidth, targetHeight);
+		var imageInfo = new SKImageInfo(decodeSize.Width, decodeSize.Height, SKColorType.Bgra8888, SKAlphaType.Premul);
 		var frameInfos = codec.FrameInfo;
 		using var bitmap = new SKBitmap(imageInfo);
 
@@ -38,7 +42,9 @@ internal static class FrameProviderFactory
 		{
 			// FrameInfo can be zero for single-frame images
 			codec.GetPixels(imageInfo, bitmap.GetPixels());
-			provider = new SingleFrameProvider(GetImage(bitmap, origin));
+			var image = GetImage(bitmap, origin);
+			image = ScaleToTargetIfNeeded(image, origin, codecWidth, codecHeight, targetWidth, targetHeight);
+			provider = new SingleFrameProvider(image);
 			return true;
 		}
 
@@ -90,50 +96,105 @@ internal static class FrameProviderFactory
 	}
 
 	/// <summary>
-	/// Computes the decode dimensions for an image, accounting for EXIF orientation.
-	/// The target dimensions are specified in post-rotation (display) space,
-	/// while the codec dimensions are in pre-rotation space.
+	/// Returns the smallest codec-supported decode dimensions that cover the target size.
+	/// For codecs that support native downscaling (e.g. JPEG: 1/2, 1/4, 1/8), this
+	/// returns a reduced size that saves memory. For codecs that only support native
+	/// size (e.g. PNG), this returns the original dimensions.
 	/// </summary>
-	internal static (int Width, int Height) ComputeDecodeDimensions(
-		int codecWidth, int codecHeight,
-		SKEncodedOrigin origin,
-		int? requestedWidth, int? requestedHeight)
+	private static SKSizeI GetSupportedDecodeDimensions(
+		SKCodec codec, SKEncodedOrigin origin,
+		int? targetWidth, int? targetHeight)
 	{
-		if (requestedWidth is null && requestedHeight is null)
+		var codecWidth = codec.Info.Width;
+		var codecHeight = codec.Info.Height;
+
+		if (targetWidth is null && targetHeight is null)
 		{
-			return (codecWidth, codecHeight);
+			return new SKSizeI(codecWidth, codecHeight);
 		}
 
-		// The user specifies dimensions in post-rotation (display) space.
-		// The codec works in pre-rotation space. If EXIF swaps W/H, we need
-		// to swap the user's requested dimensions to match the codec's space.
+		// Target dimensions are in display (post-rotation) space.
+		// Convert to codec (pre-rotation) space for the scale calculation.
 		bool swaps = SkEncodedOriginSwapsWidthHeight(origin);
 		int displayWidth = swaps ? codecHeight : codecWidth;
 		int displayHeight = swaps ? codecWidth : codecHeight;
 
-		int targetDisplayW, targetDisplayH;
+		int targetCodecW, targetCodecH;
 
-		if (requestedWidth is > 0 && requestedHeight is > 0)
+		if (targetWidth is > 0 && targetHeight is > 0)
 		{
-			targetDisplayW = requestedWidth.Value;
-			targetDisplayH = requestedHeight.Value;
+			targetCodecW = swaps ? targetHeight.Value : targetWidth.Value;
+			targetCodecH = swaps ? targetWidth.Value : targetHeight.Value;
 		}
-		else if (requestedWidth is > 0)
+		else if (targetWidth is > 0)
 		{
-			targetDisplayW = requestedWidth.Value;
-			targetDisplayH = (int)Math.Max(1, (long)displayHeight * targetDisplayW / displayWidth);
+			int targetDisplayW = targetWidth.Value;
+			int targetDisplayH = (int)Math.Max(1, (long)displayHeight * targetDisplayW / displayWidth);
+			targetCodecW = swaps ? targetDisplayH : targetDisplayW;
+			targetCodecH = swaps ? targetDisplayW : targetDisplayH;
 		}
-		else // requestedHeight > 0
+		else
 		{
-			targetDisplayH = requestedHeight!.Value;
-			targetDisplayW = (int)Math.Max(1, (long)displayWidth * targetDisplayH / displayHeight);
+			int targetDisplayH = targetHeight!.Value;
+			int targetDisplayW = (int)Math.Max(1, (long)displayWidth * targetDisplayH / displayHeight);
+			targetCodecW = swaps ? targetDisplayH : targetDisplayW;
+			targetCodecH = swaps ? targetDisplayW : targetDisplayH;
 		}
 
-		// Convert back to codec (pre-rotation) space
-		int decodeW = swaps ? targetDisplayH : targetDisplayW;
-		int decodeH = swaps ? targetDisplayW : targetDisplayH;
+		// Use the larger scale factor so the decoded image covers the target in both dimensions.
+		float desiredScale = Math.Max(
+			(float)targetCodecW / codecWidth,
+			(float)targetCodecH / codecHeight);
 
-		return (Math.Max(1, decodeW), Math.Max(1, decodeH));
+		return codec.GetScaledDimensions(desiredScale);
+	}
+
+	/// <summary>
+	/// Scales an image (already in display/post-EXIF-rotation space) to the exact
+	/// target dimensions. When only one dimension is specified, the other is computed
+	/// to preserve the source aspect ratio.
+	/// </summary>
+	private static SKImage ScaleToTargetIfNeeded(
+		SKImage image, SKEncodedOrigin origin,
+		int codecWidth, int codecHeight,
+		int? targetWidth, int? targetHeight)
+	{
+		if (targetWidth is null && targetHeight is null)
+		{
+			return image;
+		}
+
+		bool swaps = SkEncodedOriginSwapsWidthHeight(origin);
+		int originalDisplayW = swaps ? codecHeight : codecWidth;
+		int originalDisplayH = swaps ? codecWidth : codecHeight;
+
+		int dstW, dstH;
+		if (targetWidth is > 0 && targetHeight is > 0)
+		{
+			dstW = targetWidth.Value;
+			dstH = targetHeight.Value;
+		}
+		else if (targetWidth is > 0)
+		{
+			dstW = targetWidth.Value;
+			dstH = (int)Math.Max(1, (long)originalDisplayH * dstW / originalDisplayW);
+		}
+		else
+		{
+			dstH = targetHeight!.Value;
+			dstW = (int)Math.Max(1, (long)originalDisplayW * dstH / originalDisplayH);
+		}
+
+		if (dstW == image.Width && dstH == image.Height)
+		{
+			return image;
+		}
+
+		var dstInfo = new SKImageInfo(dstW, dstH, SKColorType.Bgra8888, SKAlphaType.Premul);
+		var dstBitmap = new SKBitmap(dstInfo);
+		using var srcBitmap = SKBitmap.FromImage(image);
+		srcBitmap.ScalePixels(dstBitmap, new SKSamplingOptions(SKCubicResampler.CatmullRom));
+		return SKImage.FromBitmap(dstBitmap);
 	}
 
 	private static SKImage GetImage(SKBitmap bitmap, SKEncodedOrigin origin)
