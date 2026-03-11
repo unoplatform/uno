@@ -190,7 +190,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void SubscribeOwnerThemeChanged()
 		{
-			if (_owner is FrameworkElement ownerFe)
+			var ownerFe = GetOwnerFrameworkElement();
+			if (ownerFe is not null)
 			{
 				ownerFe.ActualThemeChanged += OnOwnerActualThemeChanged;
 			}
@@ -198,7 +199,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UnsubscribeOwnerThemeChanged()
 		{
-			if (_owner is FrameworkElement ownerFe)
+			var ownerFe = GetOwnerFrameworkElement();
+			if (ownerFe is not null)
 			{
 				ownerFe.ActualThemeChanged -= OnOwnerActualThemeChanged;
 			}
@@ -217,7 +219,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// matches the theme of the subtree it was opened from.
 		private void ForwardOwnerThemePropertyToToolTip()
 		{
-			if (_owner is not FrameworkElement owner)
+			// MUX Reference: ToolTip_Partial.cpp lines 2530-2545
+			// Handle TextElement owners (e.g., Hyperlink) by finding containing FE.
+			var owner = GetOwnerFrameworkElement();
+			if (owner is null)
 			{
 				return;
 			}
@@ -257,6 +262,24 @@ namespace Microsoft.UI.Xaml.Controls
 				RequestedTheme = requestedTheme;
 				m_isToolTipRequestedThemeOverridden = true;
 			}
+		}
+
+		// MUX Reference: ToolTip_Partial.cpp lines 2530-2545
+		// Resolves _owner to a FrameworkElement, handling TextElement owners
+		// (e.g., Hyperlink) by finding the containing FrameworkElement.
+		private FrameworkElement? GetOwnerFrameworkElement()
+		{
+			if (_owner is FrameworkElement fe)
+			{
+				return fe;
+			}
+
+			if (_owner is Documents.TextElement textElement)
+			{
+				return textElement.GetContainingFrameworkElement();
+			}
+
+			return null;
 		}
 
 		public event RoutedEventHandler? Closed;
