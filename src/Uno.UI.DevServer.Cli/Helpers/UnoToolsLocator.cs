@@ -22,6 +22,8 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 
 	public async Task<DiscoveryInfo> DiscoverAsync(string workDirectory, WorkspaceResolution? workspaceResolution)
 	{
+		var discoveryStopwatch = Stopwatch.StartNew();
+
 		workspaceResolution ??= new WorkspaceResolution
 		{
 			RequestedWorkingDirectory = Path.GetFullPath(workDirectory),
@@ -32,6 +34,7 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 
 		if (!workspaceResolution.IsResolved)
 		{
+			discoveryStopwatch.Stop();
 			return new DiscoveryInfo
 			{
 				RequestedWorkingDirectory = workspaceResolution.RequestedWorkingDirectory,
@@ -41,6 +44,7 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 				SelectedGlobalJsonPath = workspaceResolution.SelectedGlobalJsonPath,
 				ResolutionKind = workspaceResolution.ResolutionKind,
 				CandidateSolutions = workspaceResolution.CandidateSolutions,
+				DiscoveryDurationMs = discoveryStopwatch.ElapsedMilliseconds,
 				Errors = workspaceResolution.ResolutionKind == WorkspaceResolutionKind.NoCandidates
 					? []
 					: ["Workspace could not be resolved."],
@@ -239,6 +243,8 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 			_logger.LogDebug(ex, "AmbientRegistry lookup failed");
 		}
 
+		discoveryStopwatch.Stop();
+
 		return new DiscoveryInfo
 		{
 			RequestedWorkingDirectory = workspaceResolution.RequestedWorkingDirectory,
@@ -248,6 +254,7 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 			SelectedGlobalJsonPath = workspaceResolution.SelectedGlobalJsonPath,
 			ResolutionKind = workspaceResolution.ResolutionKind,
 			CandidateSolutions = workspaceResolution.CandidateSolutions,
+			DiscoveryDurationMs = discoveryStopwatch.ElapsedMilliseconds,
 			GlobalJsonPath = globalJsonPath,
 			UnoSdkSource = unoSdkSource,
 			UnoSdkSourcePath = unoSdkSourcePath,

@@ -80,6 +80,7 @@ internal class ProxyLifecycleManager
 	private TaskCompletionSource<bool>? _toolCachePrimedTcs;
 	private Task? _cachePrimedWatcher;
 	private FileSystemWatcher? _workspaceMutationWatcher;
+	private string? _workspaceMutationWatcherRoot;
 	private CancellationTokenSource? _workspaceMutationDebounceCts;
 	private readonly SemaphoreSlim _workspaceTransitionGate = new(1, 1);
 
@@ -198,9 +199,7 @@ internal class ProxyLifecycleManager
 
 	internal async Task ReevaluateWorkspaceAsync(WorkspaceTransitionTrigger trigger, CancellationToken ct = default)
 	{
-		var workspaceRoot = _currentDirectory
-			?? _workspaceResolution?.RequestedWorkingDirectory
-			?? _workspaceResolution?.EffectiveWorkspaceDirectory;
+		var workspaceRoot = GetWorkspaceObservationRoot();
 
 		if (string.IsNullOrWhiteSpace(workspaceRoot))
 		{
@@ -231,11 +230,13 @@ internal class ProxyLifecycleManager
 						_workspaceResolution?.EffectiveWorkspaceDirectory);
 					_workspaceResolution = nextResolution;
 					UpdateWorkspaceHash(nextResolution);
+					EnsureWorkspaceMutationWatcherMatchesCurrentRoot();
 					return;
 
 				case WorkspaceTransitionAction.Start:
 					_workspaceResolution = nextResolution;
 					UpdateWorkspaceHash(nextResolution);
+					EnsureWorkspaceMutationWatcherMatchesCurrentRoot();
 					StartDevServerMonitor(nextResolution.EffectiveWorkspaceDirectory);
 					return;
 
@@ -247,6 +248,7 @@ internal class ProxyLifecycleManager
 					await StopCurrentWorkspaceAsync();
 					_workspaceResolution = nextResolution;
 					UpdateWorkspaceHash(nextResolution);
+					EnsureWorkspaceMutationWatcherMatchesCurrentRoot();
 					SetConnectionState(ConnectionState.Degraded);
 					FailToolCachePriming();
 					return;
@@ -259,6 +261,7 @@ internal class ProxyLifecycleManager
 					await StopCurrentWorkspaceAsync();
 					_workspaceResolution = nextResolution;
 					UpdateWorkspaceHash(nextResolution);
+					EnsureWorkspaceMutationWatcherMatchesCurrentRoot();
 					StartDevServerMonitor(nextResolution.EffectiveWorkspaceDirectory);
 					return;
 
@@ -278,6 +281,7 @@ internal class ProxyLifecycleManager
 							nextResolution.ResolutionKind);
 						_workspaceResolution = nextResolution;
 						UpdateWorkspaceHash(nextResolution);
+						EnsureWorkspaceMutationWatcherMatchesCurrentRoot();
 					}
 
 					SetConnectionState(ConnectionState.Degraded);
@@ -461,9 +465,7 @@ internal class ProxyLifecycleManager
 			return;
 		}
 
-		var workspaceRoot = _currentDirectory
-			?? _workspaceResolution?.RequestedWorkingDirectory
-			?? _workspaceResolution?.EffectiveWorkspaceDirectory;
+		var workspaceRoot = GetWorkspaceObservationRoot();
 
 		if (string.IsNullOrWhiteSpace(workspaceRoot) || !Directory.Exists(workspaceRoot))
 		{
@@ -484,7 +486,9 @@ internal class ProxyLifecycleManager
 		_workspaceMutationWatcher.Changed += OnWorkspaceMutation;
 		_workspaceMutationWatcher.Deleted += OnWorkspaceMutation;
 		_workspaceMutationWatcher.Renamed += OnWorkspaceMutation;
+		_workspaceMutationWatcher.Error += OnWorkspaceMutationWatcherError;
 		_workspaceMutationWatcher.EnableRaisingEvents = true;
+		_workspaceMutationWatcherRoot = workspaceRoot;
 
 		_logger.LogTrace("Started workspace mutation watcher for {WorkspaceRoot}", workspaceRoot);
 	}
@@ -505,8 +509,10 @@ internal class ProxyLifecycleManager
 		_workspaceMutationWatcher.Changed -= OnWorkspaceMutation;
 		_workspaceMutationWatcher.Deleted -= OnWorkspaceMutation;
 		_workspaceMutationWatcher.Renamed -= OnWorkspaceMutation;
+		_workspaceMutationWatcher.Error -= OnWorkspaceMutationWatcherError;
 		_workspaceMutationWatcher.Dispose();
 		_workspaceMutationWatcher = null;
+		_workspaceMutationWatcherRoot = null;
 
 		await Task.CompletedTask;
 	}
@@ -542,6 +548,75 @@ internal class ProxyLifecycleManager
 				_logger.LogWarning(ex, "Workspace reevaluation failed after filesystem mutation");
 			}
 		}, CancellationToken.None);
+	}
+
+	private void OnWorkspaceMutationWatcherError(object sender, ErrorEventArgs args)
+	{
+		_logger.LogWarning(args.GetException(), "Workspace mutation watcher failed; restarting watcher and reevaluating the workspace");
+
+		_ = Task.Run(async () =>
+		{
+			try
+			{
+				await StopWorkspaceMutationWatcherAsync();
+				StartWorkspaceMutationWatcher();
+				await ReevaluateWorkspaceAsync(WorkspaceTransitionTrigger.FileSystem);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogWarning(ex, "Workspace reevaluation failed after watcher error");
+			}
+		}, CancellationToken.None);
+	}
+
+	private string? GetWorkspaceObservationRoot()
+	{
+		if (!string.IsNullOrWhiteSpace(_currentDirectory))
+		{
+			var activeWorkspace = _workspaceResolution?.EffectiveWorkspaceDirectory;
+			if (string.IsNullOrWhiteSpace(activeWorkspace)
+				|| IsPathWithinRoot(activeWorkspace, _currentDirectory))
+			{
+				return _currentDirectory;
+			}
+		}
+
+		return _workspaceResolution?.RequestedWorkingDirectory
+			?? _workspaceResolution?.EffectiveWorkspaceDirectory
+			?? _currentDirectory;
+	}
+
+	private void EnsureWorkspaceMutationWatcherMatchesCurrentRoot()
+	{
+		var expectedRoot = GetWorkspaceObservationRoot();
+		if (string.Equals(_workspaceMutationWatcherRoot, expectedRoot, StringComparison.OrdinalIgnoreCase))
+		{
+			return;
+		}
+
+		_ = Task.Run(async () =>
+		{
+			try
+			{
+				await StopWorkspaceMutationWatcherAsync();
+				StartWorkspaceMutationWatcher();
+			}
+			catch (Exception ex)
+			{
+				_logger.LogWarning(ex, "Unable to realign workspace mutation watcher to {WorkspaceRoot}", expectedRoot);
+			}
+		}, CancellationToken.None);
+	}
+
+	private static bool IsPathWithinRoot(string path, string root)
+	{
+		var fullPath = Path.GetFullPath(path).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+		var fullRoot = Path.GetFullPath(root).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+
+		return fullPath.StartsWith(fullRoot, StringComparison.OrdinalIgnoreCase)
+			&& (fullPath.Length == fullRoot.Length
+				|| fullPath[fullRoot.Length] == Path.DirectorySeparatorChar
+				|| fullPath[fullRoot.Length] == Path.AltDirectorySeparatorChar);
 	}
 
 	private string? NormalizeSolutionDirectory(string? directory)

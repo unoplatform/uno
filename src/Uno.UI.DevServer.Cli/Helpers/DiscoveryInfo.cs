@@ -1,6 +1,5 @@
 namespace Uno.UI.DevServer.Cli.Helpers;
 
-#pragma warning disable IDE0055
 public sealed class DiscoveryInfo
 {
 	/// <summary>
@@ -124,6 +123,11 @@ public sealed class DiscoveryInfo
 	public string? AddInsDiscoveryMethod { get; init; }
 
 	/// <summary>
+	/// Gets the total discovery duration in milliseconds.
+	/// </summary>
+	public long DiscoveryDurationMs { get; init; }
+
+	/// <summary>
 	/// Gets the duration of add-in discovery in milliseconds.
 	/// </summary>
 	public long AddInsDiscoveryDurationMs { get; init; }
@@ -168,4 +172,3 @@ public sealed class ActiveServerInfo
 	/// </summary>
 	public bool IsInWorkspace { get; init; }
 }
-#pragma warning restore IDE0055

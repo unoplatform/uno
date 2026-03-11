@@ -68,48 +68,4 @@ internal class HealthService(
 				? upstreamTask.Exception?.InnerException?.Message ?? "Unknown error"
 				: null);
 	}
-
-	internal static DiscoverySummary? MapDiscovery(DiscoveryInfo? info)
-	{
-		if (info is null)
-		{
-			return null;
-		}
-
-		return new DiscoverySummary
-		{
-			RequestedWorkingDirectory = info.RequestedWorkingDirectory,
-			WorkingDirectory = info.WorkingDirectory,
-			EffectiveWorkspaceDirectory = info.EffectiveWorkspaceDirectory,
-			SelectedSolutionPath = info.SelectedSolutionPath,
-			SelectedGlobalJsonPath = info.SelectedGlobalJsonPath,
-			ResolutionKind = info.ResolutionKind,
-			CandidateSolutions = info.CandidateSolutions.Count > 0 ? info.CandidateSolutions : null,
-			DotNetVersion = info.DotNetVersion,
-			UnoSdkVersion = info.UnoSdkVersion,
-			UnoSdkPath = info.UnoSdkPath,
-			HostPath = info.HostPath,
-			SettingsPath = info.SettingsPath,
-			AddIns = info.AddIns.Select(a => new AddInSummary
-			{
-				PackageName = a.PackageName,
-				PackageVersion = a.PackageVersion,
-				EntryPointDll = a.EntryPointDll,
-				DiscoverySource = a.DiscoverySource,
-			}).ToList(),
-			ActiveServers = info.ActiveServers.Count > 0
-				? info.ActiveServers.Select(s => new ActiveServerSummary
-				{
-					ProcessId = s.ProcessId,
-					Port = s.Port,
-					McpEndpoint = s.McpEndpoint,
-					ParentProcessId = s.ParentProcessId,
-					StartTime = s.StartTime,
-					IdeChannelId = s.IdeChannelId,
-					SolutionPath = s.SolutionPath,
-					IsInWorkspace = s.IsInWorkspace,
-				}).ToList()
-				: null,
-		};
-	}
 }

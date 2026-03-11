@@ -5,7 +5,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<IsPackable>false</IsPackable>
-		<NoWarn>$(NoWarn);VSTHRD200;IDE0055</NoWarn>
+		<NoWarn>$(NoWarn);VSTHRD200</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>

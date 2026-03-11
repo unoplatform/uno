@@ -255,6 +255,30 @@ public class Given_HealthService
 	}
 
 	[TestMethod]
+	public void HealthReport_WhenDiscoveryInfoHasTotalDuration_UsesThatDuration()
+	{
+		var discovery = new DiscoveryInfo
+		{
+			RequestedWorkingDirectory = @"D:\src\repo",
+			EffectiveWorkspaceDirectory = @"D:\src\repo\src",
+			ResolutionKind = WorkspaceResolutionKind.AutoDiscovered,
+			DiscoveryDurationMs = 321,
+			AddInsDiscoveryDurationMs = 42,
+			UnoSdkVersion = "6.6.0-dev.1",
+		};
+
+		var report = HealthReportFactory.Create(
+			discovery,
+			devServerStarted: true,
+			upstreamConnected: false,
+			toolCount: 0,
+			connectionState: null,
+			discoveredSolutions: null);
+
+		report.DiscoveryDurationMs.Should().Be(321);
+	}
+
+	[TestMethod]
 	[Description("Every IssueCode enum value must survive a JSON serialize/deserialize roundtrip as a string")]
 	public void AllIssueCodes_RoundtripThroughJson()
 	{

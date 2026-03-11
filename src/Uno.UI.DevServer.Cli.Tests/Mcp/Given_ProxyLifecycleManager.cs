@@ -38,7 +38,7 @@ public class Given_ProxyLifecycleManager
 		}
 		finally
 		{
-			Directory.Delete(root, recursive: true);
+			await DeleteDirectoryWithRetriesAsync(root);
 		}
 	}
 
@@ -78,7 +78,7 @@ public class Given_ProxyLifecycleManager
 		}
 		finally
 		{
-			Directory.Delete(root, recursive: true);
+			await DeleteDirectoryWithRetriesAsync(root);
 		}
 	}
 
@@ -117,7 +117,7 @@ public class Given_ProxyLifecycleManager
 		}
 		finally
 		{
-			Directory.Delete(root, recursive: true);
+			await DeleteDirectoryWithRetriesAsync(root);
 		}
 	}
 
@@ -165,7 +165,7 @@ public class Given_ProxyLifecycleManager
 				await monitor.StopMonitoringAsync();
 			}
 
-			Directory.Delete(root, recursive: true);
+			await DeleteDirectoryWithRetriesAsync(root);
 		}
 	}
 
@@ -216,7 +216,7 @@ public class Given_ProxyLifecycleManager
 				await monitor.StopMonitoringAsync();
 			}
 
-			Directory.Delete(root, recursive: true);
+			await DeleteDirectoryWithRetriesAsync(root);
 		}
 	}
 
@@ -264,7 +264,7 @@ public class Given_ProxyLifecycleManager
 				await monitor.StopMonitoringAsync();
 			}
 
-			Directory.Delete(root, recursive: true);
+			await DeleteDirectoryWithRetriesAsync(root);
 		}
 	}
 
@@ -326,7 +326,7 @@ public class Given_ProxyLifecycleManager
 				}
 			}
 
-			Directory.Delete(root, recursive: true);
+			await DeleteDirectoryWithRetriesAsync(root);
 		}
 	}
 
@@ -382,7 +382,7 @@ public class Given_ProxyLifecycleManager
 				}
 			}
 
-			Directory.Delete(root, recursive: true);
+			await DeleteDirectoryWithRetriesAsync(root);
 		}
 	}
 
@@ -425,7 +425,7 @@ public class Given_ProxyLifecycleManager
 				await StopWatcherAndMonitorAsync(subject);
 			}
 
-			Directory.Delete(root, recursive: true);
+			await DeleteDirectoryWithRetriesAsync(root);
 		}
 	}
 
@@ -470,7 +470,7 @@ public class Given_ProxyLifecycleManager
 				await StopWatcherAndMonitorAsync(subject);
 			}
 
-			Directory.Delete(root, recursive: true);
+			await DeleteDirectoryWithRetriesAsync(root);
 		}
 	}
 
@@ -520,7 +520,7 @@ public class Given_ProxyLifecycleManager
 				await StopWatcherAndMonitorAsync(subject);
 			}
 
-			Directory.Delete(root, recursive: true);
+			await DeleteDirectoryWithRetriesAsync(root);
 		}
 	}
 
@@ -575,7 +575,7 @@ public class Given_ProxyLifecycleManager
 				await StopWatcherAndMonitorAsync(subject);
 			}
 
-			Directory.Delete(root, recursive: true);
+			await DeleteDirectoryWithRetriesAsync(root);
 		}
 	}
 
@@ -626,7 +626,7 @@ public class Given_ProxyLifecycleManager
 				await StopWatcherAndMonitorAsync(subject);
 			}
 
-			Directory.Delete(root, recursive: true);
+			await DeleteDirectoryWithRetriesAsync(root);
 		}
 	}
 
@@ -678,7 +678,7 @@ public class Given_ProxyLifecycleManager
 				await StopWatcherAndMonitorAsync(subject);
 			}
 
-			Directory.Delete(root, recursive: true);
+			await DeleteDirectoryWithRetriesAsync(root);
 		}
 	}
 
@@ -721,7 +721,58 @@ public class Given_ProxyLifecycleManager
 				await StopWatcherAndMonitorAsync(subject);
 			}
 
-			Directory.Delete(root, recursive: true);
+			await DeleteDirectoryWithRetriesAsync(root);
+		}
+	}
+
+	[TestMethod]
+	[Description("When MCP roots select a workspace outside the launch directory, the workspace watcher is realigned to the active root")]
+	public async Task WhenMcpRootsSelectExternalWorkspace_WatcherTracksSelectedRoot()
+	{
+		var launchRoot = CreateTempDirectory();
+		var externalRoot = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
+
+		try
+		{
+			var externalWorkspace = await CreateUnoWorkspaceAsync(externalRoot, "src", "App.slnx", "6.6.0-dev.1");
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
+			var unresolvedWorkspace = new WorkspaceResolution
+			{
+				RequestedWorkingDirectory = launchRoot,
+				ResolutionKind = WorkspaceResolutionKind.NoCandidates,
+				CandidateSolutions = [],
+			};
+			var resolvedExternalWorkspace = await resolver.ResolveAsync(externalRoot);
+
+			var created = CreateSubject();
+			subject = created.Subject;
+			SetPrivateField(subject, "_currentDirectory", launchRoot);
+			SetPrivateField(subject, "_workspaceResolution", unresolvedWorkspace);
+			SetPrivateField(subject, "_devServerPort", 0);
+			SetPrivateField(subject, "_forwardedArgs", new List<string>());
+
+			subject.StartWorkspaceMutationWatcher();
+			await subject.ApplyWorkspaceResolutionAsync(resolvedExternalWorkspace, WorkspaceTransitionTrigger.McpRoots);
+
+			await WaitUntilAsync(() =>
+				string.Equals(
+					GetPrivateField<string?>(subject, "_workspaceMutationWatcherRoot"),
+					externalRoot,
+					StringComparison.OrdinalIgnoreCase));
+
+			GetPrivateField<string?>(subject, "_workspaceMutationWatcherRoot").Should().Be(externalRoot);
+			GetPrivateField<WorkspaceResolution>(subject, "_workspaceResolution").RequestedWorkingDirectory.Should().Be(externalRoot);
+		}
+		finally
+		{
+			if (subject is not null)
+			{
+				await StopWatcherAndMonitorAsync(subject);
+			}
+
+			await DeleteDirectoryWithRetriesAsync(launchRoot);
+			await DeleteDirectoryWithRetriesAsync(externalRoot);
 		}
 	}
 
@@ -825,5 +876,29 @@ public class Given_ProxyLifecycleManager
 
 		var monitor = GetPrivateField<DevServerMonitor>(subject, "_devServerMonitor");
 		await monitor.StopMonitoringAsync();
+	}
+
+	private static async Task DeleteDirectoryWithRetriesAsync(string path, int attempts = 10, int delayMs = 100)
+	{
+		for (var attempt = 1; attempt <= attempts; attempt++)
+		{
+			try
+			{
+				if (Directory.Exists(path))
+				{
+					Directory.Delete(path, recursive: true);
+				}
+
+				return;
+			}
+			catch (IOException) when (attempt < attempts)
+			{
+				await Task.Delay(delayMs);
+			}
+			catch (UnauthorizedAccessException) when (attempt < attempts)
+			{
+				await Task.Delay(delayMs);
+			}
+		}
 	}
 }
