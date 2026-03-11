@@ -2287,6 +2287,95 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	public async Task When_Grandparent_RequestedTheme_Changes_Button_Foreground_Updates()
+	{
+		// Matches BasicThemeResources scenario: Page sets RequestedTheme,
+		// buttons are nested several levels deep.
+		var outerPanel = new StackPanel { Width = 300, Height = 300 };
+		var middleGrid = new Grid();
+		var innerPanel = new StackPanel { Orientation = Orientation.Horizontal };
+		var button1 = new Button { Content = "Button1" };
+		var button2 = new Button { Content = "Button2" };
+		var button3 = new Button { Content = "Button3" };
+
+		innerPanel.Children.Add(button1);
+		innerPanel.Children.Add(button2);
+		innerPanel.Children.Add(button3);
+		middleGrid.Children.Add(innerPanel);
+		outerPanel.Children.Add(middleGrid);
+
+		WindowHelper.WindowContent = outerPanel;
+		await WindowHelper.WaitForLoaded(button3);
+
+		var cp1 = button1.FindVisualChildByName("ContentPresenter") as ContentPresenter;
+		var cp3 = button3.FindVisualChildByName("ContentPresenter") as ContentPresenter;
+		Assert.IsNotNull(cp1, "Button1 should have ContentPresenter");
+		Assert.IsNotNull(cp3, "Button3 should have ContentPresenter");
+
+		var defaultFg1 = (cp1.Foreground as SolidColorBrush)?.Color;
+		var defaultFg3 = (cp3.Foreground as SolidColorBrush)?.Color;
+
+		// Change theme on the GRANDPARENT (like a Page setting RequestedTheme)
+		outerPanel.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		var darkFg1 = (cp1.Foreground as SolidColorBrush)?.Color;
+		var darkFg3 = (cp3.Foreground as SolidColorBrush)?.Color;
+
+		Assert.AreNotEqual(defaultFg1, darkFg1,
+			$"Button1 foreground should change from {defaultFg1} to a dark theme color, got {darkFg1}");
+		Assert.AreNotEqual(defaultFg3, darkFg3,
+			$"Button3 foreground should change from {defaultFg3} to a dark theme color, got {darkFg3}");
+	}
+
+	[TestMethod]
+	public async Task When_XamlParsed_Buttons_Theme_Change_Foreground_Updates()
+	{
+		// Test XAML-parsed buttons (matching BasicThemeResources scenario)
+		// where buttons are created via XAML parsing, not programmatically.
+		var xaml = """
+			<StackPanel
+				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				Width="400" Height="200">
+				<StackPanel Orientation="Horizontal">
+					<Button x:Name="Btn1">Button1</Button>
+					<Button x:Name="Btn2">Button2</Button>
+					<Button x:Name="Btn3">Button3</Button>
+				</StackPanel>
+			</StackPanel>
+			""";
+
+		var root = (StackPanel)XamlReader.Load(xaml);
+		WindowHelper.WindowContent = root;
+
+		var btn1 = root.FindName("Btn1") as Button;
+		var btn3 = root.FindName("Btn3") as Button;
+		Assert.IsNotNull(btn1);
+		Assert.IsNotNull(btn3);
+
+		await WindowHelper.WaitForLoaded(btn3);
+
+		var cp1 = btn1.FindVisualChildByName("ContentPresenter") as ContentPresenter;
+		var cp3 = btn3.FindVisualChildByName("ContentPresenter") as ContentPresenter;
+		Assert.IsNotNull(cp1, "Button1 should have ContentPresenter");
+		Assert.IsNotNull(cp3, "Button3 should have ContentPresenter");
+
+		var defaultFg1 = (cp1.Foreground as SolidColorBrush)?.Color;
+
+		root.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		var darkFg1 = (cp1.Foreground as SolidColorBrush)?.Color;
+		var darkFg3 = (cp3.Foreground as SolidColorBrush)?.Color;
+
+		Assert.AreNotEqual(defaultFg1, darkFg1,
+			$"XAML-parsed button foreground should change. Default={defaultFg1}, Dark={darkFg1}");
+		Assert.AreNotEqual(defaultFg1, darkFg3,
+			$"XAML-parsed button3 foreground should change. Default={defaultFg1}, Dark={darkFg3}");
+	}
+
+	[TestMethod]
 	public async Task When_Theme_Changes_TextBlock_Foreground_Updates()
 	{
 		// Basic test: does a TextBlock's Foreground update when parent theme changes?
@@ -2440,6 +2529,137 @@ public class Given_ElementTheme
 			menuFlyout.Hide();
 			await WindowHelper.WaitForIdle();
 		}
+	}
+
+	[TestMethod]
+	public async Task When_Storyboard_VisualState_After_Element_Theme_Change()
+	{
+		// This test verifies that Storyboard-based visual state animations
+		// (ObjectAnimationUsingKeyFrames) use the correct ThemeResource values
+		// after an element-level theme change.
+		var container = new Border { RequestedTheme = ElementTheme.Light };
+
+		// Create a Button with standard template (uses Storyboard for PointerOver state)
+		var button = new Button { Content = "Test", Width = 120, Height = 40 };
+		container.Child = button;
+
+		WindowHelper.WindowContent = container;
+		await WindowHelper.WaitForLoaded(button);
+		await WindowHelper.WaitForIdle();
+
+		// Find the ContentPresenter in the Button's template tree
+		ContentPresenter contentPresenter = null;
+		var queue = new System.Collections.Generic.Queue<DependencyObject>();
+		queue.Enqueue(button);
+		while (queue.Count > 0)
+		{
+			var current = queue.Dequeue();
+			if (current is ContentPresenter cp && current != button)
+			{
+				contentPresenter = cp;
+				break;
+			}
+			var childCount = VisualTreeHelper.GetChildrenCount(current);
+			for (int i = 0; i < childCount; i++)
+			{
+				queue.Enqueue(VisualTreeHelper.GetChild(current, i));
+			}
+		}
+		Assert.IsNotNull(contentPresenter, "Button should have a ContentPresenter in its template");
+
+		// Simulate PointerOver state
+		VisualStateManager.GoToState(button, "PointerOver", false);
+		await WindowHelper.WaitForIdle();
+
+		// Record Light theme PointerOver background
+		var lightPointerOverBg = (contentPresenter.Background as SolidColorBrush)?.Color;
+		Assert.IsNotNull(lightPointerOverBg, "Button should have SolidColorBrush background in PointerOver");
+
+		// Return to Normal
+		VisualStateManager.GoToState(button, "Normal", false);
+		await WindowHelper.WaitForIdle();
+
+		// Change theme to Dark
+		container.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		// Enter PointerOver again - should use Dark theme resources
+		VisualStateManager.GoToState(button, "PointerOver", false);
+		await WindowHelper.WaitForIdle();
+
+		var darkPointerOverBg = (contentPresenter.Background as SolidColorBrush)?.Color;
+		Assert.IsNotNull(darkPointerOverBg, "Button should have SolidColorBrush background in Dark PointerOver");
+
+		// The PointerOver background should be different between Light and Dark themes
+		Assert.AreNotEqual(lightPointerOverBg.Value, darkPointerOverBg.Value,
+			$"Button PointerOver background should differ between themes. " +
+			$"Light={lightPointerOverBg}, Dark={darkPointerOverBg}");
+	}
+
+	[TestMethod]
+	public async Task When_Root_Theme_Cycles_Dark_Default_TextBlock_Foreground_Restores()
+	{
+		// Repro: SamplesApp three-dots Dark → Default → navigate to page → TextBlock white instead of black
+		// Root cause: EnsureThemeForeground sets Inheritance-precedence foreground on all children
+		// during Dark push, but when root switches back to Default, only root's _themeForeground
+		// is cleared. Children retain stale dark foreground at Inheritance precedence.
+		var root = new Border { Width = 200, Height = 200 };
+		var textBlock = new TextBlock { Text = "Test" };
+		root.Child = textBlock;
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(textBlock);
+		await WindowHelper.WaitForIdle();
+
+		// Baseline: Light theme foreground should be dark (black or near-black)
+		var lightFg = (textBlock.Foreground as SolidColorBrush)?.Color;
+		Assert.IsNotNull(lightFg, "TextBlock should have SolidColorBrush foreground");
+		Assert.IsTrue(lightFg.Value.R < 128, $"Light theme foreground should be dark, got {lightFg}");
+
+		// Step 1: Switch root to Dark (mimics three-dots → Dark)
+		root.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		var darkFg = (textBlock.Foreground as SolidColorBrush)?.Color;
+		Assert.IsNotNull(darkFg, "TextBlock should have foreground in Dark theme");
+		Assert.IsTrue(darkFg.Value.R > 128, $"Dark theme foreground should be light, got {darkFg}");
+
+		// Step 2: Switch root back to Default (mimics three-dots → Default)
+		root.RequestedTheme = ElementTheme.Default;
+		await WindowHelper.WaitForIdle();
+
+		// TextBlock foreground should be restored to light-theme (dark color)
+		var restoredFg = (textBlock.Foreground as SolidColorBrush)?.Color;
+		Assert.IsNotNull(restoredFg, "TextBlock should have foreground after theme restore");
+		Assert.IsTrue(restoredFg.Value.R < 128,
+			$"After Dark→Default cycle, TextBlock foreground should be dark (light theme), got {restoredFg}");
+	}
+
+	[TestMethod]
+	public async Task When_Root_Theme_Cycles_New_Content_Has_Correct_Foreground()
+	{
+		// Tests that NEW content loaded after Dark→Default cycle gets correct foreground
+		var root = new StackPanel { Width = 200, Height = 200 };
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+
+		// Cycle: Dark → Default
+		root.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+		root.RequestedTheme = ElementTheme.Default;
+		await WindowHelper.WaitForIdle();
+
+		// Add NEW TextBlock after the cycle
+		var textBlock = new TextBlock { Text = "New content" };
+		root.Children.Add(textBlock);
+		await WindowHelper.WaitForLoaded(textBlock);
+		await WindowHelper.WaitForIdle();
+
+		var fg = (textBlock.Foreground as SolidColorBrush)?.Color;
+		Assert.IsNotNull(fg, "New TextBlock should have foreground");
+		Assert.IsTrue(fg.Value.R < 128,
+			$"New TextBlock after Dark→Default cycle should have dark foreground (light theme), got {fg}");
 	}
 
 	#endregion
