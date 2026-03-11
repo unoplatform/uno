@@ -205,6 +205,56 @@ public class Given_HealthService
 	}
 
 	[TestMethod]
+	public void HealthReport_WhenNoCandidates_IsImmediatelyUnhealthy()
+	{
+		var discovery = new DiscoveryInfo
+		{
+			RequestedWorkingDirectory = @"D:\empty",
+			ResolutionKind = WorkspaceResolutionKind.NoCandidates,
+			CandidateSolutions = [],
+		};
+
+		var report = HealthReportFactory.Create(
+			discovery,
+			devServerStarted: false,
+			upstreamConnected: false,
+			toolCount: 0,
+			connectionState: null,
+			discoveredSolutions: null);
+
+		report.Status.Should().Be(HealthStatus.Unhealthy);
+		report.Issues.Should().Contain(issue => issue.Code == IssueCode.HostNotStarted);
+		report.Issues.Should().Contain(issue => issue.Code == IssueCode.NoSolutionFound);
+	}
+
+	[TestMethod]
+	public void HealthReport_WhenWorkspaceIsAmbiguous_IsImmediatelyUnhealthyWithDiagnostic()
+	{
+		var discovery = new DiscoveryInfo
+		{
+			RequestedWorkingDirectory = @"D:\src\repo",
+			ResolutionKind = WorkspaceResolutionKind.Ambiguous,
+			CandidateSolutions =
+			[
+				@"D:\src\repo\srcA\AppA.slnx",
+				@"D:\src\repo\srcB\AppB.slnx",
+			],
+		};
+
+		var report = HealthReportFactory.Create(
+			discovery,
+			devServerStarted: false,
+			upstreamConnected: false,
+			toolCount: 0,
+			connectionState: null,
+			discoveredSolutions: discovery.CandidateSolutions);
+
+		report.Status.Should().Be(HealthStatus.Unhealthy);
+		report.Issues.Should().Contain(issue => issue.Code == IssueCode.HostNotStarted);
+		report.Issues.Should().Contain(issue => issue.Code == IssueCode.WorkspaceAmbiguous);
+	}
+
+	[TestMethod]
 	[Description("Every IssueCode enum value must survive a JSON serialize/deserialize roundtrip as a string")]
 	public void AllIssueCodes_RoundtripThroughJson()
 	{

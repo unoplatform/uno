@@ -34,28 +34,28 @@ The following rules are part of the supported behavior:
 
 | Case | Expected result | Test expected | Current code | Current dedicated coverage |
 |---|---|---|---|---|
-| Empty directory, no `.git`, no solution | `ResolutionKind=NoCandidates`; no host start; health immediately available with `HostNotStarted` + `NoSolutionFound` | Resolver unit + health/report unit | Yes | Gap |
-| Git repo with no solution | Same as empty directory | Resolver unit + health/report unit | Yes | Gap |
+| Empty directory, no `.git`, no solution | `ResolutionKind=NoCandidates`; no host start; health immediately available with `HostNotStarted` + `NoSolutionFound` | Resolver unit + health/report unit | Yes | Covered |
+| Git repo with no solution | Same as empty directory | Resolver unit + health/report unit | Yes | Covered |
 | One non-Uno solution | `ResolutionKind=NoValidWorkspace`; no host start; immediate unhealthy health | Resolver unit + health/report unit | Yes | Covered |
-| One Uno solution in requested directory | `ResolutionKind=CurrentDirectory`; DevServer starts from requested directory | Resolver unit | Yes | Gap |
+| One Uno solution in requested directory | `ResolutionKind=CurrentDirectory`; DevServer starts from requested directory | Resolver unit | Yes | Covered |
 | One nested Uno solution (`.slnx`) | `ResolutionKind=AutoDiscovered`; auto-descend to nested workspace | Resolver unit | Yes | Covered |
 | One nested Uno solution (`.sln`) | Same as above | Resolver unit | Yes | Covered |
-| Root solution non-Uno, deeper solution Uno | Uno solution wins; only Uno workspace starts | Resolver unit + health/report unit | Yes | Partial |
+| Root solution non-Uno, deeper solution Uno | Uno solution wins; only Uno workspace starts | Resolver unit + health/report unit | Yes | Covered |
 | Multiple solutions, only one Uno | Uno solution selected automatically | Resolver unit | Yes | Covered |
-| Multiple Uno solutions, one clear best candidate | Best candidate selected automatically | Resolver unit | Yes | Gap |
-| Multiple Uno solutions, equal priority | `ResolutionKind=Ambiguous`; no host start; diagnostic health | Resolver unit + health/report unit + lifecycle unit | Yes | Partial |
-| Solution exists, but no `global.json` on its parent chain | `ResolutionKind=NoValidWorkspace`; fail fast; no upstream timeout | Resolver unit + health/report unit | Yes | Gap |
+| Multiple Uno solutions, one clear best candidate | Best candidate selected automatically | Resolver unit | Yes | Covered |
+| Multiple Uno solutions, equal priority | `ResolutionKind=Ambiguous`; no host start; diagnostic health | Resolver unit + health/report unit + lifecycle unit | Yes | Covered |
+| Solution exists, but no `global.json` on its parent chain | `ResolutionKind=NoValidWorkspace`; fail fast; no upstream timeout | Resolver unit + health/report unit | Yes | Covered |
 | `global.json` exists but does not declare Uno | Same as non-Uno solution | Resolver unit | Yes | Covered |
-| `global.json` is malformed / invalid JSON | Treated as non-valid workspace; no host start | Resolver unit + health/report unit | Yes | Gap |
-| Multiple `global.json` on one path, nearest is non-Uno, parent is Uno | Nearest `global.json` wins; solution is not treated as Uno | Resolver unit | Yes | Gap |
-| Multiple `global.json` on one path, nearest is Uno | Nearest `global.json` wins; workspace resolves normally | Resolver unit | Yes | Gap |
+| `global.json` is malformed / invalid JSON | Treated as non-valid workspace; no host start | Resolver unit + health/report unit | Yes | Covered |
+| Multiple `global.json` on one path, nearest is non-Uno, parent is Uno | Nearest `global.json` wins; solution is not treated as Uno | Resolver unit | Yes | Covered |
+| Multiple `global.json` on one path, nearest is Uno | Nearest `global.json` wins; workspace resolves normally | Resolver unit | Yes | Covered |
 | Solutions under `node_modules`, `bin`, `obj`, `.vs`, `.idea`, `packages` | Ignored during scan | Finder unit | Yes | Covered |
 | Git repo with `.gitignore` excluding solution folders | Ignored solutions are not candidates | Finder unit | Yes | Covered |
 | Fake/corrupt `.git` repo or `git` unavailable | Hardcoded fallback; no crash; scan still works | Finder unit | Yes | Covered |
-| Solution deeper than 3 levels | Not supported for auto-discovery; result is `NoCandidates` | Resolver unit | Yes | Gap |
-| MCP roots arrive later and confirm same workspace | No restart; session continues unchanged | Lifecycle/proxy unit | Yes | Gap |
-| MCP roots arrive later and point to different workspace | No hot switch; session stays diagnostic/degraded | Lifecycle/proxy unit + health/report unit | Yes | Gap |
-| CLI `health --json` | Same logical payload shape as `uno_health` | CLI integration + formatter/model unit | Yes | Partial |
+| Solution deeper than 3 levels | Not supported for auto-discovery; result is `NoCandidates` | Resolver unit | Yes | Covered |
+| MCP roots arrive later and confirm same workspace | No restart; session continues unchanged | Lifecycle/proxy unit | Yes | Covered |
+| MCP roots arrive later and point to different workspace | No hot switch; session stays diagnostic/degraded | Lifecycle/proxy unit + health/report unit | Yes | Covered |
+| CLI `health --json` | Same logical payload shape as `uno_health` | CLI integration + formatter/model unit | Yes | Covered |
 
 ---
 
@@ -67,7 +67,6 @@ Coverage labels in this appendix mean:
 - **Partial**: the behavior is exercised indirectly or only at one layer.
 - **Gap**: the code appears to support the scenario, but there is no focused automated test yet.
 
-This appendix is the source of truth for the follow-up audit and for new tests added under `Uno.UI.RemoteControl.DevServer.Tests`.
+This appendix is the source of truth for the follow-up audit and for new tests added under `Uno.UI.RemoteControl.DevServer.Tests` and `Uno.UI.DevServer.Cli.Tests`.
 
 Changes that happen **after startup** are specified separately in [Appendix J](spec-appendix-j-workspace-transition-matrix.md).
-

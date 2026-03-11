@@ -16,6 +16,37 @@ public class Given_DiscoveryIssueMapper
 	}
 
 	[TestMethod]
+	public void WhenNoCandidates_ReportsNoSolutionFound()
+	{
+		var discovery = new DiscoveryInfo
+		{
+			ResolutionKind = WorkspaceResolutionKind.NoCandidates,
+		};
+
+		var issues = DiscoveryIssueMapper.MapDiscoveryIssues(discovery);
+
+		issues.Should().HaveCount(1);
+		issues[0].Code.Should().Be(IssueCode.NoSolutionFound);
+		issues[0].Severity.Should().Be(ValidationSeverity.Warning);
+	}
+
+	[TestMethod]
+	public void WhenAmbiguous_ReportsWorkspaceAmbiguous()
+	{
+		var discovery = new DiscoveryInfo
+		{
+			ResolutionKind = WorkspaceResolutionKind.Ambiguous,
+			CandidateSolutions = ["/tmp/a.slnx", "/tmp/b.slnx"],
+		};
+
+		var issues = DiscoveryIssueMapper.MapDiscoveryIssues(discovery);
+
+		issues.Should().HaveCount(1);
+		issues[0].Code.Should().Be(IssueCode.WorkspaceAmbiguous);
+		issues[0].Severity.Should().Be(ValidationSeverity.Warning);
+	}
+
+	[TestMethod]
 	public void WhenGlobalJsonMissing_ReportsGlobalJsonNotFound()
 	{
 		var discovery = new DiscoveryInfo { GlobalJsonPath = null };
