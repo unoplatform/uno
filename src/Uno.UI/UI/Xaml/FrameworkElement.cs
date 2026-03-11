@@ -745,6 +745,16 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
+			// MUX Reference: Theming.cpp line 128, framework.cpp lines 3269-3288
+			// Override incoming theme with element's own RequestedTheme if set.
+			// This matches WinUI's GetRequestedThemeOverride pattern where each
+			// element with explicit RequestedTheme overrides the incoming theme
+			// rather than being skipped during propagation.
+			if (RequestedTheme != ElementTheme.Default)
+			{
+				theme = Theming.FromElementTheme(RequestedTheme);
+			}
+
 			// MUX Reference: Theming.cpp line 132
 			// Early-out if theme hasn't changed and not forcing refresh
 			if (theme == GetTheme() && !forceRefresh)
@@ -861,11 +871,10 @@ namespace Microsoft.UI.Xaml
 				var child = VisualTreeHelper.GetChild(this, i);
 				if (child is FrameworkElement fe)
 				{
-					// Skip children that have their own explicit RequestedTheme
-					if (fe.RequestedTheme == ElementTheme.Default)
-					{
-						fe.NotifyThemeChanged(theme, forceRefresh);
-					}
+					// All children participate in the theme walk.
+					// GetRequestedThemeOverride in NotifyThemeChanged will override
+					// the theme for children with explicit RequestedTheme.
+					fe.NotifyThemeChanged(theme, forceRefresh);
 				}
 			}
 		}
