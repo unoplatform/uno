@@ -232,4 +232,49 @@ public class Given_ConfigWriter
 		var result = ConfigWriter.RemoveServer(existing, "mcpServers", "UnoApp");
 		result.Should().BeNull();
 	}
+
+	[TestMethod]
+	public void RemoveServer_JsoncContent_ParsedCorrectly()
+	{
+		var existing = """
+		{
+		  // comment
+		  "mcpServers": {
+		    "UnoApp": {"command": "dnx"},
+		    "OtherServer": {"command": "other"},
+		  }
+		}
+		""";
+
+		var result = ConfigWriter.RemoveServer(existing, "mcpServers", "UnoApp");
+
+		result.Should().NotBeNull();
+		var parsed = JsonNode.Parse(result!)!.AsObject();
+		var servers = parsed["mcpServers"]!.AsObject();
+		servers.ContainsKey("UnoApp").Should().BeFalse();
+		servers["OtherServer"].Should().NotBeNull();
+	}
+
+	[TestMethod]
+	public void MergeServer_ArrayRoot_ThrowsJsonException()
+	{
+		var existing = """[{"mcpServers":{}}]""";
+		var def = JsonNode.Parse("""{"command":"dnx"}""")!.AsObject();
+
+		var act = () => ConfigWriter.MergeServer(existing, "mcpServers", "UnoApp", def, includeType: false, transport: null);
+
+		act.Should().Throw<JsonException>()
+			.WithMessage("*root JSON value must be an object*");
+	}
+
+	[TestMethod]
+	public void RemoveServer_ArrayRoot_ThrowsJsonException()
+	{
+		var existing = """[{"mcpServers":{}}]""";
+
+		var act = () => ConfigWriter.RemoveServer(existing, "mcpServers", "UnoApp");
+
+		act.Should().Throw<JsonException>()
+			.WithMessage("*root JSON value must be an object*");
+	}
 }

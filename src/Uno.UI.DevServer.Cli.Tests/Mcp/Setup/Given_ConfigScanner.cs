@@ -38,7 +38,7 @@ public class Given_ConfigScanner
 		JsonRootKey: "mcpServers");
 
 	private static IdeProfile VsCodeProfile => new(
-		ConfigPaths: ["{workspace}/.vscode/mcp.json", "{home}/.vscode/mcp.json"],
+		ConfigPaths: ["{workspace}/.vscode/mcp.json", "{home}/.vscode/mcp.json", "{appdata}/Code/User/settings.json"],
 		WriteTarget: "{workspace}/.vscode/mcp.json",
 		JsonRootKey: "servers");
 
@@ -262,5 +262,91 @@ public class Given_ConfigScanner
 		result.ServerResults["UnoDocs"].Status.Should().Be("registered");
 		result.ServerResults["UnoDocs"].Locations.Should().ContainSingle();
 		result.ServerResults["UnoDocs"].Locations[0].Transport.Should().Be("http");
+	}
+
+	[TestMethod]
+	public void Scan_MalformedJson_AddsParsingWarning()
+	{
+		var fs = new InMemoryFileSystem();
+		fs.AddFile("/project/.cursor/mcp.json", "{ not valid json");
+
+		var expectedDefs = new Dictionary<string, JsonObject>
+		{
+			["UnoApp"] = JsonNode.Parse("""{"command":"dnx","args":["-y","uno.devserver","--mcp-app"]}""")!.AsObject(),
+			["UnoDocs"] = JsonNode.Parse("""{"url":"https://mcp.platform.uno/v1"}""")!.AsObject(),
+		};
+
+		var scanner = new ConfigScanner(fs);
+		var result = scanner.Scan(CursorProfile, "/project", TestServers, expectedDefs);
+
+		result.ServerResults["UnoApp"].Status.Should().Be("missing");
+		result.ServerResults["UnoApp"].Warnings.Should().ContainSingle(w => w.Contains("Invalid JSON", StringComparison.Ordinal));
+	}
+
+	[TestMethod]
+	public void Scan_UnreadableFile_AddsReadWarning()
+	{
+		var fs = new ThrowingReadFileSystem("/project/.cursor/mcp.json");
+
+		var expectedDefs = new Dictionary<string, JsonObject>
+		{
+			["UnoApp"] = JsonNode.Parse("""{"command":"dnx","args":["-y","uno.devserver","--mcp-app"]}""")!.AsObject(),
+			["UnoDocs"] = JsonNode.Parse("""{"url":"https://mcp.platform.uno/v1"}""")!.AsObject(),
+		};
+
+		var scanner = new ConfigScanner(fs);
+		var result = scanner.Scan(CursorProfile, "/project", TestServers, expectedDefs);
+
+		result.ServerResults["UnoApp"].Status.Should().Be("missing");
+		result.ServerResults["UnoApp"].Warnings.Should().ContainSingle(w => w.Contains("Could not read", StringComparison.Ordinal));
+	}
+
+	[TestMethod]
+	public void Scan_AppDataConfig_DetectedEndToEnd()
+	{
+		var fs = new InMemoryFileSystem { AppDataPath = "/users/test/AppData/Roaming" };
+		fs.AddFile("/users/test/AppData/Roaming/Code/User/settings.json", """
+		{
+		  "servers": {
+		    "UnoDocs": {"type": "http", "url": "https://mcp.platform.uno/v1"}
+		  }
+		}
+		""");
+
+		var expectedDefs = new Dictionary<string, JsonObject>
+		{
+			["UnoApp"] = JsonNode.Parse("""{"command":"dnx","args":["-y","uno.devserver","--mcp-app"]}""")!.AsObject(),
+			["UnoDocs"] = JsonNode.Parse("""{"url":"https://mcp.platform.uno/v1"}""")!.AsObject(),
+		};
+
+		var scanner = new ConfigScanner(fs);
+		var result = scanner.Scan(VsCodeProfile, "/project", TestServers, expectedDefs);
+
+		result.Detected.Should().BeTrue();
+		result.ServerResults["UnoDocs"].Status.Should().Be("registered");
+		result.ServerResults["UnoDocs"].Locations.Should().ContainSingle();
+		result.ServerResults["UnoDocs"].Locations[0].Path.Replace('\\', '/')
+			.Should().Be("/users/test/AppData/Roaming/Code/User/settings.json");
+	}
+
+	private sealed class ThrowingReadFileSystem(string unreadablePath) : IFileSystem
+	{
+		public bool FileExists(string path) => Normalize(path) == Normalize(unreadablePath);
+
+		public bool DirectoryExists(string path) => Normalize(path) == "/project/.cursor";
+
+		public string ReadAllText(string path) => throw new UnauthorizedAccessException("Access denied");
+
+		public void WriteAllText(string path, string content) => throw new NotSupportedException();
+
+		public void CreateDirectory(string path) => throw new NotSupportedException();
+
+		public bool IsReadOnly(string path) => false;
+
+		public string GetUserHomePath() => "/home/testuser";
+
+		public string GetAppDataPath() => "/home/testuser/.config";
+
+		private static string Normalize(string path) => path.Replace('\\', '/').TrimEnd('/');
 	}
 }

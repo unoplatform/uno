@@ -68,5 +68,12 @@
     "includeType": true,
     "typeMap": {"stdio": "local", "http": "remote"},
     "mergeCommandArgs": true
+  },
+  "unknown": {
+    "configPaths": [
+      "{workspace}/.vscode/mcp.json"
+    ],
+    "writeTarget": "{workspace}/.vscode/mcp.json",
+    "jsonRootKey": "servers"
   }
 }
