@@ -29,8 +29,9 @@ internal static class ConfigWriter
 	/// <param name="rootKey">JSON root key (<c>"servers"</c> or <c>"mcpServers"</c>).</param>
 	/// <param name="serverKey">Key name for the server entry (e.g. <c>"UnoApp"</c>).</param>
 	/// <param name="definition">Server definition to write.</param>
-	/// <param name="includeType">Whether to include a <c>"type"</c> field (VS Code format).</param>
+	/// <param name="includeType">Whether to include a <c>"type"</c> field (VS Code / Antigravity format).</param>
 	/// <param name="transport">Transport type for the <c>"type"</c> field (e.g. <c>"stdio"</c>).</param>
+	/// <param name="urlKey">Override URL key name (e.g. <c>"serverUrl"</c> for Antigravity). Null keeps <c>"url"</c>.</param>
 	/// <returns>Updated JSON content string (2-space indent, trailing newline, UTF-8 no BOM).</returns>
 	/// <exception cref="JsonException">Thrown when <paramref name="existingContent"/> is malformed JSON.</exception>
 	public static string MergeServer(
@@ -39,7 +40,8 @@ internal static class ConfigWriter
 		string serverKey,
 		JsonObject definition,
 		bool includeType,
-		string? transport)
+		string? transport,
+		string? urlKey = null)
 	{
 		var root = ParseOrCreateRoot(existingContent);
 
@@ -52,6 +54,12 @@ internal static class ConfigWriter
 
 		// Build the new entry with shallow merge of existing unknown keys
 		var newEntry = CloneJsonObject(definition);
+
+		// Rename "url" to the IDE-specific key (e.g. "serverUrl" for Antigravity)
+		if (urlKey is not null && urlKey != "url" && newEntry.Remove("url", out var urlValue))
+		{
+			newEntry[urlKey] = urlValue;
+		}
 
 		if (includeType && transport is not null)
 		{

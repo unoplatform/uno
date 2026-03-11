@@ -237,4 +237,30 @@ public class Given_ConfigScanner
 		result.ServerResults["UnoApp"].Status.Should().Be("registered");
 		result.ServerResults["UnoApp"].Locations.Should().HaveCount(1);
 	}
+
+	[TestMethod]
+	public void Scan_ServerUrlEntry_DetectedAsRegisteredHttp()
+	{
+		var fs = new InMemoryFileSystem();
+		fs.AddFile("/project/.cursor/mcp.json", """
+		{
+		  "mcpServers": {
+		    "UnoDocs": {"serverUrl": "https://mcp.platform.uno/v1"}
+		  }
+		}
+		""");
+
+		var expectedDefs = new Dictionary<string, JsonObject>
+		{
+			["UnoApp"] = JsonNode.Parse("""{"command":"dnx","args":["-y","uno.devserver","--mcp-app"]}""")!.AsObject(),
+			["UnoDocs"] = JsonNode.Parse("""{"url":"https://mcp.platform.uno/v1"}""")!.AsObject(),
+		};
+
+		var scanner = new ConfigScanner(fs);
+		var result = scanner.Scan(CursorProfile, "/project", TestServers, expectedDefs);
+
+		result.ServerResults["UnoDocs"].Status.Should().Be("registered");
+		result.ServerResults["UnoDocs"].Locations.Should().ContainSingle();
+		result.ServerResults["UnoDocs"].Locations[0].Transport.Should().Be("http");
+	}
 }

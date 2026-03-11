@@ -71,7 +71,18 @@ internal static class DefinitionsLoader
 			var jsonRootKey = element.GetProperty("jsonRootKey").GetString()
 				?? throw new JsonException($"IDE profile '{key}': missing jsonRootKey.");
 
-			result[key] = new IdeProfile(configPaths, writeTarget, jsonRootKey);
+			var includeType = element.TryGetProperty("includeType", out var it) && it.GetBoolean();
+			string? urlKey = element.TryGetProperty("urlKey", out var uk) ? uk.GetString() : null;
+
+			IReadOnlyDictionary<string, string>? typeMap = null;
+			if (element.TryGetProperty("typeMap", out var tm))
+			{
+				typeMap = tm.Deserialize<Dictionary<string, string>>(_options);
+			}
+
+			var mergeCommandArgs = element.TryGetProperty("mergeCommandArgs", out var mca) && mca.GetBoolean();
+
+			result[key] = new IdeProfile(configPaths, writeTarget, jsonRootKey, includeType, urlKey, typeMap, mergeCommandArgs);
 		}
 
 		return result;

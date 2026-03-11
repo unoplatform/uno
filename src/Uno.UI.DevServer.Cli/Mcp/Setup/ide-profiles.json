@@ -1,12 +1,20 @@
 {
-  "vscode": {
+  "antigravity": {
     "configPaths": [
-      "{workspace}/.vscode/mcp.json",
-      "{home}/.vscode/mcp.json",
-      "{appdata}/Code/User/settings.json"
+      "{home}/.gemini/antigravity/mcp_config.json"
     ],
-    "writeTarget": "{workspace}/.vscode/mcp.json",
-    "jsonRootKey": "servers"
+    "writeTarget": "{home}/.gemini/antigravity/mcp_config.json",
+    "jsonRootKey": "mcpServers",
+    "includeType": true,
+    "urlKey": "serverUrl"
+  },
+  "claude-code": {
+    "configPaths": [
+      "{workspace}/.mcp.json",
+      "{home}/.claude/mcp.json"
+    ],
+    "writeTarget": "{workspace}/.mcp.json",
+    "jsonRootKey": "mcpServers"
   },
   "cursor": {
     "configPaths": [
@@ -14,14 +22,6 @@
       "{home}/.cursor/mcp.json"
     ],
     "writeTarget": "{workspace}/.cursor/mcp.json",
-    "jsonRootKey": "mcpServers"
-  },
-  "windsurf": {
-    "configPaths": [
-      "{workspace}/.windsurf/mcp.json",
-      "{home}/.codeium/windsurf/mcp_config.json"
-    ],
-    "writeTarget": "{workspace}/.windsurf/mcp.json",
     "jsonRootKey": "mcpServers"
   },
   "kiro": {
@@ -32,20 +32,6 @@
     "writeTarget": "{workspace}/.kiro/settings/mcp.json",
     "jsonRootKey": "mcpServers"
   },
-  "trae": {
-    "configPaths": [
-      "{workspace}/.trae/mcp.json"
-    ],
-    "writeTarget": "{workspace}/.trae/mcp.json",
-    "jsonRootKey": "mcpServers"
-  },
-  "antigravity": {
-    "configPaths": [
-      "{home}/.gemini/antigravity/mcp_config.json"
-    ],
-    "writeTarget": "{home}/.gemini/antigravity/mcp_config.json",
-    "jsonRootKey": "mcpServers"
-  },
   "rider": {
     "configPaths": [
       "{workspace}/.idea/mcpServers.json"
@@ -53,26 +39,34 @@
     "writeTarget": "{workspace}/.idea/mcpServers.json",
     "jsonRootKey": "mcpServers"
   },
-  "claude-code": {
+  "vscode": {
     "configPaths": [
-      "{workspace}/.mcp.json",
-      "{home}/.claude/mcp.json"
+      "{workspace}/.vscode/mcp.json",
+      "{home}/.vscode/mcp.json",
+      "{appdata}/Code/User/settings.json"
     ],
-    "writeTarget": "{workspace}/.mcp.json",
-    "jsonRootKey": "mcpServers"
+    "writeTarget": "{workspace}/.vscode/mcp.json",
+    "jsonRootKey": "servers",
+    "includeType": true
+  },
+  "windsurf": {
+    "configPaths": [
+      "{workspace}/.windsurf/mcp.json",
+      "{home}/.codeium/windsurf/mcp_config.json"
+    ],
+    "writeTarget": "{workspace}/.windsurf/mcp.json",
+    "jsonRootKey": "mcpServers",
+    "urlKey": "serverUrl"
   },
   "opencode": {
     "configPaths": [
-      "{workspace}/.opencode/mcp.json"
+      "{workspace}/opencode.json",
+      "{workspace}/opencode.jsonc"
     ],
-    "writeTarget": "{workspace}/.opencode/mcp.json",
-    "jsonRootKey": "mcpServers"
-  },
-  "aider": {
-    "configPaths": [
-      "{workspace}/.aider/mcp.json"
-    ],
-    "writeTarget": "{workspace}/.aider/mcp.json",
-    "jsonRootKey": "mcpServers"
+    "writeTarget": "{workspace}/opencode.json",
+    "jsonRootKey": "mcp",
+    "includeType": true,
+    "typeMap": {"stdio": "local", "http": "remote"},
+    "mergeCommandArgs": true
   }
 }

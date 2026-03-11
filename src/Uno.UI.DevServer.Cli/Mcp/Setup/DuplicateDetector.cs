@@ -49,7 +49,7 @@ internal static class DuplicateDetector
 		// Check for legacy HTTP (localhost URL for a stdio server)
 		if (serverDef.Transport == "stdio")
 		{
-			var url = entryJson["url"]?.GetValue<string>();
+			var url = GetUrl(entryJson);
 			if (url is not null && serverDef.Detection.UrlPatterns is { } urlPatterns
 				&& MatchesAnyPattern(url, urlPatterns))
 			{
@@ -58,6 +58,17 @@ internal static class DuplicateDetector
 		}
 
 		var args = entryJson["args"]?.AsArray();
+
+		// OpenCode format: extract args from command array (skip first element = command)
+		if (args is null && entryJson["command"] is JsonArray cmdArray && cmdArray.Count > 1)
+		{
+			args = new JsonArray();
+			for (int i = 1; i < cmdArray.Count; i++)
+			{
+				args.Add(cmdArray[i]?.DeepClone());
+			}
+		}
+
 		if (args is not null)
 		{
 			for (int i = 0; i < args.Count; i++)
@@ -94,22 +105,21 @@ internal static class DuplicateDetector
 		}
 
 		// HTTP transport: compare url
-		var existingUrl = existingEntry["url"]?.GetValue<string>();
-		var expectedUrl = expectedDefinition["url"]?.GetValue<string>();
+		var existingUrl = GetUrl(existingEntry);
+		var expectedUrl = GetUrl(expectedDefinition);
 		return string.Equals(existingUrl, expectedUrl, StringComparison.Ordinal);
 	}
 
 	private static bool CommandEquals(JsonObject existing, JsonObject expected)
 	{
-		var existingCmd = existing["command"]?.GetValue<string>();
-		var expectedCmd = expected["command"]?.GetValue<string>();
+		// Normalize both sides to (command, args) for comparison
+		var (existingCmd, existingArgs) = NormalizeCommandArgs(existing);
+		var (expectedCmd, expectedArgs) = NormalizeCommandArgs(expected);
+
 		if (!string.Equals(existingCmd, expectedCmd, StringComparison.Ordinal))
 		{
 			return false;
 		}
-
-		var existingArgs = existing["args"]?.AsArray();
-		var expectedArgs = expected["args"]?.AsArray();
 
 		if (existingArgs is null && expectedArgs is null)
 		{
@@ -134,6 +144,38 @@ internal static class DuplicateDetector
 		return true;
 	}
 
+	/// <summary>
+	/// Normalizes command+args from either standard format (command string + args array)
+	/// or OpenCode format (command array) into a consistent (command, args) tuple.
+	/// </summary>
+	private static (string? Command, JsonArray? Args) NormalizeCommandArgs(JsonObject entry)
+	{
+		var commandNode = entry["command"];
+		if (commandNode is JsonArray cmdArray)
+		{
+			var cmd = cmdArray.Count > 0 ? cmdArray[0]?.GetValue<string>() : null;
+			JsonArray? args = null;
+			if (cmdArray.Count > 1)
+			{
+				args = new JsonArray();
+				for (int i = 1; i < cmdArray.Count; i++)
+				{
+					args.Add(cmdArray[i]?.DeepClone());
+				}
+			}
+
+			return (cmd, args);
+		}
+
+		return (commandNode?.GetValue<string>(), entry["args"]?.AsArray());
+	}
+
+	/// <summary>
+	/// Gets the URL from an entry, checking both <c>url</c> and <c>serverUrl</c> (Gemini/Antigravity).
+	/// </summary>
+	internal static string? GetUrl(JsonObject entryJson) =>
+		entryJson["url"]?.GetValue<string>() ?? entryJson["serverUrl"]?.GetValue<string>();
+
 	private static bool MatchesByContent(JsonObject entryJson, ServerDefinition serverDef)
 	{
 		// Check command patterns for stdio
@@ -149,7 +191,7 @@ internal static class DuplicateDetector
 		// Check url patterns
 		if (serverDef.Detection.UrlPatterns is { } urlPatterns)
 		{
-			var url = entryJson["url"]?.GetValue<string>();
+			var url = GetUrl(entryJson);
 			if (url is not null && MatchesAnyPattern(url, urlPatterns))
 			{
 				return true;
@@ -161,29 +203,46 @@ internal static class DuplicateDetector
 
 	private static string? BuildCommandLine(JsonObject entryJson)
 	{
-		var command = entryJson["command"]?.GetValue<string>();
-		if (command is null)
+		var commandNode = entryJson["command"];
+		if (commandNode is null)
 		{
 			return null;
 		}
 
-		var args = entryJson["args"]?.AsArray();
-		if (args is null || args.Count == 0)
-		{
-			return command;
-		}
+		var parts = new List<string>();
 
-		var parts = new List<string> { command };
-		foreach (var arg in args)
+		if (commandNode is JsonArray cmdArray)
 		{
-			var val = arg?.GetValue<string>();
-			if (val is not null)
+			// OpenCode format: command is an array combining command + args
+			foreach (var item in cmdArray)
 			{
-				parts.Add(val);
+				if (item?.GetValue<string>() is { } val)
+				{
+					parts.Add(val);
+				}
+			}
+		}
+		else
+		{
+			// Standard format: command is a string, args is a separate array
+			if (commandNode.GetValue<string>() is { } cmd)
+			{
+				parts.Add(cmd);
+			}
+
+			if (entryJson["args"]?.AsArray() is { } args)
+			{
+				foreach (var arg in args)
+				{
+					if (arg?.GetValue<string>() is { } val)
+					{
+						parts.Add(val);
+					}
+				}
 			}
 		}
 
-		return string.Join(" ", parts);
+		return parts.Count > 0 ? string.Join(" ", parts) : null;
 	}
 
 	private static bool MatchesAnyPattern(string input, string[] patterns)

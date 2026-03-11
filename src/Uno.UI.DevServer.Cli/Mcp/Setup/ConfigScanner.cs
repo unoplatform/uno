@@ -173,7 +173,7 @@ internal sealed class ConfigScanner(IFileSystem fs)
 			return "stdio";
 		}
 
-		if (entryJson["url"] is not null)
+		if (DuplicateDetector.GetUrl(entryJson) is not null)
 		{
 			return "http";
 		}

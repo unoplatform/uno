@@ -61,6 +61,21 @@ public class Given_ConfigWriter
 		entry["url"]!.GetValue<string>().Should().Be("https://mcp.platform.uno/v1");
 	}
 
+	[TestMethod]
+	public void MergeServer_AntigravityFormat_RenamesUrlToServerUrl()
+	{
+		var def = JsonNode.Parse("""{"url":"https://mcp.platform.uno/v1"}""")!.AsObject();
+
+		var result = ConfigWriter.MergeServer(null, "mcpServers", "UnoDocs", def,
+			includeType: true, transport: "http", urlKey: "serverUrl");
+
+		var parsed = JsonNode.Parse(result)!.AsObject();
+		var entry = parsed["mcpServers"]!["UnoDocs"]!.AsObject();
+		entry["serverUrl"]!.GetValue<string>().Should().Be("https://mcp.platform.uno/v1");
+		entry.ContainsKey("url").Should().BeFalse();
+		entry["type"]!.GetValue<string>().Should().Be("http");
+	}
+
 	// ── MergeServer: preserves other entries ──
 
 	[TestMethod]
