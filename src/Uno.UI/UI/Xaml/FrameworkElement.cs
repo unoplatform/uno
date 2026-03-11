@@ -513,15 +513,7 @@ namespace Microsoft.UI.Xaml
 			// MUX Reference: CTextBlock::PullInheritedTextFormatting (TextBlock.cpp line 647)
 			//   if (IsPropertyDefaultByIndex(KnownPropertyIndex::TextBlock_Foreground)
 			//       && !m_pTextFormatting->m_freezeForeground)
-			DependencyProperty foregroundProperty = null;
-			if (this is Controls.Control)
-			{
-				foregroundProperty = Controls.Control.ForegroundProperty;
-			}
-			else if (this is Controls.TextBlock)
-			{
-				foregroundProperty = Controls.TextBlock.ForegroundProperty;
-			}
+			DependencyProperty foregroundProperty = GetForegroundProperty();
 
 			if (foregroundProperty is null)
 			{
