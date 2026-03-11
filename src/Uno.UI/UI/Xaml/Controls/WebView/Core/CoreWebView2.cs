@@ -30,6 +30,7 @@ public partial class CoreWebView2
 	private readonly List<WebResourceRequestedFilter> _webResourceRequestedFilters = new();
 	internal long _navigationId;
 	private object? _processedSource;
+	private bool _isClosed;
 
 	internal CoreWebView2(IWebView owner)
 	{
@@ -139,6 +140,19 @@ public partial class CoreWebView2
 
 	public void Reload() => _nativeWebView?.Reload();
 
+	// Explicit teardown entrypoint used by WebView2.Dispose().
+	// Destruction is intentionally decoupled from visual-tree unload transitions.
+	internal void Close()
+	{
+		if (_isClosed)
+		{
+			return;
+		}
+
+		_isClosed = true;
+		ReleaseNativeWebView();
+	}
+
 	public IAsyncOperation<string?> ExecuteScriptAsync(string javaScript) =>
 		AsyncOperation.FromTask(ct =>
 		{
@@ -163,6 +177,12 @@ public partial class CoreWebView2
 	internal void OnOwnerApplyTemplate()
 	{
 		var nativeWebView = GetNativeWebViewFromTemplate();
+		if (_isClosed)
+		{
+			DisposeNativeWebView(nativeWebView);
+			return;
+		}
+
 		SetNativeWebView(nativeWebView);
 		if (_nativeWebView is not null)
 		{
@@ -294,13 +314,28 @@ public partial class CoreWebView2
 		WebResourceRequested?.Invoke(this, eventArgs);
 	}
 	private TaskCompletionSource<bool> _nativeWebViewInitializedTcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
-	internal Task EnsureNativeWebViewAsync() => _nativeWebViewInitializedTcs.Task;
+	internal Task EnsureNativeWebViewAsync()
+	{
+		if (_isClosed)
+		{
+			MarkClosedForFutureEnsures();
+		}
+
+		return _nativeWebViewInitializedTcs.Task;
+	}
 	internal static bool GetIsHistoryEntryValid(string url) =>
 		!url.IsNullOrWhiteSpace() &&
 		!url.Equals(BlankUrl, StringComparison.OrdinalIgnoreCase);
 
 	private void SetNativeWebView(INativeWebView? nativeWebView)
 	{
+		if (_isClosed)
+		{
+			DisposeNativeWebView(nativeWebView);
+			MarkClosedForFutureEnsures();
+			return;
+		}
+
 		// Template re-application can happen many times during a page lifetime (reload, visual tree churn,
 		// style/template updates). This method is the single swap point for the platform-native view instance.
 		if (ReferenceEquals(_nativeWebView, nativeWebView))
@@ -346,6 +381,11 @@ public partial class CoreWebView2
 		DisposeNativeWebView(_nativeWebView);
 
 		_nativeWebView = null;
+		if (_isClosed)
+		{
+			MarkClosedForFutureEnsures();
+			return;
+		}
 
 		if (_nativeWebViewInitializedTcs.Task.IsCompleted)
 		{
@@ -366,6 +406,24 @@ public partial class CoreWebView2
 		{
 			disposable.Dispose();
 		}
+	}
+
+	private void MarkClosedForFutureEnsures()
+	{
+		if (!_nativeWebViewInitializedTcs.Task.IsCompleted)
+		{
+			_nativeWebViewInitializedTcs.TrySetException(new ObjectDisposedException(nameof(CoreWebView2)));
+		}
+
+		if (_nativeWebViewInitializedTcs.Task.IsFaulted &&
+			_nativeWebViewInitializedTcs.Task.Exception?.InnerException is ObjectDisposedException)
+		{
+			return;
+		}
+
+		var closedTcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+		closedTcs.TrySetException(new ObjectDisposedException(nameof(CoreWebView2)));
+		_nativeWebViewInitializedTcs = closedTcs;
 	}
 
 	private void ApplyNativeWebViewState()
