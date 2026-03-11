@@ -277,15 +277,15 @@ namespace Microsoft.UI.Xaml.Controls
 						horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, delta),
 						disableAnimation: false);
 #else
-					// Trackpad/touchpad scroll events arrive at display-refresh rate (~60/s) with precise
+					// Trackpad/touchpad-style scroll events can arrive at display-refresh rate (~60/s) with precise
 					// pixel-level deltas. The 1-second composition animation is NOT suitable because:
 					// 1. When many events have accumulated the target far ahead of the visual, the animation's
 					// first step jumps (target-visual)*0.149 pixels, causing a blank frame before items can be realized for the new position.
 					// 2. VerticalOffset accumulates the target at 68px*60fps, hitting ScrollableHeight quickly and making scroll appear to stop prematurely.
 					// Immediate updates (DisableAnimation:true, IsIntermediate:false) ensure that:
 					// visual == logical == new position, one small per-event delta, no animation lag.
-					// For discrete mouse wheel events (non-touchpad), animation is preserved to smooth notch-based scrolling.
-					// The same applies to vertical scrolling below.
+					// On iOS/macOS, all wheel events currently take this immediate path because we do not have a reliable
+					// signal to distinguish touchpad/precise scrolling from discrete mouse-wheel input.
 					if (OperatingSystem.IsIOS() || OperatingSystem.IsMacOS())
 					{
 						success = Set(
