@@ -11,6 +11,11 @@
 				// "DOTNET_ADDITIONAL_DEPS": "C:\\Program Files\\dotnet\\shared\\Microsoft.WindowsDesktop.App\\8.0.2\\Microsoft.WindowsDesktop.App.deps.json"
 			}
 		},
+		"WebView2_Basic": {
+			"commandName": "Project",
+			"commandLineArgs": "sample=UITests.Microsoft_UI_Xaml_Controls.WebView2Tests.WebView2_Basic",
+			"nativeDebugging": false
+		},
 		"WSL": {
 			"commandName": "WSL2",
 			"distributionName":  ""
