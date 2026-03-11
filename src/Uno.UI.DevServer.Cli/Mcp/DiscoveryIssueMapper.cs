@@ -26,7 +26,7 @@ internal static class DiscoveryIssueMapper
 				Code = IssueCode.WorkspaceAmbiguous,
 				Severity = ValidationSeverity.Warning,
 				Message = "Multiple Uno workspaces matched the current directory. The DevServer host was not started automatically.",
-				Remediation = "Start from a more specific workspace directory, or use --solution-dir to disambiguate.",
+				Remediation = "Start from a more specific workspace directory, or use --solution-dir to disambiguate. If the repo changed after startup, restart the MCP bridge once the intended workspace is clear.",
 			});
 			return issues;
 		}
@@ -38,7 +38,7 @@ internal static class DiscoveryIssueMapper
 				Code = IssueCode.WorkspaceNotResolved,
 				Severity = ValidationSeverity.Fatal,
 				Message = "Solution files were found, but none resolved to a valid Uno workspace with a global.json declaring Uno.Sdk.",
-				Remediation = "Ensure the intended workspace contains a global.json with Uno.Sdk in msbuild-sdks.",
+				Remediation = "Ensure the intended workspace contains a global.json with Uno.Sdk in msbuild-sdks. If the repo changed after startup, restart the MCP bridge after fixing the workspace.",
 			});
 			return issues;
 		}

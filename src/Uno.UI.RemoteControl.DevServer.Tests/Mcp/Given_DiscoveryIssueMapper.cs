@@ -44,6 +44,23 @@ public class Given_DiscoveryIssueMapper
 		issues.Should().HaveCount(1);
 		issues[0].Code.Should().Be(IssueCode.WorkspaceAmbiguous);
 		issues[0].Severity.Should().Be(ValidationSeverity.Warning);
+		issues[0].Remediation.Should().Contain("restart the MCP bridge");
+	}
+
+	[TestMethod]
+	public void WhenNoValidWorkspace_ReportsRestartGuidanceForPostStartupChanges()
+	{
+		var discovery = new DiscoveryInfo
+		{
+			ResolutionKind = WorkspaceResolutionKind.NoValidWorkspace,
+			CandidateSolutions = ["/tmp/app.slnx"],
+		};
+
+		var issues = DiscoveryIssueMapper.MapDiscoveryIssues(discovery);
+
+		issues.Should().HaveCount(1);
+		issues[0].Code.Should().Be(IssueCode.WorkspaceNotResolved);
+		issues[0].Remediation.Should().Contain("restart the MCP bridge");
 	}
 
 	[TestMethod]
