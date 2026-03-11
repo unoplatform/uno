@@ -130,11 +130,10 @@ public class Given_ConfigWriter
 	// ── MergeServer: JSONC handling ──
 
 	[TestMethod]
-	public void MergeServer_JsoncContent_ParsedCorrectly()
+	public void MergeServer_TrailingCommaContent_ParsedCorrectly()
 	{
 		var existing = """
 		{
-		  // This is a comment
 		  "mcpServers": {
 		    "OtherServer": {"command": "other"},
 		  }
@@ -148,6 +147,27 @@ public class Given_ConfigWriter
 		var servers = parsed["mcpServers"]!.AsObject();
 		servers["OtherServer"].Should().NotBeNull();
 		servers["UnoApp"].Should().NotBeNull();
+	}
+
+	[TestMethod]
+	public void MergeServer_CommentedJsonc_ThrowsJsonException()
+	{
+		var existing = """
+		{
+		  // This is a comment
+		  "mcpServers": {
+		    "OtherServer": {"command": "other"}
+		  }
+		}
+		""";
+		var def = JsonNode.Parse("""{"command":"dnx","args":["-y","uno.devserver","--mcp-app"]}""")!.AsObject();
+		const string rootKey = "mcpServers";
+		const string serverKey = "UnoApp";
+
+		Action act = () => ConfigWriter.MergeServer(existing, rootKey, serverKey, def, includeType: false, transport: null);
+
+		act.Should().Throw<JsonException>()
+			.WithMessage("*comments cannot be modified*");
 	}
 
 	// ── MergeServer: malformed JSON ──
@@ -234,11 +254,10 @@ public class Given_ConfigWriter
 	}
 
 	[TestMethod]
-	public void RemoveServer_JsoncContent_ParsedCorrectly()
+	public void RemoveServer_TrailingCommaContent_ParsedCorrectly()
 	{
 		var existing = """
 		{
-		  // comment
 		  "mcpServers": {
 		    "UnoApp": {"command": "dnx"},
 		    "OtherServer": {"command": "other"},
@@ -253,6 +272,25 @@ public class Given_ConfigWriter
 		var servers = parsed["mcpServers"]!.AsObject();
 		servers.ContainsKey("UnoApp").Should().BeFalse();
 		servers["OtherServer"].Should().NotBeNull();
+	}
+
+	[TestMethod]
+	public void RemoveServer_CommentedJsonc_ThrowsJsonException()
+	{
+		var existing = """
+		{
+		  // comment
+		  "mcpServers": {
+		    "UnoApp": {"command": "dnx"},
+		    "OtherServer": {"command": "other"}
+		  }
+		}
+		""";
+
+		var act = () => ConfigWriter.RemoveServer(existing, "mcpServers", "UnoApp");
+
+		act.Should().Throw<JsonException>()
+			.WithMessage("*comments cannot be modified*");
 	}
 
 	[TestMethod]

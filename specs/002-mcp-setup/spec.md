@@ -99,7 +99,7 @@ uno.devserver mcp install <ide> [--workspace <path>] [--release|--prerelease|--v
 ### Subcommand: `mcp uninstall`
 
 ```
-uno.devserver mcp uninstall <ide> [--workspace <path>] [--servers UnoApp,UnoDocs] [--json]
+uno.devserver mcp uninstall <ide> [--workspace <path>] [--servers UnoApp,UnoDocs] [--all-scopes] [--json]
 ```
 
 ### Shared Parameters
@@ -112,6 +112,7 @@ uno.devserver mcp uninstall <ide> [--workspace <path>] [--servers UnoApp,UnoDocs
 | `--prerelease` | No | status, install | Force prerelease server definitions (overrides auto-detection) |
 | `--version <ver>` | No | status, install | Pin a specific tool version in the server definition (for QA). Mutually exclusive with `--release` and `--prerelease` |
 | `--servers <list>` | No | install, uninstall | Comma-separated server names from the server definitions. Unknown names are rejected (exit code 2). Duplicates are silently deduplicated. Default: all servers. |
+| `--all-scopes` | No | uninstall | Remove matching registrations from every configured path for the target IDE. Without this flag, uninstall only modifies the IDE profile's `writeTarget`, matching the default install scope. |
 | `--json` | No | status, install, uninstall | Emit JSON output to stdout. Without this flag, output is human-readable text to stdout |
 | `--ide-definitions <path>` | No | status, install, uninstall | Path to an external `ide-profiles.json`, replacing the embedded IDE profiles (see [Definitions Files](#12-definitions-files)) |
 | `--server-definitions <path>` | No | status, install, uninstall | Path to an external `server-definitions.json`, replacing the embedded server definitions (see [Definitions Files](#12-definitions-files)) |
@@ -466,9 +467,9 @@ Each operation entry also includes the target `ide` identifier.
 
 ### Scope Behavior
 
-Uninstall removes the server from **all** scopes (workspace and global) for the target IDE. This means removing a server from a global config affects all workspaces using that IDE.
+By default, uninstall removes the server only from the IDE profile's `writeTarget` scope, matching where `install` writes. Passing `--all-scopes` removes matching registrations from **all** configured paths (workspace and global) for the target IDE.
 
-> **Note for global-only IDEs** (e.g., Anti-Gravity): since the only config is global, uninstall always has workspace-spanning effect. This is inherent to the IDE's config model, not a tool limitation.
+> **Note for global-only IDEs** (e.g., Anti-Gravity): since the only config is global, uninstall still has workspace-spanning effect even without `--all-scopes`. This is inherent to the IDE's config model, not a tool limitation.
 
 ---
 
@@ -722,7 +723,7 @@ This compatibility applies only to persisted config files in the documented loca
 IDE config files may contain JSONC extensions (comments and trailing commas). The tool handles them as follows:
 
 - **Reading**: `JsonCommentHandling.Skip` and `AllowTrailingCommas = true`, matching the existing pattern in `EntryPoint.Mcp.cs`
-- **Writing**: Standard JSON only — comments are **not preserved** on round-trip. This is an accepted trade-off (simplicity over preservation), consistent with how the VS extension already handles `.vs/mcp.json`.
+- **Writing**: Trailing commas are normalized away. Files containing JSON comments are rejected with an explicit error instead of being rewritten and losing comments.
 
 ### Formatting
 
@@ -754,11 +755,11 @@ MCP config files are workspace-specific and typically safe to commit (they conta
 
 | Code | Meaning | Examples |
 |------|---------|----------|
-| `0` | Success — the command produced an exploitable payload, including partial failures reported in operations | Install where 1 of 2 servers failed (JSON contains per-operation status) |
-| `1` | Failure — no useful work was done, or a fatal error occurred | Unknown `--ide`, invalid `--workspace`, malformed definitions file |
+| `0` | Success — the command produced an exploitable payload with at least one successful or non-terminal operation | Install where 1 of 2 servers failed (JSON contains per-operation status) |
+| `1` | Failure — no useful work was done, a fatal error occurred, or every install/uninstall operation was terminal (`error` / `not_found`) | Unknown `--ide`, invalid `--workspace`, malformed definitions file, uninstall where every selected server is `not_found` |
 | `2` | Usage error — invalid arguments or parameter combinations | Missing required `<ide>` for install, mutually exclusive flags, unknown `--servers` name |
 
-> **Design note**: Exit code 0 with per-operation error details in JSON (action `"error"`) is preferred for partial failures. This preserves the richest possible contract for callers. Exit code 1 is reserved for fatal failures that prevent the command from producing useful output.
+> **Design note**: Exit code 0 with per-operation error details in JSON (action `"error"`) is preferred for partial failures. This preserves the richest possible contract for callers. Exit code 1 is also used when install/uninstall completes but every operation is terminal (`"error"` or `"not_found"`), so shell scripts can distinguish total failure from partial success without losing the rich payload.
 
 ---
 
@@ -899,24 +900,34 @@ Set-Location $qa
      - operation is reported as `skipped`
      - process exit code is `0`
 
-8. **Uninstall across scopes**
+8. **Uninstall current scope by default**
    - Ensure the same server exists in both a workspace and a global config for one IDE, then run:
    ```powershell
    uno-devserver mcp uninstall vscode --workspace $qa --servers UnoApp --json
+   ```
+   - Verify:
+     - only the write-target scope is modified by default
+     - the other scope remains untouched
+     - payload remains valid JSON
+
+9. **Uninstall across scopes**
+   - Ensure the same server exists in both a workspace and a global config for one IDE, then run:
+   ```powershell
+   uno-devserver mcp uninstall vscode --workspace $qa --servers UnoApp --all-scopes --json
    ```
    - Verify:
      - all matching persisted registrations are reported
      - multiple `removed` operations may be emitted for the same server
      - payload remains valid JSON
 
-9. **Partial failure with usable payload**
+10. **Partial failure with usable payload**
    - Create a mixed scenario where one target file is writable and one is read-only, then run install or uninstall.
    - Verify:
      - at least one operation reports `action: "error"`
-     - the command still emits the full JSON payload
-     - the process exit code is `0` because the payload is still actionable
+      - the command still emits the full JSON payload
+      - the process exit code is `0` because the payload is still actionable
 
-10. **CLI help**
+11. **CLI help**
     - Run:
     ```powershell
     uno-devserver --help

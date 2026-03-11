@@ -137,7 +137,8 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		Definitions defs,
 		string workspace,
 		string targetIde,
-		IReadOnlyList<string>? serverFilter)
+		IReadOnlyList<string>? serverFilter,
+		bool allScopes = false)
 	{
 		if (!defs.Ides.TryGetValue(targetIde, out var profile))
 		{
@@ -158,7 +159,11 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 
 			var found = false;
 
-			foreach (var configTemplate in profile.ConfigPaths)
+			var uninstallPaths = allScopes
+				? profile.ConfigPaths
+				: [profile.WriteTarget];
+
+			foreach (var configTemplate in uninstallPaths.Distinct(StringComparer.OrdinalIgnoreCase))
 			{
 				var configPath = ConfigScanner.ResolvePath(configTemplate, workspace, home, appdata);
 

@@ -1,4 +1,3 @@
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -10,6 +9,8 @@ namespace Uno.UI.DevServer.Cli.Mcp.Setup;
 /// </summary>
 internal static class ConfigWriter
 {
+	private const string CommentedJsonUnsupportedMessage = "JSON files containing comments cannot be modified without losing comments.";
+
 	private static readonly JsonDocumentOptions _readOptions = new()
 	{
 		CommentHandling = JsonCommentHandling.Skip,
@@ -119,8 +120,12 @@ internal static class ConfigWriter
 			return new JsonObject();
 		}
 
-		// Parse with JSONC support (comments + trailing commas), then serialize
-		// back to clean JSON and re-parse into a mutable JsonNode tree.
+		if (ContainsJsonComments(content))
+		{
+			throw new JsonException(
+				CommentedJsonUnsupportedMessage);
+		}
+
 		using var doc = JsonDocument.Parse(content, _readOptions);
 		var cleanJson = JsonSerializer.Serialize(doc.RootElement);
 		var root = JsonNode.Parse(cleanJson);
@@ -135,8 +140,59 @@ internal static class ConfigWriter
 
 	private static JsonObject CloneJsonObject(JsonObject source)
 	{
-		var json = source.ToJsonString();
-		return JsonNode.Parse(json)!.AsObject();
+		return source.DeepClone().AsObject();
+	}
+
+	private static bool ContainsJsonComments(string content)
+	{
+		var inString = false;
+		var escaped = false;
+
+		for (var i = 0; i < content.Length; i++)
+		{
+			var current = content[i];
+
+			if (inString)
+			{
+				if (escaped)
+				{
+					escaped = false;
+					continue;
+				}
+
+				if (current == '\\')
+				{
+					escaped = true;
+					continue;
+				}
+
+				if (current == '"')
+				{
+					inString = false;
+				}
+
+				continue;
+			}
+
+			if (current == '"')
+			{
+				inString = true;
+				continue;
+			}
+
+			if (current != '/' || i + 1 >= content.Length)
+			{
+				continue;
+			}
+
+			var next = content[i + 1];
+			if (next is '/' or '*')
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private static string FormatOutput(JsonObject root)
