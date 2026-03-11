@@ -50,6 +50,7 @@ internal class CliManager
 
 			if (originalArgs.Contains("--mcp-app"))
 			{
+				LogVersionBanner();
 				return await RunMcpProxyAsync(
 					originalArgs.Where(a => a != "--mcp-app").ToArray(),
 					requestedWorkingDirectory,
@@ -134,20 +135,20 @@ internal class CliManager
 
 	private void ShowBanner()
 	{
-		// get the assembly informational version
-		var attrs = typeof(CliManager).Assembly.GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false);
+		LogVersionBanner();
+	}
 
-		if (attrs.Length > 0 && attrs[0] is System.Reflection.AssemblyInformationalVersionAttribute versionAttr)
-		{
-			// Take only what's before a `+`, we don't want the commit hash here
-			var items = versionAttr.InformationalVersion.Split('+', StringSplitOptions.RemoveEmptyEntries);
+	internal void LogVersionBanner()
+	{
+		_logger.LogInformation(GetVersionBannerText());
+	}
 
-			_logger.LogInformation("Uno Platform DevServer CLI - Version {Version}", items[0]);
-		}
-		else
-		{
-			_logger.LogInformation("Uno Platform DevServer CLI - Dev Version");
-		}
+	internal static string GetVersionBannerText()
+	{
+		var version = McpStdioServer.GetAssemblyVersion();
+		return string.IsNullOrWhiteSpace(version)
+			? "Uno Platform DevServer CLI - Dev Version"
+			: $"Uno Platform DevServer CLI - Version {version}";
 	}
 
 	private async Task<int> RunDiscoAddInsOnlyAsync(string workingDirectory, bool outputJson)
