@@ -32,6 +32,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 		/// Unlike <see cref="UseDarkTheme"/> which sets element-level theme on the content root,
 		/// this changes the application-level theme affecting all windows and root elements.
 		/// </summary>
+#if HAS_UNO
 		public static IDisposable UseApplicationDarkTheme()
 		{
 			var originalTheme = Application.Current.RequestedTheme;
@@ -42,6 +43,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 				Application.Current.SetExplicitRequestedTheme(originalTheme);
 			});
 		}
+#endif
 
 		public static ElementTheme CurrentTheme
 		{

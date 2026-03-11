@@ -103,6 +103,7 @@ public class Given_Window
 		Assert.AreEqual(startingNumberOfWindows, endNumberOfWindows);
 	}
 
+#if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task When_Secondary_Window_No_Background_Light_Dark()
@@ -117,6 +118,7 @@ public class Given_Window
 
 		await VerifyWindowBackgroundAsync(sut, false, Colors.Black);
 	}
+#endif
 
 	[TestMethod]
 	[RunsOnUIThread]
@@ -129,6 +131,7 @@ public class Given_Window
 		await VerifyWindowBackgroundAsync(sut, false, Colors.White);
 	}
 
+#if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task When_Secondary_Window_No_Background_Switch_Theme()
@@ -144,6 +147,7 @@ public class Given_Window
 		using var _ = ThemeHelper.UseApplicationDarkTheme();
 		await VerifyWindowBackgroundAsync(sut, true, Colors.Black);
 	}
+#endif
 
 	private static async Task VerifyWindowBackgroundAsync(Window sut, bool wasActivated, Color expectedColor)
 	{
