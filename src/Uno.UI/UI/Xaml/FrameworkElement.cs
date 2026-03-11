@@ -466,7 +466,10 @@ namespace Microsoft.UI.Xaml
 
 				// This is replicating the UpdateAllThemeReferences call in Enter in WinUI.
 				// Updates theme references to account for new ancestor theme dictionaries.
-				this.UpdateResourceBindings();
+				// Use UpdateThemeBindings (virtual) instead of the BindingHelper extension so that
+				// subclasses like TextBlock can also propagate to non-DP children (e.g., Inlines).
+				((IDependencyObjectStoreProvider)this).Store.ApplyElementNameBindings();
+				UpdateThemeBindings(ResourceUpdateReason.ResolvedOnLoading);
 
 				// MUX Reference: CUIElement::Enter / EnsureTextFormatting
 				// Pull inherited theme foreground from parent when entering the visual tree.
