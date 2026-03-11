@@ -314,7 +314,12 @@ public partial class TextBox
 
 	partial void OnIsReadonlyChangedPartial() => UpdateCanPasteClipboardContent();
 
-	partial void OnForegroundColorChangedPartial(Brush newValue) => TextBoxView?.OnForegroundChanged(newValue);
+	partial void OnForegroundColorChangedPartial(Brush newValue)
+	{
+		TextBoxView?.OnForegroundChanged(newValue);
+		// Update the caret brush to match the new foreground color.
+		UpdateDisplaySelection();
+	}
 
 	partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush) => TextBoxView?.OnSelectionHighlightColorChanged(brush);
 
@@ -601,8 +606,12 @@ public partial class TextBox
 				!IsReadOnly &&
 				!FeatureConfiguration.TextBox.HideCaret)
 			{
-				var brush = DefaultBrushes.TextForegroundBrush.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor());
-				displayBlock.RenderCaret = (IsBackwardSelection ? SelectionStart : SelectionStart + SelectionLength, brush);
+				// WinUI uses DestInvert composite mode with a white brush so the caret
+				// is always visible regardless of theme. Uno doesn't support DestInvert,
+				// so we use the TextBox's own Foreground (element-theme-aware via
+				// ThemeResource) with fully opaque alpha for maximum caret visibility.
+				var caretBrush = GetOpaqueCaretBrush();
+				displayBlock.RenderCaret = (IsBackwardSelection ? SelectionStart : SelectionStart + SelectionLength, caretBrush);
 			}
 			else
 			{
@@ -610,6 +619,27 @@ public partial class TextBox
 			}
 			((IBlock)TextBoxView.DisplayBlock).Invalidate(false);
 		}
+	}
+
+	/// <summary>
+	/// Gets a fully opaque composition brush derived from the TextBox's Foreground for caret rendering.
+	/// WinUI uses DestInvert composite mode (white brush + invert), but Uno doesn't support that.
+	/// Instead, we use the element-theme-aware Foreground with full opacity for maximum visibility.
+	/// </summary>
+	private CompositionBrush GetOpaqueCaretBrush()
+	{
+		var compositor = Compositor.GetSharedCompositor();
+		if (Foreground is SolidColorBrush scb)
+		{
+			var color = scb.Color;
+			if (color.A < 255)
+			{
+				// Force fully opaque for caret visibility
+				color = Color.FromArgb(255, color.R, color.G, color.B);
+			}
+			return compositor.CreateColorBrush(color);
+		}
+		return DefaultBrushes.TextForegroundBrush.GetOrCreateCompositionBrush(compositor);
 	}
 
 	private void UpdateScrolling() => UpdateScrolling(true);
