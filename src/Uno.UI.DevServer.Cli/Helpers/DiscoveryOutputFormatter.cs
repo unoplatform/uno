@@ -46,7 +46,7 @@ internal static class DiscoveryOutputFormatter
 
 		AddSection(table, "Add-Ins");
 		AddRow(table, "discoveryMethod", info.AddInsDiscoveryMethod);
-		AddRow(table, "discoveryDurationMs", info.AddInsDiscoveryDurationMs.ToString(CultureInfo.InvariantCulture));
+		AddRow(table, "discoveryDurationMs", info.DiscoveryDurationMs.ToString(CultureInfo.InvariantCulture));
 		if (info.AddIns.Count > 0)
 		{
 			foreach (var addIn in info.AddIns)

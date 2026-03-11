@@ -88,7 +88,7 @@ internal static class HealthReportFactory
 			UpstreamConnected = upstreamConnected,
 			ToolCount = toolCount,
 			UnoSdkVersion = discovery?.UnoSdkVersion,
-			DiscoveryDurationMs = discovery?.AddInsDiscoveryDurationMs ?? 0,
+			DiscoveryDurationMs = discovery?.DiscoveryDurationMs ?? 0,
 			ConnectionState = connectionState,
 			DiscoveredSolutions = discoveredSolutions,
 			EffectiveWorkspaceDirectory = discovery?.EffectiveWorkspaceDirectory,
