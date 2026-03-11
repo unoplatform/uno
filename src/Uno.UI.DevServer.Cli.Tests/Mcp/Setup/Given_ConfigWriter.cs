@@ -150,7 +150,7 @@ public class Given_ConfigWriter
 	}
 
 	[TestMethod]
-	public void MergeServer_CommentedJsonc_ThrowsJsonException()
+	public void MergeServer_CommentedJsonc_PreservesComments()
 	{
 		var existing = """
 		{
@@ -164,10 +164,11 @@ public class Given_ConfigWriter
 		const string rootKey = "mcpServers";
 		const string serverKey = "UnoApp";
 
-		Action act = () => ConfigWriter.MergeServer(existing, rootKey, serverKey, def, includeType: false, transport: null);
+		var result = ConfigWriter.MergeServer(existing, rootKey, serverKey, def, includeType: false, transport: null);
 
-		act.Should().Throw<JsonException>()
-			.WithMessage("*comments cannot be modified*");
+		result.Should().Contain("This is a comment");
+		result.Should().Contain("\"OtherServer\"");
+		result.Should().Contain("\"UnoApp\"");
 	}
 
 	// ── MergeServer: malformed JSON ──
@@ -275,7 +276,7 @@ public class Given_ConfigWriter
 	}
 
 	[TestMethod]
-	public void RemoveServer_CommentedJsonc_ThrowsJsonException()
+	public void RemoveServer_CommentedJsonc_PreservesComments()
 	{
 		var existing = """
 		{
@@ -287,10 +288,12 @@ public class Given_ConfigWriter
 		}
 		""";
 
-		var act = () => ConfigWriter.RemoveServer(existing, "mcpServers", "UnoApp");
+		var result = ConfigWriter.RemoveServer(existing, "mcpServers", "UnoApp");
 
-		act.Should().Throw<JsonException>()
-			.WithMessage("*comments cannot be modified*");
+		result.Should().NotBeNull();
+		result.Should().Contain("comment");
+		result.Should().NotContain("\"UnoApp\"");
+		result.Should().Contain("\"OtherServer\"");
 	}
 
 	[TestMethod]
