@@ -14,6 +14,7 @@ internal class CliManager
 {
 	private readonly IServiceProvider _services;
 	private readonly UnoToolsLocator _unoToolsLocator;
+	private readonly WorkspaceResolver _workspaceResolver;
 	private readonly ILogger<CliManager> _logger;
 	private static readonly JsonSerializerOptions _discoJsonOptions = new()
 	{
@@ -21,10 +22,11 @@ internal class CliManager
 		PropertyNamingPolicy = JsonNamingPolicy.CamelCase
 	};
 
-	public CliManager(IServiceProvider services, UnoToolsLocator unoToolsLocator)
+	public CliManager(IServiceProvider services, UnoToolsLocator unoToolsLocator, WorkspaceResolver workspaceResolver)
 	{
 		_services = services;
 		_unoToolsLocator = unoToolsLocator;
+		_workspaceResolver = workspaceResolver;
 		_logger = _services.GetRequiredService<ILogger<CliManager>>();
 	}
 
@@ -42,14 +44,16 @@ internal class CliManager
 			}
 
 			originalArgs = solutionDirParseResult.FilteredArgs;
-			var workingDirectory = solutionDirParseResult.SolutionDirectory ?? Environment.CurrentDirectory;
+			var requestedWorkingDirectory = solutionDirParseResult.SolutionDirectory ?? Environment.CurrentDirectory;
+			var workspaceResolution = await _workspaceResolver.ResolveAsync(requestedWorkingDirectory);
+			var workingDirectory = workspaceResolution.EffectiveWorkspaceDirectory ?? requestedWorkingDirectory;
 
 			if (originalArgs.Contains("--mcp-app"))
 			{
 				return await RunMcpProxyAsync(
 					originalArgs.Where(a => a != "--mcp-app").ToArray(),
-					workingDirectory,
-					solutionDirParseResult.SolutionDirectory);
+					requestedWorkingDirectory,
+					workspaceResolution);
 			}
 
 			var isDisco = originalArgs is { Length: > 0 } &&
@@ -58,8 +62,12 @@ internal class CliManager
 				originalArgs.Any(a => string.Equals(a, "--json", StringComparison.OrdinalIgnoreCase));
 			var discoAddInsOnly = isDisco &&
 				originalArgs.Any(a => string.Equals(a, "--addins-only", StringComparison.OrdinalIgnoreCase));
+			var isHealth = originalArgs is { Length: > 0 } &&
+				string.Equals(originalArgs[0], "health", StringComparison.OrdinalIgnoreCase);
+			var healthJson = isHealth &&
+				originalArgs.Any(a => string.Equals(a, "--json", StringComparison.OrdinalIgnoreCase));
 
-			if (!isDisco || (!discoJson && !discoAddInsOnly))
+			if ((!isDisco || (!discoJson && !discoAddInsOnly)) && !(isHealth && healthJson))
 			{
 				ShowBanner();
 			}
@@ -72,12 +80,17 @@ internal class CliManager
 			if (isDisco && discoJson)
 			{
 				// Avoid banner/log noise when emitting JSON output
-				return await RunDiscoAsync(workingDirectory, outputJson: true);
+				return await RunDiscoAsync(workingDirectory, workspaceResolution, outputJson: true);
 			}
 
 			if (isDisco)
 			{
-				return await RunDiscoAsync(workingDirectory, outputJson: false);
+				return await RunDiscoAsync(workingDirectory, workspaceResolution, outputJson: false);
+			}
+
+			if (isHealth)
+			{
+				return await RunHealthAsync(requestedWorkingDirectory, workspaceResolution, healthJson);
 			}
 
 			if (originalArgs is { Length: > 0 } && string.Equals(originalArgs[0], "login", StringComparison.OrdinalIgnoreCase))
@@ -205,9 +218,9 @@ internal class CliManager
 		}
 	}
 
-	private async Task<int> RunDiscoAsync(string workingDirectory, bool outputJson)
+	private async Task<int> RunDiscoAsync(string workingDirectory, WorkspaceResolution workspaceResolution, bool outputJson)
 	{
-		var info = await _unoToolsLocator.DiscoverAsync(workingDirectory);
+		var info = await _unoToolsLocator.DiscoverAsync(workingDirectory, workspaceResolution);
 
 		if (outputJson)
 		{
@@ -220,6 +233,30 @@ internal class CliManager
 		}
 
 		return info.Errors.Count > 0 ? 1 : 0;
+	}
+
+	private async Task<int> RunHealthAsync(string requestedWorkingDirectory, WorkspaceResolution workspaceResolution, bool outputJson)
+	{
+		var workingDirectory = workspaceResolution.EffectiveWorkspaceDirectory ?? requestedWorkingDirectory;
+		var info = await _unoToolsLocator.DiscoverAsync(workingDirectory, workspaceResolution);
+		var report = HealthReportFactory.Create(
+			info,
+			devServerStarted: false,
+			upstreamConnected: false,
+			toolCount: 0,
+			connectionState: null,
+			discoveredSolutions: info.CandidateSolutions.Count > 0 ? info.CandidateSolutions : null);
+
+		if (outputJson)
+		{
+			Console.WriteLine(HealthReportFormatter.FormatJson(report));
+		}
+		else
+		{
+			Console.WriteLine(HealthReportFormatter.FormatPlainText(report));
+		}
+
+		return report.Status == HealthStatus.Healthy ? 0 : 1;
 	}
 
 	private async Task<int> OpenSettings(string[] originalArgs, string workingDirectory)
@@ -258,7 +295,7 @@ internal class CliManager
 		}
 	}
 
-	private async Task<int> RunMcpProxyAsync(string[] args, string workingDirectory, string? solutionDirectory)
+	private async Task<int> RunMcpProxyAsync(string[] args, string requestedWorkingDirectory, WorkspaceResolution workspaceResolution)
 	{
 		try
 		{
@@ -306,17 +343,16 @@ internal class CliManager
 				forwardedArgs.Add(a);
 			}
 
-			var normalizedSolutionDirectory = solutionDirectory ?? (forceGenerateToolCache ? workingDirectory : null);
-
 			var waitForTools = mcpWaitToolsList;
 			return await _services.GetRequiredService<ProxyLifecycleManager>().RunAsync(
-				workingDirectory,
+				requestedWorkingDirectory,
+				workspaceResolution,
 				requestedPort,
 				forwardedArgs,
 				waitForTools,
 				forceRootsFallback,
 				forceGenerateToolCache,
-				normalizedSolutionDirectory,
+				workspaceResolution.EffectiveWorkspaceDirectory ?? requestedWorkingDirectory,
 				CancellationToken.None);
 		}
 		catch (Exception ex)

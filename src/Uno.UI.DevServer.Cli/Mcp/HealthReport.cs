@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Uno.UI.DevServer.Cli.Helpers;
 
 namespace Uno.UI.DevServer.Cli.Mcp;
 
@@ -16,13 +17,23 @@ internal sealed record HealthReport
 	public long DiscoveryDurationMs { get; init; }
 	public ConnectionState? ConnectionState { get; init; }
 	public IReadOnlyList<string>? DiscoveredSolutions { get; init; }
+	public string? EffectiveWorkspaceDirectory { get; init; }
+	public string? SelectedSolutionPath { get; init; }
+	public WorkspaceResolutionKind? ResolutionKind { get; init; }
+	public IReadOnlyList<string>? CandidateSolutions { get; init; }
 	public required IReadOnlyList<ValidationIssue> Issues { get; init; }
 	public DiscoverySummary? Discovery { get; init; }
 }
 
 internal sealed record DiscoverySummary
 {
+	public string? RequestedWorkingDirectory { get; init; }
 	public string? WorkingDirectory { get; init; }
+	public string? EffectiveWorkspaceDirectory { get; init; }
+	public string? SelectedSolutionPath { get; init; }
+	public string? SelectedGlobalJsonPath { get; init; }
+	public WorkspaceResolutionKind? ResolutionKind { get; init; }
+	public IReadOnlyList<string>? CandidateSolutions { get; init; }
 	public string? DotNetVersion { get; init; }
 	public string? UnoSdkVersion { get; init; }
 	public string? UnoSdkPath { get; init; }
@@ -95,4 +106,6 @@ internal enum IssueCode
 	AddInDiscoveryFallback,
 	UpstreamError,
 	NoSolutionFound,
+	WorkspaceAmbiguous,
+	WorkspaceNotResolved,
 }
