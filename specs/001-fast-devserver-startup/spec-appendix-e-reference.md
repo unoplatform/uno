@@ -61,3 +61,13 @@ Per-IDE discovery      CLI-centralized                 CLI-centralized
 ## E.4 IDE Extension Behavior
 
 Moved to [`.github/agents/devserver-agent.md` § 10](../../.github/agents/devserver-agent.md) (IDE Compatibility Constraints).
+
+---
+
+## E.5 Extension Alignment Tracking
+
+The workspace-resolution and workspace-transition contracts in Appendices I and J are **DevServer-wide contracts**, not MCP-only behavior. MCP is the first consumer being aligned, but VS Code, Rider, and Visual Studio launchers must converge on the same lifecycle rules while remaining backward compatible and forward compatible.
+
+Alignment work for Rider, VS Code, and Visual Studio is tracked outside this public spec, including in private extension repositories. Those trackers must stay aligned with the contracts defined here, but they are intentionally not referenced directly from this document.
+
+The spec remains the source of truth for expected behavior.

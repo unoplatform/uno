@@ -1,6 +1,6 @@
 # Health & Diagnostics
 
-`HealthService` exposes an always-available `uno_health` MCP tool and a `uno://health` resource so AI agents can inspect DevServer state even before the upstream Host is ready.
+`HealthService` exposes an always-available `uno_health` MCP tool and a `uno://health` resource so AI agents can inspect DevServer state even before the upstream Host is ready. The CLI also exposes `uno.devserver health`, with `--json` returning the same `HealthReport` payload.
 
 ## Data Flow
 
@@ -18,6 +18,8 @@ DevServerMonitor.LastDiscoveryInfo
 |------|------|
 | `Mcp/HealthService.cs` | Produces `uno_health` tool and `uno://health` resource |
 | `Mcp/HealthReport.cs` | Data model, `IssueCode` enum, `ValidationSeverity` enum |
+| `Mcp/HealthReportFactory.cs` | Shared builder for MCP and CLI health reports |
+| `Helpers/HealthReportFormatter.cs` | Plain-text / JSON rendering for CLI health output |
 | `Mcp/DiscoveryIssueMapper.cs` | Static mapper: `DiscoveryInfo` --> `ValidationIssue[]` |
 
 ## Discovery-Time Issues (`DiscoveryIssueMapper`)
@@ -26,6 +28,8 @@ Static mapper that converts `DiscoveryInfo` fields into `ValidationIssue[]`. Iss
 
 | IssueCode | Severity | Trigger | Early exit? |
 |-----------|----------|---------|-------------|
+| `WorkspaceNotResolved` | Fatal | Solutions exist, but none resolve to a valid Uno workspace | Yes |
+| `WorkspaceAmbiguous` | Warning | Multiple Uno workspaces match equally well | Yes |
 | `GlobalJsonNotFound` | Fatal | `GlobalJsonPath` is null | Yes |
 | `UnoSdkNotInGlobalJson` | Fatal | `UnoSdkPackage` or `UnoSdkVersion` is null | Yes |
 | `SdkNotInCache` | Fatal | `UnoSdkPath` is null | Yes |
@@ -62,6 +66,9 @@ Three codes exist in the `IssueCode` enum but are **not currently mapped** in CL
 |-------|------|-------------|
 | `DiscoveredSolutions` | `string[]?` | Relative paths to `.sln`/`.slnx` files found by recursive search (null when none found) |
 | `ConnectionState` | `ConnectionState?` | Lifecycle state of the MCP bridge (see `Mcp/ConnectionState.cs` for state diagram) |
+| `EffectiveWorkspaceDirectory` | `string?` | Resolved workspace directory used for discovery and cache identity |
+| `SelectedSolutionPath` | `string?` | Solution selected for the current workspace |
+| `ResolutionKind` | `WorkspaceResolutionKind?` | How the workspace was selected (`CurrentDirectory`, `AutoDiscovered`, `Ambiguous`, `NoValidWorkspace`, `NoCandidates`) |
 | `Discovery` | `DiscoverySummary?` | Full discovery info including `ActiveServers[]` with `IsInWorkspace` flag |
 
 ## Health Status
