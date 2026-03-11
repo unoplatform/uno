@@ -35,11 +35,11 @@ internal class CliManager
 	{
 		try
 		{
-			var solutionDirParseResult = ExtractSolutionDirectory(originalArgs);
+			var (Success, FilteredArgs, SolutionDirectory) = ExtractSolutionDirectory(originalArgs);
 			// --solution-dir is applied uniformly so automation and CI environments can run any
 			// command (start, stop, list, login, MCP) against a target solution even when the
 			// current working directory differs from the solution root.
-			if (!solutionDirParseResult.Success)
+			if (!Success)
 			{
 				return 1;
 			}
@@ -52,7 +52,7 @@ internal class CliManager
 			if (originalArgs is { Length: > 0 } &&
 				string.Equals(originalArgs[0], "mcp", StringComparison.OrdinalIgnoreCase))
 			{
-				return RunMcpSubcommand(originalArgs[1..], workingDirectory, solutionDirParseResult.SolutionDirectory);
+				return RunMcpSubcommand(originalArgs[1..], workingDirectory, SolutionDirectory);
 			}
 
 			if (originalArgs.Contains("--mcp-app"))
@@ -143,8 +143,8 @@ internal class CliManager
 
 			var startInfo = BuildHostArgs(hostPath, originalArgs, workingDirectory, redirectOutput: true, addins: resolvedAddIns);
 
-			var result = await DevServerProcessHelper.RunConsoleProcessAsync(startInfo, _logger, forwardOutputToConsole: requiresHostOutputPassthrough);
-			return result.ExitCode;
+			var (ExitCode, StdOut, StdErr) = await DevServerProcessHelper.RunConsoleProcessAsync(startInfo, _logger, forwardOutputToConsole: requiresHostOutputPassthrough);
+			return ExitCode;
 		}
 		catch (Exception ex)
 		{
@@ -333,13 +333,13 @@ internal class CliManager
 		{
 			_logger.LogInformation("Starting MCP Mode");
 
-			int requestedPort = 0;
-			bool mcpWaitToolsList = false;
-			bool forceRootsFallback = false;
-			bool forceGenerateToolCache = false;
+			var requestedPort = 0;
+			var mcpWaitToolsList = false;
+			var forceRootsFallback = false;
+			var forceGenerateToolCache = false;
 			var forwardedArgs = new List<string>();
 
-			for (int i = 0; i < args.Length; i++)
+			for (var i = 0; i < args.Length; i++)
 			{
 				var a = args[i];
 				if (a == "--port" || a == "-p")
@@ -402,7 +402,7 @@ internal class CliManager
 		string? rawSolutionDirectory = null;
 		var filteredArgs = new List<string>(args.Length);
 
-		for (int i = 0; i < args.Length; i++)
+		for (var i = 0; i < args.Length; i++)
 		{
 			var arg = args[i];
 			if (arg == "--solution-dir")
@@ -410,7 +410,7 @@ internal class CliManager
 				if (i + 1 >= args.Length)
 				{
 					_logger.LogError("Missing value for --solution-dir");
-					return (false, Array.Empty<string>(), null);
+					return (false, [], null);
 				}
 
 				rawSolutionDirectory = args[i + 1];
@@ -431,7 +431,7 @@ internal class CliManager
 			catch (Exception ex)
 			{
 				_logger.LogError(ex, "Invalid solution directory '{Directory}'", rawSolutionDirectory);
-				return (false, Array.Empty<string>(), null);
+				return (false, [], null);
 			}
 		}
 
@@ -569,7 +569,7 @@ internal class CliManager
 			McpSetupOutputFormatter.WriteInstall(result, workspace);
 		}
 
-		return result.Operations.Any(o => o.Action == "error") ? 1 : 0;
+		return DetermineMcpSetupExitCode(result);
 	}
 
 	private static int RunMcpUninstall(
@@ -585,8 +585,13 @@ internal class CliManager
 			McpSetupOutputFormatter.WriteUninstall(result, workspace);
 		}
 
-		return result.Operations.Any(o => o.Action == "error") ? 1 : 0;
+		return DetermineMcpSetupExitCode(result);
 	}
+
+	internal static int DetermineMcpSetupExitCode(OperationResponse result) =>
+		// Payload-first: once a command produced an operation payload, callers should inspect it
+		// for partial failures instead of losing the result behind a process-level failure code.
+		0;
 
 	private record struct McpSetupParsedArgs(
 		string? Ide,
@@ -603,15 +608,15 @@ internal class CliManager
 	{
 		string? ide = null;
 		string? workspace = null;
-		bool releaseFlag = false;
-		bool prereleaseFlag = false;
+		var releaseFlag = false;
+		var prereleaseFlag = false;
 		string? versionFlag = null;
 		List<string>? servers = null;
-		bool jsonOutput = false;
+		var jsonOutput = false;
 		string? ideDefinitionsPath = null;
 		string? serverDefinitionsPath = null;
 
-		for (int i = 0; i < args.Length; i++)
+		for (var i = 0; i < args.Length; i++)
 		{
 			var a = args[i];
 			switch (a)
@@ -632,7 +637,7 @@ internal class CliManager
 					break;
 				case "--servers":
 					if (i + 1 >= args.Length) { _logger.LogError("Missing value for --servers"); return null; }
-					servers = args[++i].Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
+					servers = [.. args[++i].Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)];
 					break;
 				case "--json":
 					jsonOutput = true;

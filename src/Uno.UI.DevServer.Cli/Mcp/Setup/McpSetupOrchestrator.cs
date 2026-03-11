@@ -8,18 +8,12 @@ namespace Uno.UI.DevServer.Cli.Mcp.Setup;
 /// Composes <see cref="ConfigScanner"/>, <see cref="ConfigWriter"/>,
 /// <see cref="ServerDefinitionResolver"/>, and <see cref="DuplicateDetector"/>.
 /// </summary>
-internal sealed class McpSetupOrchestrator
+internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrchestrator> logger)
 {
 	private const string ProtocolVersion = "1.0";
 
-	private readonly IFileSystem _fs;
-	private readonly ILogger<McpSetupOrchestrator> _logger;
-
-	public McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrchestrator> logger)
-	{
-		_fs = fs;
-		_logger = logger;
-	}
+	private readonly IFileSystem _fs = fs;
+	private readonly ILogger<McpSetupOrchestrator> _logger = logger;
 
 	/// <summary>
 	/// Reports the installation state of all MCP servers across all IDEs.
@@ -51,7 +45,7 @@ internal sealed class McpSetupOrchestrator
 			{
 				if (!ideStatusMap.TryGetValue(serverName, out var map))
 				{
-					map = new Dictionary<string, ServerIdeStatus>();
+					map = [];
 					ideStatusMap[serverName] = map;
 				}
 
@@ -67,13 +61,13 @@ internal sealed class McpSetupOrchestrator
 		foreach (var (serverName, serverDef) in defs.Servers)
 		{
 			var ideStatuses = ideStatusMap.TryGetValue(serverName, out var map)
-				? map.Values.ToList()
+				? [.. map.Values]
 				: new List<ServerIdeStatus>();
 
 			serverEntries.Add(new ServerStatusEntry(
 				serverName,
 				serverDef.Transport,
-				expectedDefinitions.TryGetValue(serverName, out var def) ? def : new JsonObject(),
+				expectedDefinitions.TryGetValue(serverName, out var def) ? def : [],
 				ideStatuses));
 		}
 
@@ -106,8 +100,6 @@ internal sealed class McpSetupOrchestrator
 		var scanner = new ConfigScanner(_fs);
 		var expectedDefinitions = BuildExpectedDefinitions(defs.Servers, expectedVariant);
 		var scanResult = scanner.Scan(profile, workspace, defs.Servers, expectedDefinitions);
-		var includeType = profile.JsonRootKey == "servers";
-
 		foreach (var (serverName, serverDef) in defs.Servers)
 		{
 			if (serverFilter is not null && !serverFilter.Contains(serverName, StringComparer.OrdinalIgnoreCase))
@@ -125,7 +117,7 @@ internal sealed class McpSetupOrchestrator
 			try
 			{
 				var entry = InstallServer(
-					profile, scanResult, serverName, serverDef, serverResult, definition, includeType);
+					targetIde, profile, scanResult, serverName, serverDef, serverResult, definition);
 				operations.Add(entry);
 			}
 			catch (Exception ex)
@@ -211,20 +203,19 @@ internal sealed class McpSetupOrchestrator
 	}
 
 	private OperationEntry InstallServer(
+		string targetIde,
 		IdeProfile profile,
 		ScanResult scanResult,
 		string serverName,
 		ServerDefinition serverDef,
 		ServerScanResult? serverResult,
-		JsonObject definition,
-		bool includeType)
+		JsonObject definition)
 	{
 		var targetPath = scanResult.ResolvedWriteTarget;
-		var ide = profile.JsonRootKey; // used for logging context
 
 		if (serverResult is not null && serverResult.Status == "registered")
 		{
-			return new OperationEntry(serverName, ide, "skipped", targetPath, "Already registered and up-to-date");
+			return new OperationEntry(serverName, targetIde, "skipped", targetPath, "Already registered and up-to-date");
 		}
 
 		// Determine the key to write: use existing key if found (preserve user naming)
@@ -235,7 +226,7 @@ internal sealed class McpSetupOrchestrator
 		{
 			if (_fs.IsReadOnly(targetPath))
 			{
-				return new OperationEntry(serverName, ide, "error", targetPath, "File is read-only");
+				return new OperationEntry(serverName, targetIde, "error", targetPath, "File is read-only");
 			}
 
 			existingContent = _fs.ReadAllText(targetPath);
@@ -251,17 +242,45 @@ internal sealed class McpSetupOrchestrator
 		var isUpdate = serverResult is not null && serverResult.Status == "outdated";
 		var action = isUpdate ? "updated" : "created";
 
+		// Apply IDE-specific transformations
+		var installDef = profile.MergeCommandArgs ? MergeCommandAndArgs(definition) : definition;
+		var transportLabel = profile.TypeMap is not null
+			&& profile.TypeMap.TryGetValue(serverDef.Transport, out var mapped)
+			? mapped
+			: serverDef.Transport;
+
 		var updated = ConfigWriter.MergeServer(
 			existingContent,
 			profile.JsonRootKey,
 			writeKey,
-			definition,
-			includeType,
-			serverDef.Transport);
+			installDef,
+			profile.IncludeType,
+			transportLabel,
+			profile.UrlKey);
 
 		_fs.WriteAllText(targetPath, updated);
 
-		return new OperationEntry(serverName, ide, action, targetPath, null);
+		return new OperationEntry(serverName, targetIde, action, targetPath, null);
+	}
+
+	private static JsonObject MergeCommandAndArgs(JsonObject definition)
+	{
+		var clone = JsonNode.Parse(definition.ToJsonString())!.AsObject();
+
+		if (clone["command"]?.GetValue<string>() is { } cmd
+			&& clone.Remove("args", out var argsNode)
+			&& argsNode is JsonArray argsArray)
+		{
+			var cmdArray = new JsonArray { JsonValue.Create(cmd) };
+			foreach (var arg in argsArray)
+			{
+				cmdArray.Add(arg?.DeepClone());
+			}
+
+			clone["command"] = cmdArray;
+		}
+
+		return clone;
 	}
 
 	private static string? FindServerKeyInConfig(

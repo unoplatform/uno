@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using AwesomeAssertions;
 using Microsoft.Extensions.Logging;
@@ -18,7 +19,26 @@ public class Given_McpSetupOrchestrator
 			["vscode"] = new(
 				ConfigPaths: ["{workspace}/.vscode/mcp.json", "{home}/.vscode/mcp.json"],
 				WriteTarget: "{workspace}/.vscode/mcp.json",
-				JsonRootKey: "servers"),
+				JsonRootKey: "servers",
+				IncludeType: true),
+			["antigravity"] = new(
+				ConfigPaths: ["{home}/.gemini/antigravity/mcp_config.json"],
+				WriteTarget: "{home}/.gemini/antigravity/mcp_config.json",
+				JsonRootKey: "mcpServers",
+				IncludeType: true,
+				UrlKey: "serverUrl"),
+			["windsurf"] = new(
+				ConfigPaths: ["{workspace}/.windsurf/mcp.json", "{home}/.codeium/windsurf/mcp_config.json"],
+				WriteTarget: "{workspace}/.windsurf/mcp.json",
+				JsonRootKey: "mcpServers",
+				UrlKey: "serverUrl"),
+			["opencode"] = new(
+				ConfigPaths: ["{workspace}/opencode.json", "{workspace}/opencode.jsonc"],
+				WriteTarget: "{workspace}/opencode.json",
+				JsonRootKey: "mcp",
+				IncludeType: true,
+				TypeMap: new Dictionary<string, string> { ["stdio"] = "local", ["http"] = "remote" },
+				MergeCommandArgs: true),
 		},
 		Servers: new Dictionary<string, ServerDefinition>(StringComparer.OrdinalIgnoreCase)
 		{
@@ -109,6 +129,28 @@ public class Given_McpSetupOrchestrator
 
 		result.DetectedIdes.Should().Contain("cursor");
 		result.DetectedIdes.Should().NotContain("vscode");
+	}
+
+	[TestMethod]
+	public void Status_Serialization_IncludesDetectedIdesAndLocationTransport()
+	{
+		var fs = new InMemoryFileSystem();
+		fs.AddDirectory("/project/.cursor");
+		fs.AddFile("/project/.cursor/mcp.json", """
+		{
+		  "mcpServers": {
+		    "UnoApp": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]}
+		  }
+		}
+		""");
+
+		var orch = CreateOrchestrator(fs);
+		var result = orch.Status(TestDefs, "/project", "cursor", "stable", "5.6.0");
+		var json = JsonSerializer.Serialize(result, McpSetupJson.OutputOptions);
+
+		json.Should().Contain("\"detectedIdes\"");
+		json.Should().Contain("\"ide\": \"cursor\"");
+		json.Should().Contain("\"transport\": \"stdio\"");
 	}
 
 	// ── Install ──
@@ -223,6 +265,67 @@ public class Given_McpSetupOrchestrator
 	}
 
 	[TestMethod]
+	public void Install_AntigravityFormat_WritesServerUrl()
+	{
+		var fs = new InMemoryFileSystem();
+		var orch = CreateOrchestrator(fs);
+
+		orch.Install(TestDefs, "/project", "antigravity", "stable", "5.6.0", serverFilter: ["UnoDocs"]);
+
+		var content = fs.GetFileContent("/home/testuser/.gemini/antigravity/mcp_config.json")!;
+		var parsed = JsonNode.Parse(content)!.AsObject();
+		var entry = parsed["mcpServers"]!["UnoDocs"]!.AsObject();
+		entry["serverUrl"]!.GetValue<string>().Should().Be("https://mcp.platform.uno/v1");
+		entry.ContainsKey("url").Should().BeFalse();
+		entry["type"]!.GetValue<string>().Should().Be("http");
+	}
+
+	[TestMethod]
+	public void Install_AntigravityFormat_StdioIncludesType()
+	{
+		var fs = new InMemoryFileSystem();
+		var orch = CreateOrchestrator(fs);
+
+		orch.Install(TestDefs, "/project", "antigravity", "stable", "5.6.0", serverFilter: ["UnoApp"]);
+
+		var content = fs.GetFileContent("/home/testuser/.gemini/antigravity/mcp_config.json")!;
+		var parsed = JsonNode.Parse(content)!.AsObject();
+		var entry = parsed["mcpServers"]!["UnoApp"]!.AsObject();
+		entry["type"]!.GetValue<string>().Should().Be("stdio");
+	}
+
+	[TestMethod]
+	public void Install_WindsurfFormat_WritesServerUrl()
+	{
+		var fs = new InMemoryFileSystem();
+		var orch = CreateOrchestrator(fs);
+
+		orch.Install(TestDefs, "/project", "windsurf", "stable", "5.6.0", serverFilter: ["UnoDocs"]);
+
+		var content = fs.GetFileContent("/project/.windsurf/mcp.json")!;
+		var parsed = JsonNode.Parse(content)!.AsObject();
+		var entry = parsed["mcpServers"]!["UnoDocs"]!.AsObject();
+		entry["serverUrl"]!.GetValue<string>().Should().Be("https://mcp.platform.uno/v1");
+		entry.ContainsKey("url").Should().BeFalse();
+		entry.ContainsKey("type").Should().BeFalse();
+	}
+
+	[TestMethod]
+	public void Install_WindsurfFormat_StdioNoType()
+	{
+		var fs = new InMemoryFileSystem();
+		var orch = CreateOrchestrator(fs);
+
+		orch.Install(TestDefs, "/project", "windsurf", "stable", "5.6.0", serverFilter: ["UnoApp"]);
+
+		var content = fs.GetFileContent("/project/.windsurf/mcp.json")!;
+		var parsed = JsonNode.Parse(content)!.AsObject();
+		var entry = parsed["mcpServers"]!["UnoApp"]!.AsObject();
+		entry["command"]!.GetValue<string>().Should().Be("dnx");
+		entry.ContainsKey("type").Should().BeFalse();
+	}
+
+	[TestMethod]
 	public void Install_PinnedVersion_ReplacesPlaceholder()
 	{
 		var fs = new InMemoryFileSystem();
@@ -259,6 +362,18 @@ public class Given_McpSetupOrchestrator
 
 		result.Operations.Should().HaveCount(1);
 		result.Operations[0].Action.Should().Be("error");
+	}
+
+	[TestMethod]
+	public void Install_Serialization_IncludesOperationIde()
+	{
+		var fs = new InMemoryFileSystem();
+		var orch = CreateOrchestrator(fs);
+
+		var result = orch.Install(TestDefs, "/project", "cursor", "stable", "5.6.0", serverFilter: ["UnoApp"]);
+		var json = JsonSerializer.Serialize(result, McpSetupJson.OutputOptions);
+
+		json.Should().Contain("\"ide\": \"cursor\"");
 	}
 
 	[TestMethod]
@@ -311,6 +426,73 @@ public class Given_McpSetupOrchestrator
 		entry["disabled"]!.GetValue<bool>().Should().BeFalse();
 		// Args should be updated to prerelease
 		entry["args"]!.AsArray().Select(a => a!.GetValue<string>()).Should().Contain("--prerelease");
+	}
+
+	// ── OpenCode format ──
+
+	[TestMethod]
+	public void Install_OpenCodeFormat_RemoteWritesTypeAndUrl()
+	{
+		var fs = new InMemoryFileSystem();
+		var orch = CreateOrchestrator(fs);
+
+		orch.Install(TestDefs, "/project", "opencode", "stable", "5.6.0", serverFilter: ["UnoDocs"]);
+
+		var content = fs.GetFileContent("/project/opencode.json")!;
+		var parsed = JsonNode.Parse(content)!.AsObject();
+		var entry = parsed["mcp"]!["UnoDocs"]!.AsObject();
+		entry["type"]!.GetValue<string>().Should().Be("remote");
+		entry["url"]!.GetValue<string>().Should().Be("https://mcp.platform.uno/v1");
+		entry.ContainsKey("command").Should().BeFalse();
+	}
+
+	[TestMethod]
+	public void Install_OpenCodeFormat_LocalWritesCommandArray()
+	{
+		var fs = new InMemoryFileSystem();
+		var orch = CreateOrchestrator(fs);
+
+		orch.Install(TestDefs, "/project", "opencode", "stable", "5.6.0", serverFilter: ["UnoApp"]);
+
+		var content = fs.GetFileContent("/project/opencode.json")!;
+		var parsed = JsonNode.Parse(content)!.AsObject();
+		var entry = parsed["mcp"]!["UnoApp"]!.AsObject();
+		entry["type"]!.GetValue<string>().Should().Be("local");
+		entry["command"].Should().BeOfType<JsonArray>();
+		var cmdArray = entry["command"]!.AsArray();
+		cmdArray[0]!.GetValue<string>().Should().Be("dnx");
+		cmdArray.Select(a => a!.GetValue<string>()).Should().Contain("uno.devserver");
+		entry.ContainsKey("args").Should().BeFalse();
+	}
+
+	[TestMethod]
+	public void Install_OpenCodeFormat_PreservesUserKeys()
+	{
+		var fs = new InMemoryFileSystem();
+		fs.AddFile("/project/opencode.json", """
+		{
+		  "mcp": {
+		    "UnoApp": {
+		      "type": "local",
+		      "command": ["dnx", "-y", "uno.devserver", "--mcp-app"],
+		      "environment": {"MY_VAR": "test"},
+		      "enabled": true
+		    }
+		  }
+		}
+		""");
+
+		var orch = CreateOrchestrator(fs);
+		orch.Install(TestDefs, "/project", "opencode", "prerelease", "5.6.0-dev.42", serverFilter: ["UnoApp"]);
+
+		var content = fs.GetFileContent("/project/opencode.json")!;
+		var parsed = JsonNode.Parse(content)!.AsObject();
+		var entry = parsed["mcp"]!["UnoApp"]!.AsObject();
+		entry["environment"]!["MY_VAR"]!.GetValue<string>().Should().Be("test");
+		entry["enabled"]!.GetValue<bool>().Should().BeTrue();
+		// Command should be updated to prerelease
+		var cmdArray = entry["command"]!.AsArray();
+		cmdArray.Select(a => a!.GetValue<string>()).Should().Contain("--prerelease");
 	}
 
 	// ── Uninstall ──

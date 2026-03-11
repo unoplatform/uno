@@ -10,7 +10,7 @@
 
 ### The Problem
 
-The Uno DevServer exposes two MCP servers (UnoApp for in-app tooling, UnoDocs for documentation). Today, these are registered via `vscode.lm.registerMcpServerDefinitionProvider` — an API exclusive to VS Code. Users on **Cursor, Anti-Gravity, Windsurf, Kiro, Trae, Rider**, and CLI agents like **Claude Code, Aider, OpenCode** get no MCP integration at all.
+The Uno DevServer exposes two MCP servers (UnoApp for in-app tooling, UnoDocs for documentation). Today, these are registered via `vscode.lm.registerMcpServerDefinitionProvider` — an API exclusive to VS Code. Users on **Cursor, Anti-Gravity, Windsurf, Kiro, Rider**, and CLI agents like **Claude Code and OpenCode** get no MCP integration at all.
 
 Each editor has its own MCP config format and file location. There is no cross-editor registration API.
 
@@ -29,14 +29,14 @@ uno.devserver mcp uninstall  # Remove servers from IDE configs
 
 ### Why This Approach
 
-- **The tool is the single source of truth**: The CLI owns the list of MCP servers. The VS Code extension (and any future IDE extension) does not hardcode server names, transports, or definitions — it processes whatever `status` returns.
+- **The tool is the canonical source of truth for Uno definitions**: The CLI owns the list of Uno MCP servers and the canonical definitions it writes. The VS Code extension (and any future IDE extension) does not hardcode server names, transports, or definitions — it processes whatever `status` returns. `status` must also recognize compatible registrations that were persisted by the IDE's own tooling in the profile's documented config files.
 - **Adding servers requires no extension update**: Adding, removing, or modifying servers is done entirely in the tool.
 - **Works for all editors**: Config-file-based registration works for every editor, regardless of whether it exposes a programmatic API.
 - **Backward compatible**: `--mcp-app` continues to work as an alias for `mcp start`.
 
 ### Scope
 
-- 13+ IDE profiles (VS Code, Cursor, Windsurf, Kiro, Trae, Anti-Gravity, Rider, Claude Code, OpenCode, Aider, Continue, Zed, unknown)
+- 9 IDE profiles in v1 (VS Code, Cursor, Windsurf, Kiro, Anti-Gravity, Rider, Claude Code, OpenCode, unknown)
 - 2 MCP servers (UnoApp stdio, UnoDocs HTTP) — extensible without protocol changes
 - 3 operations: status, install, uninstall
 - Config file merge with preservation of existing entries
@@ -57,8 +57,8 @@ uno.devserver mcp <subcommand> [options]
 |------------|-------------|
 | `start` | Start the MCP STDIO proxy (existing functionality, was `--mcp-app`) |
 | `status` | Report installation state of MCP servers across all detected IDEs |
-| `install` | Register MCP servers in the target IDE's config file |
-| `uninstall` | Remove MCP servers from the target IDE's config file |
+| `install` | Register MCP servers in the target IDE's config files |
+| `uninstall` | Remove MCP servers from the target IDE's config files |
 
 ### Backward Compatibility
 
@@ -118,7 +118,7 @@ uno.devserver mcp uninstall <ide> [--workspace <path>] [--servers UnoApp,UnoDocs
 
 ### IDE Identifiers
 
-`vscode`, `cursor`, `windsurf`, `kiro`, `trae`, `antigravity`, `rider`, `claude-code`, `opencode`, `aider`, `unknown`
+`vscode`, `cursor`, `windsurf`, `kiro`, `antigravity`, `rider`, `claude-code`, `opencode`, `unknown`
 
 > **v2 (deferred):** `continue`, `zed` — excluded from initial implementation due to non-standard config formats (see [IDE Profiles §5](#5-ide-profiles)).
 
@@ -136,6 +136,8 @@ uno.devserver mcp status [<ide>] [--workspace <path>] [--release|--prerelease|--
 ```
 
 When `<ide>` is provided, it identifies the **caller's IDE** and is included in the output as `callerIde`. The tool scans config paths for **all known IDE profiles** and returns per-IDE status for each server, giving a complete picture of what is already configured and what could be configured.
+
+`status` is the **scanner of record**. It is not limited to entries previously written by `uno.devserver`: it must recognize Uno server registrations persisted by the IDE's own tooling, as long as they are written to the profile's documented config files and use the documented schema variants. It does **not** promise to detect transient, internal, or non-persisted IDE state.
 
 The **expected variant** (used to determine `registered` vs `outdated`) is resolved as follows:
 1. `--version <ver>` → expected variant is `pinned:<ver>`
@@ -178,26 +180,7 @@ All paths in the JSON output are **fully resolved absolute paths** — no tokens
   "callerIde": "cursor",
   "toolVersion": "5.6.0-dev.42",
   "expectedVariant": "prerelease",
-  "ides": [
-    {
-      "id": "vscode",
-      "detected": true,
-      "configPaths": ["/home/user/myproject/.vscode/mcp.json", "/home/user/.vscode/mcp.json"],
-      "writeTarget": "/home/user/myproject/.vscode/mcp.json"
-    },
-    {
-      "id": "cursor",
-      "detected": true,
-      "configPaths": ["/home/user/myproject/.cursor/mcp.json", "/home/user/.cursor/mcp.json"],
-      "writeTarget": "/home/user/myproject/.cursor/mcp.json"
-    },
-    {
-      "id": "rider",
-      "detected": false,
-      "configPaths": ["/home/user/myproject/.idea/mcpServers.json"],
-      "writeTarget": "/home/user/myproject/.idea/mcpServers.json"
-    }
-  ],
+  "detectedIdes": ["vscode", "cursor"],
   "servers": [
     {
       "name": "UnoApp",
@@ -211,17 +194,18 @@ All paths in the JSON output are **fully resolved absolute paths** — no tokens
           "ide": "vscode",
           "status": "outdated",
           "locations": [
-            { "path": "/home/user/myproject/.vscode/mcp.json", "variant": "stable" },
-            { "path": "/home/user/.vscode/mcp.json", "variant": "prerelease" }
+            { "path": "/home/user/myproject/.vscode/mcp.json", "variant": "stable", "transport": "stdio" },
+            { "path": "/home/user/.vscode/mcp.json", "variant": "prerelease", "transport": "stdio" }
           ],
           "warnings": ["Registered in multiple config files"]
         },
         { "ide": "cursor", "status": "missing" },
+        { "ide": "rider", "status": "missing" },
         {
           "ide": "claude-code",
           "status": "registered",
           "locations": [
-            { "path": "/home/user/myproject/.mcp.json", "variant": "prerelease" }
+            { "path": "/home/user/myproject/.mcp.json", "variant": "prerelease", "transport": "stdio" }
           ]
         }
       ]
@@ -237,17 +221,18 @@ All paths in the JSON output are **fully resolved absolute paths** — no tokens
           "ide": "vscode",
           "status": "registered",
           "locations": [
-            { "path": "/home/user/.vscode/mcp.json", "variant": "stable" }
+            { "path": "/home/user/.vscode/mcp.json", "variant": "stable", "transport": "http" }
           ]
         },
         {
           "ide": "cursor",
           "status": "registered",
           "locations": [
-            { "path": "/home/user/.cursor/mcp.json", "variant": "stable" }
+            { "path": "/home/user/.cursor/mcp.json", "variant": "stable", "transport": "http" }
           ]
         },
-        { "ide": "claude-code", "status": "missing" }
+        { "ide": "claude-code", "status": "missing" },
+        { "ide": "rider", "status": "missing" }
       ]
     }
   ]
@@ -262,19 +247,8 @@ All paths in the JSON output are **fully resolved absolute paths** — no tokens
 | `callerIde` | string? | IDE identifier as passed via `<ide>` or `--ide`. `null` when omitted (status only). |
 | `toolVersion` | string | Version of the running `uno.devserver` tool |
 | `expectedVariant` | string | The variant that `install` would write: `stable`, `prerelease`, or `pinned:<ver>` |
-| `ides` | array | All IDE profiles known by the tool, with detection info |
+| `detectedIdes` | string[] | IDE identifiers for profiles whose config path or parent directory was found on disk |
 | `servers` | array | All MCP servers the tool manages, with per-IDE status |
-
-### IDE Entry Fields (`ides[]`)
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | string | IDE identifier |
-| `detected` | boolean | `true` if at least one config path exists on disk (directory or file) |
-| `configPaths` | string[] | All config paths the tool scans for this IDE |
-| `writeTarget` | string | Where `install` would write for this IDE |
-
-When `<ide>` is provided, the caller's IDE is **always included** in the `ides` array, even if not detected. When omitted, all known IDE profiles are listed.
 
 ### Server Entry Fields (`servers[]`)
 
@@ -291,10 +265,10 @@ When `<ide>` is provided, the caller's IDE is **always included** in the `ides` 
 |-------|------|-------------|
 | `ide` | string | IDE identifier |
 | `status` | string | `"registered"`, `"missing"`, or `"outdated"` |
-| `locations` | array? | Config files where the server was found. Each entry has `path` (string) and `variant` (string). Absent when `missing`. |
+| `locations` | array? | Config files where the server was found. Each entry has `path` (string), `variant` (string), and `transport` (string). Absent when `missing`. |
 | `warnings` | string[]? | Diagnostic messages (e.g., duplicate registration across scopes). Absent when empty. |
 
-Only IDEs where at least one config path was found on disk **or** matching the caller's IDE are included in `servers[].ides[]`.
+All known IDE profiles are included in `servers[].ides[]`. `detectedIdes` tells consumers which of those profiles were found on disk.
 
 #### Location Entry Fields (`servers[].ides[].locations[]`)
 
@@ -302,6 +276,7 @@ Only IDEs where at least one config path was found on disk **or** matching the c
 |-------|------|-------------|
 | `path` | string | Config file path where the server was found |
 | `variant` | string | Version variant detected: `stable`, `prerelease`, `pinned:<ver>`, or `legacy-http` |
+| `transport` | string | Transport inferred from the matching entry: `"stdio"` or `"http"` |
 
 ### Status Values
 
@@ -366,8 +341,8 @@ uno.devserver mcp install <ide> [--workspace <path>] [--release|--prerelease|--v
 MCP Install
 ===========
 
-  UnoApp   created  /home/user/myproject/.cursor/mcp.json   Added UnoApp stdio server
-  UnoDocs  skipped  /home/user/.cursor/mcp.json             Already registered
+  UnoApp   created  /home/user/myproject/.cursor/mcp.json
+  UnoDocs  skipped  /home/user/.cursor/mcp.json             Already registered and up-to-date
 ```
 
 ### JSON Output (`--json`)
@@ -380,15 +355,17 @@ All paths are fully resolved absolute paths.
   "operations": [
     {
       "server": "UnoApp",
+      "ide": "cursor",
       "action": "created",
       "path": "/home/user/myproject/.cursor/mcp.json",
-      "reason": "Added UnoApp stdio server"
+      "reason": null
     },
     {
       "server": "UnoDocs",
+      "ide": "cursor",
       "action": "skipped",
       "path": "/home/user/.cursor/mcp.json",
-      "reason": "Already registered"
+      "reason": "Already registered and up-to-date"
     }
   ]
 }
@@ -417,6 +394,7 @@ If an individual operation fails, it is reported in the operations array:
 ```json
 {
   "server": "UnoApp",
+  "ide": "cursor",
   "action": "error",
   "path": "/home/user/myproject/.cursor/mcp.json",
   "reason": "File is read-only"
@@ -438,9 +416,9 @@ uno.devserver mcp uninstall <ide> [--workspace <path>] [--servers UnoApp,UnoDocs
 MCP Uninstall
 =============
 
-  UnoApp   removed    /home/user/myproject/.cursor/mcp.json   Removed from workspace config
-  UnoApp   removed    /home/user/.cursor/mcp.json             Removed from user config
-  UnoDocs  not_found                                          Not found in any config file
+  UnoApp   removed    /home/user/myproject/.cursor/mcp.json
+  UnoApp   removed    /home/user/.cursor/mcp.json
+  UnoDocs  not_found
 ```
 
 ### JSON Output (`--json`)
@@ -453,21 +431,24 @@ All paths are fully resolved absolute paths.
   "operations": [
     {
       "server": "UnoApp",
+      "ide": "cursor",
       "action": "removed",
       "path": "/home/user/myproject/.cursor/mcp.json",
-      "reason": "Removed from workspace config"
+      "reason": null
     },
     {
       "server": "UnoApp",
+      "ide": "cursor",
       "action": "removed",
       "path": "/home/user/.cursor/mcp.json",
-      "reason": "Removed from user config"
+      "reason": null
     },
     {
       "server": "UnoDocs",
+      "ide": "cursor",
       "action": "not_found",
       "path": null,
-      "reason": "Not found in any config file"
+      "reason": null
     }
   ]
 }
@@ -480,6 +461,8 @@ All paths are fully resolved absolute paths.
 | `removed` | Server entry was removed from a config file. One operation per file — if the server appears in multiple scopes, there will be multiple `removed` entries for the same server. |
 | `not_found` | Server was not found in any scanned config path |
 | `error` | Operation failed |
+
+Each operation entry also includes the target `ide` identifier.
 
 ### Scope Behavior
 
@@ -501,15 +484,14 @@ Each IDE has a profile that defines config file locations, write targets, and JS
 |-----|-------------------------------|--------------|-------------|
 | **VS Code** | `{ws}/.vscode/mcp.json`, `~/.vscode/mcp.json`, global OS path | `{ws}/.vscode/mcp.json` | `servers` |
 | **Cursor** | `{ws}/.cursor/mcp.json`, `~/.cursor/mcp.json` | `{ws}/.cursor/mcp.json` | `mcpServers` |
-| **Windsurf** | `{ws}/.windsurf/mcp.json`, `~/.codeium/windsurf/mcp_config.json` | `{ws}/.windsurf/mcp.json` | `mcpServers` |
+| **Windsurf** | `{ws}/.windsurf/mcp.json`, `~/.codeium/windsurf/mcp_config.json` | `{ws}/.windsurf/mcp.json` | `mcpServers` with `serverUrl` for HTTP servers |
 | **Kiro** | `{ws}/.kiro/settings/mcp.json`, `~/.kiro/settings/mcp.json` | `{ws}/.kiro/settings/mcp.json` | `mcpServers` |
-| **Trae** | `{ws}/.trae/mcp.json` | `{ws}/.trae/mcp.json` | `mcpServers` |
-| **Anti-Gravity** | `~/.gemini/antigravity/mcp_config.json` | same (global only) | `mcpServers` |
+| **Anti-Gravity** | `~/.gemini/antigravity/mcp_config.json` | same (global only) | `mcpServers` with `type` and `serverUrl` |
 
 VS Code global OS paths:
-- Windows: `%APPDATA%/Code/User/mcp.json`
-- macOS: `~/Library/Application Support/Code/User/mcp.json`
-- Linux: `~/.config/Code/User/mcp.json`
+- Windows: `%APPDATA%/Code/User/settings.json`
+- macOS: `~/Library/Application Support/Code/User/settings.json`
+- Linux: `~/.config/Code/User/settings.json`
 
 ### JetBrains (tool only, no extension)
 
@@ -524,8 +506,7 @@ VS Code global OS paths:
 | Agent | Config Locations | Write Target | JSON Format |
 |-------|------------------|--------------|-------------|
 | **Claude Code** | `{ws}/.mcp.json`, `~/.claude/mcp.json` | `{ws}/.mcp.json` | `mcpServers` |
-| **OpenCode** | `{ws}/.opencode/mcp.json` | `{ws}/.opencode/mcp.json` | `mcpServers` |
-| **Aider** | `{ws}/.aider/mcp.json` | `{ws}/.aider/mcp.json` | `mcpServers` |
+| **OpenCode** | `{ws}/opencode.json`, `{ws}/opencode.jsonc` | `{ws}/opencode.json` | `mcp` with `type` and command-array format |
 | **Continue** *(v2)* | `{ws}/.continue/config.json` (MCP section) | same | `mcpServers` (nested) |
 | **Zed** *(v2)* | `{ws}/.zed/settings.json` (section) | same | `context_servers` |
 
@@ -652,6 +633,8 @@ The tool scans config paths for **all known IDE profiles** and detects existing 
 
 The scan is **exhaustive**: all configPaths are checked for every IDE, not just the first match. A server may appear in multiple config files for the same IDE (e.g., workspace and global). This is reported as a warning in the status response.
 
+Detection is intentionally **writer-agnostic**. A matching entry may have been created by `uno-devserver`, by the IDE's own registration workflow, or by a user editing the official config file manually. The guarantee is limited to the documented file locations and supported schema shapes for each profile; hidden or ephemeral IDE state is out of scope.
+
 ### Detection Patterns
 
 A config entry is considered a match for a server when **either** of these conditions is met:
@@ -724,6 +707,16 @@ After `install --prerelease`, the entry becomes:
 
 The `env` and `disabled` keys are preserved; `command` and `args` are updated.
 
+### Relationship to Native IDE Tooling
+
+`install` and `uninstall` are the canonical Uno writers, but the merge and scan rules must remain compatible with config files that were originally produced by the IDE's own MCP tooling. In practice:
+
+- `status` must recognize supported Uno registrations even when `uno-devserver` did not create them
+- `install` may update an existing compatible entry in place rather than creating a duplicate
+- `uninstall` removes matching Uno registrations regardless of which writer originally created them
+
+This compatibility applies only to persisted config files in the documented locations and shapes for each IDE profile.
+
 ### JSONC Compatibility
 
 IDE config files may contain JSONC extensions (comments and trailing commas). The tool handles them as follows:
@@ -761,11 +754,11 @@ MCP config files are workspace-specific and typically safe to commit (they conta
 
 | Code | Meaning | Examples |
 |------|---------|----------|
-| `0` | Success — all operations completed, skipped, or partially failed with details in JSON | Install where 1 of 2 servers failed (JSON contains per-operation status) |
+| `0` | Success — the command produced an exploitable payload, including partial failures reported in operations | Install where 1 of 2 servers failed (JSON contains per-operation status) |
 | `1` | Failure — no useful work was done, or a fatal error occurred | Unknown `--ide`, invalid `--workspace`, malformed definitions file |
 | `2` | Usage error — invalid arguments or parameter combinations | Missing required `<ide>` for install, mutually exclusive flags, unknown `--servers` name |
 
-> **Design note**: Exit code 0 with per-operation error details in JSON (action `"error"`) is preferred over exit code 1 for partial failures. This avoids confusing scripts that check `$? -ne 0` while still providing full diagnostic data in the output. The caller should always parse stdout for details.
+> **Design note**: Exit code 0 with per-operation error details in JSON (action `"error"`) is preferred for partial failures. This preserves the richest possible contract for callers. Exit code 1 is reserved for fatal failures that prevent the command from producing useful output.
 
 ---
 
@@ -790,7 +783,161 @@ Future protocol versions:
 
 ---
 
-## 11. Implementation Architecture
+## 11. Manual QA Plan
+
+Manual QA is performed against the **distributed .NET tool package**, not by running the CLI from source. This validates the real installation path used by customers.
+
+### Package Under Test
+
+- Package ID: `Uno.DevServer`
+- Tool command: `uno-devserver`
+- Install shape: global .NET tool from a test feed or package source
+
+### Environment Preparation
+
+1. Prepare a feed containing the package version under test.
+2. Remove any previously installed global tool version:
+
+```powershell
+dotnet tool uninstall -g Uno.DevServer
+```
+
+3. Install the candidate package:
+
+```powershell
+dotnet tool install -g Uno.DevServer --add-source <feed> --version <version>
+```
+
+4. Create a disposable workspace:
+
+```powershell
+$qa = Join-Path $env:TEMP "uno-mcp-qa"
+Remove-Item $qa -Recurse -Force -ErrorAction SilentlyContinue
+New-Item -ItemType Directory -Path $qa | Out-Null
+Set-Location $qa
+```
+
+### Required Scenarios
+
+1. **Empty workspace status**
+   - Run:
+   ```powershell
+   uno-devserver mcp status --json
+   ```
+   - Verify:
+     - JSON payload is valid
+     - `servers[].ides[]` is exhaustive for all known profiles
+     - `detectedIdes` only lists profiles whose config paths or parent directories exist on disk
+
+2. **VS Code workspace install**
+   - Run:
+   ```powershell
+   New-Item -ItemType Directory -Path ".vscode" | Out-Null
+   uno-devserver mcp install vscode --workspace $qa --servers UnoApp --json
+   Get-Content .\.vscode\mcp.json
+   ```
+   - Verify:
+     - `.vscode\mcp.json` is created
+     - root key is `servers`
+     - `UnoApp` uses the expected stdio shape
+
+3. **Detection of IDE-persisted config**
+   - Manually create an official config file in one supported shape without using `uno-devserver`, for example:
+     - VS Code: `.vscode\mcp.json`
+     - Cursor: `.cursor\mcp.json`
+     - Claude Code: `.mcp.json`
+   - Run:
+   ```powershell
+   uno-devserver mcp status --json
+   ```
+   - Verify:
+     - the Uno server is detected
+     - the server appears in `locations`
+     - `transport` is correct
+   - This confirms the scanner recognizes registrations persisted by native IDE tooling or manual edits to the official file.
+
+4. **Windsurf HTTP format**
+   - Run:
+   ```powershell
+   uno-devserver mcp install windsurf --workspace $qa --servers UnoDocs --json
+   ```
+   - Verify:
+     - output file is `.windsurf\mcp.json`
+     - root key is `mcpServers`
+     - HTTP endpoint uses `serverUrl`
+     - no `url` key is written for the UnoDocs entry
+
+5. **Anti-Gravity HTTP format**
+   - Run:
+   ```powershell
+   uno-devserver mcp install antigravity --workspace $qa --servers UnoDocs --json
+   ```
+   - Verify:
+     - output file is `%USERPROFILE%\.gemini\antigravity\mcp_config.json`
+     - root key is `mcpServers`
+     - entry includes `type`
+     - HTTP endpoint uses `serverUrl`
+
+6. **OpenCode format**
+   - Run:
+   ```powershell
+   uno-devserver mcp install opencode --workspace $qa --servers UnoApp,UnoDocs --json
+   ```
+   - Verify:
+     - output file is `opencode.json`
+     - root key is `mcp`
+     - `UnoApp` uses `type: "local"` and a single `command` array
+     - `UnoDocs` uses `type: "remote"`
+
+7. **Duplicate detection / no-op install**
+   - Re-run an install for an already up-to-date entry:
+   ```powershell
+   uno-devserver mcp install vscode --workspace $qa --servers UnoApp --json
+   ```
+   - Verify:
+     - no duplicate entry is created
+     - operation is reported as `skipped`
+     - process exit code is `0`
+
+8. **Uninstall across scopes**
+   - Ensure the same server exists in both a workspace and a global config for one IDE, then run:
+   ```powershell
+   uno-devserver mcp uninstall vscode --workspace $qa --servers UnoApp --json
+   ```
+   - Verify:
+     - all matching persisted registrations are reported
+     - multiple `removed` operations may be emitted for the same server
+     - payload remains valid JSON
+
+9. **Partial failure with usable payload**
+   - Create a mixed scenario where one target file is writable and one is read-only, then run install or uninstall.
+   - Verify:
+     - at least one operation reports `action: "error"`
+     - the command still emits the full JSON payload
+     - the process exit code is `0` because the payload is still actionable
+
+10. **CLI help**
+    - Run:
+    ```powershell
+    uno-devserver --help
+    ```
+    - Verify:
+      - help text documents the `mcp` command group
+      - `trae` and `aider` are absent
+
+### Evidence To Capture
+
+For each scenario, capture:
+
+- exact command line
+- resulting exit code
+- affected config file path
+- relevant JSON excerpt from stdout or the written config file
+- any mismatch between expected and observed behavior
+
+---
+
+## 12. Implementation Architecture
 
 ### File Structure
 
@@ -798,8 +945,8 @@ All new code under `src/Uno.UI.DevServer.Cli/Mcp/Setup/`:
 
 | File | Responsibility |
 |------|----------------|
-| `IdeId.cs` | Enum of 13+ IDE identifiers |
-| `IdeProfile.cs` | Record: config paths (templates with `{workspace}`/`{home}`/`{appdata}` tokens), write target, JSON root key |
+| `IdeId.cs` | Enum of the supported IDE identifiers |
+| `IdeProfile.cs` | Record: config paths, write target, JSON root key, and per-IDE formatting controls (`includeType`, `urlKey`, `typeMap`, `mergeCommandArgs`) |
 | `DefinitionsLoader.cs` | Loads `ide-profiles.json` and `server-definitions.json` from embedded resources or external files (`--ide-definitions`, `--server-definitions`). See [Definitions Files](#12-definitions-files) |
 | `ServerDefinitionResolver.cs` | Builds concrete `JsonObject` definitions from a `ServerDefinition` template. Applies variant resolution (stable/prerelease/pinned) based on auto-detect + CLI overrides |
 | `DuplicateDetector.cs` | Pure static methods: `IsUnoAppEntry(keyName, jsonObj)`, `IsUnoDocsEntry(keyName, jsonObj)`, `IsUpToDate(existing, expected)` |
@@ -808,7 +955,7 @@ All new code under `src/Uno.UI.DevServer.Cli/Mcp/Setup/`:
 | `IFileSystem.cs` | I/O abstraction: `FileExists`, `DirectoryExists`, `ReadAllText`, `WriteAllText`, `CreateDirectory`, `IsReadOnly`, `GetUserHomePath`, `GetAppDataPath` |
 | `FileSystem.cs` | Production `IFileSystem` wrapping `System.IO` |
 | `McpSetupOrchestrator.cs` | `Status()`, `Install()`, `Uninstall()` — orchestrates scanner + writer via `IFileSystem` |
-| `McpSetupModels.cs` | Response DTOs: `StatusResponse`, `InstallResponse`, `UninstallResponse` and their child records |
+| `McpSetupModels.cs` | Response DTOs: `StatusResponse`, `OperationResponse`, and their child records (`ServerIdeStatus`, `LocationEntry`, `OperationEntry`) |
 
 ### Modified Files
 
@@ -839,7 +986,7 @@ Single I/O seam via `IFileSystem`. All business logic is fully testable with an 
 
 ---
 
-## 12. Definitions Files
+## 13. Definitions Files
 
 IDE profiles and server definitions are stored in two separate embedded JSON files rather than in static C# registries. This makes it possible to add or modify IDE support and server definitions without recompiling the tool.
 
@@ -893,7 +1040,11 @@ The root is a JSON object keyed by IDE identifier (matching the `--ide` paramete
   "<ide-id>": {
     "configPaths": ["<path-template>", ...],
     "writeTarget": "<path-template>",
-    "jsonRootKey": "<root-key>"
+    "jsonRootKey": "<root-key>",
+    "includeType": false,
+    "urlKey": null,
+    "typeMap": null,
+    "mergeCommandArgs": false
   }
 }
 ```
@@ -904,7 +1055,18 @@ The root is a JSON object keyed by IDE identifier (matching the `--ide` paramete
 |-------|------|-------------|
 | `configPaths` | string[] | Ordered list of config file path templates to scan (all are checked). Order indicates priority — first entry is the most local/specific scope. |
 | `writeTarget` | string | Path template where `install` writes new entries. Must be one of the `configPaths`. |
-| `jsonRootKey` | string | JSON root key used by this IDE: `"servers"`, `"mcpServers"`, or `"context_servers"` |
+| `jsonRootKey` | string | JSON root key used by this IDE: `"servers"`, `"mcpServers"`, or `"mcp"` |
+| `includeType` | boolean | Whether install writes a `type` field alongside the server definition. Used by VS Code, Anti-Gravity, and OpenCode. |
+| `urlKey` | string? | Alternate key for HTTP endpoints. When set to `"serverUrl"`, install writes `serverUrl` instead of `url`. |
+| `typeMap` | object? | Optional transport remapping for `type`. Used by OpenCode to map `stdio -> local` and `http -> remote`. |
+| `mergeCommandArgs` | boolean | When true, `command` and `args` are merged into a single command array. Used by OpenCode. |
+
+#### IDE-specific format notes
+
+- **VS Code** writes under `servers` and includes `type` for both stdio and HTTP registrations.
+- **Anti-Gravity** writes under `mcpServers`, includes `type`, and stores HTTP endpoints under `serverUrl`.
+- **Windsurf** writes under `mcpServers` and stores HTTP endpoints under `serverUrl` without a `type` field.
+- **OpenCode** writes under `mcp`, includes `type`, stores HTTP endpoints under `url`, and rewrites stdio definitions from `command + args` into a single command array.
 
 #### Path Template Tokens
 
@@ -927,14 +1089,22 @@ The root is a JSON object keyed by IDE identifier (matching the `--ide` paramete
 
 ```json
 {
-  "vscode": {
+  "antigravity": {
     "configPaths": [
-      "{workspace}/.vscode/mcp.json",
-      "{home}/.vscode/mcp.json",
-      "{appdata}/Code/User/mcp.json"
+      "{home}/.gemini/antigravity/mcp_config.json"
     ],
-    "writeTarget": "{workspace}/.vscode/mcp.json",
-    "jsonRootKey": "servers"
+    "writeTarget": "{home}/.gemini/antigravity/mcp_config.json",
+    "jsonRootKey": "mcpServers",
+    "includeType": true,
+    "urlKey": "serverUrl"
+  },
+  "claude-code": {
+    "configPaths": [
+      "{workspace}/.mcp.json",
+      "{home}/.claude/mcp.json"
+    ],
+    "writeTarget": "{workspace}/.mcp.json",
+    "jsonRootKey": "mcpServers"
   },
   "cursor": {
     "configPaths": [
@@ -942,14 +1112,6 @@ The root is a JSON object keyed by IDE identifier (matching the `--ide` paramete
       "{home}/.cursor/mcp.json"
     ],
     "writeTarget": "{workspace}/.cursor/mcp.json",
-    "jsonRootKey": "mcpServers"
-  },
-  "windsurf": {
-    "configPaths": [
-      "{workspace}/.windsurf/mcp.json",
-      "{home}/.codeium/windsurf/mcp_config.json"
-    ],
-    "writeTarget": "{workspace}/.windsurf/mcp.json",
     "jsonRootKey": "mcpServers"
   },
   "kiro": {
@@ -960,20 +1122,6 @@ The root is a JSON object keyed by IDE identifier (matching the `--ide` paramete
     "writeTarget": "{workspace}/.kiro/settings/mcp.json",
     "jsonRootKey": "mcpServers"
   },
-  "trae": {
-    "configPaths": [
-      "{workspace}/.trae/mcp.json"
-    ],
-    "writeTarget": "{workspace}/.trae/mcp.json",
-    "jsonRootKey": "mcpServers"
-  },
-  "antigravity": {
-    "configPaths": [
-      "{home}/.gemini/antigravity/mcp_config.json"
-    ],
-    "writeTarget": "{home}/.gemini/antigravity/mcp_config.json",
-    "jsonRootKey": "mcpServers"
-  },
   "rider": {
     "configPaths": [
       "{workspace}/.idea/mcpServers.json"
@@ -981,27 +1129,35 @@ The root is a JSON object keyed by IDE identifier (matching the `--ide` paramete
     "writeTarget": "{workspace}/.idea/mcpServers.json",
     "jsonRootKey": "mcpServers"
   },
-  "claude-code": {
+  "vscode": {
     "configPaths": [
-      "{workspace}/.mcp.json",
-      "{home}/.claude/mcp.json"
+      "{workspace}/.vscode/mcp.json",
+      "{home}/.vscode/mcp.json",
+      "{appdata}/Code/User/settings.json"
     ],
-    "writeTarget": "{workspace}/.mcp.json",
-    "jsonRootKey": "mcpServers"
+    "writeTarget": "{workspace}/.vscode/mcp.json",
+    "jsonRootKey": "servers",
+    "includeType": true
+  },
+  "windsurf": {
+    "configPaths": [
+      "{workspace}/.windsurf/mcp.json",
+      "{home}/.codeium/windsurf/mcp_config.json"
+    ],
+    "writeTarget": "{workspace}/.windsurf/mcp.json",
+    "jsonRootKey": "mcpServers",
+    "urlKey": "serverUrl"
   },
   "opencode": {
     "configPaths": [
-      "{workspace}/.opencode/mcp.json"
+      "{workspace}/opencode.json",
+      "{workspace}/opencode.jsonc"
     ],
-    "writeTarget": "{workspace}/.opencode/mcp.json",
-    "jsonRootKey": "mcpServers"
-  },
-  "aider": {
-    "configPaths": [
-      "{workspace}/.aider/mcp.json"
-    ],
-    "writeTarget": "{workspace}/.aider/mcp.json",
-    "jsonRootKey": "mcpServers"
+    "writeTarget": "{workspace}/opencode.json",
+    "jsonRootKey": "mcp",
+    "includeType": true,
+    "typeMap": {"stdio": "local", "http": "remote"},
+    "mergeCommandArgs": true
   },
   "unknown": {
     "configPaths": [
@@ -1140,7 +1296,11 @@ public record Definitions(
 public record IdeProfile(
     string[] ConfigPaths,
     string WriteTarget,
-    string JsonRootKey);
+    string JsonRootKey,
+    bool IncludeType = false,
+    string? UrlKey = null,
+    IReadOnlyDictionary<string, string>? TypeMap = null,
+    bool MergeCommandArgs = false);
 
 public record ServerDefinition(
     string Transport,

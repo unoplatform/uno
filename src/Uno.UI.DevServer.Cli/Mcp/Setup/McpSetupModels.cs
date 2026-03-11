@@ -11,7 +11,11 @@ namespace Uno.UI.DevServer.Cli.Mcp.Setup;
 internal sealed record IdeProfile(
 	string[] ConfigPaths,
 	string WriteTarget,
-	string JsonRootKey);
+	string JsonRootKey,
+	bool IncludeType = false,
+	string? UrlKey = null,
+	IReadOnlyDictionary<string, string>? TypeMap = null,
+	bool MergeCommandArgs = false);
 
 internal sealed record ServerDefinition(
 	string Transport,

@@ -15,12 +15,10 @@ public class Given_DefinitionsLoader
 		defs.Ides.Should().ContainKey("cursor");
 		defs.Ides.Should().ContainKey("windsurf");
 		defs.Ides.Should().ContainKey("kiro");
-		defs.Ides.Should().ContainKey("trae");
 		defs.Ides.Should().ContainKey("antigravity");
 		defs.Ides.Should().ContainKey("rider");
 		defs.Ides.Should().ContainKey("claude-code");
 		defs.Ides.Should().ContainKey("opencode");
-		defs.Ides.Should().ContainKey("aider");
 	}
 
 	[TestMethod]

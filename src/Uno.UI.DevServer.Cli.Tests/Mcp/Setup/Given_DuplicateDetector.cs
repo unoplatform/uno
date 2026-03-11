@@ -106,6 +106,22 @@ public class Given_DuplicateDetector
 		result.Should().Be("UnoDocs");
 	}
 
+	[TestMethod]
+	public void FindMatchingServer_AntigravityServerUrl_MatchesUnoDocs()
+	{
+		var entry = JsonNode.Parse("""{"serverUrl":"https://mcp.platform.uno/v1"}""")!.AsObject();
+		var result = DuplicateDetector.FindMatchingServer("docs", entry, TestServers);
+		result.Should().Be("UnoDocs");
+	}
+
+	[TestMethod]
+	public void FindMatchingServer_OpenCodeCommandArray_MatchesUnoApp()
+	{
+		var entry = JsonNode.Parse("""{"command":["dnx","-y","uno.devserver","--mcp-app"]}""")!.AsObject();
+		var result = DuplicateDetector.FindMatchingServer("my-uno", entry, TestServers);
+		result.Should().Be("UnoApp");
+	}
+
 	// ── DetectVariant ──
 
 	[TestMethod]
@@ -185,5 +201,23 @@ public class Given_DuplicateDetector
 		var expected = JsonNode.Parse("""{"url":"https://mcp.platform.uno/v1"}""")!.AsObject();
 		var result = DuplicateDetector.IsUpToDate(existing, expected, TestServers["UnoDocs"]);
 		result.Should().BeFalse();
+	}
+
+	[TestMethod]
+	public void IsUpToDate_HttpTransport_ServerUrlAlias_ReturnsTrue()
+	{
+		var existing = JsonNode.Parse("""{"serverUrl":"https://mcp.platform.uno/v1"}""")!.AsObject();
+		var expected = JsonNode.Parse("""{"url":"https://mcp.platform.uno/v1"}""")!.AsObject();
+		var result = DuplicateDetector.IsUpToDate(existing, expected, TestServers["UnoDocs"]);
+		result.Should().BeTrue();
+	}
+
+	[TestMethod]
+	public void IsUpToDate_OpenCodeCommandArray_ReturnsTrue()
+	{
+		var existing = JsonNode.Parse("""{"command":["dnx","-y","uno.devserver","--mcp-app"],"type":"local"}""")!.AsObject();
+		var expected = JsonNode.Parse("""{"command":"dnx","args":["-y","uno.devserver","--mcp-app"]}""")!.AsObject();
+		var result = DuplicateDetector.IsUpToDate(existing, expected, TestServers["UnoApp"]);
+		result.Should().BeTrue();
 	}
 }
