@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Microsoft.UI.Xaml;
 
@@ -45,7 +46,12 @@ public static class ComboBox
 	/// This is only the preferred placement, the combo will still ensure to keep its drop down in the visual bounds of the window
 	/// (When content cannot be rendered out of the current window ...)
 	/// </remarks>
-	public static DependencyProperty DropDownPreferredPlacementProperty { get; } = DependencyProperty.RegisterAttached(
+	public static DependencyProperty DropDownPreferredPlacementProperty
+	{
+		[DynamicDependency(nameof(GetDropDownPreferredPlacement))]
+		[DynamicDependency(nameof(SetDropDownPreferredPlacement))]
+		get;
+	} = DependencyProperty.RegisterAttached(
 		"DropDownPreferredPlacement",
 		typeof(DropDownPlacement),
 		typeof(Microsoft.UI.Xaml.Controls.ComboBox),

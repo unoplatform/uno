@@ -7,7 +7,7 @@ jobs:
 - job: Skia_Android_NativeAOT_Tests_Build
   displayName: 'Build Skia Android+NativeAOT Samples App'
   timeoutInMinutes: 60
-  cancelTimeoutInMinutes: 1
+  cancelTimeoutInMinutes: 0
 
   pool: ${{ parameters.vmLinuxPool }}
 

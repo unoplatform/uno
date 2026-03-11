@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Uno.Foundation.Logging;
@@ -37,6 +38,13 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 		{
 			case AssemblyDeltaReload.Name:
 				ProcessAssemblyReload(frame.GetContent<AssemblyDeltaReload>());
+				break;
+
+			case UpdateSingleFileResponse.Name:
+				// Dev server is not in sync with the application ... this should not happen, but we can safely handle that
+				var single = frame.GetContent<UpdateSingleFileResponse>();
+				var multi = new UpdateFileResponse(single.RequestId, null, [new FileEditResult(single.FilePath, single.Result, single.Error)], single.HotReloadCorrelationId);
+				ProcessUpdateFileResponse(multi);
 				break;
 
 			case UpdateFileResponse.Name:
@@ -86,7 +94,7 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 					_status.ReportInvalidRuntime();
 				}
 
-				var hrDebug = Environment.GetEnvironmentVariable("__UNO_SUPPORT_DEBUG_HOT_RELOAD__") == "true";
+				var hrDebug = Debugger.IsAttached && Environment.GetEnvironmentVariable("__UNO_SUPPORT_DEBUG_HOT_RELOAD__") == "true";
 				var message = new ConfigureServer(
 					_projectPath,
 					GetMetadataUpdateCapabilities(),

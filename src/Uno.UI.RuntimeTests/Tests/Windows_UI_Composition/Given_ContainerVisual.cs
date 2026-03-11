@@ -1,4 +1,4 @@
-﻿#if __SKIA__
+#if __SKIA__
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -39,19 +39,19 @@ public class Given_ContainerVisual
 		Assert.IsTrue(containerVisual.IsChildrenRenderOrderDirty);
 		var children = containerVisual.GetChildrenInRenderOrderTestingOnly();
 		Assert.IsFalse(containerVisual.IsChildrenRenderOrderDirty);
-		Assert.AreEqual(1, children.Count());
+		Assert.HasCount(1, children);
 
 		containerVisual.Children.InsertAtTop(compositor.CreateShapeVisual());
 		Assert.IsTrue(containerVisual.IsChildrenRenderOrderDirty);
 		children = containerVisual.GetChildrenInRenderOrderTestingOnly();
 		Assert.IsFalse(containerVisual.IsChildrenRenderOrderDirty);
-		Assert.AreEqual(2, children.Count());
+		Assert.HasCount(2, children);
 
 		containerVisual.Children.Remove(shape);
 		Assert.IsTrue(containerVisual.IsChildrenRenderOrderDirty);
 		children = containerVisual.GetChildrenInRenderOrderTestingOnly();
 		Assert.IsFalse(containerVisual.IsChildrenRenderOrderDirty);
-		Assert.AreEqual(1, children.Count());
+		Assert.HasCount(1, children);
 	}
 
 	[TestMethod]

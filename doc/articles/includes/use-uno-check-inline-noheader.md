@@ -11,5 +11,3 @@
 [!include[use-uno-check](use-uno-check-inline-linux-noheader.md)]
 
 ---
-
-You can find additional information about [**uno-check here**](xref:UnoCheck.UsingUnoCheck).

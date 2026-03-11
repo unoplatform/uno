@@ -6,14 +6,8 @@ using Uno;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Media;
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
-#else
-using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
-using Windows.Devices.Input;
-using Windows.UI.Input;
-#endif
 
 namespace Microsoft.UI.Xaml.Input
 {

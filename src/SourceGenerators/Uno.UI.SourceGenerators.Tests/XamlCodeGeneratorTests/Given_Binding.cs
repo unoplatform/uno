@@ -772,4 +772,109 @@ public class Given_Binding
 
 		await test.RunAsync();
 	}
+
+	[TestMethod]
+	public async Task When_Static_XBind_Property_In_DataTemplate_Without_DataType()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml", """
+<Page x:Class="TestRepro.MainPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:TestRepro">
+    <ContentControl x:Name="root">
+        <ContentControl.ContentTemplate>
+            <DataTemplate>
+                <TextBlock Text="{x:Bind local:StaticData.StaticProperty}" />
+            </DataTemplate>
+        </ContentControl.ContentTemplate>
+    </ContentControl>
+</Page>
+"""),
+		};
+		var test = new Verify.Test(xamlFiles)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+                    using Microsoft.UI.Xaml.Controls;
+
+                    namespace TestRepro
+                    {
+                        public static class StaticData
+                        {
+                            public static string StaticProperty => "Static Value";
+                        }
+
+                        public sealed partial class MainPage : Page
+                        {
+                            public MainPage()
+                            {
+                                this.InitializeComponent();
+                            }
+                        }
+                    }
+                    """
+				}
+			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_Static_XBind_Event_In_DataTemplate_Without_DataType()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml", """
+<Page x:Class="TestRepro.MainPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:TestRepro">
+    <ContentControl x:Name="root">
+        <ContentControl.ContentTemplate>
+            <DataTemplate>
+                <Button Click="{x:Bind local:StaticHandler.OnClick}" />
+            </DataTemplate>
+        </ContentControl.ContentTemplate>
+    </ContentControl>
+</Page>
+"""),
+		};
+		var test = new Verify.Test(xamlFiles)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+                    using Microsoft.UI.Xaml;
+                    using Microsoft.UI.Xaml.Controls;
+
+                    namespace TestRepro
+                    {
+                        public static class StaticHandler
+                        {
+                            public static void OnClick(object sender, RoutedEventArgs e) { }
+                        }
+
+                        public sealed partial class MainPage : Page
+                        {
+                            public MainPage()
+                            {
+                                this.InitializeComponent();
+                            }
+                        }
+                    }
+                    """
+				}
+			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
 }

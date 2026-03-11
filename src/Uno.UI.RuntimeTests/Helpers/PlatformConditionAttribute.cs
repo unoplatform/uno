@@ -18,7 +18,7 @@ public sealed class PlatformConditionAttribute : ConditionBaseAttribute
 
 	public RuntimeTestPlatforms Platforms { get; set; }
 
-	public override bool ShouldRun => Platforms.HasFlag(RuntimeTestsPlatformHelper.CurrentPlatform);
+	public override bool IsConditionMet => Platforms.HasFlag(RuntimeTestsPlatformHelper.CurrentPlatform);
 
 	/// <summary>
 	/// Gets the group name for this attribute.

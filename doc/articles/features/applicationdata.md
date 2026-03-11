@@ -23,6 +23,9 @@ Legend
 
 Please note that `RoamingFolder` and `RoamingSettings` are not roamed automatically across devices, they only provide a logical separation between data that you intend to roam and that you intend to keep local.
 
+> [!IMPORTANT]
+> **Windows Packaging Requirement**: On Windows, `ApplicationData` functionality requires your app to be configured as a **Packaged** app. The default project configuration uses **Unpackaged** mode to enable better [Hot Reload](xref:Uno.Features.HotReload) support (both C# and XAML), but this will prevent `ApplicationData` from working. If you need `ApplicationData` functionality on Windows, you'll need to switch your project to Packaged mode. See the [Windows publishing documentation](xref:uno.publishing.windows.sideload.packaged.unsigned) for more details on packaging configuration.
+
 ## Storing application data
 
 There are several folders where persistent application data can be stored:

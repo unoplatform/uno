@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -551,6 +552,15 @@ namespace Uno.UI
 			/// This option must be set on application startup before the cache is initialized.
 			/// </summary>
 			public static int JavaStringCachedCapacity { get; set; } = 1000;
+
+			/// <summary>
+			/// On Skia targets, determines if the TextBlock should render whitespace characters.
+			/// There's usually no effect between toggling this flag on and off, but it can have
+			/// an effect when the font used to draw the TextBlock doesn't have a glyph for the
+			/// whitespace characters, in which case disabling this flag will prevent the TextBlock
+			/// from rendering the font's "replacement character" symbol (e.g. �) instead of just a white space.
+			/// </summary>
+			public static bool RenderWhiteSpace { get; set; } = true;
 		}
 
 		public static class TextBox
@@ -567,6 +577,13 @@ namespace Uno.UI
 			/// Uno skia-based TextBox implementation.
 			/// </summary>
 			public static bool UseOverlayOnSkia { get; set; }
+
+			/// <summary>
+			/// Hunspell dictionaries to be used for spell checking in TextBox and RichEditBox controls.
+			/// By default, an english dictionary is provided.
+			/// This is currently a skia-only feature.
+			/// </summary>
+			public static List<(Stream dictionary, Stream affixes)> CustomSpellCheckDictionaries { get; set; }
 
 #if __ANDROID__
 			/// <summary>

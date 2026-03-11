@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Uno.UI.RuntimeTests.Helpers;
@@ -26,6 +26,7 @@ public class Given_Hyperlink
 	[DataRow(false, false, "#FF0078D7")]
 	[DataRow(true, true, "#FFA6D8FF")]
 	[DataRow(false, true, "#FF004275")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task TestSimpleHyperlink(bool useDark, bool useFluent, string expectedColorCode)
 	{
 		var expectedColor = (Color)XamlBindingHelper.ConvertValue(typeof(Color), expectedColorCode);
@@ -165,6 +166,7 @@ public class Given_Hyperlink
 	[DataRow(false, false, "#FF0078D7")]
 	[DataRow(true, true, "#FFA6D8FF")]
 	[DataRow(false, true, "#FF004275")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task TestNotInheritedFromTextBlock(bool useDark, bool useFluent, string expectedColorCode)
 	{
 		var expectedColor = (Color)XamlBindingHelper.ConvertValue(typeof(Color), expectedColorCode);
@@ -180,7 +182,7 @@ public class Given_Hyperlink
 				WindowHelper.WindowContent = tb;
 				await WindowHelper.WaitForLoaded(tb);
 
-				Assert.AreEqual(2, tb.Inlines.Count);
+				Assert.HasCount(2, tb.Inlines);
 				var hyperlink = (Hyperlink)tb.Inlines[0];
 				var hyperlinkRun = (Run)hyperlink.Inlines.Single();
 				var redRun = (Run)tb.Inlines[1];
@@ -212,7 +214,7 @@ public class Given_Hyperlink
 			WindowHelper.WindowContent = tb;
 			await WindowHelper.WaitForLoaded(tb);
 
-			Assert.AreEqual(2, tb.Inlines.Count);
+			Assert.HasCount(2, tb.Inlines);
 			var hyperlink = (Hyperlink)tb.Inlines[0];
 			var hyperlinkRun = (Run)hyperlink.Inlines.Single();
 			var redRun = (Run)tb.Inlines[1];

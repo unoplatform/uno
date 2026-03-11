@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -53,7 +53,7 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 				Content.UpdateLayout();
 				var inputTextBox = TestUtilities.FindDescendents<TextBox>(numberBox).Where(e => e.Name == "InputBox").Single();
 
-				Assert.AreEqual(1, inputTextBox.InputScope.Names.Count);
+				Assert.HasCount(1, inputTextBox.InputScope.Names);
 				Assert.AreEqual(InputScopeNameValue.Number, inputTextBox.InputScope.Names[0].NameValue, "The default InputScope should be 'Number'.");
 
 				var scopeName = new InputScopeName();
@@ -64,7 +64,7 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 				numberBox.InputScope = scope;
 				Content.UpdateLayout();
 
-				Assert.AreEqual(1, inputTextBox.InputScope.Names.Count);
+				Assert.HasCount(1, inputTextBox.InputScope.Names);
 				Assert.AreEqual(InputScopeNameValue.CurrencyAmountAndSymbol, inputTextBox.InputScope.Names[0].NameValue, "The InputScope should be 'CurrencyAmountAndSymbol'.");
 			});
 

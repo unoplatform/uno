@@ -1,9 +1,9 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.ToolTip;
 
-[SampleControlInfo(nameof(ToolTip), nameof(ToolTip_Nested), description: SampleDescription, isManualTest: true)]
+[Sample(nameof(ToolTip), nameof(ToolTip_Nested), Description = SampleDescription, IsManualTest = true)]
 public sealed partial class ToolTip_Nested : UserControl
 {
 	private const string SampleDescription =

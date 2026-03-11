@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System.Runtime.InteropServices.JavaScript;
+using System.Threading.Tasks;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -9,7 +10,7 @@ internal partial class WebAssemblyWindowWrapper
 	private static partial class NativeMethods
 	{
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.initialize")]
-		public static partial void Initialize([JSMarshalAs<JSType.Any>] object owner);
+		public static partial Task Initialize([JSMarshalAs<JSType.Any>] object owner);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.getContainerId")]
 		public static partial string GetContainerId([JSMarshalAs<JSType.Any>] object owner);

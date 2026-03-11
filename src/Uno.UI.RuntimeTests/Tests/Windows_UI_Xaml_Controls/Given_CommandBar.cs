@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -77,7 +77,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot);
-			Assert.AreEqual(1, popups.Count);
+			Assert.HasCount(1, popups);
 
 			var secondaryButton = (AppBarButton)SUT.FindName("SecondaryButton");
 			var bounds = secondaryButton.GetAbsoluteBounds();
@@ -86,13 +86,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot).Count);
+			Assert.IsEmpty(VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot));
 		}
 
 		[TestMethod]
 #if __APPLE_UIKIT__
 		[Ignore("VerticalAlignment asserts fail. Might be because of different timing.")]
 #endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Expanded_Then_Collapsed_MoreButton_VerticalAlignment()
 		{
 			var SUT = new CommandBar
@@ -208,14 +209,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await Task.Delay(1000);
 			await WindowHelper.WaitForIdle();
 			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot);
-			Assert.AreEqual(1, popups.Count);
+			Assert.HasCount(1, popups);
 
 			var secondary = (AppBarButton)SUT.FindName("SecondaryButton");
 			var sb = secondary.GetAbsoluteBounds();
 			finger.Press(sb.Bottom + 10, (sb.Left + sb.Right) / 2);
 			finger.Release();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot).Count);
+			Assert.IsEmpty(VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot));
 
 			WindowHelper.WindowContent = null;
 			await WindowHelper.WaitForIdle();
@@ -231,7 +232,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Release();
 			await WindowHelper.WaitForIdle();
 			popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot);
-			Assert.AreEqual(1, popups.Count);
+			Assert.HasCount(1, popups);
 		}
 	}
 

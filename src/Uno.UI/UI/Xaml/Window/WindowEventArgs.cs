@@ -3,12 +3,7 @@
 /// <summary>
 /// Contains the window's state information returned by the Window.Closed event.
 /// </summary>
-#if HAS_UNO_WINUI
-public
-#else
-internal
-#endif
-sealed partial class WindowEventArgs
+public sealed partial class WindowEventArgs
 {
 	internal WindowEventArgs()
 	{

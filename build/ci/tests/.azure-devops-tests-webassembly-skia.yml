@@ -10,6 +10,7 @@ jobs:
 - job: Skia_Browser_Runtime_Tests_Build
   displayName: 'Run' ## Name is concatenated with the matrix group name
   timeoutInMinutes: 60
+  cancelTimeoutInMinutes: 0
 
   pool:
     vmImage: ${{ parameters.vmLinuxImage }}

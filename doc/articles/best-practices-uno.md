@@ -50,4 +50,4 @@ Sometimes so much freedom can be paralyzing. To help you get started, we've crea
 
 ## Performance
 
-See a checklist of performance-related best practices [here](Uno-UI-Performance.md).
+See a checklist of performance-related best practices in [Uno Platform Performance](Uno-UI-Performance.md).

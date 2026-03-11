@@ -18,7 +18,6 @@ using Uno.WinUI.Runtime.Skia.X11.DBus;
 namespace Uno.WinUI.Runtime.Skia.X11;
 
 // https://flatpak.github.io/xdg-desktop-portal/docs/doc-org.freedesktop.portal.FileChooser.html
-// https://github.com/tmds/Tmds.DBus/blob/main/docs/modelling.md#argument-types
 
 /// <summary>
 /// This class implements v4 of the org.freedesktop.portal.FileChooser portal for files as defined by freedesktop.org
@@ -32,7 +31,7 @@ internal class LinuxFileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 
 	public async Task<StorageFile?> PickSaveFileAsync(CancellationToken token)
 	{
-		var sessionsAddressBus = Address.Session;
+		var sessionsAddressBus = DBusAddress.Session;
 		if (sessionsAddressBus is null)
 		{
 			if (this.Log().IsEnabled(LogLevel.Error))
@@ -47,7 +46,7 @@ internal class LinuxFileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 			return null;
 		}
 
-		using var connection = new Connection(sessionsAddressBus);
+		using var connection = new DBusConnection(sessionsAddressBus);
 		var connectionTcs = new TaskCompletionSource();
 		// ConnectAsync calls ConfigureAwait(false), so we need this TCS dance to make the continuation continue on the UI thread
 		_ = connection.ConnectAsync().AsTask().ContinueWith(_ => connectionTcs.TrySetResult(), token);
@@ -64,7 +63,7 @@ internal class LinuxFileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 
 		try
 		{
-			var desktopService = new DesktopService(connection, Service);
+			var desktopService = new DBusService(connection, Service);
 			var chooser = desktopService.CreateFileChooser(ObjectPath);
 
 			if (token.IsCancellationRequested)

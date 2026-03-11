@@ -290,6 +290,10 @@ namespace Windows.System
 					return VirtualKey.Shift; // NOT LeftShift
 				case "ShiftLeft":
 					return VirtualKey.Shift;
+				case "ControlLeft":
+					return VirtualKey.Control;
+				case "ControlRight":
+					return VirtualKey.Control;
 				case "MetaRight":
 					return VirtualKey.LeftWindows;
 				case "MetaLeft":

@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -202,7 +202,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 				var replaced = await rootFolder.CreateFolderAsync(folderName, CreationCollisionOption.ReplaceExisting);
 				Assert.AreEqual(folderName, replaced.Name);
 				var files = await replaced.GetFilesAsync();
-				Assert.AreEqual(0, files.Count);
+				Assert.IsEmpty(files);
 			}
 			finally
 			{
@@ -444,6 +444,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_GetFile_File_Does_Not_Exist()
 		{
 			var rootFolder = await GetRootFolderAsync();
@@ -719,7 +720,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			{
 				createdFolder = await rootFolder.CreateFolderAsync(folderName);
 				var files = await createdFolder.GetFilesAsync();
-				Assert.AreEqual(0, files.Count);
+				Assert.IsEmpty(files);
 			}
 			finally
 			{
@@ -742,7 +743,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 					await createdFolder.CreateFolderAsync(GetRandomFolderName());
 				}
 				var files = await createdFolder.GetFilesAsync();
-				Assert.AreEqual(0, files.Count);
+				Assert.IsEmpty(files);
 			}
 			finally
 			{
@@ -765,7 +766,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 					await createdFolder.CreateFileAsync(GetRandomTextFileName());
 				}
 				var files = await createdFolder.GetFilesAsync();
-				Assert.AreEqual(5, files.Count);
+				Assert.HasCount(5, files);
 			}
 			finally
 			{
@@ -792,7 +793,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 					await createdFolder.CreateFileAsync(GetRandomTextFileName());
 				}
 				var files = await createdFolder.GetFilesAsync();
-				Assert.AreEqual(5, files.Count);
+				Assert.HasCount(5, files);
 			}
 			finally
 			{
@@ -811,7 +812,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			{
 				createdFolder = await rootFolder.CreateFolderAsync(folderName);
 				var folders = await createdFolder.GetFoldersAsync();
-				Assert.AreEqual(0, folders.Count);
+				Assert.IsEmpty(folders);
 			}
 			finally
 			{
@@ -834,7 +835,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 					await createdFolder.CreateFileAsync(GetRandomTextFileName());
 				}
 				var folders = await createdFolder.GetFoldersAsync();
-				Assert.AreEqual(0, folders.Count);
+				Assert.IsEmpty(folders);
 			}
 			finally
 			{
@@ -857,7 +858,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 					await createdFolder.CreateFolderAsync(GetRandomTextFileName());
 				}
 				var folders = await createdFolder.GetFoldersAsync();
-				Assert.AreEqual(5, folders.Count);
+				Assert.HasCount(5, folders);
 			}
 			finally
 			{
@@ -884,7 +885,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 					await createdFolder.CreateFileAsync(GetRandomTextFileName());
 				}
 				var folders = await createdFolder.GetFoldersAsync();
-				Assert.AreEqual(5, folders.Count);
+				Assert.HasCount(5, folders);
 			}
 			finally
 			{
@@ -903,7 +904,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			{
 				createdFolder = await rootFolder.CreateFolderAsync(folderName);
 				var folders = await createdFolder.GetItemsAsync();
-				Assert.AreEqual(0, folders.Count);
+				Assert.IsEmpty(folders);
 			}
 			finally
 			{
@@ -926,7 +927,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 					await createdFolder.CreateFileAsync(GetRandomTextFileName());
 				}
 				var items = await createdFolder.GetItemsAsync();
-				Assert.AreEqual(5, items.Count);
+				Assert.HasCount(5, items);
 			}
 			finally
 			{
@@ -949,7 +950,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 					await createdFolder.CreateFolderAsync(GetRandomTextFileName());
 				}
 				var items = await createdFolder.GetItemsAsync();
-				Assert.AreEqual(5, items.Count);
+				Assert.HasCount(5, items);
 			}
 			finally
 			{
@@ -976,7 +977,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 					await createdFolder.CreateFileAsync(GetRandomTextFileName());
 				}
 				var items = await createdFolder.GetItemsAsync();
-				Assert.AreEqual(9, items.Count);
+				Assert.HasCount(9, items);
 			}
 			finally
 			{

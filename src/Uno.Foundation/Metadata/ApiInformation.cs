@@ -170,8 +170,16 @@ public partial class ApiInformation
 	{
 		lock (_assemblies)
 		{
-			if (_typeCache.TryGetValue(typeName, out var type))
+			var type = CacheGetType(typeName);
+			if (type != null)
 			{
+				return type;
+			}
+
+			type = TypeGetType(typeName);
+			if (type != null)
+			{
+				_typeCache[typeName] = type;
 				return type;
 			}
 
@@ -206,14 +214,35 @@ public partial class ApiInformation
 				}
 			}
 
-			[UnconditionalSuppressMessage("Trimming", "IL2073", Justification = "Assume that if Assembly.GetType() returns an assembly, it is un-trimmed, and thus has everything.")]
+			return null;
+
+			[UnconditionalSuppressMessage("Trimming", "IL2068", Justification = "`Uno.UI.SourceGenerators/BindableTypeProviders` et al should ensure required members are preserved.")]
 			[return: DynamicallyAccessedMembers(PublicMembers)]
-			Type? AssemblyGetType(Assembly? assembly, string type)
+			static Type? CacheGetType(
+				[DynamicallyAccessedMembers(PublicMembers)]
+				string typeName)
+			{
+				if (_typeCache.TryGetValue(typeName, out var type))
+				{
+					return type;
+				}
+				return null;
+			}
+
+			[return: DynamicallyAccessedMembers(PublicMembers)]
+			static Type? TypeGetType(
+				[DynamicallyAccessedMembers(PublicMembers)]
+				string typeName)
+			{
+				return Type.GetType(typeName, throwOnError: false);
+			}
+
+			[UnconditionalSuppressMessage("Trimming", "IL2073", Justification = "`Uno.UI.SourceGenerators/BindableTypeProviders` et al should ensure required members are preserved.")]
+			[return: DynamicallyAccessedMembers(PublicMembers)]
+			static Type? AssemblyGetType(Assembly? assembly, string type)
 			{
 				return assembly?.GetType(type);
 			}
-
-			return null;
 		}
 	}
 

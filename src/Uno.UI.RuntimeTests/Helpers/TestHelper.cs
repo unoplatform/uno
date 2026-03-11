@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Uno.UI.RuntimeTests.Helpers
@@ -49,6 +50,25 @@ namespace Uno.UI.RuntimeTests.Helpers
 					await Task.Delay(10);
 				}
 			}
+		}
+
+		public static async Task<bool> TryWaitUntilCollected(WeakReference reference)
+		{
+			var sw = Stopwatch.StartNew();
+			while (sw.Elapsed < TimeSpan.FromSeconds(3))
+			{
+				GC.Collect(2);
+				GC.WaitForPendingFinalizers();
+
+				if (!reference.IsAlive)
+				{
+					return true;
+				}
+
+				await Task.Delay(100);
+			}
+
+			return false;
 		}
 	}
 }

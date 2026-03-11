@@ -1,4 +1,4 @@
-﻿using Uno.Extensions;
+using Uno.Extensions;
 using Uno.UI.Samples.Controls;
 using SamplesApp.Windows_UI_Xaml_Controls.Models;
 using Microsoft.UI.Xaml.Controls;
@@ -12,7 +12,7 @@ using Uno.Logging;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListView_ItemClick", typeof(ListViewViewModel))]
+	[Sample("ListView", Name = "ListView_ItemClick", ViewModelType = typeof(ListViewViewModel))]
 	public sealed partial class ListView_ItemClick : UserControl
 	{
 #pragma warning disable CS0109

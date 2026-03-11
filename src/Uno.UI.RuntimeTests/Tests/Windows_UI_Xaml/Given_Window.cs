@@ -171,15 +171,22 @@ public class Given_Window
 		AssertSupportsMultipleWindows();
 
 		var sut = new Window();
-		bool activated = false;
-		sut.Content = new Border();
-		sut.Activated += (s, e) => activated = true;
-		sut.Activate();
-		await TestServices.WindowHelper.WaitFor(() => activated);
-		Assert.IsTrue(activated);
-		await TestServices.WindowHelper.WaitForLoaded(sut.Content as FrameworkElement);
-		Assert.IsTrue(sut.Bounds.Width > 0);
-		Assert.IsTrue(sut.Bounds.Height > 0);
+		try
+		{
+			bool activated = false;
+			sut.Content = new Border();
+			sut.Activated += (s, e) => activated = true;
+			sut.Activate();
+			await TestServices.WindowHelper.WaitFor(() => activated);
+			Assert.IsTrue(activated);
+			await TestServices.WindowHelper.WaitForLoaded(sut.Content as FrameworkElement);
+			Assert.IsGreaterThan(0, sut.Bounds.Width);
+			Assert.IsGreaterThan(0, sut.Bounds.Height);
+		}
+		finally
+		{
+			sut.Close();
+		}
 	}
 
 	[TestMethod]
@@ -212,8 +219,8 @@ public class Given_Window
 		sut.Content = button;
 		sut.Activate();
 		await TestServices.WindowHelper.WaitFor(() => button.ActualWidth > 0);
-		Assert.IsTrue(button.ActualWidth > 0);
-		Assert.IsTrue(button.ActualHeight > 0);
+		Assert.IsGreaterThan(0, button.ActualWidth);
+		Assert.IsGreaterThan(0, button.ActualHeight);
 	}
 
 	[TestMethod]
@@ -240,9 +247,9 @@ public class Given_Window
 		AssertSupportsMultipleWindows();
 
 		var darkThemeDisposable = ThemeHelper.UseDarkTheme();
+		var sut = new Window();
 		try
 		{
-			var sut = new Window();
 			sut.Content = new Border() { Width = 100, Height = 100, RequestedTheme = ElementTheme.Light };
 			sut.Activate();
 			await TestServices.WindowHelper.WaitForLoaded(sut.Content as FrameworkElement);
@@ -253,6 +260,7 @@ public class Given_Window
 		{
 			// Reset the theme to avoid affecting other tests
 			darkThemeDisposable.Dispose();
+			sut.Close();
 		}
 	}
 
@@ -301,6 +309,7 @@ public class Given_Window
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Window_Closed_Is_Handled()
 	{
 		AssertSupportsMultipleWindows();

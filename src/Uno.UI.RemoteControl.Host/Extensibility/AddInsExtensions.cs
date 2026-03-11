@@ -29,4 +29,28 @@ public static class AddInsExtensions
 
 		return builder;
 	}
+
+	public static WebApplicationBuilder ConfigureAddInsFromPaths(this WebApplicationBuilder builder, string addinsValue, ITelemetry? telemetry = null)
+	{
+		var dllPaths = addinsValue
+			.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+			.Distinct(StringComparer.OrdinalIgnoreCase)
+			.ToImmutableList();
+
+		var discovery = dllPaths.Count > 0
+			? AddInsDiscoveryResult.Success(dllPaths)
+			: AddInsDiscoveryResult.Empty();
+
+		var loadResults = AssemblyHelper.Load(discovery.AddIns, telemetry, throwIfLoadFailed: false);
+
+		var assemblies = loadResults
+			.Where(result => result.Assembly is not null)
+			.Select(result => result.Assembly)
+			.ToImmutableArray();
+
+		builder.Services.AddFromAttributes(assemblies);
+		builder.Services.AddSingleton(new AddInsStatus(discovery, loadResults));
+
+		return builder;
+	}
 }

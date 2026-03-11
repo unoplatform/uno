@@ -45,13 +45,7 @@ using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.ScrollContentPresente
 using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.IScrollContentPresenter;
 #endif
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
-#else
-using Windows.Devices.Input;
-using Windows.UI.Input;
-using Microsoft.UI.Xaml.Media;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -169,8 +163,12 @@ namespace Microsoft.UI.Xaml.Controls
 			set => this.SetValue(HorizontalScrollBarVisibilityProperty, value);
 		}
 
-		public static DependencyProperty HorizontalScrollBarVisibilityProperty { get; } =
-			DependencyProperty.RegisterAttached(
+		public static DependencyProperty HorizontalScrollBarVisibilityProperty
+		{
+			[DynamicDependency(nameof(GetHorizontalScrollBarVisibility))]
+			[DynamicDependency(nameof(SetHorizontalScrollBarVisibility))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 				"HorizontalScrollBarVisibility",
 				typeof(ScrollBarVisibility),
 				typeof(ScrollViewer),
@@ -194,8 +192,12 @@ namespace Microsoft.UI.Xaml.Controls
 			set => this.SetValue(VerticalScrollBarVisibilityProperty, value);
 		}
 
-		public static DependencyProperty VerticalScrollBarVisibilityProperty { get; } =
-			DependencyProperty.RegisterAttached(
+		public static DependencyProperty VerticalScrollBarVisibilityProperty
+		{
+			[DynamicDependency(nameof(GetVerticalScrollBarVisibility))]
+			[DynamicDependency(nameof(SetVerticalScrollBarVisibility))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 				"VerticalScrollBarVisibility",
 				typeof(ScrollBarVisibility),
 				typeof(ScrollViewer),
@@ -219,8 +221,12 @@ namespace Microsoft.UI.Xaml.Controls
 			set => this.SetValue(HorizontalScrollModeProperty, value);
 		}
 
-		public static DependencyProperty HorizontalScrollModeProperty { get; } =
-			DependencyProperty.RegisterAttached(
+		public static DependencyProperty HorizontalScrollModeProperty
+		{
+			[DynamicDependency(nameof(GetHorizontalScrollMode))]
+			[DynamicDependency(nameof(SetHorizontalScrollMode))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 				"HorizontalScrollMode",
 				typeof(ScrollMode),
 				typeof(ScrollViewer),
@@ -246,8 +252,12 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// Using a DependencyProperty as the backing store for VerticalScrollMode.  This enables animation, styling, binding, etc...
-		public static DependencyProperty VerticalScrollModeProperty { get; } =
-			DependencyProperty.RegisterAttached(
+		public static DependencyProperty VerticalScrollModeProperty
+		{
+			[DynamicDependency(nameof(GetVerticalScrollMode))]
+			[DynamicDependency(nameof(SetVerticalScrollMode))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 				"VerticalScrollMode",
 				typeof(ScrollMode),
 				typeof(ScrollViewer),
@@ -280,8 +290,12 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(BringIntoViewOnFocusChangeProperty, value);
 		}
 
-		public static DependencyProperty BringIntoViewOnFocusChangeProperty { get; } =
-			DependencyProperty.RegisterAttached(
+		public static DependencyProperty BringIntoViewOnFocusChangeProperty
+		{
+			[DynamicDependency(nameof(GetBringIntoViewOnFocusChange))]
+			[DynamicDependency(nameof(SetBringIntoViewOnFocusChange))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 				"BringIntoViewOnFocusChange",
 				typeof(bool),
 				typeof(ScrollViewer),
@@ -312,8 +326,12 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(ZoomModeProperty, value);
 		}
 
-		public static DependencyProperty ZoomModeProperty { get; } =
-			DependencyProperty.RegisterAttached(
+		public static DependencyProperty ZoomModeProperty
+		{
+			[DynamicDependency(nameof(GetZoomMode))]
+			[DynamicDependency(nameof(SetZoomMode))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 				"ZoomMode",
 				typeof(ZoomMode),
 				typeof(ScrollViewer),
@@ -1756,6 +1774,23 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void HandleHorizontalScroll(ScrollEventType scrollEventType, double offset = 0)
 		{
 			//UNO TODO: Implement HandleHorizontalScroll on ScrollViewer
+		}
+
+		/// <summary>
+		/// Determines whether this ScrollViewer is pannable.
+		/// Returns false only if both vertical and horizontal scrolling are disabled.
+		/// </summary>
+		internal override bool IsDraggableOrPannable()
+		{
+			// If both vertical and horizontal scrolling are disabled, return false.
+			// This matches WinUI's ScrollViewer::IsDraggableOrPannableImpl.
+			return !(
+				(VerticalScrollBarVisibility == ScrollBarVisibility.Disabled ||
+					VerticalScrollMode == ScrollMode.Disabled)
+				&&
+				(HorizontalScrollBarVisibility == ScrollBarVisibility.Disabled ||
+					HorizontalScrollMode == ScrollMode.Disabled)
+			);
 		}
 	}
 }

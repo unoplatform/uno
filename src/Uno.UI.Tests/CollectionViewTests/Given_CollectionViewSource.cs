@@ -49,7 +49,7 @@ namespace Uno.UI.Tests.CollectionViewTests
 
 			var view = source.View;
 
-			Assert.AreEqual(0, view.Count);
+			Assert.IsEmpty(view);
 			Assert.IsNull(view.CurrentItem);
 			Assert.AreEqual(0, view.CurrentPosition); //Not -1
 		}

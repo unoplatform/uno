@@ -31,6 +31,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 	private Rect _lastArrangeRect;
 	private string? _lastFinalSvgClipPath;
 	private HRGN _lastClipHrgn;
+	private bool _showWindowOnNextArrange;
 
 	public Win32NativeElementHostingExtension(ContentPresenter presenter)
 	{
@@ -85,7 +86,8 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		PInvoke.SetWindowLong((HWND)window.Hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE, oldExStyleVal | (int)WINDOW_EX_STYLE.WS_EX_LAYERED);
 		PInvoke.SetWindowLong((HWND)window.Hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE, (oldStyleVal | (int)WINDOW_STYLE.WS_CLIPSIBLINGS) & ~(int)WINDOW_STYLE.WS_CAPTION); // removes the title bar and borders
 
-		_ = PInvoke.ShowWindow((HWND)window.Hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
+		_ = PInvoke.ShowWindow((HWND)window.Hwnd, SHOW_WINDOW_CMD.SW_HIDE);
+		_showWindowOnNextArrange = true; // only show the window after the first arrange to avoid the split-second flicker between showing the window and positioning/clipping it correctly.
 
 		var oldParent = PInvoke.SetParent((HWND)window.Hwnd, Hwnd);
 		if (oldParent == HWND.Null && Marshal.GetLastWin32Error() != 0)
@@ -99,12 +101,6 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 
 	private unsafe void OnRenderingNegativePathReevaluated(object? sender, SKPath path)
 	{
-		if (path != _lastClipPath)
-		{
-			_lastClipPath.Rewind();
-			_lastClipPath.AddPath(path);
-		}
-
 		_tempPath.Rewind();
 		_tempPath.AddRect(_lastArrangeRect.ToSKRect());
 		path.Op(_tempPath, SKPathOp.Intersect, _tempPath);
@@ -321,6 +317,12 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 
 		_lastFinalSvgClipPath = null; // force reapply clip path after arranging
 		OnRenderingNegativePathReevaluated(this, _lastClipPath);
+
+		if (_showWindowOnNextArrange)
+		{
+			_showWindowOnNextArrange = false;
+			_ = PInvoke.ShowWindow((HWND)window.Hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
+		}
 	}
 
 	public Size MeasureNativeElement(object content, Size childMeasuredSize, Size availableSize)

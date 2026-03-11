@@ -443,7 +443,7 @@ namespace Uno.UI.Tests.StackPanelTest
 
 		public partial class MyStackPanel : StackPanel
 		{
-			public Size ArrangeOverridePublic(Size finalSize) => ArrangeOverride(arrangeSize: finalSize);
+			public Size ArrangeOverridePublic(Size finalSize) => ArrangeOverride(finalSize);
 		}
 	}
 }

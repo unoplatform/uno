@@ -1,4 +1,10 @@
 steps:
+
+- pwsh: |
+    New-Item -ItemType Directory -Force -Path "$(Pipeline.Workspace)/.npm/cspell" | Out-Null
+  displayName: Ensure cspell cache folder exists
+  condition: eq(variables['DocChangesDetected'], 'true')
+
 - task: Cache@2
   displayName: Cache npm (cspell)
   inputs:

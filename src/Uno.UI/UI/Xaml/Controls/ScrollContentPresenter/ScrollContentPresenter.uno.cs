@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,8 @@ namespace Uno.UI.Xaml.Controls
 		/// <summary>
 		/// Backing property for the IsPointerWheelReversed attached property.
 		/// </summary>
+		[DynamicDependency(nameof(GetIsPointerWheelReversed))]
+		[DynamicDependency(nameof(SetIsPointerWheelReversed))]
 		public static readonly DependencyProperty IsPointerWheelReversedProperty = DependencyProperty.RegisterAttached(
 			"IsPointerWheelReversed",
 			typeof(bool),

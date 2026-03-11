@@ -4,6 +4,7 @@
 			"commandName": "Project",
 			"nativeDebugging": false,
 			"environmentVariables": {
+				"GDK_BACKEND": "x11",
 				//"UNO_DISPLAY_SCALE_OVERRIDE": "2"
 				//"COREHOST_TRACE": "1",
 				//"COREHOST_TRACE_VERBOSITY": "4"

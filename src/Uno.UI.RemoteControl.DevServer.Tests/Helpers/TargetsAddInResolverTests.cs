@@ -1,0 +1,895 @@
+using System.Globalization;
+using System.Text.Json;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.DevServer.Cli.Helpers;
+
+namespace Uno.UI.RemoteControl.DevServer.Tests.Helpers;
+
+[TestClass]
+public class TargetsAddInResolverTests
+{
+	private static ILogger<TargetsAddInResolver> _logger = null!;
+	private string _tempDir = null!;
+
+	[ClassInitialize]
+	public static void ClassInitialize(TestContext _)
+	{
+		var loggerFactory = LoggerFactory.Create(builder =>
+		{
+			builder.AddConsole();
+			builder.AddDebug();
+			builder.SetMinimumLevel(LogLevel.Trace);
+		});
+		_logger = loggerFactory.CreateLogger<TargetsAddInResolver>();
+	}
+
+	[TestInitialize]
+	public void TestInitialize()
+	{
+		_tempDir = Path.Combine(Path.GetTempPath(), "TargetsAddInResolverTests_" + Guid.NewGuid().ToString("N"));
+		Directory.CreateDirectory(_tempDir);
+	}
+
+	[TestCleanup]
+	public void TestCleanup()
+	{
+		try
+		{
+			if (Directory.Exists(_tempDir))
+			{
+				Directory.Delete(_tempDir, recursive: true);
+			}
+		}
+		catch
+		{
+			// Best effort cleanup
+		}
+	}
+
+	[TestMethod]
+	public void ResolveAddIns_WhenSimpleDirectInclude_ShouldResolveDll()
+	{
+		// Arrange - Simulates: <UnoRemoteControlAddIns Include="$(MSBuildThisFileDirectory)../tools/devserver/MyAddIn.dll" />
+		var (packagesJsonPath, nugetCache) = CreatePackagesJson(
+			("Uno.Test.AddIn", "1.0.0"));
+
+		var dllPath = CreatePackageWithTargets(
+			nugetCache, "uno.test.addin", "1.0.0",
+			"""
+			<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(MSBuildThisFileDirectory)../tools/devserver/MyAddIn.dll" />
+				</ItemGroup>
+			</Project>
+			""",
+			dllRelativePath: "tools/devserver/MyAddIn.dll");
+
+		var resolver = new TargetsAddInResolver(_logger);
+
+		// Act
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
+
+		// Assert
+		results.Should().HaveCount(1);
+		results[0].PackageName.Should().Be("Uno.Test.AddIn");
+		results[0].PackageVersion.Should().Be("1.0.0");
+		results[0].EntryPointDll.Should().Be(dllPath);
+		results[0].DiscoverySource.Should().Be("targets");
+	}
+
+	[TestMethod]
+	public void ResolveAddIns_WhenPropertyIndirection_ShouldResolveDll()
+	{
+		// Arrange - Simulates property indirection pattern (like Uno.UI.App.Mcp)
+		var (packagesJsonPath, nugetCache) = CreatePackagesJson(
+			("Uno.Test.Mcp", "2.0.0"));
+
+		var dllPath = CreatePackageWithTargets(
+			nugetCache, "uno.test.mcp", "2.0.0",
+			"""
+			<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				<PropertyGroup>
+					<_TestProcessorPath>$(MSBuildThisFileDirectory)../tools/devserver/Uno.Test.Mcp.dll</_TestProcessorPath>
+				</PropertyGroup>
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(_TestProcessorPath)" />
+				</ItemGroup>
+			</Project>
+			""",
+			dllRelativePath: "tools/devserver/Uno.Test.Mcp.dll");
+
+		var resolver = new TargetsAddInResolver(_logger);
+
+		// Act
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
+
+		// Assert
+		results.Should().HaveCount(1);
+		results[0].EntryPointDll.Should().Be(dllPath);
+	}
+
+	[TestMethod]
+	public void ResolveAddIns_WhenExistsConditionTrue_ShouldResolve()
+	{
+		// Arrange - Property with exists() condition that resolves to true
+		var (packagesJsonPath, nugetCache) = CreatePackagesJson(
+			("Uno.Test.Exists", "1.0.0"));
+
+		var dllPath = CreatePackageWithTargets(
+			nugetCache, "uno.test.exists", "1.0.0",
+			"""
+			<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				<PropertyGroup>
+					<_MyPath Condition="exists('$(MSBuildThisFileDirectory)../tools/devserver/Plugin.dll')">$(MSBuildThisFileDirectory)../tools/devserver/Plugin.dll</_MyPath>
+				</PropertyGroup>
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(_MyPath)" />
+				</ItemGroup>
+			</Project>
+			""",
+			dllRelativePath: "tools/devserver/Plugin.dll");
+
+		var resolver = new TargetsAddInResolver(_logger);
+
+		// Act
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
+
+		// Assert
+		results.Should().HaveCount(1);
+		results[0].EntryPointDll.Should().Be(dllPath);
+	}
+
+	[TestMethod]
+	public void ResolveAddIns_WhenExistsConditionFalse_ShouldSkipProperty()
+	{
+		// Arrange - Property with exists() condition that resolves to false (DLL doesn't exist)
+		var (packagesJsonPath, nugetCache) = CreatePackagesJson(
+			("Uno.Test.NoExists", "1.0.0"));
+
+		CreatePackageWithTargets(
+			nugetCache, "uno.test.noexists", "1.0.0",
+			"""
+			<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				<PropertyGroup>
+					<_MyPath Condition="exists('$(MSBuildThisFileDirectory)../tools/devserver/NonExistent.dll')">$(MSBuildThisFileDirectory)../tools/devserver/NonExistent.dll</_MyPath>
+				</PropertyGroup>
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(_MyPath)" />
+				</ItemGroup>
+			</Project>
+			""",
+			dllRelativePath: null); // Don't create the DLL
+
+		var resolver = new TargetsAddInResolver(_logger);
+
+		// Act
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
+
+		// Assert
+		results.Should().BeEmpty();
+	}
+
+	[TestMethod]
+	public void ResolveAddIns_WhenEqualityConditionMatches_ShouldResolve()
+	{
+		// Arrange - Item with MSBuildThisFile equality condition
+		var (packagesJsonPath, nugetCache) = CreatePackagesJson(
+			("Uno.Test.Eq", "1.0.0"));
+
+		var dllPath = CreatePackageWithTargets(
+			nugetCache, "uno.test.eq", "1.0.0",
+			"""
+			<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(MSBuildThisFileDirectory)../tools/devserver/Eq.dll" Condition="'$(MSBuildThisFile)'=='Uno.Test.Eq.targets'" />
+				</ItemGroup>
+			</Project>
+			""",
+			dllRelativePath: "tools/devserver/Eq.dll",
+			targetsFileName: "Uno.Test.Eq.targets");
+
+		var resolver = new TargetsAddInResolver(_logger);
+
+		// Act
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
+
+		// Assert
+		results.Should().HaveCount(1);
+	}
+
+	[TestMethod]
+	public void ResolveAddIns_WhenEqualityConditionDoesNotMatch_ShouldSkip()
+	{
+		// Arrange - Item with MSBuildThisFile condition that doesn't match
+		var (packagesJsonPath, nugetCache) = CreatePackagesJson(
+			("Uno.Test.EqFail", "1.0.0"));
+
+		CreatePackageWithTargets(
+			nugetCache, "uno.test.eqfail", "1.0.0",
+			"""
+			<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(MSBuildThisFileDirectory)../tools/devserver/Eq.dll" Condition="'$(MSBuildThisFile)'=='WrongName.targets'" />
+				</ItemGroup>
+			</Project>
+			""",
+			dllRelativePath: "tools/devserver/Eq.dll",
+			targetsFileName: "Uno.Test.EqFail.targets");
+
+		var resolver = new TargetsAddInResolver(_logger);
+
+		// Act
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
+
+		// Assert
+		results.Should().BeEmpty();
+	}
+
+	[TestMethod]
+	public void ResolveAddIns_WhenDllDoesNotExist_ShouldSkip()
+	{
+		// Arrange - .targets references a DLL that doesn't exist on disk
+		var (packagesJsonPath, nugetCache) = CreatePackagesJson(
+			("Uno.Test.NoDll", "1.0.0"));
+
+		CreatePackageWithTargets(
+			nugetCache, "uno.test.nodll", "1.0.0",
+			"""
+			<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(MSBuildThisFileDirectory)../tools/devserver/Missing.dll" />
+				</ItemGroup>
+			</Project>
+			""",
+			dllRelativePath: null); // Don't create the DLL
+
+		var resolver = new TargetsAddInResolver(_logger);
+
+		// Act
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
+
+		// Assert
+		results.Should().BeEmpty();
+	}
+
+	[TestMethod]
+	public void ResolveAddIns_WhenMalformedXml_ShouldSkipAndNotThrow()
+	{
+		// Arrange
+		var (packagesJsonPath, nugetCache) = CreatePackagesJson(
+			("Uno.Test.BadXml", "1.0.0"));
+
+		CreatePackageWithTargets(
+			nugetCache, "uno.test.badxml", "1.0.0",
+			"<this is not valid xml><<<",
+			dllRelativePath: null);
+
+		var resolver = new TargetsAddInResolver(_logger);
+
+		// Act
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
+
+		// Assert
+		results.Should().BeEmpty();
+	}
+
+	[TestMethod]
+	public void ResolveAddIns_WhenMultiplePackages_ShouldResolveAll()
+	{
+		// Arrange
+		var (packagesJsonPath, nugetCache) = CreatePackagesJson(
+			("Uno.AddIn.A", "1.0.0"),
+			("Uno.AddIn.B", "2.0.0"));
+
+		var dllA = CreatePackageWithTargets(
+			nugetCache, "uno.addin.a", "1.0.0",
+			"""
+			<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(MSBuildThisFileDirectory)../tools/devserver/A.dll" />
+				</ItemGroup>
+			</Project>
+			""",
+			dllRelativePath: "tools/devserver/A.dll");
+
+		var dllB = CreatePackageWithTargets(
+			nugetCache, "uno.addin.b", "2.0.0",
+			"""
+			<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(MSBuildThisFileDirectory)../tools/devserver/B.dll" />
+				</ItemGroup>
+			</Project>
+			""",
+			dllRelativePath: "tools/devserver/B.dll");
+
+		var resolver = new TargetsAddInResolver(_logger);
+
+		// Act
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
+
+		// Assert
+		results.Should().HaveCount(2);
+		results.Select(r => r.PackageName).Should().BeEquivalentTo(["Uno.AddIn.A", "Uno.AddIn.B"]);
+	}
+
+	[TestMethod]
+	public void ResolveAddIns_WhenPackageNotInCache_ShouldSkipSilently()
+	{
+		// Arrange - Package listed in packages.json but not in any cache
+		var (packagesJsonPath, nugetCache) = CreatePackagesJson(
+			("Uno.Not.Installed", "1.0.0"));
+
+		var resolver = new TargetsAddInResolver(_logger);
+
+		// Act
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
+
+		// Assert
+		results.Should().BeEmpty();
+	}
+
+	[TestMethod]
+	public void ResolveAddIns_WhenNoTargetsFiles_ShouldReturnEmpty()
+	{
+		// Arrange - Package exists but has no .targets files
+		var (packagesJsonPath, nugetCache) = CreatePackagesJson(
+			("Uno.No.Targets", "1.0.0"));
+
+		// Create package directory without buildTransitive
+		var packageDir = Path.Combine(nugetCache, "uno.no.targets", "1.0.0");
+		Directory.CreateDirectory(packageDir);
+
+		var resolver = new TargetsAddInResolver(_logger);
+
+		// Act
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
+
+		// Assert
+		results.Should().BeEmpty();
+	}
+
+	[TestMethod]
+	public void ResolveAddIns_WhenBuildFallback_ShouldScanBuildDirectory()
+	{
+		// Arrange - Package has build/*.targets but not buildTransitive/*.targets
+		var (packagesJsonPath, nugetCache) = CreatePackagesJson(
+			("Uno.Build.Fallback", "1.0.0"));
+
+		var packageDir = Path.Combine(nugetCache, "uno.build.fallback", "1.0.0");
+		var buildDir = Path.Combine(packageDir, "build");
+		Directory.CreateDirectory(buildDir);
+
+		// Create DLL
+		var toolsDir = Path.Combine(packageDir, "tools", "devserver");
+		Directory.CreateDirectory(toolsDir);
+		var dllPath = Path.Combine(toolsDir, "Fallback.dll");
+		File.WriteAllBytes(dllPath, [0]);
+
+		// Create .targets in build/ (not buildTransitive/)
+		File.WriteAllText(
+			Path.Combine(buildDir, "Uno.Build.Fallback.targets"),
+			"""
+			<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(MSBuildThisFileDirectory)../tools/devserver/Fallback.dll" />
+				</ItemGroup>
+			</Project>
+			""");
+
+		var resolver = new TargetsAddInResolver(_logger);
+
+		// Act
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
+
+		// Assert
+		results.Should().HaveCount(1);
+		results[0].EntryPointDll.Should().Be(Path.GetFullPath(dllPath));
+	}
+
+	[TestMethod]
+	public void ResolveAddIns_WhenNestedPropertyReferences_ShouldResolveUpTo5Levels()
+	{
+		// Arrange - Nested property references: $(A) -> $(B) -> value
+		var (packagesJsonPath, nugetCache) = CreatePackagesJson(
+			("Uno.Test.Nested", "1.0.0"));
+
+		var dllPath = CreatePackageWithTargets(
+			nugetCache, "uno.test.nested", "1.0.0",
+			"""
+			<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				<PropertyGroup>
+					<_Level1>$(MSBuildThisFileDirectory)../tools/devserver</_Level1>
+					<_Level2>$(_Level1)/Nested.dll</_Level2>
+				</PropertyGroup>
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(_Level2)" />
+				</ItemGroup>
+			</Project>
+			""",
+			dllRelativePath: "tools/devserver/Nested.dll");
+
+		var resolver = new TargetsAddInResolver(_logger);
+
+		// Act
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
+
+		// Assert
+		results.Should().HaveCount(1);
+		results[0].EntryPointDll.Should().Be(dllPath);
+	}
+
+	[TestMethod]
+	public void ResolveAddIns_WhenInvalidPackagesJson_ShouldThrow()
+	{
+		// Arrange
+		var packagesJsonPath = Path.Combine(_tempDir, "invalid_packages.json");
+		File.WriteAllText(packagesJsonPath, "this is not valid json");
+
+		var resolver = new TargetsAddInResolver(_logger);
+
+		// Act & Assert — exception propagates so callers can trigger MSBuild fallback
+		var act = () => resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [_tempDir]);
+		act.Should().Throw<JsonException>();
+	}
+
+	[TestMethod]
+	public void ResolveAddIns_WhenEmptyPackagesJson_ShouldReturnEmpty()
+	{
+		// Arrange
+		var packagesJsonPath = Path.Combine(_tempDir, "empty_packages.json");
+		File.WriteAllText(packagesJsonPath, "[]");
+
+		var resolver = new TargetsAddInResolver(_logger);
+
+		// Act
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [_tempDir]);
+
+		// Assert
+		results.Should().BeEmpty();
+	}
+
+	[TestMethod]
+	public void ResolveAddIns_WhenInequalityCondition_ShouldEvaluateCorrectly()
+	{
+		// Arrange
+		var (packagesJsonPath, nugetCache) = CreatePackagesJson(
+			("Uno.Test.Neq", "1.0.0"));
+
+		var dllPath = CreatePackageWithTargets(
+			nugetCache, "uno.test.neq", "1.0.0",
+			"""
+			<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				<PropertyGroup>
+					<_ShouldInclude Condition="'$(MSBuildThisFile)'!='wrong.targets'">$(MSBuildThisFileDirectory)../tools/devserver/Neq.dll</_ShouldInclude>
+				</PropertyGroup>
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(_ShouldInclude)" />
+				</ItemGroup>
+			</Project>
+			""",
+			dllRelativePath: "tools/devserver/Neq.dll",
+			targetsFileName: "Uno.Test.Neq.targets");
+
+		var resolver = new TargetsAddInResolver(_logger);
+
+		// Act
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
+
+		// Assert
+		results.Should().HaveCount(1);
+	}
+
+	[TestMethod]
+	public void ResolveAddIns_WhenMultipleNuGetCaches_ShouldSearchAll()
+	{
+		// Arrange
+		var cache1 = Path.Combine(_tempDir, "cache1");
+		var cache2 = Path.Combine(_tempDir, "cache2");
+		Directory.CreateDirectory(cache1);
+		Directory.CreateDirectory(cache2);
+
+		var packagesJsonPath = Path.Combine(_tempDir, "packages.json");
+		File.WriteAllText(packagesJsonPath, """
+			[{"version": "1.0.0", "packages": ["Uno.In.Cache2"]}]
+			""");
+
+		// Package only exists in cache2
+		var packageDir = Path.Combine(cache2, "uno.in.cache2", "1.0.0");
+		var buildDir = Path.Combine(packageDir, "buildTransitive");
+		var toolsDir = Path.Combine(packageDir, "tools", "devserver");
+		Directory.CreateDirectory(buildDir);
+		Directory.CreateDirectory(toolsDir);
+
+		var dllPath = Path.Combine(toolsDir, "Cache2.dll");
+		File.WriteAllBytes(dllPath, [0]);
+
+		File.WriteAllText(
+			Path.Combine(buildDir, "Uno.In.Cache2.targets"),
+			"""
+			<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(MSBuildThisFileDirectory)../tools/devserver/Cache2.dll" />
+				</ItemGroup>
+			</Project>
+			""");
+
+		var resolver = new TargetsAddInResolver(_logger);
+
+		// Act
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [cache1, cache2]);
+
+		// Assert
+		results.Should().HaveCount(1);
+		results[0].EntryPointDll.Should().Be(Path.GetFullPath(dllPath));
+	}
+
+	[TestMethod]
+	public void ResolveAddIns_WhenNoNamespace_ShouldStillParse()
+	{
+		// Arrange - .targets file without namespace (some packages do this)
+		var (packagesJsonPath, nugetCache) = CreatePackagesJson(
+			("Uno.Test.NoNs", "1.0.0"));
+
+		var dllPath = CreatePackageWithTargets(
+			nugetCache, "uno.test.nons", "1.0.0",
+			"""
+			<Project>
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(MSBuildThisFileDirectory)../tools/devserver/NoNs.dll" />
+				</ItemGroup>
+			</Project>
+			""",
+			dllRelativePath: "tools/devserver/NoNs.dll");
+
+		var resolver = new TargetsAddInResolver(_logger);
+
+		// Act
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
+
+		// Assert
+		results.Should().HaveCount(1);
+	}
+
+	// -------------------------------------------------------------------
+	// Manifest-first integration
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	[Description("When both manifest and .targets exist, manifest wins and .targets is skipped for that package")]
+	public void ResolveAddIns_WhenManifestPresent_TakesPriorityOverTargets()
+	{
+		var (packagesJsonPath, nugetCache) = CreatePackagesJson(
+			("Uno.Test.Both", "1.0.0"));
+
+		// Create both a .targets file and a manifest
+		CreatePackageWithTargets(
+			nugetCache, "uno.test.both", "1.0.0",
+			"""
+			<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(MSBuildThisFileDirectory)../tools/devserver/FromTargets.dll" />
+				</ItemGroup>
+			</Project>
+			""",
+			dllRelativePath: "tools/devserver/FromTargets.dll");
+
+		// Also create the manifest DLL and manifest file
+		var packageDir = Path.Combine(nugetCache, "uno.test.both", "1.0.0");
+		var manifestDllDir = Path.Combine(packageDir, "tools", "devserver");
+		Directory.CreateDirectory(manifestDllDir);
+		var manifestDll = Path.Combine(manifestDllDir, "FromManifest.dll");
+		File.WriteAllBytes(manifestDll, [0]);
+
+		File.WriteAllText(Path.Combine(packageDir, "devserver-addin.json"), """
+		{
+			"version": 1,
+			"addins": [
+				{ "entryPoint": "tools/devserver/FromManifest.dll" }
+			]
+		}
+		""");
+
+		var manifestLogger = LoggerFactory.Create(b => b.AddConsole().SetMinimumLevel(LogLevel.Trace))
+			.CreateLogger<ManifestAddInResolver>();
+		var manifestResolver = new ManifestAddInResolver(manifestLogger);
+		var resolver = new TargetsAddInResolver(_logger, manifestResolver);
+
+		// Act
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
+
+		// Assert - manifest DLL should win
+		results.Should().HaveCount(1);
+		results[0].EntryPointDll.Should().Contain("FromManifest.dll");
+		results[0].DiscoverySource.Should().Be("manifest");
+	}
+
+	[TestMethod]
+	[Description("When manifest has version > 1, it falls through and .targets takes over")]
+	public void ResolveAddIns_WhenManifestFutureVersion_FallsThroughToTargets()
+	{
+		var (packagesJsonPath, nugetCache) = CreatePackagesJson(
+			("Uno.Test.FutureManifest", "1.0.0"));
+
+		var targetsDll = CreatePackageWithTargets(
+			nugetCache, "uno.test.futuremanifest", "1.0.0",
+			"""
+			<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(MSBuildThisFileDirectory)../tools/devserver/FromTargets.dll" />
+				</ItemGroup>
+			</Project>
+			""",
+			dllRelativePath: "tools/devserver/FromTargets.dll");
+
+		// Write a v42 manifest → should fall through
+		var packageDir = Path.Combine(nugetCache, "uno.test.futuremanifest", "1.0.0");
+		File.WriteAllText(Path.Combine(packageDir, "devserver-addin.json"), """
+		{
+			"version": 42,
+			"addins": [
+				{ "entryPoint": "tools/devserver/FromManifest.dll" }
+			]
+		}
+		""");
+
+		var manifestLogger = LoggerFactory.Create(b => b.AddConsole().SetMinimumLevel(LogLevel.Trace))
+			.CreateLogger<ManifestAddInResolver>();
+		var manifestResolver = new ManifestAddInResolver(manifestLogger);
+		var resolver = new TargetsAddInResolver(_logger, manifestResolver);
+
+		// Act
+		var results = resolver.ResolveAddIns(packagesJsonPath, nugetCachePaths: [nugetCache]);
+
+		// Assert - .targets DLL should be used since manifest fell through
+		results.Should().HaveCount(1);
+		results[0].EntryPointDll.Should().Be(targetsDll);
+		results[0].DiscoverySource.Should().Be("targets");
+	}
+
+	// -------------------------------------------------------------------
+	// project.assets.json merge tests
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	public void ResolveAddIns_ProjectAssets_ThirdPartyPackage_Resolved()
+	{
+		// Arrange - Package only in project.assets.json, not in packages.json
+		var (packagesJsonPath, nugetCache) = CreatePackagesJson(
+			("Uno.Sdk.Package", "1.0.0"));
+
+		// Create an empty SDK package (no add-in)
+		var sdkPackageDir = Path.Combine(nugetCache, "uno.sdk.package", "1.0.0");
+		Directory.CreateDirectory(sdkPackageDir);
+
+		// Create third-party add-in package in cache
+		var dllPath = CreatePackageWithTargets(
+			nugetCache, "thirdparty.addin", "2.0.0",
+			"""
+			<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(MSBuildThisFileDirectory)../tools/devserver/ThirdParty.dll" />
+				</ItemGroup>
+			</Project>
+			""",
+			dllRelativePath: "tools/devserver/ThirdParty.dll");
+
+		// Create project.assets.json listing the third-party package
+		var assetsPath = CreateProjectAssetsJson(
+			Path.Combine(_tempDir, "project"),
+			("ThirdParty.AddIn", "2.0.0"));
+
+		var resolver = new TargetsAddInResolver(_logger);
+
+		// Act
+		var results = resolver.ResolveAddIns(packagesJsonPath, [assetsPath], [nugetCache]);
+
+		// Assert
+		results.Should().Contain(r => r.PackageName == "ThirdParty.AddIn");
+		results.Should().Contain(r => r.EntryPointDll == dllPath);
+	}
+
+	[TestMethod]
+	public void ResolveAddIns_ProjectAssets_VersionConflict_PrefersProjectAssets()
+	{
+		// Arrange - Same package in both sources with different versions
+		var (packagesJsonPath, nugetCache) = CreatePackagesJson(
+			("Uno.Test.Pkg", "1.0.0"));
+
+		// Create v1 in cache (from packages.json)
+		CreatePackageWithTargets(
+			nugetCache, "uno.test.pkg", "1.0.0",
+			"""
+			<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(MSBuildThisFileDirectory)../tools/devserver/Test.dll" />
+				</ItemGroup>
+			</Project>
+			""",
+			dllRelativePath: "tools/devserver/Test.dll");
+
+		// Create v2 in cache (from project.assets.json - should win)
+		var dllV2 = CreatePackageWithTargets(
+			nugetCache, "uno.test.pkg", "2.0.0",
+			"""
+			<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(MSBuildThisFileDirectory)../tools/devserver/Test.dll" />
+				</ItemGroup>
+			</Project>
+			""",
+			dllRelativePath: "tools/devserver/Test.dll");
+
+		// project.assets.json says v2
+		var assetsPath = CreateProjectAssetsJson(
+			Path.Combine(_tempDir, "project"),
+			("Uno.Test.Pkg", "2.0.0"));
+
+		var resolver = new TargetsAddInResolver(_logger);
+
+		// Act
+		var results = resolver.ResolveAddIns(packagesJsonPath, [assetsPath], [nugetCache]);
+
+		// Assert - should use v2 from project.assets.json
+		results.Should().HaveCount(1);
+		results[0].PackageVersion.Should().Be("2.0.0");
+		results[0].EntryPointDll.Should().Be(dllV2);
+	}
+
+	[TestMethod]
+	public void ResolveAddIns_NoProjectAssets_FallsBackToPackagesJson()
+	{
+		// Arrange
+		var (packagesJsonPath, nugetCache) = CreatePackagesJson(
+			("Uno.Test.Fallback", "1.0.0"));
+
+		var dllPath = CreatePackageWithTargets(
+			nugetCache, "uno.test.fallback", "1.0.0",
+			"""
+			<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(MSBuildThisFileDirectory)../tools/devserver/Fallback.dll" />
+				</ItemGroup>
+			</Project>
+			""",
+			dllRelativePath: "tools/devserver/Fallback.dll");
+
+		var resolver = new TargetsAddInResolver(_logger);
+
+		// Act - null projectAssetsPaths
+		var results = resolver.ResolveAddIns(packagesJsonPath, null, [nugetCache]);
+
+		// Assert - works the same as before
+		results.Should().HaveCount(1);
+		results[0].EntryPointDll.Should().Be(dllPath);
+	}
+
+	[TestMethod]
+	public void ResolveAddIns_MultipleProjectAssets_MergesAll()
+	{
+		// Arrange
+		var (packagesJsonPath, nugetCache) = CreatePackagesJson();
+
+		// Create two third-party add-in packages
+		var dllA = CreatePackageWithTargets(
+			nugetCache, "thirdparty.a", "1.0.0",
+			"""
+			<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(MSBuildThisFileDirectory)../tools/devserver/A.dll" />
+				</ItemGroup>
+			</Project>
+			""",
+			dllRelativePath: "tools/devserver/A.dll");
+
+		var dllB = CreatePackageWithTargets(
+			nugetCache, "thirdparty.b", "2.0.0",
+			"""
+			<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+				<ItemGroup>
+					<UnoRemoteControlAddIns Include="$(MSBuildThisFileDirectory)../tools/devserver/B.dll" />
+				</ItemGroup>
+			</Project>
+			""",
+			dllRelativePath: "tools/devserver/B.dll");
+
+		// Two separate project.assets.json files
+		var assets1 = CreateProjectAssetsJson(
+			Path.Combine(_tempDir, "project1"),
+			("ThirdParty.A", "1.0.0"));
+		var assets2 = CreateProjectAssetsJson(
+			Path.Combine(_tempDir, "project2"),
+			("ThirdParty.B", "2.0.0"));
+
+		var resolver = new TargetsAddInResolver(_logger);
+
+		// Act
+		var results = resolver.ResolveAddIns(packagesJsonPath, [assets1, assets2], [nugetCache]);
+
+		// Assert
+		results.Should().HaveCount(2);
+		results.Select(r => r.PackageName).Should().BeEquivalentTo(["ThirdParty.A", "ThirdParty.B"]);
+	}
+
+	#region Test Helpers
+
+	private (string packagesJsonPath, string nugetCache) CreatePackagesJson(
+		params (string name, string version)[] packages)
+	{
+		var nugetCache = Path.Combine(_tempDir, "nuget_cache");
+		Directory.CreateDirectory(nugetCache);
+
+		// Group packages by version for the JSON format
+		var groups = packages
+			.GroupBy(p => p.version)
+			.Select(g => new
+			{
+				version = g.Key,
+				packages = g.Select(p => p.name).ToArray()
+			});
+
+		var json = System.Text.Json.JsonSerializer.Serialize(groups);
+		var packagesJsonPath = Path.Combine(_tempDir, "packages.json");
+		File.WriteAllText(packagesJsonPath, json);
+
+		return (packagesJsonPath, nugetCache);
+	}
+
+	private string CreatePackageWithTargets(
+		string nugetCache,
+		string lowercasePackageName,
+		string version,
+		string targetsContent,
+		string? dllRelativePath,
+		string? targetsFileName = null)
+	{
+		var packageDir = Path.Combine(nugetCache, lowercasePackageName, version);
+		var buildDir = Path.Combine(packageDir, "buildTransitive");
+		Directory.CreateDirectory(buildDir);
+
+		targetsFileName ??= lowercasePackageName.Replace(".", ".") + ".targets";
+		// Use PascalCase-ish name for the targets file (matching NuGet convention)
+		var targetsFilePath = Path.Combine(buildDir, targetsFileName);
+		File.WriteAllText(targetsFilePath, targetsContent);
+
+		if (dllRelativePath is not null)
+		{
+			var dllFullPath = Path.Combine(packageDir, dllRelativePath);
+			var dllDir = Path.GetDirectoryName(dllFullPath)!;
+			Directory.CreateDirectory(dllDir);
+			File.WriteAllBytes(dllFullPath, [0]); // Create empty file
+			return Path.GetFullPath(dllFullPath);
+		}
+
+		return "";
+	}
+
+	private string CreateProjectAssetsJson(
+		string directory,
+		params (string name, string version)[] packages)
+	{
+		Directory.CreateDirectory(directory);
+
+		var libraries = new Dictionary<string, object>();
+		foreach (var (name, version) in packages)
+		{
+			libraries[$"{name}/{version}"] = new
+			{
+				type = "package",
+				path = $"{name.ToLowerInvariant()}/{version}"
+			};
+		}
+
+		var json = System.Text.Json.JsonSerializer.Serialize(new
+		{
+			version = 3,
+			libraries
+		});
+
+		var assetsPath = Path.Combine(directory, "project.assets.json");
+		File.WriteAllText(assetsPath, json);
+		return assetsPath;
+	}
+
+	#endregion
+}

@@ -22,27 +22,27 @@ public static class TypeMappings
 	/// This maps a replacement type to the original type. This dictionary will grow with each iteration 
 	/// of the original type.
 	/// </summary>
-	private static IDictionary<Type, Type> AllMappedTypeToOriginalTypeMappings { get; } = new Dictionary<Type, Type>();
+	private static TypeMapCollection AllMappedTypeToOriginalTypeMappings { get; } = new();
 
 	/// <summary>
 	/// This maps a replacement type to the original type. This dictionary will grow with each iteration 
 	/// of the original type.
 	/// Similiar to AllMappedTypeToOriginalTypeMappings but doesn't update whilst hot reload is paused
 	/// </summary>
-	private static IDictionary<Type, Type> MappedTypeToOriginalTypeMappings { get; set; } = new Dictionary<Type, Type>();
+	private static TypeMapCollection MappedTypeToOriginalTypeMappings { get; set; } = new();
 
 	/// <summary>
 	/// This maps an original type to the most recent replacement type. This dictionary will only grow when
 	/// a different original type is modified.
 	/// </summary>
-	private static IDictionary<Type, Type> AllOriginalTypeToMappedType { get; } = new Dictionary<Type, Type>();
+	private static TypeMapCollection AllOriginalTypeToMappedType { get; } = new();
 
 	/// <summary>
 	/// This maps an original type to the most recent replacement type. This dictionary will only grow when
 	/// a different original type is modified.
 	/// Similiar to AllOriginalTypeToMappedType but doesn't update whilst hot reload is paused
 	/// </summary>
-	private static IDictionary<Type, Type> OriginalTypeToMappedType { get; set; } = new Dictionary<Type, Type>();
+	private static TypeMapCollection OriginalTypeToMappedType { get; set; } = new();
 
 	/// <summary>
 	/// Extension method to return the replacement type for a given instance type
@@ -174,9 +174,45 @@ public static class TypeMappings
 	{
 		if (Interlocked.Exchange(ref _mappingsPaused, null) is { } completion)
 		{
-			MappedTypeToOriginalTypeMappings = new Dictionary<Type, Type>(AllMappedTypeToOriginalTypeMappings);
-			OriginalTypeToMappedType = new Dictionary<Type, Type>(AllOriginalTypeToMappedType);
+			MappedTypeToOriginalTypeMappings = new(AllMappedTypeToOriginalTypeMappings);
+			OriginalTypeToMappedType = new(AllOriginalTypeToMappedType);
 			completion.TrySetResult();
 		}
 	}
+}
+
+internal class TypeMapCollection
+{
+	private Dictionary<Type, Type> _mappings;
+
+	public TypeMapCollection()
+	{
+		_mappings = new();
+	}
+
+	public TypeMapCollection(TypeMapCollection copy)
+	{
+		_mappings = new(copy._mappings);
+	}
+
+	public void Clear()
+		=> _mappings.Clear();
+
+	[DynamicallyAccessedMembers(TypeMappings.TypeRequirements)]
+	public Type this[
+		[DynamicallyAccessedMembers(TypeMappings.TypeRequirements)]
+		Type key]
+	{
+		[UnconditionalSuppressMessage("Trimming", "IL2073", Justification = "Output must match Input, and since Input has annotations…")]
+		get => _mappings[key];
+		set => _mappings[key] = value;
+	}
+
+	public bool TryGetValue(
+		[DynamicallyAccessedMembers(TypeMappings.TypeRequirements)]
+		Type key,
+		[NotNullWhen(true)]
+		[DynamicallyAccessedMembers(TypeMappings.TypeRequirements)]
+		out Type value)
+		=> _mappings.TryGetValue(key, out value);
 }

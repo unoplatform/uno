@@ -26,6 +26,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Microsoft.UI.Xaml.Documents;
 using Private.Infrastructure;
 
 #if !HAS_UNO
@@ -78,6 +79,9 @@ namespace SamplesApp
 		static App()
 		{
 			ConfigureLogging();
+#if __SKIA__
+			InitializeIcuData();
+#endif
 		}
 
 		/// <summary>
@@ -86,6 +90,9 @@ namespace SamplesApp
 		/// </summary>
 		public App()
 		{
+#if !HAS_UNO
+			UnhandledException += App_UnhandledException;
+#endif
 			// Fix language for UI tests
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
 			Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
@@ -113,6 +120,19 @@ namespace SamplesApp
 			});
 #endif
 		}
+
+#if !HAS_UNO
+		private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
+		{
+			_log?.Error("UnhandledException", e.Exception);
+			global::System.Console.WriteLine($"UnhandledException: {e.Exception}");
+
+			if (Debugger.IsAttached)
+			{
+				e.Handled = true;
+			}
+		}
+#endif
 
 		internal static Microsoft.UI.Xaml.Window? MainWindow => _mainWindow;
 
@@ -203,6 +223,17 @@ namespace SamplesApp
 			Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow =
 				_mainWindow;
 		}
+
+#if __SKIA__
+		private static void InitializeIcuData()
+		{
+			// This is done by the IcuDataInitializerGenerator for external projects
+			var icuType = Type.GetType("Microsoft.UI.Xaml.Documents.UnicodeText+ICU, Uno.UI");
+			var setMethod = icuType?.GetMethod("SetDataAssembly", BindingFlags.Public | BindingFlags.Static);
+			var assembly = AppDomain.CurrentDomain.GetAssemblies().First(a => a.GetName().Name is { } name && name.StartsWith("SamplesApp", StringComparison.Ordinal) && !name.Equals("SamplesApp.Skia", StringComparison.Ordinal));
+			setMethod?.Invoke(null, [assembly]);
+		}
+#endif
 
 		private void SetupAndroidEnvironment()
 		{
@@ -376,9 +407,13 @@ namespace SamplesApp
 
 		private async void HandleLaunchArguments(LaunchActivatedEventArgs launchActivatedEventArgs)
 		{
-			Console.WriteLine($"HandleLaunchArguments: {launchActivatedEventArgs.Arguments}");
-
+#if !HAS_UNO
+			var args = string.Join("&", Environment.GetCommandLineArgs().Skip(1));
+#else
 			var args = launchActivatedEventArgs.Arguments ?? "";
+#endif
+
+			Console.WriteLine($"HandleLaunchArguments: {args}");
 
 			if (HandleAutoScreenshots(args))
 			{
@@ -403,7 +438,7 @@ namespace SamplesApp
 
 			if (SampleControl.Presentation.SampleChooserViewModel.Instance is { } vm && vm.CurrentSelectedSample is null)
 			{
-				vm.SetSelectedSample(CancellationToken.None, "Playground", "Playground");
+				vm.SetSelectedSample(CancellationToken.None, "_None", "Playground");
 			}
 		}
 
@@ -562,6 +597,10 @@ namespace SamplesApp
 #endif
 #if __ANDROID__
 			Uno.WinRTFeatureConfiguration.StoreContext.TestMode = true;
+#endif
+
+#if HAS_UNO
+			Uno.WinRTFeatureConfiguration.DebugOptions.ForceEnableBackButtonIntegration = true;
 #endif
 		}
 

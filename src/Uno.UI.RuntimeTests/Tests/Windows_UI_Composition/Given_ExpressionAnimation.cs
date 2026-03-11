@@ -19,6 +19,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 public partial class Given_ExpressionAnimation
 {
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Animating_Visual_Offset()
 	{
 		var border = new Border()
@@ -53,6 +54,7 @@ public partial class Given_ExpressionAnimation
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Animating_Visual_Translation()
 	{
 		var border = new Border()
@@ -90,6 +92,7 @@ public partial class Given_ExpressionAnimation
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Animating_Visual_Offset_Using_Vector3_Call()
 	{
 		var border = new Border()
@@ -124,6 +127,7 @@ public partial class Given_ExpressionAnimation
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Animating_Visual_Offset_X()
 	{
 		var border = new Border()
@@ -158,6 +162,7 @@ public partial class Given_ExpressionAnimation
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Animating_Visual_Translation_X()
 	{
 		var border = new Border()

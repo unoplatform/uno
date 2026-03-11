@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -56,7 +56,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.TextBlockTests
 		{
 			var page = new LineBreak_Surrounding_WhiteSpace();
 			var tbTrim = page.tbTrim;
-			Assert.AreEqual(5, tbTrim.Inlines.Count);
+			Assert.HasCount(5, tbTrim.Inlines);
 			Assert.AreEqual("BeforeLineBreak", ((Run)tbTrim.Inlines[0]).Text);
 			Assert.IsInstanceOfType(tbTrim.Inlines[1], typeof(LineBreak));
 			Assert.AreEqual("You can construct URLs and access their parts. For URLs that represent local files, you can also manipulate properties of those files directly.", ((Run)tbTrim.Inlines[2]).Text);
@@ -64,7 +64,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.TextBlockTests
 			Assert.AreEqual("AfterLineBreak", ((Run)tbTrim.Inlines[4]).Text);
 
 			var tbPreserve = page.tbPreserve;
-			Assert.AreEqual(5, tbPreserve.Inlines.Count);
+			Assert.HasCount(5, tbPreserve.Inlines);
 			Assert.AreEqual("\n\t\t\t\t   BeforeLineBreak\n\t\t\t\t", ((Run)tbPreserve.Inlines[0]).Text);
 			Assert.IsInstanceOfType(tbPreserve.Inlines[1], typeof(LineBreak));
 			Assert.AreEqual("\n\t\t\t\t   You can construct URLs and access their parts. For URLs that represent local files, you can also manipulate properties of those files directly.\n\t\t\t\t", ((Run)tbPreserve.Inlines[2]).Text);

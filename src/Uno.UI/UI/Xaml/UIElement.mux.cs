@@ -6,17 +6,17 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using DirectUI;
-using Uno.UI.Extensions;
-using Uno.UI.Xaml;
-using Uno.UI.Xaml.Core;
-using Uno.UI.Xaml.Input;
-using Windows.Foundation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.Collections;
+using Uno.UI.Extensions;
+using Uno.UI.Xaml;
+using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Input;
+using Windows.Foundation;
 using Windows.System;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
@@ -415,6 +415,23 @@ namespace Microsoft.UI.Xaml
 			{
 				if (parentDO is UIElement uiElement)
 				{
+					// WinUI: uielement.cpp lines 2501-2517
+					// If the immediate parent is the popup hosting panel, the element is a
+					// Popup's child — jump to the Popup itself.
+					// In WinUI, Popup.Child is parented directly to PopupRoot.
+					// In Uno, Popup.Child is parented to PopupPanel (which is inside PopupRoot).
+					// PopupPanel.Popup provides the equivalent of WinUI's GetLogicalParentNoRef().
+					if (uiElement is PopupPanel popupPanel)
+					{
+						return popupPanel.Popup;
+					}
+
+					// If the parent is PopupRoot and this is a PopupPanel, jump to the owning Popup.
+					if (uiElement is PopupRoot && this is PopupPanel selfPanel)
+					{
+						return selfPanel.Popup;
+					}
+
 					return uiElement;
 				}
 				else

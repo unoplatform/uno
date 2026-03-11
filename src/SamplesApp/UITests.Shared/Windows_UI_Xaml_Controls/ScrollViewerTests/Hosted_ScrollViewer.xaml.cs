@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests
 {
-	[SampleControlInfo("Scrolling", nameof(Hosted_ScrollViewer), description: "Test the ability of a ScrollViewer's content in have a proper TemplatedParent)")]
+	[Sample("Scrolling", Name = nameof(Hosted_ScrollViewer), Description = "Test the ability of a ScrollViewer's content in have a proper TemplatedParent)")]
 	public sealed partial class Hosted_ScrollViewer : UserControl
 	{
 		public Hosted_ScrollViewer()

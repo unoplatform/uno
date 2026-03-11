@@ -13,9 +13,8 @@ namespace Microsoft.UI.Xaml
 	{
 		CoreDispatcher Dispatcher { get; }
 
-#if HAS_UNO_WINUI
 		public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue { get; }
-#endif
+
 		object GetValue(DependencyProperty dp);
 
 		void SetValue(DependencyProperty dp, object value);

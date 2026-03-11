@@ -1,9 +1,9 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 namespace SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox
 {
-	[SampleControlInfo("ComboBox", "ComboBox_DisplayMemberPath")]
+	[Sample("ComboBox", Name = "ComboBox_DisplayMemberPath")]
 	public sealed partial class ComboBox_DisplayMemberPath : UserControl
 	{
 		public ComboBox_DisplayMemberPath()

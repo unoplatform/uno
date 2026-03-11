@@ -13,3 +13,38 @@ jobs:
     - uses: actions/labeler@ac9175f8a1f3625fd0d4fb234536d26811351594 # v4
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
+    - name: Assign PR to its author
+      uses: actions/github-script@v6
+      with:
+        github-token: "${{ secrets.GITHUB_TOKEN }}"
+        script: |
+          const pr = context.payload.pull_request;
+          if (!pr) {
+            core.info('No pull_request payload available, skipping.');
+            return;
+          }
+          // If the PR already has any assignees, skip auto-assignment
+          if (pr.assignees && pr.assignees.length > 0) {
+            core.info(`PR #${pr.number} already has assignees; skipping auto-assignment.`);
+            return;
+          }
+          const author = pr.user && pr.user.login;
+          if (!author) {
+            core.info('PR has no author, skipping assignment.');
+            return;
+          }
+          const owner = context.repo.owner;
+          const repo = context.repo.repo;
+          const pull_number = pr.number;
+          core.info(`Attempting to assign PR #${pull_number} to ${author}`);
+          try {
+            await github.rest.issues.addAssignees({
+              owner,
+              repo,
+              issue_number: pull_number,
+              assignees: [author]
+            });
+            core.info(`Assigned PR #${pull_number} to ${author}`);
+          } catch (err) {
+            core.info(`Could not assign PR #${pull_number} to ${author}: ${err.message}`);
+          }

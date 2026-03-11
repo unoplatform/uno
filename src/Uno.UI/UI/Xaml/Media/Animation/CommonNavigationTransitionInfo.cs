@@ -1,4 +1,6 @@
-﻿namespace Microsoft.UI.Xaml.Media.Animation
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	public partial class CommonNavigationTransitionInfo : NavigationTransitionInfo
 	{
@@ -33,8 +35,12 @@
 			element.SetValue(IsStaggerElementProperty, value);
 		}
 
-		public static DependencyProperty IsStaggerElementProperty { get; } =
-		DependencyProperty.RegisterAttached(
+		public static DependencyProperty IsStaggerElementProperty
+		{
+			[DynamicDependency(nameof(GetIsStaggerElement))]
+			[DynamicDependency(nameof(SetIsStaggerElement))]
+			get;
+		} = DependencyProperty.RegisterAttached(
 			"IsStaggerElement", typeof(bool),
 			typeof(CommonNavigationTransitionInfo),
 			new FrameworkPropertyMetadata(default(bool))

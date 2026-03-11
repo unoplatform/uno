@@ -119,6 +119,11 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 		HtmlElement = BrowserHtmlElement.CreateHtmlElement("video");
 		_elementIdToMediaPlayer.TryAdd(HtmlElement.ElementId, weakThis);
 
+		// Disable remote playback (Chromecast, Airplay, etc.) by default to prevent browser
+		// device discovery permission prompts on app startup. This matches WinUI behavior
+		// where MediaPlayerElement doesn't trigger device discovery until explicitly needed
+		HtmlElement.SetHtmlAttribute("disableRemotePlayback", "true");
+
 		NativeMethods.SetupEvents(HtmlElement.ElementId);
 
 		// using the native timeupdate fires way too frequently (probably every frame) and chokes

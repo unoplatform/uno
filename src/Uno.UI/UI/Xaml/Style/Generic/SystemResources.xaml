@@ -12,9 +12,8 @@
 					xmlns:android="http://uno.ui/android"
 					xmlns:ios="http://uno.ui/ios"
 					xmlns:wasm="http://uno.ui/wasm"
-					xmlns:macos="http://uno.ui/macos"
 					xmlns:skia="http://uno.ui/skia"
-					mc:Ignorable="d not_win ios android macos wasm skia">
+					mc:Ignorable="d not_win ios android wasm skia">
 
 	<ResourceDictionary.ThemeDictionaries>
 		<ResourceDictionary x:Key="Default">
@@ -62,7 +61,6 @@
 				https://github.com/Microsoft/fonts/tree/master/Symbols
 				-->
 			<ios:FontFamily x:Key="SymbolThemeFontFamily">Symbols</ios:FontFamily>
-			<macos:FontFamily x:Key="SymbolThemeFontFamily">Symbols</macos:FontFamily>
 			<wasm:FontFamily x:Key="SymbolThemeFontFamily">Symbols</wasm:FontFamily>
 			<skia:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf#Symbols</skia:FontFamily>
 			<android:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf#Symbols</android:FontFamily>
@@ -1368,7 +1366,6 @@
 	https://github.com/Microsoft/fonts/tree/master/Symbols
 	-->
 			<ios:FontFamily x:Key="SymbolThemeFontFamily">Symbols</ios:FontFamily>
-			<macos:FontFamily x:Key="SymbolThemeFontFamily">Symbols</macos:FontFamily>
 			<wasm:FontFamily x:Key="SymbolThemeFontFamily">Symbols</wasm:FontFamily>
 			<skia:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf#Symbols</skia:FontFamily>
 			<android:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf#Symbols</android:FontFamily>
@@ -2662,7 +2659,6 @@
 			https://github.com/Microsoft/fonts/tree/master/Symbols
 			-->
 			<ios:FontFamily x:Key="SymbolThemeFontFamily">Symbols</ios:FontFamily>
-			<macos:FontFamily x:Key="SymbolThemeFontFamily">Symbols</macos:FontFamily>
 			<wasm:FontFamily x:Key="SymbolThemeFontFamily">Symbols</wasm:FontFamily>
 			<skia:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf#Symbols</skia:FontFamily>
 			<android:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf#Symbols</android:FontFamily>

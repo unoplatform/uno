@@ -23,11 +23,7 @@ public sealed partial class BrowserHtmlElement : IDisposable
 
 	private static void CreateHtmlElementNative(string id, nint unoElementId, string tagName)
 	{
-		NativeMethods.CreateHtmlElementAndAddToStore(id, tagName);
-	}
-
-	private static void RegisterExistingElementNative(string elementId)
-	{
+		NativeMethods.CreateHtmlElement(id, tagName);
 	}
 
 	private void SetCssStyleNative(string name, string value)
@@ -166,11 +162,8 @@ public sealed partial class BrowserHtmlElement : IDisposable
 		[JSImport($"globalThis.Uno.UI.NativeElementHosting.BrowserHtmlElement.initialize")]
 		internal static partial void Initialize();
 
-		[JSImport($"globalThis.Uno.UI.NativeElementHosting.BrowserHtmlElement.createHtmlElementAndAddToStore")]
-		internal static partial void CreateHtmlElementAndAddToStore(string id, string tagName);
-
-		[JSImport($"globalThis.Uno.UI.NativeElementHosting.BrowserHtmlElement.addToStore")]
-		internal static partial void AddToStore(string id);
+		[JSImport($"globalThis.Uno.UI.NativeElementHosting.BrowserHtmlElement.createHtmlElement")]
+		internal static partial void CreateHtmlElement(string id, string tagName);
 
 		[JSImport($"globalThis.Uno.UI.NativeElementHosting.BrowserHtmlElement.disposeHtmlElement")]
 		internal static partial bool DisposeHtmlElement(string id);

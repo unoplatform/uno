@@ -14,12 +14,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging;
 
 partial class SvgImageSource
 {
-	private const string SvgPackageName =
-#if HAS_UNO_WINUI
-		"Uno.WinUI.Svg";
-#else
-		"Uno.UI.Svg";
-#endif
+	private const string SvgPackageName = "Uno.WinUI.Svg";
 
 	private Task<ImageData>? _currentOpenTask;
 

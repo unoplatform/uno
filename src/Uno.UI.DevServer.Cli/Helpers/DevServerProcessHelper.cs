@@ -110,7 +110,7 @@ internal static class DevServerProcessHelper
 			EnableRaisingEvents = true
 		};
 
-		var (outputSb, errorSb) = ObserveOutputs(startInfo, "studio", logger, process);
+		var (outputSb, errorSb) = ObserveOutputs(startInfo, "studio", logger, process, forwardOutputToConsole: false);
 
 		var processExited = new TaskCompletionSource();
 		process.Exited += (_, __) =>
@@ -152,7 +152,12 @@ internal static class DevServerProcessHelper
 		return (gracePeriodTask == resultTask || !process.HasExited ? null : process.ExitCode, stdOut, stdErr);
 	}
 
-	private static (StringBuilder output, StringBuilder error) ObserveOutputs(ProcessStartInfo startInfo, string displayName, ILogger logger, Process process)
+	private static (StringBuilder output, StringBuilder error) ObserveOutputs(
+		ProcessStartInfo startInfo,
+		string displayName,
+		ILogger logger,
+		Process process,
+		bool forwardOutputToConsole)
 	{
 		var outputSb = new StringBuilder();
 		var errorSb = new StringBuilder();
@@ -164,7 +169,11 @@ internal static class DevServerProcessHelper
 				if (e.Data != null)
 				{
 					outputSb.AppendLine(e.Data);
-					if (logger.IsEnabled(LogLevel.Debug))
+					if (forwardOutputToConsole)
+					{
+						Console.Out.WriteLine(e.Data);
+					}
+					else if (logger.IsEnabled(LogLevel.Debug))
 					{
 						logger.LogDebug("[{DisplayName}:stdout] {Data}", displayName, e.Data);
 					}
@@ -179,7 +188,11 @@ internal static class DevServerProcessHelper
 				if (e.Data != null)
 				{
 					errorSb.AppendLine(e.Data);
-					if (logger.IsEnabled(LogLevel.Debug))
+					if (forwardOutputToConsole)
+					{
+						Console.Error.WriteLine(e.Data);
+					}
+					else if (logger.IsEnabled(LogLevel.Debug))
 					{
 						logger.LogDebug("[{DisplayName}:stderr] {Data}", displayName, e.Data);
 					}
@@ -190,7 +203,10 @@ internal static class DevServerProcessHelper
 		return (outputSb, errorSb);
 	}
 
-	public static async Task<(int ExitCode, string StdOut, string StdErr)> RunConsoleProcessAsync(ProcessStartInfo startInfo, ILogger logger)
+	public static async Task<(int ExitCode, string StdOut, string StdErr)> RunConsoleProcessAsync(
+		ProcessStartInfo startInfo,
+		ILogger logger,
+		bool forwardOutputToConsole = false)
 	{
 		logger.LogDebug("Starting host process: {File} {Args}", startInfo.FileName, string.Join(" ", startInfo.ArgumentList));
 
@@ -200,7 +216,7 @@ internal static class DevServerProcessHelper
 			EnableRaisingEvents = true
 		};
 
-		var (outputSb, errorSb) = ObserveOutputs(startInfo, "devserver", logger, process);
+		var (outputSb, errorSb) = ObserveOutputs(startInfo, "devserver", logger, process, forwardOutputToConsole);
 
 		var processExited = new TaskCompletionSource();
 		process.Exited += (_, __) =>

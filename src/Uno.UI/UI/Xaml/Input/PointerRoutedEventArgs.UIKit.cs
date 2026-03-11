@@ -10,18 +10,8 @@ using Uno.UI.Xaml.Extensions;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
-#else
-using Windows.UI.Input;
-using Windows.Devices.Input;
-#endif
-
-#if HAS_UNO_WINUI
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
-#else
-using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
-#endif
 
 namespace Microsoft.UI.Xaml.Input
 {

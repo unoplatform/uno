@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Notifications
 {
-	[SampleControlInfo("Windows.UI.Notifications")]
+	[Sample("Windows.UI.Notifications")]
 	public sealed partial class BadgeNotificationTests : Page
 	{
 		public BadgeNotificationTests()

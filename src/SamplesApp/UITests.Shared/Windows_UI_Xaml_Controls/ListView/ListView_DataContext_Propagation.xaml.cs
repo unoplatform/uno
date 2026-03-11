@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListView_DataContext_Propagation")]
+	[Sample("ListView", Name = "ListView_DataContext_Propagation")]
 	public sealed partial class ListView_DataContext_Propagation : UserControl
 	{
 		public ListView_DataContext_Propagation()

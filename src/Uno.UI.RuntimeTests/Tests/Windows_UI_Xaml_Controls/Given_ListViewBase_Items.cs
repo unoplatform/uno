@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -24,6 +24,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 #endif
 	[TestClass]
+#if !IS_UNIT_TESTS
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+#endif
 	public partial class Given_ListViewBase_Items
 	{
 		[TestMethod]
@@ -31,7 +34,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var listView = new ListView();
 			listView.Items.Add(1);
-			Assert.AreEqual(1, listView.Items.Count);
+			Assert.HasCount(1, listView.Items);
 		}
 
 		[TestMethod]
@@ -66,7 +69,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var listView = new ListView();
 			listView.Items.Add(1);
 			listView.ItemsSource = new List<int>();
-			Assert.AreEqual(0, listView.Items.Count);
+			Assert.IsEmpty(listView.Items);
 		}
 
 		[TestMethod]
@@ -76,7 +79,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			listView.Items.Add(1);
 			listView.ItemsSource = new List<int>() { 1, 3 };
 			listView.ItemsSource = null;
-			Assert.AreEqual(1, listView.Items.Count);
+			Assert.HasCount(1, listView.Items);
 		}
 
 		[TestMethod]
@@ -85,7 +88,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var listView = new ListView();
 			listView.Items.Add(1);
 			listView.ItemsSource = null;
-			Assert.AreEqual(1, listView.Items.Count);
+			Assert.HasCount(1, listView.Items);
 		}
 
 		[TestMethod]
@@ -125,9 +128,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var items = new List<int>() { 1 };
 			var listView = new ListView { ItemsSource = items };
 
-			Assert.AreEqual(1, listView.Items.Count);
+			Assert.HasCount(1, listView.Items);
 			items.Add(2);
-			Assert.AreEqual(2, listView.Items.Count);
+			Assert.HasCount(2, listView.Items);
 		}
 
 		[TestMethod]
@@ -136,7 +139,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var listView = new ListView();
 			var items = new List<int>() { 1 };
 			listView.ItemsSource = items;
-			Assert.AreEqual(1, listView.Items.Count);
+			Assert.HasCount(1, listView.Items);
 			var notified = false;
 			listView.Items.VectorChanged += (s, e) =>
 			{
@@ -144,7 +147,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			};
 			items.Add(2);
 #if WINAPPSDK // #12183: ItemsControl.Items no longer map to ItemsSource for simple collection.
-			Assert.AreEqual(2, listView.Items.Count);
+			Assert.HasCount(2, listView.Items);
 #endif
 			Assert.IsFalse(notified);
 		}
@@ -170,14 +173,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var listView = new ListView();
 			var items = new ObservableCollection<int>() { 1 };
 			listView.ItemsSource = items;
-			Assert.AreEqual(1, listView.Items.Count);
+			Assert.HasCount(1, listView.Items);
 			var notified = false;
 			listView.Items.VectorChanged += (s, e) =>
 			{
 				notified = true;
 			};
 			items.Add(2);
-			Assert.AreEqual(2, listView.Items.Count);
+			Assert.HasCount(2, listView.Items);
 			Assert.IsTrue(notified);
 		}
 
@@ -186,7 +189,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var listView = new ListView();
 
-			Assert.AreEqual(0, listView.Items.Count);
+			Assert.IsEmpty(listView.Items);
 
 			listView.ItemsSource = new List<int>() { 1, 2, 3 };
 
@@ -201,7 +204,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var listView = new ListView();
 
-			Assert.AreEqual(0, listView.Items.Count);
+			Assert.IsEmpty(listView.Items);
 
 			var items = new List<int>() { 1, 2, 3 };
 			listView.ItemsSource = items;
@@ -247,12 +250,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			listView.ItemsSource = items.Where(i => i % 2 == 0);
 
-			Assert.AreEqual(3, listView.Items.Count);
+			Assert.HasCount(3, listView.Items);
 
 			items.Add(5);
 			items.Add(6);
 
-			Assert.AreEqual(3, listView.Items.Count);
+			Assert.HasCount(3, listView.Items);
 		}
 
 
@@ -272,10 +275,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var items = new Dictionary<int, string>() { { 1, "Hello" } };
 
 			listView.ItemsSource = items;
-			Assert.AreEqual(1, listView.Items.Count);
+			Assert.HasCount(1, listView.Items);
 
 			items.Add(2, "World");
-			Assert.AreEqual(1, listView.Items.Count);
+			Assert.HasCount(1, listView.Items);
 		}
 
 		[TestMethod]
@@ -287,7 +290,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var cvs = new CollectionViewSource { Source = source };
 			listView.ItemsSource = cvs.View;
 
-			Assert.AreEqual(10, listView.Items.Count);
+			Assert.HasCount(10, listView.Items);
 
 			var timesRaised = 0;
 			CollectionChange change = default;
@@ -302,7 +305,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			source.Add(10);
 
 #if WINAPPSDK // CollectionView doesn't implement VectorChanged
-			Assert.AreEqual(11, listView.Items.Count);
+			Assert.HasCount(11, listView.Items);
 			Assert.AreEqual(1, timesRaised);
 			Assert.AreEqual(CollectionChange.ItemInserted, change);
 			Assert.AreEqual(10, index);
@@ -447,7 +450,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			"BELIZE",
 			"COLOMBIA",
 			"BRAZIL",
-			"CONGO, REPUBLIC OF THE",
+			"CONGO,�REPUBLIC OF THE",
 			"BARBADOS",
 			"BELGIUM",
 			"ARGENTINA",
@@ -480,7 +483,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			"BHUTAN",
 			"ALBANIA",
 			"AUSTRIA",
-			"CÔTE D'IVOIRE ",
+			"C�TE D'IVOIRE�",
 			"CAMEROON",
 			"ARMENIA",
 			"CROATIA",

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -28,7 +28,7 @@ using Private.Infrastructure;
 namespace UITests.Windows_Devices.Midi
 {
 	// Based on https://github.com/microsoft/Windows-universal-samples/blob/master/Samples/MIDI/cs/Scenario2_ReceiveMIDIMessages.xaml.cs
-	[SampleControlInfo("Windows.Devices", "Midi_Input")]
+	[Sample("Windows.Devices", Name = "Midi_Input")]
 	public sealed partial class MidiDeviceInput : UserControl
 	{
 		/// <summary>

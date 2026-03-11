@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX reference InfoBarPanel.properties.cpp, tag winui3/release/1.4.2
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
@@ -25,8 +26,16 @@ public partial class InfoBarPanel
 	/// <summary>
 	/// Gets the identifier for the HorizontalOrientationMargin dependency property.
 	/// </summary>
-	public static DependencyProperty HorizontalOrientationMarginProperty { get; } =
-		DependencyProperty.RegisterAttached("HorizontalOrientationMargin", typeof(Thickness), typeof(InfoBarPanel), new FrameworkPropertyMetadata(default(Thickness)));
+	public static DependencyProperty HorizontalOrientationMarginProperty
+	{
+		[DynamicDependency(nameof(GetHorizontalOrientationMargin))]
+		[DynamicDependency(nameof(SetHorizontalOrientationMargin))]
+		get;
+	} = DependencyProperty.RegisterAttached(
+			"HorizontalOrientationMargin",
+			typeof(Thickness),
+			typeof(InfoBarPanel),
+			new FrameworkPropertyMetadata(default(Thickness)));
 
 	/// <summary>
 	/// Gets and sets the distance between the edges of the InfoBarPanel
@@ -61,8 +70,16 @@ public partial class InfoBarPanel
 	/// <summary>
 	/// Gets the identifier for the VerticalOrientationMargin dependency property.
 	/// </summary>
-	public static DependencyProperty VerticalOrientationMarginProperty { get; } =
-		DependencyProperty.RegisterAttached("VerticalOrientationMargin", typeof(Thickness), typeof(InfoBarPanel), new FrameworkPropertyMetadata(default(Thickness)));
+	public static DependencyProperty VerticalOrientationMarginProperty
+	{
+		[DynamicDependency(nameof(GetVerticalOrientationMargin))]
+		[DynamicDependency(nameof(SetVerticalOrientationMargin))]
+		get;
+	} = DependencyProperty.RegisterAttached(
+			"VerticalOrientationMargin",
+			typeof(Thickness),
+			typeof(InfoBarPanel),
+			new FrameworkPropertyMetadata(default(Thickness)));
 
 	/// <summary>
 	/// Gets and sets the distance between the edges of the InfoBarPanel

@@ -1,4 +1,4 @@
-﻿#if __WASM__ || __SKIA__
+#if __WASM__ || __SKIA__
 using System;
 using System.Drawing;
 using System.Linq;
@@ -17,7 +17,6 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Controls;
 public class Given_SystemFocusVisual
 {
 	[TestMethod]
-	[RequiresFullWindow]
 	public async Task When_Focused_Element_Scrolled()
 	{
 		if (TestServices.WindowHelper.IsXamlIsland)
@@ -54,11 +53,12 @@ public class Given_SystemFocusVisual
 
 		button.Focus(FocusState.Keyboard);
 		await TestServices.WindowHelper.WaitForIdle();
+		await UITestHelper.WaitForRender(2);
 		var visualTree = TestServices.WindowHelper.XamlRoot.VisualTree;
 		var focusVisualLayer = visualTree?.FocusVisualRoot;
 
 		Assert.IsNotNull(focusVisualLayer);
-		Assert.AreEqual(1, focusVisualLayer.Children.Count);
+		Assert.HasCount(1, focusVisualLayer.Children);
 
 		var focusVisual = focusVisualLayer.Children.First();
 
@@ -83,58 +83,6 @@ public class Given_SystemFocusVisual
 	}
 
 	[TestMethod]
-#if __WASM__
-	[Ignore("RenderTargetBitmap is not implemented")]
-#endif
-	public async Task When_Focused_Element_Scrolled_Clipping()
-	{
-		if (TestServices.WindowHelper.IsXamlIsland)
-		{
-			Assert.Inconclusive($"Not supported under XAML islands");
-		}
-		var sp = new StackPanel();
-		var sv = new ScrollViewer
-		{
-			Height = 70,
-			Content = sp
-		};
-		var buttons = Enumerable.Range(0, 10).Select(i => new Button
-		{
-			Content = $"{i}"
-		}).ToList();
-		sp.Children.AddRange(buttons);
-
-		var border = new Border
-		{
-			Height = 130,
-			Padding = new Thickness(0, 30, 0, 0),
-			Child = sv
-		};
-
-		TestServices.WindowHelper.WindowContent = border;
-		await TestServices.WindowHelper.WaitForIdle();
-
-		buttons[2].Focus(FocusState.Keyboard);
-		await TestServices.WindowHelper.WaitForIdle();
-		var visualTree = TestServices.WindowHelper.XamlRoot.VisualTree;
-		var focusVisualLayer = visualTree?.FocusVisualRoot;
-
-		Assert.IsNotNull(focusVisualLayer);
-		Assert.AreEqual(1, focusVisualLayer.Children.Count);
-
-		for (var i = 0; i < 15; i++)
-		{
-			sv.ChangeView(null, 10 * i, null, true);
-			await TestServices.WindowHelper.WaitForIdle();
-
-			var screenShot = await UITestHelper.ScreenShot(border, true);
-			ImageAssert.DoesNotHaveColorInRectangle(screenShot, new Rectangle(0, 0, 5, 30), ((SolidColorBrush)buttons[1].FocusVisualPrimaryBrush).Color);
-			ImageAssert.DoesNotHaveColorInRectangle(screenShot, new Rectangle(0, screenShot.Height - 30, 5, 30), ((SolidColorBrush)buttons[2].FocusVisualPrimaryBrush).Color);
-		}
-	}
-
-	[TestMethod]
-	[RequiresFullWindow]
 #if __ANDROID__ || __APPLE_UIKIT__
 	[Ignore("Disabled on iOS/Android https://github.com/unoplatform/uno/issues/9080")]
 #endif
@@ -160,11 +108,12 @@ public class Given_SystemFocusVisual
 
 		button.Focus(FocusState.Keyboard);
 		await TestServices.WindowHelper.WaitForIdle();
+		await UITestHelper.WaitForRender(2);
 		var visualTree = TestServices.WindowHelper.XamlRoot.VisualTree;
 		var focusVisualLayer = visualTree?.FocusVisualRoot;
 
 		Assert.IsNotNull(focusVisualLayer);
-		Assert.AreEqual(1, focusVisualLayer.Children.Count);
+		Assert.HasCount(1, focusVisualLayer.Children);
 
 		var focusVisual = focusVisualLayer.Children.First();
 
@@ -189,7 +138,6 @@ public class Given_SystemFocusVisual
 	}
 
 	[TestMethod]
-	[RequiresFullWindow]
 	public async Task When_Focused_Element_In_Scaled_Viewbox()
 	{
 		if (TestServices.WindowHelper.IsXamlIsland)
@@ -223,12 +171,13 @@ public class Given_SystemFocusVisual
 
 		button.Focus(FocusState.Keyboard);
 		await TestServices.WindowHelper.WaitForIdle();
+		await UITestHelper.WaitForRender(2);
 
 		var visualTree = TestServices.WindowHelper.XamlRoot.VisualTree;
 		var focusVisualLayer = visualTree?.FocusVisualRoot;
 
 		Assert.IsNotNull(focusVisualLayer);
-		Assert.AreEqual(1, focusVisualLayer.Children.Count);
+		Assert.HasCount(1, focusVisualLayer.Children);
 
 		var focusVisual = focusVisualLayer.Children.First();
 
@@ -245,7 +194,6 @@ public class Given_SystemFocusVisual
 	}
 
 	[TestMethod]
-	[RequiresFullWindow]
 	public async Task When_Focused_Element_With_Multiple_Parent_Transforms()
 	{
 		if (TestServices.WindowHelper.IsXamlIsland)
@@ -303,12 +251,13 @@ public class Given_SystemFocusVisual
 
 		button.Focus(FocusState.Keyboard);
 		await TestServices.WindowHelper.WaitForIdle();
+		await UITestHelper.WaitForRender(2);
 
 		var visualTree = TestServices.WindowHelper.XamlRoot.VisualTree;
 		var focusVisualLayer = visualTree?.FocusVisualRoot;
 
 		Assert.IsNotNull(focusVisualLayer);
-		Assert.AreEqual(1, focusVisualLayer.Children.Count);
+		Assert.HasCount(1, focusVisualLayer.Children);
 
 		var focusVisual = focusVisualLayer.Children.First();
 

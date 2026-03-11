@@ -26,12 +26,12 @@ using Windows.ApplicationModel.DataTransfer;
 using Uno.UI;
 using DirectUI;
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 using Uno.UI.Xaml.Controls;
-#else
-using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+using System.Linq;
+#if __SKIA__
+using Microsoft.UI.Xaml.Internal;
 #endif
 
 namespace Microsoft.UI.Xaml.Controls
@@ -77,6 +77,10 @@ namespace Microsoft.UI.Xaml.Controls
 		public event RoutedEventHandler SelectionChanged;
 
 		public event TypedEventHandler<TextBox, TextBoxSelectionChangingEventArgs> SelectionChanging;
+
+#if __SKIA__
+		public event ContextMenuOpeningEventHandler ContextMenuOpening;
+#endif
 
 #if !IS_UNIT_TESTS
 		/// <summary>
@@ -141,9 +145,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void InitializePartial();
 
+		partial void OnLoadedPartial();
+
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
+
+			OnLoadedPartial();
 
 #if __ANDROID__
 			SetupTextBoxView();
@@ -237,10 +245,14 @@ namespace Microsoft.UI.Xaml.Controls
 			InitializePropertiesPartial();
 		}
 
-		protected override void OnGotFocus(RoutedEventArgs e) => StartBringIntoView(new BringIntoViewOptions
+		protected override void OnGotFocus(RoutedEventArgs e)
 		{
-			AnimationDesired = false
-		});
+			_forceFocusedVisualState = false;
+			StartBringIntoView(new BringIntoViewOptions
+			{
+				AnimationDesired = false
+			});
+		}
 
 		protected override void OnApplyTemplate()
 		{
@@ -289,11 +301,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (value == null)
 				{
-#if HAS_UNO_WINUI
 					value = string.Empty;
-#else
-					throw new ArgumentNullException();
-#endif
 				}
 
 				this.SetValue(TextProperty, value);
@@ -1014,6 +1022,14 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			OnFocusStateChangedPartial(newValue, initial);
 
+			if (_forceFocusedVisualState && newValue == FocusState.Unfocused)
+			{
+				// Context flyout is taking focus - skip binding updates and keep
+				// _hasTextChangedThisFocusSession. Deferred until actual focus loss.
+				UpdateVisualState();
+				return;
+			}
+
 			if (!initial && newValue == FocusState.Unfocused && _hasTextChangedThisFocusSession)
 			{
 				if (!_wasTemplateRecycled &&
@@ -1127,7 +1143,14 @@ namespace Microsoft.UI.Xaml.Controls
 			bool wasFocused = FocusState != FocusState.Unfocused;
 			if (!ShouldFocusOnPointerPressed(args))
 			{
-				Focus(FocusState.Pointer);
+				// Ported from: TextBoxBase.cpp OnPointerReleased
+				// Don't take focus if the context flyout is open.
+#if __SKIA__
+				if (!TextControlFlyoutHelper.IsOpen(ContextFlyout))
+#endif
+				{
+					Focus(FocusState.Pointer);
+				}
 #if __SKIA__
 				if (wasFocused)
 				{
@@ -1159,10 +1182,27 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void OnTappedPartial();
 
-		/// <inheritdoc />
+		partial void OnKeyDownPartial(KeyRoutedEventArgs args);
+
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
 		{
+			base.OnKeyDown(args);
+
 			OnKeyDownPartial(args);
+		}
+
+		private protected override void OnPostKeyDown(KeyRoutedEventArgs args)
+		{
+#if __SKIA__
+			if (_isSkiaTextBox)
+			{
+				OnKeyDownSkia(args);
+			}
+			else
+#endif
+			{
+				OnKeyDownNonSkia(args);
+			}
 
 			var modifiers = CoreImports.Input_GetKeyboardModifiers();
 			if (!args.Handled && KeyboardAcceleratorUtility.IsKeyValidForAccelerators(args.Key, KeyboardAcceleratorUtility.MapVirtualKeyModifiersToIntegersModifiers(modifiers)))
@@ -1175,17 +1215,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		partial void OnKeyDownPartial(KeyRoutedEventArgs args);
-
-#if !__SKIA__
-		partial void OnKeyDownPartial(KeyRoutedEventArgs args) => OnKeyDownInternal(args);
-#endif
-
-		private void OnKeyDownInternal(KeyRoutedEventArgs args)
+		private void OnKeyDownNonSkia(KeyRoutedEventArgs args)
 		{
-			base.OnKeyDown(args);
-
-
 			// On skia, sometimes SelectionStart is updated to a new value before KeyDown is fired, so
 			// we need to get selectionStart from another source on Skia.
 #if __SKIA__
@@ -1417,16 +1448,19 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var content = Clipboard.GetContent();
 				string clipboardText;
-				try
+				if (content.AvailableFormats.Contains(StandardDataFormats.Text))
 				{
-					clipboardText = await content.GetTextAsync();
-					PasteFromClipboard(clipboardText);
-				}
-				catch (InvalidOperationException e)
-				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
+					try
 					{
-						this.Log().Debug("TextBox.PasteFromClipboard failed during DataPackageView.GetTextAsync: " + e);
+						clipboardText = await content.GetTextAsync();
+						PasteFromClipboard(clipboardText);
+					}
+					catch (InvalidOperationException e)
+					{
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().Debug("TextBox.PasteFromClipboard failed during DataPackageView.GetTextAsync: " + e);
+						}
 					}
 				}
 			});

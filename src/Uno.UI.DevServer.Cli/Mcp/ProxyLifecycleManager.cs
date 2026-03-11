@@ -1,0 +1,605 @@
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using ModelContextProtocol.Protocol;
+using ModelContextProtocol.Server;
+
+namespace Uno.UI.DevServer.Cli.Mcp;
+
+/// <summary>
+/// Top-level orchestrator for the MCP stdio-to-HTTP bridge lifecycle. Manages root initialization,
+/// DevServer startup, cache priming, and event wiring between the other MCP components.
+/// </summary>
+/// <seealso cref="MonitorDecisions"/>
+/// <seealso href="../../../specs/001-fast-devserver-startup/spec-appendix-d-mcp-improvements.md"/>
+internal class ProxyLifecycleManager
+{
+	private readonly ILogger<ProxyLifecycleManager> _logger;
+	private readonly DevServerMonitor _devServerMonitor;
+	private readonly McpUpstreamClient _mcpUpstreamClient;
+	private readonly HealthService _healthService;
+	private readonly ToolListManager _toolListManager;
+	private readonly McpStdioServer _mcpStdioServer;
+	private readonly Tool _addRootsTool;
+	private bool _waitForTools;
+	private bool _forceRootsFallback;
+	private bool _forceGenerateToolCache;
+	private string? _solutionDirectory;
+	private readonly MonitorDecisions.StartOnceGuard _devServerStartGuard = new();
+
+	// ┌──────────────────────────────────────────────────────────────────┐
+	// │              Observational Connection State Machine              │
+	// │                                                                  │
+	// │  Initializing                                                    │
+	// │       │                                                          │
+	// │       │ StartDevServerMonitor()                                  │
+	// │       v                                                          │
+	// │  Discovering ───[SDK/host resolved]───> Launching                │
+	// │       │                                      │                   │
+	// │       │ [resolution failed]                  │ [process ready]   │
+	// │       v                                      v                   │
+	// │  Degraded <──[max retries]──           Connecting                │
+	// │       ^                        │             │                   │
+	// │       │                        │             │ [toolListChanged] │
+	// │       │                        │             v                   │
+	// │       │                        └──────  Connected                │
+	// │       │                                      │                   │
+	// │       │                                      │ [ServerCrashed]   │
+	// │       │                                      v                   │
+	// │       └──[max reconnections]──         Reconnecting              │
+	// │                                           │                      │
+	// │                                           │ [retry]              │
+	// │                                           v                      │
+	// │                                       Discovering (cycle)        │
+	// │                                                                  │
+	// │  Any state ──[clean shutdown]──> Shutdown                        │
+	// └──────────────────────────────────────────────────────────────────┘
+	//
+	// This state machine does NOT drive behavior — it observes the state
+	// resulting from DevServerMonitor events and McpUpstreamClient callbacks.
+	// Consumers: HealthService (diagnostics), McpStdioServer (error messages).
+	//
+	// Two separate counters:
+	//   - DevServerMonitor: retry counter for initial startup failures
+	//   - _reconnectionAttempts: crash→restart cycles (reset on Connected)
+
+	private ConnectionState _connectionState = ConnectionState.Initializing;
+	private int _reconnectionAttempts;
+	private const int MaxReconnectionAttempts = 3;
+	private string? _currentDirectory;
+	private string? _workspaceHash;
+	private int _devServerPort;
+	private List<string> _forwardedArgs = [];
+	private string[] _roots = [];
+	private TaskCompletionSource<bool>? _toolCachePrimedTcs;
+	private Task? _cachePrimedWatcher;
+
+	public ProxyLifecycleManager(ILogger<ProxyLifecycleManager> logger, DevServerMonitor devServerMonitor, McpUpstreamClient mcpUpstreamClient, HealthService healthService, ToolListManager toolListManager, McpStdioServer mcpStdioServer)
+	{
+		_logger = logger;
+		_devServerMonitor = devServerMonitor;
+		_mcpUpstreamClient = mcpUpstreamClient;
+		_healthService = healthService;
+		_toolListManager = toolListManager;
+		_mcpStdioServer = mcpStdioServer;
+
+		_addRootsTool = McpServerTool.Create(SetRoots, new() { Name = "uno_app_set_roots" }).ProtocolTool;
+	}
+
+	internal ConnectionState ConnectionState => _connectionState;
+
+	private void SetConnectionState(ConnectionState newState)
+	{
+		var oldState = _connectionState;
+		_connectionState = newState;
+		_healthService.ConnectionState = newState;
+		_logger.LogInformation("Connection state: {OldState} -> {NewState}", oldState, newState);
+	}
+
+	public async Task<int> RunAsync(
+		string currentDirectory,
+		int port,
+		List<string> forwardedArgs,
+		bool waitForTools,
+		bool forceRootsFallback,
+		bool forceGenerateToolCache,
+		string? solutionDirectory,
+		CancellationToken ct)
+	{
+		_waitForTools = waitForTools;
+		_forceRootsFallback = forceRootsFallback;
+		_forceGenerateToolCache = forceGenerateToolCache;
+		_currentDirectory = currentDirectory;
+		_devServerPort = port;
+		_forwardedArgs = forwardedArgs;
+		_solutionDirectory = NormalizeSolutionDirectory(solutionDirectory);
+		_workspaceHash = ToolCacheFile.ComputeWorkspaceHash(_solutionDirectory);
+		_toolListManager.WorkspaceHash = _workspaceHash;
+		_toolListManager.IsToolCacheEnabled = true;
+		_toolListManager.OnToolCachePersisted = () => _toolCachePrimedTcs?.TrySetResult(true);
+		_toolListManager.OnToolCachePersistFailed = ex => FailToolCachePriming(ex);
+		InitializeToolCachePrimingTracker();
+
+		EnsureDevServerStartedFromSolutionDirectory();
+
+		try
+		{
+			var exitCode = await StartMcpStdIoProxyAsync(ct);
+
+			if (!await EnsureCachePrimingCompletedAsync())
+			{
+				return 1;
+			}
+
+			return exitCode;
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Stdio server error: {Message}", ex.Message);
+			return 1;
+		}
+	}
+
+	[Description("This tool MUST be called before other uno app tools to initialize properly")]
+	private async Task SetRoots([Description("Fully qualified root folder path for the workspace")] string[] roots)
+	{
+		var normalizedRoots = roots ?? Array.Empty<string>();
+		_logger.LogTrace("SetRoots invoked with {Count} roots: {Roots}", normalizedRoots.Length, string.Join(", ", normalizedRoots));
+		_roots = normalizedRoots;
+
+		await ProcessRoots();
+	}
+
+	private async Task ProcessRoots()
+	{
+		_logger.LogTrace("Processing MCP Client Roots: {Roots}", string.Join(", ", _roots));
+
+		if (_devServerStartGuard.IsStarted)
+		{
+			_logger.LogTrace("DevServer monitor already running; skipping additional root processing");
+			return;
+		}
+
+		if (_roots.FirstOrDefault() is { } rootUri)
+		{
+			var rootPath = GetRootPath(rootUri);
+			if (!string.IsNullOrWhiteSpace(rootPath))
+			{
+				_logger.LogTrace("Resolved MCP root '{RootUri}' into path '{RootPath}'", rootUri, rootPath);
+				StartDevServerMonitor(rootPath);
+			}
+			else
+			{
+				_logger.LogWarning("Unable to resolve MCP root '{RootUri}' to a local path", rootUri);
+			}
+		}
+		else if (!_forceRootsFallback)
+		{
+			_logger.LogWarning("No roots found and roots fallback is disabled; devserver was not started");
+		}
+	}
+
+	private string? GetRootPath(string rootUri)
+	{
+		_logger.LogTrace("Attempting to resolve root URI '{RootUri}' using current directory '{CurrentDirectory}'", rootUri, _currentDirectory);
+
+		if (Uri.TryCreate(rootUri, UriKind.Absolute, out var absoluteUri) && absoluteUri.IsFile)
+		{
+			var normalizedPath = NormalizeLocalFilePath(absoluteUri.LocalPath);
+			return Path.GetFullPath(normalizedPath);
+		}
+
+		if (Path.IsPathRooted(rootUri))
+		{
+			return Path.GetFullPath(rootUri);
+		}
+
+		if (!string.IsNullOrWhiteSpace(_currentDirectory))
+		{
+			var combined = Path.Combine(_currentDirectory, rootUri);
+			return Path.GetFullPath(combined);
+		}
+
+		_logger.LogWarning("Unable to resolve MCP root path from '{RootUri}'", rootUri);
+		return null;
+	}
+
+	private static string NormalizeLocalFilePath(string localPath)
+	{
+		if (!OperatingSystem.IsWindows())
+		{
+			return localPath;
+		}
+
+		// Windows file URIs (file:///c:/...) can include a leading slash in LocalPath ("/c:/...")
+		// which later causes Path.GetFullPath to produce invalid "c:\c:\" style paths. Only strip
+		// the leading slash when it matches the drive letter pattern `/X:/` to avoid altering other
+		// path formats unnecessarily.
+		if (localPath.Length >= 3
+			&& localPath[0] == '/'
+			&& char.IsLetter(localPath[1])
+			&& localPath[2] == ':')
+		{
+			return localPath[1..];
+		}
+
+		return localPath;
+	}
+
+	private void EnsureDevServerStartedFromSolutionDirectory()
+	{
+		if (_forceRootsFallback)
+		{
+			_logger.LogTrace("Roots fallback is enabled; skipping initial DevServer start (waiting for roots)");
+			return;
+		}
+
+		var directory = string.IsNullOrWhiteSpace(_solutionDirectory)
+			? _currentDirectory
+			: _solutionDirectory;
+
+		_logger.LogTrace(
+			"EnsureDevServerStartedFromSolutionDirectory (solutionDir: {SolutionDir}, currentDir: {CurrentDir})",
+			_solutionDirectory,
+			_currentDirectory);
+
+		if (string.IsNullOrWhiteSpace(directory))
+		{
+			_logger.LogTrace("No directory available to start the DevServer monitor; skipping initial start");
+			return;
+		}
+
+		StartDevServerMonitor(directory);
+	}
+
+	private void StartDevServerMonitor(string? directory)
+	{
+		if (!_devServerStartGuard.TryStart())
+		{
+			_logger.LogTrace("StartDevServerMonitor called but monitor already running");
+			return;
+		}
+
+		var normalized = NormalizeSolutionDirectory(directory);
+		if (string.IsNullOrWhiteSpace(normalized))
+		{
+			_logger.LogWarning("Unable to start DevServer monitor because the solution directory '{Directory}' is invalid", directory);
+			_devServerStartGuard.Reset();
+			FailToolCachePriming();
+			return;
+		}
+
+		_logger.LogTrace("Starting DevServer monitor using solution directory {Directory}", normalized);
+		try
+		{
+			if (string.IsNullOrEmpty(_workspaceHash))
+			{
+				_workspaceHash = ToolCacheFile.ComputeWorkspaceHash(normalized);
+				_toolListManager.WorkspaceHash = _workspaceHash;
+			}
+			_devServerMonitor.StartMonitoring(normalized, _devServerPort, _forwardedArgs);
+			_healthService.DevServerStarted = true;
+			SetConnectionState(ConnectionState.Discovering);
+			_logger.LogTrace("DevServer monitor started for {Directory} (port: {Port}, forwardedArgs: {Args})", normalized, _devServerPort, string.Join(" ", _forwardedArgs));
+		}
+		catch (Exception ex)
+		{
+			_logger.LogWarning(ex, "Unable to start DevServer monitor for solution directory '{Directory}'", normalized);
+			_devServerStartGuard.Reset();
+			FailToolCachePriming(ex);
+		}
+	}
+
+	private string? NormalizeSolutionDirectory(string? directory)
+	{
+		if (string.IsNullOrWhiteSpace(directory))
+		{
+			return null;
+		}
+
+		try
+		{
+			var basePath = _currentDirectory ?? Environment.CurrentDirectory;
+			var combined = Path.IsPathRooted(directory)
+				? directory
+				: Path.Combine(basePath, directory);
+			return Path.GetFullPath(combined);
+		}
+		catch (Exception ex)
+		{
+			_logger.LogWarning(ex, "Unable to normalize solution directory '{Directory}'", directory);
+			return null;
+		}
+	}
+
+	private void InitializeToolCachePrimingTracker()
+	{
+		if (!_forceGenerateToolCache)
+		{
+			_toolCachePrimedTcs = null;
+			_cachePrimedWatcher = null;
+			return;
+		}
+
+		_toolCachePrimedTcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
+		_cachePrimedWatcher = null;
+	}
+
+	private void FailToolCachePriming(Exception? ex = null)
+	{
+		if (_toolCachePrimedTcs is null)
+		{
+			return;
+		}
+
+		if (ex is not null)
+		{
+			_toolCachePrimedTcs.TrySetException(ex);
+		}
+		else
+		{
+			_toolCachePrimedTcs.TrySetResult(false);
+		}
+	}
+
+	private async Task<bool> EnsureCachePrimingCompletedAsync()
+	{
+		if (!_forceGenerateToolCache)
+		{
+			return true;
+		}
+
+		if (_toolCachePrimedTcs is null)
+		{
+			_logger.LogError("Tool cache priming tracker was not initialized");
+			return false;
+		}
+
+		try
+		{
+			var result = await _toolCachePrimedTcs.Task;
+			if (!result)
+			{
+				_logger.LogError("Tool cache priming failed");
+			}
+			return result;
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Tool cache priming failed with an exception");
+			return false;
+		}
+	}
+
+	private void StartCachePrimingWatcher(IHost host)
+	{
+		if (!_forceGenerateToolCache || _toolCachePrimedTcs is null)
+		{
+			return;
+		}
+
+		_cachePrimedWatcher = CachePrimingWatcherAsync(host);
+	}
+
+	private async Task CachePrimingWatcherAsync(IHost host)
+	{
+		try
+		{
+			try
+			{
+				var result = await _toolCachePrimedTcs!.Task.ConfigureAwait(false);
+
+				if (result)
+				{
+					_logger.LogInformation("Tool cache primed successfully; stopping stdio server");
+				}
+				else
+				{
+					_logger.LogWarning("Tool cache priming failed; stopping stdio server");
+				}
+			}
+			catch (OperationCanceledException)
+			{
+				_logger.LogInformation("Tool cache priming was canceled; stopping stdio server");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Tool cache priming failed with an exception; stopping stdio server");
+			}
+
+			try
+			{
+				await host.StopAsync().ConfigureAwait(false);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogWarning(ex, "Error while stopping stdio server after tool cache priming");
+			}
+		}
+		catch (Exception ex)
+		{
+			_logger.LogWarning(ex, "Unexpected error in cache priming watcher");
+		}
+	}
+
+	private async Task<int> StartMcpStdIoProxyAsync(CancellationToken ct)
+	{
+		var (host, tcs) = _mcpStdioServer.BuildHost(
+			EnsureRootsInitialized,
+			_addRootsTool,
+			_forceRootsFallback,
+			() => _roots,
+			async roots => await SetRoots(roots));
+
+		StartCachePrimingWatcher(host);
+
+		_devServerMonitor.ServerLaunching += () =>
+		{
+			SetConnectionState(ConnectionState.Launching);
+		};
+
+		_devServerMonitor.ServerStarted += _ =>
+		{
+			SetConnectionState(ConnectionState.Connecting);
+		};
+
+		_mcpUpstreamClient.RegisterToolListChangedCallback(async () =>
+		{
+			_logger.LogTrace("Upstream tool list changed");
+
+			SetConnectionState(ConnectionState.Connected);
+			_reconnectionAttempts = 0;
+
+			_toolListManager.MarkShouldRefresh();
+
+			await _toolListManager.RefreshCachedToolsFromUpstreamAsync();
+
+			tcs.TrySetResult();
+
+			await host.Services.GetRequiredService<McpServer>().SendNotificationAsync(
+				NotificationMethods.ToolListChangedNotification,
+				new ToolListChangedNotificationParams()
+			);
+		});
+
+		_devServerMonitor.ServerCrashed += () =>
+		{
+			_reconnectionAttempts++;
+			if (_reconnectionAttempts > MaxReconnectionAttempts)
+			{
+				_logger.LogError("DevServer crashed {Attempts} times, entering degraded mode", _reconnectionAttempts);
+				SetConnectionState(ConnectionState.Degraded);
+			}
+			else
+			{
+				_logger.LogWarning(
+					"DevServer crashed (attempt {Attempt}/{Max}), resetting connection for reconnection",
+					_reconnectionAttempts, MaxReconnectionAttempts);
+				SetConnectionState(ConnectionState.Reconnecting);
+				_ = _mcpUpstreamClient.ResetConnectionAsync();
+			}
+		};
+
+		_devServerMonitor.ServerFailed += () =>
+		{
+			_logger.LogError("DevServer failed to start, stopping stdio server");
+			SetConnectionState(ConnectionState.Degraded);
+			FailToolCachePriming();
+			_ = Task.Run(async () =>
+			{
+				try
+				{
+					await host.StopAsync().ConfigureAwait(false);
+				}
+				catch (Exception ex)
+				{
+					_logger.LogError(ex, "Error while stopping stdio server host after DevServer failure.");
+				}
+			});
+		};
+
+		try
+		{
+			await host.RunAsync();
+		}
+		finally
+		{
+			SetConnectionState(ConnectionState.Shutdown);
+			await _mcpUpstreamClient.DisposeAsync();
+			await _devServerMonitor.StopMonitoringAsync();
+		}
+
+		return 0;
+	}
+
+	private async Task EnsureRootsInitialized(RequestContext<ListToolsRequestParams> ctx, TaskCompletionSource tcs, CancellationToken ct)
+	{
+		if (_roots.Length != 0)
+		{
+			// Already initialized
+			return;
+		}
+
+		var clientSupportsRoots = MonitorDecisions.DetermineClientSupportsRoots(
+			_forceRootsFallback,
+			rootsCapabilityPresent: ctx.Server.ClientCapabilities?.Roots is not null);
+
+		if (!_forceRootsFallback)
+		{
+			var fallbackRoot = BuildFallbackRoot();
+
+			if (clientSupportsRoots)
+			{
+				var roots = await ctx.Server.RequestRootsAsync(new(), ct);
+
+				_logger.LogTrace("MCP Client supports roots: {Roots}", string.Join(", ", roots.Roots.Select(r => r.Uri)));
+
+				if (roots.Roots.Count != 0)
+				{
+					_roots = [.. roots.Roots.Select(r => r.Uri)];
+				}
+				else
+				{
+					_logger.LogTrace("MCP client returned no roots; defaulting to {FallbackRoot}", fallbackRoot);
+					_roots = [fallbackRoot];
+				}
+			}
+			else
+			{
+				_logger.LogTrace("MCP Client does not support roots; defaulting to {FallbackRoot}", fallbackRoot);
+				_roots = [fallbackRoot];
+			}
+
+			await ProcessRoots();
+		}
+
+		// When there are no cached tools, wait for the upstream server to start
+		// so the first list_tools response includes real tools. Clients that support
+		// tools/list_changed will get updates later; those that don't still get tools
+		// on the first call thanks to this wait.
+		if ((!_forceRootsFallback || !clientSupportsRoots) &&
+			(_waitForTools
+			|| !_toolListManager.HasCachedTools)
+		)
+		{
+			_logger.LogTrace("No cached tools available, waiting for upstream server to start");
+
+			using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+			timeoutCts.CancelAfter(ToolListManager.ListToolsTimeoutMs);
+
+			try
+			{
+				await tcs.Task.WaitAsync(timeoutCts.Token);
+			}
+			catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+			{
+				_logger.LogWarning("Timed out waiting for upstream tools after {Timeout}ms", ToolListManager.ListToolsTimeoutMs);
+			}
+		}
+	}
+
+	private string BuildFallbackRoot()
+	{
+		var directory = _solutionDirectory ?? _currentDirectory ?? Environment.CurrentDirectory;
+
+		try
+		{
+			var fullPath = Path.GetFullPath(directory);
+			if (Uri.TryCreate(fullPath, UriKind.Absolute, out var uri) && uri.IsAbsoluteUri)
+			{
+				return uri.ToString();
+			}
+
+			return fullPath;
+		}
+		catch (Exception ex)
+		{
+			_logger.LogDebug(ex, "Unable to normalize fallback root '{Directory}'", directory);
+			return directory;
+		}
+	}
+
+}

@@ -41,4 +41,4 @@ Some WinRT APIs are unsupported in WinUI 3 Desktop apps, notably `CoreDispatcher
 
 ## Creating an application from the templates
 
-Instructions are available [here](get-started-winui3.md) for creating a new Uno Platform application targeting WinUI 3.
+Instructions are available in [Getting started with WinUI 3](get-started-winui3.md) for creating a new Uno Platform application targeting WinUI 3.

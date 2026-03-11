@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -21,7 +21,7 @@ using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 {
-	[SampleControlInfo("UIElement", nameof(Arrange_Performance01))]
+	[Sample("UIElement", Name = nameof(Arrange_Performance01))]
 	public sealed partial class Arrange_Performance01 : UserControl
 	{
 

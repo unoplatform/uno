@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests
 {
-	[SampleControlInfo("TextBox", "TextBox_Disabled", description: "Illustrates that disabling TextBox actually disables it.")]
+	[Sample("TextBox", Name = "TextBox_Disabled", Description = "Illustrates that disabling TextBox actually disables it.")]
 	public sealed partial class TextBox_Disabled : UserControl
 	{
 		public TextBox_Disabled()

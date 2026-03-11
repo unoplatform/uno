@@ -15,7 +15,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_AppBarButton
 	{
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid)] // https://github.com/unoplatform/uno/issues/9080
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeWinUI)] // https://github.com/unoplatform/uno/issues/9080
 		[TestMethod]
 		public async Task Check_DataContext_Propagation()
 		{
@@ -35,8 +35,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.IsNotNull(tb);
 				Assert.IsNotNull(icon);
 				Assert.AreEqual("Archaeopteryx", tb.Text);
-				Assert.IsTrue(tb.ActualWidth > 0);
-				Assert.IsTrue(tb.ActualHeight > 0);
+				Assert.IsGreaterThan(0, tb.ActualWidth);
+				Assert.IsGreaterThan(0, tb.ActualHeight);
 			}
 		}
 

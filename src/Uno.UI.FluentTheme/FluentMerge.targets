@@ -4,9 +4,6 @@
 	<PageExclusions>$(MSBuildThisFileDirectory)Resources\**\*.xaml</PageExclusions>
   </PropertyGroup>
 
-  <UsingTask TaskName="BatchMergeXaml" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" />
-
-
   <PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='Reference'">
 	<EnableAutomaticXamlPageInclusion>false</EnableAutomaticXamlPageInclusion>
   </PropertyGroup>

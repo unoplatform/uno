@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,7 +17,7 @@ using Uno.UI;
 
 namespace UITests.Windows_UI_Xaml_Controls.ToolTip
 {
-	[SampleControlInfo(nameof(ToolTip), nameof(ToolTip_DynamicContent), description: SampleDescription)]
+	[Sample(nameof(ToolTip), nameof(ToolTip_DynamicContent), Description = SampleDescription)]
 	public sealed partial class ToolTip_DynamicContent : Page
 	{
 		private const string SampleDescription =

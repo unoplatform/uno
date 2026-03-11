@@ -1,6 +1,7 @@
 ﻿using Uno.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Collections.Specialized;
 using System.Linq;
@@ -51,8 +52,16 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		public static void SetTargetName(Timeline element, string name) => element.SetValue(TargetNameProperty, name);
 
 		// Using a DependencyProperty as the backing store for TargetName.  This enables animation, styling, binding, etc...
-		public static DependencyProperty TargetNameProperty { get; } =
-			DependencyProperty.RegisterAttached("TargetName", typeof(string), typeof(Storyboard), new FrameworkPropertyMetadata(string.Empty));
+		public static DependencyProperty TargetNameProperty
+		{
+			[DynamicDependency(nameof(GetTargetName))]
+			[DynamicDependency(nameof(SetTargetName))]
+			get;
+		} = DependencyProperty.RegisterAttached(
+				"TargetName",
+				typeof(string),
+				typeof(Storyboard),
+				new FrameworkPropertyMetadata(string.Empty));
 		#endregion
 
 		#region TargetProperty Attached Property
@@ -61,8 +70,16 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		public static void SetTargetProperty(Timeline element, string path) => element.SetValue(TargetPropertyProperty, path);
 
 		// Using a DependencyProperty as the backing store for TargetProperty.  This enables animation, styling, binding, etc...
-		public static DependencyProperty TargetPropertyProperty { get; } =
-			DependencyProperty.RegisterAttached("TargetProperty", typeof(string), typeof(Storyboard), new FrameworkPropertyMetadata(string.Empty));
+		public static DependencyProperty TargetPropertyProperty
+		{
+			[DynamicDependency(nameof(GetTargetProperty))]
+			[DynamicDependency(nameof(SetTargetProperty))]
+			get;
+		} = DependencyProperty.RegisterAttached(
+				"TargetProperty",
+				typeof(string),
+				typeof(Storyboard),
+				new FrameworkPropertyMetadata(string.Empty));
 		#endregion
 
 		public static void SetTarget(Timeline timeline, DependencyObject target) => timeline.Target = target;

@@ -1,9 +1,9 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
-	[SampleControlInfo("TextBox", "TextBox_HorizontalAlignment")]
+	[Sample("TextBox", Name = "TextBox_HorizontalAlignment")]
 	public sealed partial class TextBox_HorizontalAlignment : UserControl
 	{
 		public TextBox_HorizontalAlignment()

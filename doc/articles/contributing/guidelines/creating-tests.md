@@ -96,12 +96,12 @@ Note: there may be 'false positives' in the comparison results due to inherently
 
 ### Excluding snapshots from comparison
 
-Skip screenshot for static sample:
+Skip screenshot for static sample using `IgnoreInSnapshotTests`:
 
 ```csharp
 namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl;
 
-[SampleControlInfo(ignoreInSnapshotTests: true)]
+[Sample("Button", IgnoreInSnapshotTests = true)]
 public sealed partial class CheckBox_Button_With_CanExecute_Changing : UserControl
 {
   ...

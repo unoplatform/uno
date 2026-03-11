@@ -76,6 +76,7 @@ Here are the supported features:
 | `Navigation`         | Adds support for [Navigation](xref:Uno.Extensions.Navigation.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                               |
 | `Prism`              | Adds [Prism](https://github.com/PrismLibrary/Prism) support for Uno Platform applications WinUI.                                                                                                                                           |
 | `Serialization`      | Adds support for [Serialization](xref:Uno.Extensions.Serialization.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                         |
+| `SimpleTheme`        | Adds support for the [Simple Design Theme](xref:Uno.Themes.Simple.GetStarted) library. If the `Toolkit` feature is also used, it will add support for the Simple Design Toolkit library.                                                    |
 | `Skia`               | Adds support for [SkiaSharp](https://github.com/mono/SkiaSharp).                                                                                                                                                                           |
 | `SkiaRenderer`       | Adds support for using Skia as the graphics rendering engine. For more details, see [Skia Rendering documentation](xref:uno.features.renderer.skia).                                                                                               |
 | `Storage`            | Adds support for [Storage](xref:Uno.Extensions.Storage.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                                     |
@@ -301,7 +302,7 @@ As discussed above setting `EnableDefaultUnoItems` to false will disable these i
 >
 > ```xml
 > <Target Name="AdjustAppItemGroups" BeforeTargets="ResolveAssemblyReferences">
->     <ItemGroup Condition="'$(TargetFramework)' == 'net9.0-browserwasm'">
+>     <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-browserwasm'">
 >         <None Remove="Page.xaml"/>
 >         <Page Remove="Page.xaml"/>
 >     </ItemGroup>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,7 +19,7 @@ using Windows.UI.Popups;
 
 namespace Uno.UI.Samples.Content.UITests.CommandBar
 {
-	[SampleControlInfo("CommandBar", "Examples")]
+	[Sample("CommandBar", Name = "Examples")]
 	public sealed partial class CommandBar_Examples : UserControl
 	{
 		public CommandBar_Examples()

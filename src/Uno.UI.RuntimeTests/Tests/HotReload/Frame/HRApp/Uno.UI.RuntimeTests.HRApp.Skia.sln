@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.7.33808.371
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11206.111
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.RuntimeTests.HRApp.Skia", "Uno.UI.RuntimeTests.HRApp.Skia.csproj", "{D93B081A-D590-4BC0-99BD-C2FF7FCF2BCF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uno.UI.RuntimeTests.HRUnoLib", "..\HRUnoLib\Uno.UI.RuntimeTests.HRUnoLib.csproj", "{78116CEE-9DE4-75C6-F79E-5F089E7D71A2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{D93B081A-D590-4BC0-99BD-C2FF7FCF2BCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D93B081A-D590-4BC0-99BD-C2FF7FCF2BCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D93B081A-D590-4BC0-99BD-C2FF7FCF2BCF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78116CEE-9DE4-75C6-F79E-5F089E7D71A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78116CEE-9DE4-75C6-F79E-5F089E7D71A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78116CEE-9DE4-75C6-F79E-5F089E7D71A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78116CEE-9DE4-75C6-F79E-5F089E7D71A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

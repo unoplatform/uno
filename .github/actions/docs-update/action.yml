@@ -7,10 +7,6 @@ inputs:
     required: true
     default: 'master'
 
-  github_token:
-  description: 'GitHub token used for authenticated API calls'
-  required: false
-
 outputs:
   has_changes:
     description: 'Whether changes were detected'
@@ -27,7 +23,6 @@ runs:
     - name: Update external docs commit hashes
       shell: pwsh
       run: |
-        $env:GITHUB_TOKEN = '${{ inputs.github_token }}'
         ./doc/update_external_docs_hashes.ps1 -Branch '${{ inputs.branch }}'
 
     - name: Check for changes

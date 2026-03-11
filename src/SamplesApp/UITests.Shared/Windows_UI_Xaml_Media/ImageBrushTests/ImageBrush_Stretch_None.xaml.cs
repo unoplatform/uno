@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 {
-	[SampleControlInfo("Brushes", "ImageBrush_Stretch_None")]
+	[Sample("Brushes", Name = "ImageBrush_Stretch_None")]
 	public sealed partial class ImageBrush_Stretch_None : UserControl
 	{
 		public ImageBrush_Stretch_None()
