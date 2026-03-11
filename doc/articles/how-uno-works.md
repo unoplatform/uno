@@ -14,7 +14,7 @@ The [`Uno.WinUI` NuGet package](https://www.nuget.org/packages/Uno.WinUI/) and [
 - The support for cross-platform non-UI APIs, such as file system access, devices and sensors, pickers, etc...
 
 > [!NOTE]
-> As the API surface is very large, some parts are included but not implemented. These features are marked with the [`Uno.NotImplementedAttribute`] attribute, and a code analyzer is included with the Uno.WinUI package will generate a warning for any such features that are referenced. You can see a complete list of supported APIs [here](implemented-views.md).
+> As the API surface is very large, some parts are included but not implemented. These features are marked with the [`Uno.NotImplementedAttribute`] attribute, and a code analyzer is included with the Uno.WinUI package will generate a warning for any such features that are referenced. You can see a complete list of supported APIs in the [implemented views documentation](implemented-views.md).
 
 ## Rendering the UI
 

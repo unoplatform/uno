@@ -1,9 +1,9 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListView_DataTemplateSelector")]
+	[Sample("ListView", Name = "ListView_DataTemplateSelector")]
 	public sealed partial class ListView_DataTemplateSelector : UserControl
 	{
 		public ListView_DataTemplateSelector()

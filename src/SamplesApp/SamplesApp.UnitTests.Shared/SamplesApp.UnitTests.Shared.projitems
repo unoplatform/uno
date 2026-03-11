@@ -28,7 +28,7 @@
       <DependentUpon>SampleChooserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Controls\SampleControl.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Controls\SampleControlInfoAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Controls\SampleAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Controls\SampleInfoControl.xaml.cs">
       <DependentUpon>SampleInfoControl.xaml</DependentUpon>
     </Compile>

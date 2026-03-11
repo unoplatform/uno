@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.Samples.Controls;
 using System;
@@ -24,7 +24,7 @@ using Windows.UI.Input;
 
 namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 {
-	[SampleControlInfo("Gesture Recognizer", "Pointer Events test bench")]
+	[Sample("Gesture Recognizer", Name = "Pointer Events test bench")]
 	public sealed partial class PointersEvents : Page
 	{
 		private static readonly IDictionary<string, ManipulationModes> _manipulationModes = new Dictionary<string, ManipulationModes>
@@ -308,9 +308,9 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 			public string Errors { get; }
 
 			public string ValidityBullet
-				=> Validity == EventValidity.Valid ? "🟩 ok"
-					: Validity == EventValidity.SequenceValid ? $"🟨 ~ok ({Errors})"
-					: $"🟥 error ({Errors})";
+				=> Validity == EventValidity.Valid ? "?? ok"
+					: Validity == EventValidity.SequenceValid ? $"?? ~ok ({Errors})"
+					: $"?? error ({Errors})";
 
 			public string Details { get; }
 
@@ -362,8 +362,8 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 				=> $"src={(args.OriginalSource as FrameworkElement)?.Name ?? args.OriginalSource.GetType().Name} ";
 
 			private static string F(ManipulationDelta delta, ManipulationDelta cumulative)
-				=> $"X=(Σ:{cumulative.Translation.X:' '000.00;'-'000.00} / Δ:{delta.Translation.X:' '00.00;'-'00.00}) "
-				+ $"| Y=(Σ:{cumulative.Translation.Y:' '000.00;'-'000.00} / Δ:{delta.Translation.Y:' '00.00;'-'00.00}) ";
+				=> $"X=(S:{cumulative.Translation.X:' '000.00;'-'000.00} / ?:{delta.Translation.X:' '00.00;'-'00.00}) "
+				+ $"| Y=(S:{cumulative.Translation.Y:' '000.00;'-'000.00} / ?:{delta.Translation.Y:' '00.00;'-'00.00}) ";
 
 			private static string F(global::Windows.Foundation.Point pt)
 				=> $"[{pt.X:F2}, {pt.Y:F2}]";

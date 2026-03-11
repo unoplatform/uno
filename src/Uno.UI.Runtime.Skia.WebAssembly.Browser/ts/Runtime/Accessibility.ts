@@ -9,20 +9,6 @@ namespace Uno.UI.Runtime.Skia {
 		private static managedOnScroll: any;
 		private static containerElement: HTMLElement;
 
-		private constructor() {
-		}
-
-		private static async buildImports() {
-			let anyModule = <any>window.Module;
-
-			if (anyModule.getAssemblyExports !== undefined) {
-				const browserExports = await anyModule.getAssemblyExports("Uno.UI.Runtime.Skia.WebAssembly.Browser");
-
-				this.managedEnableAccessibility = browserExports.Uno.UI.Runtime.Skia.WebAssemblyAccessibility.EnableAccessibility;
-				this.managedOnScroll = browserExports.Uno.UI.Runtime.Skia.WebAssemblyAccessibility.OnScroll;
-			}
-		}
-
 		private static createLiveElement(kind: string) {
 			const element = document.createElement("div");
 			element.classList.add("uno-aria-live");
@@ -30,8 +16,11 @@ namespace Uno.UI.Runtime.Skia {
 			return element;
 		}
 
-		public static async setup() {
-			await this.buildImports();
+		public static setup() {
+			const browserExports = WebAssemblyWindowWrapper.getAssemblyExports();
+			this.managedEnableAccessibility = browserExports.Uno.UI.Runtime.Skia.WebAssemblyAccessibility.EnableAccessibility;
+			this.managedOnScroll = browserExports.Uno.UI.Runtime.Skia.WebAssemblyAccessibility.OnScroll;
+
 			this.containerElement = document.getElementById("uno-body");
 			this.politeElement = Accessibility.createLiveElement("polite");
 			this.assertiveElement = Accessibility.createLiveElement("assertive");

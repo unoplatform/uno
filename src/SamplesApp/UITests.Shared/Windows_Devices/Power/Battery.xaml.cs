@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,7 +21,7 @@ using Windows.ApplicationModel.Appointments;
 namespace UITests.Windows_Devices.Power
 {
 
-	[SampleControlInfo("Windows.Devices.Power", "Battery")]
+	[Sample("Windows.Devices.Power", Name = "Battery")]
 	public sealed partial class Battery : Page
 	{
 		public Battery()

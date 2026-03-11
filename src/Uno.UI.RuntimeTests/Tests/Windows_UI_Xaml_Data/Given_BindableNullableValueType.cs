@@ -11,6 +11,7 @@ public class Given_BindableNullableValueType
 {
 	[TestMethod]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_BindableNullableValueTypeTestPage()
 	{
 		var x = new BindableNullableValueTypeTestPage();

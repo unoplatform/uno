@@ -9,7 +9,7 @@
         HorizontalAlignment="Center"
         VerticalAlignment="Center">
         <TextBlock AutomationProperties.AutomationId="HelloTextBlock"
-          Text="Hello Uno Platform!"
+          Text="{Binding HelloModel.HelloEntity.Text}"
           HorizontalAlignment="Center" />
       </StackPanel>
     </Grid>

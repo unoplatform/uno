@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,7 +21,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[SampleControlInfo("TextBox", ignoreInSnapshotTests: true /*Keyboard is midway through appearing*/)]
+	[Sample("TextBox", IgnoreInSnapshotTests = true /*Keyboard is midway through appearing*/)]
 	public sealed partial class TextBox_RoundedCorners : Page
 	{
 		public TextBox_RoundedCorners()

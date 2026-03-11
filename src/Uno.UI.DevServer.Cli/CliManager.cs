@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text.Json;
@@ -14,6 +15,11 @@ internal class CliManager
 	private readonly IServiceProvider _services;
 	private readonly UnoToolsLocator _unoToolsLocator;
 	private readonly ILogger<CliManager> _logger;
+	private static readonly JsonSerializerOptions _discoJsonOptions = new()
+	{
+		WriteIndented = true,
+		PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+	};
 
 	public CliManager(IServiceProvider services, UnoToolsLocator unoToolsLocator)
 	{
@@ -26,33 +32,84 @@ internal class CliManager
 	{
 		try
 		{
-			if (originalArgs.Contains("--mcp-app"))
+			var solutionDirParseResult = ExtractSolutionDirectory(originalArgs);
+			// --solution-dir is applied uniformly so automation and CI environments can run any
+			// command (start, stop, list, login, MCP) against a target solution even when the
+			// current working directory differs from the solution root.
+			if (!solutionDirParseResult.Success)
 			{
-				return await RunMcpProxyAsync(originalArgs.Where(a => a != "--mcp-app").ToArray());
+				return 1;
 			}
 
-			ShowBanner();
+			originalArgs = solutionDirParseResult.FilteredArgs;
+			var workingDirectory = solutionDirParseResult.SolutionDirectory ?? Environment.CurrentDirectory;
+
+			if (originalArgs.Contains("--mcp-app"))
+			{
+				return await RunMcpProxyAsync(
+					originalArgs.Where(a => a != "--mcp-app").ToArray(),
+					workingDirectory,
+					solutionDirParseResult.SolutionDirectory);
+			}
+
+			var isDisco = originalArgs is { Length: > 0 } &&
+				string.Equals(originalArgs[0], "disco", StringComparison.OrdinalIgnoreCase);
+			var discoJson = isDisco &&
+				originalArgs.Any(a => string.Equals(a, "--json", StringComparison.OrdinalIgnoreCase));
+			var discoAddInsOnly = isDisco &&
+				originalArgs.Any(a => string.Equals(a, "--addins-only", StringComparison.OrdinalIgnoreCase));
+
+			if (!isDisco || (!discoJson && !discoAddInsOnly))
+			{
+				ShowBanner();
+			}
+
+			if (isDisco && discoAddInsOnly)
+			{
+				return await RunDiscoAddInsOnlyAsync(workingDirectory, outputJson: discoJson);
+			}
+
+			if (isDisco && discoJson)
+			{
+				// Avoid banner/log noise when emitting JSON output
+				return await RunDiscoAsync(workingDirectory, outputJson: true);
+			}
+
+			if (isDisco)
+			{
+				return await RunDiscoAsync(workingDirectory, outputJson: false);
+			}
 
 			if (originalArgs is { Length: > 0 } && string.Equals(originalArgs[0], "login", StringComparison.OrdinalIgnoreCase))
 			{
-				return await OpenSettings(originalArgs);
+				return await OpenSettings(originalArgs, workingDirectory);
 			}
 
-			var hostPath = await _unoToolsLocator.ResolveHostExecutableAsync(Environment.CurrentDirectory);
+			var hostPath = await _unoToolsLocator.ResolveHostExecutableAsync(workingDirectory);
 
 			if (hostPath is null)
 			{
 				return 1; // errors already logged
 			}
 
-			var isDirectOutputCommand = originalArgs.Length > 0 && (
+			// Resolve add-ins via convention-based discovery for the start command
+			string? resolvedAddIns = null;
+			var isStart = originalArgs.Length == 0 ||
+				string.Equals(originalArgs[0], "start", StringComparison.OrdinalIgnoreCase);
+
+			if (isStart)
+			{
+				resolvedAddIns = ResolveAddInsForCommand(workingDirectory);
+			}
+
+			var requiresHostOutputPassthrough = originalArgs.Length > 0 && (
 				string.Equals(originalArgs[0], "list", StringComparison.OrdinalIgnoreCase) ||
 				string.Equals(originalArgs[0], "cleanup", StringComparison.OrdinalIgnoreCase)
 			);
 
-			var startInfo = BuildHostArgs(hostPath, originalArgs, Environment.CurrentDirectory, redirectOutput: !isDirectOutputCommand);
+			var startInfo = BuildHostArgs(hostPath, originalArgs, workingDirectory, redirectOutput: true, addins: resolvedAddIns);
 
-			var result = await DevServerProcessHelper.RunConsoleProcessAsync(startInfo, _logger);
+			var result = await DevServerProcessHelper.RunConsoleProcessAsync(startInfo, _logger, forwardOutputToConsole: requiresHostOutputPassthrough);
 			return result.ExitCode;
 		}
 		catch (Exception ex)
@@ -80,16 +137,101 @@ internal class CliManager
 		}
 	}
 
-	private async Task<int> OpenSettings(string[] originalArgs)
+	private async Task<int> RunDiscoAddInsOnlyAsync(string workingDirectory, bool outputJson)
 	{
-		var studioExecutable = await _unoToolsLocator.ResolveSettingsExecutableAsync(Environment.CurrentDirectory);
+		var addInsValue = ResolveAddInsForCommand(workingDirectory);
+		if (addInsValue is null)
+		{
+			if (outputJson)
+			{
+				Console.WriteLine("[]");
+			}
+			return 1;
+		}
+
+		var paths = addInsValue.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+		if (outputJson)
+		{
+			var json = JsonSerializer.Serialize(paths, _discoJsonOptions);
+			Console.WriteLine(json);
+		}
+		else
+		{
+			Console.WriteLine(addInsValue);
+		}
+
+		return 0;
+	}
+
+	/// <summary>
+	/// Resolves add-in DLL paths via convention-based discovery.
+	/// Returns:
+	///   <c>null</c>  — discovery failed (caller should fall back to MSBuild evaluation),
+	///   <c>""</c>    — discovery succeeded but found zero add-ins (skip MSBuild fallback),
+	///   non-empty   — semicolon-separated DLL paths.
+	/// </summary>
+	private string? ResolveAddInsForCommand(string workingDirectory)
+	{
+		try
+		{
+			var discovery = _unoToolsLocator.DiscoverAsync(workingDirectory).GetAwaiter().GetResult();
+			if (discovery.PackagesJsonPath is null)
+			{
+				_logger.LogDebug("No packages.json found, skipping convention-based add-in discovery");
+				return null; // discovery not possible — let MSBuild evaluate
+			}
+
+			if (discovery.AddInDiscoveryFailed)
+			{
+				_logger.LogDebug("Add-in discovery failed during DiscoverAsync, falling back to MSBuild");
+				return null;
+			}
+
+			var addIns = discovery.AddIns;
+			if (addIns.Count == 0)
+			{
+				_logger.LogDebug("No add-ins resolved via convention-based discovery");
+				return ""; // discovery succeeded, zero add-ins — skip MSBuild fallback
+			}
+
+			var paths = string.Join(";", addIns.Select(a => a.EntryPointDll).Distinct(StringComparer.OrdinalIgnoreCase));
+			_logger.LogDebug("Resolved {Count} add-in(s) via convention-based discovery", addIns.Count);
+			return paths;
+		}
+		catch (Exception ex)
+		{
+			_logger.LogWarning(ex, "Convention-based add-in discovery failed, MSBuild fallback will be used");
+			return null;
+		}
+	}
+
+	private async Task<int> RunDiscoAsync(string workingDirectory, bool outputJson)
+	{
+		var info = await _unoToolsLocator.DiscoverAsync(workingDirectory);
+
+		if (outputJson)
+		{
+			var json = JsonSerializer.Serialize(info, _discoJsonOptions);
+			Console.WriteLine(json);
+		}
+		else
+		{
+			DiscoveryOutputFormatter.WritePlainText(info);
+		}
+
+		return info.Errors.Count > 0 ? 1 : 0;
+	}
+
+	private async Task<int> OpenSettings(string[] originalArgs, string workingDirectory)
+	{
+		var studioExecutable = await _unoToolsLocator.ResolveSettingsExecutableAsync(workingDirectory);
 
 		if (studioExecutable is null)
 		{
 			return 1; // errors already logged
 		}
 
-		var startInfo = DevServerProcessHelper.CreateDotnetProcessStartInfo(studioExecutable, originalArgs, Environment.CurrentDirectory, redirectOutput: true);
+		var startInfo = DevServerProcessHelper.CreateDotnetProcessStartInfo(studioExecutable, originalArgs, workingDirectory, redirectOutput: true);
 
 		var (exitCode, stdOut, stdErr) = await DevServerProcessHelper.RunGuiProcessAsync(startInfo, _logger, TimeSpan.FromSeconds(3));
 
@@ -116,7 +258,7 @@ internal class CliManager
 		}
 	}
 
-	private async Task<int> RunMcpProxyAsync(string[] args)
+	private async Task<int> RunMcpProxyAsync(string[] args, string workingDirectory, string? solutionDirectory)
 	{
 		try
 		{
@@ -125,6 +267,7 @@ internal class CliManager
 			int requestedPort = 0;
 			bool mcpWaitToolsList = false;
 			bool forceRootsFallback = false;
+			bool forceGenerateToolCache = false;
 			var forwardedArgs = new List<string>();
 
 			for (int i = 0; i < args.Length; i++)
@@ -155,20 +298,76 @@ internal class CliManager
 					forceRootsFallback = true;
 					continue; // do not forward mcp-specific arguments to controller
 				}
+				else if (a == "--force-generate-tool-cache")
+				{
+					forceGenerateToolCache = true;
+					continue; // do not forward mcp-specific arguments to controller
+				}
 				forwardedArgs.Add(a);
 			}
 
+			var normalizedSolutionDirectory = solutionDirectory ?? (forceGenerateToolCache ? workingDirectory : null);
+
 			var waitForTools = mcpWaitToolsList;
-			return await _services.GetRequiredService<McpProxy>().RunAsync(Environment.CurrentDirectory, requestedPort, forwardedArgs, waitForTools, forceRootsFallback, CancellationToken.None);
+			return await _services.GetRequiredService<ProxyLifecycleManager>().RunAsync(
+				workingDirectory,
+				requestedPort,
+				forwardedArgs,
+				waitForTools,
+				forceRootsFallback,
+				forceGenerateToolCache,
+				normalizedSolutionDirectory,
+				CancellationToken.None);
 		}
 		catch (Exception ex)
 		{
-			_logger.LogError($"MCP proxy error: {ex.Message}");
+			_logger.LogError(ex, "MCP stdio server error: {Message}", ex.Message);
 			return 1;
 		}
 	}
 
-	private ProcessStartInfo BuildHostArgs(string hostPath, string[] originalArgs, string workingDirectory, bool redirectOutput = true)
+	private (bool Success, string[] FilteredArgs, string? SolutionDirectory) ExtractSolutionDirectory(string[] args)
+	{
+		string? rawSolutionDirectory = null;
+		var filteredArgs = new List<string>(args.Length);
+
+		for (int i = 0; i < args.Length; i++)
+		{
+			var arg = args[i];
+			if (arg == "--solution-dir")
+			{
+				if (i + 1 >= args.Length)
+				{
+					_logger.LogError("Missing value for --solution-dir");
+					return (false, Array.Empty<string>(), null);
+				}
+
+				rawSolutionDirectory = args[i + 1];
+				i++; // skip value
+				continue;
+			}
+
+			filteredArgs.Add(arg);
+		}
+
+		string? normalizedSolutionDirectory = null;
+		if (!string.IsNullOrWhiteSpace(rawSolutionDirectory))
+		{
+			try
+			{
+				normalizedSolutionDirectory = Path.GetFullPath(rawSolutionDirectory);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Invalid solution directory '{Directory}'", rawSolutionDirectory);
+				return (false, Array.Empty<string>(), null);
+			}
+		}
+
+		return (true, filteredArgs.ToArray(), normalizedSolutionDirectory);
+	}
+
+	private ProcessStartInfo BuildHostArgs(string hostPath, string[] originalArgs, string workingDirectory, bool redirectOutput = true, string? addins = null)
 	{
 		var args = new List<string> { "--command" };
 		if (originalArgs.Length > 0)
@@ -182,6 +381,12 @@ internal class CliManager
 		else
 		{
 			args.Add("start");
+		}
+
+		if (addins is not null)
+		{
+			args.Add("--addins");
+			args.Add(addins);
 		}
 
 		return DevServerProcessHelper.CreateDotnetProcessStartInfo(hostPath, args, workingDirectory, redirectOutput);

@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Foundation.Metadata;
 using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
 using Uno.UI.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
@@ -89,5 +91,39 @@ public class Given_ProgressRing
 		{
 			SUT.IsActive = false;
 		}
+	}
+
+	[TestMethod]
+#if !__SKIA__
+	[Ignore("The test is unreliable when DPI scaling is not 1")]
+#endif
+	public async Task When_Stretch_Fill()
+	{
+		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
+		{
+			Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+		}
+
+		var pr1 = new ProgressRing { Width = 100, Height = 100, IsIndeterminate = false, Value = 50 };
+		var pr2 = new ProgressRing { Width = 50, Height = 50, IsIndeterminate = false, Value = 50 };
+
+		await UITestHelper.Load(new StackPanel { Children = { pr1, pr2 } });
+		await Task.Delay(TimeSpan.FromSeconds(2)); // wait for the animation to end
+
+		var screenshot1 = await UITestHelper.ScreenShot(pr1);
+		var screenshot2 = await UITestHelper.ScreenShot(pr2);
+		var pixels1 = screenshot1.GetPixels();
+		var pixels2 = screenshot2.GetPixels();
+
+		var different = false;
+		for (int i = 0; i < screenshot2.Bitmap.PixelHeight; i++)
+		{
+			different = 0 != pixels1.AsSpan(i * screenshot2.Bitmap.PixelWidth, screenshot2.Bitmap.PixelWidth).SequenceCompareTo(pixels2.AsSpan(i * screenshot2.Bitmap.PixelWidth, screenshot2.Bitmap.PixelWidth));
+			if (different)
+			{
+				break;
+			}
+		}
+		Assert.IsTrue(different);
 	}
 }

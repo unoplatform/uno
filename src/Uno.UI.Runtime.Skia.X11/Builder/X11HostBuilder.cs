@@ -12,6 +12,7 @@ public partial class X11HostBuilder : IPlatformHostBuilder
 
 	private int _renderFrameRate = 60;
 	private bool _preloadMediaPlayer;
+	private bool _useSystemHarfBuzz;
 
 	internal X11HostBuilder()
 	{
@@ -32,11 +33,20 @@ public partial class X11HostBuilder : IPlatformHostBuilder
 		return this;
 	}
 
+	/// <summary>
+	/// Uses the system HarfBuzz library for text shaping instead of libHarfBuzzSharp shipped with SkiaSharp.
+	/// </summary>
+	public X11HostBuilder UseSystemHarfBuzz(bool value)
+	{
+		_useSystemHarfBuzz = value;
+		return this;
+	}
+
 	bool IPlatformHostBuilder.IsSupported
 		=> OperatingSystem.IsLinux() &&
 			Environment.GetEnvironmentVariable("DISPLAY") is { } displayString &&
 			DisplayRegex().Match(displayString).Success;
 
 	UnoPlatformHost IPlatformHostBuilder.Create(Func<Microsoft.UI.Xaml.Application> appBuilder, Type appType)
-		=> new X11ApplicationHost(appBuilder, _renderFrameRate, preloadVlc: _preloadMediaPlayer);
+		=> new X11ApplicationHost(appBuilder, _renderFrameRate, _preloadMediaPlayer, _useSystemHarfBuzz);
 }

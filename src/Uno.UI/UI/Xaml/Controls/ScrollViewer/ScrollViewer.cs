@@ -45,13 +45,7 @@ using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.ScrollContentPresente
 using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.IScrollContentPresenter;
 #endif
 
-#if HAS_UNO_WINUI
 using Microsoft.UI.Input;
-#else
-using Windows.Devices.Input;
-using Windows.UI.Input;
-using Microsoft.UI.Xaml.Media;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -1780,6 +1774,23 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void HandleHorizontalScroll(ScrollEventType scrollEventType, double offset = 0)
 		{
 			//UNO TODO: Implement HandleHorizontalScroll on ScrollViewer
+		}
+
+		/// <summary>
+		/// Determines whether this ScrollViewer is pannable.
+		/// Returns false only if both vertical and horizontal scrolling are disabled.
+		/// </summary>
+		internal override bool IsDraggableOrPannable()
+		{
+			// If both vertical and horizontal scrolling are disabled, return false.
+			// This matches WinUI's ScrollViewer::IsDraggableOrPannableImpl.
+			return !(
+				(VerticalScrollBarVisibility == ScrollBarVisibility.Disabled ||
+					VerticalScrollMode == ScrollMode.Disabled)
+				&&
+				(HorizontalScrollBarVisibility == ScrollBarVisibility.Disabled ||
+					HorizontalScrollMode == ScrollMode.Disabled)
+			);
 		}
 	}
 }

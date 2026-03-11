@@ -23,6 +23,7 @@ using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.Services;
 using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.Server.AppLaunch;
+using Uno.UI.RemoteControl.Host.Mcp;
 
 namespace Uno.UI.RemoteControl.Host
 {
@@ -58,8 +59,14 @@ namespace Uno.UI.RemoteControl.Host
 				var solution = globalConfiguration.GetOptionalString("solution");
 				if (!string.IsNullOrWhiteSpace(solution) && !File.Exists(solution))
 				{
-					throw new ArgumentException($"The provided solution path '{solution}' does not exists");
+					throw new ArgumentException($"The provided solution path '{solution}' does not exist");
 				}
+
+				// Read --addins: pre-resolved add-in DLL paths (semicolon-separated).
+				// When present, MSBuild-based discovery is skipped entirely.
+				var addins = globalConfiguration.GetAddinsValue("addins");
+
+				var ideChannel = globalConfiguration.GetOptionalString("ideChannel");
 
 				// Controller mode
 				if (!string.IsNullOrWhiteSpace(command))
@@ -68,7 +75,7 @@ namespace Uno.UI.RemoteControl.Host
 					switch (verb)
 					{
 						case "start":
-							await StartCommandAsync(httpPort, parentPID, solution, workingDir, timeoutMs);
+							await StartCommandAsync(httpPort, parentPID, solution, workingDir, timeoutMs, addins, ideChannel);
 							return;
 						case "stop":
 							await StopCommandAsync();
@@ -175,7 +182,13 @@ namespace Uno.UI.RemoteControl.Host
 				// Apply Startup.ConfigureServices for compatibility with existing Startup class
 				new Startup(builder.Configuration).ConfigureServices(builder.Services);
 
-				if (solution is not null)
+				if (addins is not null)
+				{
+					// Pre-resolved add-in paths from CLI (convention-based discovery).
+					// Skip MSBuild-based discovery entirely.
+					builder.ConfigureAddInsFromPaths(addins, telemetry);
+				}
+				else if (solution is not null)
 				{
 					// For backward compatibility, we allow to not have a solution file specified.
 					builder.ConfigureAddIns(solution, telemetry);
@@ -187,6 +200,10 @@ namespace Uno.UI.RemoteControl.Host
 					builder.Services.AddSingleton(AddInsStatus.Empty);
 				}
 #pragma warning restore ASPDEPR004
+
+				// Register Host-level MCP health tool and resource.
+				// AddMcpServer() uses TryAdd* internally, safe even if add-ins already called it.
+				HostHealthTool.Configure(builder.Services);
 
 #pragma warning disable ASPDEPR008
 				// Ditto: https://github.com/aspnet/Announcements/issues/526
@@ -219,7 +236,7 @@ namespace Uno.UI.RemoteControl.Host
 				_ = ParentProcessObserver.ObserveAsync(parentPID, ct.Cancel, telemetry, ct.Token);
 
 				ambientRegistry = new AmbientRegistry(host.Services.GetRequiredService<ILogger<AmbientRegistry>>());
-				ambientRegistry.Register(solution, parentPID, httpPort);
+				ambientRegistry.Register(solution, parentPID, httpPort, ideChannelId);
 
 				await host.StartAsync(ct.Token);
 				try

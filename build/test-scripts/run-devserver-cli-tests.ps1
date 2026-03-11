@@ -1,9 +1,54 @@
 # Set-PSDebug -Trace 1
 
+[CmdletBinding()]
+param(
+    [string]$DevServerCliDllPath
+)
+
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
 function Write-Log([string]$Message){ Write-Host "[devserver-cli-test] $Message" }
+
+$script:DevServerHostExecutable = "dotnet"
+$script:DevServerCliEntryPoint = "uno-devserver"
+$script:DevServerCliDisplayName = "$script:DevServerHostExecutable $script:DevServerCliEntryPoint"
+$script:DevServerCliUsesDllPath = $false
+$script:DevServerCliResolvedDllPath = $null
+
+if (-not [string]::IsNullOrWhiteSpace($DevServerCliDllPath)) {
+    if (-not (Test-Path -LiteralPath $DevServerCliDllPath)) {
+        throw "Provided DevServerCliDllPath '$DevServerCliDllPath' was not found."
+    }
+
+    $script:DevServerCliResolvedDllPath = (Resolve-Path -LiteralPath $DevServerCliDllPath -ErrorAction Stop).Path
+    $script:DevServerCliEntryPoint = $script:DevServerCliResolvedDllPath
+    $script:DevServerCliDisplayName = "$script:DevServerHostExecutable $script:DevServerCliResolvedDllPath"
+    $script:DevServerCliUsesDllPath = $true
+}
+
+function Get-DevserverCliArguments {
+    param([string[]]$Arguments = @())
+
+    return @($script:DevServerCliEntryPoint) + $Arguments
+}
+
+function Get-DevserverExternalCommand {
+    param([string[]]$Arguments = @())
+
+    return @($script:DevServerHostExecutable) + (Get-DevserverCliArguments -Arguments $Arguments)
+}
+
+function Invoke-DevserverCli {
+    param([string[]]$Arguments = @())
+
+    $fullArgs = Get-DevserverCliArguments -Arguments $Arguments
+    & $script:DevServerHostExecutable @fullArgs
+}
+
+if ($script:DevServerCliUsesDllPath -and $script:DevServerCliResolvedDllPath) {
+    Write-Log "Using devserver CLI from $script:DevServerCliResolvedDllPath"
+}
 
 # Wait for a TCP port to be opened on localhost. Accepts a Path parameter (e.g. '/', 'subpath') and sets $Global:DevServerBaseUrl. Returns $true when the port is open, $false otherwise.
 function Wait-ForHttpPortOpen([int]$Port, [string]$Path = '/', [int]$MaxAttempts = 30, [int]$ConnectTimeoutMs = 2000, [string]$TargetHost = '127.0.0.1', [string]$Scheme = 'http') {
@@ -53,6 +98,43 @@ function Wait-ForHttpPortOpen([int]$Port, [string]$Path = '/', [int]$MaxAttempts
     $Global:DevServerBaseUrl = $url
 
     return $success
+}
+
+function Wait-ForDevserverListEntry([int]$Port, [string]$SolutionDirectory, [int]$MaxAttempts = 30, [int]$DelaySeconds = 2) {
+    $normalizedDirectory = $SolutionDirectory
+    try {
+        $normalizedDirectory = (Resolve-Path -LiteralPath $SolutionDirectory -ErrorAction Stop).Path
+    }
+    catch {
+        Write-Log "Unable to normalize solution directory '$SolutionDirectory' for list validation: $($_.Exception.Message)"
+    }
+
+    $escapedDirectory = [Regex]::Escape($normalizedDirectory)
+    $portPattern = "Port\s*:\s*$Port"
+    $endpointPattern = ":$Port(\b|/)"
+
+    for ($attempt = 1; $attempt -le $MaxAttempts; $attempt++) {
+        Write-Log "Checking devserver list for directory $normalizedDirectory (attempt $attempt/$MaxAttempts)..."
+
+        $listOutput = ""
+        try {
+            $listOutput = Invoke-DevserverCli -Arguments @('list') 2>&1
+        }
+        catch {
+            $listOutput = $_.Exception.Message
+        }
+
+        $listText = ($listOutput | Out-String)
+
+        if ($LASTEXITCODE -eq 0 -and $listText -match $escapedDirectory -and ($listText -match $portPattern -or $listText -match $endpointPattern)) {
+            return $true
+        }
+
+        Start-Sleep -Seconds $DelaySeconds
+    }
+
+    Write-Log "Devserver list did not report directory $normalizedDirectory with port $Port after $MaxAttempts attempts."
+    return $false
 }
 
 # Helper: try to extract a port number from a .csproj.user XML file
@@ -153,7 +235,7 @@ function Register-UnoCodexMcps {
             }
         }
 
-        $unoAppArguments += @("--", "dotnet", "uno-devserver", "--mcp-app", "-l", "trace")
+        $unoAppArguments += @("--") + (Get-DevserverExternalCommand -Arguments @("--mcp-app", "-l", "trace"))
 
         Invoke-CodexMcpAdd -Name "uno-app" -Arguments $unoAppArguments
     }
@@ -166,21 +248,61 @@ function Invoke-CodexToolEnumerationTest {
     param([string]$WorkingDirectory)
 
     $toolsFile = Join-Path $WorkingDirectory "codex-tools.json"
-    if (Test-Path $toolsFile) {
-        Remove-Item $toolsFile -Force
+    $toolsFileName = Split-Path $toolsFile -Leaf
+
+    $maxAttempts = 2
+    $lastError = $null
+
+    for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
+        $lastError = $null
+
+        if (Test-Path $toolsFile) {
+            Remove-Item $toolsFile -Force
+        }
+
+        try {
+            Invoke-SingleCodexToolEnumeration -WorkingDirectory $WorkingDirectory -ToolsFile $toolsFile -ToolsFileName $toolsFileName
+            return # success
+        }
+        catch {
+            $lastError = $_
+            if ($attempt -lt $maxAttempts) {
+                Write-Log "Codex tool enumeration attempt $attempt failed: $($_.Exception.Message). Retrying..."
+                # Clean up stale DevServer before retry
+                Stop-DevserverInDirectory -Directory $WorkingDirectory
+            }
+        }
     }
 
-    $toolsFileName = Split-Path $toolsFile -Leaf
+    throw "Codex tool enumeration failed after $maxAttempts attempts. Last error: $($lastError.Exception.Message)"
+}
+
+function Invoke-SingleCodexToolEnumeration {
+    param(
+        [string]$WorkingDirectory,
+        [string]$ToolsFile,
+        [string]$ToolsFileName
+    )
+
     $instructions = @"
 You are running inside an automated CI validation for the Uno Platform devserver CLI.
 
-Tasks:
-1. Create a list of all MCP tools available to you
-2. Create or overwrite a JSON file named '$toolsFileName' in the current working directory.
-    The JSON must be an object that contains a property ``"tools"`` whose value is an alphabetically sorted array listing every tool identifier you discovered.
-3. Confirm completion and exit when finished.
+Your ONLY task: enumerate every MCP **tool** (callable function) and write the list to a JSON file.
 
-Begin now.
+Steps:
+1. Look at the functions available to you whose names start with ``mcp__``.
+   These are MCP tools. Each one has the form ``mcp__<server>__<tool_name>``.
+   Extract just the ``<tool_name>`` part (e.g. ``mcp__uno-app__uno_app_get_screenshot`` → ``uno_app_get_screenshot``).
+   IMPORTANT: Do NOT list MCP resources or resource URIs (like ``uno://health``). Only list callable tool function names.
+2. Write a JSON file named ``$ToolsFileName`` in the current directory.
+   The file must contain ONLY this JSON object, nothing else:
+   ``{"tools":["tool_a","tool_b","tool_c"]}``
+   where the array is alphabetically sorted. Example with real names:
+   ``{"tools":["uno_app_get_screenshot","uno_get_build_output","uno_health"]}``
+   Write raw JSON only — no markdown fences, no trailing newline, no extra text.
+3. Confirm done and exit.
+
+Begin.
 "@
 
     $stdOutFile = [System.IO.Path]::GetTempFileName()
@@ -216,8 +338,7 @@ Begin now.
     $env:RUST_LOG = 'debug'
     try {
         $process = Start-Process -FilePath $codexExecutable -ArgumentList $codexArguments -WorkingDirectory $WorkingDirectory -RedirectStandardOutput $stdOutFile -RedirectStandardError $stdErrFile -RedirectStandardInput $instructionsFile -PassThru
-
-        $timeoutMs = 90000 # 90 seconds
+        $timeoutMs = 180000 # 180 seconds
         if (-not $process.WaitForExit($timeoutMs)) {
             try { $process.Kill() } catch {}
             $stdErrContent = Get-Content $stdErrFile -ErrorAction SilentlyContinue -Raw
@@ -248,20 +369,28 @@ Begin now.
         }
     }
 
-    if (-not (Test-Path $toolsFile)) {
-        throw "Codex CLI did not create $toolsFile.`nSTDOUT:`n$stdout`nSTDERR:`n$stderr"
+    if (-not (Test-Path $ToolsFile)) {
+        throw "Codex CLI did not create $ToolsFile.`nSTDOUT:`n$stdout`nSTDERR:`n$stderr"
     }
 
-    $jsonText = Get-Content $toolsFile -Raw -ErrorAction Stop
+    $jsonText = (Get-Content $ToolsFile -Raw -ErrorAction Stop).Trim()
+    # LLMs sometimes emit a literal \n after the JSON object — strip it
+    $jsonText = $jsonText -replace '\\n$', ''
     try {
         $json = $jsonText | ConvertFrom-Json -ErrorAction Stop
     }
     catch {
-        throw "codex-tools.json is not valid JSON: $($_.Exception.Message)"
+        throw "codex-tools.json is not valid JSON (raw content: $jsonText): $($_.Exception.Message)"
     }
 
     if (-not $json.tools -or $json.tools.Count -eq 0) {
         throw "codex-tools.json does not contain a non-empty 'tools' array."
+    }
+
+    # The upstream DevServer + add-ins expose at least 10 tools; a much smaller
+    # count means the model listed resources or only built-in tools.
+    if ($json.tools.Count -lt 5) {
+        throw "codex-tools.json contains only $($json.tools.Count) tool(s), expected at least 5. The model may have listed MCP resources instead of tools. Tools found: $($json.tools -join ', ')"
     }
 
     Write-Log "Codex CLI reported $($json.tools.Count) tools via codex-tools.json:"
@@ -271,7 +400,7 @@ Begin now.
 
     $screenshotTool = $json.tools | Where-Object { $_ -like '*uno_app_get_screenshot*' } | Select-Object -First 1
     if (-not $screenshotTool) {
-        throw "Codex CLI did not report the required 'uno_app_get_screenshot' tool."
+        throw "Codex CLI did not report the required 'uno_app_get_screenshot' tool. Tools found: $($json.tools -join ', ')"
     }
 }
 
@@ -334,20 +463,714 @@ function Setup-UnoStudioLicenses {
     return $unoDir
 }
 
+function Test-DevserverStartStop {
+    param(
+        [string]$SlnDir,
+        [string]$CsprojDir,
+        [string]$CsprojPath,
+        [int]$DefaultPort,
+        [int]$MaxAttempts
+    )
+
+    $port = $DefaultPort
+
+    $startProcessContext = $null
+    $devserverStarted = $false
+
+    try {
+        $startArguments = Get-DevserverCliArguments -Arguments @('start', '--httpPort', $port.ToString([System.Globalization.CultureInfo]::InvariantCulture), '-l', 'trace')
+        $startProcessContext = Start-DevserverProcessCapture -WorkingDirectory $SlnDir -Executable $script:DevServerHostExecutable -Arguments $startArguments
+        $devserverStarted = $true
+
+        $csprojUserPath = Join-Path $CsprojDir ((Split-Path $CsprojPath -Leaf) + '.user')
+
+        $userPort = Get-PortFromCsprojUser -UserFilePath $csprojUserPath
+        if ($userPort) {
+            Write-Log "Port extracted from .csproj.user (UnoRemoteControlPort): $userPort"
+
+            if ($userPort -lt 1 -or $userPort -gt 65535) {
+                throw "Port number in $csprojUserPath is out of range: $userPort"
+            }
+
+            $port = $userPort
+        }
+        else {
+            if (Test-Path $csprojUserPath) {
+                throw "Could not find a valid UnoRemoteControlPort in $csprojUserPath"
+            }
+            else {
+                Write-Log "No .csproj.user file found. Using default port $DefaultPort"
+            }
+        }
+
+        $success = Wait-ForHttpPortOpen -Port $port -Path '/' -MaxAttempts $MaxAttempts -ConnectTimeoutMs 2000
+
+        if (-not $success) {
+            $stdoutLog = if ($startProcessContext -and (Test-Path $startProcessContext.StdoutLogPath)) { Get-Content $startProcessContext.StdoutLogPath -Raw -ErrorAction SilentlyContinue } else { "" }
+            $stderrLog = if ($startProcessContext -and (Test-Path $startProcessContext.StderrLogPath)) { Get-Content $startProcessContext.StderrLogPath -Raw -ErrorAction SilentlyContinue } else { "" }
+            throw "Devserver did not open HTTP port $port after $MaxAttempts attempts.`nSTDOUT:`n$stdoutLog`nSTDERR:`n$stderrLog"
+        }
+
+        Write-Log "Devserver HTTP port $port is open at $DevServerBaseUrl"
+    }
+    finally {
+        if ($devserverStarted) {
+            Stop-DevserverInDirectory -Directory $SlnDir
+        }
+
+        Stop-DevserverProcessCapture -Context $startProcessContext
+
+        if ($startProcessContext) {
+            foreach ($logPath in @($startProcessContext.StdoutLogPath, $startProcessContext.StderrLogPath)) {
+                if ($logPath -and (Test-Path $logPath)) {
+                    Remove-Item $logPath -ErrorAction SilentlyContinue
+                }
+            }
+        }
+    }
+
+    return $port
+}
+
+function Test-DevserverSolutionDirSupport {
+    param(
+        [string]$SlnDir,
+        [int]$DefaultPort,
+        [int]$BaselinePort,
+        [int]$MaxAttempts
+    )
+
+    Write-Log "Validating --solution-dir support from outside the solution root"
+
+    $solutionDirTestPort = if ($BaselinePort -ge 65535) { $DefaultPort + 1 } else { $BaselinePort + 1 }
+    $outerDirectory = Split-Path $SlnDir -Parent
+    if ([string]::IsNullOrWhiteSpace($outerDirectory)) {
+        $outerDirectory = [System.IO.Path]::GetTempPath()
+    }
+
+    Push-Location $outerDirectory
+    $solutionDirStarted = $false
+    $solutionDirProcessContext = $null
+    try {
+        $startArguments = Get-DevserverCliArguments -Arguments @('start', '--solution-dir', $SlnDir, '--httpPort', $solutionDirTestPort.ToString([System.Globalization.CultureInfo]::InvariantCulture), '-l', 'trace')
+        $solutionDirProcessContext = Start-DevserverProcessCapture -WorkingDirectory $outerDirectory -Executable $script:DevServerHostExecutable -Arguments $startArguments
+        $solutionDirStarted = $true
+
+        $solutionDirSuccess = Wait-ForHttpPortOpen -Port $solutionDirTestPort -Path '/' -MaxAttempts $MaxAttempts -ConnectTimeoutMs 2000
+        if (-not $solutionDirSuccess) {
+            $stdoutLog = if ($solutionDirProcessContext -and (Test-Path $solutionDirProcessContext.StdoutLogPath)) { Get-Content $solutionDirProcessContext.StdoutLogPath -Raw -ErrorAction SilentlyContinue } else { "" }
+            $stderrLog = if ($solutionDirProcessContext -and (Test-Path $solutionDirProcessContext.StderrLogPath)) { Get-Content $solutionDirProcessContext.StderrLogPath -Raw -ErrorAction SilentlyContinue } else { "" }
+            throw "Devserver did not open HTTP port $solutionDirTestPort via --solution-dir after $MaxAttempts attempts.`nSTDOUT:`n$stdoutLog`nSTDERR:`n$stderrLog"
+        }
+
+        Write-Log "Devserver started successfully using --solution-dir at $DevServerBaseUrl"
+    }
+    finally {
+        if ($solutionDirStarted) {
+            Stop-DevserverInDirectory -Directory $SlnDir
+        }
+
+        Stop-DevserverProcessCapture -Context $solutionDirProcessContext
+
+        if ($solutionDirProcessContext) {
+            foreach ($logPath in @($solutionDirProcessContext.StdoutLogPath, $solutionDirProcessContext.StderrLogPath)) {
+                if ($logPath -and (Test-Path $logPath)) {
+                    Remove-Item $logPath -ErrorAction SilentlyContinue
+                }
+            }
+        }
+
+        Pop-Location
+        Set-Location $SlnDir
+    }
+
+    return $solutionDirTestPort
+}
+
+function Stop-DevserverProcessCapture {
+    param($Context)
+
+    if (-not $Context) {
+        return
+    }
+
+    $process = $Context.Process
+
+    if ($Context.HasStarted -and $process -and -not $process.HasExited) {
+        try {
+            Stop-Process -Id $process.Id -ErrorAction Stop
+        }
+        catch {
+            Write-Log "Graceful devserver termination failed: $($_.Exception.Message)"
+        }
+
+        if (-not $process.WaitForExit(5000)) {
+            try {
+                Stop-Process -Id $process.Id -Force -ErrorAction SilentlyContinue
+            }
+            catch {
+                Write-Log "Failed to force-terminate devserver process: $($_.Exception.Message)"
+            }
+        }
+    }
+
+    if ($Context.HasStarted -and $process) {
+        try { $process.WaitForExit(2000) | Out-Null } catch {}
+    }
+
+    if ($Context.CancellationSource) {
+        try { $Context.CancellationSource.Cancel() } catch {}
+        try { $Context.CancellationSource.Dispose() } catch {}
+        $Context.CancellationSource = $null
+    }
+
+    foreach ($task in @($Context.StdoutTask, $Context.StderrTask)) {
+        if ($task) {
+            try {
+                if (-not $task.Wait(5000)) {
+                    Write-Log "Background log capture task did not complete within timeout."
+                }
+            }
+            catch {
+                # swallow cancellation/aggregate errors
+            }
+        }
+    }
+
+    foreach ($stream in @($Context.StdoutStream, $Context.StderrStream)) {
+        if ($stream) {
+            try { $stream.Flush() } catch {}
+            $stream.Dispose()
+        }
+    }
+
+    $Context.HasStarted = $false
+}
+
+function Start-DevserverProcessCapture {
+    param(
+        [string]$WorkingDirectory,
+        [string]$Executable,
+        [string[]]$Arguments
+    )
+
+    $stdoutLogPath = [System.IO.Path]::GetTempFileName()
+    $stderrLogPath = [System.IO.Path]::GetTempFileName()
+
+    $startInfo = New-Object System.Diagnostics.ProcessStartInfo
+    $startInfo.FileName = $Executable
+    foreach ($arg in $Arguments) {
+        [void]$startInfo.ArgumentList.Add($arg)
+    }
+    $startInfo.WorkingDirectory = $WorkingDirectory
+    $startInfo.UseShellExecute = $false
+    $startInfo.CreateNoWindow = $true
+    $startInfo.RedirectStandardOutput = $true
+    $startInfo.RedirectStandardError = $true
+    $startInfo.RedirectStandardInput = $true
+    $startInfo.StandardOutputEncoding = [System.Text.Encoding]::UTF8
+    $startInfo.StandardErrorEncoding = [System.Text.Encoding]::UTF8
+
+    $process = New-Object System.Diagnostics.Process
+    $process.StartInfo = $startInfo
+
+    $context = [pscustomobject]@{
+        Process = $process
+        StdoutStream = $null
+        StderrStream = $null
+        StdoutTask = $null
+        StderrTask = $null
+        CancellationSource = $null
+        StdoutLogPath = $stdoutLogPath
+        StderrLogPath = $stderrLogPath
+        HasStarted = $false
+    }
+
+    try {
+        $context.StdoutStream = New-Object System.IO.FileStream($stdoutLogPath, [System.IO.FileMode]::Create, [System.IO.FileAccess]::Write, [System.IO.FileShare]::ReadWrite)
+        $context.StderrStream = New-Object System.IO.FileStream($stderrLogPath, [System.IO.FileMode]::Create, [System.IO.FileAccess]::Write, [System.IO.FileShare]::ReadWrite)
+
+        if (-not $process.Start()) {
+            throw "Failed to start devserver process for MCP validation."
+        }
+
+        $context.HasStarted = $true
+
+        $context.CancellationSource = New-Object System.Threading.CancellationTokenSource
+        $token = $context.CancellationSource.Token
+
+        $context.StdoutTask = $process.StandardOutput.BaseStream.CopyToAsync($context.StdoutStream, 81920, $token)
+        $context.StderrTask = $process.StandardError.BaseStream.CopyToAsync($context.StderrStream, 81920, $token)
+    }
+    catch {
+        Stop-DevserverProcessCapture -Context $context
+        throw
+    }
+
+    return $context
+}
+
+function Test-McpModeWithoutSolutionDir {
+    param(
+        [string]$SlnDir,
+        [int]$DefaultPort,
+        [int]$PrimaryPort,
+        [int]$SolutionDirPort,
+        [int]$MaxAttempts
+    )
+
+    Write-Log "Validating MCP mode from solution root without --solution-dir"
+
+    $maxAllocatedPort = [Math]::Max($PrimaryPort, $SolutionDirPort)
+    $mcpTestPort = if ($maxAllocatedPort -ge 65534) { $DefaultPort + 2 } else { $maxAllocatedPort + 1 }
+
+    $processContext = $null
+    $devserverStarted = $false
+
+    $mcpArguments = Get-DevserverCliArguments -Arguments @("--mcp-app", "--port", $mcpTestPort.ToString([System.Globalization.CultureInfo]::InvariantCulture), "-l", "trace")
+    $processContext = Start-DevserverProcessCapture -WorkingDirectory $SlnDir -Executable $script:DevServerHostExecutable -Arguments $mcpArguments
+    $devserverStarted = $true
+
+    try {
+        $mcpStarted = Wait-ForDevserverListEntry -Port $mcpTestPort -SolutionDirectory $SlnDir -MaxAttempts $MaxAttempts -DelaySeconds 2
+        if (-not $mcpStarted) {
+            $stdoutLog = if ($processContext -and (Test-Path $processContext.StdoutLogPath)) { Get-Content $processContext.StdoutLogPath -Raw -ErrorAction SilentlyContinue } else { "" }
+            $stderrLog = if ($processContext -and (Test-Path $processContext.StderrLogPath)) { Get-Content $processContext.StderrLogPath -Raw -ErrorAction SilentlyContinue } else { "" }
+            throw "Devserver MCP mode (no --solution-dir) did not appear in 'uno-devserver list' output after $MaxAttempts attempts.`nSTDOUT:`n$stdoutLog`nSTDERR:`n$stderrLog"
+        }
+
+        Write-Log "Devserver MCP mode without --solution-dir registered successfully in 'uno-devserver list'"
+    }
+    finally {
+        if ($devserverStarted) {
+            Stop-DevserverInDirectory -Directory $SlnDir
+        }
+
+        Stop-DevserverProcessCapture -Context $processContext
+
+        if ($processContext) {
+            foreach ($logPath in @($processContext.StdoutLogPath, $processContext.StderrLogPath)) {
+                if ($logPath -and (Test-Path $logPath)) {
+                    Remove-Item $logPath -ErrorAction SilentlyContinue
+                }
+            }
+        }
+    }
+}
+
+function Test-McpModeWithRootsFallback {
+    param(
+        [string]$SlnDir,
+        [int]$DefaultPort,
+        [int]$MaxAllocatedPort,
+        [int]$CheckAttempts = 5,
+        [int]$MaxAttempts = 30
+    )
+
+    Write-Log "Validating MCP mode with --force-roots-fallback: devserver should start only after SetRoots is called"
+
+    $mcpTestPort = if ($MaxAllocatedPort -ge 65533) { $DefaultPort + 3 } else { $MaxAllocatedPort + 1 }
+
+    $process = $null
+    $mcpProcessStarted = $false
+    $stdoutLogPath = [System.IO.Path]::GetTempFileName()
+    $stderrLogPath = [System.IO.Path]::GetTempFileName()
+
+    try {
+        # Start MCP with --force-roots-fallback flag - devserver should NOT start until roots are provided
+        $mcpArguments = Get-DevserverCliArguments -Arguments @("--mcp-app", "--force-roots-fallback", "--port", $mcpTestPort.ToString([System.Globalization.CultureInfo]::InvariantCulture), "-l", "trace")
+
+        $startInfo = New-Object System.Diagnostics.ProcessStartInfo
+        $startInfo.FileName = $script:DevServerHostExecutable
+        foreach ($arg in $mcpArguments) {
+            [void]$startInfo.ArgumentList.Add($arg)
+        }
+        $startInfo.WorkingDirectory = $SlnDir
+        $startInfo.UseShellExecute = $false
+        $startInfo.CreateNoWindow = $true
+        $startInfo.RedirectStandardOutput = $true
+        $startInfo.RedirectStandardError = $true
+        $startInfo.RedirectStandardInput = $true
+        $startInfo.StandardOutputEncoding = [System.Text.Encoding]::UTF8
+        $startInfo.StandardErrorEncoding = [System.Text.Encoding]::UTF8
+
+        $process = New-Object System.Diagnostics.Process
+        $process.StartInfo = $startInfo
+
+        if (-not $process.Start()) {
+            throw "Failed to start MCP proxy process for roots-fallback test."
+        }
+        $mcpProcessStarted = $true
+
+        # Start background tasks to capture stdout/stderr to files
+        $stdoutStream = New-Object System.IO.FileStream($stdoutLogPath, [System.IO.FileMode]::Create, [System.IO.FileAccess]::Write, [System.IO.FileShare]::ReadWrite)
+        $stderrStream = New-Object System.IO.FileStream($stderrLogPath, [System.IO.FileMode]::Create, [System.IO.FileAccess]::Write, [System.IO.FileShare]::ReadWrite)
+        $cts = New-Object System.Threading.CancellationTokenSource
+        $stdoutTask = $process.StandardOutput.BaseStream.CopyToAsync($stdoutStream, 81920, $cts.Token)
+        $stderrTask = $process.StandardError.BaseStream.CopyToAsync($stderrStream, 81920, $cts.Token)
+
+        # Give the MCP proxy a moment to initialize
+        Start-Sleep -Seconds 5
+
+        # PHASE 1: Verify the devserver does NOT appear in the list (because roots-fallback is enabled and no roots were set)
+        Write-Log "Phase 1: Verifying devserver did NOT auto-start..."
+        $foundInList = $false
+        for ($attempt = 1; $attempt -le $CheckAttempts; $attempt++) {
+            Write-Log "Checking devserver list for absence of auto-started instance (attempt $attempt/$CheckAttempts)..."
+
+            $listOutput = ""
+            try {
+                $listOutput = Invoke-DevserverCli -Arguments @('list') 2>&1
+            }
+            catch {
+                $listOutput = $_.Exception.Message
+            }
+
+            $listText = ($listOutput | Out-String)
+            $portPattern = "Port\s*:\s*$mcpTestPort"
+            $endpointPattern = ":$mcpTestPort(\b|/)"
+
+            if ($LASTEXITCODE -eq 0 -and ($listText -match $portPattern -or $listText -match $endpointPattern)) {
+                $foundInList = $true
+                break
+            }
+
+            Start-Sleep -Seconds 2
+        }
+
+        if ($foundInList) {
+            $stdoutLog = if (Test-Path $stdoutLogPath) { Get-Content $stdoutLogPath -Raw -ErrorAction SilentlyContinue } else { "" }
+            $stderrLog = if (Test-Path $stderrLogPath) { Get-Content $stderrLogPath -Raw -ErrorAction SilentlyContinue } else { "" }
+            throw "Devserver with --force-roots-fallback should NOT have started automatically, but it appeared in 'uno-devserver list'.`nSTDOUT:`n$stdoutLog`nSTDERR:`n$stderrLog"
+        }
+
+        Write-Log "Phase 1 passed: Devserver did NOT auto-start (as expected)"
+
+        # PHASE 2: Send MCP initialize and SetRoots call via STDIO, then verify devserver starts
+        Write-Log "Phase 2: Sending MCP initialize and SetRoots via STDIO..."
+
+        # MCP JSON-RPC initialize request
+        $initializeRequest = @{
+            jsonrpc = "2.0"
+            id = 1
+            method = "initialize"
+            params = @{
+                protocolVersion = "2024-11-05"
+                capabilities = @{}
+                clientInfo = @{
+                    name = "test-client"
+                    version = "1.0.0"
+                }
+            }
+        } | ConvertTo-Json -Depth 10 -Compress
+
+        # MCP JSON-RPC tools/call request for uno_app_set_roots
+        $normalizedSlnDir = $SlnDir -replace '\\', '/'
+        $setRootsRequest = @{
+            jsonrpc = "2.0"
+            id = 2
+            method = "tools/call"
+            params = @{
+                name = "uno_app_set_roots"
+                arguments = @{
+                    roots = @($normalizedSlnDir)
+                }
+            }
+        } | ConvertTo-Json -Depth 10 -Compress
+
+        # Write requests to stdin (each message is a single line in MCP STDIO transport)
+        $stdinWriter = $process.StandardInput
+        $stdinWriter.WriteLine($initializeRequest)
+        $stdinWriter.Flush()
+
+        Start-Sleep -Seconds 2
+
+        $stdinWriter.WriteLine($setRootsRequest)
+        $stdinWriter.Flush()
+
+        Write-Log "Sent SetRoots request with root: $normalizedSlnDir"
+
+        # PHASE 3: Verify the devserver NOW appears in the list
+        Write-Log "Phase 3: Verifying devserver started after SetRoots..."
+        $mcpStarted = Wait-ForDevserverListEntry -Port $mcpTestPort -SolutionDirectory $SlnDir -MaxAttempts $MaxAttempts -DelaySeconds 2
+
+        if (-not $mcpStarted) {
+            $stdoutLog = if (Test-Path $stdoutLogPath) { Get-Content $stdoutLogPath -Raw -ErrorAction SilentlyContinue } else { "" }
+            $stderrLog = if (Test-Path $stderrLogPath) { Get-Content $stderrLogPath -Raw -ErrorAction SilentlyContinue } else { "" }
+            throw "Devserver with --force-roots-fallback did NOT start after SetRoots was called via MCP STDIO.`nSTDOUT:`n$stdoutLog`nSTDERR:`n$stderrLog"
+        }
+
+        Write-Log "Phase 3 passed: Devserver started after SetRoots call"
+        Write-Log "Test-McpModeWithRootsFallback completed successfully"
+    }
+    finally {
+        # Clean up
+        if ($cts) {
+            try { $cts.Cancel() } catch {}
+            try { $cts.Dispose() } catch {}
+        }
+
+        if ($process -and $mcpProcessStarted -and -not $process.HasExited) {
+            try { $process.Kill() } catch {}
+            try { $process.WaitForExit(5000) } catch {}
+        }
+
+        if ($stdoutStream) {
+            try { $stdoutStream.Flush() } catch {}
+            try { $stdoutStream.Dispose() } catch {}
+        }
+        if ($stderrStream) {
+            try { $stderrStream.Flush() } catch {}
+            try { $stderrStream.Dispose() } catch {}
+        }
+
+        Stop-DevserverInDirectory -Directory $SlnDir
+
+        if (Test-Path $stdoutLogPath) { Remove-Item $stdoutLogPath -ErrorAction SilentlyContinue }
+        if (Test-Path $stderrLogPath) { Remove-Item $stderrLogPath -ErrorAction SilentlyContinue }
+    }
+
+    return $mcpTestPort
+}
+
+function Stop-DevserverInDirectory {
+    param([string]$Directory)
+
+    if ([string]::IsNullOrWhiteSpace($Directory) -or -not (Test-Path $Directory)) {
+        return
+    }
+
+    Push-Location $Directory
+    try {
+        Write-Log "Ensuring no lingering devserver instances remain in $Directory"
+        Invoke-DevserverCli -Arguments @('stop', '-l', 'trace')
+    }
+    catch {
+        Write-Log "Cleanup devserver stop failed: $($_.Exception.Message)"
+    }
+    finally {
+        Pop-Location
+    }
+}
+
+function Test-CodexIntegration {
+    param([string]$SlnDir)
+
+    $CodexAPIKey = $env:CODEX_API_KEY
+    $isForkPr = $env:SYSTEM_PULLREQUEST_ISFORK -eq 'True'
+
+    if ($isForkPr) {
+        Write-Log "Forked pull request detected. Skipping Codex MCP integration test for security."
+        return
+    }
+    elseif ([string]::IsNullOrWhiteSpace($CodexAPIKey)) {
+        Write-Log "CODEX_API_KEY not provided. Skipping Codex MCP integration test."
+        return
+    }
+
+    Write-Log "CODEX_API_KEY detected. Starting Codex MCP integration test."
+    if (Ensure-CodexCli) {
+        Register-UnoCodexMcps -WorkingDirectory $SlnDir
+        Invoke-CodexToolEnumerationTest -WorkingDirectory $SlnDir
+    }
+    else {
+        throw "Codex CLI unavailable after installation attempt."
+    }
+}
+
+function Test-DiscoJsonOutput {
+    param([string]$SlnDir)
+
+    Write-Log "Validating disco --json output"
+
+    $output = Invoke-DevserverCli -Arguments @('disco', '--json', '--solution-dir', $SlnDir) 2>&1
+    if ($LASTEXITCODE -ne 0) { throw "disco --json exited with code $LASTEXITCODE" }
+
+    $json = ($output | Out-String) | ConvertFrom-Json -ErrorAction Stop
+
+    # Backward compat: existing fields must still be present
+    $requiredFields = @('globalJsonPath', 'unoSdkPackage')
+    foreach ($field in $requiredFields) {
+        if (-not $json.PSObject.Properties[$field]) {
+            throw "disco --json missing required field: $field"
+        }
+    }
+
+    # New field: addIns array
+    if (-not $json.PSObject.Properties['addIns']) {
+        throw "disco --json missing new 'addIns' field"
+    }
+
+    if ($json.addIns.Count -eq 0) {
+        Write-Log "WARNING: disco --json returned 0 add-ins (may be expected if no Uno project)"
+    }
+
+    foreach ($addIn in $json.addIns) {
+        if (-not $addIn.entryPointDll -or -not (Test-Path $addIn.entryPointDll)) {
+            throw "disco --json add-in entryPointDll does not exist: $($addIn.entryPointDll)"
+        }
+        if (-not $addIn.discoverySource) {
+            throw "disco --json add-in missing discoverySource field"
+        }
+        Write-Log " Add-in: $($addIn.entryPointDll) (source: $($addIn.discoverySource))"
+    }
+
+    Write-Log "disco --json output validated successfully"
+}
+
+function Test-DiscoAddInsOnly {
+    param([string]$SlnDir)
+
+    Write-Log "Validating disco --addins-only output"
+
+    # Text mode: semicolon-separated paths
+    $textOutput = (Invoke-DevserverCli -Arguments @('disco', '--addins-only', '--solution-dir', $SlnDir) 2>&1 | Out-String).Trim()
+    if ($LASTEXITCODE -ne 0) { throw "disco --addins-only exited with code $LASTEXITCODE" }
+
+    # Verify parseable as semicolon-separated paths
+    $paths = $textOutput -split ';' | Where-Object { $_ -ne '' }
+    foreach ($p in $paths) {
+        if (-not (Test-Path $p)) { throw "disco --addins-only path not found: $p" }
+    }
+
+    # JSON mode: JSON array of paths
+    $jsonOutput = (Invoke-DevserverCli -Arguments @('disco', '--addins-only', '--json', '--solution-dir', $SlnDir) 2>&1 | Out-String).Trim()
+    if ($LASTEXITCODE -ne 0) { throw "disco --addins-only --json exited with code $LASTEXITCODE" }
+
+    $jsonPaths = $jsonOutput | ConvertFrom-Json -ErrorAction Stop
+    if ($jsonPaths.Count -ne $paths.Count) {
+        throw "disco --addins-only text ($($paths.Count)) and JSON ($($jsonPaths.Count)) path counts differ"
+    }
+
+    Write-Log "disco --addins-only validated: $($paths.Count) paths"
+}
+
+function Test-CleanupCommand {
+    param([string]$SlnDir)
+
+    Write-Log "Validating cleanup command"
+
+    Invoke-DevserverCli -Arguments @('cleanup', '-l', 'trace')
+    if ($LASTEXITCODE -ne 0) {
+        throw "cleanup command exited with code $LASTEXITCODE"
+    }
+
+    Write-Log "cleanup command completed successfully (exit code 0)"
+}
+
+function Test-HostAddInsFlag {
+    param([string]$SlnDir)
+
+    Write-Log "Validating Host --addins flag"
+
+    # Step 1: Get add-in paths from disco
+    $addInsOutput = (Invoke-DevserverCli -Arguments @('disco', '--addins-only', '--solution-dir', $SlnDir) 2>&1 | Out-String).Trim()
+    if ([string]::IsNullOrWhiteSpace($addInsOutput)) {
+        Write-Log "No add-ins discovered — skipping --addins flag test"
+        return
+    }
+
+    # Step 2: Resolve Host path from Uno SDK (mirrors DevServerProcessHelper logic)
+    $discoJson = (Invoke-DevserverCli -Arguments @('disco', '--json', '--solution-dir', $SlnDir) 2>&1 | Out-String) | ConvertFrom-Json
+    $hostPath = $discoJson.hostPath
+    if (-not $hostPath -or -not (Test-Path $hostPath)) {
+        Write-Log "Host not found at '$hostPath' — skipping --addins flag test"
+        return
+    }
+
+    # Step 3: Launch Host with --addins, verify it starts (port 0 = auto-assign)
+    # On non-Windows or when hostPath is a .dll, run via "dotnet <dll>".
+    # On Windows with an .exe, run the .exe directly (it's a native AppHost).
+    $stderrFile = [System.IO.Path]::GetTempFileName()
+    $isExe = $hostPath.EndsWith('.exe', [System.StringComparison]::OrdinalIgnoreCase)
+    $useDotnet = (-not [System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Windows)) -or (-not $isExe)
+    if ($useDotnet -and $isExe) {
+        # Swap .exe for .dll so dotnet can load it as a managed assembly
+        $hostPath = [System.IO.Path]::ChangeExtension($hostPath, '.dll')
+        if (-not (Test-Path $hostPath)) {
+            Write-Log "Host DLL not found at '$hostPath' — skipping --addins flag test"
+            return
+        }
+    }
+    if ($useDotnet) {
+        $hostProcess = Start-Process -FilePath "dotnet" -ArgumentList @(
+            $hostPath, '--httpPort', '0', '--addins', $addInsOutput
+        ) -PassThru -NoNewWindow -RedirectStandardError $stderrFile
+    } else {
+        $hostProcess = Start-Process -FilePath $hostPath -ArgumentList @(
+            '--httpPort', '0', '--addins', $addInsOutput
+        ) -PassThru -NoNewWindow -RedirectStandardError $stderrFile
+    }
+
+    Start-Sleep -Seconds 5
+
+    if ($hostProcess.HasExited -and $hostProcess.ExitCode -ne 0) {
+        $stderrContent = Get-Content $stderrFile -Raw -ErrorAction SilentlyContinue
+        Remove-Item $stderrFile -ErrorAction SilentlyContinue
+        throw "Host with --addins exited with error code $($hostProcess.ExitCode)`nSTDERR:`n$stderrContent"
+    }
+
+    if (-not $hostProcess.HasExited) {
+        Stop-Process -Id $hostProcess.Id -Force -ErrorAction SilentlyContinue
+    }
+
+    Remove-Item $stderrFile -ErrorAction SilentlyContinue
+
+    Write-Log "Host --addins flag accepted successfully"
+}
+
+function Test-PackageContent {
+    param([string]$PackagesDir)  # CI artifact directory containing .nupkg files
+
+    Write-Log "Validating package contents"
+
+    # Find Uno.WinUI.DevServer nupkg
+    $devServerPkg = Get-ChildItem -Path $PackagesDir -Filter "Uno.WinUI.DevServer.*.nupkg" | Select-Object -First 1
+    if (-not $devServerPkg) {
+        Write-Log "Uno.WinUI.DevServer .nupkg not found in $PackagesDir — skipping package content test"
+        return
+    }
+
+    $extractDir = Join-Path ([System.IO.Path]::GetTempPath()) "devserver-pkg-verify"
+    if (Test-Path $extractDir) { Remove-Item $extractDir -Recurse -Force }
+    Expand-Archive -Path $devServerPkg.FullName -DestinationPath $extractDir
+
+    # Verify both TFM Host binaries are present
+    foreach ($tfm in @('net9.0', 'net10.0')) {
+        $hostDll = Join-Path $extractDir "tools/rc/host/$tfm/Uno.UI.RemoteControl.Host.dll"
+        if (-not (Test-Path $hostDll)) {
+            throw "Package missing Host binary for $tfm at tools/rc/host/$tfm/"
+        }
+        Write-Log " Host binary present: tools/rc/host/$tfm/ ($(((Get-Item $hostDll).Length / 1KB).ToString('N0')) KB)"
+    }
+
+    Remove-Item $extractDir -Recurse -Force -ErrorAction SilentlyContinue
+    Write-Log "Package content validated successfully"
+}
+
+$finalExitCode = 1
+$devserverCleanupDirectory = $null
+
 try {
     cd $env:BUILD_SOURCESDIRECTORY/src/SolutionTemplate
     & $env:BUILD_SOURCESDIRECTORY/build/test-scripts/update-uno-sdk-globaljson.ps1
 
     Write-Log "Starting devserver CLI test"
 
-    Write-Log "Installing devserver CLI tool: uno.devserver";
-    dotnet tool install uno.devserver --version $env:NBGV_SemVer2
+    if (-not $script:DevServerCliUsesDllPath) {
+        Write-Log "Installing devserver CLI tool: uno.devserver"
+        dotnet tool install uno.devserver --version $env:NBGV_SemVer2
+    }
+    else {
+        Write-Log "Using provided devserver CLI at $script:DevServerCliResolvedDllPath. Skipping tool installation."
+    }
 
     # Use the project path (project directory) so we can look for the .csproj.user file
     $csprojPath = "$env:BUILD_SOURCESDIRECTORY/src/SolutionTemplate/5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj"
     $csprojDir = Split-Path $csprojPath -Parent
     $slnDir = Split-Path $csprojDir -Parent
     $workDir = $slnDir
+    $devserverCleanupDirectory = $slnDir
 
     if (-not (Test-Path $csprojDir)) {
         throw "Project directory not found: $csprojDir"
@@ -360,67 +1183,37 @@ try {
     # Force a restore to prime the dependencies
     & dotnet restore
 
-    # Default port
     $defaultPort = 5042
-    $port = $defaultPort
+    $maxAttempts = 30
 
-    # Start the devserver in the current directory
-    & dotnet uno-devserver start --httpPort $port -l trace
+    # --- Phase 0 discovery tests ---
+    Test-DiscoJsonOutput -SlnDir $slnDir
+    Test-DiscoAddInsOnly -SlnDir $slnDir
+    Test-CleanupCommand -SlnDir $slnDir
+    Test-HostAddInsFlag -SlnDir $slnDir
+    if ($env:PACKAGES_DIR) { Test-PackageContent -PackagesDir $env:PACKAGES_DIR }
 
-    # Look for a .csproj.user file next to the project file (e.g. 'uno56netcurrent.csproj.user')
-    $csprojUserPath = Join-Path $csprojDir ((Split-Path $csprojPath -Leaf) + '.user')
+    # --- Existing integration tests ---
+    $primaryPort = Test-DevserverStartStop -SlnDir $slnDir -CsprojDir $csprojDir -CsprojPath $csprojPath -DefaultPort $defaultPort -MaxAttempts $maxAttempts
+    $solutionDirTestPort = Test-DevserverSolutionDirSupport -SlnDir $slnDir -DefaultPort $defaultPort -BaselinePort $primaryPort -MaxAttempts $maxAttempts
+    Test-McpModeWithoutSolutionDir -SlnDir $slnDir -DefaultPort $defaultPort -PrimaryPort $primaryPort -SolutionDirPort $solutionDirTestPort -MaxAttempts $maxAttempts
+    # +1 accounts for the port used internally by Test-McpModeWithoutSolutionDir
+    $maxAllocatedPort = [Math]::Max($primaryPort, $solutionDirTestPort) + 1
+    Test-McpModeWithRootsFallback -SlnDir $slnDir -DefaultPort $defaultPort -MaxAllocatedPort $maxAllocatedPort
+    # Ensure a clean state before the Codex test — previous MCP tests may leave
+    # behind a stale DevServer registration or lingering host process.
+    Stop-DevserverInDirectory -Directory $slnDir
+    Test-CodexIntegration -SlnDir $slnDir
 
-    $userPort = Get-PortFromCsprojUser -UserFilePath $csprojUserPath
-    if ($userPort) {
-        Write-Log "Port extracted from .csproj.user (UnoRemoteControlPort): $userPort"
-
-        if ($userPort -lt 1 -or $userPort -gt 65535) {
-            throw "Port number in $csprojUserPath is out of range: $userPort"
-        }
-
-        $port = $userPort
-    }
-    else {
-        if (Test-Path $csprojUserPath) {
-            throw "Could not find a valid UnoRemoteControlPort in $csprojUserPath"
-        }
-        else {
-            Write-Log "No .csproj.user file found. Using default port $defaultPort"
-        }
-    }
-
-    $maxAttempts=30
-
-    # Validate that the HTTP port is open by attempting to connect to it with a TCP client.
-    $success = Wait-ForHttpPortOpen -Port $port -Path '/' -MaxAttempts $maxAttempts -ConnectTimeoutMs 2000
-
-    if (-not $success) {
-        throw "Devserver did not open HTTP port $port after $maxAttempts attempts."
-    }
-
-    Write-Log "Devserver HTTP port $port is open at $DevServerBaseUrl"
-
-    & dotnet uno-devserver stop -l trace
-
-    $CodexAPIKey = $env:CODEX_API_KEY
-    if ([string]::IsNullOrWhiteSpace($CodexAPIKey)) {
-        Write-Log "CODEX_API_KEY not provided. Skipping Codex MCP integration test."
-    }
-    else {
-        Write-Log "CODEX_API_KEY detected. Starting Codex MCP integration test."
-        if (Ensure-CodexCli) {
-            Register-UnoCodexMcps -WorkingDirectory $slnDir
-            Invoke-CodexToolEnumerationTest -WorkingDirectory $slnDir
-        }
-        else {
-            throw "Codex CLI unavailable after installation attempt."
-        }
-    }
-
-    exit 0
+    $finalExitCode = 0
 }
 catch {
     Write-Log "ERROR: $($_.Exception.Message)"
     try { Pop-Location -ErrorAction SilentlyContinue; Pop-Location -ErrorAction SilentlyContinue } catch {}
-    exit 1
+    $finalExitCode = 1
 }
+finally {
+    Stop-DevserverInDirectory -Directory $devserverCleanupDirectory
+}
+
+exit $finalExitCode

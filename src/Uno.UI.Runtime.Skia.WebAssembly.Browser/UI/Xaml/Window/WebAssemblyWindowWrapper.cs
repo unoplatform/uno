@@ -1,53 +1,46 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Threading;
-using Uno.Extensions;
-using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.Graphics.Display;
-using Windows.System;
 using Windows.UI.Core;
-using Windows.UI.Input;
-using static Windows.UI.Input.PointerUpdateKind;
-using System.Runtime.CompilerServices;
-using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
 using Windows.UI.Text;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
-using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
 using FontFamilyHelper = Microsoft.UI.Xaml.FontFamilyHelper;
 using Windows.Graphics;
+using Microsoft.UI.Xaml;
 using Uno.Disposables;
+using Uno.UI.Dispatching;
+using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia.WebAssembly.Browser;
 
 namespace Uno.UI.Runtime.Skia;
 
 internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 {
-	private static readonly Lazy<WebAssemblyWindowWrapper> _instance = new Lazy<WebAssemblyWindowWrapper>(() => new());
-	private DisplayInformation _displayInformation;
+	private static WebAssemblyWindowWrapper? _instance;
+	private DisplayInformation? _displayInformation;
 
-	internal static WebAssemblyWindowWrapper Instance => _instance.Value;
+	internal static WebAssemblyWindowWrapper Instance => _instance!;
 
-	public WebAssemblyWindowWrapper()
+	public static async Task Initialize()
 	{
-		if (this.Log().IsEnabled(LogLevel.Trace))
-		{
-			this.Log().Trace($"Initializing {nameof(WebAssemblyWindowWrapper)}");
-		}
+		_instance = new();
+		await NativeMethods.Initialize(_instance);
 
-		NativeMethods.Initialize(this);
+		typeof(WebAssemblyWindowWrapper).LogTrace()?.Trace($"Initializing {nameof(WebAssemblyWindowWrapper)}");
 
-		_displayInformation = DisplayInformation.GetForCurrentView();
-		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
-		_displayInformation.DpiChanged += (_, _) => RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
+		_instance._displayInformation = DisplayInformation.GetForCurrentView();
+		_instance.RasterizationScale = (float)_instance._displayInformation.RawPixelsPerViewPixel;
+		_instance._displayInformation.DpiChanged += (_, _) => _instance.RasterizationScale = (float)_instance._displayInformation.RawPixelsPerViewPixel;
+	}
+
+	private WebAssemblyWindowWrapper()
+	{
 	}
 
 	public override object? NativeWindow => null;
@@ -101,30 +94,36 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		}
 	}
 
-	[JSExport]
-	private static async Task PrefetchFonts()
+	protected override void ShowCore()
 	{
-		var symbolsFontSuccess = await FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.SymbolsFont), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
-		if (symbolsFontSuccess)
+		if (Application.Current.FontPreloadTask is { } task)
 		{
-			typeof(WebAssemblyWindowWrapper).Log().Info("The default symbols font was preloaded successfully.");
-		}
-
-		if (Uri.TryCreate(FeatureConfiguration.Font.DefaultTextFontFamily, UriKind.RelativeOrAbsolute, out var uri))
-		{
-			var textFontSuccess = await FontFamilyHelper.PreloadAllFontsInManifest(uri);
-			if (textFontSuccess)
+			task.ContinueWith(_ =>
 			{
-				typeof(WebAssemblyWindowWrapper).Log().Info("The default text font was preloaded successfully.");
-			}
-		}
-		else
-		{
-			await FontFamilyHelper.PreloadAsync(
-				FeatureConfiguration.Font.DefaultTextFontFamily,
-				FontWeights.Normal,
-				FontStretch.Normal,
-				FontStyle.Normal);
+				NativeDispatcher.Main.Enqueue(() =>
+				{
+					if (XamlRoot?.Content is FrameworkElement content)
+					{
+						content.InvalidateArrange();
+						content.LayoutUpdated += OnContentLayoutUpdated;
+
+						void OnContentLayoutUpdated(object? sender, object e)
+						{
+							content.LayoutUpdated -= OnContentLayoutUpdated;
+
+							var compositionTarget = (CompositionTarget)XamlRoot?.Content?.Visual.CompositionTarget!;
+							var host = (WebAssemblyBrowserHost)XamlRootMap.GetHostForRoot(XamlRoot!)!;
+							compositionTarget.FrameRendered += CompositionTargetOnFrameRendered;
+							((IXamlRootHost)host).InvalidateRender();
+							void CompositionTargetOnFrameRendered()
+							{
+								compositionTarget.FrameRendered -= CompositionTargetOnFrameRendered;
+								host.RemoveSplashScreen();
+							}
+						}
+					}
+				});
+			});
 		}
 	}
 

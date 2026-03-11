@@ -23,6 +23,7 @@ jobs:
 
 - job: Android_Build_NetCoreMobile_For_Tests
   displayName: 'Build Samples App'
+  cancelTimeoutInMinutes: 0
 
   pool:
     vmImage: ${{ parameters.vmMacOSImage }}
@@ -68,7 +69,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     condition: always()
-    retryCountOnTaskFailure: 3
+    retryCountOnTaskFailure: 10
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uitests-android-netcoremobile-build
@@ -80,7 +81,7 @@ jobs:
   - Android_Build_NetCoreMobile_For_Tests
 
   timeoutInMinutes: 45
-  cancelTimeoutInMinutes: 1
+  cancelTimeoutInMinutes: 0
 
   variables:
     CI_Build: true
@@ -233,7 +234,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     condition: always()
-    retryCountOnTaskFailure: 3
+    retryCountOnTaskFailure: 10
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uitests-results
@@ -242,7 +243,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     displayName: Publish Failed Tests Results List
     condition: always()
-    retryCountOnTaskFailure: 3
+    retryCountOnTaskFailure: 10
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
       ArtifactName: uitests-failure-results

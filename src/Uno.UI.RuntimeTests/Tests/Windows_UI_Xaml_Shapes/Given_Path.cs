@@ -29,6 +29,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void Should_Not_Include_Control_Points_Bounds()
 		{
 			var SUT = new Path { Data = (Geometry)XamlBindingHelper.ConvertValue(typeof(Geometry), "M 0 0 C 0 0 25 25 0 50") };
@@ -38,8 +39,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 #if WINAPPSDK
 			Assert.AreEqual(new Size(11, 50), SUT.DesiredSize);
 #else
-			Assert.IsTrue(Math.Abs(11 - SUT.DesiredSize.Width) <= 1, $"Actual size: {SUT.DesiredSize}");
-			Assert.IsTrue(Math.Abs(50 - SUT.DesiredSize.Height) <= 1, $"Actual size: {SUT.DesiredSize}");
+			Assert.IsLessThanOrEqualTo(1, Math.Abs(11 - SUT.DesiredSize.Width), $"Actual size: {SUT.DesiredSize}");
+			Assert.IsLessThanOrEqualTo(1, Math.Abs(50 - SUT.DesiredSize.Height), $"Actual size: {SUT.DesiredSize}");
 #endif
 		}
 
@@ -167,6 +168,179 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 
 			var screenShot = await UITestHelper.ScreenShot(SUT);
 			ImageAssert.HasColorAt(screenShot, new Point(90, 50), "#FF38FF52");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3238")]
+#if !__SKIA__ && !WINAPPSDK
+		[Ignore("Geometry.Transform is only implemented on Skia and WinUI.")]
+#endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_Geometry_Transform_Translates_Rendering()
+		{
+			var path = new Path
+			{
+				Data = new RectangleGeometry
+				{
+					Rect = new Rect(0, 0, 50, 50),
+					Transform = new TranslateTransform { X = 60, Y = 60 }
+				},
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Width = 150,
+				Height = 150
+			};
+
+			await UITestHelper.Load(path);
+
+			var screenshot = await UITestHelper.ScreenShot(path);
+
+			// The rectangle is at (0,0)-(50,50) but translated by (60,60),
+			// so it should render at (60,60)-(110,110).
+			// Origin area should NOT be red
+			ImageAssert.DoesNotHaveColorAt(screenshot, new Point(10, 10), Microsoft.UI.Colors.Red);
+			// Translated position should be red
+			ImageAssert.HasColorAt(screenshot, new Point(85, 85), Microsoft.UI.Colors.Red);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3238")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+#if !__SKIA__ && !WINAPPSDK
+		[Ignore("Geometry.Transform is only implemented on Skia and WinUI.")]
+#endif
+		public async Task When_Geometry_Transform_Changed_At_Runtime()
+		{
+			var translate = new TranslateTransform { X = 0, Y = 0 };
+			var path = new Path
+			{
+				Data = new RectangleGeometry
+				{
+					Rect = new Rect(0, 0, 50, 50),
+					Transform = translate
+				},
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Width = 150,
+				Height = 150
+			};
+
+			await UITestHelper.Load(path);
+
+			// Initially, the rect is at (0,0)
+			var screenshotBefore = await UITestHelper.ScreenShot(path);
+			ImageAssert.HasColorAt(screenshotBefore, new Point(25, 25), Microsoft.UI.Colors.Red);
+			ImageAssert.DoesNotHaveColorAt(screenshotBefore, new Point(125, 125), Microsoft.UI.Colors.Red);
+
+			// Change the transform at runtime (simulates what an animation would do)
+			translate.X = 80;
+			translate.Y = 80;
+
+			await WindowHelper.WaitForIdle();
+
+			// After transform change, the rect should have moved
+			var screenshotAfter = await UITestHelper.ScreenShot(path);
+			ImageAssert.HasColorAt(screenshotAfter, new Point(105, 105), Microsoft.UI.Colors.Red);
+			// Origin should no longer be red
+			ImageAssert.DoesNotHaveColorAt(screenshotAfter, new Point(10, 10), Microsoft.UI.Colors.Red);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3238")]
+#if !__SKIA__ && !WINAPPSDK
+		[Ignore("Geometry.Transform is only implemented on Skia and WinUI.")]
+#endif
+		public async Task When_GeometryGroup_Children_Have_Transforms()
+		{
+			var path = new Path
+			{
+				Data = new GeometryGroup
+				{
+					Children =
+					{
+						new RectangleGeometry
+						{
+							Rect = new Rect(0, 0, 40, 40),
+						},
+						new RectangleGeometry
+						{
+							Rect = new Rect(0, 0, 40, 40),
+							Transform = new TranslateTransform { X = 80, Y = 80 }
+						}
+					}
+				},
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Width = 150,
+				Height = 150
+			};
+
+			await UITestHelper.Load(path);
+
+			var screenshot = await UITestHelper.ScreenShot(path);
+
+			// First rect at origin should be red
+			ImageAssert.HasColorAt(screenshot, new Point(20, 20), Microsoft.UI.Colors.Red);
+			// Second rect translated to (80,80) should be red
+			ImageAssert.HasColorAt(screenshot, new Point(100, 100), Microsoft.UI.Colors.Red);
+			// Gap between the two rects should NOT be red
+			ImageAssert.DoesNotHaveColorAt(screenshot, new Point(60, 60), Microsoft.UI.Colors.Red);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19957")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+#if !__SKIA__ && !WINAPPSDK
+		[Ignore("PolyLineSegment stroke rendering is validated on Skia and WinUI.")]
+#endif
+		public async Task When_PolyLineSegment_Is_Stroked_Renders_All_Points()
+		{
+			// A PathGeometry containing a LineSegment followed by a PolyLineSegment,
+			// both stroke-only (no fill).  Before the fix, the PolyLineSegment portion
+			// was invisible on Skia because the canvas Save() was missing before ClipPath().
+			var SUT = new Path
+			{
+				Width = 200,
+				Height = 100,
+				Stroke = new SolidColorBrush(Microsoft.UI.Colors.Black),
+				StrokeThickness = 4,
+				Data = new PathGeometry
+				{
+					Figures = new PathFigureCollection
+					{
+						new PathFigure
+						{
+							StartPoint = new Point(0, 50),
+							IsClosed = false,
+							Segments = new PathSegmentCollection
+							{
+								// Single LineSegment — always rendered correctly
+								new LineSegment { Point = new Point(60, 50) },
+								// PolyLineSegment — was silently dropped before the fix
+								new PolyLineSegment
+								{
+									Points = new PointCollection
+									{
+										new Point(120, 50),
+										new Point(200, 50),
+									}
+								},
+							}
+						}
+					}
+				}
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var screenshot = await UITestHelper.ScreenShot(SUT);
+
+			// Mid-point of the LineSegment portion — should be black
+			ImageAssert.HasColorAt(screenshot, new Point(30, 50), Microsoft.UI.Colors.Black);
+
+			// Mid-point of the PolyLineSegment portion — must also be black
+			ImageAssert.HasColorAt(screenshot, new Point(160, 50), Microsoft.UI.Colors.Black);
+
+			// Area well above the line — must NOT be black
+			ImageAssert.DoesNotHaveColorAt(screenshot, new Point(30, 10), Microsoft.UI.Colors.Black);
+			ImageAssert.DoesNotHaveColorAt(screenshot, new Point(160, 10), Microsoft.UI.Colors.Black);
 		}
 
 		private void Brush_ImageOpened(object sender, Microsoft.UI.Xaml.RoutedEventArgs e) => throw new NotImplementedException();

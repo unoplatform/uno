@@ -20,9 +20,6 @@ public partial class PathIconSource : IconSource
 	public static DependencyProperty DataProperty { get; } =
 		DependencyProperty.Register(nameof(Data), typeof(Geometry), typeof(PathIconSource), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
-#if !HAS_UNO_WINUI
-	private
-#endif
 	protected override IconElement CreateIconElementCore()
 	{
 		Geometry data = Data;
@@ -34,9 +31,6 @@ public partial class PathIconSource : IconSource
 		return pathIcon;
 	}
 
-#if !HAS_UNO_WINUI
-	private
-#endif
 	protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty iconSourceProperty)
 	{
 		if (iconSourceProperty == DataProperty)

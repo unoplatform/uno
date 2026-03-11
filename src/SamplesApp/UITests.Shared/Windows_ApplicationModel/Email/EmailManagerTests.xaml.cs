@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -27,11 +27,11 @@ namespace UITests.Shared.Windows_ApplicationModel.Email
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[SampleControlInfo(
+	[Sample(
 		"Windows.ApplicationModel",
 		"EmailManager",
-		description: "Test the EmailManager.ShowComposeNewEmailAsync API.",
-		viewModelType: typeof(EmailManagerViewModel))]
+		Description = "Test the EmailManager.ShowComposeNewEmailAsync API.",
+		ViewModelType = typeof(EmailManagerViewModel))]
 	public sealed partial class EmailManagerTests : Page
 	{
 		public EmailManagerTests()

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,7 +19,7 @@ using Uno.UI.Extensions;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListView_With_ListViews_Count_Measure")]
+	[Sample("ListView", Name = "ListView_With_ListViews_Count_Measure")]
 	public sealed partial class ListView_With_ListViews_Count_Measure : UserControl
 	{
 		public ListView_With_ListViews_Count_Measure()

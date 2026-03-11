@@ -14,7 +14,7 @@ using Uno.UI;
 namespace Microsoft.UI.Xaml
 {
 	[Markup.ContentProperty(Name = "Setters")]
-	public partial class Style
+	public partial class Style : IMultiParentShareableDependencyObject
 	{
 		private static Logger _logger = typeof(Style).Log();
 

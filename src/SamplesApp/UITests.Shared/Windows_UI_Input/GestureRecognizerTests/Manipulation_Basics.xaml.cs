@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
@@ -15,7 +15,7 @@ using Windows.UI.Input;
 
 namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
 {
-	[SampleControlInfo("Gesture Recognizer")]
+	[Sample("Gesture Recognizer")]
 	public sealed partial class Manipulation_Basics : Page
 	{
 		private bool _isReady;
@@ -114,10 +114,10 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
 
 		private static string F(Point position, ManipulationDelta delta, ManipulationDelta cumulative)
 			=> $"@=[{position.X:000.00},{position.Y:000.00}] "
-			+ $"| X=(Σ:{cumulative.Translation.X:' '000.00;'-'000.00} / Δ:{delta.Translation.X:' '00.00;'-'00.00}) "
-			+ $"| Y=(Σ:{cumulative.Translation.Y:' '000.00;'-'000.00} / Δ:{delta.Translation.Y:' '00.00;'-'00.00}) "
-			+ $"| θ=(Σ:{cumulative.Rotation:' '000.00;'-'000.00} / Δ:{delta.Rotation:' '00.00;'-'00.00}) "
-			+ $"| s=(Σ:{cumulative.Scale:000.00} / Δ:{delta.Scale:00.00}) "
-			+ $"| e=(Σ:{cumulative.Expansion:' '000.00;'-'000.00} / Δ:{delta.Expansion:' '00.00;'-'00.00})";
+			+ $"| X=(S:{cumulative.Translation.X:' '000.00;'-'000.00} / ?:{delta.Translation.X:' '00.00;'-'00.00}) "
+			+ $"| Y=(S:{cumulative.Translation.Y:' '000.00;'-'000.00} / ?:{delta.Translation.Y:' '00.00;'-'00.00}) "
+			+ $"| ?=(S:{cumulative.Rotation:' '000.00;'-'000.00} / ?:{delta.Rotation:' '00.00;'-'00.00}) "
+			+ $"| s=(S:{cumulative.Scale:000.00} / ?:{delta.Scale:00.00}) "
+			+ $"| e=(S:{cumulative.Expansion:' '000.00;'-'000.00} / ?:{delta.Expansion:' '00.00;'-'00.00})";
 	}
 }

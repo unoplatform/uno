@@ -5,17 +5,20 @@
 		private static readonly isMacOS = navigator?.platform.toUpperCase().includes('MAC') ?? false;
 		private static inputElement: HTMLInputElement | HTMLTextAreaElement;
 		private static isInSelectionChange: boolean;
+		private static acceptsReturn: boolean;
 
 		private static waitingAsyncOnSelectionChange: boolean;
 		private static nextSelectionStart: number;
 		private static nextSelectionEnd: number;
 		private static nextSelectionDirection: "forward" | "backward" | "none";
 
-		public static async initialize(): Promise<any> {
-			const module = <any>window.Module;
-			if (BrowserInvisibleTextBoxViewExtension._exports == undefined
-				&& module.getAssemblyExports !== undefined) {
-				const browserExports = (await module.getAssemblyExports("Uno.UI.Runtime.Skia.WebAssembly.Browser"));
+		// Android soft keyboards report all key events with keyCode 229 ("Unidentified").
+		// Text changes are synced via the oninput handler instead.
+		private static readonly ANDROID_IME_KEYCODE = 229;
+
+		public static initialize() {
+			if (BrowserInvisibleTextBoxViewExtension._exports == undefined) {
+				const browserExports = WebAssemblyWindowWrapper.getAssemblyExports();
 
 				BrowserInvisibleTextBoxViewExtension._exports = browserExports.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension;
 
@@ -43,6 +46,7 @@
 		}
 
 		private static createInput(isPasswordBox: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string) {
+			BrowserInvisibleTextBoxViewExtension.acceptsReturn = acceptsReturn;
 			const input = document.createElement(acceptsReturn && !isPasswordBox ? "textarea" : "input");
 			if (isPasswordBox) {
 				(input as HTMLInputElement).type = "password";
@@ -86,6 +90,16 @@
 				ev.preventDefault();
 			};
 
+			// Handle Enter key from Android virtual keyboards which don't fire keydown events.
+			// Android keyboards typically fire beforeinput with inputType "insertLineBreak" or "insertParagraph" instead.
+			input.addEventListener("beforeinput", (ev: InputEvent) => {
+				if ((ev.inputType === "insertLineBreak" || ev.inputType === "insertParagraph") && !BrowserInvisibleTextBoxViewExtension.acceptsReturn) {
+					ev.preventDefault();
+
+					BrowserInvisibleTextBoxViewExtension._exports.OnEnterKeyPressed();
+				}
+			});
+
 			input.onkeydown = ev => {
 				if (ev.ctrlKey || (ev.metaKey && BrowserInvisibleTextBoxViewExtension.isMacOS)) {
 					// Due to browser security considerations, we need to let the clipboard operations be handled natively.
@@ -96,7 +110,30 @@
 					}
 				}
 
+				// Allow Enter key to propagate when the TextBox doesn't accept returns
+				// This enables focus navigation (e.g., Uno.Toolkit's AutoFocusNext) on mobile browsers
+				if ((ev.key === "Enter" || ev.keyCode === 13) && !BrowserInvisibleTextBoxViewExtension.acceptsReturn) {
+					// Don't call preventDefault() to allow the key event to propagate to document listeners
+					return;
+				}
+
+				// Android soft keyboards fire all keys as keyCode 229 / key "Unidentified".
+				// The C# side cannot identify these (maps to VirtualKey.None), so let the browser
+				// handle them natively. Text changes sync via the oninput handler.
+				// stopPropagation prevents the document-level BrowserKeyboardInputSource from
+				// calling preventDefault() on the event.
+				if (ev.keyCode === BrowserInvisibleTextBoxViewExtension.ANDROID_IME_KEYCODE) {
+					ev.stopPropagation();
+					return;
+				}
+
 				ev.preventDefault();
+			};
+
+			input.onkeyup = ev => {
+				if (ev.keyCode === BrowserInvisibleTextBoxViewExtension.ANDROID_IME_KEYCODE) {
+					ev.stopPropagation();
+				}
 			};
 
 			document.body.appendChild(input);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,7 +19,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo(description: "ListView gets measured with an anomalously-small width during arrange, which it must handle with grace and panache")]
+	[Sample(Description = "ListView gets measured with an anomalously-small width during arrange, which it must handle with grace and panache")]
 	public sealed partial class ListView_Weird_Measure : UserControl
 	{
 		public ListView_Weird_Measure()

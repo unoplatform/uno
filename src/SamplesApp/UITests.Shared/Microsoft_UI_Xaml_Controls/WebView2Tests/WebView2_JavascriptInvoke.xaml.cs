@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests;
@@ -10,7 +10,7 @@ using Private.Infrastructure;
 
 namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 {
-	[SampleControlInfo("WebView", "WebView2_JavascriptInvoke", typeof(WebView2ViewModel))]
+	[Sample("WebView", Name = "WebView2_JavascriptInvoke", ViewModelType = typeof(WebView2ViewModel))]
 	public sealed partial class WebView2_JavascriptInvoke : UserControl
 	{
 #if HAS_UNO

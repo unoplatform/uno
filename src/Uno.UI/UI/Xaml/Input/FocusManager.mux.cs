@@ -2020,12 +2020,8 @@ namespace Microsoft.UI.Xaml.Input
 				if (pAP != null)
 				{
 					_focusedAutomationPeer = pAP;
-					//TODO Uno: implement
-					//if (pAP.GetAPEventsSource())
-					//{
-					//	pAP = pAP.GetAPEventsSource();
-					//}
-					//pAP.RaiseAutomationEvent(UIAXcp.AEAutomationFocusChanged);
+					var apToRaiseEvent = pAP.EventsSource ?? pAP;
+					apToRaiseEvent.RaiseAutomationEvent(AutomationEvents.AutomationFocusChanged);
 				}
 			}
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,7 +19,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListView_Explicit_Items", typeof(ViewModelBase), description: "ListView containing explicitly-defined ListViewItems. Items shouldn't be corrupted by scrolling.")]
+	[Sample("ListView", Name = "ListView_Explicit_Items", ViewModelType = typeof(ViewModelBase), Description = "ListView containing explicitly-defined ListViewItems. Items shouldn't be corrupted by scrolling.")]
 	public sealed partial class ListView_Explicit_Items : UserControl
 	{
 		public ListView_Explicit_Items()

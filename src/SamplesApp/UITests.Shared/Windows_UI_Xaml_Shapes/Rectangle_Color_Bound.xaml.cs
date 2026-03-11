@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,7 +20,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Shapes
 {
-	[SampleControlInfo("Shapes", nameof(Rectangle_Color_Bound), description: "Late-bound color should be applied to the Rectangle")]
+	[Sample("Shapes", Name = nameof(Rectangle_Color_Bound), Description = "Late-bound color should be applied to the Rectangle")]
 	public sealed partial class Rectangle_Color_Bound : UserControl
 	{
 		public Rectangle_Color_Bound()

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -15,6 +15,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [TestClass]
 [RunsOnUIThread]
 [RequiresFullWindow]
+[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 public class Given_Frame
 {
 	[TestMethod]
@@ -168,7 +169,7 @@ public class Given_Frame
 		SUT.IsNavigationStackEnabled = false;
 		SUT.Navigate(typeof(MyPage));
 
-		Assert.AreEqual(0, SUT.BackStack.Count);
+		Assert.IsEmpty(SUT.BackStack);
 		Assert.IsFalse(SUT.CanGoBack);
 	}
 
@@ -186,33 +187,33 @@ public class Given_Frame
 
 		SUT.Navigate(typeof(ThirdPage));
 
-		Assert.AreEqual(2, SUT.BackStack.Count);
+		Assert.HasCount(2, SUT.BackStack);
 
 		SUT.GoBack();
 
 		SUT.IsNavigationStackEnabled = false;
 
-		Assert.AreEqual(1, SUT.BackStack.Count);
-		Assert.AreEqual(1, SUT.ForwardStack.Count);
+		Assert.HasCount(1, SUT.BackStack);
+		Assert.HasCount(1, SUT.ForwardStack);
 
 		SUT.Navigate(typeof(MyPage));
 		SUT.Navigate(typeof(MyPage));
 
 		Assert.IsInstanceOfType(SUT.Content, typeof(MyPage));
-		Assert.AreEqual(1, SUT.BackStack.Count);
-		Assert.AreEqual(1, SUT.ForwardStack.Count);
+		Assert.HasCount(1, SUT.BackStack);
+		Assert.HasCount(1, SUT.ForwardStack);
 
 		SUT.GoBack();
 
 		Assert.IsInstanceOfType(SUT.Content, typeof(FirstPage));
-		Assert.AreEqual(1, SUT.BackStack.Count);
-		Assert.AreEqual(1, SUT.ForwardStack.Count);
+		Assert.HasCount(1, SUT.BackStack);
+		Assert.HasCount(1, SUT.ForwardStack);
 
 		SUT.GoForward();
 
 		Assert.IsInstanceOfType(SUT.Content, typeof(ThirdPage));
-		Assert.AreEqual(1, SUT.BackStack.Count);
-		Assert.AreEqual(1, SUT.ForwardStack.Count);
+		Assert.HasCount(1, SUT.BackStack);
+		Assert.HasCount(1, SUT.ForwardStack);
 	}
 
 	[TestMethod]
@@ -236,15 +237,15 @@ public class Given_Frame
 		SUT.GoBack();
 
 		Assert.IsInstanceOfType(SUT.Content, typeof(FirstPage));
-		Assert.AreEqual(1, SUT.BackStack.Count);
-		Assert.AreEqual(1, SUT.ForwardStack.Count);
+		Assert.HasCount(1, SUT.BackStack);
+		Assert.HasCount(1, SUT.ForwardStack);
 
 		SUT.IsNavigationStackEnabled = true;
 		SUT.GoBack();
 
 		Assert.IsInstanceOfType(SUT.Content, typeof(FirstPage));
-		Assert.AreEqual(0, SUT.BackStack.Count);
-		Assert.AreEqual(2, SUT.ForwardStack.Count);
+		Assert.IsEmpty(SUT.BackStack);
+		Assert.HasCount(2, SUT.ForwardStack);
 	}
 
 #if !__SKIA__ // This test only applies to legacy frame which keeps all pages in memory
@@ -530,7 +531,6 @@ public class Given_Frame
 	[Ignore("This test specifically tests Android's NativeFramePresenter")]
 #endif
 	[CombinatorialData]
-	[Timeout(5 * 60 * 1000)] // test is really slow in CI
 	public async Task When_Navigating_NativeFrame_Pages_Get_Collected(bool backAndForth)
 	{
 		// to clean up residual pages from a previous test run

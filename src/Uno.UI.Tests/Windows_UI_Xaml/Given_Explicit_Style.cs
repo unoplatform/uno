@@ -17,12 +17,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 	[TestClass]
 	public class Given_Explicit_Style
 	{
-#if NETFX_CORE
-		internal static readonly Thickness DefaultButtonPadding = new Thickness(8, 4, 8, 4);
-#else
-		// TODO: adjust this when Uno retargets newer version of the SDK
-		internal static readonly Thickness DefaultButtonPadding = new Thickness(8, 4, 8, 4);
-#endif
+		internal static readonly Thickness DefaultButtonPadding = new Thickness(8, 4, 8, 5);
 		[TestInitialize]
 		public void Init()
 		{

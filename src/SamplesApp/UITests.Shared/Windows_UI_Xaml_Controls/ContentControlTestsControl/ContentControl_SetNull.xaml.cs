@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,7 +17,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 {
-	[SampleControlInfo("ContentControl", "ContentControl_SetNull", typeof(Presentation.SamplePages.ContentControlTestViewModel))]
+	[Sample("ContentControl", Name = "ContentControl_SetNull", ViewModelType = typeof(Presentation.SamplePages.ContentControlTestViewModel))]
 	public sealed partial class ContentControl_SetNull : UserControl
 	{
 		public ContentControl_SetNull()

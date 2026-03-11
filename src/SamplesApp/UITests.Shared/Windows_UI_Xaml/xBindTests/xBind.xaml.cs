@@ -1,10 +1,10 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_UI_Xaml.xBind
 {
-	[SampleControlInfo("x:Bind", "xBind")]
+	[Sample("x:Bind", Name = "xBind")]
 	public sealed partial class xBind : UserControl
 	{
 		internal XbindViewModel ViewModel { get; set; }

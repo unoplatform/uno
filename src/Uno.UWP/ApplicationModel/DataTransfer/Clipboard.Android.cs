@@ -132,7 +132,7 @@ namespace Windows.ApplicationModel.DataTransfer
 					if (item != null)
 					{
 						var itemText = item.Text;
-						if (itemText != null)
+						if (!string.IsNullOrEmpty(itemText))
 						{
 							clipText = itemText;
 						}
@@ -193,8 +193,14 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			if (ContextHelper.Current.GetSystemService(Context.ClipboardService) is ClipboardManager manager)
 			{
-				var clipData = ClipData.NewPlainText("", "");
-				manager.PrimaryClip = clipData;
+				if (OperatingSystem.IsAndroidVersionAtLeast(28))
+				{
+					manager.ClearPrimaryClip();
+				}
+				else
+				{
+					manager.PrimaryClip = ClipData.NewPlainText("", "");
+				}
 			}
 		}
 

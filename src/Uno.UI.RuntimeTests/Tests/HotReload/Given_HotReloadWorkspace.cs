@@ -53,7 +53,6 @@ public partial class Given_HotReloadWorkspace
 	/// 
 	/// </remarks>
 	// Hot reload tests are only available on Skia desktop targets
-	[Timeout(10 * 60 * 1000)]
 	[Filters]
 	[TestMethod]
 	public async Task When_HotReloadScenario(string filters)

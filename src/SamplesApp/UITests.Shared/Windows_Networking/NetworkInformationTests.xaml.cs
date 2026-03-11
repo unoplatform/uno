@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,7 +21,7 @@ using Private.Infrastructure;
 
 namespace UITests.Windows_Networking
 {
-	[SampleControlInfo("Windows.Networking", "NetworkInformation", viewModelType: typeof(NetworkInformationViewModel))]
+	[Sample("Windows.Networking", Name = "NetworkInformation", ViewModelType = typeof(NetworkInformationViewModel))]
 	public sealed partial class NetworkInformationTests : Page
 	{
 		public NetworkInformationTests()

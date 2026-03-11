@@ -3601,6 +3601,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						var dataTypeObject = FindMember(template.xamlObject!, "DataType", XamlConstants.XamlXmlNamespace);
 						if (dataTypeObject?.Value == null)
 						{
+							// Check if this is a static method binding (path starts with a namespace prefix like "local:Type")
+							// Static bindings don't require x:DataType because they don't access the DataContext
+							var pathParts = path.Split('.');
+							var isStaticBinding = pathParts.FirstOrDefault()?.Contains(":") ?? false;
+
+							if (isStaticBinding)
+							{
+								// Extract the type from the static path (e.g., "local:StaticHandler" from "local:StaticHandler.OnClick")
+								return GetType(RewriteNamespaces(pathParts[0]));
+							}
+
 							throw new XamlGenerationException("Unable to find x:DataType in enclosing DataTemplate for x:Bind event", bind);
 						}
 
@@ -4211,9 +4222,38 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (isInsideDataTemplate)
 			{
 				var dataTypeObject = FindMember(dataTemplateObject!, "DataType", XamlConstants.XamlXmlNamespace);
+
+				// Check if this might be a static-only binding (no instance member access needed)
+				// Static-only bindings don't require x:DataType because they don't access the DataContext
 				if (dataTypeObject?.Value == null)
 				{
-					throw new XamlGenerationException("Unable to find x:DataType in enclosing DataTemplate", bindNode);
+					// Try parsing without a context type to see if it's a static-only binding
+					var staticContextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction, null, _metadataHelper.Compilation.GlobalNamespace, isRValue: true, _xBindCounter, FindType, targetPropertyType: null);
+
+					// Check if all properties are static (start with global::) or if there are no instance properties
+					var hasInstanceProperties = staticContextFunction.Properties.Any(p => !p.StartsWith("global::", StringComparison.Ordinal));
+
+					if (!hasInstanceProperties && !string.IsNullOrEmpty(rawFunction))
+					{
+						// This is a static-only binding - no x:DataType required
+						if (staticContextFunction.MethodDeclaration is not null)
+						{
+							RegisterXBindTryGetDeclaration(staticContextFunction.MethodDeclaration);
+						}
+
+						// TwoWay binding to static properties is not supported
+						if (modeMember == "TwoWay")
+						{
+							throw new XamlGenerationException("TwoWay binding to static properties is not supported", bindNode);
+						}
+
+						return $".BindingApply(___b => /*defaultBindMode{GetDefaultBindMode()}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ({staticContextFunction.Expression}), null))";
+					}
+					else
+					{
+						// Has instance properties but no x:DataType - throw the original error
+						throw new XamlGenerationException("Unable to find x:DataType in enclosing DataTemplate", bindNode);
+					}
 				}
 
 				var dataType = RewriteNamespaces(dataTypeObject.Value.ToString() ?? "");
@@ -4808,7 +4848,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return GetMemberValue();
 					case SpecialType.System_Single:
 					case SpecialType.System_Double:
-						return GetFloatingPointLiteral(GetMemberValue(), propertyType, owner);
+						return GetFloatingPointLiteral(GetMemberValue(), propertyType, owner, owner);
 					case SpecialType.System_String:
 						return "\"" + DoubleEscape(memberValue) + "\"";
 					case SpecialType.System_Boolean:
@@ -4826,10 +4866,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return BuildBrush(GetMemberValue());
 
 					case XamlConstants.Types.Thickness:
-						return BuildThickness(GetMemberValue());
+						return BuildThickness(GetMemberValue(), owner);
 
 					case XamlConstants.Types.CornerRadius:
-						return BuildCornerRadius(GetMemberValue());
+						return BuildCornerRadius(GetMemberValue(), owner);
 
 					case XamlConstants.Types.FontFamily:
 						return $@"new global::{propertyTypeWithoutGlobal}(""{memberValue}"")";
@@ -4838,7 +4878,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return BuildFontWeight(GetMemberValue());
 
 					case XamlConstants.Types.GridLength:
-						return BuildGridLength(GetMemberValue());
+						return BuildGridLength(GetMemberValue(), owner);
 
 					case "UIKit.UIColor":
 						return BuildColor(GetMemberValue());
@@ -4878,22 +4918,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return "new System.Drawing.PointF(" + AppendFloatSuffix(GetMemberValue()) + ")";
 
 					case "System.Drawing.Size":
-						return "new System.Drawing.Size(" + SplitAndJoin(memberValue) + ")";
+						return "new System.Drawing.Size(" + SplitAndJoin(memberValue, "Size") + ")";
 
 					case "Windows.Foundation.Size":
-						return "new Windows.Foundation.Size(" + SplitAndJoin(memberValue) + ")";
+						return "new Windows.Foundation.Size(" + SplitAndJoin(memberValue, "Size") + ")";
 
 					case "Microsoft.UI.Xaml.Media.Matrix":
-						return "new Microsoft.UI.Xaml.Media.Matrix(" + SplitAndJoin(memberValue) + ")";
+						return "new Microsoft.UI.Xaml.Media.Matrix(" + SplitAndJoin(memberValue, "Matrix") + ")";
 
 					case "Windows.Foundation.Point":
-						return "new Windows.Foundation.Point(" + SplitAndJoin(memberValue) + ")";
+						return "new Windows.Foundation.Point(" + SplitAndJoin(memberValue, "Point") + ")";
 
 					case "System.Numerics.Vector2":
-						return "new global::System.Numerics.Vector2(" + SplitAndJoin(memberValue) + ")";
+						return "new global::System.Numerics.Vector2(" + SplitAndJoin(memberValue, "Vector2") + ")";
 
 					case "System.Numerics.Vector3":
-						return "new global::System.Numerics.Vector3(" + SplitAndJoin(memberValue) + ")";
+						return "new global::System.Numerics.Vector3(" + SplitAndJoin(memberValue, "Vector3") + ")";
 
 					case "Microsoft.UI.Xaml.Input.InputScope":
 						return "new global::Microsoft.UI.Xaml.Input.InputScope { Names = { new global::Microsoft.UI.Xaml.Input.InputScopeName { NameValue = global::Microsoft.UI.Xaml.Input.InputScopeNameValue." + memberValue + "} } }";
@@ -4993,8 +5033,27 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				throw new XamlGenerationException($"Unable to convert '{memberValue}' to '{propertyType}'", owner);
 
-				static string? SplitAndJoin(string? value)
-					=> value == null ? null : splitRegex.Replace(value, ", ");
+				string? SplitAndJoin(string? value, string typeName)
+				{
+					if (value == null)
+					{
+						return null;
+					}
+
+					// Split the value by commas or whitespace and validate each component is a valid number
+					var components = splitRegex.Split(value);
+					foreach (var component in components)
+					{
+						var trimmed = component.Trim();
+						if (!string.IsNullOrEmpty(trimmed) && !double.TryParse(trimmed, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out _))
+						{
+							AddError($"Invalid {typeName} value '{value}'. Each component must be a valid number", owner);
+							return "0, 0";
+						}
+					}
+
+					return splitRegex.Replace(value, ", ");
+				}
 
 				string RewriteUri(string? rawValue)
 				{
@@ -5164,11 +5223,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return $"global::System.TimeSpan.FromTicks({value.Ticks} /* {memberValue} */)";
 		}
 
-		private static string BuildGridLength(string memberValue)
+		private string BuildGridLength(string memberValue, XamlMemberDefinition? owner = null)
 		{
-			var gridLength = Microsoft.UI.Xaml.GridLength.ParseGridLength(memberValue).FirstOrDefault();
-
-			return $"new global::{XamlConstants.Types.GridLength}({gridLength.Value.ToStringInvariant()}f, global::{XamlConstants.Types.GridUnitType}.{gridLength.GridUnitType})";
+			try
+			{
+				var gridLength = Microsoft.UI.Xaml.GridLength.ParseGridLength(memberValue).FirstOrDefault();
+				return $"new global::{XamlConstants.Types.GridLength}({gridLength.Value.ToStringInvariant()}f, global::{XamlConstants.Types.GridUnitType}.{gridLength.GridUnitType})";
+			}
+			catch (Exception) when (owner != null)
+			{
+				AddError($"Invalid GridLength value '{memberValue}', expected a number (e.g., '100'), 'Auto', or a star value (e.g., '2*')", owner);
+				return $"new global::{XamlConstants.Types.GridLength}(0f, global::{XamlConstants.Types.GridUnitType}.Pixel)";
+			}
 		}
 
 		private string BuildLiteralValue(XamlMemberDefinition member, INamedTypeSymbol? propertyType = null, XamlMemberDefinition? owner = null, string objectUid = "", bool isTemplateBindingAttachedProperty = false)
@@ -5301,12 +5367,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private static string BuildThickness(string memberValue)
+		private string BuildThickness(string memberValue, XamlMemberDefinition owner)
 		{
 			// This is until we find an appropriate way to convert strings to Thickness.
 			if (!memberValue.Contains(","))
 			{
 				memberValue = ReplaceWhitespaceByCommas(memberValue);
+			}
+
+			// Validate that all components are valid numeric values
+			var components = memberValue.Split(',');
+			foreach (var component in components)
+			{
+				var trimmed = component.Trim();
+				if (!double.TryParse(trimmed, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out _))
+				{
+					AddError($"Invalid Thickness value '{memberValue}'. Each component must be a valid number", owner);
+					return "new global::Microsoft.UI.Xaml.Thickness(0)";
+				}
 			}
 
 			if (memberValue.Contains("."))
@@ -5318,13 +5396,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return "new global::Microsoft.UI.Xaml.Thickness(" + memberValue + ")";
 		}
 
-		private static string BuildCornerRadius(string memberValue)
+		private string BuildCornerRadius(string memberValue, XamlMemberDefinition owner)
 		{
 			// values can be separated by commas or whitespace
 			// ensure commas are used for the constructor
 			if (!memberValue.Contains(","))
 			{
 				memberValue = ReplaceWhitespaceByCommas(memberValue);
+			}
+
+			// Validate that all components are valid numeric values
+			var components = memberValue.Split(',');
+			foreach (var component in components)
+			{
+				var trimmed = component.Trim();
+				if (!double.TryParse(trimmed, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out _))
+				{
+					AddError($"Invalid CornerRadius value '{memberValue}'. Each component must be a valid number", owner);
+					return $"new {XamlConstants.Types.CornerRadius}(0)";
+				}
 			}
 
 			return $"new {XamlConstants.Types.CornerRadius}({memberValue})";
@@ -5875,7 +5965,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						m.Member.Name != "_UnknownContent"
 
 						&& m.Member.Name != "Resources"
-						&& m.Member.Name != "Key"
+						&& !(m.Member.Name == "Key" && m.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
 					)
 					||
 					(
@@ -6656,7 +6746,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return false;
 		}
 
-		private void BuildInitializer(IIndentedStringBuilder writer, XamlObjectDefinition xamlObjectDefinition, XamlMemberDefinition? owner = null)
+		private void BuildInitializer(IIndentedStringBuilder writer, XamlObjectDefinition xamlObjectDefinition, XamlMemberDefinition? owner)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			var initializer = xamlObjectDefinition.Members.First(m => m.Member.Name == "_Initialization");
@@ -6670,7 +6760,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						throw new XamlGenerationException($"Initializer value for '{xamlObjectDefinition.Type.Name}' cannot be empty", xamlObjectDefinition);
 					}
 
-					writer.AppendLineInvariantIndented("{0}", GetFloatingPointLiteral(initializer.Value.ToString() ?? "", GetType(xamlObjectDefinition.Type), owner));
+					writer.AppendLineInvariantIndented("{0}", GetFloatingPointLiteral(initializer.Value.ToString() ?? "", GetType(xamlObjectDefinition.Type), owner, xamlObjectDefinition));
 				}
 				else if (xamlObjectDefinition.Type.Name == "Boolean")
 				{
@@ -6696,7 +6786,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private string GetFloatingPointLiteral(string memberValue, INamedTypeSymbol type, XamlMemberDefinition? owner)
+		private string GetFloatingPointLiteral(string memberValue, INamedTypeSymbol type, XamlMemberDefinition? owner, IXamlLocation location)
 		{
 			var name = ValidatePropertyType(type, owner);
 
@@ -6736,6 +6826,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				// UWP does that for double but not for float.
 				memberValue = IgnoreStartingFromFirstSpaceIgnoreLeading(memberValue);
+			}
+
+			// Validate that the value is a valid number
+			if (!double.TryParse(memberValue, NumberStyles.Float, CultureInfo.InvariantCulture, out _))
+			{
+				var typeName = isDouble ? "Double" : "Single";
+				AddError($"Invalid {typeName} value '{memberValue}'", location);
+				return isDouble ? "0d" : "0f";
 			}
 
 			return "{0}{1}".InvariantCultureFormat(memberValue, isDouble ? "d" : "f");

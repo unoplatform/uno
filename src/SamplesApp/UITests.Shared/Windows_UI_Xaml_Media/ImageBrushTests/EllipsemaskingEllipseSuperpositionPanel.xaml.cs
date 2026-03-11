@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 {
-	[SampleControlInfo("Brushes", "EllipsemaskingEllipseSuperpositionPanel")]
+	[Sample("Brushes", Name = "EllipsemaskingEllipseSuperpositionPanel")]
 	public sealed partial class EllipsemaskingEllipseSuperpositionPanel : UserControl, IWaitableSample
 	{
 		private readonly Task _samplePreparedTask;

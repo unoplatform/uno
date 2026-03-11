@@ -69,6 +69,7 @@ partial class ContentPresenter
 			{
 				//If in visual tree, attach immediately. If not, don't attach since Enter will attach later.
 				AttachNativeElement();
+				ArrangeNativeElement();
 			}
 		}
 		else
@@ -87,8 +88,16 @@ partial class ContentPresenter
 		_nativeElementHostingExtension.Value!.AttachNativeElement(Content);
 		_nativeHosts.Add(this);
 		var ct = ((CompositionTarget)Visual.CompositionTarget)!;
-		ct.FrameRendered += ArrangeNativeElement;
-		_frameRenderedDisposable = Disposable.Create(() => ct.FrameRendered -= ArrangeNativeElement);
+		ct.FrameRendered += OnFrameRendered;
+		_frameRenderedDisposable = Disposable.Create(() => ct.FrameRendered -= OnFrameRendered);
+	}
+
+	private void OnFrameRendered()
+	{
+		if (_nativeElementAttached)
+		{
+			ArrangeNativeElement();
+		}
 	}
 
 	partial void DetachNativeElement(object content)
@@ -171,6 +180,7 @@ partial class ContentPresenter
 						// We're detaching the native element as it's no longer in view, but conceptually, it's still in the tree, so IsNativeHost is still true
 						Debug.Assert(host.IsNativeHost);
 						host._nativeElementAttached = false;
+						host._lastArrangeRect = null;
 						host._nativeElementHostingExtension.Value!.DetachNativeElement(host.Content);
 					}
 					else

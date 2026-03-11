@@ -1,4 +1,4 @@
-﻿using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.Controls;
 using System;
 using Microsoft.UI.Xaml;
 using Windows.UI.Core;
@@ -10,7 +10,7 @@ using Private.Infrastructure;
 
 namespace Uno.UI.Samples.Content.UITests.WebView
 {
-	[SampleControlInfo("WebView", "WebView_JavascriptInvoke", typeof(WebViewViewModel))]
+	[Sample("WebView", Name = "WebView_JavascriptInvoke", ViewModelType = typeof(WebViewViewModel))]
 	public sealed partial class WebView_JavascriptInvoke : UserControl
 	{
 #if HAS_UNO

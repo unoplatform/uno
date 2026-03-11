@@ -83,4 +83,9 @@ public partial class CoreWebView2
 	/// <see cref="CoreWebView2.UnsupportedUriSchemeIdentified"/> is raised when the WebView encounters a URI with an unsupported scheme.
 	/// </summary>
 	internal event TypedEventHandler<CoreWebView2, WebViewUnsupportedUriSchemeIdentifiedEventArgs> UnsupportedUriSchemeIdentified;
+
+	/// <summary>
+	/// Occurs when an HTTP request is made in the WebView for a web resource.
+	/// </summary>
+	public event TypedEventHandler<CoreWebView2, CoreWebView2WebResourceRequestedEventArgs> WebResourceRequested;
 }

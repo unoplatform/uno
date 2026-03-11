@@ -63,12 +63,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 				var textBlock = page.ResourceKeyThemedTextBlock;
 
 				// Dark text
-				Assert.IsTrue(((SolidColorBrush)textBlock.Foreground).Color.R < 100);
+				Assert.IsLessThan(100, ((SolidColorBrush)textBlock.Foreground).Color.R);
 
 				using var _ = SwapSystemTheme();
 
 				// Light text
-				Assert.IsTrue(((SolidColorBrush)textBlock.Foreground).Color.R > 200);
+				Assert.IsGreaterThan(200, ((SolidColorBrush)textBlock.Foreground).Color.R);
 			}
 		}
 
@@ -84,12 +84,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 				app.HostView.Children.Add(button);
 
 				// Dark text
-				Assert.IsTrue(((SolidColorBrush)button.Foreground).Color.R < 100);
+				Assert.IsLessThan(100, ((SolidColorBrush)button.Foreground).Color.R);
 
 				using var _ = SwapSystemTheme();
 
 				// Light text
-				Assert.IsTrue(((SolidColorBrush)button.Foreground).Color.R > 200);
+				Assert.IsGreaterThan(200, ((SolidColorBrush)button.Foreground).Color.R);
 			}
 		}
 

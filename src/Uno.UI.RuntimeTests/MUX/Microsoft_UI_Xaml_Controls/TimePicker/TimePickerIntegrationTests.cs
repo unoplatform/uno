@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
@@ -55,6 +55,7 @@ public class TimePickerIntegrationTests
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task VerifyDefaultProperties()
 	{
 		TimePicker timePicker = null;
@@ -245,6 +246,7 @@ public class TimePickerIntegrationTests
 #endif
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task HasPlaceholderTextByDefault()
 	{
 		var timePicker = await SetupTimePickerTestAsync();
@@ -402,7 +404,7 @@ public class TimePickerIntegrationTests
 
 			var minuteItems = minuteLoopingSelector.Items;
 
-			Assert.AreEqual(12, minuteItems.Count);
+			Assert.HasCount(12, minuteItems);
 			for (int i = 0; i < minuteItems.Count; i++)
 			{
 				var dayItem = minuteItems[i] as DatePickerFlyoutItem;

@@ -25,7 +25,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 	{
 		[TestMethod]
 		[RunsOnUIThread]
-		[Timeout(30000)]
+		// Note: Timeout is handled inside the test method by the CTS. No need to add an attribute here.
 #if !HAS_INPUT_INJECTOR || (!HAS_UNO_WINUI && !WINAPPSDK) // Requires pointer injection and WinUI API
 		[Ignore("This test is not supported on this platform.")]
 #endif

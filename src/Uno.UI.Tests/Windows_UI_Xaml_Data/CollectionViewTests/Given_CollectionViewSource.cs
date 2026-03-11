@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -34,7 +34,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.CollectionViewTests
 			SUT.Source = new[] { 42 };
 
 			Assert.IsNotNull(SUT.View);
-			Assert.AreEqual(1, SUT.View.Count);
+			Assert.HasCount(1, SUT.View);
 		}
 
 		[TestMethod]
@@ -49,7 +49,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.CollectionViewTests
 			SUT.Source = new[] { 42 };
 
 			Assert.IsNotNull(SUT.View);
-			Assert.AreEqual(1, SUT.View.Count);
+			Assert.HasCount(1, SUT.View);
 			Assert.AreEqual(1, viewChanged);
 		}
 
@@ -77,14 +77,14 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.CollectionViewTests
 			SUT.Source = items;
 
 			Assert.IsNotNull(SUT.View);
-			Assert.AreEqual(2, SUT.View.Count);
+			Assert.HasCount(2, SUT.View);
 			Assert.AreEqual(1, viewChanged);
 
-			Assert.AreEqual(1, SUT.View.CollectionGroups.Count);
+			Assert.HasCount(1, SUT.View.CollectionGroups);
 
 			var firstGroup = SUT.View.CollectionGroups.First() as ICollectionViewGroup;
 			Assert.AreEqual(items.First(), firstGroup.Group);
-			Assert.AreEqual(2, firstGroup.GroupItems.Count);
+			Assert.HasCount(2, firstGroup.GroupItems);
 		}
 
 		[TestMethod]
@@ -111,13 +111,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.CollectionViewTests
 			SUT.Source = items;
 
 			Assert.IsNotNull(SUT.View);
-			Assert.AreEqual(0, SUT.View.Count);
+			Assert.IsEmpty(SUT.View);
 			Assert.AreEqual(1, viewChanged);
 
-			Assert.AreEqual(1, SUT.View.CollectionGroups.Count);
+			Assert.HasCount(1, SUT.View.CollectionGroups);
 
 			var firstGroup = SUT.View.CollectionGroups.First() as ICollectionViewGroup;
-			Assert.AreEqual(0, firstGroup.GroupItems.Count);
+			Assert.IsEmpty(firstGroup.GroupItems);
 		}
 	}
 }

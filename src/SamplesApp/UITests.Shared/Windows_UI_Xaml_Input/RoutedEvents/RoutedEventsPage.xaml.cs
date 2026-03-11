@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Uno.UI.Samples.Controls;
 using Windows.UI;
 using Microsoft.UI.Xaml;
@@ -8,7 +8,7 @@ using Microsoft.UI.Xaml.Media;
 
 namespace SamplesApp.Samples.RoutedEvents
 {
-	[SampleControlInfo("Routed Events", "Test Page", description: "Test surface for routed events.")]
+	[Sample("Routed Events", Name = "Test Page", Description = "Test surface for routed events.")]
 	public sealed partial class RoutedEventsPage : Page
 	{
 		public RoutedEventsPage()

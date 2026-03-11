@@ -9,6 +9,16 @@ namespace Uno.UI.Tasks.HotReloadInfo;
 
 public class HotReloadInfoHelper
 {
+	/// <summary>
+	/// The relative path (from IntermediateOutputPath) where the HotReloadInfo.Attribute.g.cs file is generated.
+	/// </summary>
+	public static readonly string HotReloadInfoAttributeFilePath = Path.Combine("uno.hot-reload.info", "HotReloadInfo.Attribute.g.cs");
+
+	/// <summary>
+	/// The relative path (from IntermediateOutputPath) where the HotReloadInfo.g.cs file is generated.
+	/// </summary>
+	public static readonly string HotReloadInfoFilePath = Path.Combine("uno.hot-reload.info", "HotReloadInfo.g.cs");
+
 	public static string? GetInfoFilePath(Assembly asm)
 		=> asm
 			.GetCustomAttributesData()

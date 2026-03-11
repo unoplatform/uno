@@ -1,10 +1,8 @@
-// On the UWP branch, only include this file in Uno.UWP (as public Window.whatever). On the WinUI branch, include it in both Uno.UWP (internal as Windows.whatever) and Uno.UI (public as Microsoft.whatever)
-#if HAS_UNO_WINUI || !IS_UNO_UI_PROJECT
 using System.Text;
 using Windows.Foundation;
 using Uno;
 
-#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
+#if IS_UNO_UI_PROJECT
 namespace Microsoft.UI.Input
 #else
 namespace Windows.UI.Input
@@ -35,6 +33,7 @@ namespace Windows.UI.Input
 			public const int Primary = 1 << 10;
 			public const int InRange = 1 << 11;
 			public const int TouchConfidence = 1 << 12;
+			public const int Inverted = 1 << 13;
 		}
 
 		internal int _flags;
@@ -75,10 +74,11 @@ namespace Windows.UI.Input
 			PointerUpdateKind = (PointerUpdateKind)properties.PointerUpdateKind;
 			XTilt = properties.XTilt;
 			YTilt = properties.YTilt;
+			Twist = properties.Twist;
 			MouseWheelDelta = properties.MouseWheelDelta;
 		}
 
-#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
+#if IS_UNO_UI_PROJECT
 		public static explicit operator global::Windows.UI.Input.PointerPointProperties(Microsoft.UI.Input.PointerPointProperties muxProps)
 		{
 			var props = new global::Windows.UI.Input.PointerPointProperties();
@@ -103,6 +103,7 @@ namespace Windows.UI.Input
 			props.PointerUpdateKind = (global::Windows.UI.Input.PointerUpdateKind)muxProps.PointerUpdateKind;
 			props.XTilt = muxProps.XTilt;
 			props.YTilt = muxProps.YTilt;
+			props.Twist = muxProps.Twist;
 			props.MouseWheelDelta = muxProps.MouseWheelDelta;
 
 			return props;
@@ -208,6 +209,12 @@ namespace Windows.UI.Input
 			internal set => SetFlag(Mask.Eraser, value);
 		}
 
+		public bool IsInverted
+		{
+			get => GetFlag(Mask.Inverted);
+			internal set => SetFlag(Mask.Inverted, value);
+		}
+
 		public float Pressure { get; internal set; } = 0.5f; // According to the doc, the default value is .5
 
 		[NotImplemented] // This is not implemented, it can only be set using injected inputs
@@ -240,6 +247,9 @@ namespace Windows.UI.Input
 		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public float YTilt { get; internal set; }
 
+		[NotImplemented] // This is not implemented, it can only be set using injected inputs
+		public float Twist { get; internal set; }
+
 		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__")]
 		public int MouseWheelDelta { get; internal set; }
 
@@ -270,6 +280,7 @@ namespace Windows.UI.Input
 			// Pen
 			if (IsBarrelButtonPressed) builder.Append("barrel ");
 			if (IsEraser) builder.Append("eraser ");
+			if (IsInverted) builder.Append("inverted ");
 			if (IsTouchPad) builder.Append("touchpad ");
 
 			// Misc
@@ -281,4 +292,3 @@ namespace Windows.UI.Input
 		}
 	}
 }
-#endif

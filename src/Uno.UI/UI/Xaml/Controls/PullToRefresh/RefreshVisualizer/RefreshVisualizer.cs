@@ -11,6 +11,7 @@ using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
+using Microsoft.UI.Composition.Interactions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
@@ -170,6 +171,17 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 			});
 
 			m_executionRatio = m_refreshInfoProvider.ExecutionRatio;
+
+#if HAS_UNO
+			if (m_refreshInfoProvider is RefreshInfoProviderImpl impl)
+			{
+				impl.IdleEntered += RefreshInfoProvider_IdleEntered;
+				m_RefreshInfoProvider_IdleEnteredToken.Disposable = Disposable.Create(() =>
+				{
+					impl.IdleEntered -= RefreshInfoProvider_IdleEntered;
+				});
+			}
+#endif
 		}
 		else
 		{
@@ -177,6 +189,13 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 			m_RefreshInfoProvider_InteractionRatioChangedToken.Disposable = null;
 
 			m_executionRatio = 1.0f;
+
+#if HAS_UNO
+			m_RefreshInfoProvider_IdleEnteredToken.Disposable = null;
+
+			ScrollViewer = null;
+			InteractionTracker = null;
+#endif
 		}
 	}
 
@@ -574,6 +593,10 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 		{
 			m_refreshInfoProvider.OnRefreshCompleted();
 		}
+
+#if HAS_UNO
+		RecoverFromOverscroll(forceReset: true);
+#endif
 	}
 
 	private void RefreshInfoProvider_InteractingForRefreshChanged(object sender, object e)
@@ -670,6 +693,62 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 			}
 		}
 	}
+
+#if HAS_UNO
+	private void RefreshInfoProvider_IdleEntered(IRefreshInfoProvider sender, InteractionTracker tracker)
+	{
+		if (State is RefreshVisualizerState.Interacting or RefreshVisualizerState.Peeking)
+		{
+			State = RefreshVisualizerState.Idle;
+			RecoverFromOverscroll(forceReset: true);
+		}
+		else if (State is RefreshVisualizerState.Pending)
+		{
+			RequestRefresh();
+			// RecoverFromOverscroll will be called from RefreshCompleted
+		}
+		else if (State is RefreshVisualizerState.Idle)
+		{
+			RecoverFromOverscroll(forceReset: false);
+		}
+	}
+
+	private void RecoverFromOverscroll(bool forceReset)
+	{
+		RefreshInfoProvider_InteractionRatioChanged(InfoProvider, new RefreshInteractionRatioChangedEventArgs(interactionRatio: 0));
+		InteractionTracker?.TryUpdatePosition(new Vector3(0f));
+
+		if (ScrollViewer?.Content is FrameworkElement { Parent: UIElement parent } content)
+		{
+			var offset = parent.TransformToVisual(content).TransformPoint(default);
+			var scrollable = new Point(ScrollViewer.ExtentWidth - ScrollViewer.ViewportWidth, ScrollViewer.ExtentHeight - ScrollViewer.ViewportHeight);
+			var overscrolled = m_pullDirection switch
+			{
+				RefreshPullDirection.TopToBottom => offset.Y < 0.0,
+				RefreshPullDirection.BottomToTop => offset.Y > scrollable.Y,
+				RefreshPullDirection.LeftToRight => offset.X < 0.0,
+				RefreshPullDirection.RightToLeft => offset.X > scrollable.X,
+
+				_ => false,
+			};
+
+			// reeling back the ScrollViewer from overscrolled position
+			if (forceReset || overscrolled)
+			{
+				var clamped = m_pullDirection switch
+				{
+					RefreshPullDirection.TopToBottom => (null, 0.0),
+					RefreshPullDirection.BottomToTop => (null, scrollable.Y),
+					RefreshPullDirection.LeftToRight => (0.0, null),
+					RefreshPullDirection.RightToLeft => (scrollable.X, null),
+
+					_ => (X: default(double?), Y: default(double?)),
+				};
+				ScrollViewer.ChangeView(clamped.X, clamped.Y, null);
+			}
+		}
+	}
+#endif
 
 	private bool IsPullDirectionVertical()
 	{

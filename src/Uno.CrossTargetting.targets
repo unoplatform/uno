@@ -10,8 +10,11 @@
 		<None Include="**\*.crossruntime.cs" Exclude="bin\**\*.crossruntime.cs;obj\**\*.crossruntime.cs" Condition="!$(IsCrossruntime)" />
 		<Compile Remove="**\*.crossruntime.cs" Condition="!$(IsCrossruntime)" />
 
-		<None Include="**\*.wasm.cs" Exclude="bin\**\*.wasm.cs;obj\**\*.wasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly'" />
-		<Compile Remove="**\*.wasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly'" />
+		<None Include="**\*.wasm.cs" Exclude="bin\**\*.wasm.cs;obj\**\*.wasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly' AND '$(IsBrowserWasm)'!='true'" />
+		<Compile Remove="**\*.wasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly' AND '$(IsBrowserWasm)'!='true'" />
+
+		<None Include="**\*.browserwasm.cs" Exclude="bin\**\*.browserwasm.cs;obj\**\*.browserwasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly' AND '$(IsBrowserWasm)'!='true'" />
+		<Compile Remove="**\*.browserwasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly' AND '$(IsBrowserWasm)'!='true'" />
 
 		<None Include="**\*.skia.cs" Exclude="bin\**\*.skia.cs;obj\**\*.skia.cs" Condition="'$(UnoRuntimeIdentifier)'!='Skia'" />
 		<Compile Remove="**\*.skia.cs" Condition="'$(UnoRuntimeIdentifier)'!='Skia'" />
@@ -121,7 +124,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(TargetFramework.EndsWith('-windows10.0.19041.0'))">
-		<DefineConstants>$(DefineConstants);HAS_INPUT_INJECTOR;WINDOWS_WINUI;HAS_RENDER_TARGET_BITMAP;HAS_COMPOSITION_API</DefineConstants>
+		<DefineConstants>$(DefineConstants);WINDOWS_WINUI;HAS_RENDER_TARGET_BITMAP;HAS_COMPOSITION_API</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(TargetFramework)' == 'uap10.0.19041' ">
@@ -154,23 +157,57 @@
 			<_overridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">$(_overridePackageId.Replace('uno.ui','uno.winui'))</_overridePackageId>
 			<_TargetNugetFolder>$(NuGetPackageRoot)\$(_overridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 			<_TargetNugetRefFolder>$(NuGetPackageRoot)\$(_overridePackageId)\$(UnoNugetOverrideVersion)\ref\$(_OverrideTargetFramework)</_TargetNugetRefFolder>
+			<!-- Track ownership so cleanup only touches files produced by this project/TFM. -->
+			<_OwnedOutputManifest>$(_TargetNugetFolder)\.$(MSBuildProjectName).$(_OverrideTargetFramework).owned-files.txt</_OwnedOutputManifest>
+			<_OwnedRefOutputManifest>$(_TargetNugetRefFolder)\.$(MSBuildProjectName).$(_OverrideTargetFramework).owned-files.txt</_OwnedRefOutputManifest>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)\*.*" />
 			<_OutputRefFiles Include="$(TargetDir)\ref\*.*" />
+			<!-- Precompute destination paths so cleanup and copy use the same mapping. -->
+			<_OutputTargetFiles Include="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+			<_OutputTargetRefFiles Include="@(_OutputRefFiles->'$(_TargetNugetRefFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
 		</ItemGroup>
-		<MakeDir Directories="$(_TargetNugetFolder)" />
+		<MakeDir Directories="$(_TargetNugetFolder);$(_TargetNugetRefFolder)" />
 
 		<!-- Add override file to notify a developer that the used package is modified -->
 		<WriteLinestoFile File="$(_TargetNugetFolder)\.packageoverride"
-				 Lines="$([System.DateTime]::Now.ToString('yyyyMMddTHHmmss')) from $(MSBuildThisFileDirectory)"
-				 Overwrite="True" />
+				 Lines="override from $(MSBuildThisFileDirectory)"
+				 Overwrite="True"
+				 WriteOnlyWhenDifferent="true" />
 		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder) and $(_TargetNugetRefFolder)" />
 
+		<!-- Delete only files previously owned by this project/TFM. Shared package folders may also contain outputs from other projects. -->
+		<ReadLinesFromFile File="$(_OwnedOutputManifest)" Condition="Exists('$(_OwnedOutputManifest)')">
+			<Output TaskParameter="Lines" ItemName="_PreviouslyOwnedTargetFiles" />
+		</ReadLinesFromFile>
+		<ReadLinesFromFile File="$(_OwnedRefOutputManifest)" Condition="Exists('$(_OwnedRefOutputManifest)')">
+			<Output TaskParameter="Lines" ItemName="_PreviouslyOwnedTargetRefFiles" />
+		</ReadLinesFromFile>
+		<ItemGroup>
+			<_StaleOwnedTargetFiles Include="@(_PreviouslyOwnedTargetFiles)" Exclude="@(_OutputTargetFiles)" />
+			<_StaleOwnedTargetRefFiles Include="@(_PreviouslyOwnedTargetRefFiles)" Exclude="@(_OutputTargetRefFiles)" />
+		</ItemGroup>
+		<Delete Files="@(_StaleOwnedTargetFiles);@(_StaleOwnedTargetRefFiles)" ContinueOnError="true" />
+
 		<Copy SourceFiles="@(_OutputFiles)"
-			  DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+			  DestinationFiles="@(_OutputTargetFiles)"
+			  SkipUnchangedFiles="true"
+			  Retries="1"
+			  RetryDelayMilliseconds="500" />
 		<Copy SourceFiles="@(_OutputRefFiles)"
-			  DestinationFiles="@(_OutputRefFiles->'$(_TargetNugetRefFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+			  DestinationFiles="@(_OutputTargetRefFiles)"
+			  SkipUnchangedFiles="true"
+			  Retries="1"
+			  RetryDelayMilliseconds="500" />
+		<WriteLinestoFile File="$(_OwnedOutputManifest)"
+				 Lines="@(_OutputTargetFiles)"
+				 Overwrite="True"
+				 WriteOnlyWhenDifferent="true" />
+		<WriteLinestoFile File="$(_OwnedRefOutputManifest)"
+				 Lines="@(_OutputTargetRefFiles)"
+				 Overwrite="True"
+				 WriteOnlyWhenDifferent="true" />
 	</Target>
 
 
@@ -186,17 +223,37 @@
 			<CommonOverridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">$(CommonOverridePackageId.Replace('uno.ui','uno.winui'))</CommonOverridePackageId>
 			<_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference'">$(NuGetPackageRoot)\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 			<_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'!='' and '$(UnoRuntimeIdentifier)'!='Reference'">$(NuGetPackageRoot)\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(TargetFramework)\$(UnoRuntimeIdentifier.ToLower())</_TargetNugetFolder>
+			<!-- Track ownership so shared package folders are cleaned safely. -->
+			<_OwnedCommonOverrideManifest>$(_TargetNugetFolder)\.$(MSBuildProjectName).$(_OverrideTargetFramework).owned-files.txt</_OwnedCommonOverrideManifest>
 		</PropertyGroup>
 
 		<ItemGroup>
 			<_OutputFiles Include="@(TargetPathWithTargetPlatformMoniker)" />
+			<_OutputDebugSymbols Include="@(_DebugSymbolsIntermediatePath)" />
+			<!-- Precompute destinations so cleanup+copy stay deterministic across target frameworks/runtimes. -->
+			<_CommonOverrideTargetFiles Include="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+			<_CommonOverrideTargetDebugFiles Include="@(_OutputDebugSymbols->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
 		</ItemGroup>
 
 		<MakeDir Directories="$(_TargetNugetFolder)" />
 
 		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
 
-		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
-		<Copy SourceFiles="@(_DebugSymbolsIntermediatePath)" DestinationFiles="@(_DebugSymbolsIntermediatePath->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<!-- Remove obsolete files owned by this project/TFM only. -->
+		<ReadLinesFromFile File="$(_OwnedCommonOverrideManifest)" Condition="Exists('$(_OwnedCommonOverrideManifest)')">
+			<Output TaskParameter="Lines" ItemName="_PreviouslyOwnedCommonFiles" />
+		</ReadLinesFromFile>
+		<ItemGroup>
+			<_CommonOverrideCurrentOwnedFiles Include="@(_CommonOverrideTargetFiles);@(_CommonOverrideTargetDebugFiles)" />
+			<_CommonOverrideStaleOwnedFiles Include="@(_PreviouslyOwnedCommonFiles)" Exclude="@(_CommonOverrideCurrentOwnedFiles)" />
+		</ItemGroup>
+		<Delete Files="@(_CommonOverrideStaleOwnedFiles)" ContinueOnError="true" />
+
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_CommonOverrideTargetFiles)" SkipUnchangedFiles="true" Retries="1" RetryDelayMilliseconds="500" />
+		<Copy SourceFiles="@(_OutputDebugSymbols)" DestinationFiles="@(_CommonOverrideTargetDebugFiles)" SkipUnchangedFiles="true" Retries="1" RetryDelayMilliseconds="500" />
+		<WriteLinestoFile File="$(_OwnedCommonOverrideManifest)"
+				 Lines="@(_CommonOverrideCurrentOwnedFiles)"
+				 Overwrite="True"
+				 WriteOnlyWhenDifferent="true" />
 	</Target>
 </Project>

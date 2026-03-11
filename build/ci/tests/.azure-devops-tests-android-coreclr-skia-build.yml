@@ -7,7 +7,7 @@ jobs:
 - job: Skia_Android_CoreCLR_Tests_Build
   displayName: 'Build Skia Android+CoreCLR Samples App'
   timeoutInMinutes: 60
-  cancelTimeoutInMinutes: 1
+  cancelTimeoutInMinutes: 0
 
   pool: ${{ parameters.vmLinuxPool }}
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -26,7 +26,7 @@ using Java.Lang;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests
 {
-	[SampleControlInfo("TextBox", "TextBox_Formatting_Flicker", description: "Continuing to enter value past the max length specified, should not cause the text box content to be changed again.")]
+	[Sample("TextBox", Name = "TextBox_Formatting_Flicker", Description = "Continuing to enter value past the max length specified, should not cause the text box content to be changed again.")]
 	public sealed partial class TextBox_Formatting_Flicker : UserControl
 	{
 		private int _textChangedCounter = 0;

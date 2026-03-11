@@ -23,6 +23,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 	[Uno.UI.Samples.Controls.Sample(
 		"WebView",
 		IsManualTest = true,
+		IgnoreInSnapshotTests = true,
 		Description =
 			"You should be able to interact with the website (click links, scroll), as well as click the button in the center." +
 			"Each click should increment it exactly once. Conversely, clicking the button should not trigger any hyperlink that is currently below it.")]

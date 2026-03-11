@@ -25,10 +25,5 @@ namespace Microsoft.UI.Xaml
 
 		internal UIElement ReplaceChild(int index, UIElement viewToRemove) => VisualTreeHelper.ReplaceChild(this, index, viewToRemove);
 #endif
-
-#if !HAS_UNO_WINUI
-		// This is to ensure forward compatibility with WinUI
-		protected internal DispatcherQueue DispatcherQueue => DispatcherQueue.GetForCurrentThread();
-#endif
 	}
 }

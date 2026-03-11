@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference ButtonBaseAutomationPeer_Partial.cpp, tag winui3/release/1.4.2
+// MUX reference ButtonBaseAutomationPeer_Partial.cpp, tag winui3/release/1.8.4
 
 using Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -21,4 +21,31 @@ public partial class ButtonBaseAutomationPeer : FrameworkElementAutomationPeer
 	}
 
 	protected override bool IsControlElementCore() => true;
+
+	// 	IFACEMETHODIMP ButtonBaseAutomationPeer::GetNameCore(_Out_ HSTRING* returnValue)
+	// {
+	//     HRESULT hr = S_OK;
+
+	//     xaml::IUIElement* pOwner = NULL;
+	//     IInspectable* pContent = NULL;
+
+	//     IFC(ButtonBaseAutomationPeerGenerated::GetNameCore(returnValue));
+
+	//     if (*returnValue == NULL)
+	//     {
+	//         IFC(get_Owner(&pOwner));
+	//         IFCPTR(pOwner);
+	//         IFC((static_cast<ButtonBase*>(pOwner))->get_Content(&pContent));
+	//         IFC(IValueBoxer::UnboxValue(pContent, returnValue));
+	//     }
+
+	// Cleanup:
+	//     ReleaseInterface(pOwner);
+	//     ReleaseInterface(pContent);
+
+	//     RRETURN(hr);
+	// }
+
+
+
 }

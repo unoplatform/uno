@@ -72,11 +72,11 @@
 	</Target>
 
 	<PropertyGroup>
-		<MSTestVersion>3.11.0</MSTestVersion>
-		<MicrosoftTestingPlatformVersion>1.9.0</MicrosoftTestingPlatformVersion>
+		<MSTestVersion>4.1.0</MSTestVersion>
+		<MicrosoftTestingPlatformVersion>2.1.0</MicrosoftTestingPlatformVersion>
 		<SkiaSharpVersion>3.119.0</SkiaSharpVersion>
 		<HarfbuzzSharpVersion>8.3.1.1</HarfbuzzSharpVersion>
-		<UnoICUVersion>77.1.0-dev.45</UnoICUVersion>
+		<UnoICUVersion>77.2.0-dev.11</UnoICUVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -93,14 +93,14 @@
 		<PackageReference Update="MSTest.TestFramework" Version="$(MSTestVersion)" />
 		<PackageReference Update="MSTest.TestAdapter" Version="$(MSTestVersion)" />
 		<PackageReference Update="MSTest.Analyzers" Version="$(MSTestVersion)" />
-		<PackageReference Update="Combinatorial.MSTest" Version="1.0.0" />
+		<PackageReference Update="Combinatorial.MSTest" Version="2.0.0" />
 		<PackageReference Update="Microsoft.Testing.Extensions.HangDump" Version="$(MicrosoftTestingPlatformVersion)" />
 
 		<PackageReference Update="Uno.MonoAnalyzers" Version="1.0.0" PrivateAssets="all" />
 		<PackageReference Update="Uno.Wasm.WebSockets" Version="1.1.0" />
 		<PackageReference Update="Microsoft.TypeScript.MSBuild" Version="4.3.5" />
 		<PackageReference Update="NUnit" Version="3.14.0" />
-		<PackageReference Update="NUnit3TestAdapter" Version="5.2.0" />
+		<PackageReference Update="NUnit3TestAdapter" Version="6.0.0" />
 		<PackageReference Update="NunitXml.TestLogger" Version="3.1.15" />
 		<PackageReference Update="Microsoft.Testing.Extensions.TrxReport" Version="$(MicrosoftTestingPlatformVersion)" />
 		<PackageReference Update="Uno.UITest" Version="1.1.0-dev.70" />
@@ -178,6 +178,7 @@
 		<PackageReference Update="Uno.icu-macos" Version="$(UnoICUVersion)" />
 		<PackageReference Update="Uno.icu-wasm" Version="$(UnoICUVersion)" />
 		<PackageReference Update="Uno.icu-ios" Version="$(UnoICUVersion)" />
+		<PackageReference Update="Uno.icu-win" Version="$(UnoICUVersion)" />
 	</ItemGroup>
 
 	<Target Name="ValidateSolutionPath" BeforeTargets="Build">

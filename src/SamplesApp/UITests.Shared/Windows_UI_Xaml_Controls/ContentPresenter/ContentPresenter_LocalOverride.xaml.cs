@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.ContentPresenter
 {
-	[SampleControlInfo("ContentPresenter", "ContentPresenter_LocalOverride")]
+	[Sample("ContentPresenter", Name = "ContentPresenter_LocalOverride")]
 	public sealed partial class ContentPresenter_LocalOverride : UserControl
 	{
 		public ContentPresenter_LocalOverride()

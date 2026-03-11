@@ -28,6 +28,22 @@ internal sealed class DirectManipulationCollection : IEnumerable<DirectManipulat
 	public DirectManipulation? Get(PointerIdentifier identifier)
 		=> _instances.FirstOrDefault(manip => manip.IsTracking(identifier));
 
+	/// <summary>
+	/// Force-completes any inertial manipulations that share the given handler.
+	/// This prevents dual-DM coexistence where old inertial deltas fight the new manipulation's direction.
+	/// </summary>
+	public void CompleteInertialForHandler(IDirectManipulationHandler handler)
+	{
+		for (var i = _instances.Count - 1; i >= 0; i--)
+		{
+			var dm = _instances[i];
+			if (dm.IsInertial && dm.Handlers.Contains(handler))
+			{
+				dm.ForceComplete();
+			}
+		}
+	}
+
 	public void Add(DirectManipulation manipulation)
 		=> _instances.Add(manipulation);
 

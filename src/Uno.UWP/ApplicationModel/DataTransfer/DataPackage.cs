@@ -12,6 +12,7 @@ using Windows.Storage.Streams;
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Dispatching;
 
 namespace Windows.ApplicationModel.DataTransfer
 {
@@ -271,5 +272,11 @@ namespace Windows.ApplicationModel.DataTransfer
 		internal void OnShareCompleted() => ShareCompleted?.Invoke(this, new ShareCompletedEventArgs());
 
 		internal void OnShareCanceled() => ShareCanceled?.Invoke(this, null);
+
+		~DataPackage()
+		{
+			GC.SuppressFinalize(this);
+			NativeDispatcher.Main.Enqueue(() => Destroyed?.Invoke(this, null));
+		}
 	}
 }

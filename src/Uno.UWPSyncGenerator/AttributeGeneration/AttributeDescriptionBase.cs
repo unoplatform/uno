@@ -27,7 +27,6 @@ internal abstract class AttributeDescriptionBase : IAttributeDescription
 		}
 		else
 		{
-#if HAS_UNO_WINUI
 			// Special case ContentPropertyAttribute.
 			// In WinUI, we get attributeName As Windows.UI.Xaml.Markup.ContentPropertyAttribute,
 			// But we only have Microsoft.UI.Xaml.Markup.ContentPropertyAttribute
@@ -35,7 +34,6 @@ internal abstract class AttributeDescriptionBase : IAttributeDescription
 			{
 				attributeName = "Microsoft.UI.Xaml.Markup.ContentPropertyAttribute";
 			}
-#endif
 
 			return $"[global::{attributeName}({parameters})]";
 		}

@@ -25,10 +25,6 @@ using System.Reflection;
 using Uno.Extensions;
 using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
 
-#if !HAS_UNO_WINUI
-using Windows.UI.Input;
-#endif
-
 namespace Uno.UI.Xaml.Core;
 
 partial class InputManager
@@ -72,6 +68,10 @@ partial class InputManager
 			var manipulation = _directManipulations.Get(pointer);
 			if (manipulation is null)
 			{
+				// Stop any inertial DMs sharing this handler to prevent dual-DM coexistence
+				// where old inertial deltas fight the new manipulation's direction.
+				_directManipulations.CompleteInertialForHandler(handler);
+
 				manipulation = new DirectManipulation(this, _directManipulations, pointer);
 
 				_directManipulations.Add(manipulation);

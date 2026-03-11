@@ -7,6 +7,7 @@ jobs:
 - job: iOS_TestFlight
   displayName: 'Build Samples App - TestFlight'
   condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/master')
+  cancelTimeoutInMinutes: 0
 
   strategy:
     matrix:
@@ -106,6 +107,7 @@ jobs:
   displayName: 'Publish iOS Testflight Native'
   condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/master')
   environment: 'Uno UI TestFlight'
+  cancelTimeoutInMinutes: 0
   dependsOn: iOS_TestFlight
   pool:
     vmImage: macos-latest
@@ -136,6 +138,7 @@ jobs:
   displayName: 'Publish iOS Testflight Skia'
   environment: 'Uno UI TestFlight'
   condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/master')
+  cancelTimeoutInMinutes: 0
   dependsOn: iOS_TestFlight
   pool:
     vmImage: macos-latest

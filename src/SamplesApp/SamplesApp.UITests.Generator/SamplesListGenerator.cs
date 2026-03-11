@@ -14,15 +14,13 @@ namespace Uno.Samples.UITest.Generator
 		public void Initialize(IncrementalGeneratorInitializationContext context)
 		{
 			var assemblyNameProvider = context.CompilationProvider.Select((compilation, _) => compilation.Assembly.Name);
-			var sampleControlInfoAttributeProvider = GetProviderForAttributedClasses(context, "Uno.UI.Samples.Controls.SampleControlInfoAttribute");
 			var sampleAttributeProvider = GetProviderForAttributedClasses(context, "Uno.UI.Samples.Controls.SampleAttribute");
 
-			sampleControlInfoAttributeProvider = IgnoreAssembly(assemblyNameProvider, "SamplesApp.UITests", sampleControlInfoAttributeProvider);
 			sampleAttributeProvider = IgnoreAssembly(assemblyNameProvider, "SamplesApp.UITests", sampleAttributeProvider);
 
-			var combined = sampleControlInfoAttributeProvider.Collect().Combine(sampleAttributeProvider.Collect());
+			var samples = sampleAttributeProvider.Collect();
 
-			context.RegisterSourceOutput(combined, GenerateSource);
+			context.RegisterSourceOutput(samples, GenerateSource);
 		}
 
 		private static IncrementalValuesProvider<string> GetProviderForAttributedClasses(IncrementalGeneratorInitializationContext context, string attributeFullyQualifiedMetadataName)
@@ -37,7 +35,7 @@ namespace Uno.Samples.UITest.Generator
 		private static IncrementalValuesProvider<string> IgnoreAssembly(IncrementalValueProvider<string> assemblyNameProvider, string assemblyName, IncrementalValuesProvider<string> classesProvider)
 			=> classesProvider.Combine(assemblyNameProvider).Where(x => x.Right != assemblyName).Select((x, _) => x.Left);
 
-		private static void GenerateSource(SourceProductionContext context, (ImmutableArray<string> Left, ImmutableArray<string> Right) attributedTypes)
+		private static void GenerateSource(SourceProductionContext context, ImmutableArray<string> attributedTypes)
 		{
 			var builder = new IndentedStringBuilder();
 
@@ -49,11 +47,7 @@ namespace Uno.Samples.UITest.Generator
 				{
 					using (builder.BlockInvariant("internal Type[] _allSamples = new Type[]"))
 					{
-						foreach (var type in attributedTypes.Left)
-						{
-							builder.AppendLineIndented($"typeof({type}),");
-						}
-						foreach (var type in attributedTypes.Right)
+						foreach (var type in attributedTypes)
 						{
 							builder.AppendLineIndented($"typeof({type}),");
 						}

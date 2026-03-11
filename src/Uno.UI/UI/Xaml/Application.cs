@@ -22,14 +22,10 @@ using Windows.Storage;
 using Windows.UI.Popups;
 using Windows.UI.Popups.Internal;
 using Windows.UI.ViewManagement;
-
+using DirectUI;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
-#if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
-#else
-using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
-#endif
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -96,6 +92,8 @@ namespace Microsoft.UI.Xaml
 #endif
 			Current = this;
 			ApplicationLanguages.ApplyCulture();
+
+			BackButtonIntegration.Initialize();
 
 			InitializePartial();
 		}
@@ -315,9 +313,6 @@ namespace Microsoft.UI.Xaml
 
 			_initializationComplete = true;
 
-#if !HAS_UNO_WINUI
-			Microsoft.UI.Xaml.Window.EnsureWindowCurrent();
-#endif
 
 			// Initialize all windows that have been created before the application was initialized.
 			foreach (var window in ApplicationHelper.Windows)
@@ -465,7 +460,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal void UpdateResourceBindingsForHotReload() => OnResourcesChanged(ResourceUpdateReason.HotReload);
+		internal void UpdateResourceBindingsForHotReload() => OnResourcesChanged(ResourceUpdateReason.HotReload | ResourceUpdateReason.ThemeResource);
 
 		internal void OnRequestedThemeChanged()
 		{

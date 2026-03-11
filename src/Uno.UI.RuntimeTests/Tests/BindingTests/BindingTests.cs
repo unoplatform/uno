@@ -84,6 +84,7 @@ public partial class BindingTests
 #endif
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_TargetNullValueThemeResource()
 	{
 		var SUT = new TargetNullValueThemeResource();
@@ -101,6 +102,7 @@ public partial class BindingTests
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_FallbackValueThemeResource_NoDataContext()
 	{
 		var SUT = new FallbackValueThemeResource();
@@ -123,6 +125,7 @@ public partial class BindingTests
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_FallbackValueThemeResource_WithDataContext()
 	{
 		var SUT = new FallbackValueThemeResource();

@@ -127,7 +127,7 @@ Here's what to look for:
 - [Enable Startup Tracing](https://devblogs.microsoft.com/dotnet/performance-improvements-in-dotnet-maui/#record-a-custom-aot-profile) by running the following:
 
     ```bash
-    dotnet add package Mono.AotProfiler.Android
+    dotnet add package Mono.AotProfiler.Android --project [YourProjectName]
     dotnet build -t:BuildAndStartAotProfiling
     # Wait until the app launches, then navigate around the most common screens
     dotnet build -t:FinishAotProfiling
@@ -164,6 +164,7 @@ You'll find below other known memory leak patterns on iOS Native:
   - It's possible to set `DebugSettings.EnableFrameRateCounter` in `App.OnLaunched` in order to view a top-left indicator. It indicates the current frames per second, as well as the time spent rendering a composition frame, in milliseconds.
   - If the indicator does not change, this means that the UI is not refreshing.
   - If it is, but nothing is changing visually, it could be that a XAML or Composition animation is still running, see the `ProgressRing` section in this document.
+- Avoid the use of SkiaSharp's `SKXamlCanvas`, instead use [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement) which is hardware accelerated.
 
 ## Advanced performance Tracing
 

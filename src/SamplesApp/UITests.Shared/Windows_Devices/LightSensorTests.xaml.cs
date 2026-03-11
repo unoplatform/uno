@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Uno.Disposables;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
@@ -10,7 +10,7 @@ using Private.Infrastructure;
 
 namespace UITests.Windows_Devices
 {
-	[SampleControlInfo("Windows.Devices", "LightSensor", description: "Demonstrates use of Windows.Devices.Sensors.LightSensor", viewModelType: typeof(LightSensorTestsViewModel), ignoreInSnapshotTests: true)]
+	[Sample("Windows.Devices", Name = "LightSensor", Description = "Demonstrates use of Windows.Devices.Sensors.LightSensor", ViewModelType = typeof(LightSensorTestsViewModel), IgnoreInSnapshotTests = true)]
 	public sealed partial class LightSensorTests : Page
 	{
 		public LightSensorTests() => InitializeComponent();

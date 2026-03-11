@@ -57,6 +57,13 @@ namespace Microsoft.UI.Xaml
 			IsLoading = false;
 			IsLoaded = true;
 
+			// Propagate VisualTree to ContextFlyout (matches WinUI UIElement::EnterImpl
+			// which calls Enter on the ContextFlyout when entering the tree).
+			if (ContextFlyout is { } contextFlyout && this.GetVisualTree() is { } visualTree)
+			{
+				contextFlyout.SetVisualTree(visualTree);
+			}
+
 			OnFwEltLoaded();
 			UpdateHitTest();
 		}
@@ -102,6 +109,7 @@ namespace Microsoft.UI.Xaml
 		private void OnChildRemoved(UIElement child)
 		{
 			child.Shutdown();
+			(child as IDependencyObjectStoreProvider)?.Store.ClearInheritedDataContext();
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
 			var leaveParams = new LeaveParams(IsActiveInVisualTree);
