@@ -107,7 +107,15 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	/// environment variables or assembly attributes emitted at build time by the IDE integration.
 	/// </remarks>
 	public static RemoteControlClient Initialize(Type appType)
-		=> CreateClient(appType, endpoints: null, additionalServerProcessorsDiscoveryPath: null, options: RemoteControlClientOptions.DefaultClient, connectionTransportOverride: null);
+	{
+		// When a transport override is pending, this Initialize call is for a nested/secondary app
+		// and should NOT replace the singleton Instance.
+		var options = _defaultConnectionTransportOverride is not null
+			? RemoteControlClientOptions.AdditionalClient
+			: RemoteControlClientOptions.DefaultClient;
+
+		return CreateClient(appType, endpoints: null, additionalServerProcessorsDiscoveryPath: null, options: options, connectionTransportOverride: null);
+	}
 
 	/// <summary>
 	/// Initializes the remote control client with explicit server endpoints.
