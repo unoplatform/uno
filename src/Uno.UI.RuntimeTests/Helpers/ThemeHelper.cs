@@ -27,6 +27,22 @@ namespace Uno.UI.RuntimeTests.Helpers
 			});
 		}
 
+		/// <summary>
+		/// Ensure dark theme is applied at the application level for the course of a single test.
+		/// Unlike <see cref="UseDarkTheme"/> which sets element-level theme on the content root,
+		/// this changes the application-level theme affecting all windows and root elements.
+		/// </summary>
+		public static IDisposable UseApplicationDarkTheme()
+		{
+			var originalTheme = Application.Current.RequestedTheme;
+			Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Dark);
+
+			return new DisposableAction(() =>
+			{
+				Application.Current.SetExplicitRequestedTheme(originalTheme);
+			});
+		}
+
 		public static ElementTheme CurrentTheme
 		{
 			get
