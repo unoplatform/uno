@@ -270,10 +270,20 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 	{
 		if (IsAccessibilityEnabled && _accessibilityTreeInitialized)
 		{
-			AddAccessibilityElement(parent.Visual.Handle, child, index);
-			foreach (var childChild in child.GetChildren())
+			try
 			{
-				OnChildAdded(child, childChild, null);
+				AddAccessibilityElement(parent.Visual.Handle, child, index);
+				foreach (var childChild in child.GetChildren())
+				{
+					OnChildAdded(child, childChild, null);
+				}
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Failed to add accessibility element for {child}: {e.Message}");
+				}
 			}
 		}
 	}
@@ -402,8 +412,29 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 
 		if (peer != null)
 		{
-			role = ResolveRole(peer, child);
-			label = ResolveLabel(peer);
+			try
+			{
+				role = ResolveRole(peer, child);
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Failed to resolve role for {child}: {e.Message}");
+				}
+			}
+
+			try
+			{
+				label = ResolveLabel(peer);
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Failed to resolve label for {child}: {e.Message}");
+				}
+			}
 		}
 
 		NativeUno.uno_accessibility_add_element(
@@ -418,7 +449,17 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 		// Apply attributes to the native element
 		if (peer != null)
 		{
-			ApplyAttributes(child.Visual.Handle, peer, child);
+			try
+			{
+				ApplyAttributes(child.Visual.Handle, peer, child);
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Failed to apply accessibility attributes for {child}: {e.Message}");
+				}
+			}
 		}
 
 		// Set initial enabled state

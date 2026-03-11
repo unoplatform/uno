@@ -205,59 +205,70 @@ public static class AriaMapper
 			attributes.Level = (int)headingLevel;
 		}
 
-		// Toggle pattern (checkboxes, radio buttons, toggle buttons)
-		if (peer.GetPattern(PatternInterface.Toggle) is IToggleProvider toggleProvider)
+		// Pattern queries are wrapped in try-catch because some peers (e.g.,
+		// CalendarViewBaseItemAutomationPeer) may throw NRE if queried before
+		// they are fully initialized in the visual tree.
+		try
 		{
-			attributes.Checked = ConvertToggleStateToAriaChecked(toggleProvider.ToggleState);
-		}
-
-		// ExpandCollapse pattern (comboboxes, expanders, tree items)
-		if (peer.GetPattern(PatternInterface.ExpandCollapse) is IExpandCollapseProvider expandCollapseProvider)
-		{
-			attributes.Expanded = expandCollapseProvider.ExpandCollapseState == ExpandCollapseState.Expanded ||
-								  expandCollapseProvider.ExpandCollapseState == ExpandCollapseState.PartiallyExpanded;
-
-			// HasPopup for comboboxes and menus
-			if (controlType == AutomationControlType.ComboBox)
+			// Toggle pattern (checkboxes, radio buttons, toggle buttons)
+			if (peer.GetPattern(PatternInterface.Toggle) is IToggleProvider toggleProvider)
 			{
-				attributes.HasPopup = "listbox";
+				attributes.Checked = ConvertToggleStateToAriaChecked(toggleProvider.ToggleState);
 			}
-			else if (controlType == AutomationControlType.Menu || controlType == AutomationControlType.MenuItem)
+
+			// ExpandCollapse pattern (comboboxes, expanders, tree items)
+			if (peer.GetPattern(PatternInterface.ExpandCollapse) is IExpandCollapseProvider expandCollapseProvider)
 			{
-				attributes.HasPopup = "menu";
-			}
-		}
+				attributes.Expanded = expandCollapseProvider.ExpandCollapseState == ExpandCollapseState.Expanded ||
+									  expandCollapseProvider.ExpandCollapseState == ExpandCollapseState.PartiallyExpanded;
 
-		// Selection pattern (selection containers like listboxes)
-		if (peer.GetPattern(PatternInterface.Selection) is ISelectionProvider selectionProvider)
-		{
-			attributes.MultiSelectable = selectionProvider.CanSelectMultiple;
-		}
-
-		// SelectionItem pattern (list items, radio buttons, etc.)
-		if (peer.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider selectionItemProvider)
-		{
-			attributes.Selected = selectionItemProvider.IsSelected;
-		}
-
-		// RangeValue pattern (sliders, progress bars, spinners)
-		if (peer.GetPattern(PatternInterface.RangeValue) is IRangeValueProvider rangeValueProvider)
-		{
-			attributes.ValueNow = rangeValueProvider.Value;
-			attributes.ValueMin = rangeValueProvider.Minimum;
-			attributes.ValueMax = rangeValueProvider.Maximum;
-
-			// aria-valuetext for VoiceOver: read human-friendly text instead of raw number
-			// Use the automation name if it contains the value context (e.g., "Volume: 50%")
-			if (peer is FrameworkElementAutomationPeer frameworkPeerRange &&
-				frameworkPeerRange.Owner is Slider slider)
-			{
-				var headerText = slider.Header?.ToString();
-				if (!string.IsNullOrEmpty(headerText))
+				// HasPopup for comboboxes and menus
+				if (controlType == AutomationControlType.ComboBox)
 				{
-					attributes.ValueText = $"{headerText}: {rangeValueProvider.Value}";
+					attributes.HasPopup = "listbox";
+				}
+				else if (controlType == AutomationControlType.Menu || controlType == AutomationControlType.MenuItem)
+				{
+					attributes.HasPopup = "menu";
 				}
 			}
+
+			// Selection pattern (selection containers like listboxes)
+			if (peer.GetPattern(PatternInterface.Selection) is ISelectionProvider selectionProvider)
+			{
+				attributes.MultiSelectable = selectionProvider.CanSelectMultiple;
+			}
+
+			// SelectionItem pattern (list items, radio buttons, etc.)
+			if (peer.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider selectionItemProvider)
+			{
+				attributes.Selected = selectionItemProvider.IsSelected;
+			}
+
+			// RangeValue pattern (sliders, progress bars, spinners)
+			if (peer.GetPattern(PatternInterface.RangeValue) is IRangeValueProvider rangeValueProvider)
+			{
+				attributes.ValueNow = rangeValueProvider.Value;
+				attributes.ValueMin = rangeValueProvider.Minimum;
+				attributes.ValueMax = rangeValueProvider.Maximum;
+
+				// aria-valuetext for VoiceOver: read human-friendly text instead of raw number
+				// Use the automation name if it contains the value context (e.g., "Volume: 50%")
+				if (peer is FrameworkElementAutomationPeer frameworkPeerRange &&
+					frameworkPeerRange.Owner is Slider slider)
+				{
+					var headerText = slider.Header?.ToString();
+					if (!string.IsNullOrEmpty(headerText))
+					{
+						attributes.ValueText = $"{headerText}: {rangeValueProvider.Value}";
+					}
+				}
+			}
+		}
+		catch
+		{
+			// Some peers may throw if queried before fully initialized.
+			// Attributes will be updated later when properties change.
 		}
 
 		return attributes;
