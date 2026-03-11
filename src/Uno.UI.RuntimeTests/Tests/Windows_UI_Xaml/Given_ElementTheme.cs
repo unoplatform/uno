@@ -2663,4 +2663,175 @@ public class Given_ElementTheme
 	}
 
 	#endregion
+
+	#region Root Theme Cycle Then Element Theme Change (Issue Repro)
+
+	[TestMethod]
+	public async Task When_RootTheme_Cycles_Then_Element_RequestedTheme_Dark_Button_Foreground_Updates()
+	{
+		// Exact SamplesApp repro:
+		// 1. Three-dots button → root.RequestedTheme = Dark → root.RequestedTheme = Default
+		// 2. Navigate to BasicThemeResources page (loads fresh content)
+		// 3. Click "Local Dark" → page.RequestedTheme = Dark
+		// 4. BUG: All buttons keep black text (Light foreground) instead of white (Dark foreground)
+		//
+		// The root-level theme cycle (Dark → Default) leaves stale state that prevents
+		// element-level theme changes from properly updating ThemeResource bindings.
+
+		// Use a wrapper that simulates the SamplesApp root element
+		var appRoot = new Border { Width = 400, Height = 400 };
+		WindowHelper.WindowContent = appRoot;
+		await WindowHelper.WaitForLoaded(appRoot);
+
+		// Step 1: Simulate three-dots menu theme cycle (Dark → back to Default)
+		appRoot.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+		appRoot.RequestedTheme = ElementTheme.Default;
+		await WindowHelper.WaitForIdle();
+
+		// Step 2: Navigate to sample page (create fresh content under the root)
+		var page = new StackPanel { Width = 400, Height = 300 };
+		var buttonsPanel = new StackPanel { Orientation = Orientation.Horizontal };
+		var button1 = new Button { Content = "Local Default" };
+		var button2 = new Button { Content = "Local Dark" };
+		var button3 = new Button { Content = "Parent Dark" };
+		buttonsPanel.Children.Add(button1);
+		buttonsPanel.Children.Add(button2);
+		buttonsPanel.Children.Add(button3);
+		page.Children.Add(buttonsPanel);
+		appRoot.Child = page;
+
+		await WindowHelper.WaitForLoaded(button3);
+		await WindowHelper.WaitForIdle();
+
+		// Record baseline foreground (should be dark/black in Light theme)
+		var cp1 = button1.FindVisualChildByName("ContentPresenter") as ContentPresenter;
+		Assert.IsNotNull(cp1, "Button1 should have ContentPresenter");
+
+		var lightFg = (cp1.Foreground as SolidColorBrush)?.Color;
+		Assert.IsNotNull(lightFg, "Button should have SolidColorBrush foreground");
+		Assert.IsTrue(lightFg.Value.R < 128,
+			$"Before theme change, button foreground should be dark (Light theme). Got R={lightFg.Value.R}");
+
+		// Step 3: Set element-level RequestedTheme to Dark (simulating "Local Dark" click)
+		page.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		// Step 4: Verify foreground updated to light/white (Dark theme)
+		var darkFg = (cp1.Foreground as SolidColorBrush)?.Color;
+		Assert.IsNotNull(darkFg, "Button should have SolidColorBrush foreground after theme change");
+		Assert.IsTrue(darkFg.Value.R > 128,
+			$"After element RequestedTheme=Dark (post root cycle), button foreground should be light. " +
+			$"Got R={darkFg.Value.R}, color={darkFg}. This indicates ThemeResource bindings were not updated.");
+	}
+
+	[TestMethod]
+	public async Task When_RootTheme_Cycles_Then_Element_Dark_PointerOver_Uses_Correct_Theme()
+	{
+		// SamplesApp repro for Issue 7:
+		// After root Dark→Default cycle and element RequestedTheme=Dark,
+		// hovering a button should apply Dark theme PointerOver resources, not Light.
+
+		var appRoot = new Border { Width = 300, Height = 300 };
+		WindowHelper.WindowContent = appRoot;
+		await WindowHelper.WaitForLoaded(appRoot);
+
+		// Root theme cycle (three-dots: Dark → Default)
+		appRoot.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+		appRoot.RequestedTheme = ElementTheme.Default;
+		await WindowHelper.WaitForIdle();
+
+		// Create fresh content
+		var page = new StackPanel { Width = 200, Height = 200 };
+		var button = new Button { Content = "Test Button" };
+		page.Children.Add(button);
+		appRoot.Child = page;
+
+		await WindowHelper.WaitForLoaded(button);
+		await WindowHelper.WaitForIdle();
+
+		// Set element-level Dark theme
+		page.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		var contentPresenter = button.FindVisualChildByName("ContentPresenter") as ContentPresenter;
+		Assert.IsNotNull(contentPresenter, "Button should have ContentPresenter");
+
+		// Enter PointerOver state — should use Dark theme resources
+		VisualStateManager.GoToState(button, "PointerOver", false);
+		await WindowHelper.WaitForIdle();
+
+		// In Dark PointerOver, foreground should be light (white)
+		var fg = (contentPresenter.Foreground as SolidColorBrush)?.Color;
+		Assert.IsNotNull(fg, "ContentPresenter should have foreground in PointerOver");
+		Assert.IsTrue(fg.Value.R > 128,
+			$"PointerOver foreground after element Dark theme (post root cycle) should be light. " +
+			$"Got R={fg.Value.R}, color={fg}. PointerOver is using wrong theme context.");
+	}
+
+	[TestMethod]
+	public async Task When_RootTheme_Cycles_Then_Element_Dark_PointerExit_Restores_Correct_Foreground()
+	{
+		// SamplesApp repro: exiting PointerOver "fixes" the foreground to white.
+		// Tests the full cycle:
+		// 1. Root theme cycle (Dark → Default)
+		// 2. Element theme = Dark
+		// 3. Hover button (PointerOver)
+		// 4. Exit hover (Normal)
+		// 5. Foreground should be white throughout steps 2-4
+
+		var appRoot = new Border { Width = 300, Height = 300 };
+		WindowHelper.WindowContent = appRoot;
+		await WindowHelper.WaitForLoaded(appRoot);
+
+		// Root theme cycle
+		appRoot.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+		appRoot.RequestedTheme = ElementTheme.Default;
+		await WindowHelper.WaitForIdle();
+
+		// Fresh content
+		var page = new StackPanel { Width = 200, Height = 200 };
+		var button = new Button { Content = "Test" };
+		page.Children.Add(button);
+		appRoot.Child = page;
+
+		await WindowHelper.WaitForLoaded(button);
+		await WindowHelper.WaitForIdle();
+
+		// Set element Dark theme
+		page.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		var cp = button.FindVisualChildByName("ContentPresenter") as ContentPresenter;
+		Assert.IsNotNull(cp, "Button should have ContentPresenter");
+
+		// Check foreground BEFORE hover (should already be white in Dark theme)
+		var beforeHoverFg = (cp.Foreground as SolidColorBrush)?.Color;
+		Assert.IsNotNull(beforeHoverFg, "Should have foreground before hover");
+
+		// Hover
+		VisualStateManager.GoToState(button, "PointerOver", false);
+		await WindowHelper.WaitForIdle();
+
+		// Exit hover
+		VisualStateManager.GoToState(button, "Normal", false);
+		await WindowHelper.WaitForIdle();
+
+		var afterHoverFg = (cp.Foreground as SolidColorBrush)?.Color;
+		Assert.IsNotNull(afterHoverFg, "Should have foreground after hover exit");
+
+		// Both should be light/white (Dark theme foreground)
+		Assert.IsTrue(beforeHoverFg.Value.R > 128,
+			$"Before hover, foreground should be light (Dark theme). Got R={beforeHoverFg.Value.R}");
+		Assert.IsTrue(afterHoverFg.Value.R > 128,
+			$"After hover exit, foreground should be light (Dark theme). Got R={afterHoverFg.Value.R}");
+
+		// Foreground should be consistent
+		Assert.AreEqual(beforeHoverFg, afterHoverFg,
+			$"Foreground should be consistent before and after hover. Before={beforeHoverFg}, After={afterHoverFg}");
+	}
+
+	#endregion
 }
