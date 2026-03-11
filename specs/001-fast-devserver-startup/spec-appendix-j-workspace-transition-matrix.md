@@ -36,10 +36,10 @@ The following rules define the required behavior for dynamic workspace changes:
 
 | Before | Trigger | After | Expected behavior | Test expected | Current status |
 |---|---|---|---|---|---|
-| `NoCandidates` | Create Uno solution in scope | Single valid Uno workspace | Auto-resolve workspace and start DevServer | Lifecycle/proxy unit + integration | Covered (policy) |
+| `NoCandidates` | Create Uno solution in scope | Single valid Uno workspace | Auto-resolve workspace and start DevServer | Lifecycle/proxy unit + integration | Covered |
 | `NoValidWorkspace` | Add or fix Uno `global.json` | Single valid Uno workspace | Start DevServer automatically | Lifecycle/proxy unit + integration | Covered (policy) |
 | `NoCandidates` | Git operation adds non-Uno solution only | `NoValidWorkspace` | Stay without DevServer; health updates immediately | Lifecycle/proxy unit + health/report unit | Covered (policy) |
-| Single valid Uno workspace | Delete or rename `global.json` | `NoValidWorkspace` | Stop current DevServer; health becomes immediately unhealthy | Lifecycle/proxy unit + health/report unit | Covered (policy) |
+| Single valid Uno workspace | Delete or rename `global.json` | `NoValidWorkspace` | Stop current DevServer; health becomes immediately unhealthy | Lifecycle/proxy unit + health/report unit | Covered |
 | Single valid Uno workspace | Delete or rename solution file | `NoCandidates` | Stop current DevServer; health becomes immediately unhealthy | Lifecycle/proxy unit + health/report unit | Covered (policy) |
 | Single valid Uno workspace A | Git operation changes repo so workspace B becomes the only valid Uno workspace | Single valid Uno workspace B | Stop A, start B, refresh health and cache identity | Lifecycle/proxy unit + integration | Covered (policy) |
 | Single valid Uno workspace | Repo mutation changes files but effective workspace stays the same | Same workspace | No restart; refresh diagnostics only if needed | Lifecycle/proxy unit | Covered (policy) |
