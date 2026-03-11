@@ -51,7 +51,7 @@ internal static class ServerDefinitionResolver
 			if (!serverDef.Variants.TryGetValue("pinned", out var pinnedTemplate))
 			{
 				// Fall back to stable if no pinned template
-				return CloneJsonObject(serverDef.Variants["stable"]);
+				return CloneJsonObject(GetStableVariant(serverDef, expectedVariant));
 			}
 
 			var cloned = CloneJsonObject(pinnedTemplate);
@@ -63,7 +63,7 @@ internal static class ServerDefinitionResolver
 		if (!serverDef.Variants.TryGetValue(variantKey, out var template))
 		{
 			// Fall back to stable
-			template = serverDef.Variants["stable"];
+			template = GetStableVariant(serverDef, expectedVariant);
 		}
 
 		return CloneJsonObject(template);
@@ -79,6 +79,17 @@ internal static class ServerDefinitionResolver
 	/// Determines whether a version string is prerelease (contains <c>-</c>).
 	/// </summary>
 	public static bool IsPrerelease(string version) => version.Contains('-');
+
+	private static JsonObject GetStableVariant(ServerDefinition serverDef, string expectedVariant)
+	{
+		if (serverDef.Variants.TryGetValue("stable", out var stableTemplate))
+		{
+			return stableTemplate;
+		}
+
+		throw new InvalidOperationException(
+			$"Server definition does not contain variant '{expectedVariant}' or fallback variant 'stable'.");
+	}
 
 	private static JsonObject CloneJsonObject(JsonObject source)
 	{

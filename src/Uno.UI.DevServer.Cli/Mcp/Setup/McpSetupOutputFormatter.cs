@@ -128,14 +128,24 @@ internal static class McpSetupOutputFormatter
 
 	private static string Escape(string text) => text.Replace("[", "[[").Replace("]", "]]");
 
-	private static string ShortenPath(string path, string workspace)
+	internal static string ShortenPath(
+		string path,
+		string workspace,
+		string? homePath = null,
+		bool? isWindows = null)
 	{
 		// Normalize mixed separators (templates use '/' but OS may use '\')
 		path = path.Replace('/', Path.DirectorySeparatorChar);
 		workspace = workspace.Replace('/', Path.DirectorySeparatorChar).TrimEnd(Path.DirectorySeparatorChar);
+		var home = (homePath ?? Environment.GetFolderPath(Environment.SpecialFolder.UserProfile))
+			.Replace('/', Path.DirectorySeparatorChar)
+			.TrimEnd(Path.DirectorySeparatorChar);
+		var comparison = (isWindows ?? OperatingSystem.IsWindows())
+			? StringComparison.OrdinalIgnoreCase
+			: StringComparison.Ordinal;
 
 		// Prefer workspace-relative paths
-		if (path.StartsWith(workspace, StringComparison.OrdinalIgnoreCase)
+		if (path.StartsWith(workspace, comparison)
 			&& path.Length > workspace.Length
 			&& path[workspace.Length] == Path.DirectorySeparatorChar)
 		{
@@ -143,8 +153,7 @@ internal static class McpSetupOutputFormatter
 		}
 
 		// Fall back to home-relative paths
-		var home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-		if (!string.IsNullOrEmpty(home) && path.StartsWith(home, StringComparison.OrdinalIgnoreCase))
+		if (!string.IsNullOrEmpty(home) && path.StartsWith(home, comparison))
 		{
 			return "~" + path[home.Length..];
 		}

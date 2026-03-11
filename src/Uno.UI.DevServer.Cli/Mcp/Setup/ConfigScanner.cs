@@ -42,7 +42,7 @@ internal sealed class ConfigScanner(IFileSystem fs)
 
 			foreach (var configPath in resolvedPaths)
 			{
-				ScanConfigFile(configPath, profile.JsonRootKey, serverName, serverDef, locations);
+				ScanConfigFile(configPath, profile.JsonRootKey, serverName, serverDef, locations, warnings);
 			}
 
 			if (locations.Count > 1)
@@ -75,7 +75,8 @@ internal sealed class ConfigScanner(IFileSystem fs)
 		string rootKey,
 		string serverName,
 		ServerDefinition serverDef,
-		List<LocationEntry> locations)
+		List<LocationEntry> locations,
+		List<string> warnings)
 	{
 		if (!fs.FileExists(configPath))
 		{
@@ -87,9 +88,10 @@ internal sealed class ConfigScanner(IFileSystem fs)
 		{
 			content = fs.ReadAllText(configPath);
 		}
-		catch
+		catch (Exception ex)
 		{
-			return; // unreadable file — skip
+			warnings.Add($"Could not read config file '{configPath}': {ex.Message}");
+			return;
 		}
 
 		JsonObject? root;
@@ -103,9 +105,10 @@ internal sealed class ConfigScanner(IFileSystem fs)
 			var cleanJson = JsonSerializer.Serialize(doc.RootElement);
 			root = JsonNode.Parse(cleanJson)?.AsObject();
 		}
-		catch
+		catch (JsonException ex)
 		{
-			return; // malformed JSON — skip for scanning
+			warnings.Add($"Invalid JSON in config file '{configPath}': {ex.Message}");
+			return;
 		}
 
 		if (root?[rootKey] is not JsonObject serversObj)

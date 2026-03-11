@@ -111,4 +111,38 @@ public class Given_ServerDefinitionResolver
 		// They should be equal but not the same reference
 		result1.ToJsonString().Should().Be(result2.ToJsonString());
 	}
+
+	[TestMethod]
+	public void ResolveDefinition_PinnedWithoutPinnedVariant_FallsBackToStable()
+	{
+		var defWithoutPinned = new ServerDefinition(
+			Transport: "stdio",
+			Variants: new Dictionary<string, JsonObject>
+			{
+				["stable"] = JsonNode.Parse("""{"command":"dnx","args":["-y","uno.devserver","--mcp-app"]}""")!.AsObject(),
+			},
+			Detection: new(["^UnoApp$"], null, null));
+
+		var result = ServerDefinitionResolver.ResolveDefinition(defWithoutPinned, "pinned:5.6.0");
+		var args = result["args"]!.AsArray();
+
+		args.Select(a => a!.GetValue<string>()).Should().BeEquivalentTo(["-y", "uno.devserver", "--mcp-app"]);
+	}
+
+	[TestMethod]
+	public void ResolveDefinition_MissingRequestedVariantAndStable_ThrowsInvalidOperationException()
+	{
+		var defWithoutFallback = new ServerDefinition(
+			Transport: "stdio",
+			Variants: new Dictionary<string, JsonObject>
+			{
+				["prerelease"] = JsonNode.Parse("""{"command":"dnx","args":["-y","--prerelease","uno.devserver","--mcp-app"]}""")!.AsObject(),
+			},
+			Detection: new(["^UnoApp$"], null, null));
+
+		var act = () => ServerDefinitionResolver.ResolveDefinition(defWithoutFallback, "stable");
+
+		act.Should().Throw<InvalidOperationException>()
+			.WithMessage("*variant*stable*");
+	}
 }

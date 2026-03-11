@@ -130,8 +130,7 @@ internal static class ConfigWriter
 			return objRoot;
 		}
 
-		// Non-object root: wrap in _original to avoid data loss
-		return new JsonObject { ["_original"] = root };
+		throw new JsonException("The root JSON value must be an object.");
 	}
 
 	private static JsonObject CloneJsonObject(JsonObject source)

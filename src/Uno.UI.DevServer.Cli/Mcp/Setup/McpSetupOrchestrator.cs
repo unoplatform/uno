@@ -290,38 +290,31 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		ServerDefinition serverDef,
 		IReadOnlyDictionary<string, ServerDefinition> servers)
 	{
-		try
+		using var doc = System.Text.Json.JsonDocument.Parse(content, new System.Text.Json.JsonDocumentOptions
 		{
-			using var doc = System.Text.Json.JsonDocument.Parse(content, new System.Text.Json.JsonDocumentOptions
-			{
-				CommentHandling = System.Text.Json.JsonCommentHandling.Skip,
-				AllowTrailingCommas = true,
-			});
-			var cleanJson = System.Text.Json.JsonSerializer.Serialize(doc.RootElement);
-			var root = JsonNode.Parse(cleanJson)?.AsObject();
+			CommentHandling = System.Text.Json.JsonCommentHandling.Skip,
+			AllowTrailingCommas = true,
+		});
+		var cleanJson = System.Text.Json.JsonSerializer.Serialize(doc.RootElement);
+		var root = JsonNode.Parse(cleanJson)?.AsObject();
 
-			if (root?[rootKey] is not JsonObject serversObj)
-			{
-				return null;
-			}
-
-			foreach (var (keyName, value) in serversObj)
-			{
-				if (value is not JsonObject entryJson)
-				{
-					continue;
-				}
-
-				var match = DuplicateDetector.FindMatchingServer(keyName, entryJson, servers);
-				if (match == serverName)
-				{
-					return keyName;
-				}
-			}
+		if (root?[rootKey] is not JsonObject serversObj)
+		{
+			return null;
 		}
-		catch
+
+		foreach (var (keyName, value) in serversObj)
 		{
-			// malformed JSON
+			if (value is not JsonObject entryJson)
+			{
+				continue;
+			}
+
+			var match = DuplicateDetector.FindMatchingServer(keyName, entryJson, servers);
+			if (match == serverName)
+			{
+				return keyName;
+			}
 		}
 
 		return null;
