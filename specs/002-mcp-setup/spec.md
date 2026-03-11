@@ -723,7 +723,7 @@ This compatibility applies only to persisted config files in the documented loca
 IDE config files may contain JSONC extensions (comments and trailing commas). The tool handles them as follows:
 
 - **Reading**: `JsonCommentHandling.Skip` and `AllowTrailingCommas = true`, matching the existing pattern in `EntryPoint.Mcp.cs`
-- **Writing**: Trailing commas are normalized away. Files containing JSON comments are rejected with an explicit error instead of being rewritten and losing comments.
+- **Writing**: Comments are preserved when rewriting existing JSONC files. Trailing commas may still be normalized away during the rewrite.
 
 ### Formatting
 
