@@ -356,6 +356,24 @@ namespace Microsoft.UI.Xaml
 					return;
 				}
 
+				// MUX Reference: CVisualStateManager2::OnVisualStateGroupCollectionNotifyThemeChanged
+				// In WinUI, ThemeResource values in setters are resolved lazily at read time
+				// using the element's current theme context. In Uno, resolution happens eagerly
+				// at setter application time. We must push the owner element's theme so that
+				// ResourceDictionary.TryGetValue selects the correct themed dictionary
+				// (e.g., Dark instead of the app-default Light).
+				var needsThemePush = false;
+				if (element is FrameworkElement fe)
+				{
+					var effectiveTheme = fe.GetTheme();
+					if (effectiveTheme != Theme.None)
+					{
+						var themeKey = Theming.GetBaseValue(effectiveTheme) == Theme.Light ? "Light" : "Dark";
+						ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
+						needsThemePush = true;
+					}
+				}
+
 				try
 				{
 					// Setter.ApplyValue can resolve some theme resources.
@@ -377,6 +395,11 @@ namespace Microsoft.UI.Xaml
 				finally
 				{
 					ResourceResolver.PopScope();
+
+					if (needsThemePush)
+					{
+						ResourceDictionary.PopRequestedThemeForSubTree();
+					}
 				}
 
 			}
