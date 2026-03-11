@@ -83,6 +83,7 @@ internal class ProxyLifecycleManager
 	private string? _workspaceMutationWatcherRoot;
 	private CancellationTokenSource? _workspaceMutationDebounceCts;
 	private readonly SemaphoreSlim _workspaceTransitionGate = new(1, 1);
+	private readonly object _workspaceMutationWatcherGate = new();
 
 	public ProxyLifecycleManager(ILogger<ProxyLifecycleManager> logger, DevServerMonitor devServerMonitor, McpUpstreamClient mcpUpstreamClient, HealthService healthService, ToolListManager toolListManager, McpStdioServer mcpStdioServer, WorkspaceResolver workspaceResolver)
 	{
@@ -219,7 +220,8 @@ internal class ProxyLifecycleManager
 			var transitionAction = WorkspaceTransitionDecisions.DetermineAction(
 				_workspaceResolution,
 				nextResolution,
-				trigger);
+				trigger,
+				_healthService.DevServerStarted);
 
 			switch (transitionAction)
 			{
@@ -230,13 +232,13 @@ internal class ProxyLifecycleManager
 						_workspaceResolution?.EffectiveWorkspaceDirectory);
 					_workspaceResolution = nextResolution;
 					UpdateWorkspaceHash(nextResolution);
-					EnsureWorkspaceMutationWatcherMatchesCurrentRoot();
+					await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
 					return;
 
 				case WorkspaceTransitionAction.Start:
 					_workspaceResolution = nextResolution;
 					UpdateWorkspaceHash(nextResolution);
-					EnsureWorkspaceMutationWatcherMatchesCurrentRoot();
+					await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
 					StartDevServerMonitor(nextResolution.EffectiveWorkspaceDirectory);
 					return;
 
@@ -248,7 +250,7 @@ internal class ProxyLifecycleManager
 					await StopCurrentWorkspaceAsync();
 					_workspaceResolution = nextResolution;
 					UpdateWorkspaceHash(nextResolution);
-					EnsureWorkspaceMutationWatcherMatchesCurrentRoot();
+					await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
 					SetConnectionState(ConnectionState.Degraded);
 					FailToolCachePriming();
 					return;
@@ -261,7 +263,7 @@ internal class ProxyLifecycleManager
 					await StopCurrentWorkspaceAsync();
 					_workspaceResolution = nextResolution;
 					UpdateWorkspaceHash(nextResolution);
-					EnsureWorkspaceMutationWatcherMatchesCurrentRoot();
+					await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
 					StartDevServerMonitor(nextResolution.EffectiveWorkspaceDirectory);
 					return;
 
@@ -276,12 +278,12 @@ internal class ProxyLifecycleManager
 					else
 					{
 						_logger.LogWarning(
-							"{Trigger} did not resolve to a valid Uno workspace ({ResolutionKind}); staying in diagnostic mode for this session",
+						"{Trigger} did not resolve to a valid Uno workspace ({ResolutionKind}); staying in diagnostic mode for this session",
 							trigger,
 							nextResolution.ResolutionKind);
 						_workspaceResolution = nextResolution;
 						UpdateWorkspaceHash(nextResolution);
-						EnsureWorkspaceMutationWatcherMatchesCurrentRoot();
+						await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
 					}
 
 					SetConnectionState(ConnectionState.Degraded);
@@ -460,59 +462,67 @@ internal class ProxyLifecycleManager
 
 	internal void StartWorkspaceMutationWatcher()
 	{
-		if (_workspaceMutationWatcher is not null)
+		lock (_workspaceMutationWatcherGate)
 		{
-			return;
+			if (_workspaceMutationWatcher is not null)
+			{
+				return;
+			}
+
+			var workspaceRoot = GetWorkspaceObservationRoot();
+
+			if (string.IsNullOrWhiteSpace(workspaceRoot) || !Directory.Exists(workspaceRoot))
+			{
+				_logger.LogTrace("Skipping workspace mutation watcher because {WorkspaceRoot} is not available", workspaceRoot);
+				return;
+			}
+
+			_workspaceMutationWatcher = new FileSystemWatcher(workspaceRoot)
+			{
+				IncludeSubdirectories = true,
+				NotifyFilter = NotifyFilters.FileName
+					| NotifyFilters.DirectoryName
+					| NotifyFilters.LastWrite
+					| NotifyFilters.CreationTime,
+			};
+
+			_workspaceMutationWatcher.Created += OnWorkspaceMutation;
+			_workspaceMutationWatcher.Changed += OnWorkspaceMutation;
+			_workspaceMutationWatcher.Deleted += OnWorkspaceMutation;
+			_workspaceMutationWatcher.Renamed += OnWorkspaceMutation;
+			_workspaceMutationWatcher.Error += OnWorkspaceMutationWatcherError;
+			_workspaceMutationWatcher.EnableRaisingEvents = true;
+			_workspaceMutationWatcherRoot = workspaceRoot;
+
+			_logger.LogTrace("Started workspace mutation watcher for {WorkspaceRoot}", workspaceRoot);
 		}
-
-		var workspaceRoot = GetWorkspaceObservationRoot();
-
-		if (string.IsNullOrWhiteSpace(workspaceRoot) || !Directory.Exists(workspaceRoot))
-		{
-			_logger.LogTrace("Skipping workspace mutation watcher because {WorkspaceRoot} is not available", workspaceRoot);
-			return;
-		}
-
-		_workspaceMutationWatcher = new FileSystemWatcher(workspaceRoot)
-		{
-			IncludeSubdirectories = true,
-			NotifyFilter = NotifyFilters.FileName
-				| NotifyFilters.DirectoryName
-				| NotifyFilters.LastWrite
-				| NotifyFilters.CreationTime,
-		};
-
-		_workspaceMutationWatcher.Created += OnWorkspaceMutation;
-		_workspaceMutationWatcher.Changed += OnWorkspaceMutation;
-		_workspaceMutationWatcher.Deleted += OnWorkspaceMutation;
-		_workspaceMutationWatcher.Renamed += OnWorkspaceMutation;
-		_workspaceMutationWatcher.Error += OnWorkspaceMutationWatcherError;
-		_workspaceMutationWatcher.EnableRaisingEvents = true;
-		_workspaceMutationWatcherRoot = workspaceRoot;
-
-		_logger.LogTrace("Started workspace mutation watcher for {WorkspaceRoot}", workspaceRoot);
 	}
 
 	internal async Task StopWorkspaceMutationWatcherAsync()
 	{
-		_workspaceMutationDebounceCts?.Cancel();
-		_workspaceMutationDebounceCts?.Dispose();
-		_workspaceMutationDebounceCts = null;
+		var debounceCts = Interlocked.Exchange(ref _workspaceMutationDebounceCts, null);
+		TryCancelAndDispose(debounceCts);
 
-		if (_workspaceMutationWatcher is null)
+		FileSystemWatcher? watcherToDispose = null;
+		lock (_workspaceMutationWatcherGate)
 		{
-			return;
+			if (_workspaceMutationWatcher is null)
+			{
+				return;
+			}
+
+			_workspaceMutationWatcher.EnableRaisingEvents = false;
+			_workspaceMutationWatcher.Created -= OnWorkspaceMutation;
+			_workspaceMutationWatcher.Changed -= OnWorkspaceMutation;
+			_workspaceMutationWatcher.Deleted -= OnWorkspaceMutation;
+			_workspaceMutationWatcher.Renamed -= OnWorkspaceMutation;
+			_workspaceMutationWatcher.Error -= OnWorkspaceMutationWatcherError;
+			watcherToDispose = _workspaceMutationWatcher;
+			_workspaceMutationWatcher = null;
+			_workspaceMutationWatcherRoot = null;
 		}
 
-		_workspaceMutationWatcher.EnableRaisingEvents = false;
-		_workspaceMutationWatcher.Created -= OnWorkspaceMutation;
-		_workspaceMutationWatcher.Changed -= OnWorkspaceMutation;
-		_workspaceMutationWatcher.Deleted -= OnWorkspaceMutation;
-		_workspaceMutationWatcher.Renamed -= OnWorkspaceMutation;
-		_workspaceMutationWatcher.Error -= OnWorkspaceMutationWatcherError;
-		_workspaceMutationWatcher.Dispose();
-		_workspaceMutationWatcher = null;
-		_workspaceMutationWatcherRoot = null;
+		watcherToDispose?.Dispose();
 
 		await Task.CompletedTask;
 	}
@@ -526,8 +536,8 @@ internal class ProxyLifecycleManager
 
 		_logger.LogTrace("Workspace mutation detected for {Path} ({ChangeType})", args.FullPath, args.ChangeType);
 
-		_workspaceMutationDebounceCts?.Cancel();
-		_workspaceMutationDebounceCts?.Dispose();
+		var previousDebounceCts = Interlocked.Exchange(ref _workspaceMutationDebounceCts, null);
+		TryCancelAndDispose(previousDebounceCts);
 
 		var debounceCts = new CancellationTokenSource();
 		_workspaceMutationDebounceCts = debounceCts;
@@ -548,6 +558,34 @@ internal class ProxyLifecycleManager
 				_logger.LogWarning(ex, "Workspace reevaluation failed after filesystem mutation");
 			}
 		}, CancellationToken.None);
+	}
+
+	private static void TryCancelAndDispose(CancellationTokenSource? cts)
+	{
+		if (cts is null)
+		{
+			return;
+		}
+
+		try
+		{
+			cts.Cancel();
+		}
+		catch (ObjectDisposedException)
+		{
+			// A late watcher callback raced with teardown; disposal already completed.
+		}
+		finally
+		{
+			try
+			{
+				cts.Dispose();
+			}
+			catch (ObjectDisposedException)
+			{
+				// Ignore duplicate disposal from concurrent watcher callbacks.
+			}
+		}
 	}
 
 	private void OnWorkspaceMutationWatcherError(object sender, ErrorEventArgs args)
@@ -586,7 +624,7 @@ internal class ProxyLifecycleManager
 			?? _currentDirectory;
 	}
 
-	private void EnsureWorkspaceMutationWatcherMatchesCurrentRoot()
+	private async Task EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync()
 	{
 		var expectedRoot = GetWorkspaceObservationRoot();
 		if (string.Equals(_workspaceMutationWatcherRoot, expectedRoot, StringComparison.OrdinalIgnoreCase))
@@ -594,18 +632,15 @@ internal class ProxyLifecycleManager
 			return;
 		}
 
-		_ = Task.Run(async () =>
+		try
 		{
-			try
-			{
-				await StopWorkspaceMutationWatcherAsync();
-				StartWorkspaceMutationWatcher();
-			}
-			catch (Exception ex)
-			{
-				_logger.LogWarning(ex, "Unable to realign workspace mutation watcher to {WorkspaceRoot}", expectedRoot);
-			}
-		}, CancellationToken.None);
+			await StopWorkspaceMutationWatcherAsync();
+			StartWorkspaceMutationWatcher();
+		}
+		catch (Exception ex)
+		{
+			_logger.LogWarning(ex, "Unable to realign workspace mutation watcher to {WorkspaceRoot}", expectedRoot);
+		}
 	}
 
 	private static bool IsPathWithinRoot(string path, string root)

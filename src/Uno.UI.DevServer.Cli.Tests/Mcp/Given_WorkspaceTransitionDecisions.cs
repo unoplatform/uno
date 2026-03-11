@@ -13,7 +13,7 @@ public class Given_WorkspaceTransitionDecisions
 		var previous = CreateUnresolved(WorkspaceResolutionKind.NoCandidates);
 		var current = CreateResolved(@"D:\repo\src", @"D:\repo\src\App.slnx");
 
-		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.FileSystem);
+		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.FileSystem, devServerStarted: false);
 
 		action.Should().Be(WorkspaceTransitionAction.Start);
 	}
@@ -24,7 +24,7 @@ public class Given_WorkspaceTransitionDecisions
 		var previous = CreateUnresolved(WorkspaceResolutionKind.NoValidWorkspace, @"D:\repo\App.slnx");
 		var current = CreateResolved(@"D:\repo", @"D:\repo\App.slnx");
 
-		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.FileSystem);
+		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.FileSystem, devServerStarted: false);
 
 		action.Should().Be(WorkspaceTransitionAction.Start);
 	}
@@ -35,7 +35,7 @@ public class Given_WorkspaceTransitionDecisions
 		var previous = CreateUnresolved(WorkspaceResolutionKind.NoCandidates);
 		var current = CreateUnresolved(WorkspaceResolutionKind.NoValidWorkspace, @"D:\repo\App.slnx");
 
-		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.FileSystem);
+		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.FileSystem, devServerStarted: false);
 
 		action.Should().Be(WorkspaceTransitionAction.Diagnose);
 	}
@@ -46,7 +46,7 @@ public class Given_WorkspaceTransitionDecisions
 		var previous = CreateResolved(@"D:\repo", @"D:\repo\App.slnx");
 		var current = CreateUnresolved(WorkspaceResolutionKind.NoValidWorkspace, @"D:\repo\App.slnx");
 
-		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.FileSystem);
+		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.FileSystem, devServerStarted: true);
 
 		action.Should().Be(WorkspaceTransitionAction.Stop);
 	}
@@ -57,7 +57,7 @@ public class Given_WorkspaceTransitionDecisions
 		var previous = CreateResolved(@"D:\repo", @"D:\repo\App.slnx");
 		var current = CreateUnresolved(WorkspaceResolutionKind.NoCandidates);
 
-		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.FileSystem);
+		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.FileSystem, devServerStarted: true);
 
 		action.Should().Be(WorkspaceTransitionAction.Stop);
 	}
@@ -68,7 +68,7 @@ public class Given_WorkspaceTransitionDecisions
 		var previous = CreateResolved(@"D:\repo\a", @"D:\repo\a\AppA.slnx");
 		var current = CreateResolved(@"D:\repo\b", @"D:\repo\b\AppB.slnx");
 
-		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.FileSystem);
+		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.FileSystem, devServerStarted: true);
 
 		action.Should().Be(WorkspaceTransitionAction.Restart);
 	}
@@ -79,7 +79,7 @@ public class Given_WorkspaceTransitionDecisions
 		var previous = CreateResolved(@"D:\repo\src", @"D:\repo\src\App.slnx");
 		var current = CreateResolved(@"D:\repo\src", @"D:\repo\src\App.slnx");
 
-		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.FileSystem);
+		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.FileSystem, devServerStarted: true);
 
 		action.Should().Be(WorkspaceTransitionAction.Refresh);
 	}
@@ -93,7 +93,7 @@ public class Given_WorkspaceTransitionDecisions
 			@"D:\repo\srcA\AppA.slnx",
 			@"D:\repo\srcB\AppB.slnx");
 
-		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.FileSystem);
+		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.FileSystem, devServerStarted: true);
 
 		action.Should().Be(WorkspaceTransitionAction.Stop);
 	}
@@ -107,7 +107,7 @@ public class Given_WorkspaceTransitionDecisions
 			@"D:\repo\srcB\AppB.slnx");
 		var current = CreateResolved(@"D:\repo\srcA", @"D:\repo\srcA\AppA.slnx");
 
-		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.FileSystem);
+		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.FileSystem, devServerStarted: false);
 
 		action.Should().Be(WorkspaceTransitionAction.Start);
 	}
@@ -118,9 +118,20 @@ public class Given_WorkspaceTransitionDecisions
 		var previous = CreateResolved(@"D:\repo\src", @"D:\repo\src\App.slnx");
 		var current = CreateResolved(@"D:\repo\src", @"D:\repo\src\App.slnx");
 
-		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.McpRoots);
+		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.McpRoots, devServerStarted: true);
 
 		action.Should().Be(WorkspaceTransitionAction.Refresh);
+	}
+
+	[TestMethod]
+	public void WhenMcpRootsConfirmSameWorkspaceAfterDeferredStartup_ActionIsStart()
+	{
+		var previous = CreateResolved(@"D:\repo\src", @"D:\repo\src\App.slnx");
+		var current = CreateResolved(@"D:\repo\src", @"D:\repo\src\App.slnx");
+
+		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.McpRoots, devServerStarted: false);
+
+		action.Should().Be(WorkspaceTransitionAction.Start);
 	}
 
 	[TestMethod]
@@ -129,7 +140,7 @@ public class Given_WorkspaceTransitionDecisions
 		var previous = CreateResolved(@"D:\repo\a", @"D:\repo\a\AppA.slnx");
 		var current = CreateResolved(@"D:\repo\b", @"D:\repo\b\AppB.slnx");
 
-		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.McpRoots);
+		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.McpRoots, devServerStarted: true);
 
 		action.Should().Be(WorkspaceTransitionAction.Diagnose);
 	}

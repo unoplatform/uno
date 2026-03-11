@@ -9,6 +9,7 @@ using Uno.UI.DevServer.Cli.Helpers;
 namespace Uno.UI.DevServer.Cli.Tests.Mcp;
 
 [TestClass]
+[DoNotParallelize]
 public class Given_CliManager
 {
 	[TestMethod]
