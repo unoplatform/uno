@@ -79,6 +79,9 @@ internal class ProxyLifecycleManager
 	private string[] _roots = [];
 	private TaskCompletionSource<bool>? _toolCachePrimedTcs;
 	private Task? _cachePrimedWatcher;
+	private FileSystemWatcher? _workspaceMutationWatcher;
+	private CancellationTokenSource? _workspaceMutationDebounceCts;
+	private readonly SemaphoreSlim _workspaceTransitionGate = new(1, 1);
 
 	public ProxyLifecycleManager(ILogger<ProxyLifecycleManager> logger, DevServerMonitor devServerMonitor, McpUpstreamClient mcpUpstreamClient, HealthService healthService, ToolListManager toolListManager, McpStdioServer mcpStdioServer, WorkspaceResolver workspaceResolver)
 	{
@@ -129,6 +132,7 @@ internal class ProxyLifecycleManager
 		_toolListManager.OnToolCachePersisted = () => _toolCachePrimedTcs?.TrySetResult(true);
 		_toolListManager.OnToolCachePersistFailed = ex => FailToolCachePriming(ex);
 		InitializeToolCachePrimingTracker();
+		StartWorkspaceMutationWatcher();
 
 		EnsureDevServerStartedFromSolutionDirectory();
 
@@ -178,49 +182,8 @@ internal class ProxyLifecycleManager
 			{
 				var rootWorkspaceResolution = await _workspaceResolver.ResolveAsync(rootPath);
 				_logger.LogTrace("Resolved MCP root '{RootUri}' into path '{RootPath}'", rootUri, rootPath);
-				var transitionAction = WorkspaceTransitionDecisions.DetermineAction(
-					_workspaceResolution,
-					rootWorkspaceResolution,
-					WorkspaceTransitionTrigger.McpRoots);
-
-				switch (transitionAction)
-				{
-					case WorkspaceTransitionAction.Refresh:
-						_logger.LogTrace("MCP roots confirmed existing workspace {Workspace}", _workspaceResolution?.EffectiveWorkspaceDirectory);
-						_workspaceResolution = rootWorkspaceResolution;
-						return;
-
-					case WorkspaceTransitionAction.Start:
-						_workspaceResolution = rootWorkspaceResolution;
-						StartDevServerMonitor(rootWorkspaceResolution.EffectiveWorkspaceDirectory);
-						return;
-
-					case WorkspaceTransitionAction.Diagnose:
-						if (_workspaceResolution?.IsResolved == true && rootWorkspaceResolution.IsResolved)
-						{
-							_logger.LogWarning(
-								"MCP roots resolved to a different workspace ({IncomingWorkspace}) than the running workspace ({CurrentWorkspace}); keeping the existing workspace for this session",
-								rootWorkspaceResolution.EffectiveWorkspaceDirectory,
-								_workspaceResolution.EffectiveWorkspaceDirectory);
-						}
-						else
-						{
-							_logger.LogWarning(
-								"MCP roots did not resolve to a valid Uno workspace ({ResolutionKind}); staying in diagnostic mode for this session",
-								rootWorkspaceResolution.ResolutionKind);
-							_workspaceResolution = rootWorkspaceResolution;
-						}
-
-						SetConnectionState(ConnectionState.Degraded);
-						FailToolCachePriming();
-						return;
-
-					default:
-						_logger.LogWarning("Unexpected workspace transition action {Action} for MCP roots", transitionAction);
-						SetConnectionState(ConnectionState.Degraded);
-						FailToolCachePriming();
-						return;
-				}
+				await ApplyWorkspaceResolutionAsync(rootWorkspaceResolution, WorkspaceTransitionTrigger.McpRoots);
+				return;
 			}
 			else
 			{
@@ -231,6 +194,120 @@ internal class ProxyLifecycleManager
 		{
 			_logger.LogWarning("No roots provided via uno_app_set_roots; DevServer startup is deferred until roots are set");
 		}
+	}
+
+	internal async Task ReevaluateWorkspaceAsync(WorkspaceTransitionTrigger trigger, CancellationToken ct = default)
+	{
+		var workspaceRoot = _currentDirectory
+			?? _workspaceResolution?.RequestedWorkingDirectory
+			?? _workspaceResolution?.EffectiveWorkspaceDirectory;
+
+		if (string.IsNullOrWhiteSpace(workspaceRoot))
+		{
+			_logger.LogDebug("Skipping workspace reevaluation because no workspace root is available");
+			return;
+		}
+
+		var nextResolution = await _workspaceResolver.ResolveAsync(workspaceRoot);
+		await ApplyWorkspaceResolutionAsync(nextResolution, trigger, ct);
+	}
+
+	internal async Task ApplyWorkspaceResolutionAsync(WorkspaceResolution nextResolution, WorkspaceTransitionTrigger trigger, CancellationToken ct = default)
+	{
+		await _workspaceTransitionGate.WaitAsync(ct);
+		try
+		{
+			var transitionAction = WorkspaceTransitionDecisions.DetermineAction(
+				_workspaceResolution,
+				nextResolution,
+				trigger);
+
+			switch (transitionAction)
+			{
+				case WorkspaceTransitionAction.Refresh:
+					_logger.LogTrace(
+						"{Trigger} confirmed existing workspace {Workspace}",
+						trigger,
+						_workspaceResolution?.EffectiveWorkspaceDirectory);
+					_workspaceResolution = nextResolution;
+					UpdateWorkspaceHash(nextResolution);
+					return;
+
+				case WorkspaceTransitionAction.Start:
+					_workspaceResolution = nextResolution;
+					UpdateWorkspaceHash(nextResolution);
+					StartDevServerMonitor(nextResolution.EffectiveWorkspaceDirectory);
+					return;
+
+				case WorkspaceTransitionAction.Stop:
+					_logger.LogInformation(
+						"{Trigger} invalidated the current workspace {Workspace}; stopping the active DevServer session",
+						trigger,
+						_workspaceResolution?.EffectiveWorkspaceDirectory);
+					await StopCurrentWorkspaceAsync();
+					_workspaceResolution = nextResolution;
+					UpdateWorkspaceHash(nextResolution);
+					SetConnectionState(ConnectionState.Degraded);
+					FailToolCachePriming();
+					return;
+
+				case WorkspaceTransitionAction.Restart:
+					_logger.LogInformation(
+						"{Trigger} selected a new workspace {Workspace}; restarting the DevServer session",
+						trigger,
+						nextResolution.EffectiveWorkspaceDirectory);
+					await StopCurrentWorkspaceAsync();
+					_workspaceResolution = nextResolution;
+					UpdateWorkspaceHash(nextResolution);
+					StartDevServerMonitor(nextResolution.EffectiveWorkspaceDirectory);
+					return;
+
+				case WorkspaceTransitionAction.Diagnose:
+					if (_workspaceResolution?.IsResolved == true && nextResolution.IsResolved && trigger == WorkspaceTransitionTrigger.McpRoots)
+					{
+						_logger.LogWarning(
+							"MCP roots resolved to a different workspace ({IncomingWorkspace}) than the running workspace ({CurrentWorkspace}); keeping the existing workspace for this session",
+							nextResolution.EffectiveWorkspaceDirectory,
+							_workspaceResolution.EffectiveWorkspaceDirectory);
+					}
+					else
+					{
+						_logger.LogWarning(
+							"{Trigger} did not resolve to a valid Uno workspace ({ResolutionKind}); staying in diagnostic mode for this session",
+							trigger,
+							nextResolution.ResolutionKind);
+						_workspaceResolution = nextResolution;
+						UpdateWorkspaceHash(nextResolution);
+					}
+
+					SetConnectionState(ConnectionState.Degraded);
+					FailToolCachePriming();
+					return;
+
+				default:
+					_logger.LogWarning("Unexpected workspace transition action {Action} for trigger {Trigger}", transitionAction, trigger);
+					SetConnectionState(ConnectionState.Degraded);
+					FailToolCachePriming();
+					return;
+			}
+		}
+		finally
+		{
+			_workspaceTransitionGate.Release();
+		}
+	}
+
+	internal static bool IsWorkspaceMutationPath(string? path)
+	{
+		if (string.IsNullOrWhiteSpace(path))
+		{
+			return false;
+		}
+
+		var fileName = Path.GetFileName(path);
+		return string.Equals(fileName, "global.json", StringComparison.OrdinalIgnoreCase)
+			|| string.Equals(Path.GetExtension(path), ".sln", StringComparison.OrdinalIgnoreCase)
+			|| string.Equals(Path.GetExtension(path), ".slnx", StringComparison.OrdinalIgnoreCase);
 	}
 
 	private string? GetRootPath(string rootUri)
@@ -353,6 +430,118 @@ internal class ProxyLifecycleManager
 			_devServerStartGuard.Reset();
 			FailToolCachePriming(ex);
 		}
+	}
+
+	private async Task StopCurrentWorkspaceAsync()
+	{
+		await _devServerMonitor.StopMonitoringAsync();
+		_healthService.DevServerStarted = false;
+		_devServerStartGuard.Reset();
+	}
+
+	private void UpdateWorkspaceHash(WorkspaceResolution resolution)
+	{
+		var workspaceDirectory = resolution.EffectiveWorkspaceDirectory
+			?? _solutionDirectory
+			?? _currentDirectory;
+
+		if (string.IsNullOrWhiteSpace(workspaceDirectory))
+		{
+			return;
+		}
+
+		_workspaceHash = ToolCacheFile.ComputeWorkspaceHash(workspaceDirectory);
+		_toolListManager.WorkspaceHash = _workspaceHash;
+	}
+
+	internal void StartWorkspaceMutationWatcher()
+	{
+		if (_workspaceMutationWatcher is not null)
+		{
+			return;
+		}
+
+		var workspaceRoot = _currentDirectory
+			?? _workspaceResolution?.RequestedWorkingDirectory
+			?? _workspaceResolution?.EffectiveWorkspaceDirectory;
+
+		if (string.IsNullOrWhiteSpace(workspaceRoot) || !Directory.Exists(workspaceRoot))
+		{
+			_logger.LogTrace("Skipping workspace mutation watcher because {WorkspaceRoot} is not available", workspaceRoot);
+			return;
+		}
+
+		_workspaceMutationWatcher = new FileSystemWatcher(workspaceRoot)
+		{
+			IncludeSubdirectories = true,
+			NotifyFilter = NotifyFilters.FileName
+				| NotifyFilters.DirectoryName
+				| NotifyFilters.LastWrite
+				| NotifyFilters.CreationTime,
+		};
+
+		_workspaceMutationWatcher.Created += OnWorkspaceMutation;
+		_workspaceMutationWatcher.Changed += OnWorkspaceMutation;
+		_workspaceMutationWatcher.Deleted += OnWorkspaceMutation;
+		_workspaceMutationWatcher.Renamed += OnWorkspaceMutation;
+		_workspaceMutationWatcher.EnableRaisingEvents = true;
+
+		_logger.LogTrace("Started workspace mutation watcher for {WorkspaceRoot}", workspaceRoot);
+	}
+
+	internal async Task StopWorkspaceMutationWatcherAsync()
+	{
+		_workspaceMutationDebounceCts?.Cancel();
+		_workspaceMutationDebounceCts?.Dispose();
+		_workspaceMutationDebounceCts = null;
+
+		if (_workspaceMutationWatcher is null)
+		{
+			return;
+		}
+
+		_workspaceMutationWatcher.EnableRaisingEvents = false;
+		_workspaceMutationWatcher.Created -= OnWorkspaceMutation;
+		_workspaceMutationWatcher.Changed -= OnWorkspaceMutation;
+		_workspaceMutationWatcher.Deleted -= OnWorkspaceMutation;
+		_workspaceMutationWatcher.Renamed -= OnWorkspaceMutation;
+		_workspaceMutationWatcher.Dispose();
+		_workspaceMutationWatcher = null;
+
+		await Task.CompletedTask;
+	}
+
+	private void OnWorkspaceMutation(object sender, FileSystemEventArgs args)
+	{
+		if (!IsWorkspaceMutationPath(args.FullPath))
+		{
+			return;
+		}
+
+		_logger.LogTrace("Workspace mutation detected for {Path} ({ChangeType})", args.FullPath, args.ChangeType);
+
+		_workspaceMutationDebounceCts?.Cancel();
+		_workspaceMutationDebounceCts?.Dispose();
+
+		var debounceCts = new CancellationTokenSource();
+		_workspaceMutationDebounceCts = debounceCts;
+
+		_ = Task.Run(async () =>
+		{
+			try
+			{
+				await Task.Delay(TimeSpan.FromMilliseconds(250), debounceCts.Token);
+				await ReevaluateWorkspaceAsync(WorkspaceTransitionTrigger.FileSystem, debounceCts.Token);
+			}
+			catch (OperationCanceledException)
+			{
+				// Expected when a newer filesystem mutation supersedes the current debounce window.
+			}
+			catch (Exception ex)
+			{
+				_logger.LogWarning(ex, "Workspace reevaluation failed after filesystem mutation");
+			}
+		}, CancellationToken.None);
 	}
 
 	private string? NormalizeSolutionDirectory(string? directory)
@@ -569,6 +758,7 @@ internal class ProxyLifecycleManager
 		}
 		finally
 		{
+			await StopWorkspaceMutationWatcherAsync();
 			SetConnectionState(ConnectionState.Shutdown);
 			await _mcpUpstreamClient.DisposeAsync();
 			await _devServerMonitor.StopMonitoringAsync();

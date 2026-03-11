@@ -90,6 +90,10 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 				// Expected when canceling
 			}
 		}
+
+		_monitor = null;
+		_cts = null;
+		_serverProcess = null;
 	}
 
 	private async Task RunMonitor(CancellationToken ct)
