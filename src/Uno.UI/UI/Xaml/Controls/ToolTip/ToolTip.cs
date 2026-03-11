@@ -63,6 +63,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool m_bCallPerformPlacementAtNextPopupOpen;
 		internal AutomaticToolTipInputMode m_inputMode = AutomaticToolTipInputMode.Mouse; // TODO Uno: This should be set from ToolTipService
 		internal bool m_isSliderThumbToolTip;
+		private bool m_isToolTipRequestedThemeOverridden;
 #pragma warning restore CS0649
 #pragma warning restore CS0169
 #pragma warning restore CS0414
@@ -142,7 +143,9 @@ namespace Microsoft.UI.Xaml.Controls
 			Popup.IsOpen = isOpen;
 			if (isOpen && IsEnabled)
 			{
+				ForwardOwnerThemePropertyToToolTip();
 				AttachToPopup();
+				SubscribeOwnerThemeChanged();
 
 				Opened?.Invoke(this, new RoutedEventArgs(this));
 				GoToElementState("Opened", useTransitions: true);
@@ -156,6 +159,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
+				UnsubscribeOwnerThemeChanged();
 				Closed?.Invoke(this, new RoutedEventArgs(this));
 				GoToElementState("Closed", useTransitions: true);
 			}
@@ -183,6 +187,77 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public void SetAnchor(UIElement element) => _owner = element;
+
+		private void SubscribeOwnerThemeChanged()
+		{
+			if (_owner is FrameworkElement ownerFe)
+			{
+				ownerFe.ActualThemeChanged += OnOwnerActualThemeChanged;
+			}
+		}
+
+		private void UnsubscribeOwnerThemeChanged()
+		{
+			if (_owner is FrameworkElement ownerFe)
+			{
+				ownerFe.ActualThemeChanged -= OnOwnerActualThemeChanged;
+			}
+		}
+
+		private void OnOwnerActualThemeChanged(FrameworkElement sender, object args)
+		{
+			// Owner's effective theme changed (e.g., ancestor RequestedTheme changed).
+			// Re-forward the theme to keep the ToolTip in sync.
+			ForwardOwnerThemePropertyToToolTip();
+		}
+
+		// MUX Reference: ToolTip_Partial.cpp ForwardOwnerThemePropertyToToolTip (lines 2510-2575)
+		// Walks up from the owner/placement target to find the nearest non-Default
+		// RequestedTheme and applies it to this ToolTip, ensuring tooltip content
+		// matches the theme of the subtree it was opened from.
+		private void ForwardOwnerThemePropertyToToolTip()
+		{
+			if (_owner is not FrameworkElement owner)
+			{
+				return;
+			}
+
+			// Only override if ToolTip's RequestedTheme hasn't been explicitly set,
+			// or was previously overridden by us.
+			var currentTheme = RequestedTheme;
+			if (currentTheme != ElementTheme.Default && !m_isToolTipRequestedThemeOverridden)
+			{
+				return;
+			}
+
+			// Walk up from owner to find nearest non-Default RequestedTheme
+			var requestedTheme = ElementTheme.Default;
+			DependencyObject current = owner;
+			while (current is FrameworkElement currentFe)
+			{
+				requestedTheme = currentFe.RequestedTheme;
+				if (requestedTheme != ElementTheme.Default)
+				{
+					break;
+				}
+
+				var parent = VisualTreeHelper.GetParent(current);
+				if (parent is Primitives.PopupRoot)
+				{
+					// If the owner is inside a Popup's visual tree, skip PopupRoot
+					// and use the logical parent instead.
+					parent = currentFe.Parent;
+				}
+
+				current = parent;
+			}
+
+			if (requestedTheme != currentTheme)
+			{
+				RequestedTheme = requestedTheme;
+				m_isToolTipRequestedThemeOverridden = true;
+			}
+		}
 
 		public event RoutedEventHandler? Closed;
 
