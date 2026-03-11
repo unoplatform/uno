@@ -470,19 +470,15 @@ namespace Microsoft.UI.Xaml
 
 				// MUX Reference: CUIElement::Enter / EnsureTextFormatting
 				// Pull inherited theme foreground from parent when entering the visual tree.
+				// Only apply when there IS a parent with a frozen theme foreground, meaning
+				// we're inside a theme boundary (RequestedTheme != Default ancestor).
+				// Without a theme boundary, foreground inheritance works normally via the DP system.
 				if (RequestedTheme == ElementTheme.Default && effectiveTheme != Theme.None)
 				{
 					var parent = this.GetParent() as FrameworkElement;
 					if (parent?._themeForeground is { } parentFg)
 					{
 						EnsureThemeForeground(parentFg);
-					}
-					else
-					{
-						// No parent with frozen foreground; look up the theme brush directly.
-						var brush = (Brush)ResourceResolver.ResolveTopLevelResource(
-							"DefaultTextForegroundThemeBrush", null);
-						EnsureThemeForeground(brush);
 					}
 				}
 			}
@@ -987,7 +983,6 @@ namespace Microsoft.UI.Xaml
 
 		/// <summary>
 		/// Gets the Foreground DependencyProperty for this element, if it has one.
-		/// Only Control and TextBlock have Foreground in Uno.
 		/// </summary>
 		private DependencyProperty GetForegroundProperty()
 		{
@@ -998,6 +993,14 @@ namespace Microsoft.UI.Xaml
 			else if (this is Controls.TextBlock)
 			{
 				return Controls.TextBlock.ForegroundProperty;
+			}
+			else if (this is Controls.IconElement)
+			{
+				return Controls.IconElement.ForegroundProperty;
+			}
+			else if (this is Controls.ContentPresenter)
+			{
+				return Controls.ContentPresenter.ForegroundProperty;
 			}
 			return null;
 		}
