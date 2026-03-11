@@ -175,7 +175,7 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 		}
 
 		// Lookup active DevServers via AmbientRegistry
-		// Show all servers on this machine, with IsLocal flag for matching solution or directory.
+		// Show all servers on this machine, with IsInWorkspace flag for matching solution or directory.
 		var activeServers = new List<ActiveServerInfo>();
 		try
 		{
@@ -190,7 +190,7 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 				.Where(s => s.MachineName == Environment.MachineName && s.UserName == Environment.UserName)
 				.Select(s =>
 				{
-					var isLocal = IsServerLocal(s.SolutionPath, localSolutions, workDirFull);
+					var isInWorkspace = IsServerLocal(s.SolutionPath, localSolutions, workDirFull);
 					return new ActiveServerInfo
 					{
 						ProcessId = s.ProcessId,
@@ -200,7 +200,7 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 						StartTime = s.StartTime,
 						IdeChannelId = s.IdeChannelId,
 						SolutionPath = s.SolutionPath,
-						IsLocal = isLocal,
+						IsInWorkspace = isInWorkspace,
 					};
 				})
 				.ToList();

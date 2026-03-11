@@ -173,7 +173,7 @@ internal class HealthService(
 					StartTime = s.StartTime,
 					IdeChannelId = s.IdeChannelId,
 					SolutionPath = s.SolutionPath,
-					IsLocal = s.IsLocal,
+					IsInWorkspace = s.IsInWorkspace,
 				}).ToList()
 				: null,
 		};

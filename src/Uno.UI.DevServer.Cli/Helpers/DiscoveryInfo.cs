@@ -132,7 +132,8 @@ public sealed class ActiveServerInfo
 	public string? SolutionPath { get; init; }
 
 	/// <summary>
-	/// True when this server's solution matches the current working directory's solution.
+	/// True when this server's solution matches one of the working directory's
+	/// solutions, or when the solution resides within the working directory tree.
 	/// </summary>
-	public bool IsLocal { get; init; }
+	public bool IsInWorkspace { get; init; }
 }

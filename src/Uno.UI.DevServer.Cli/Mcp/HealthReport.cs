@@ -41,7 +41,7 @@ internal sealed record ActiveServerSummary
 	public DateTime StartTime { get; init; }
 	public string? IdeChannelId { get; init; }
 	public string? SolutionPath { get; init; }
-	public bool IsLocal { get; init; }
+	public bool IsInWorkspace { get; init; }
 }
 
 internal sealed record AddInSummary

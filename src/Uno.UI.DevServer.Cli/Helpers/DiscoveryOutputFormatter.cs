@@ -61,7 +61,7 @@ internal static class DiscoveryOutputFormatter
 		{
 			foreach (var server in info.ActiveServers)
 			{
-				var localTag = server.IsLocal ? " [green][local][/]" : " [grey][other][/]";
+				var localTag = server.IsInWorkspace ? " [green][workspace][/]" : " [grey][other][/]";
 				table.AddRow(
 					new Markup($"[white]processId[/]"),
 					new Markup($"[grey]{server.ProcessId}[/]{localTag}"));
