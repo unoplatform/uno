@@ -146,6 +146,50 @@ public sealed class Given_WebView2_SkiaWin32
 	}
 
 	[TestMethod]
+	public async Task When_Disposed_Before_Load_Then_EnsureCoreWebView2Async_FailsFast()
+	{
+		var webView = new WebView2();
+		webView.Dispose();
+
+		await AssertEnsureCoreWebView2FailsFastAfterDisposeAsync(webView);
+	}
+
+	[TestMethod]
+	public async Task When_Disposed_After_Initialization_Then_EnsureCoreWebView2Async_RemainsTerminal()
+	{
+		const int loadTimeoutMs = 5000;
+		var initialRoot = new Grid();
+		var reloadedRoot = new Grid();
+		var webView = new WebView2();
+		initialRoot.Children.Add(webView);
+
+		try
+		{
+			TestServices.WindowHelper.WindowContent = initialRoot;
+			await TestServices.WindowHelper.WaitForLoaded(initialRoot, timeoutMS: loadTimeoutMs);
+			await TestServices.WindowHelper.WaitForLoaded(webView, timeoutMS: loadTimeoutMs);
+			await webView.EnsureCoreWebView2Async();
+
+			webView.Dispose();
+
+			TestServices.WindowHelper.WindowContent = null;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			reloadedRoot.Children.Add(webView);
+			TestServices.WindowHelper.WindowContent = reloadedRoot;
+			await TestServices.WindowHelper.WaitForLoaded(reloadedRoot, timeoutMS: loadTimeoutMs);
+			await TestServices.WindowHelper.WaitForLoaded(webView, timeoutMS: loadTimeoutMs);
+
+			await AssertEnsureCoreWebView2FailsFastAfterDisposeAsync(webView);
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
 	public void When_SuccessArtifacts_Are_Not_Explicitly_Enabled_Then_OutputRoot_Is_Null()
 	{
 		using var _ = new EnvironmentVariableScope("UNO_WEBVIEW2_RUNTIME_TEST_ARTIFACTS", null);
@@ -197,6 +241,22 @@ public sealed class Given_WebView2_SkiaWin32
 		}
 
 		Assert.Fail($"WebView2 content remained blank in phase '{phase}'. Last summary: {lastSummary}");
+	}
+
+	private static async Task AssertEnsureCoreWebView2FailsFastAfterDisposeAsync(WebView2 webView)
+	{
+		var ensureTask = webView.EnsureCoreWebView2Async().AsTask();
+		var completedTask = await Task.WhenAny(ensureTask, Task.Delay(TimeSpan.FromSeconds(5)));
+
+		Assert.AreSame(ensureTask, completedTask, "EnsureCoreWebView2Async() should fail quickly after disposal instead of hanging.");
+		try
+		{
+			await ensureTask;
+			Assert.Fail("EnsureCoreWebView2Async() should throw ObjectDisposedException after disposal.");
+		}
+		catch (ObjectDisposedException)
+		{
+		}
 	}
 
 	private static unsafe ScreenCaptureBuffer CaptureClientAreaPixels()
