@@ -84,8 +84,17 @@ internal class ProxyLifecycleManager
 	private CancellationTokenSource? _workspaceMutationDebounceCts;
 	private readonly SemaphoreSlim _workspaceTransitionGate = new(1, 1);
 	private readonly object _workspaceMutationWatcherGate = new();
+	private readonly Func<string, FileSystemWatcher> _workspaceMutationWatcherFactory;
 
-	public ProxyLifecycleManager(ILogger<ProxyLifecycleManager> logger, DevServerMonitor devServerMonitor, McpUpstreamClient mcpUpstreamClient, HealthService healthService, ToolListManager toolListManager, McpStdioServer mcpStdioServer, WorkspaceResolver workspaceResolver)
+	public ProxyLifecycleManager(
+		ILogger<ProxyLifecycleManager> logger,
+		DevServerMonitor devServerMonitor,
+		McpUpstreamClient mcpUpstreamClient,
+		HealthService healthService,
+		ToolListManager toolListManager,
+		McpStdioServer mcpStdioServer,
+		WorkspaceResolver workspaceResolver,
+		Func<string, FileSystemWatcher>? workspaceMutationWatcherFactory = null)
 	{
 		_logger = logger;
 		_devServerMonitor = devServerMonitor;
@@ -94,6 +103,7 @@ internal class ProxyLifecycleManager
 		_toolListManager = toolListManager;
 		_mcpStdioServer = mcpStdioServer;
 		_workspaceResolver = workspaceResolver;
+		_workspaceMutationWatcherFactory = workspaceMutationWatcherFactory ?? (root => new FileSystemWatcher(root));
 
 		_addRootsTool = McpServerTool.Create(SetRoots, new() { Name = "uno_app_set_roots" }).ProtocolTool;
 	}
@@ -477,28 +487,55 @@ internal class ProxyLifecycleManager
 				return;
 			}
 
-			_workspaceMutationWatcher = new FileSystemWatcher(workspaceRoot)
+			FileSystemWatcher? watcher = null;
+			try
 			{
-				IncludeSubdirectories = true,
-				NotifyFilter = NotifyFilters.FileName
+				watcher = _workspaceMutationWatcherFactory(workspaceRoot);
+				watcher.IncludeSubdirectories = true;
+				watcher.NotifyFilter = NotifyFilters.FileName
 					| NotifyFilters.DirectoryName
 					| NotifyFilters.LastWrite
-					| NotifyFilters.CreationTime,
-			};
+					| NotifyFilters.CreationTime;
 
-			_workspaceMutationWatcher.Created += OnWorkspaceMutation;
-			_workspaceMutationWatcher.Changed += OnWorkspaceMutation;
-			_workspaceMutationWatcher.Deleted += OnWorkspaceMutation;
-			_workspaceMutationWatcher.Renamed += OnWorkspaceMutation;
-			_workspaceMutationWatcher.Error += OnWorkspaceMutationWatcherError;
-			_workspaceMutationWatcher.EnableRaisingEvents = true;
-			_workspaceMutationWatcherRoot = workspaceRoot;
+				watcher.Created += OnWorkspaceMutation;
+				watcher.Changed += OnWorkspaceMutation;
+				watcher.Deleted += OnWorkspaceMutation;
+				watcher.Renamed += OnWorkspaceMutation;
+				watcher.Error += OnWorkspaceMutationWatcherError;
+				watcher.EnableRaisingEvents = true;
 
-			_logger.LogTrace("Started workspace mutation watcher for {WorkspaceRoot}", workspaceRoot);
+				_workspaceMutationWatcher = watcher;
+				_workspaceMutationWatcherRoot = workspaceRoot;
+
+				_logger.LogTrace("Started workspace mutation watcher for {WorkspaceRoot}", workspaceRoot);
+			}
+			catch (Exception ex)
+			{
+				if (watcher is not null)
+				{
+					try
+					{
+						watcher.Created -= OnWorkspaceMutation;
+						watcher.Changed -= OnWorkspaceMutation;
+						watcher.Deleted -= OnWorkspaceMutation;
+						watcher.Renamed -= OnWorkspaceMutation;
+						watcher.Error -= OnWorkspaceMutationWatcherError;
+						watcher.Dispose();
+					}
+					catch
+					{
+						// Best-effort cleanup for partially initialized watcher instances.
+					}
+				}
+
+				_workspaceMutationWatcher = null;
+				_workspaceMutationWatcherRoot = null;
+				_logger.LogWarning(ex, "Unable to start workspace mutation watcher for {WorkspaceRoot}", workspaceRoot);
+			}
 		}
 	}
 
-	internal async Task StopWorkspaceMutationWatcherAsync()
+	internal ValueTask StopWorkspaceMutationWatcherAsync()
 	{
 		var debounceCts = Interlocked.Exchange(ref _workspaceMutationDebounceCts, null);
 		TryCancelAndDispose(debounceCts);
@@ -508,7 +545,7 @@ internal class ProxyLifecycleManager
 		{
 			if (_workspaceMutationWatcher is null)
 			{
-				return;
+				return ValueTask.CompletedTask;
 			}
 
 			_workspaceMutationWatcher.EnableRaisingEvents = false;
@@ -523,8 +560,7 @@ internal class ProxyLifecycleManager
 		}
 
 		watcherToDispose?.Dispose();
-
-		await Task.CompletedTask;
+		return ValueTask.CompletedTask;
 	}
 
 	private void OnWorkspaceMutation(object sender, FileSystemEventArgs args)

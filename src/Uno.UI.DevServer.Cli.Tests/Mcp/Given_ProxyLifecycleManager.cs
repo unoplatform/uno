@@ -1,6 +1,7 @@
 using System.Reflection;
 using AwesomeAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Uno.UI.DevServer.Cli.Helpers;
 using Uno.UI.DevServer.Cli.Mcp;
@@ -865,7 +866,37 @@ public class Given_ProxyLifecycleManager
 		action.Should().NotThrow();
 	}
 
-	private static (ProxyLifecycleManager Subject, HealthService HealthService, DevServerMonitor Monitor) CreateSubject()
+	[TestMethod]
+	[Description("Watcher startup failures are logged and do not leave a partially initialized watcher behind")]
+	public void WhenWatcherStartupFails_NoExceptionEscapesAndNoWatcherIsRetained()
+	{
+		var loggerProvider = new CollectingLoggerProvider();
+		var created = CreateSubject(
+			logger: loggerProvider.CreateLogger<ProxyLifecycleManager>(),
+			workspaceMutationWatcherFactory: _ => throw new IOException("boom"));
+		var subject = created.Subject;
+		var workspaceRoot = CreateTempDirectory();
+
+		try
+		{
+			SetPrivateField(subject, "_currentDirectory", workspaceRoot);
+
+			var action = () => subject.StartWorkspaceMutationWatcher();
+
+			action.Should().NotThrow();
+			GetPrivateField<FileSystemWatcher?>(subject, "_workspaceMutationWatcher").Should().BeNull();
+			GetPrivateField<string?>(subject, "_workspaceMutationWatcherRoot").Should().BeNull();
+			loggerProvider.Messages.Should().Contain(message => message.Contains("Unable to start workspace mutation watcher", StringComparison.Ordinal));
+		}
+		finally
+		{
+			Directory.Delete(workspaceRoot, recursive: true);
+		}
+	}
+
+	private static (ProxyLifecycleManager Subject, HealthService HealthService, DevServerMonitor Monitor) CreateSubject(
+		ILogger<ProxyLifecycleManager>? logger = null,
+		Func<string, FileSystemWatcher>? workspaceMutationWatcherFactory = null)
 	{
 		var services = new ServiceCollection()
 			.AddSingleton(new UnoToolsLocator(NullLogger<UnoToolsLocator>.Instance))
@@ -881,13 +912,14 @@ public class Given_ProxyLifecycleManager
 		var workspaceResolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
 
 		var subject = new ProxyLifecycleManager(
-			NullLogger<ProxyLifecycleManager>.Instance,
+			logger ?? NullLogger<ProxyLifecycleManager>.Instance,
 			monitor,
 			upstreamClient,
 			healthService,
 			toolListManager,
 			stdioServer,
-			workspaceResolver);
+			workspaceResolver,
+			workspaceMutationWatcherFactory);
 
 		return (subject, healthService, monitor);
 	}
@@ -988,6 +1020,27 @@ public class Given_ProxyLifecycleManager
 			{
 				await Task.Delay(delayMs);
 			}
+		}
+	}
+
+	private sealed class CollectingLoggerProvider
+	{
+		public List<string> Messages { get; } = [];
+
+		public ILogger<T> CreateLogger<T>() => new CollectingLogger<T>(Messages);
+	}
+
+	private sealed class CollectingLogger<T>(List<string> messages) : ILogger<T>
+	{
+		private readonly List<string> _messages = messages;
+
+		public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
+
+		public bool IsEnabled(LogLevel logLevel) => true;
+
+		public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+		{
+			_messages.Add(formatter(state, exception));
 		}
 	}
 }
