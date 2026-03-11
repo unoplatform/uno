@@ -737,7 +737,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Notifies this element and its subtree that the theme has changed.
 		/// </summary>
-		internal void NotifyThemeChanged(Theme theme)
+		internal void NotifyThemeChanged(Theme theme, bool forceRefresh = false)
 		{
 			// Cycle protection - prevent re-entrant theme notifications
 			if (IsProcessingThemeWalk)
@@ -745,10 +745,17 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
+			// MUX Reference: Theming.cpp line 132
+			// Early-out if theme hasn't changed and not forcing refresh
+			if (theme == GetTheme() && !forceRefresh)
+			{
+				return;
+			}
+
 			SetIsProcessingThemeWalk(true);
 			try
 			{
-				NotifyThemeChangedCore(theme);
+				NotifyThemeChangedCore(theme, forceRefresh);
 			}
 			finally
 			{
@@ -762,7 +769,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Core implementation of theme change notification using WinUI's push-pop pattern.
 		/// </summary>
-		private protected virtual void NotifyThemeChangedCore(Theme theme)
+		private protected virtual void NotifyThemeChangedCore(Theme theme, bool forceRefresh)
 		{
 			// 1. Determine if ActualTheme is changing
 			var oldTheme = GetTheme();
@@ -771,7 +778,7 @@ namespace Microsoft.UI.Xaml
 			var oldBase = oldTheme == Theme.None ? appBaseTheme : Theming.GetBaseValue(oldTheme);
 			var newBase = Theming.GetBaseValue(theme);
 
-			bool themeChanged = oldBase != newBase;
+			bool themeChanged = oldBase != newBase || forceRefresh;
 
 			// 2. PUSH this element's theme to global context for resource lookups
 			var themeKey = newBase == Theme.Light ? "Light" : "Dark";
@@ -830,7 +837,7 @@ namespace Microsoft.UI.Xaml
 				}
 
 				// 6. Propagate to children (they may push their own context)
-				PropagateThemeToChildren(theme);
+				PropagateThemeToChildren(theme, forceRefresh);
 			}
 			finally
 			{
@@ -846,7 +853,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Propagates theme changes to child elements.
 		/// </summary>
-		private void PropagateThemeToChildren(Theme theme)
+		private void PropagateThemeToChildren(Theme theme, bool forceRefresh)
 		{
 			var childCount = VisualTreeHelper.GetChildrenCount(this);
 			for (var i = 0; i < childCount; i++)
@@ -857,7 +864,7 @@ namespace Microsoft.UI.Xaml
 					// Skip children that have their own explicit RequestedTheme
 					if (fe.RequestedTheme == ElementTheme.Default)
 					{
-						fe.NotifyThemeChanged(theme);
+						fe.NotifyThemeChanged(theme, forceRefresh);
 					}
 				}
 			}

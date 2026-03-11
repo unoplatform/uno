@@ -93,9 +93,9 @@ internal partial class PopupRoot : Canvas
 	// parented under PopupRoot but their logical parent is the Popup itself.
 	// Without this, theme walks that reach PopupRoot via the visual tree
 	// would not propagate to popup content.
-	private protected override void NotifyThemeChangedCore(Theme theme)
+	private protected override void NotifyThemeChangedCore(Theme theme, bool forceRefresh)
 	{
-		base.NotifyThemeChangedCore(theme);
+		base.NotifyThemeChangedCore(theme, forceRefresh);
 
 		// Propagate theme to all open popups
 		var node = _openPopups.First;
@@ -104,7 +104,7 @@ internal partial class PopupRoot : Canvas
 			var next = node.Next;
 			if (node.Value.TryGetTarget<Popup>(out var popup))
 			{
-				popup.NotifyThemeChanged(theme);
+				popup.NotifyThemeChanged(theme, forceRefresh);
 			}
 			node = next;
 		}
