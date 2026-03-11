@@ -16,7 +16,7 @@
 		<PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" />
 		<PackageReference Include="Microsoft.VisualStudio.SolutionPersistence" Version="1.0.52" />
 		<PackageReference Include="StreamJsonRpc" Version="2.17.11" />
-		<PackageReference Include="ModelContextProtocol" Version="0.8.0-preview.1" />
+		<PackageReference Include="ModelContextProtocol" Version="1.1.0" />
 		<PackageReference Include="Uno.DevTools.Telemetry" Version="1.1.1">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -40,6 +40,7 @@
 		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\NuGetCacheHelper.cs" Link="Helpers\NuGetCacheHelper.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\ProjectAssetsParser.cs" Link="Helpers\ProjectAssetsParser.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\DiscoveryInfo.cs" Link="Helpers\DiscoveryInfo.cs" />
+		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\SolutionFileFinder.cs" Link="Helpers\SolutionFileFinder.cs" />
 
 		<!-- Link MCP sources for unit testing -->
 		<!-- TODO: MCP tests that only depend on CLI types should be migrated to Uno.UI.DevServer.Cli.Tests -->

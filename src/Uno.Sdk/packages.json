@@ -382,7 +382,7 @@
 	},
 	{
 		"group": "AppMcp",
-		"version": "1.2.0-dev.30",
+		"version": "1.2.0-dev.31",
 		"packages": [
 			"Uno.UI.App.Mcp"
 		]
