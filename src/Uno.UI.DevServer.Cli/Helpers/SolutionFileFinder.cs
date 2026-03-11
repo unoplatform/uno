@@ -170,9 +170,9 @@ internal static class SolutionFileFinder
 				results.Add(file);
 			}
 		}
-		catch (UnauthorizedAccessException)
+		catch (Exception ex) when (ex is UnauthorizedAccessException or DirectoryNotFoundException or IOException)
 		{
-			// Skip directories we can't access
+			// Skip directories we can't access or that disappeared during scanning
 		}
 
 		if (currentDepth >= maxDepth)
@@ -211,9 +211,9 @@ internal static class SolutionFileFinder
 				SearchDirectory(subDir, currentDepth + 1, maxDepth, results, gitRoot);
 			}
 		}
-		catch (UnauthorizedAccessException)
+		catch (Exception ex) when (ex is UnauthorizedAccessException or DirectoryNotFoundException or IOException)
 		{
-			// Skip directories we can't access
+			// Skip directories we can't access or that disappeared during scanning
 		}
 	}
 }

@@ -425,7 +425,16 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 			return false;
 		}
 
-		var serverSolutionFull = Path.GetFullPath(serverSolutionPath);
+		string serverSolutionFull;
+		try
+		{
+			serverSolutionFull = Path.GetFullPath(serverSolutionPath);
+		}
+		catch (Exception ex) when (ex is ArgumentException or NotSupportedException or PathTooLongException)
+		{
+			// Malformed path from AmbientRegistry — treat as non-workspace
+			return false;
+		}
 
 		// Direct match: server's solution is one of the solutions in the working directory
 		if (localSolutions.Contains(serverSolutionFull))

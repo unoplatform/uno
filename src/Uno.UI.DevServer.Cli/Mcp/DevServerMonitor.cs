@@ -302,7 +302,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 				return true;
 			}
 
-			// Probe aggressively for the first 5 seconds (200ms), then slow to 1s
+			// Probe aggressively for the first ~2 seconds (10×200ms), then slow to 1s (~30s total budget)
 			var delay = i < 10 ? 200 : 1000;
 			await Task.Delay(delay, ct);
 		}
