@@ -25,6 +25,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 	private long _discoveryDurationMs;
 	private DiscoveryInfo? _lastDiscoveryInfo;
 	private Process? _serverProcess;
+	private WorkspaceResolution? _workspaceResolution;
 
 	public event Action<string>? ServerStarted;
 	public event Action? ServerFailed;
@@ -50,7 +51,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 	/// </summary>
 	public IReadOnlyList<string> DiscoveredSolutions { get; private set; } = [];
 
-	internal void StartMonitoring(string currentDirectory, int port, List<string> forwardedArgs)
+	internal void StartMonitoring(string currentDirectory, int port, List<string> forwardedArgs, WorkspaceResolution? workspaceResolution = null)
 	{
 		if (_monitor is not null)
 		{
@@ -60,6 +61,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 		_originalPort = port;
 		_forwardedArgs = forwardedArgs;
 		_currentDirectory = currentDirectory;
+		_workspaceResolution = workspaceResolution;
 
 		var forwardedArgsDisplay = string.Join(" ", _forwardedArgs);
 		_logger.LogTrace(
@@ -119,7 +121,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 					// Run full discovery to get DiscoveryInfo (used by health reports)
 					var discoveryStopwatch = System.Diagnostics.Stopwatch.StartNew();
 					var locator = _services.GetRequiredService<UnoToolsLocator>();
-					var discovery = await locator.DiscoverAsync(_currentDirectory);
+					var discovery = await locator.DiscoverAsync(_currentDirectory, _workspaceResolution);
 					discoveryStopwatch.Stop();
 					_lastDiscoveryInfo = discovery;
 					_unoSdkVersion = discovery.UnoSdkVersion;

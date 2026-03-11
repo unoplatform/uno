@@ -1,6 +1,7 @@
 using System.Text.Json;
 using AwesomeAssertions;
 using ModelContextProtocol.Protocol;
+using Uno.UI.DevServer.Cli.Helpers;
 using Uno.UI.DevServer.Cli.Mcp;
 
 namespace Uno.UI.RemoteControl.DevServer.Tests.Mcp;
@@ -173,6 +174,34 @@ public class Given_HealthService
 			MimeType = "application/json",
 		};
 		contents.Text.Should().NotBeEmpty();
+	}
+
+	[TestMethod]
+	[Description("When workspace resolution fails before startup, health is immediately unhealthy with a workspace-specific issue instead of waiting for upstream timeouts.")]
+	public void HealthReport_WhenWorkspaceIsNotResolved_IsImmediatelyUnhealthy()
+	{
+		var discovery = new DiscoveryInfo
+		{
+			RequestedWorkingDirectory = @"D:\src\studio.live",
+			ResolutionKind = WorkspaceResolutionKind.NoValidWorkspace,
+			CandidateSolutions =
+			[
+				@"D:\src\studio.live\src\App.slnx",
+			],
+		};
+
+		var report = HealthReportFactory.Create(
+			discovery,
+			devServerStarted: false,
+			upstreamConnected: false,
+			toolCount: 0,
+			connectionState: null,
+			discoveredSolutions: discovery.CandidateSolutions);
+
+		report.Status.Should().Be(HealthStatus.Unhealthy);
+		report.Issues.Should().Contain(issue => issue.Code == IssueCode.HostNotStarted);
+		report.Issues.Should().Contain(issue => issue.Code == IssueCode.WorkspaceNotResolved);
+		report.Issues.Should().NotContain(issue => issue.Code == IssueCode.HostUnreachable);
 	}
 
 	[TestMethod]

@@ -18,7 +18,36 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 	private string? _workDirectory;
 
 	public async Task<DiscoveryInfo> DiscoverAsync(string workDirectory)
+		=> await DiscoverAsync(workDirectory, null);
+
+	public async Task<DiscoveryInfo> DiscoverAsync(string workDirectory, WorkspaceResolution? workspaceResolution)
 	{
+		workspaceResolution ??= new WorkspaceResolution
+		{
+			RequestedWorkingDirectory = Path.GetFullPath(workDirectory),
+			EffectiveWorkspaceDirectory = Path.GetFullPath(workDirectory),
+			ResolutionKind = WorkspaceResolutionKind.CurrentDirectory,
+			CandidateSolutions = SolutionFileFinder.FindSolutionFiles(workDirectory),
+		};
+
+		if (!workspaceResolution.IsResolved)
+		{
+			return new DiscoveryInfo
+			{
+				RequestedWorkingDirectory = workspaceResolution.RequestedWorkingDirectory,
+				WorkingDirectory = workspaceResolution.RequestedWorkingDirectory,
+				EffectiveWorkspaceDirectory = workspaceResolution.EffectiveWorkspaceDirectory,
+				SelectedSolutionPath = workspaceResolution.SelectedSolutionPath,
+				SelectedGlobalJsonPath = workspaceResolution.SelectedGlobalJsonPath,
+				ResolutionKind = workspaceResolution.ResolutionKind,
+				CandidateSolutions = workspaceResolution.CandidateSolutions,
+				Errors = workspaceResolution.ResolutionKind == WorkspaceResolutionKind.NoCandidates
+					? []
+					: ["Workspace could not be resolved."],
+			};
+		}
+
+		workDirectory = workspaceResolution.EffectiveWorkspaceDirectory!;
 		_workDirectory = workDirectory;
 		string? globalJsonPath = null;
 		string? unoSdkSource = null;
@@ -38,7 +67,7 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 		var warnings = new List<string>();
 		var errors = new List<string>();
 
-		var globalJsonResult = await ParseGlobalJsonForUnoSdk(workDirectory);
+		var globalJsonResult = await GlobalJsonLocator.ParseGlobalJsonForUnoSdkAsync(workDirectory, _logger);
 		globalJsonPath = globalJsonResult.globalJsonPath;
 		unoSdkPackage = globalJsonResult.sdkPackage;
 		unoSdkVersion = globalJsonResult.sdkVersion;
@@ -212,7 +241,13 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 
 		return new DiscoveryInfo
 		{
+			RequestedWorkingDirectory = workspaceResolution.RequestedWorkingDirectory,
 			WorkingDirectory = workDirectory,
+			EffectiveWorkspaceDirectory = workspaceResolution.EffectiveWorkspaceDirectory,
+			SelectedSolutionPath = workspaceResolution.SelectedSolutionPath,
+			SelectedGlobalJsonPath = workspaceResolution.SelectedGlobalJsonPath,
+			ResolutionKind = workspaceResolution.ResolutionKind,
+			CandidateSolutions = workspaceResolution.CandidateSolutions,
 			GlobalJsonPath = globalJsonPath,
 			UnoSdkSource = unoSdkSource,
 			UnoSdkSourcePath = unoSdkSourcePath,
@@ -297,24 +332,6 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 		return hostPath;
 	}
 
-	private static string? FindGlobalJson(string startPath)
-	{
-		var currentPath = startPath;
-		while (currentPath != null)
-		{
-			var globalJsonPath = Path.Combine(currentPath, "global.json");
-			if (File.Exists(globalJsonPath))
-			{
-				return globalJsonPath;
-			}
-
-			var parent = Directory.GetParent(currentPath);
-			currentPath = parent?.FullName;
-		}
-
-		return null;
-	}
-
 	private async Task<(string? sdkPackage, string? sdkVersion)> GetSdkVersionFromGlobalJson(string searchDirectory)
 	{
 		var result = await ParseGlobalJsonForUnoSdk(searchDirectory);
@@ -336,46 +353,7 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 	}
 
 	private async Task<(string? globalJsonPath, string? sdkPackage, string? sdkVersion)> ParseGlobalJsonForUnoSdk(string searchDirectory)
-	{
-		try
-		{
-			var globalJsonPath = FindGlobalJson(searchDirectory);
-			if (globalJsonPath is null)
-			{
-				return (null, null, null);
-			}
-
-			var content = await File.ReadAllTextAsync(globalJsonPath);
-			using var document = JsonDocument.Parse(
-				content,
-				new()
-				{
-					CommentHandling = JsonCommentHandling.Skip,
-					AllowTrailingCommas = true
-				});
-
-			if (document.RootElement.TryGetProperty("msbuild-sdks", out var sdksElement))
-			{
-				if (sdksElement.TryGetProperty("Uno.Sdk", out var unoSdkElement))
-				{
-					return (globalJsonPath, "Uno.Sdk", unoSdkElement.GetString() ?? "");
-				}
-
-				if (sdksElement.TryGetProperty("Uno.Sdk.Private", out var unoSdkPrivateElement))
-				{
-					return (globalJsonPath, "Uno.Sdk.Private", unoSdkPrivateElement.GetString() ?? "");
-				}
-			}
-
-			return (globalJsonPath, null, null);
-		}
-		catch (Exception ex)
-		{
-			_logger.LogWarning(ex, "Failed to parse global.json: {ErrorMessage}", ex.Message);
-		}
-
-		return (null, null, null);
-	}
+		=> await GlobalJsonLocator.ParseGlobalJsonForUnoSdkAsync(searchDirectory, _logger);
 
 	private async Task InstallUnoSdk(string packageId, string version)
 	{

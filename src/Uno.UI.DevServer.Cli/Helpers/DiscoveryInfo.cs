@@ -1,11 +1,42 @@
 namespace Uno.UI.DevServer.Cli.Helpers;
 
+#pragma warning disable IDE0055
 public sealed class DiscoveryInfo
 {
+	/// <summary>
+	/// Gets the working directory originally requested by the caller.
+	/// </summary>
+	public string? RequestedWorkingDirectory { get; init; }
+
 	/// <summary>
 	/// Gets the working directory used for discovery.
 	/// </summary>
 	public string? WorkingDirectory { get; init; }
+
+	/// <summary>
+	/// Gets the effective workspace directory selected for discovery.
+	/// </summary>
+	public string? EffectiveWorkspaceDirectory { get; init; }
+
+	/// <summary>
+	/// Gets the selected solution path for the workspace.
+	/// </summary>
+	public string? SelectedSolutionPath { get; init; }
+
+	/// <summary>
+	/// Gets the selected global.json used to identify the Uno workspace.
+	/// </summary>
+	public string? SelectedGlobalJsonPath { get; init; }
+
+	/// <summary>
+	/// Gets how the workspace was resolved.
+	/// </summary>
+	public WorkspaceResolutionKind? ResolutionKind { get; init; }
+
+	/// <summary>
+	/// Gets all candidate solution paths that were considered during workspace resolution.
+	/// </summary>
+	public IReadOnlyList<string> CandidateSolutions { get; init; } = [];
 
 	/// <summary>
 	/// Gets the resolved path to global.json if found.
@@ -137,3 +168,4 @@ public sealed class ActiveServerInfo
 	/// </summary>
 	public bool IsInWorkspace { get; init; }
 }
+#pragma warning restore IDE0055

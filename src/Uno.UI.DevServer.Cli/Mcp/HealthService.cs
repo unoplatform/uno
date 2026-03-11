@@ -43,105 +43,33 @@ internal class HealthService(
 
 	public HealthReport BuildHealthReport()
 	{
-		var issues = new List<ValidationIssue>();
 		var upstreamTask = mcpUpstreamClient.UpstreamClient;
 		var upstreamConnected = upstreamTask.IsCompletedSuccessfully;
 
-		if (!DevServerStarted)
-		{
-			issues.Add(new ValidationIssue
-			{
-				Code = IssueCode.HostNotStarted,
-				Severity = ValidationSeverity.Fatal,
-				Message = "The DevServer host process has not been started yet.",
-				Remediation = "Ensure the working directory contains a global.json with the Uno.Sdk, or provide roots via uno_app_set_roots.",
-			});
-		}
-
-		if (devServerMonitor.SolutionNotFound)
-		{
-			issues.Add(new ValidationIssue
-			{
-				Code = IssueCode.NoSolutionFound,
-				Severity = ValidationSeverity.Warning,
-				Message = "No .sln or .slnx file found in the working directory or its subdirectories.",
-				Remediation = "Create an Uno Platform project first (e.g. 'dotnet new unoapp'), then tools will become available automatically.",
-			});
-		}
-
-		if (ConnectionState == ConnectionState.Reconnecting)
-		{
-			issues.Add(new ValidationIssue
-			{
-				Code = IssueCode.HostCrashed,
-				Severity = ValidationSeverity.Warning,
-				Message = "The DevServer host process crashed and is being restarted automatically.",
-				Remediation = "Wait a few seconds for the host to restart. Tools will become available again once the connection is re-established.",
-			});
-		}
-		else if (ConnectionState == ConnectionState.Degraded)
-		{
-			issues.Add(new ValidationIssue
-			{
-				Code = IssueCode.HostCrashed,
-				Severity = ValidationSeverity.Fatal,
-				Message = "The DevServer host process crashed repeatedly and could not be restarted.",
-				Remediation = "Check the DevServer logs for errors. You may need to restart the MCP proxy manually.",
-			});
-		}
-
-		if (upstreamTask.IsFaulted)
-		{
-			var errorMessage = upstreamTask.Exception?.InnerException?.Message ?? "Unknown error";
-			issues.Add(new ValidationIssue
-			{
-				Code = IssueCode.UpstreamError,
-				Severity = ValidationSeverity.Fatal,
-				Message = $"Failed to connect to upstream MCP server: {errorMessage}",
-				Remediation = "Check that the DevServer host process started correctly and is listening on the expected port.",
-			});
-		}
-		else if (DevServerStarted && !upstreamConnected)
-		{
-			issues.Add(new ValidationIssue
-			{
-				Code = IssueCode.HostUnreachable,
-				Severity = ValidationSeverity.Warning,
-				Message = "The DevServer host process is started but the upstream MCP connection is not yet established.",
-				Remediation = "The host may still be initializing. Wait a few seconds and retry.",
-			});
-		}
-
-		issues.AddRange(DiscoveryIssueMapper.MapDiscoveryIssues(devServerMonitor.LastDiscoveryInfo));
-
 		var toolCount = toolListManager.GetCachedTools().Length;
-
-		var status = issues.Any(i => i.Severity == ValidationSeverity.Fatal)
-			? HealthStatus.Unhealthy
-			: issues.Count > 0
-				? HealthStatus.Degraded
-				: HealthStatus.Healthy;
 
 		var discoveredSolutions = devServerMonitor.DiscoveredSolutions is { Count: > 0 }
 			? devServerMonitor.DiscoveredSolutions
 			: null;
 
-		return new HealthReport
+		if (discoveredSolutions is null && devServerMonitor.SolutionNotFound)
 		{
-			Status = status,
-			DevServerVersion = McpStdioServer.GetAssemblyVersion(),
-			UpstreamConnected = upstreamConnected,
-			ToolCount = toolCount,
-			UnoSdkVersion = devServerMonitor.UnoSdkVersion,
-			DiscoveryDurationMs = devServerMonitor.DiscoveryDurationMs,
-			ConnectionState = ConnectionState,
-			DiscoveredSolutions = discoveredSolutions,
-			Issues = issues,
-			Discovery = MapDiscovery(devServerMonitor.LastDiscoveryInfo),
-		};
+			discoveredSolutions = [];
+		}
+
+		return HealthReportFactory.Create(
+			devServerMonitor.LastDiscoveryInfo,
+			DevServerStarted,
+			upstreamConnected,
+			toolCount,
+			ConnectionState,
+			discoveredSolutions,
+			upstreamError: upstreamTask.IsFaulted
+				? upstreamTask.Exception?.InnerException?.Message ?? "Unknown error"
+				: null);
 	}
 
-	private static DiscoverySummary? MapDiscovery(DiscoveryInfo? info)
+	internal static DiscoverySummary? MapDiscovery(DiscoveryInfo? info)
 	{
 		if (info is null)
 		{
@@ -150,7 +78,13 @@ internal class HealthService(
 
 		return new DiscoverySummary
 		{
+			RequestedWorkingDirectory = info.RequestedWorkingDirectory,
 			WorkingDirectory = info.WorkingDirectory,
+			EffectiveWorkspaceDirectory = info.EffectiveWorkspaceDirectory,
+			SelectedSolutionPath = info.SelectedSolutionPath,
+			SelectedGlobalJsonPath = info.SelectedGlobalJsonPath,
+			ResolutionKind = info.ResolutionKind,
+			CandidateSolutions = info.CandidateSolutions.Count > 0 ? info.CandidateSolutions : null,
 			DotNetVersion = info.DotNetVersion,
 			UnoSdkVersion = info.UnoSdkVersion,
 			UnoSdkPath = info.UnoSdkPath,

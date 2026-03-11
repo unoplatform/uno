@@ -19,6 +19,42 @@ internal static class DiscoveryIssueMapper
 			return issues;
 		}
 
+		if (discovery.ResolutionKind == WorkspaceResolutionKind.Ambiguous)
+		{
+			issues.Add(new ValidationIssue
+			{
+				Code = IssueCode.WorkspaceAmbiguous,
+				Severity = ValidationSeverity.Warning,
+				Message = "Multiple Uno workspaces matched the current directory. The DevServer host was not started automatically.",
+				Remediation = "Start from a more specific workspace directory, or use --solution-dir to disambiguate.",
+			});
+			return issues;
+		}
+
+		if (discovery.ResolutionKind == WorkspaceResolutionKind.NoValidWorkspace)
+		{
+			issues.Add(new ValidationIssue
+			{
+				Code = IssueCode.WorkspaceNotResolved,
+				Severity = ValidationSeverity.Fatal,
+				Message = "Solution files were found, but none resolved to a valid Uno workspace with a global.json declaring Uno.Sdk.",
+				Remediation = "Ensure the intended workspace contains a global.json with Uno.Sdk in msbuild-sdks.",
+			});
+			return issues;
+		}
+
+		if (discovery.ResolutionKind == WorkspaceResolutionKind.NoCandidates)
+		{
+			issues.Add(new ValidationIssue
+			{
+				Code = IssueCode.NoSolutionFound,
+				Severity = ValidationSeverity.Warning,
+				Message = "No .sln or .slnx file found in the working directory or its subdirectories.",
+				Remediation = "Create an Uno Platform project first (e.g. 'dotnet new unoapp'), then tools will become available automatically.",
+			});
+			return issues;
+		}
+
 		if (discovery.GlobalJsonPath is null)
 		{
 			issues.Add(new ValidationIssue

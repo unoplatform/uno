@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
+using Uno.UI.DevServer.Cli.Helpers;
 
 namespace Uno.UI.DevServer.Cli.Mcp;
 
@@ -23,6 +24,7 @@ internal class ProxyLifecycleManager
 	private readonly HealthService _healthService;
 	private readonly ToolListManager _toolListManager;
 	private readonly McpStdioServer _mcpStdioServer;
+	private readonly WorkspaceResolver _workspaceResolver;
 	private readonly Tool _addRootsTool;
 	private bool _waitForTools;
 	private bool _forceRootsFallback;
@@ -70,6 +72,7 @@ internal class ProxyLifecycleManager
 	private int _reconnectionAttempts;
 	private const int MaxReconnectionAttempts = 3;
 	private string? _currentDirectory;
+	private WorkspaceResolution? _workspaceResolution;
 	private string? _workspaceHash;
 	private int _devServerPort;
 	private List<string> _forwardedArgs = [];
@@ -77,7 +80,7 @@ internal class ProxyLifecycleManager
 	private TaskCompletionSource<bool>? _toolCachePrimedTcs;
 	private Task? _cachePrimedWatcher;
 
-	public ProxyLifecycleManager(ILogger<ProxyLifecycleManager> logger, DevServerMonitor devServerMonitor, McpUpstreamClient mcpUpstreamClient, HealthService healthService, ToolListManager toolListManager, McpStdioServer mcpStdioServer)
+	public ProxyLifecycleManager(ILogger<ProxyLifecycleManager> logger, DevServerMonitor devServerMonitor, McpUpstreamClient mcpUpstreamClient, HealthService healthService, ToolListManager toolListManager, McpStdioServer mcpStdioServer, WorkspaceResolver workspaceResolver)
 	{
 		_logger = logger;
 		_devServerMonitor = devServerMonitor;
@@ -85,6 +88,7 @@ internal class ProxyLifecycleManager
 		_healthService = healthService;
 		_toolListManager = toolListManager;
 		_mcpStdioServer = mcpStdioServer;
+		_workspaceResolver = workspaceResolver;
 
 		_addRootsTool = McpServerTool.Create(SetRoots, new() { Name = "uno_app_set_roots" }).ProtocolTool;
 	}
@@ -101,6 +105,7 @@ internal class ProxyLifecycleManager
 
 	public async Task<int> RunAsync(
 		string currentDirectory,
+		WorkspaceResolution workspaceResolution,
 		int port,
 		List<string> forwardedArgs,
 		bool waitForTools,
@@ -113,10 +118,12 @@ internal class ProxyLifecycleManager
 		_forceRootsFallback = forceRootsFallback;
 		_forceGenerateToolCache = forceGenerateToolCache;
 		_currentDirectory = currentDirectory;
+		_workspaceResolution = workspaceResolution;
 		_devServerPort = port;
 		_forwardedArgs = forwardedArgs;
 		_solutionDirectory = NormalizeSolutionDirectory(solutionDirectory);
-		_workspaceHash = ToolCacheFile.ComputeWorkspaceHash(_solutionDirectory);
+		_workspaceHash = ToolCacheFile.ComputeWorkspaceHash(
+			workspaceResolution.EffectiveWorkspaceDirectory ?? _solutionDirectory ?? currentDirectory);
 		_toolListManager.WorkspaceHash = _workspaceHash;
 		_toolListManager.IsToolCacheEnabled = true;
 		_toolListManager.OnToolCachePersisted = () => _toolCachePrimedTcs?.TrySetResult(true);
@@ -166,8 +173,37 @@ internal class ProxyLifecycleManager
 			var rootPath = GetRootPath(rootUri);
 			if (!string.IsNullOrWhiteSpace(rootPath))
 			{
+				var rootWorkspaceResolution = await _workspaceResolver.ResolveAsync(rootPath);
 				_logger.LogTrace("Resolved MCP root '{RootUri}' into path '{RootPath}'", rootUri, rootPath);
-				StartDevServerMonitor(rootPath);
+
+				if (_workspaceResolution?.IsResolved == true &&
+					rootWorkspaceResolution.IsResolved &&
+					string.Equals(
+						_workspaceResolution.EffectiveWorkspaceDirectory,
+						rootWorkspaceResolution.EffectiveWorkspaceDirectory,
+						StringComparison.OrdinalIgnoreCase))
+				{
+					_logger.LogTrace("MCP roots confirmed existing workspace {Workspace}", _workspaceResolution.EffectiveWorkspaceDirectory);
+					return;
+				}
+
+				if (_workspaceResolution?.IsResolved == true &&
+					rootWorkspaceResolution.IsResolved &&
+					!string.Equals(
+						_workspaceResolution.EffectiveWorkspaceDirectory,
+						rootWorkspaceResolution.EffectiveWorkspaceDirectory,
+						StringComparison.OrdinalIgnoreCase))
+				{
+					_logger.LogWarning(
+						"MCP roots resolved to a different workspace ({IncomingWorkspace}) than the running workspace ({CurrentWorkspace}); keeping the existing workspace for this session",
+						rootWorkspaceResolution.EffectiveWorkspaceDirectory,
+						_workspaceResolution.EffectiveWorkspaceDirectory);
+					SetConnectionState(ConnectionState.Degraded);
+					return;
+				}
+
+				_workspaceResolution = rootWorkspaceResolution;
+				StartDevServerMonitor(rootWorkspaceResolution.EffectiveWorkspaceDirectory ?? rootPath);
 			}
 			else
 			{
@@ -246,12 +282,22 @@ internal class ProxyLifecycleManager
 			return;
 		}
 
+		if (_workspaceResolution?.IsResolved != true)
+		{
+			_logger.LogWarning(
+				"Workspace resolution failed for {Directory}; DevServer startup is skipped and health remains immediately unavailable",
+				_currentDirectory);
+			SetConnectionState(ConnectionState.Degraded);
+			FailToolCachePriming();
+			return;
+		}
+
 		// No explicit --solution-dir was provided. Use the current directory
 		// so the monitor can scan for solutions immediately. MCP roots received
 		// later will be processed via ProcessRoots() which can trigger the
 		// monitor if it hasn't started yet (StartOnceGuard prevents duplicates).
-		_logger.LogTrace("No explicit solution directory; using current directory {Directory}", _currentDirectory);
-		StartDevServerMonitor(_currentDirectory);
+		_logger.LogTrace("No explicit solution directory; using resolved workspace {Directory}", _workspaceResolution.EffectiveWorkspaceDirectory);
+		StartDevServerMonitor(_workspaceResolution.EffectiveWorkspaceDirectory);
 	}
 
 	private void StartDevServerMonitor(string? directory)
@@ -279,7 +325,7 @@ internal class ProxyLifecycleManager
 				_workspaceHash = ToolCacheFile.ComputeWorkspaceHash(normalized);
 				_toolListManager.WorkspaceHash = _workspaceHash;
 			}
-			_devServerMonitor.StartMonitoring(normalized, _devServerPort, _forwardedArgs);
+			_devServerMonitor.StartMonitoring(normalized, _devServerPort, _forwardedArgs, _workspaceResolution);
 			_healthService.DevServerStarted = true;
 			SetConnectionState(ConnectionState.Discovering);
 			_logger.LogTrace("DevServer monitor started for {Directory} (port: {Port}, forwardedArgs: {Args})", normalized, _devServerPort, string.Join(" ", _forwardedArgs));
@@ -555,6 +601,13 @@ internal class ProxyLifecycleManager
 			await ProcessRoots();
 		}
 
+		if (_workspaceResolution?.IsResolved != true && !_healthService.DevServerStarted)
+		{
+			_logger.LogTrace("Workspace is unresolved; skipping upstream wait so health can report the failure immediately");
+			tcs.TrySetResult();
+			return;
+		}
+
 		// When there are no cached tools, wait for the upstream server to start
 		// so the first list_tools response includes real tools. Clients that support
 		// tools/list_changed will get updates later; those that don't still get tools
@@ -582,7 +635,10 @@ internal class ProxyLifecycleManager
 
 	private string BuildFallbackRoot()
 	{
-		var directory = _solutionDirectory ?? _currentDirectory ?? Environment.CurrentDirectory;
+		var directory = _workspaceResolution?.EffectiveWorkspaceDirectory
+			?? _solutionDirectory
+			?? _currentDirectory
+			?? Environment.CurrentDirectory;
 
 		try
 		{
