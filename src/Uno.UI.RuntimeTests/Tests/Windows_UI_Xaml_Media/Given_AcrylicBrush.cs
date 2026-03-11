@@ -172,6 +172,89 @@ public class Given_AcrylicBrush
 
 	[TestMethod]
 	[RunsOnUIThread]
+	public async Task When_AcrylicBrush_Over_Black_Background_Light_Theme()
+	{
+		// Reproduces the issue where AcrylicInAppFillColorDefaultBrush in Light theme
+		// produces an almost-black (#262626) result on Uno over a black background,
+		// while WinUI produces a much lighter shade (~#d4d4d4).
+		//
+		// Root cause: WinUI's XamlControlsResources programmatically sets
+		// TintLuminosityOpacity on acrylic brushes (0.85 for Light theme default).
+		// Without it, the luminosity layer alpha is computed from TintOpacity (0.0),
+		// resulting in only 15% opacity — far too low.
+		var outerBorder = (Border)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+			"<Border xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'" +
+			"        Background='Black' Width='100' Height='100'" +
+			"        HorizontalAlignment='Left' VerticalAlignment='Top'>" +
+			"    <Border Width='100' Height='100'" +
+			"            Background='{ThemeResource AcrylicInAppFillColorDefaultBrush}' />" +
+			"</Border>");
+
+		await UITestHelper.Load(outerBorder);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var screenshot = await UITestHelper.ScreenShot(outerBorder);
+
+		// Sample the center pixel of the acrylic area
+		var centerColor = screenshot.GetPixel(50, 50);
+
+		// On WinUI, the result is approximately #D4D4D4 (R=212, G=212, B=212).
+		// The acrylic should produce a light result even over a black backdrop,
+		// because the luminosity layer (TintLuminosityOpacity=0.85) significantly
+		// lifts the brightness.
+		Assert.IsTrue(centerColor.R > 0x80,
+			$"Expected a light pixel (R > 0x80), but got {centerColor}. " +
+			$"The acrylic luminosity layer should lift the brightness significantly.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_TintLuminosityOpacity_Is_Set_By_ThemeResources()
+	{
+		// WinUI's XamlControlsResources programmatically sets TintLuminosityOpacity
+		// on acrylic brushes. Verify that these values are correctly applied
+		// for both Light and Dark themes.
+
+		// --- Light theme (default) ---
+		var lightBorder = (Border)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+			"<Border xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'" +
+			"        Width='10' Height='10'" +
+			"        Background='{ThemeResource AcrylicInAppFillColorDefaultBrush}' />");
+
+		await UITestHelper.Load(lightBorder);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var lightBrush = lightBorder.Background as AcrylicBrush;
+		Assert.IsNotNull(lightBrush, "AcrylicInAppFillColorDefaultBrush should be an AcrylicBrush (Light).");
+		Assert.IsNotNull(lightBrush.TintLuminosityOpacity,
+			"TintLuminosityOpacity must not be null in Light theme. " +
+			"XamlControlsResources should set it programmatically.");
+		Assert.AreEqual(0.85, lightBrush.TintLuminosityOpacity.Value, 0.01,
+			"Light theme AcrylicInAppFillColorDefaultBrush should have TintLuminosityOpacity=0.85.");
+
+		// --- Dark theme ---
+		using (ThemeHelper.UseDarkTheme())
+		{
+			var darkBorder = (Border)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+				"<Border xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'" +
+				"        Width='10' Height='10'" +
+				"        Background='{ThemeResource AcrylicInAppFillColorDefaultBrush}' />");
+
+			await UITestHelper.Load(darkBorder);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var darkBrush = darkBorder.Background as AcrylicBrush;
+			Assert.IsNotNull(darkBrush, "AcrylicInAppFillColorDefaultBrush should be an AcrylicBrush (Dark).");
+			Assert.IsNotNull(darkBrush.TintLuminosityOpacity,
+				"TintLuminosityOpacity must not be null in Dark theme. " +
+				"XamlControlsResources should set it programmatically.");
+			Assert.AreEqual(0.96, darkBrush.TintLuminosityOpacity.Value, 0.01,
+				"Dark theme AcrylicInAppFillColorDefaultBrush should have TintLuminosityOpacity=0.96.");
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20634")]
 	public async Task When_Idle()
 	{
