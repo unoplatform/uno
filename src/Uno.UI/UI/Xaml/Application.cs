@@ -484,6 +484,18 @@ namespace Microsoft.UI.Xaml
 						// Update theme bindings in system resources
 						ResourceResolver.UpdateSystemThemeBindings(updateReason);
 
+						// When the application theme changes, notify the visual tree to update
+						// stored element themes (UIElement._theme). PropagateResourcesChanged only
+						// updates theme bindings but not stored themes, which causes new elements
+						// entering the tree (via OnLoadingPartial) to inherit stale themes from
+						// their parent.
+						if (updateReason == ResourceUpdateReason.ThemeResource)
+						{
+							var theme = InternalRequestedTheme == ApplicationTheme.Dark ? Theme.Dark : Theme.Light;
+							var rootFe = root as FrameworkElement ?? contentRoot.XamlRoot.Content as FrameworkElement;
+							rootFe?.NotifyThemeChanged(theme);
+						}
+
 						PropagateResourcesChanged(root, updateReason);
 					}
 
