@@ -259,7 +259,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 			$"http://[::1]:{port}/mcp"
 		};
 
-		var maxAttempts = 40; // ~30 seconds total (fast probes then slower)
+		var maxAttempts = 40; // ~32s delay budget: 10×200ms + 30×1000ms (plus HTTP request time)
 
 		using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(1) };
 

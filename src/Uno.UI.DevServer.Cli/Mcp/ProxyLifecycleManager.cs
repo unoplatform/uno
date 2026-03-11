@@ -174,9 +174,9 @@ internal class ProxyLifecycleManager
 				_logger.LogWarning("Unable to resolve MCP root '{RootUri}' to a local path", rootUri);
 			}
 		}
-		else if (!_forceRootsFallback)
+		else if (_forceRootsFallback)
 		{
-			_logger.LogWarning("No roots found and roots fallback is disabled; devserver was not started");
+			_logger.LogWarning("No roots provided via uno_app_set_roots; DevServer startup is deferred until roots are set");
 		}
 	}
 

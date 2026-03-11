@@ -220,7 +220,7 @@ public class Given_DevServerMonitor
 	// -------------------------------------------------------------------
 
 	[TestMethod]
-	[Description("DiscoveryInfo fields map to the values SolutionFileFinder exposes")]
+	[Description("DiscoveryInfo exposes the expected values when fully populated")]
 	public void DiscoveryInfo_WhenFullyPopulated_ExposesExpectedFields()
 	{
 		var discovery = new DiscoveryInfo
