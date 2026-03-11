@@ -9,6 +9,8 @@ namespace Uno.UI.DevServer.Cli.Mcp.Setup;
 /// </summary>
 internal static class DuplicateDetector
 {
+	private static readonly TimeSpan _regexTimeout = TimeSpan.FromMilliseconds(100);
+
 	/// <summary>
 	/// Finds which server definition (if any) an existing config entry matches.
 	/// Checks key name first, then content (command/url patterns).
@@ -249,9 +251,16 @@ internal static class DuplicateDetector
 	{
 		foreach (var pattern in patterns)
 		{
-			if (Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase))
+			try
 			{
-				return true;
+				if (Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase, _regexTimeout))
+				{
+					return true;
+				}
+			}
+			catch (RegexMatchTimeoutException ex)
+			{
+				throw new InvalidOperationException($"Regex pattern match timed out for pattern '{pattern}'.", ex);
 			}
 		}
 

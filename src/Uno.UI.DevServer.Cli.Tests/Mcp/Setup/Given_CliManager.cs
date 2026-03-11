@@ -1,4 +1,3 @@
-using System.Reflection;
 using AwesomeAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -10,14 +9,6 @@ namespace Uno.UI.DevServer.Cli.Tests.Mcp.Setup;
 [TestClass]
 public class Given_CliManager
 {
-	private static readonly MethodInfo _parseMcpSetupArgs = typeof(CliManager)
-		.GetMethod("ParseMcpSetupArgs", BindingFlags.NonPublic | BindingFlags.Instance)!
-		?? throw new InvalidOperationException("ParseMcpSetupArgs not found.");
-
-	private static readonly MethodInfo _runMcpSubcommand = typeof(CliManager)
-		.GetMethod("RunMcpSubcommand", BindingFlags.NonPublic | BindingFlags.Instance)!
-		?? throw new InvalidOperationException("RunMcpSubcommand not found.");
-
 	[TestMethod]
 	public void DetermineMcpSetupExitCode_PartialError_ReturnsZero()
 	{
@@ -44,7 +35,7 @@ public class Given_CliManager
 	{
 		var manager = CreateManager();
 
-		var result = _parseMcpSetupArgs.Invoke(manager, [new[] { "--version" }, "status"]);
+		var result = manager.ParseMcpSetupArgs(["--version"], "status");
 
 		result.Should().BeNull();
 	}
@@ -54,7 +45,7 @@ public class Given_CliManager
 	{
 		var manager = CreateManager();
 
-		var result = (int)_runMcpSubcommand.Invoke(manager, [new[] { "status", "--release", "--prerelease" }, "/project", null])!;
+		var result = manager.RunMcpSubcommand(["status", "--release", "--prerelease"], "/project", null);
 
 		result.Should().Be(2);
 	}
@@ -69,7 +60,7 @@ public class Given_CliManager
 
 		try
 		{
-			var result = (int)_runMcpSubcommand.Invoke(manager, [new[] { "status", "unknown", "--json" }, "/project", null])!;
+			var result = manager.RunMcpSubcommand(["status", "unknown", "--json"], "/project", null);
 
 			result.Should().Be(0);
 			writer.ToString().Should().Contain("\"callerIde\": \"unknown\"");

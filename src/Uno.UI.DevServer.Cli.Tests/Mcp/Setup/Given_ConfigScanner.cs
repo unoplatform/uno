@@ -127,6 +127,31 @@ public class Given_ConfigScanner
 		result.ServerResults["UnoApp"].Status.Should().Be("outdated");
 	}
 
+	[TestMethod]
+	public void Scan_SameVariantLabelButDifferentCommand_ReturnsOutdated()
+	{
+		var fs = new InMemoryFileSystem();
+		fs.AddFile("/project/.cursor/mcp.json", """
+		{
+		  "mcpServers": {
+		    "UnoApp": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]}
+		  }
+		}
+		""");
+
+		var changedStableDef = JsonNode.Parse("""{"command":"dnx","args":["-y","--verbosity","quiet","uno.devserver","--mcp-app"]}""")!.AsObject();
+		var expectedDefs = new Dictionary<string, JsonObject>
+		{
+			["UnoApp"] = changedStableDef,
+			["UnoDocs"] = JsonNode.Parse("""{"url":"https://mcp.platform.uno/v1"}""")!.AsObject(),
+		};
+
+		var scanner = new ConfigScanner(fs);
+		var result = scanner.Scan(CursorProfile, "/project", TestServers, expectedDefs);
+
+		result.ServerResults["UnoApp"].Status.Should().Be("outdated");
+	}
+
 	// ── Multiple scopes ──
 
 	[TestMethod]

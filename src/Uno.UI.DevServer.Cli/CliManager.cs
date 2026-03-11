@@ -438,7 +438,7 @@ internal class CliManager
 		return (true, filteredArgs.ToArray(), normalizedSolutionDirectory);
 	}
 
-	private int RunMcpSubcommand(string[] args, string workingDirectory, string? solutionDirectory)
+	internal int RunMcpSubcommand(string[] args, string workingDirectory, string? solutionDirectory)
 	{
 		if (args.Length == 0)
 		{
@@ -593,7 +593,7 @@ internal class CliManager
 		// for partial failures instead of losing the result behind a process-level failure code.
 		0;
 
-	private record struct McpSetupParsedArgs(
+	internal record struct McpSetupParsedArgs(
 		string? Ide,
 		string? Workspace,
 		bool ReleaseFlag,
@@ -604,7 +604,7 @@ internal class CliManager
 		string? IdeDefinitionsPath,
 		string? ServerDefinitionsPath);
 
-	private McpSetupParsedArgs? ParseMcpSetupArgs(string[] args, string subcommand)
+	internal McpSetupParsedArgs? ParseMcpSetupArgs(string[] args, string subcommand)
 	{
 		string? ide = null;
 		string? workspace = null;

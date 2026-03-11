@@ -39,10 +39,11 @@ internal sealed class ConfigScanner(IFileSystem fs)
 		{
 			var locations = new List<LocationEntry>();
 			var warnings = new List<string>();
+			JsonObject? effectiveEntry = null;
 
 			foreach (var configPath in resolvedPaths)
 			{
-				ScanConfigFile(configPath, profile.JsonRootKey, serverName, serverDef, locations, warnings);
+				ScanConfigFile(configPath, profile.JsonRootKey, serverName, serverDef, locations, warnings, ref effectiveEntry);
 			}
 
 			if (locations.Count > 1)
@@ -50,8 +51,8 @@ internal sealed class ConfigScanner(IFileSystem fs)
 				warnings.Add("Registered in multiple config files");
 			}
 
-			var status = DetermineStatus(serverName, locations, expectedDefinitions);
-			serverResults[serverName] = new ServerScanResult(status, locations, warnings);
+			var status = DetermineStatus(serverName, serverDef, locations, effectiveEntry, expectedDefinitions);
+			serverResults[serverName] = new ServerScanResult(status, locations, warnings, effectiveEntry);
 		}
 
 		return new ScanResult(resolvedPaths, resolvedWriteTarget, detected, serverResults);
@@ -76,7 +77,8 @@ internal sealed class ConfigScanner(IFileSystem fs)
 		string serverName,
 		ServerDefinition serverDef,
 		List<LocationEntry> locations,
-		List<string> warnings)
+		List<string> warnings,
+		ref JsonObject? effectiveEntry)
 	{
 		if (!fs.FileExists(configPath))
 		{
@@ -133,13 +135,16 @@ internal sealed class ConfigScanner(IFileSystem fs)
 				var variant = DuplicateDetector.DetectVariant(entryJson, serverDef);
 				var transport = DetectTransport(entryJson);
 				locations.Add(new LocationEntry(configPath, variant, transport));
+				effectiveEntry ??= entryJson.DeepClone().AsObject();
 			}
 		}
 	}
 
 	private static string DetermineStatus(
 		string serverName,
+		ServerDefinition serverDef,
 		IReadOnlyList<LocationEntry> locations,
+		JsonObject? effectiveEntry,
 		IReadOnlyDictionary<string, JsonObject> expectedDefinitions)
 	{
 		if (locations.Count == 0)
@@ -153,15 +158,12 @@ internal sealed class ConfigScanner(IFileSystem fs)
 			return "registered"; // no expected definition to compare against
 		}
 
-		var firstVariant = locations[0].Variant;
-		var expectedVariant = DetectExpectedVariantKey(expectedDef);
-
-		if (firstVariant == "legacy-http")
+		if (effectiveEntry is null)
 		{
-			return "outdated";
+			return "registered";
 		}
 
-		if (firstVariant != expectedVariant)
+		if (!DuplicateDetector.IsUpToDate(effectiveEntry, expectedDef, serverDef))
 		{
 			return "outdated";
 		}
@@ -182,34 +184,5 @@ internal sealed class ConfigScanner(IFileSystem fs)
 		}
 
 		return "unknown";
-	}
-
-	/// <summary>
-	/// Infers the expected variant key from the resolved definition by looking at its args.
-	/// </summary>
-	private static string DetectExpectedVariantKey(JsonObject definition)
-	{
-		var args = definition["args"]?.AsArray();
-		if (args is null)
-		{
-			return "stable"; // HTTP definitions have no args
-		}
-
-		for (int i = 0; i < args.Count; i++)
-		{
-			var arg = args[i]?.GetValue<string>();
-			if (arg == "--version" && i + 1 < args.Count)
-			{
-				var version = args[i + 1]?.GetValue<string>();
-				return version is not null ? $"pinned:{version}" : "stable";
-			}
-
-			if (arg == "--prerelease")
-			{
-				return "prerelease";
-			}
-		}
-
-		return "stable";
 	}
 }

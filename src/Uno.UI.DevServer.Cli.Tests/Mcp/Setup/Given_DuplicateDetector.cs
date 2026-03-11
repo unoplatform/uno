@@ -220,4 +220,30 @@ public class Given_DuplicateDetector
 		var result = DuplicateDetector.IsUpToDate(existing, expected, TestServers["UnoApp"]);
 		result.Should().BeTrue();
 	}
+
+	[TestMethod]
+	public void FindMatchingServer_CatastrophicPattern_ThrowsInvalidOperationException()
+	{
+		var servers = new Dictionary<string, ServerDefinition>
+		{
+			["UnoApp"] = new(
+				Transport: "stdio",
+				Variants: new Dictionary<string, JsonObject>
+				{
+					["stable"] = JsonNode.Parse("""{"command":"dnx","args":["-y","uno.devserver","--mcp-app"]}""")!.AsObject(),
+				},
+				Detection: new(
+					KeyPatterns: ["^UnoApp$"],
+					CommandPatterns: ["(a+)+$"],
+					UrlPatterns: null)),
+		};
+
+		var longInput = new string('a', 10_000) + "!";
+		var entry = JsonNode.Parse($$"""{"command":"{{longInput}}"}""")!.AsObject();
+
+		var act = () => DuplicateDetector.FindMatchingServer("not-uno", entry, servers);
+
+		act.Should().Throw<InvalidOperationException>()
+			.WithMessage("*timed out*");
+	}
 }
