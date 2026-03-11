@@ -36,17 +36,17 @@ The following rules define the required behavior for dynamic workspace changes:
 
 | Before | Trigger | After | Expected behavior | Test expected | Current status |
 |---|---|---|---|---|---|
-| `NoCandidates` | Create Uno solution in scope | Single valid Uno workspace | Auto-resolve workspace and start DevServer | Lifecycle/proxy unit + integration | Gap |
-| `NoValidWorkspace` | Add or fix Uno `global.json` | Single valid Uno workspace | Start DevServer automatically | Lifecycle/proxy unit + integration | Gap |
-| `NoCandidates` | Git operation adds non-Uno solution only | `NoValidWorkspace` | Stay without DevServer; health updates immediately | Lifecycle/proxy unit + health/report unit | Gap |
-| Single valid Uno workspace | Delete or rename `global.json` | `NoValidWorkspace` | Stop current DevServer; health becomes immediately unhealthy | Lifecycle/proxy unit + health/report unit | Gap |
-| Single valid Uno workspace | Delete or rename solution file | `NoCandidates` | Stop current DevServer; health becomes immediately unhealthy | Lifecycle/proxy unit + health/report unit | Gap |
-| Single valid Uno workspace A | Git operation changes repo so workspace B becomes the only valid Uno workspace | Single valid Uno workspace B | Stop A, start B, refresh health and cache identity | Lifecycle/proxy unit + integration | Gap |
-| Single valid Uno workspace | Repo mutation changes files but effective workspace stays the same | Same workspace | No restart; refresh diagnostics only if needed | Lifecycle/proxy unit | Gap |
-| Single valid Uno workspace | Repo mutation introduces a second equally valid Uno workspace | `Ambiguous` | Do not switch silently; move to diagnostic state | Lifecycle/proxy unit + health/report unit | Gap |
-| `Ambiguous` | Repo mutation leaves one clear valid Uno workspace | Single valid Uno workspace | Start or resume on the single clear workspace | Lifecycle/proxy unit + integration | Gap |
-| Single valid Uno workspace | MCP roots confirm the same workspace | Same workspace | No restart | Lifecycle/proxy unit | Gap |
-| Single valid Uno workspace A | MCP roots point to different valid workspace B | Single valid Uno workspace B or diagnostic state, according to session policy | Stop A then start B once dynamic switching is implemented; until then, stay diagnostic and never switch silently | Lifecycle/proxy unit | Gap |
+| `NoCandidates` | Create Uno solution in scope | Single valid Uno workspace | Auto-resolve workspace and start DevServer | Lifecycle/proxy unit + integration | Covered (policy) |
+| `NoValidWorkspace` | Add or fix Uno `global.json` | Single valid Uno workspace | Start DevServer automatically | Lifecycle/proxy unit + integration | Covered (policy) |
+| `NoCandidates` | Git operation adds non-Uno solution only | `NoValidWorkspace` | Stay without DevServer; health updates immediately | Lifecycle/proxy unit + health/report unit | Covered (policy) |
+| Single valid Uno workspace | Delete or rename `global.json` | `NoValidWorkspace` | Stop current DevServer; health becomes immediately unhealthy | Lifecycle/proxy unit + health/report unit | Covered (policy) |
+| Single valid Uno workspace | Delete or rename solution file | `NoCandidates` | Stop current DevServer; health becomes immediately unhealthy | Lifecycle/proxy unit + health/report unit | Covered (policy) |
+| Single valid Uno workspace A | Git operation changes repo so workspace B becomes the only valid Uno workspace | Single valid Uno workspace B | Stop A, start B, refresh health and cache identity | Lifecycle/proxy unit + integration | Covered (policy) |
+| Single valid Uno workspace | Repo mutation changes files but effective workspace stays the same | Same workspace | No restart; refresh diagnostics only if needed | Lifecycle/proxy unit | Covered (policy) |
+| Single valid Uno workspace | Repo mutation introduces a second equally valid Uno workspace | `Ambiguous` | Do not switch silently; move to diagnostic state | Lifecycle/proxy unit + health/report unit | Covered (policy) |
+| `Ambiguous` | Repo mutation leaves one clear valid Uno workspace | Single valid Uno workspace | Start or resume on the single clear workspace | Lifecycle/proxy unit + integration | Covered (policy) |
+| Single valid Uno workspace | MCP roots confirm the same workspace | Same workspace | No restart | Lifecycle/proxy unit | Covered |
+| Single valid Uno workspace A | MCP roots point to different valid workspace B | Single valid Uno workspace B or diagnostic state, according to session policy | Stop A then start B once dynamic switching is implemented; until then, stay diagnostic and never switch silently | Lifecycle/proxy unit | Covered |
 
 ---
 
@@ -67,4 +67,8 @@ If the bridge cannot safely decide between these actions because the new state i
 
 This appendix defines the transition cases that must be added to the automated test audit after the initial-state matrix in [Appendix I](spec-appendix-i-workspace-resolution-matrix.md).
 
-Unless otherwise stated, `Current status = Gap` means the behavior is not yet locked by a focused automated test and may also require implementation work.
+Status labels in this appendix mean:
+
+- **Covered**: a focused automated test exercises the real lifecycle or proxy behavior.
+- **Covered (policy)**: the transition is locked by a focused decision/policy test, but the file-system/repo mutation trigger is still simulated rather than observed end-to-end.
+- **Gap**: the behavior is not yet locked by a focused automated test and may also require implementation work.

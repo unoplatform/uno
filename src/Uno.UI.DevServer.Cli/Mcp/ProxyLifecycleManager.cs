@@ -150,8 +150,11 @@ internal class ProxyLifecycleManager
 		}
 	}
 
-	[Description("This tool MUST be called before other uno app tools to initialize properly")]
-	private async Task SetRoots([Description("Fully qualified root folder path for the workspace")] string[] roots)
+	[System.ComponentModel.Description("This tool MUST be called before other uno app tools to initialize properly")]
+	private async Task SetRoots(
+		[System.ComponentModel.Description("Fully qualified root folder path for the workspace")]
+		string[] roots
+	)
 	{
 		var normalizedRoots = roots ?? Array.Empty<string>();
 		_logger.LogTrace("SetRoots invoked with {Count} roots: {Roots}", normalizedRoots.Length, string.Join(", ", normalizedRoots));
@@ -175,35 +178,49 @@ internal class ProxyLifecycleManager
 			{
 				var rootWorkspaceResolution = await _workspaceResolver.ResolveAsync(rootPath);
 				_logger.LogTrace("Resolved MCP root '{RootUri}' into path '{RootPath}'", rootUri, rootPath);
+				var transitionAction = WorkspaceTransitionDecisions.DetermineAction(
+					_workspaceResolution,
+					rootWorkspaceResolution,
+					WorkspaceTransitionTrigger.McpRoots);
 
-				if (_workspaceResolution?.IsResolved == true &&
-					rootWorkspaceResolution.IsResolved &&
-					string.Equals(
-						_workspaceResolution.EffectiveWorkspaceDirectory,
-						rootWorkspaceResolution.EffectiveWorkspaceDirectory,
-						StringComparison.OrdinalIgnoreCase))
+				switch (transitionAction)
 				{
-					_logger.LogTrace("MCP roots confirmed existing workspace {Workspace}", _workspaceResolution.EffectiveWorkspaceDirectory);
-					return;
-				}
+					case WorkspaceTransitionAction.Refresh:
+						_logger.LogTrace("MCP roots confirmed existing workspace {Workspace}", _workspaceResolution?.EffectiveWorkspaceDirectory);
+						_workspaceResolution = rootWorkspaceResolution;
+						return;
 
-				if (_workspaceResolution?.IsResolved == true &&
-					rootWorkspaceResolution.IsResolved &&
-					!string.Equals(
-						_workspaceResolution.EffectiveWorkspaceDirectory,
-						rootWorkspaceResolution.EffectiveWorkspaceDirectory,
-						StringComparison.OrdinalIgnoreCase))
-				{
-					_logger.LogWarning(
-						"MCP roots resolved to a different workspace ({IncomingWorkspace}) than the running workspace ({CurrentWorkspace}); keeping the existing workspace for this session",
-						rootWorkspaceResolution.EffectiveWorkspaceDirectory,
-						_workspaceResolution.EffectiveWorkspaceDirectory);
-					SetConnectionState(ConnectionState.Degraded);
-					return;
-				}
+					case WorkspaceTransitionAction.Start:
+						_workspaceResolution = rootWorkspaceResolution;
+						StartDevServerMonitor(rootWorkspaceResolution.EffectiveWorkspaceDirectory);
+						return;
 
-				_workspaceResolution = rootWorkspaceResolution;
-				StartDevServerMonitor(rootWorkspaceResolution.EffectiveWorkspaceDirectory ?? rootPath);
+					case WorkspaceTransitionAction.Diagnose:
+						if (_workspaceResolution?.IsResolved == true && rootWorkspaceResolution.IsResolved)
+						{
+							_logger.LogWarning(
+								"MCP roots resolved to a different workspace ({IncomingWorkspace}) than the running workspace ({CurrentWorkspace}); keeping the existing workspace for this session",
+								rootWorkspaceResolution.EffectiveWorkspaceDirectory,
+								_workspaceResolution.EffectiveWorkspaceDirectory);
+						}
+						else
+						{
+							_logger.LogWarning(
+								"MCP roots did not resolve to a valid Uno workspace ({ResolutionKind}); staying in diagnostic mode for this session",
+								rootWorkspaceResolution.ResolutionKind);
+							_workspaceResolution = rootWorkspaceResolution;
+						}
+
+						SetConnectionState(ConnectionState.Degraded);
+						FailToolCachePriming();
+						return;
+
+					default:
+						_logger.LogWarning("Unexpected workspace transition action {Action} for MCP roots", transitionAction);
+						SetConnectionState(ConnectionState.Degraded);
+						FailToolCachePriming();
+						return;
+				}
 			}
 			else
 			{
