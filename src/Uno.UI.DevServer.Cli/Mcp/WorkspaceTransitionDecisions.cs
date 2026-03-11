@@ -11,13 +11,19 @@ internal static class WorkspaceTransitionDecisions
 	internal static WorkspaceTransitionAction DetermineAction(
 		WorkspaceResolution? previous,
 		WorkspaceResolution current,
-		WorkspaceTransitionTrigger trigger)
+		WorkspaceTransitionTrigger trigger,
+		bool devServerStarted)
 	{
 		var previousResolved = previous?.IsResolved == true;
 		var currentResolved = current.IsResolved;
 
 		if (previousResolved && currentResolved && IsSameWorkspace(previous!, current))
 		{
+			if (trigger == WorkspaceTransitionTrigger.McpRoots && !devServerStarted)
+			{
+				return WorkspaceTransitionAction.Start;
+			}
+
 			return WorkspaceTransitionAction.Refresh;
 		}
 

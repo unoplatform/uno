@@ -11,10 +11,12 @@ namespace Uno.UI.DevServer.Cli.Tests.Mcp;
 public class Given_ProxyLifecycleManager
 {
 	[TestMethod]
-	[Description("Late MCP roots that confirm the selected workspace do not restart or degrade the current session")]
-	public async Task WhenRootsConfirmCurrentWorkspace_SessionRemainsUnchanged()
+	[Description("Deferred MCP roots that confirm the selected workspace start the DevServer when roots fallback postponed startup")]
+	public async Task WhenRootsConfirmCurrentWorkspaceAfterDeferredStartup_DevServerStarts()
 	{
 		var root = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
+		DevServerMonitor? monitor = null;
 
 		try
 		{
@@ -26,18 +28,77 @@ public class Given_ProxyLifecycleManager
 			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
 			var workspaceResolution = await resolver.ResolveAsync(root);
 
-			var (subject, healthService, _) = CreateSubject();
+			var created = CreateSubject();
+			subject = created.Subject;
+			var healthService = created.HealthService;
+			monitor = created.Monitor;
 			SetPrivateField(subject, "_currentDirectory", root);
 			SetPrivateField(subject, "_workspaceResolution", workspaceResolution);
+			SetPrivateField(subject, "_devServerPort", 0);
+			SetPrivateField(subject, "_forwardedArgs", new List<string>());
+
+			await InvokeSetRootsAsync(subject, [new Uri(workspaceDirectory).AbsoluteUri]);
+
+			subject.ConnectionState.Should().Be(ConnectionState.Discovering);
+			healthService.ConnectionState.Should().Be(ConnectionState.Discovering);
+			healthService.DevServerStarted.Should().BeTrue();
+			GetPrivateField<Task?>(monitor, "_monitor").Should().NotBeNull();
+		}
+		finally
+		{
+			if (monitor is not null)
+			{
+				await monitor.StopMonitoringAsync();
+			}
+
+			await DeleteDirectoryWithRetriesAsync(root);
+		}
+	}
+
+	[TestMethod]
+	[Description("Late MCP roots that confirm an already running workspace do not restart or degrade the current session")]
+	public async Task WhenRootsConfirmCurrentWorkspaceDuringActiveSession_SessionRemainsUnchanged()
+	{
+		var root = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
+		DevServerMonitor? monitor = null;
+
+		try
+		{
+			var workspaceDirectory = Path.Combine(root, "src");
+			Directory.CreateDirectory(workspaceDirectory);
+			await File.WriteAllTextAsync(Path.Combine(workspaceDirectory, "global.json"), """{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.1"}}""");
+			await File.WriteAllTextAsync(Path.Combine(workspaceDirectory, "StudioLive.slnx"), string.Empty);
+
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
+			var workspaceResolution = await resolver.ResolveAsync(root);
+
+			var created = CreateSubject();
+			subject = created.Subject;
+			var healthService = created.HealthService;
+			monitor = created.Monitor;
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_workspaceResolution", workspaceResolution);
+			SetPrivateField(subject, "_devServerPort", 0);
+			SetPrivateField(subject, "_forwardedArgs", new List<string>());
+
+			monitor.StartMonitoring(workspaceDirectory, port: 0, forwardedArgs: [], workspaceResolution);
+			healthService.DevServerStarted = true;
 
 			await InvokeSetRootsAsync(subject, [new Uri(workspaceDirectory).AbsoluteUri]);
 
 			subject.ConnectionState.Should().Be(ConnectionState.Initializing);
 			healthService.ConnectionState.Should().Be(ConnectionState.Initializing);
-			healthService.DevServerStarted.Should().BeFalse();
+			healthService.DevServerStarted.Should().BeTrue();
+			GetPrivateField<string>(monitor, "_currentDirectory").Should().Be(workspaceDirectory);
 		}
 		finally
 		{
+			if (monitor is not null)
+			{
+				await monitor.StopMonitoringAsync();
+			}
+
 			await DeleteDirectoryWithRetriesAsync(root);
 		}
 	}
@@ -360,6 +421,11 @@ public class Given_ProxyLifecycleManager
 
 			await subject.ApplyWorkspaceResolutionAsync(resolvedWorkspace, WorkspaceTransitionTrigger.FileSystem);
 			subject.StartWorkspaceMutationWatcher();
+			await WaitUntilAsync(() =>
+				string.Equals(
+					GetPrivateField<string?>(subject, "_workspaceMutationWatcherRoot"),
+					root,
+					StringComparison.OrdinalIgnoreCase));
 
 			File.Delete(Path.Combine(workspace, "global.json"));
 
@@ -558,6 +624,11 @@ public class Given_ProxyLifecycleManager
 
 			await subject.ApplyWorkspaceResolutionAsync(resolvedWorkspaceA, WorkspaceTransitionTrigger.FileSystem);
 			subject.StartWorkspaceMutationWatcher();
+			await WaitUntilAsync(() =>
+				string.Equals(
+					GetPrivateField<string?>(subject, "_workspaceMutationWatcherRoot"),
+					root,
+					StringComparison.OrdinalIgnoreCase));
 
 			File.Delete(Path.Combine(workspaceA, "global.json"));
 			await File.WriteAllTextAsync(workspaceBGlobalJson, """{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.2"}}""");
@@ -774,6 +845,24 @@ public class Given_ProxyLifecycleManager
 			await DeleteDirectoryWithRetriesAsync(launchRoot);
 			await DeleteDirectoryWithRetriesAsync(externalRoot);
 		}
+	}
+
+	[TestMethod]
+	[Description("Late watcher events after teardown do not throw when the debounce token source was already disposed")]
+	public void WhenWorkspaceMutationArrivesAfterDebounceSourceWasDisposed_NoExceptionIsThrown()
+	{
+		var created = CreateSubject();
+		var subject = created.Subject;
+		using var disposedCts = new CancellationTokenSource();
+		disposedCts.Dispose();
+		SetPrivateField(subject, "_workspaceMutationDebounceCts", disposedCts);
+
+		var method = typeof(ProxyLifecycleManager).GetMethod("OnWorkspaceMutation", BindingFlags.Instance | BindingFlags.NonPublic);
+		method.Should().NotBeNull();
+
+		var action = () => method!.Invoke(subject, [subject, new FileSystemEventArgs(WatcherChangeTypes.Changed, @"D:\repo", "global.json")]);
+
+		action.Should().NotThrow();
 	}
 
 	private static (ProxyLifecycleManager Subject, HealthService HealthService, DevServerMonitor Monitor) CreateSubject()
