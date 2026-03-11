@@ -53,11 +53,11 @@
 			<TextBlock Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Center" Text="{Binding QueryString}" />
 		</Grid>
 
-		<Button x:Name="GitHubLinkButton" Click="OpenGitHubClick" CommandParameter="{Binding GitHubSourceUrl}" Margin="0,8,0,0">
+		<HyperlinkButton x:Name="GitHubLinkButton" Click="OpenGitHubClick" Margin="0,8,0,0">
 			<StackPanel Orientation="Horizontal" Spacing="8">
 				<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE774;" />
-				<TextBlock Text="View source on GitHub" />
+				<TextBlock Text="View source on GitHub" IsTextSelectionEnabled="False" />
 			</StackPanel>
-		</Button>
+		</HyperlinkButton>
 	</StackPanel>
 </UserControl>

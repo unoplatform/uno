@@ -36,10 +36,9 @@ public sealed partial class SampleInfoControl : UserControl
 
 	public async void OpenGitHubClick(object sender, RoutedEventArgs e)
 	{
-		var button = (Button)sender;
-		if (button.CommandParameter is string url && !string.IsNullOrEmpty(url))
+		if (DataContext is SampleChooserContent sample && !string.IsNullOrEmpty(sample.GitHubSourceUrl))
 		{
-			await Windows.System.Launcher.LaunchUriAsync(new Uri(url));
+			await Windows.System.Launcher.LaunchUriAsync(new Uri(sample.GitHubSourceUrl));
 		}
 	}
 }
