@@ -28,6 +28,9 @@
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net10.0-android'">
 		<PackageReference Include="Xamarin.Google.Android.Play.Core" Version="1.10.3.18" />
 	</ItemGroup>
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net11.0-android'">
+		<PackageReference Include="Xamarin.Google.Android.Play.Core" Version="1.10.3.18" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
