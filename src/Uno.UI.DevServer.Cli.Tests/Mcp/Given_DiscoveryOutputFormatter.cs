@@ -8,7 +8,7 @@ namespace Uno.UI.DevServer.Cli.Tests.Mcp;
 public class Given_DiscoveryOutputFormatter
 {
 	[TestMethod]
-	[Description("The Add-Ins section shows add-in discovery time separately from total discovery time")]
+	[Description("The Add-Ins section uses a distinct key for add-in discovery time and keeps total discovery time separate")]
 	public void WhenPlainTextIsWritten_AddInAndTotalDurationsAreDistinct()
 	{
 		var info = new DiscoveryInfo
@@ -23,9 +23,10 @@ public class Given_DiscoveryOutputFormatter
 		DiscoveryOutputFormatter.WritePlainText(info);
 		var output = AnsiConsole.ExportText();
 
-		output.Should().Contain("discoveryDurationMs");
+		output.Should().Contain("addInsDiscoveryDurationMs");
 		output.Should().Contain("75");
 		output.Should().Contain("totalDiscoveryDurationMs");
 		output.Should().Contain("250");
+		output.Should().NotContain("discoveryDurationMs");
 	}
 }

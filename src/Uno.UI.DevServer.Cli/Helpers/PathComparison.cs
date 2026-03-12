@@ -2,8 +2,6 @@ namespace Uno.UI.DevServer.Cli.Helpers;
 
 internal static class PathComparison
 {
-	public static readonly StringComparer FileSystemComparer = StringComparer.Ordinal;
-
 	public static bool PathsEqual(string? left, string? right)
 	{
 		if (left is null || right is null)
