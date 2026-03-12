@@ -48,7 +48,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 
 		private bool _wasPlaying;
+#if !__SKIA__
 		private DispatcherQueueTimer? _timer;
+#endif
 		private object _gate = new();
 
 #if USE_HARDWARE_ACCELERATION
@@ -353,7 +355,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private TimeSpan GetFrameTime()
 		{
-			if (_animation is null || _timer is null || !(_playState is { } playState) || _player is null)
+			if (_animation is null || !(_playState is { } playState) || _player is null)
 			{
 				return _progress ?? TimeSpan.Zero;
 			}
@@ -394,11 +396,15 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 				_progress = null;
 
+#if __SKIA__
+				CompositionTarget.Rendering += OnCompositionTargetRendering;
+#else
 				_timer = Windows.System.DispatcherQueue.GetForCurrentThread().CreateTimer();
 				_timer.Tick += (s, e) => Invalidate();
 
 				_timer.Interval = TimeSpan.FromSeconds(Math.Max(1 / 120d, 1 / _animation.Fps));
 				_timer.Start();
+#endif
 				_stopwatch.Restart();
 
 				SetIsPlaying(true);
@@ -408,6 +414,10 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				_playState = new(fromProgress, toProgress, looped);
 			}
 		}
+
+#if __SKIA__
+		private void OnCompositionTargetRendering(object? sender, object e) => Invalidate();
+#endif
 
 		private void Invalidate()
 		{
@@ -426,7 +436,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			{
 				_playState = null;
 				SetIsPlaying(false);
+#if __SKIA__
+				CompositionTarget.Rendering -= OnCompositionTargetRendering;
+#else
 				_timer?.Stop();
+#endif
 				_stopwatch.Stop();
 				_invalidationController?.End();
 			}
@@ -443,7 +457,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		public void Pause()
 		{
+#if __SKIA__
+			CompositionTarget.Rendering -= OnCompositionTargetRendering;
+#else
 			_timer?.Stop();
+#endif
 			_stopwatch.Stop();
 
 			SetIsPlaying(false);
@@ -452,7 +470,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		public void Resume()
 		{
 			_stopwatch.Start();
+#if __SKIA__
+			CompositionTarget.Rendering += OnCompositionTargetRendering;
+#else
 			_timer?.Start();
+#endif
 
 			SetIsPlaying(true);
 		}
