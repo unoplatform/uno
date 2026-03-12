@@ -18,7 +18,9 @@ public class Given_DefinitionsLoader
 		defs.Ides.Should().ContainKey("antigravity");
 		defs.Ides.Should().ContainKey("rider");
 		defs.Ides.Should().ContainKey("claude-code");
+		defs.Ides.Should().ContainKey("claude-desktop");
 		defs.Ides.Should().ContainKey("opencode");
+		defs.Ides.Should().ContainKey("unknown");
 	}
 
 	[TestMethod]
@@ -70,6 +72,28 @@ public class Given_DefinitionsLoader
 		var cursor = defs.Ides["cursor"];
 
 		cursor.JsonRootKey.Should().Be("mcpServers");
+	}
+
+	[TestMethod]
+	public void Load_EmbeddedResources_ClaudeCodeUsesCliConfigFiles()
+	{
+		var defs = DefinitionsLoader.Load();
+		var claudeCode = defs.Ides["claude-code"];
+
+		claudeCode.ConfigPaths.Should().Contain("{workspace}/.mcp.json");
+		claudeCode.ConfigPaths.Should().Contain("{home}/.claude.json");
+		claudeCode.WriteTarget.Should().Be("{workspace}/.mcp.json");
+	}
+
+	[TestMethod]
+	public void Load_EmbeddedResources_ClaudeDesktopUsesDesktopConfigFile()
+	{
+		var defs = DefinitionsLoader.Load();
+		var claudeDesktop = defs.Ides["claude-desktop"];
+
+		claudeDesktop.ConfigPaths.Should().Contain("{appdata}/Claude/claude_desktop_config.json");
+		claudeDesktop.WriteTarget.Should().Be("{appdata}/Claude/claude_desktop_config.json");
+		claudeDesktop.JsonRootKey.Should().Be("mcpServers");
 	}
 
 	[TestMethod]

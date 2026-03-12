@@ -54,9 +54,51 @@ internal sealed class FileSystem : IFileSystem
 		Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
 	public string GetAppDataPath() =>
-		OperatingSystem.IsMacOS()
-			? Path.Combine(
-				Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-				"Library", "Application Support")
-			: Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+		ResolveAppDataPath(
+			Environment.GetEnvironmentVariable,
+			() => Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+			Environment.GetFolderPath,
+			OperatingSystem.IsMacOS(),
+			OperatingSystem.IsLinux());
+
+	internal static string ResolveAppDataPath(
+		Func<string, string?> getEnvironmentVariable,
+		Func<string> getUserHomePath,
+		Func<Environment.SpecialFolder, string> getFolderPath,
+		bool isMacOS,
+		bool isLinux)
+	{
+		if (isMacOS)
+		{
+			return Path.Combine(getUserHomePath(), "Library", "Application Support");
+		}
+
+		if (isLinux && IsWsl(getEnvironmentVariable))
+		{
+			var windowsAppData = getEnvironmentVariable("APPDATA");
+			if (!string.IsNullOrWhiteSpace(windowsAppData))
+			{
+				return ConvertWindowsPathToWslPath(windowsAppData);
+			}
+		}
+
+		return getFolderPath(Environment.SpecialFolder.ApplicationData);
+	}
+
+	internal static bool IsWsl(Func<string, string?> getEnvironmentVariable) =>
+		!string.IsNullOrWhiteSpace(getEnvironmentVariable("WSL_DISTRO_NAME"))
+		|| !string.IsNullOrWhiteSpace(getEnvironmentVariable("WSL_INTEROP"));
+
+	internal static string ConvertWindowsPathToWslPath(string windowsPath)
+	{
+		var trimmed = windowsPath.Trim();
+		if (trimmed.Length >= 3 && trimmed[1] == ':' && (trimmed[2] == '\\' || trimmed[2] == '/'))
+		{
+			var driveLetter = char.ToLowerInvariant(trimmed[0]);
+			var remainder = trimmed[2..].Replace('\\', '/');
+			return $"/mnt/{driveLetter}{remainder}";
+		}
+
+		return trimmed.Replace('\\', '/');
+	}
 }
