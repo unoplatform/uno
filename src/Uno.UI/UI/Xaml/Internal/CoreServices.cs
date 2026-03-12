@@ -58,7 +58,7 @@ namespace Uno.UI.Xaml.Core
 				Interlocked.CompareExchange(ref _isAdditionalFrameRequested, 1, 0) == 0)
 			{
 				// This lambda is intentionally static. It shouldn't capture anything to avoid allocations.
-				NativeDispatcher.Main.Enqueue(static () => OnTick(), NativeDispatcherPriority.Normal);
+				NativeDispatcher.Main.Enqueue(static () => OnTick(), NativeDispatcherPriority.Render);
 			}
 		}
 
@@ -66,22 +66,26 @@ namespace Uno.UI.Xaml.Core
 		{
 			_isAdditionalFrameRequested = 0;
 
-			// NOTE: The below code should really be replaced with just this:
-			// ----------------------------
-			//if (GetXamlRoot()?.VisualTree?.RootElement is { } root)
-			//{
-			//	root.UpdateLayout();
-			//
-			//	if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
-			//	{
-			//		CoreServices.Instance.EventManager.RaiseLoadedEvent();
-			//		root.UpdateLayout();
-			//	}
-			//}
-			// -----------------------------
-			// However, as we don't yet have XamlIslandRootCollection, we will need to enumerate the windows through ApplicationHelper.Windows.
+			// Schedule a FrameTick for each CompositionTarget. FrameTick batches
+			// layout, loaded events, CompositionTarget.Rendering, and render into
+			// a single dispatcher item at Render priority.
 
-			// This happens for Islands.
+#if __SKIA__
+			// Islands
+			if (GetXamlRoot() is { HostWindow: null, VisualTree.RootElement: { } xamlIsland })
+			{
+				(xamlIsland.XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.ScheduleFrameTick();
+			}
+
+			foreach (var window in ApplicationHelper.WindowsInternal)
+			{
+				if (window.RootElement?.XamlRoot?.Content?.Visual.CompositionTarget is CompositionTarget ct)
+				{
+					ct.ScheduleFrameTick();
+				}
+			}
+#else
+			// Non-Skia platforms: keep the existing layout-only behavior.
 			if (GetXamlRoot() is { HostWindow: null, VisualTree.RootElement: { } xamlIsland })
 			{
 				xamlIsland.UpdateLayout();
@@ -107,11 +111,8 @@ namespace Uno.UI.Xaml.Core
 					CoreServices.Instance.EventManager.RaiseLoadedEvent();
 					root.UpdateLayout();
 				}
-
-#if __SKIA__
-				(root.XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
-#endif
 			}
+#endif
 		}
 #endif
 

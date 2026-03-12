@@ -1,4 +1,4 @@
-﻿// #define REPORT_FPS
+// #define REPORT_FPS
 
 #nullable enable
 
@@ -27,13 +27,12 @@ namespace Uno.UI.Dispatching
 		{
 			new Queue<Delegate>(), // High
 			new Queue<Delegate>(), // Normal
+			new Queue<Delegate>(), // Render
 			new Queue<Delegate>(), // Low
 			new Queue<Delegate>(), // Idle
 		};
 
 		private readonly object _gate = new();
-
-		private readonly Dictionary<object, (Action? renderAction, int normalItemsToProcessBeforeNextRenderAction)> _compositionTargets = new();
 
 		private NativeDispatcherPriority _currentPriority;
 
@@ -49,9 +48,10 @@ namespace Uno.UI.Dispatching
 			Debug.Assert(
 				(int)NativeDispatcherPriority.High == 0 &&
 				(int)NativeDispatcherPriority.Normal == 1 &&
-				(int)NativeDispatcherPriority.Low == 2 &&
-				(int)NativeDispatcherPriority.Idle == 3 &&
-				Enum.GetValues<NativeDispatcherPriority>().Length == 4);
+				(int)NativeDispatcherPriority.Render == 2 &&
+				(int)NativeDispatcherPriority.Low == 3 &&
+				(int)NativeDispatcherPriority.Idle == 4 &&
+				Enum.GetValues<NativeDispatcherPriority>().Length == 5);
 
 			_currentPriority = NativeDispatcherPriority.Normal;
 
@@ -80,40 +80,27 @@ namespace Uno.UI.Dispatching
 			// We want DispatchItems to be static to avoid delegate allocations.
 			var @this = NativeDispatcher.Main;
 
-			Action? action = @this.TryGetRenderAction();
+			Action? action = null;
 
-			if (action is null)
+			for (var p = 0; p <= 4; p++)
 			{
-				for (var p = 0; p <= 3; p++)
+				var queue = @this._queues[p];
+
+				lock (@this._gate)
 				{
-					var queue = @this._queues[p];
-
-					lock (@this._gate)
+					if (queue.Count > 0)
 					{
-						if (queue.Count > 0)
+						action = Unsafe.As<Action>(queue.Dequeue());
+
+						@this._currentPriority = (NativeDispatcherPriority)p;
+
+						@this.LogTrace()?.Trace($"Running next job in dispatcher queue: priority: {@this._currentPriority} queue states=[{string.Join("] [", @this._queues.Select(q => q.Count))}]");
+						if (Interlocked.Decrement(ref @this._globalCount) > 0)
 						{
-							action = Unsafe.As<Action>(queue.Dequeue());
-
-							@this._currentPriority = (NativeDispatcherPriority)p;
-
-							@this.LogTrace()?.Trace($"Running next job in dispatcher queue: priority: {@this._currentPriority} queue states=[{string.Join("] [", @this._queues.Select(q => q.Count))}]");
-							if (Interlocked.Decrement(ref @this._globalCount) > 0)
-							{
-								@this.EnqueueNative(@this._currentPriority);
-							}
-
-							if (@this._currentPriority == NativeDispatcherPriority.Normal)
-							{
-								foreach (var (compositionTarget, details) in @this._compositionTargets)
-								{
-									if (details.normalItemsToProcessBeforeNextRenderAction > 0)
-									{
-										@this._compositionTargets[compositionTarget] = details with { normalItemsToProcessBeforeNextRenderAction = details.normalItemsToProcessBeforeNextRenderAction - 1 };
-									}
-								}
-							}
-							break;
+							@this.EnqueueNative(@this._currentPriority);
 						}
+
+						break;
 					}
 				}
 			}
@@ -151,65 +138,7 @@ namespace Uno.UI.Dispatching
 				dispatcher.Log().Error("Dispatch queue is empty.");
 			}
 		}
-
-		private Action? TryGetRenderAction()
-		{
-			lock (_gate)
-			{
-				foreach (var (compositionTarget, details) in _compositionTargets)
-				{
-					if (details.renderAction is not null)
-					{
-						if (details.normalItemsToProcessBeforeNextRenderAction == 0)
-						{
-							_compositionTargets[compositionTarget] = (renderAction: null, normalItemsToProcessBeforeNextRenderAction: _queues[(int)NativeDispatcherPriority.Normal].Count);
-
-							_currentPriority = NativeDispatcherPriority.High;
-
-							if (Interlocked.Decrement(ref _globalCount) > 0)
-							{
-								EnqueueNative(_currentPriority);
-							}
-
-							this.LogTrace()?.Trace($"Running render job from the dispatcher: queue states=[{string.Join("] [", _queues.Select(q => q.Count))}]");
-
-							return details.renderAction;
-						}
-					}
-				}
-			}
-
-			return null;
-		}
 #endif
-
-		public void EnqueueRender(object compositionTarget, Action handler)
-		{
-			bool shouldEnqueue = false;
-			lock (_gate)
-			{
-				if (!_compositionTargets.TryGetValue(compositionTarget, out var details))
-				{
-					details = _compositionTargets[compositionTarget] = (null, 0);
-				}
-
-				Debug.Assert(details.renderAction is null);
-				if (details.renderAction is null)
-				{
-					shouldEnqueue = Interlocked.Increment(ref _globalCount) == 1;
-				}
-				_compositionTargets[compositionTarget] = details with
-				{
-					renderAction = handler,
-				};
-			}
-
-			this.LogTrace()?.Trace($"{nameof(EnqueueRender)} : {nameof(shouldEnqueue)}={shouldEnqueue}");
-			if (shouldEnqueue)
-			{
-				EnqueueNative(NativeDispatcherPriority.High);
-			}
-		}
 
 		internal void Enqueue(Action handler, NativeDispatcherPriority priority = NativeDispatcherPriority.Normal)
 		{
@@ -426,7 +355,7 @@ namespace Uno.UI.Dispatching
 
 		private void EnqueueCore(Delegate handler, NativeDispatcherPriority priority)
 		{
-			Debug.Assert((int)priority >= 0 && (int)priority <= 3);
+			Debug.Assert((int)priority >= 0 && (int)priority <= 4);
 
 			bool shouldEnqueue;
 
@@ -485,6 +414,7 @@ namespace Uno.UI.Dispatching
 		internal bool HasThreadAccess => _hasThreadAccess ??= GetHasThreadAccess();
 
 		internal bool IsIdle => _queues[(int)NativeDispatcherPriority.High].Count +
+								_queues[(int)NativeDispatcherPriority.Render].Count +
 								_queues[(int)NativeDispatcherPriority.Normal].Count +
 								_queues[(int)NativeDispatcherPriority.Low].Count == 0;
 
