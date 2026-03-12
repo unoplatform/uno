@@ -123,7 +123,7 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger) : IWo
 				RequestedWorkingDirectory = normalizedRequestedDirectory,
 				SelectedGlobalJsonPath = globalJsonPath,
 				ResolutionKind = WorkspaceResolutionKind.NoValidWorkspace,
-				SelectionSource = WorkspaceSelectionSource.Automatic,
+				SelectionSource = WorkspaceSelectionSource.UserSelected,
 				CandidateSolutions = [],
 			};
 		}
@@ -134,7 +134,7 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger) : IWo
 			EffectiveWorkspaceDirectory = normalizedRequestedDirectory,
 			SelectedGlobalJsonPath = globalJsonPath,
 			ResolutionKind = WorkspaceResolutionKind.CurrentDirectory,
-			SelectionSource = WorkspaceSelectionSource.Automatic,
+			SelectionSource = WorkspaceSelectionSource.UserSelected,
 			CandidateSolutions = [],
 		};
 	}

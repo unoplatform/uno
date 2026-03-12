@@ -225,6 +225,15 @@ public class Given_ToolCacheFile
 	}
 
 	[TestMethod]
+	public void ComputeWorkspaceHash_IgnoresTrailingDirectorySeparators()
+	{
+		var hash1 = ToolCacheFile.ComputeWorkspaceHash(@"C:\Users\test\project");
+		var hash2 = ToolCacheFile.ComputeWorkspaceHash(@"C:\Users\test\project\");
+
+		hash1.Should().Be(hash2);
+	}
+
+	[TestMethod]
 	public void ComputeWorkspaceHash_WhenNullOrEmpty_ReturnsEmpty()
 	{
 		ToolCacheFile.ComputeWorkspaceHash(null).Should().BeEmpty();

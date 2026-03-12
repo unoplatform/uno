@@ -17,7 +17,7 @@ internal static class PathComparison
 
 	public static string Normalize(string path)
 	{
-		var normalized = Path.GetFullPath(path).Replace('\\', '/');
+		var normalized = Path.TrimEndingDirectorySeparator(Path.GetFullPath(path)).Replace('\\', '/');
 		if (IsCaseInsensitivePath(normalized))
 		{
 			normalized = normalized.ToLowerInvariant();

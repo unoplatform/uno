@@ -727,9 +727,15 @@ internal class ProxyLifecycleManager
 			}
 			finally
 			{
-				ClearCompletedWorkspaceMutationDebounceSource(
+				var clearedCurrent = ClearCompletedWorkspaceMutationDebounceSource(
 					ref _workspaceMutationDebounceCts,
 					debounceCts);
+				if (clearedCurrent)
+				{
+					TryCancel(debounceCts);
+				}
+
+				TryDispose(debounceCts);
 			}
 		}, CancellationToken.None);
 	}
@@ -787,15 +793,12 @@ internal class ProxyLifecycleManager
 		return next;
 	}
 
-	internal static void ClearCompletedWorkspaceMutationDebounceSource(
+	internal static bool ClearCompletedWorkspaceMutationDebounceSource(
 		ref CancellationTokenSource? field,
 		CancellationTokenSource completed)
 	{
 		var current = Interlocked.CompareExchange(ref field, null, completed);
-		if (ReferenceEquals(current, completed))
-		{
-			TryCancelAndDispose(completed);
-		}
+		return ReferenceEquals(current, completed);
 	}
 
 	private void OnWorkspaceMutationWatcherError(object sender, ErrorEventArgs args)
