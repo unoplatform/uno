@@ -106,7 +106,7 @@ uno.devserver mcp uninstall <ide> [--workspace <path>] [--servers UnoApp,UnoDocs
 
 | Parameter | Required | Applies to | Description |
 |-----------|----------|------------|-------------|
-| `<ide>` | See below | status, install, uninstall | IDE identifier as positional argument (see [IDE Profiles](#5-ide-profiles)). Also accepted as `--ide <ide>`. If both positional and `--ide` are provided and differ, exit code 2. For `install` and `uninstall`: required. For `status`: optional — when omitted, reports on all known IDE profiles (the `detected` field indicates which have config paths on disk). |
+| `<ide>` | See below | status, install, uninstall | IDE identifier as a positional argument (see [IDE Profiles](#5-ide-profiles)). For `install` and `uninstall`: required unless `--all-ides` is used. For `status`: optional — when omitted, reports on all known IDE profiles (the `detected` field indicates which have config paths on disk). |
 | `--workspace <path>` | No | status, install, uninstall | Absolute path to workspace root. **Default: current working directory.** Must be an existing directory. Filesystem root paths (`/`, `C:\`, etc.) are rejected (exit code 2). |
 | `--release` | No | status, install | Force stable (release) server definitions (overrides auto-detection) |
 | `--prerelease` | No | status, install | Force prerelease server definitions (overrides auto-detection) |
@@ -245,7 +245,7 @@ All paths in the JSON output are **fully resolved absolute paths** — no tokens
 | Field | Type | Description |
 |-------|------|-------------|
 | `version` | string | Protocol version (`"1.0"`) |
-| `callerIde` | string? | IDE identifier as passed via `<ide>` or `--ide`. `null` when omitted (status only). |
+| `callerIde` | string? | IDE identifier as passed via `<ide>`. `null` when omitted (status only). |
 | `toolVersion` | string | Version of the running `uno.devserver` tool |
 | `expectedVariant` | string | The variant that `install` would write: `stable`, `prerelease`, or `pinned:<ver>` |
 | `detectedIdes` | string[] | IDE identifiers for profiles whose config path or parent directory was found on disk |
@@ -506,7 +506,7 @@ VS Code global OS paths:
 
 | Agent | Config Locations | Write Target | JSON Format |
 |-------|------------------|--------------|-------------|
-| **Claude Code** | `{ws}/.mcp.json`, `~/.claude/mcp.json` | `{ws}/.mcp.json` | `mcpServers` |
+| **Claude Code** | `{ws}/.mcp.json`, `~/.claude.json` | `{ws}/.mcp.json` | `mcpServers` |
 | **OpenCode** | `{ws}/opencode.json`, `{ws}/opencode.jsonc` | `{ws}/opencode.json` | `mcp` with `type` and command-array format |
 | **Continue** *(v2)* | `{ws}/.continue/config.json` (MCP section) | same | `mcpServers` (nested) |
 | **Zed** *(v2)* | `{ws}/.zed/settings.json` (section) | same | `context_servers` |
@@ -991,7 +991,7 @@ Single I/O seam via `IFileSystem`. All business logic is fully testable with an 
 ### Design Principles
 
 - **Pure logic extraction**: follows the `MonitorDecisions.cs` pattern — no I/O in business logic
-- **No new dependencies**: uses `System.Text.Json.Nodes` (`JsonNode`, `JsonObject`, `JsonArray`) already available in net9.0
+- **Minimal dependency surface**: primary JSON manipulation uses `System.Text.Json.Nodes` (`JsonNode`, `JsonObject`, `JsonArray`) already available in net9.0; `Newtonsoft.Json` is added only where required to preserve comments when updating JSONC config files
 - **Manual arg parsing**: consistent with existing `CliManager` patterns (no System.CommandLine migration)
 - **JSON options**: reuses `McpJsonUtilities.DefaultOptions` for deserialization; camelCase + indented for output serialization
 
@@ -1010,7 +1010,7 @@ IDE profiles and server definitions are stored in two separate embedded JSON fil
 
 For each file independently:
 
-1. **External override**: If the corresponding `--*-definitions <path>` parameter is passed, load from that file path. If the file does not exist or is malformed JSON, fail with exit code 2.
+1. **External override**: If the corresponding `--*-definitions <path>` parameter is passed, load from that file path. If the file does not exist or is malformed JSON, fail with exit code 1.
 2. **Embedded resource**: Otherwise, load from the embedded resource compiled into the CLI assembly.
 
 Each external override **completely replaces** its corresponding embedded file — the two are not merged. The two files are independent: overriding one does not affect the other.
@@ -1044,7 +1044,7 @@ var serverStream = typeof(DefinitionsLoader).Assembly
 
 ### IDE Profiles (`ide-profiles.json`)
 
-The root is a JSON object keyed by IDE identifier (matching the `--ide` parameter values).
+The root is a JSON object keyed by IDE identifier (matching the CLI IDE identifiers).
 
 ```json
 {
