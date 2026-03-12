@@ -60,8 +60,8 @@ internal static class WorkspaceTransitionDecisions
 		=> left.IsResolved
 			&& right.IsResolved
 			&& PathComparison.PathsEqual(left.EffectiveWorkspaceDirectory, right.EffectiveWorkspaceDirectory)
-			&& PathComparison.PathsEqual(left.SelectedSolutionPath ?? string.Empty, right.SelectedSolutionPath ?? string.Empty)
-			&& PathComparison.PathsEqual(left.SelectedGlobalJsonPath ?? string.Empty, right.SelectedGlobalJsonPath ?? string.Empty);
+			&& PathComparison.PathsEqual(left.SelectedSolutionPath, right.SelectedSolutionPath)
+			&& PathComparison.PathsEqual(left.SelectedGlobalJsonPath, right.SelectedGlobalJsonPath);
 }
 
 internal enum WorkspaceTransitionTrigger

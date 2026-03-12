@@ -708,11 +708,7 @@ internal class ProxyLifecycleManager
 			_logger.LogTrace("Workspace mutation detected for {Path} ({ChangeType})", args.FullPath, args.ChangeType);
 		}
 
-		var previousDebounceCts = Interlocked.Exchange(ref _workspaceMutationDebounceCts, null);
-		TryCancelAndDispose(previousDebounceCts);
-
-		var debounceCts = new CancellationTokenSource();
-		_workspaceMutationDebounceCts = debounceCts;
+		var debounceCts = ReplaceWorkspaceMutationDebounceSource(ref _workspaceMutationDebounceCts);
 
 		_ = Task.Run(async () =>
 		{
@@ -758,6 +754,14 @@ internal class ProxyLifecycleManager
 				// Ignore duplicate disposal from concurrent watcher callbacks.
 			}
 		}
+	}
+
+	internal static CancellationTokenSource ReplaceWorkspaceMutationDebounceSource(ref CancellationTokenSource? field)
+	{
+		var next = new CancellationTokenSource();
+		var previous = Interlocked.Exchange(ref field, next);
+		TryCancelAndDispose(previous);
+		return next;
 	}
 
 	private void OnWorkspaceMutationWatcherError(object sender, ErrorEventArgs args)

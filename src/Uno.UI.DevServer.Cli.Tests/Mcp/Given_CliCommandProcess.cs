@@ -53,6 +53,29 @@ public class Given_CliCommandProcess
 		}
 	}
 
+	[TestMethod]
+	[Description("stop auto-discovers a nested Uno workspace so it can target the active workspace instead of the unresolved parent directory")]
+	public async Task Stop_WhenNestedWorkspaceExists_ResolvesWorkspaceBeforeInvokingHost()
+	{
+		var root = CreateTempDirectory();
+		var bogusVersion = "0.0.0-dev-ci-test";
+
+		try
+		{
+			CreateNestedUnoWorkspace(root, bogusVersion);
+
+			var result = await RunCliCommandAsync(root, "stop");
+
+			result.ExitCode.Should().Be(1);
+			result.CombinedOutput.Should().Contain(bogusVersion);
+			result.CombinedOutput.Should().NotContain("Could not determine SDK version from global.json.");
+		}
+		finally
+		{
+			Directory.Delete(root, recursive: true);
+		}
+	}
+
 	private static void CreateNestedUnoWorkspace(string root, string sdkVersion)
 	{
 		var workspace = Path.Combine(root, "nested-uno-workspace");

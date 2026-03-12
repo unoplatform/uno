@@ -23,9 +23,9 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger) : IWo
 
 		var candidates = new List<WorkspaceCandidate>();
 		// Per-resolution cache: every new resolve call rebuilds this dictionary.
-		var globalJsonCache = new Dictionary<string, (string? sdkPackage, string? sdkVersion)>(PathComparison.FileSystemComparer);
+		var globalJsonCache = new Dictionary<string, (string? sdkPackage, string? sdkVersion)>(StringComparer.Ordinal);
 
-		foreach (var solutionPath in solutionFiles.OrderBy(path => path, PathComparison.FileSystemComparer))
+		foreach (var solutionPath in solutionFiles.OrderBy(PathComparison.Normalize, StringComparer.Ordinal))
 		{
 			var solutionDirectory = Path.GetDirectoryName(solutionPath);
 			if (string.IsNullOrWhiteSpace(solutionDirectory))
@@ -70,7 +70,7 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger) : IWo
 		var bestDistance = candidates.Min(candidate => candidate.GlobalJsonDistance);
 		var bestCandidates = candidates
 			.Where(candidate => candidate.GlobalJsonDistance == bestDistance)
-			.OrderBy(candidate => candidate.SolutionPath, PathComparison.FileSystemComparer)
+			.OrderBy(candidate => PathComparison.Normalize(candidate.SolutionPath), StringComparer.Ordinal)
 			.ToList();
 
 		if (bestCandidates.Count > 1)
@@ -145,7 +145,7 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger) : IWo
 		var normalizedSolutionPath = Path.GetFullPath(solutionPath);
 		var candidateSolutions = SolutionFileFinder.FindSolutionFiles(normalizedRequestedDirectory);
 		// Per-selection cache: every explicit selection attempt rebuilds this dictionary.
-		var globalJsonCache = new Dictionary<string, (string? sdkPackage, string? sdkVersion)>(PathComparison.FileSystemComparer);
+		var globalJsonCache = new Dictionary<string, (string? sdkPackage, string? sdkVersion)>(StringComparer.Ordinal);
 
 		if (!File.Exists(normalizedSolutionPath)
 			|| !candidateSolutions.Any(candidate => PathComparison.PathsEqual(candidate, normalizedSolutionPath)))
@@ -222,14 +222,15 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger) : IWo
 		string globalJsonPath,
 		Dictionary<string, (string? sdkPackage, string? sdkVersion)> globalJsonCache)
 	{
-		if (globalJsonCache.TryGetValue(globalJsonPath, out var cached))
+		var normalizedGlobalJsonPath = PathComparison.Normalize(globalJsonPath);
+		if (globalJsonCache.TryGetValue(normalizedGlobalJsonPath, out var cached))
 		{
 			return cached;
 		}
 
 		var parsed = await GlobalJsonLocator.ParseGlobalJsonFileForUnoSdkAsync(globalJsonPath, _logger);
 		var result = (parsed.sdkPackage, parsed.sdkVersion);
-		globalJsonCache[globalJsonPath] = result;
+		globalJsonCache[normalizedGlobalJsonPath] = result;
 		return result;
 	}
 
