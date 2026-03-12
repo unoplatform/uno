@@ -76,7 +76,9 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 
 	internal async Task StopMonitoringAsync()
 	{
-		_cts?.Cancel();
+		var cts = _cts;
+		_cts = null;
+		cts?.Cancel();
 		TerminateServerProcess();
 
 		if (_monitor is not null)
@@ -92,7 +94,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 		}
 
 		_monitor = null;
-		_cts = null;
+		cts?.Dispose();
 		_serverProcess = null;
 	}
 

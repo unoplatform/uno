@@ -497,7 +497,7 @@ internal class ProxyLifecycleManager
 		if (_workspaceResolution?.IsResolved != true)
 		{
 			_logger.LogWarning(
-				"Workspace resolution failed for {Directory}; DevServer startup is skipped and health remains immediately unavailable",
+				"Workspace resolution failed for {Directory}; DevServer startup is skipped and health remains immediately available for diagnostics",
 				_currentDirectory);
 			SetConnectionState(ConnectionState.Degraded);
 			FailToolCachePriming();
@@ -667,12 +667,30 @@ internal class ProxyLifecycleManager
 
 	private void OnWorkspaceMutation(object sender, FileSystemEventArgs args)
 	{
-		if (!IsWorkspaceMutationPath(args.FullPath))
+		if (args is RenamedEventArgs renamedArgs)
+		{
+			var oldPathRelevant = IsWorkspaceMutationPath(renamedArgs.OldFullPath);
+			var newPathRelevant = IsWorkspaceMutationPath(renamedArgs.FullPath);
+
+			if (!oldPathRelevant && !newPathRelevant)
+			{
+				return;
+			}
+
+			_logger.LogTrace(
+				"Workspace rename mutation detected from {OldPath} to {NewPath} ({ChangeType})",
+				renamedArgs.OldFullPath,
+				renamedArgs.FullPath,
+				renamedArgs.ChangeType);
+		}
+		else if (!IsWorkspaceMutationPath(args.FullPath))
 		{
 			return;
 		}
-
-		_logger.LogTrace("Workspace mutation detected for {Path} ({ChangeType})", args.FullPath, args.ChangeType);
+		else
+		{
+			_logger.LogTrace("Workspace mutation detected for {Path} ({ChangeType})", args.FullPath, args.ChangeType);
+		}
 
 		var previousDebounceCts = Interlocked.Exchange(ref _workspaceMutationDebounceCts, null);
 		TryCancelAndDispose(previousDebounceCts);

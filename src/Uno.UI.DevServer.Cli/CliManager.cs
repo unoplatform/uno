@@ -145,7 +145,7 @@ internal class CliManager
 
 	internal static string GetVersionBannerText()
 	{
-		var version = McpStdioServer.GetAssemblyVersion();
+		var version = AssemblyVersionHelper.GetAssemblyVersion(typeof(CliManager).Assembly);
 		return string.IsNullOrWhiteSpace(version)
 			? "Uno Platform DevServer CLI - Dev Version"
 			: $"Uno Platform DevServer CLI - Version {version}";

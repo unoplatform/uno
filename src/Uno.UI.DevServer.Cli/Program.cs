@@ -87,7 +87,7 @@ internal class Program
 		services.AddSingleton(sp =>
 		new ManifestAddInResolver(
 			sp.GetRequiredService<ILogger<ManifestAddInResolver>>(),
-			McpStdioServer.GetAssemblyVersion()));
+			AssemblyVersionHelper.GetAssemblyVersion(typeof(Program).Assembly)));
 		services.AddSingleton<TargetsAddInResolver>();
 		services.AddSingleton<DevServerMonitor>();
 		services.AddSingleton<McpUpstreamClient>();

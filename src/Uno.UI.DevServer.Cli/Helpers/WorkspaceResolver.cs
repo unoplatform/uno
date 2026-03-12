@@ -22,6 +22,7 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger)
 		}
 
 		var candidates = new List<WorkspaceCandidate>();
+		var globalJsonCache = new Dictionary<string, (string? sdkPackage, string? sdkVersion)>(StringComparer.OrdinalIgnoreCase);
 
 		foreach (var solutionPath in solutionFiles.OrderBy(path => path, StringComparer.OrdinalIgnoreCase))
 		{
@@ -37,7 +38,7 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger)
 				var globalJsonPath = Path.Combine(currentDirectory, "global.json");
 				if (File.Exists(globalJsonPath))
 				{
-					var parsed = await GlobalJsonLocator.ParseGlobalJsonFileForUnoSdkAsync(globalJsonPath, _logger);
+					var parsed = await GetCachedGlobalJsonResultAsync(globalJsonPath, globalJsonCache);
 					if (!string.IsNullOrWhiteSpace(parsed.sdkPackage) && !string.IsNullOrWhiteSpace(parsed.sdkVersion))
 					{
 						candidates.Add(new WorkspaceCandidate(
@@ -103,6 +104,7 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger)
 		var normalizedRequestedDirectory = Path.GetFullPath(requestedDirectory);
 		var normalizedSolutionPath = Path.GetFullPath(solutionPath);
 		var candidateSolutions = SolutionFileFinder.FindSolutionFiles(normalizedRequestedDirectory);
+		var globalJsonCache = new Dictionary<string, (string? sdkPackage, string? sdkVersion)>(StringComparer.OrdinalIgnoreCase);
 
 		if (!File.Exists(normalizedSolutionPath)
 			|| !candidateSolutions.Contains(normalizedSolutionPath, StringComparer.OrdinalIgnoreCase))
@@ -118,7 +120,7 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger)
 			};
 		}
 
-		var resolved = await ResolveSolutionCoreAsync(normalizedRequestedDirectory, normalizedSolutionPath, selectionSource);
+		var resolved = await ResolveSolutionCoreAsync(normalizedRequestedDirectory, normalizedSolutionPath, selectionSource, globalJsonCache);
 		return resolved ?? new WorkspaceResolution
 		{
 			RequestedWorkingDirectory = normalizedRequestedDirectory,
@@ -128,7 +130,11 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger)
 		};
 	}
 
-	private async Task<WorkspaceResolution?> ResolveSolutionCoreAsync(string requestedDirectory, string solutionPath, WorkspaceSelectionSource selectionSource)
+	private async Task<WorkspaceResolution?> ResolveSolutionCoreAsync(
+		string requestedDirectory,
+		string solutionPath,
+		WorkspaceSelectionSource selectionSource,
+		Dictionary<string, (string? sdkPackage, string? sdkVersion)> globalJsonCache)
 	{
 		var solutionDirectory = Path.GetDirectoryName(solutionPath);
 		if (string.IsNullOrWhiteSpace(solutionDirectory))
@@ -142,7 +148,7 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger)
 			var globalJsonPath = Path.Combine(currentDirectory, "global.json");
 			if (File.Exists(globalJsonPath))
 			{
-				var parsed = await GlobalJsonLocator.ParseGlobalJsonFileForUnoSdkAsync(globalJsonPath, _logger);
+				var parsed = await GetCachedGlobalJsonResultAsync(globalJsonPath, globalJsonCache);
 				if (!string.IsNullOrWhiteSpace(parsed.sdkPackage) && !string.IsNullOrWhiteSpace(parsed.sdkVersion))
 				{
 					var resolutionKind = string.Equals(currentDirectory, requestedDirectory, StringComparison.OrdinalIgnoreCase)
@@ -169,6 +175,21 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger)
 		}
 
 		return null;
+	}
+
+	private async Task<(string? sdkPackage, string? sdkVersion)> GetCachedGlobalJsonResultAsync(
+		string globalJsonPath,
+		Dictionary<string, (string? sdkPackage, string? sdkVersion)> globalJsonCache)
+	{
+		if (globalJsonCache.TryGetValue(globalJsonPath, out var cached))
+		{
+			return cached;
+		}
+
+		var parsed = await GlobalJsonLocator.ParseGlobalJsonFileForUnoSdkAsync(globalJsonPath, _logger);
+		var result = (parsed.sdkPackage, parsed.sdkVersion);
+		globalJsonCache[globalJsonPath] = result;
+		return result;
 	}
 
 	private static int GetDirectoryDistance(string workspaceDirectory, string solutionDirectory)
