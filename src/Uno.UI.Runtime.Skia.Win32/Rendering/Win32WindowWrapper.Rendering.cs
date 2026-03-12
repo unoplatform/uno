@@ -1,6 +1,6 @@
 using System;
 using System.Drawing;
-using System.Timers;
+using System.Threading;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Microsoft.UI.Xaml.Media;
@@ -14,25 +14,43 @@ namespace Uno.UI.Runtime.Skia.Win32;
 
 internal partial class Win32WindowWrapper
 {
-	private readonly Timer _renderTimer;
 	private int _renderCount;
 	private SKSurface? _surface;
 	private bool _rendering;
+	private bool _blitScheduled;
+	private bool _inSizeMove;
 
 	public event EventHandler<SKPath>? RenderingNegativePathReevaluated; // not necessarily changed
 
-	private Timer CreateRenderTimer()
-	{
-		var timer = new Timer { AutoReset = false, Interval = TimeSpan.FromSeconds(1.0 / _refreshRate).TotalMilliseconds };
-		timer.Elapsed += (_, _) => NativeDispatcher.Main.Enqueue(Render, NativeDispatcherPriority.High);
-		return timer;
-	}
-
 	unsafe void IXamlRootHost.InvalidateRender()
 	{
-		var success = PInvoke.InvalidateRect(_hwnd, default(RECT*), true);
-		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.InvalidateRect)} failed: {Win32Helper.GetErrorMessage()}"); }
-		_renderTimer.Enabled = true;
+		// Mark the window dirty for WM_PAINT. This handles external repaints (window
+		// uncovering, restore from minimized) where Windows generates WM_PAINT.
+		// Like WPF (InvalidateRect in HwndTarget) and Avalonia (InvalidateRect in WindowImpl).
+		PInvoke.InvalidateRect(_hwnd, default(RECT*), false);
+
+		// During the modal resize/move loop, rendering is driven synchronously from
+		// WM_SIZE. Don't schedule dispatcher-based blits — they would flood the modal
+		// loop's message queue and starve resize messages (each FrameTick posts the
+		// next via PostMessage, and GL's SwapBuffers blocks for VSync per blit).
+		if (_inSizeMove)
+		{
+			return;
+		}
+
+		// Schedule a single coalesced blit at Render priority. Neither WPF nor Avalonia
+		// rely on WM_PAINT for the primary blit — WM_PAINT is too low priority in the
+		// Windows message queue (starved by PostMessage'd dispatcher items during
+		// continuous animation). Like Avalonia's compositor-driven render loop, we
+		// schedule the blit as part of the render pass via the dispatcher.
+		if (!Interlocked.Exchange(ref _blitScheduled, true))
+		{
+			NativeDispatcher.Main.Enqueue(() =>
+			{
+				Interlocked.Exchange(ref _blitScheduled, false);
+				Render();
+			}, NativeDispatcherPriority.Render);
+		}
 	}
 
 	private void ReinitializeRenderer()

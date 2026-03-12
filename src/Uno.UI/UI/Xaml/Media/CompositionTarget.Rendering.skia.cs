@@ -192,8 +192,6 @@ public partial class CompositionTarget
 
 			ReturnFrame(lastRenderedFrame);
 
-			InvokeRendering();
-
 			if (FrameRenderingOptions.applyScalingToNativeElementClipPath && rasterizationScale != 1)
 			{
 				if (_lastNativeClipPath != lastRenderedFrame.nativeElementClipPath || _lastScaledNativeClipPath == null)
@@ -240,16 +238,7 @@ public partial class CompositionTarget
 
 	internal static void InvokeRendering()
 	{
-		if (NativeDispatcher.Main.HasThreadAccess)
-		{
-			_rendering?.Invoke(null, new RenderingEventArgs(Stopwatch.GetElapsedTime(_start)));
-		}
-		else
-		{
-			NativeDispatcher.Main.Enqueue(() =>
-			{
-				_rendering?.Invoke(null, new RenderingEventArgs(Stopwatch.GetElapsedTime(_start)));
-			}, NativeDispatcherPriority.High);
-		}
+		NativeDispatcher.CheckThreadAccess();
+		_rendering?.Invoke(null, new RenderingEventArgs(Stopwatch.GetElapsedTime(_start)));
 	}
 }
