@@ -47,7 +47,7 @@ internal class Program
 			WriteCommand("mcp uninstall", "Remove MCP servers from IDE config files");
 			Console.WriteLine();
 			Console.WriteLine("MCP setup options:");
-			WriteOption("<ide>", "Target IDE (positional, or use --all-ides): vscode, cursor, windsurf, kiro, antigravity, rider, claude-code, opencode, unknown");
+			WriteOption("<ide>", "Target IDE (positional, or use --all-ides): vscode, cursor, windsurf, kiro, antigravity, rider, claude-code, claude-desktop, opencode, unknown");
 			WriteOption("--workspace <path>", "Workspace root (default: current directory)");
 			WriteOption("--release", "Use stable variant");
 			WriteOption("--prerelease", "Use prerelease variant");

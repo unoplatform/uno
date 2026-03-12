@@ -10,7 +10,7 @@
 
 ### The Problem
 
-The Uno DevServer exposes two MCP servers (UnoApp for in-app tooling, UnoDocs for documentation). Today, these are registered via `vscode.lm.registerMcpServerDefinitionProvider` — an API exclusive to VS Code. Users on **Cursor, Anti-Gravity, Windsurf, Kiro, Rider**, and CLI agents like **Claude Code and OpenCode** get no MCP integration at all.
+The Uno DevServer exposes two MCP servers (UnoApp for in-app tooling, UnoDocs for documentation). Today, these are registered via `vscode.lm.registerMcpServerDefinitionProvider` — an API exclusive to VS Code. Users on **Cursor, Anti-Gravity, Windsurf, Kiro, Rider**, desktop clients like **Claude Desktop**, and CLI agents like **Claude Code and OpenCode** get no MCP integration at all.
 
 Each editor has its own MCP config format and file location. There is no cross-editor registration API.
 
@@ -36,7 +36,7 @@ uno.devserver mcp uninstall  # Remove servers from IDE configs
 
 ### Scope
 
-- 9 IDE profiles in v1 (VS Code, Cursor, Windsurf, Kiro, Anti-Gravity, Rider, Claude Code, OpenCode, unknown)
+- 10 IDE profiles in v1 (VS Code, Cursor, Windsurf, Kiro, Anti-Gravity, Rider, Claude Code, Claude Desktop, OpenCode, unknown)
 - 2 MCP servers (UnoApp stdio, UnoDocs HTTP) — extensible without protocol changes
 - 3 operations: status, install, uninstall
 - Config file merge with preservation of existing entries
@@ -119,7 +119,7 @@ uno.devserver mcp uninstall <ide> [--workspace <path>] [--servers UnoApp,UnoDocs
 
 ### IDE Identifiers
 
-`vscode`, `cursor`, `windsurf`, `kiro`, `antigravity`, `rider`, `claude-code`, `opencode`, `unknown`
+`vscode`, `cursor`, `windsurf`, `kiro`, `antigravity`, `rider`, `claude-code`, `claude-desktop`, `opencode`, `unknown`
 
 > **v2 (deferred):** `continue`, `zed` — excluded from initial implementation due to non-standard config formats (see [IDE Profiles §5](#5-ide-profiles)).
 
@@ -1096,6 +1096,8 @@ The root is a JSON object keyed by IDE identifier (matching the `--ide` paramete
 >         : Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 > ```
 
+> **Implementation note — `{appdata}` on WSL**: when the tool runs inside WSL, `{appdata}` should resolve to the **Windows roaming AppData path** (for example `/mnt/c/Users/<user>/AppData/Roaming`), not Linux `~/.config`. This ensures Windows-hosted desktop clients such as Claude Desktop and VS Code remain detectable and writable from a WSL workspace.
+
 #### Complete `ide-profiles.json`
 
 ```json
@@ -1112,9 +1114,16 @@ The root is a JSON object keyed by IDE identifier (matching the `--ide` paramete
   "claude-code": {
     "configPaths": [
       "{workspace}/.mcp.json",
-      "{home}/.claude/mcp.json"
+      "{home}/.claude.json"
     ],
     "writeTarget": "{workspace}/.mcp.json",
+    "jsonRootKey": "mcpServers"
+  },
+  "claude-desktop": {
+    "configPaths": [
+      "{appdata}/Claude/claude_desktop_config.json"
+    ],
+    "writeTarget": "{appdata}/Claude/claude_desktop_config.json",
     "jsonRootKey": "mcpServers"
   },
   "cursor": {
