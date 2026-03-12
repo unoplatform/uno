@@ -249,16 +249,22 @@ internal class ToolListManager(
 	public static IList<Tool> AppendBuiltInTools(IList<Tool> tools)
 	{
 		var result = new List<Tool>(tools.Count + 2);
+		var builtInTools = new[] { HealthService.HealthTool, ProxyLifecycleManager.SelectSolutionTool };
 
-		foreach (var builtInTool in new[] { HealthService.HealthTool, ProxyLifecycleManager.SelectSolutionTool })
+		foreach (var builtInTool in builtInTools)
 		{
-			if (!tools.Any(t => string.Equals(t.Name, builtInTool.Name, StringComparison.Ordinal)))
+			var existingTool = tools.FirstOrDefault(t => string.Equals(t.Name, builtInTool.Name, StringComparison.Ordinal));
+			result.Add(existingTool ?? builtInTool);
+		}
+
+		foreach (var tool in tools)
+		{
+			if (!builtInTools.Any(builtInTool => string.Equals(tool.Name, builtInTool.Name, StringComparison.Ordinal)))
 			{
-				result.Add(builtInTool);
+				result.Add(tool);
 			}
 		}
 
-		result.AddRange(tools);
 		return result;
 	}
 

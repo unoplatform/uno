@@ -135,4 +135,27 @@ public class Given_McpStdioServer
 		result[0].Name.Should().Be(HealthService.HealthTool.Name, "uno_health should be first");
 		result[1].Name.Should().Be(ProxyLifecycleManager.SelectSolutionTool.Name, "uno_app_select_solution should be second");
 	}
+
+	[TestMethod]
+	[Description("AppendBuiltInTools always normalizes built-in tools to the front even when upstream/cache already returned them out of order")]
+	public void ListTools_FallbackPath_BuiltInsAreAlwaysOrderedFirst()
+	{
+		List<Tool> tools =
+		[
+			new() { Name = "uno_app_get_info", Description = "Info" },
+			HealthService.HealthTool,
+			new() { Name = "uno_app_set_roots", Description = "Set roots" },
+			ProxyLifecycleManager.SelectSolutionTool,
+		];
+
+		var result = ToolListManager.AppendBuiltInTools(tools);
+
+		result[0].Name.Should().Be(HealthService.HealthTool.Name);
+		result[1].Name.Should().Be(ProxyLifecycleManager.SelectSolutionTool.Name);
+		result.Select(t => t.Name).Should().Equal(
+			HealthService.HealthTool.Name,
+			ProxyLifecycleManager.SelectSolutionTool.Name,
+			"uno_app_get_info",
+			"uno_app_set_roots");
+	}
 }
