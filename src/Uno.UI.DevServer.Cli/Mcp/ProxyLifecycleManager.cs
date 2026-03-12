@@ -725,6 +725,12 @@ internal class ProxyLifecycleManager
 			{
 				_logger.LogWarning(ex, "Workspace reevaluation failed after filesystem mutation");
 			}
+			finally
+			{
+				ClearCompletedWorkspaceMutationDebounceSource(
+					ref _workspaceMutationDebounceCts,
+					debounceCts);
+			}
 		}, CancellationToken.None);
 	}
 
@@ -762,6 +768,17 @@ internal class ProxyLifecycleManager
 		var previous = Interlocked.Exchange(ref field, next);
 		TryCancelAndDispose(previous);
 		return next;
+	}
+
+	internal static void ClearCompletedWorkspaceMutationDebounceSource(
+		ref CancellationTokenSource? field,
+		CancellationTokenSource completed)
+	{
+		var current = Interlocked.CompareExchange(ref field, null, completed);
+		if (ReferenceEquals(current, completed))
+		{
+			TryCancelAndDispose(completed);
+		}
 	}
 
 	private void OnWorkspaceMutationWatcherError(object sender, ErrorEventArgs args)
