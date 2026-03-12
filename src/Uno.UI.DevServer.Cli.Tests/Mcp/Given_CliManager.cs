@@ -249,6 +249,9 @@ public class Given_CliManager
 			throw new InvalidOperationException("Workspace resolution should not be called for this command.");
 		}
 
+		public Task<WorkspaceResolution> ResolveExplicitWorkspaceAsync(string requestedDirectory)
+			=> throw new NotSupportedException();
+
 		public Task<WorkspaceResolution> ResolveSolutionAsync(string requestedDirectory, string solutionPath, WorkspaceSelectionSource selectionSource = WorkspaceSelectionSource.UserSelected)
 			=> throw new NotSupportedException();
 	}
