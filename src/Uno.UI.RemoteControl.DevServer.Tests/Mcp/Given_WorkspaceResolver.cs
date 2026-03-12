@@ -141,6 +141,7 @@ public class Given_WorkspaceResolver
 			result.SelectedSolutionPath.Should().BeNull();
 			result.SelectedGlobalJsonPath.Should().Be(Path.Combine(root, "global.json"));
 			result.ResolutionKind.Should().Be(WorkspaceResolutionKind.CurrentDirectory);
+			result.SelectionSource.Should().Be(WorkspaceSelectionSource.UserSelected);
 		}
 		finally
 		{

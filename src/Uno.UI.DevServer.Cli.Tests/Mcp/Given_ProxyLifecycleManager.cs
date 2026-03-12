@@ -1305,33 +1305,35 @@ public class Given_ProxyLifecycleManager
 	}
 
 	[TestMethod]
-	[Description("A completed debounce source is cleared and disposed only if it is still the current debounce source")]
-	public void ClearCompletedWorkspaceMutationDebounceSource_WhenCurrent_ClearsAndDisposes()
+	[Description("A completed debounce source clears the current field when it is still the current debounce source")]
+	public void ClearCompletedWorkspaceMutationDebounceSource_WhenCurrent_ClearsField()
 	{
 		CancellationTokenSource? field = new();
 		var current = field;
 
-		ProxyLifecycleManager.ClearCompletedWorkspaceMutationDebounceSource(ref field, current!);
+		var cleared = ProxyLifecycleManager.ClearCompletedWorkspaceMutationDebounceSource(ref field, current!);
 
+		cleared.Should().BeTrue();
 		field.Should().BeNull();
-		current!.IsCancellationRequested.Should().BeTrue();
-		Action cancelDisposedCurrent = () => current.Cancel();
-		cancelDisposedCurrent.Should().Throw<ObjectDisposedException>();
+		current!.IsCancellationRequested.Should().BeFalse();
+		current.Dispose();
 	}
 
 	[TestMethod]
-	[Description("A completed debounce source does not clear or dispose a newer current debounce source")]
+	[Description("A completed debounce source does not clear a newer current debounce source")]
 	public void ClearCompletedWorkspaceMutationDebounceSource_WhenSuperseded_LeavesCurrentSourceIntact()
 	{
 		CancellationTokenSource? field = new();
 		var completed = field;
 		var current = ProxyLifecycleManager.ReplaceWorkspaceMutationDebounceSource(ref field);
 
-		ProxyLifecycleManager.ClearCompletedWorkspaceMutationDebounceSource(ref field, completed!);
+		var cleared = ProxyLifecycleManager.ClearCompletedWorkspaceMutationDebounceSource(ref field, completed!);
 
+		cleared.Should().BeFalse();
 		field.Should().BeSameAs(current);
 		current.IsCancellationRequested.Should().BeFalse();
 
+		completed!.Dispose();
 		current.Dispose();
 	}
 
