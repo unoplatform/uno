@@ -121,7 +121,7 @@ namespace Microsoft.UI.Xaml
 				ApplicationLanguages.ApplyCulture();
 
 				BackButtonIntegration.Initialize();
-				
+
 				InitializePartial();
 			}
 			else
