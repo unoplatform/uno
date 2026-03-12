@@ -1011,6 +1011,60 @@ public class Given_ProxyLifecycleManager
 	}
 
 	[TestMethod]
+	[Description("Rename events re-evaluate the workspace when a relevant file is renamed away from the watched set")]
+	public async Task WhenWorkspaceMutationRenamesRelevantFileAway_DevServerStopsAndDegrades()
+	{
+		var root = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
+
+		try
+		{
+			var workspace = await CreateUnoWorkspaceAsync(root, "src", "App.slnx", "6.6.0-dev.1");
+			var globalJsonPath = Path.Combine(workspace, "global.json");
+			var renamedGlobalJsonPath = Path.Combine(workspace, "global.json.bak");
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
+			var resolvedWorkspace = await resolver.ResolveAsync(workspace);
+			var unresolvedWorkspace = new WorkspaceResolution
+			{
+				RequestedWorkingDirectory = root,
+				ResolutionKind = WorkspaceResolutionKind.NoCandidates,
+				CandidateSolutions = [],
+			};
+
+			var created = CreateSubject();
+			subject = created.Subject;
+			var healthService = created.HealthService;
+			var monitor = created.Monitor;
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_workspaceResolution", unresolvedWorkspace);
+			SetPrivateField(subject, "_devServerPort", 0);
+			SetPrivateField(subject, "_forwardedArgs", new List<string>());
+
+			await subject.ApplyWorkspaceResolutionAsync(resolvedWorkspace, WorkspaceTransitionTrigger.FileSystem);
+
+			File.Move(globalJsonPath, renamedGlobalJsonPath);
+
+			var method = typeof(ProxyLifecycleManager).GetMethod("OnWorkspaceMutation", BindingFlags.Instance | BindingFlags.NonPublic);
+			method.Should().NotBeNull();
+			method!.Invoke(subject, [subject, new RenamedEventArgs(WatcherChangeTypes.Renamed, workspace, "global.json.bak", "global.json")]);
+
+			await WaitUntilAsync(() => !healthService.DevServerStarted && subject.ConnectionState == ConnectionState.Degraded);
+
+			GetPrivateField<Task?>(monitor, "_monitor").Should().BeNull();
+			GetPrivateField<WorkspaceResolution>(subject, "_workspaceResolution").ResolutionKind.Should().Be(WorkspaceResolutionKind.NoValidWorkspace);
+		}
+		finally
+		{
+			if (subject is not null)
+			{
+				await StopWatcherAndMonitorAsync(subject);
+			}
+
+			await DeleteDirectoryWithRetriesAsync(root);
+		}
+	}
+
+	[TestMethod]
 	[Description("A live workspace watcher starts the DevServer when an ambiguous repo becomes a single clear Uno workspace")]
 	public async Task WhenWatcherSeesAmbiguousBecomeSingle_DevServerStarts()
 	{

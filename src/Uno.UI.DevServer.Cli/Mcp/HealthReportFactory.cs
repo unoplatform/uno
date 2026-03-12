@@ -82,7 +82,7 @@ internal static class HealthReportFactory
 		return new HealthReport
 		{
 			Status = status,
-			DevServerVersion = GetAssemblyVersion(),
+			DevServerVersion = AssemblyVersionHelper.GetAssemblyVersion(typeof(HealthReportFactory).Assembly),
 			HostProcessId = hostProcessId,
 			HostEndpoint = hostEndpoint,
 			UpstreamConnected = upstreamConnected,
@@ -144,21 +144,5 @@ internal static class HealthReportFactory
 				}).ToList()
 				: null,
 		};
-	}
-
-	private static string GetAssemblyVersion()
-	{
-		var attr = typeof(HealthReportFactory).Assembly
-			.GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false)
-			.OfType<System.Reflection.AssemblyInformationalVersionAttribute>()
-			.FirstOrDefault();
-
-		if (attr is not null)
-		{
-			var parts = attr.InformationalVersion.Split('+', StringSplitOptions.RemoveEmptyEntries);
-			return parts[0];
-		}
-
-		return typeof(HealthReportFactory).Assembly.GetName().Version?.ToString() ?? "0.0.0";
 	}
 }

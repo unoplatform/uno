@@ -80,6 +80,34 @@ public class Given_DevServerMonitorLifecycle
 		}
 	}
 
+	[TestMethod]
+	[Description("Stopping the monitor disposes the internal cancellation token source so repeated stop/start cycles do not leak resources")]
+	public async Task WhenStopped_CancellationTokenSourceIsDisposed()
+	{
+		var services = new ServiceCollection().BuildServiceProvider();
+		var monitor = new DevServerMonitor(services, NullLogger<DevServerMonitor>.Instance);
+		var directory = CreateTempDirectory();
+
+		try
+		{
+			monitor.StartMonitoring(directory, port: 0, forwardedArgs: []);
+			var ctsField = typeof(DevServerMonitor).GetField("_cts", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+			ctsField.Should().NotBeNull();
+			var cts = ctsField!.GetValue(monitor) as CancellationTokenSource;
+			cts.Should().NotBeNull();
+
+			await monitor.StopMonitoringAsync();
+
+			ctsField.GetValue(monitor).Should().BeNull();
+			var accessWaitHandle = () => _ = cts!.Token.WaitHandle;
+			accessWaitHandle.Should().Throw<ObjectDisposedException>();
+		}
+		finally
+		{
+			Directory.Delete(directory, recursive: true);
+		}
+	}
+
 	private static string CreateTempDirectory()
 	{
 		var path = Path.Combine(Path.GetTempPath(), $"uno-monitor-tests-{Guid.NewGuid():N}");
