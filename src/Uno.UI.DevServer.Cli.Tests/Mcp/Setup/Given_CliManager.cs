@@ -42,13 +42,35 @@ public class Given_CliManager
 	}
 
 	[TestMethod]
-	public void ParseMcpSetupArgs_MissingVersionValue_ReturnsNull()
+	public void ParseMcpSetupArgs_MissingToolVersionValue_ReturnsNull()
 	{
 		var manager = CreateManager();
 
-		var result = manager.ParseMcpSetupArgs(["--version"], "status");
+		var result = manager.ParseMcpSetupArgs(["--tool-version"], "status");
 
 		result.Should().BeNull();
+	}
+
+	[TestMethod]
+	public void ParseMcpSetupArgs_Channel_SetsValue()
+	{
+		var manager = CreateManager();
+
+		var result = manager.ParseMcpSetupArgs(["--channel", "prerelease"], "status");
+
+		result.Should().NotBeNull();
+		result!.Value.Channel.Should().Be("prerelease");
+	}
+
+	[TestMethod]
+	public void ParseMcpSetupArgs_ToolVersion_SetsValue()
+	{
+		var manager = CreateManager();
+
+		var result = manager.ParseMcpSetupArgs(["--tool-version", "5.5.0"], "install");
+
+		result.Should().NotBeNull();
+		result!.Value.ToolVersion.Should().Be("5.5.0");
 	}
 
 	[TestMethod]
@@ -63,12 +85,56 @@ public class Given_CliManager
 	}
 
 	[TestMethod]
-	public void RunMcpSubcommand_ConflictingVariantFlags_ReturnsUsageError()
+	public void RunMcpSubcommand_ConflictingVariantOptions_ReturnsUsageError()
 	{
 		var manager = CreateManager();
 		var workspace = CreateWorkspacePath();
 
-		var result = manager.RunMcpSubcommand(["status", "--release", "--prerelease"], workspace, null);
+		var result = manager.RunMcpSubcommand(["status", "--channel", "stable", "--tool-version", "5.5.0"], workspace, null);
+
+		result.Should().Be(2);
+	}
+
+	[TestMethod]
+	public void RunMcpSubcommand_InvalidChannel_ReturnsUsageError()
+	{
+		var manager = CreateManager();
+		var workspace = CreateWorkspacePath();
+
+		var result = manager.RunMcpSubcommand(["status", "--channel", "nightly"], workspace, null);
+
+		result.Should().Be(2);
+	}
+
+	[TestMethod]
+	public void RunMcpSubcommand_OldReleaseFlag_IsRejected()
+	{
+		var manager = CreateManager();
+		var workspace = CreateWorkspacePath();
+
+		var result = manager.RunMcpSubcommand(["status", "--release"], workspace, null);
+
+		result.Should().Be(2);
+	}
+
+	[TestMethod]
+	public void RunMcpSubcommand_OldPrereleaseFlag_IsRejected()
+	{
+		var manager = CreateManager();
+		var workspace = CreateWorkspacePath();
+
+		var result = manager.RunMcpSubcommand(["status", "--prerelease"], workspace, null);
+
+		result.Should().Be(2);
+	}
+
+	[TestMethod]
+	public void RunMcpSubcommand_OldVersionFlag_IsRejected()
+	{
+		var manager = CreateManager();
+		var workspace = CreateWorkspacePath();
+
+		var result = manager.RunMcpSubcommand(["status", "--version", "5.5.0"], workspace, null);
 
 		result.Should().Be(2);
 	}
@@ -149,6 +215,38 @@ public class Given_CliManager
 		{
 			Console.SetOut(previousOut);
 		}
+	}
+
+	[TestMethod]
+	public void RunMcpSubcommand_InstallWithChannelPrerelease_WritesPrereleaseDefinition()
+	{
+		var workspace = CreateWorkspacePath();
+		var fs = new InMemoryFileSystem();
+		fs.AddDirectory(workspace);
+		var manager = CreateManager(fs);
+
+		var result = manager.RunMcpSubcommand(["install", "cursor", "--channel", "prerelease"], workspace, null);
+
+		result.Should().Be(0);
+		var content = fs.GetFileContent(Path.Combine(workspace, ".cursor", "mcp.json"));
+		content.Should().NotBeNull();
+		content.Should().Contain("--prerelease");
+	}
+
+	[TestMethod]
+	public void RunMcpSubcommand_InstallWithToolVersion_WritesPinnedDefinition()
+	{
+		var workspace = CreateWorkspacePath();
+		var fs = new InMemoryFileSystem();
+		fs.AddDirectory(workspace);
+		var manager = CreateManager(fs);
+
+		var result = manager.RunMcpSubcommand(["install", "cursor", "--tool-version", "5.5.0"], workspace, null);
+
+		result.Should().Be(0);
+		var content = fs.GetFileContent(Path.Combine(workspace, ".cursor", "mcp.json"));
+		content.Should().NotBeNull();
+		content.Should().Contain("\"5.5.0\"");
 	}
 
 	[TestMethod]

@@ -8,29 +8,22 @@ namespace Uno.UI.DevServer.Cli.Mcp.Setup;
 /// </summary>
 internal static class ServerDefinitionResolver
 {
-	/// <summary>
-	/// Determines the expected variant based on the running tool version and CLI flags.
-	/// </summary>
-	/// <returns>
-	/// <c>"stable"</c>, <c>"prerelease"</c>, or <c>"pinned:&lt;ver&gt;"</c>.
-	/// </returns>
 	public static string ResolveExpectedVariant(
 		string toolVersion,
-		bool releaseFlag,
-		bool prereleaseFlag,
-		string? versionFlag)
+		string? channel,
+		string? toolVersionOverride)
 	{
-		if (versionFlag is not null)
+		if (toolVersionOverride is not null)
 		{
-			return $"pinned:{versionFlag}";
+			return $"pinned:{toolVersionOverride}";
 		}
 
-		if (prereleaseFlag)
+		if (string.Equals(channel, "prerelease", StringComparison.OrdinalIgnoreCase))
 		{
 			return "prerelease";
 		}
 
-		if (releaseFlag)
+		if (string.Equals(channel, "stable", StringComparison.OrdinalIgnoreCase))
 		{
 			return "stable";
 		}

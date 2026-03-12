@@ -412,10 +412,17 @@ internal class CliManager
 		}
 
 		// Validate mutually exclusive variant flags
-		var flagCount = (parsed.Value.ReleaseFlag ? 1 : 0) + (parsed.Value.PrereleaseFlag ? 1 : 0) + (parsed.Value.VersionFlag is not null ? 1 : 0);
-		if (flagCount > 1)
+		if (parsed.Value.Channel is not null &&
+			!string.Equals(parsed.Value.Channel, "stable", StringComparison.OrdinalIgnoreCase) &&
+			!string.Equals(parsed.Value.Channel, "prerelease", StringComparison.OrdinalIgnoreCase))
 		{
-			_logger.LogError("--release, --prerelease, and --version are mutually exclusive");
+			_logger.LogError("Invalid value for --channel '{Channel}'. Valid values: stable, prerelease", parsed.Value.Channel);
+			return 2;
+		}
+
+		if (parsed.Value.Channel is not null && parsed.Value.ToolVersion is not null)
+		{
+			_logger.LogError("--channel and --tool-version are mutually exclusive");
 			return 2;
 		}
 
@@ -455,7 +462,7 @@ internal class CliManager
 			}
 			var toolVersion = ServerDefinitionResolver.GetToolVersion();
 			var expectedVariant = ServerDefinitionResolver.ResolveExpectedVariant(
-				toolVersion, parsed.Value.ReleaseFlag, parsed.Value.PrereleaseFlag, parsed.Value.VersionFlag);
+				toolVersion, parsed.Value.Channel, parsed.Value.ToolVersion);
 
 			var orchestrator = _services.GetRequiredService<McpSetupOrchestrator>();
 
@@ -652,9 +659,8 @@ internal class CliManager
 	internal record struct McpSetupParsedArgs(
 		string? Ide,
 		string? Workspace,
-		bool ReleaseFlag,
-		bool PrereleaseFlag,
-		string? VersionFlag,
+		string? Channel,
+		string? ToolVersion,
 		List<string>? Servers,
 		bool JsonOutput,
 		bool AllScopes,
@@ -667,9 +673,8 @@ internal class CliManager
 	{
 		string? ide = null;
 		string? workspace = null;
-		var releaseFlag = false;
-		var prereleaseFlag = false;
-		string? versionFlag = null;
+		string? channel = null;
+		string? toolVersion = null;
 		List<string>? servers = null;
 		var jsonOutput = false;
 		var allScopes = false;
@@ -687,15 +692,13 @@ internal class CliManager
 					if (i + 1 >= args.Length) { _logger.LogError("Missing value for --workspace"); return null; }
 					workspace = args[++i];
 					break;
-				case "--release":
-					releaseFlag = true;
+				case "--channel":
+					if (i + 1 >= args.Length) { _logger.LogError("Missing value for --channel"); return null; }
+					channel = args[++i];
 					break;
-				case "--prerelease":
-					prereleaseFlag = true;
-					break;
-				case "--version":
-					if (i + 1 >= args.Length) { _logger.LogError("Missing value for --version"); return null; }
-					versionFlag = args[++i];
+				case "--tool-version":
+					if (i + 1 >= args.Length) { _logger.LogError("Missing value for --tool-version"); return null; }
+					toolVersion = args[++i];
 					break;
 				case "--servers":
 					if (i + 1 >= args.Length) { _logger.LogError("Missing value for --servers"); return null; }
@@ -741,7 +744,7 @@ internal class CliManager
 			}
 		}
 
-		return new McpSetupParsedArgs(ide, workspace, releaseFlag, prereleaseFlag, versionFlag,
+		return new McpSetupParsedArgs(ide, workspace, channel, toolVersion,
 			servers, jsonOutput, allScopes, allIdes, dryRun, ideDefinitionsPath, serverDefinitionsPath);
 	}
 

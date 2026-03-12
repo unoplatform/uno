@@ -87,13 +87,13 @@ This is the existing MCP STDIO proxy. All current options remain:
 ### Subcommand: `mcp status`
 
 ```
-uno.devserver mcp status [<ide>] [--workspace <path>] [--release|--prerelease|--version <ver>] [--json]
+uno.devserver mcp status [<ide>] [--workspace <path>] [--channel <stable|prerelease>|--tool-version <ver>] [--json]
 ```
 
 ### Subcommand: `mcp install`
 
 ```
-uno.devserver mcp install <ide> [--workspace <path>] [--release|--prerelease|--version <ver>] [--servers UnoApp,UnoDocs] [--json]
+uno.devserver mcp install <ide> [--workspace <path>] [--channel <stable|prerelease>|--tool-version <ver>] [--servers UnoApp,UnoDocs] [--json]
 ```
 
 ### Subcommand: `mcp uninstall`
@@ -108,9 +108,8 @@ uno.devserver mcp uninstall <ide> [--workspace <path>] [--servers UnoApp,UnoDocs
 |-----------|----------|------------|-------------|
 | `<ide>` | See below | status, install, uninstall | IDE identifier as a positional argument (see [IDE Profiles](#5-ide-profiles)). For `install` and `uninstall`: required unless `--all-ides` is used. For `status`: optional — when omitted, reports on all known IDE profiles (the `detected` field indicates which have config paths on disk). |
 | `--workspace <path>` | No | status, install, uninstall | Absolute path to workspace root. **Default: current working directory.** Must be an existing directory. Filesystem root paths (`/`, `C:\`, etc.) are rejected (exit code 2). |
-| `--release` | No | status, install | Force stable (release) server definitions (overrides auto-detection) |
-| `--prerelease` | No | status, install | Force prerelease server definitions (overrides auto-detection) |
-| `--version <ver>` | No | status, install | Pin a specific tool version in the server definition (for QA). Mutually exclusive with `--release` and `--prerelease` |
+| `--channel <stable|prerelease>` | No | status, install | Force the expected Uno MCP definition channel (overrides auto-detection) |
+| `--tool-version <ver>` | No | status, install | Pin a specific Uno MCP tool version in the server definition (for QA). Mutually exclusive with `--channel` |
 | `--servers <list>` | No | install, uninstall | Comma-separated server names from the server definitions. Unknown names are rejected (exit code 2). Duplicates are silently deduplicated. Default: all servers. |
 | `--all-scopes` | No | uninstall | Remove matching registrations from every configured path for the target IDE. Without this flag, uninstall only modifies the IDE profile's `writeTarget`, matching the default install scope. |
 | `--json` | No | status, install, uninstall | Emit JSON output to stdout. Without this flag, output is human-readable text to stdout |
@@ -133,7 +132,7 @@ By default, output is **human-readable text** to stdout. When `--json` is passed
 
 **Command:**
 ```
-uno.devserver mcp status [<ide>] [--workspace <path>] [--release|--prerelease|--version <ver>] [--json]
+uno.devserver mcp status [<ide>] [--workspace <path>] [--channel <stable|prerelease>|--tool-version <ver>] [--json]
 ```
 
 When `<ide>` is provided, it identifies the **caller's IDE** and is included in the output as `callerIde`. The tool scans config paths for **all known IDE profiles** and returns per-IDE status for each server, giving a complete picture of what is already configured and what could be configured.
@@ -141,12 +140,14 @@ When `<ide>` is provided, it identifies the **caller's IDE** and is included in 
 `status` is the **scanner of record**. It is not limited to entries previously written by `uno.devserver`: it must recognize Uno server registrations persisted by the IDE's own tooling, as long as they are written to the profile's documented config files and use the documented schema variants. It does **not** promise to detect transient, internal, or non-persisted IDE state.
 
 The **expected variant** (used to determine `registered` vs `outdated`) is resolved as follows:
-1. `--version <ver>` → expected variant is `pinned:<ver>`
-2. `--prerelease` → expected variant is `prerelease`
-3. `--release` → expected variant is `stable`
+1. `--tool-version <ver>` → expected variant is `pinned:<ver>`
+2. `--channel prerelease` → expected variant is `prerelease`
+3. `--channel stable` → expected variant is `stable`
 4. None of the above → **auto-detect** from the running tool's own version (`AssemblyInformationalVersionAttribute`). A version containing `-` (e.g., `5.6.0-dev.42`) means `prerelease`; otherwise `stable`.
 
-The flags `--release`, `--prerelease`, and `--version` are **mutually exclusive**.
+The options `--channel` and `--tool-version` are **mutually exclusive**.
+
+`--channel` and `--tool-version` select the expected Uno MCP definition. Any `dnx --prerelease` or `dnx --version` written to IDE config files is derived output from that selected definition, not a user-facing MCP setup flag contract.
 
 ### Human-Readable Output (default)
 
@@ -333,7 +334,7 @@ The full multi-IDE data (available when `callerIde` is `null`, i.e., no IDE spec
 
 **Command:**
 ```
-uno.devserver mcp install <ide> [--workspace <path>] [--release|--prerelease|--version <ver>] [--servers UnoApp,UnoDocs] [--json]
+uno.devserver mcp install <ide> [--workspace <path>] [--channel <stable|prerelease>|--tool-version <ver>] [--servers UnoApp,UnoDocs] [--json]
 ```
 
 ### Human-Readable Output (default)
@@ -534,7 +535,7 @@ The Visual Studio extension (`Uno.UI.RemoteControl.VS`) writes its own MCP confi
 
 ### UnoApp (stdio)
 
-The UnoApp definition varies based on the resolved variant. The `dnx` runner's `--prerelease` and `--version` flags control which version of the `uno.devserver` package is resolved at runtime.
+The UnoApp definition varies based on the resolved variant. The MCP setup CLI selects a Uno-specific channel or pinned tool version; the `dnx` runner's `--prerelease` and `--version` flags only appear as derived output in the generated definition.
 
 #### Invocation Syntaxes
 
@@ -557,7 +558,7 @@ The tool **writes** the canonical dnx runner syntax, but **detects** all known i
 }
 ```
 
-**Prerelease** (default when tool is a prerelease version, or when `--prerelease` is passed):
+**Prerelease** (default when tool is a prerelease version, or when `--channel prerelease` is passed):
 ```json
 {
   "command": "dnx",
@@ -565,7 +566,7 @@ The tool **writes** the canonical dnx runner syntax, but **detects** all known i
 }
 ```
 
-**Pinned** (when `--version <ver>` is passed):
+**Pinned** (when `--tool-version <ver>` is passed):
 ```json
 {
   "command": "dnx",
@@ -575,8 +576,8 @@ The tool **writes** the canonical dnx runner syntax, but **detects** all known i
 
 ### Version Resolution
 
-| Running tool version | No flag | `--release` | `--prerelease` | `--version 1.2.3` |
-|---------------------|---------|-------------|----------------|---------------------|
+| Running tool version | No override | `--channel stable` | `--channel prerelease` | `--tool-version 1.2.3` |
+|---------------------|-------------|--------------------|-------------------------|-------------------------|
 | `5.6.0` (stable) | stable | stable | prerelease | pinned:1.2.3 |
 | `5.6.0-dev.42` (prerelease) | prerelease | stable | prerelease | pinned:1.2.3 |
 
@@ -694,7 +695,7 @@ Example — existing entry:
 }
 ```
 
-After `install --prerelease`, the entry becomes:
+After `install --channel prerelease`, the entry becomes:
 ```json
 {
   "UnoApp": {
@@ -1224,7 +1225,7 @@ The root is a JSON object keyed by server name. Each entry defines the server's 
 
 Each variant contains the JSON properties that will be written into the IDE config file (the "inner" definition, without the server name key).
 
-For `pinned` variants, the placeholder `{version}` is replaced with the value of `--version <ver>` at runtime.
+For `pinned` variants, the placeholder `{version}` is replaced with the value of `--tool-version <ver>` at runtime.
 
 #### Detection Patterns
 
