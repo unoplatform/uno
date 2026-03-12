@@ -16,6 +16,12 @@ internal sealed record IdeProfile(
 	string? UrlKey = null,
 	IReadOnlyDictionary<string, string>? TypeMap = null,
 	bool MergeCommandArgs = false);
+// Future direction:
+// Some IDE clients expose a native CLI for MCP registration (for example Claude Code).
+// We currently model every profile as file-backed because status/install/uninstall are
+// standardized around persisted config files, but this record may eventually grow an
+// install strategy so install/uninstall can delegate to a native CLI while status keeps
+// scanning the on-disk config as the source of truth.
 
 internal sealed record ServerDefinition(
 	string Transport,
