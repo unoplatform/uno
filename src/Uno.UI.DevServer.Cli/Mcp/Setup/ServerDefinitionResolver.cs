@@ -91,11 +91,8 @@ internal static class ServerDefinitionResolver
 			$"Server definition does not contain variant '{expectedVariant}' or fallback variant 'stable'.");
 	}
 
-	private static JsonObject CloneJsonObject(JsonObject source)
-	{
-		var json = source.ToJsonString();
-		return JsonNode.Parse(json)!.AsObject();
-	}
+	private static JsonObject CloneJsonObject(JsonObject source) =>
+		source.DeepClone().AsObject();
 
 	private static void ReplaceVersionPlaceholder(JsonObject obj, string version)
 	{

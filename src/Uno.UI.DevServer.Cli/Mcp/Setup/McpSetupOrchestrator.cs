@@ -83,6 +83,12 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 	/// <summary>
 	/// Registers MCP servers in the target IDE's config files.
 	/// </summary>
+	/// <remarks>
+	/// Today install/uninstall are file-backed for every profile. Some clients may later
+	/// get a native registration path (for example a vendor CLI), but status should still
+	/// be able to scan the persisted config files so externally-created registrations
+	/// remain visible.
+	/// </remarks>
 	public OperationResponse Install(
 		Definitions defs,
 		string workspace,
