@@ -22,6 +22,7 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger) : IWo
 		}
 
 		var candidates = new List<WorkspaceCandidate>();
+		// Per-resolution cache: every new resolve call rebuilds this dictionary.
 		var globalJsonCache = new Dictionary<string, (string? sdkPackage, string? sdkVersion)>(PathComparison.FileSystemComparer);
 
 		foreach (var solutionPath in solutionFiles.OrderBy(path => path, PathComparison.FileSystemComparer))
@@ -99,11 +100,51 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger) : IWo
 		};
 	}
 
+	public async Task<WorkspaceResolution> ResolveExplicitWorkspaceAsync(string requestedDirectory)
+	{
+		var normalizedRequestedDirectory = Path.GetFullPath(requestedDirectory);
+		var resolved = await ResolveAsync(normalizedRequestedDirectory);
+		if (resolved.IsResolved || resolved.ResolutionKind != WorkspaceResolutionKind.NoCandidates)
+		{
+			return resolved;
+		}
+
+		var globalJsonPath = Path.Combine(normalizedRequestedDirectory, "global.json");
+		if (!File.Exists(globalJsonPath))
+		{
+			return resolved;
+		}
+
+		var parsed = await GlobalJsonLocator.ParseGlobalJsonFileForUnoSdkAsync(globalJsonPath, _logger);
+		if (string.IsNullOrWhiteSpace(parsed.sdkPackage) || string.IsNullOrWhiteSpace(parsed.sdkVersion))
+		{
+			return new WorkspaceResolution
+			{
+				RequestedWorkingDirectory = normalizedRequestedDirectory,
+				SelectedGlobalJsonPath = globalJsonPath,
+				ResolutionKind = WorkspaceResolutionKind.NoValidWorkspace,
+				SelectionSource = WorkspaceSelectionSource.Automatic,
+				CandidateSolutions = [],
+			};
+		}
+
+		return new WorkspaceResolution
+		{
+			RequestedWorkingDirectory = normalizedRequestedDirectory,
+			EffectiveWorkspaceDirectory = normalizedRequestedDirectory,
+			SelectedGlobalJsonPath = globalJsonPath,
+			ResolutionKind = WorkspaceResolutionKind.CurrentDirectory,
+			SelectionSource = WorkspaceSelectionSource.Automatic,
+			CandidateSolutions = [],
+		};
+	}
+
 	public async Task<WorkspaceResolution> ResolveSolutionAsync(string requestedDirectory, string solutionPath, WorkspaceSelectionSource selectionSource = WorkspaceSelectionSource.UserSelected)
 	{
 		var normalizedRequestedDirectory = Path.GetFullPath(requestedDirectory);
 		var normalizedSolutionPath = Path.GetFullPath(solutionPath);
 		var candidateSolutions = SolutionFileFinder.FindSolutionFiles(normalizedRequestedDirectory);
+		// Per-selection cache: every explicit selection attempt rebuilds this dictionary.
 		var globalJsonCache = new Dictionary<string, (string? sdkPackage, string? sdkVersion)>(PathComparison.FileSystemComparer);
 
 		if (!File.Exists(normalizedSolutionPath)

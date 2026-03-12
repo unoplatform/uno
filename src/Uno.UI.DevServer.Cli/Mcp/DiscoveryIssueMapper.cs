@@ -25,7 +25,7 @@ internal static class DiscoveryIssueMapper
 			{
 				Code = IssueCode.WorkspaceAmbiguous,
 				Severity = ValidationSeverity.Warning,
-				Message = "Multiple Uno workspaces matched the current directory. The DevServer host was not started automatically.",
+				Message = "Multiple Uno solutions matched the current directory. The DevServer host was not started automatically.",
 				Remediation = "Start from a more specific workspace directory, or use --solution-dir to disambiguate. If the repo changed after startup, restart the MCP bridge once the intended workspace is clear.",
 			});
 			return issues;

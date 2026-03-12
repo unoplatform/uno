@@ -45,10 +45,11 @@ internal class CliManager
 
 			originalArgs = solutionDirParseResult.FilteredArgs;
 			var requestedWorkingDirectory = solutionDirParseResult.SolutionDirectory ?? Environment.CurrentDirectory;
+			var hasExplicitWorkspaceOverride = solutionDirParseResult.SolutionDirectory is not null;
 
 			if (originalArgs.Contains("--mcp-app"))
 			{
-				var mcpWorkspaceResolution = await _workspaceResolver.ResolveAsync(requestedWorkingDirectory);
+				var mcpWorkspaceResolution = await ResolveWorkspaceAsync(requestedWorkingDirectory, hasExplicitWorkspaceOverride);
 				LogVersionBanner();
 				return await RunMcpProxyAsync(
 					originalArgs.Where(a => a != "--mcp-app").ToArray(),
@@ -78,7 +79,7 @@ internal class CliManager
 
 			if (requiresWorkspaceResolution)
 			{
-				workspaceResolution = await _workspaceResolver.ResolveAsync(requestedWorkingDirectory);
+				workspaceResolution = await ResolveWorkspaceAsync(requestedWorkingDirectory, hasExplicitWorkspaceOverride);
 				workingDirectory = workspaceResolution.EffectiveWorkspaceDirectory ?? requestedWorkingDirectory;
 			}
 
@@ -105,7 +106,7 @@ internal class CliManager
 
 			if (originalArgs is { Length: > 0 } && string.Equals(originalArgs[0], "login", StringComparison.OrdinalIgnoreCase))
 			{
-				var loginWorkspace = (await _workspaceResolver.ResolveAsync(requestedWorkingDirectory)).EffectiveWorkspaceDirectory ?? requestedWorkingDirectory;
+				var loginWorkspace = (await ResolveWorkspaceAsync(requestedWorkingDirectory, hasExplicitWorkspaceOverride)).EffectiveWorkspaceDirectory ?? requestedWorkingDirectory;
 				return await OpenSettings(originalArgs, loginWorkspace);
 			}
 
@@ -154,6 +155,11 @@ internal class CliManager
 			|| string.Equals(command, "stop", StringComparison.OrdinalIgnoreCase)
 			|| string.Equals(command, "disco", StringComparison.OrdinalIgnoreCase)
 			|| string.Equals(command, "health", StringComparison.OrdinalIgnoreCase);
+
+	private Task<WorkspaceResolution> ResolveWorkspaceAsync(string requestedWorkingDirectory, bool hasExplicitWorkspaceOverride)
+		=> hasExplicitWorkspaceOverride
+			? _workspaceResolver.ResolveExplicitWorkspaceAsync(requestedWorkingDirectory)
+			: _workspaceResolver.ResolveAsync(requestedWorkingDirectory);
 
 	internal void LogVersionBanner()
 	{

@@ -125,6 +125,30 @@ public class Given_WorkspaceResolver
 	}
 
 	[TestMethod]
+	public async Task WhenExplicitWorkspaceHasUnoGlobalJsonButNoSolution_UsesCurrentDirectory()
+	{
+		var root = CreateTempDirectory();
+		try
+		{
+			await File.WriteAllTextAsync(Path.Combine(root, "global.json"), """{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.1"}}""");
+
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
+
+			var result = await resolver.ResolveExplicitWorkspaceAsync(root);
+
+			result.IsResolved.Should().BeTrue();
+			result.EffectiveWorkspaceDirectory.Should().Be(root);
+			result.SelectedSolutionPath.Should().BeNull();
+			result.SelectedGlobalJsonPath.Should().Be(Path.Combine(root, "global.json"));
+			result.ResolutionKind.Should().Be(WorkspaceResolutionKind.CurrentDirectory);
+		}
+		finally
+		{
+			Directory.Delete(root, recursive: true);
+		}
+	}
+
+	[TestMethod]
 	public async Task WhenMultipleCandidatesOnlyOneHasValidUnoGlobalJson_SelectsThatWorkspace()
 	{
 		var root = CreateTempDirectory();

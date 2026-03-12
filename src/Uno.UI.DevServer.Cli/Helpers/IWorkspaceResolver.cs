@@ -4,6 +4,8 @@ internal interface IWorkspaceResolver
 {
 	Task<WorkspaceResolution> ResolveAsync(string requestedDirectory);
 
+	Task<WorkspaceResolution> ResolveExplicitWorkspaceAsync(string requestedDirectory);
+
 	Task<WorkspaceResolution> ResolveSolutionAsync(
 		string requestedDirectory,
 		string solutionPath,

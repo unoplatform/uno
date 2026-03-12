@@ -44,6 +44,7 @@ public class Given_DiscoveryIssueMapper
 		issues.Should().HaveCount(1);
 		issues[0].Code.Should().Be(IssueCode.WorkspaceAmbiguous);
 		issues[0].Severity.Should().Be(ValidationSeverity.Warning);
+		issues[0].Message.Should().Contain("Multiple Uno solutions matched the current directory");
 		issues[0].Remediation.Should().Contain("restart the MCP bridge");
 	}
 
