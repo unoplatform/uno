@@ -113,7 +113,7 @@ public class XamlCodeBehindGeneratorTests
 
 			if (perFileGenerateCodeBehind is not null)
 			{
-				configBuilder.AppendLine($"build_metadata.AdditionalFiles.GenerateCodeBehind = {perFileGenerateCodeBehind}");
+				configBuilder.AppendLine($"build_metadata.AdditionalFiles.UnoGenerateCodeBehind = {perFileGenerateCodeBehind}");
 			}
 		}
 
