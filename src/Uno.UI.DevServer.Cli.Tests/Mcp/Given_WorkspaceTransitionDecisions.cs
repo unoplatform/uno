@@ -85,6 +85,17 @@ public class Given_WorkspaceTransitionDecisions
 	}
 
 	[TestMethod]
+	public void WhenSelectedSolutionChangesWithinSameWorkspace_UserSelectionActionIsRestart()
+	{
+		var previous = CreateResolved(@"D:\repo\src", @"D:\repo\src\AppA.slnx");
+		var current = CreateResolved(@"D:\repo\src", @"D:\repo\src\AppB.slnx");
+
+		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.UserSelection, devServerStarted: true);
+
+		action.Should().Be(WorkspaceTransitionAction.Restart);
+	}
+
+	[TestMethod]
 	public void WhenWorkspaceBecomesAmbiguous_ActionIsStopForFileSystem()
 	{
 		var previous = CreateResolved(@"D:\repo\src", @"D:\repo\src\App.slnx");
