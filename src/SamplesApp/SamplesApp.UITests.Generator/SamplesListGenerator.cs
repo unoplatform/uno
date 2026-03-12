@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
@@ -49,7 +50,7 @@ namespace Uno.Samples.UITest.Generator
 
 			// Extract portion after UITests.Shared/
 			var marker = "UITests.Shared/";
-			var index = filePath.IndexOf(marker);
+			var index = filePath.IndexOf(marker, StringComparison.Ordinal);
 			if (index < 0)
 			{
 				return "";
@@ -58,7 +59,7 @@ namespace Uno.Samples.UITest.Generator
 			var relativePath = filePath.Substring(index + marker.Length);
 
 			// For .xaml.cs files, strip the trailing .cs to link to the XAML file
-			if (relativePath.EndsWith(".xaml.cs"))
+			if (relativePath.EndsWith(".xaml.cs", StringComparison.Ordinal))
 			{
 				relativePath = relativePath.Substring(0, relativePath.Length - 3);
 			}
