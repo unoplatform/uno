@@ -14,4 +14,11 @@ internal interface IXamlRootHost
 	/// Resigns native first responder
 	/// </summary>
 	void ResignNativeFocus() { }
+
+	/// <summary>
+	/// When true, CompositionTarget throttles FrameTick scheduling until the host
+	/// signals that the previous frame has been presented (via OnFramePresented).
+	/// Only Win32 returns true (it has a dedicated render thread for presentation).
+	/// </summary>
+	bool SupportsRenderThrottle => false;
 }

@@ -112,6 +112,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				? (IRenderer?)GlRenderer.TryCreateGlRenderer(_hwnd) ?? new SoftwareRenderer(_hwnd)
 				: new SoftwareRenderer(_hwnd);
 
+		InitializeRenderThread();
+
 		RegisterForBackgroundColor();
 
 		PointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
@@ -241,16 +243,11 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		switch (msg)
 		{
-			case PInvoke.WM_ENTERSIZEMOVE:
-				_inSizeMove = true;
-				break;
-			case PInvoke.WM_EXITSIZEMOVE:
-				_inSizeMove = false;
-				break;
 			case PInvoke.WM_NCPAINT:
 				if (_forcePaintOnNextEraseBkgndOrNcPaint)
 				{
-					SynchronousRenderAndDraw(true);
+					(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.SynchronousRender(forceLayout: true);
+					_renderThread?.SignalNewFrame();
 				}
 				break;
 			case PInvoke.WM_ACTIVATE:
@@ -273,27 +270,24 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				UpdateDisplayInfo();
 				OnWindowSizeOrLocationChanged();
 				UpdateWindowState(wParam);
-				// During the modal resize loop, dispatcher-based blits are suppressed
-				// (they would starve the resize messages). Render synchronously instead,
-				// like WPF does with CompleteRender() during user-initiated resize.
-				if (_inSizeMove)
-				{
-					SynchronousRenderAndDraw(true);
-				}
+				// Synchronous layout + record, then signal the render thread.
+				// The render thread presents at VSync independently of any modal loop.
+				(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.SynchronousRender(forceLayout: true);
+				_renderThread?.SignalNewFrame();
 				return new LRESULT(0);
 			case PInvoke.WM_MOVE:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_MOVE)} message.");
 				UpdateDisplayInfo();
 				OnWindowSizeOrLocationChanged();
 				// When the window moves and part of it was off-screen, Windows discards that part of
-				// the framebuffer. SynchronousRenderAndDraw re-blits so the exposed area is painted.
-				SynchronousRenderAndDraw(false);
+				// the framebuffer. Signal the render thread to re-blit the exposed area.
+				_renderThread?.SignalNewFrame();
 				return new LRESULT(0);
 			case PInvoke.WM_PAINT:
-				// Blit the current frame to screen. WM_PAINT is generated when the window is
-				// uncovered, restored, or otherwise needs repainting. We blit then let DefWindowProc
-				// call BeginPaint/EndPaint to validate the update region.
-				Render();
+				// Signal the render thread to re-blit the current frame. WM_PAINT is generated
+				// when the window is uncovered, restored, or otherwise needs repainting.
+				// DefWindowProc calls BeginPaint/EndPaint to validate the update region.
+				_renderThread?.SignalNewFrame();
 				break;
 			case PInvoke.WM_GETMINMAXINFO:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_GETMINMAXINFO)} message.");
@@ -314,14 +308,14 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				if (_forcePaintOnNextEraseBkgndOrNcPaint)
 				{
 					_forcePaintOnNextEraseBkgndOrNcPaint = false;
-					// This call is necessary to avoid an initial blank frame during window startup.
-					// This follows from the SynchronousRenderAndDraw call in ShowCore.
-					Render();
+					// Signal the render thread to re-blit. The first frame was already painted
+					// by ShowCore (which waited for present), so the framebuffer has content.
+					_renderThread?.SignalNewFrame();
 					return new LRESULT(1);
 				}
 				else
 				{
-					// Paiting on WM_ERASEBKGND causes severe flickering in hosted native windows so we
+					// Painting on WM_ERASEBKGND causes severe flickering in hosted native windows so we
 					// only do it the first time when we really need to
 					return new LRESULT(0);
 				}
@@ -391,7 +385,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// triggered by a Loaded handler), and FrameTick's RaiseLoadedEvent would corrupt the
 		// iteration of the loaded event list.
 		(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.SynchronousRender(forceLayout: sizeChanged);
-		Render();
+		_renderThread?.SignalNewFrame();
+		_renderThread?.WaitForNextPresent(TimeSpan.FromMilliseconds(100));
 	}
 
 	private static System.Drawing.Point PointFromLParam(LPARAM lParam)
@@ -459,6 +454,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_DESTROY)} message.");
 		Win32SystemThemeHelperExtension.Instance.SystemThemeChanged -= OnSystemThemeChanged;
 		Win32Host.UnregisterWindow(_hwnd);
+		_renderThread?.Dispose();
+		_renderThread = null;
 		_renderer.Dispose();
 		_rendererDisposed = true;
 		_backgroundDisposable?.Dispose();
@@ -589,12 +586,10 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 					_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_MINIMIZE);
 					break;
 				default:
-					// This SynchronousRenderAndDraw call avoids showing the window with a blank first frame.
-					// We call it here and not when handling WM_ERASEBKGND. The problem is that any minor delay
-					// will cause a split-second white flash, so we're keeping the "time to blit" to a minimum by rendering
-					// before the window is shown and then making a Render call on WM_ERASEBKGND.
-					// For other pending states, SynchronousRenderAndDraw will still be called but slightly later after
-					// the window has been resized (due to e.g. maximizing)
+					// Record the first frame synchronously, signal the render thread, and wait
+					// for presentation to complete before showing the window. This avoids a
+					// blank first-frame flash. For other pending states (maximized/minimized),
+					// the first frame is handled by WM_SIZE after the window is resized.
 					SynchronousRenderAndDraw(true);
 					PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
 					break;
