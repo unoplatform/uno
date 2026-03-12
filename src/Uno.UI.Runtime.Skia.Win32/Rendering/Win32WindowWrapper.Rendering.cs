@@ -1,11 +1,9 @@
 using System;
-using System.Drawing;
-using System.Threading;
 using Windows.Win32;
 using Windows.Win32.Foundation;
+using Windows.Win32.Graphics.OpenGL;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
-using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
@@ -14,13 +12,12 @@ namespace Uno.UI.Runtime.Skia.Win32;
 
 internal partial class Win32WindowWrapper
 {
-	private int _renderCount;
 	private SKSurface? _surface;
-	private bool _rendering;
-	private bool _blitScheduled;
-	private bool _inSizeMove;
+	private RenderThread? _renderThread;
 
 	public event EventHandler<SKPath>? RenderingNegativePathReevaluated; // not necessarily changed
+
+	bool IXamlRootHost.SupportsRenderThrottle => true;
 
 	unsafe void IXamlRootHost.InvalidateRender()
 	{
@@ -29,28 +26,8 @@ internal partial class Win32WindowWrapper
 		// Like WPF (InvalidateRect in HwndTarget) and Avalonia (InvalidateRect in WindowImpl).
 		PInvoke.InvalidateRect(_hwnd, default(RECT*), false);
 
-		// During the modal resize/move loop, rendering is driven synchronously from
-		// WM_SIZE. Don't schedule dispatcher-based blits — they would flood the modal
-		// loop's message queue and starve resize messages (each FrameTick posts the
-		// next via PostMessage, and GL's SwapBuffers blocks for VSync per blit).
-		if (_inSizeMove)
-		{
-			return;
-		}
-
-		// Schedule a single coalesced blit at Render priority. Neither WPF nor Avalonia
-		// rely on WM_PAINT for the primary blit — WM_PAINT is too low priority in the
-		// Windows message queue (starved by PostMessage'd dispatcher items during
-		// continuous animation). Like Avalonia's compositor-driven render loop, we
-		// schedule the blit as part of the render pass via the dispatcher.
-		if (!Interlocked.Exchange(ref _blitScheduled, true))
-		{
-			NativeDispatcher.Main.Enqueue(() =>
-			{
-				Interlocked.Exchange(ref _blitScheduled, false);
-				Render();
-			}, NativeDispatcherPriority.Render);
-		}
+		// Signal the render thread to present the current frame.
+		_renderThread?.SignalNewFrame();
 	}
 
 	private void ReinitializeRenderer()
@@ -60,43 +37,65 @@ internal partial class Win32WindowWrapper
 		_surface = null;
 	}
 
-	private void Render()
+	private void InitializeRenderThread()
 	{
-		if (_rendererDisposed || _rendering)
-		{
-			return;
-		}
+		// TryCreateGlRenderer leaves the GL context current on the UI thread
+		// (WglCurrentContextDisposable doesn't restore to "no context" when there
+		// was none before). Detach it so the render thread can make it current.
+		// No-op for the software renderer (no GL context to detach).
+		PInvoke.wglMakeCurrent(default, HGLRC.Null);
 
-		this.LogTrace()?.Trace($"Render {this._renderCount++}");
-
-		_renderer.StartPaint();
-		using var paintDisposable = new DisposableStruct<IRenderer>(static r => r.EndPaint(), _renderer);
-
-		// In some cases, if a call to a synchronization method such as Monitor.Enter or Task.Wait()
-		// happens inside Paint(), the dotnet runtime can itself call WndProc, which can lead to
-		// Paint() becoming reentrant which can cause crashes.
-		_rendering = true;
-		try
-		{
-			var nativeElementClipPath = ((CompositionTarget)((IXamlRootHost)this).RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_surface?.Canvas, size =>
+		_renderThread = new RenderThread(
+			_renderer,
+			drawFrame: DrawFrame,
+			onClipPathUpdated: clipPath =>
 			{
-				_surface?.Dispose();
-				_surface = _renderer.UpdateSize((int)size.Width, (int)size.Height);
-				return _surface.Canvas;
+				NativeDispatcher.Main.Enqueue(() =>
+					RenderingNegativePathReevaluated?.Invoke(this, clipPath),
+					NativeDispatcherPriority.Normal);
+			},
+			onFramePresented: () =>
+			{
+				NativeDispatcher.Main.Enqueue(
+					OnFramePresented,
+					NativeDispatcherPriority.Render);
 			});
-			RenderingNegativePathReevaluated?.Invoke(this, nativeElementClipPath);
-		}
-		finally
+	}
+
+	/// <summary>
+	/// Called on the render thread. Replays the last recorded SKPicture to
+	/// the canvas and returns the clip path and client dimensions for CopyPixels.
+	/// </summary>
+	private unsafe (SKPath clipPath, int width, int height)? DrawFrame()
+	{
+		var ct = ((IXamlRootHost)this).RootElement?.Visual.CompositionTarget as CompositionTarget;
+		if (ct is null || _rendererDisposed)
 		{
-			_rendering = false;
+			return null;
 		}
+
+		var clipPath = ct.OnNativePlatformFrameRequested(_surface?.Canvas, size =>
+		{
+			_surface?.Dispose();
+			_surface = _renderer.UpdateSize((int)size.Width, (int)size.Height);
+			return _surface.Canvas;
+		});
 
 		if (!PInvoke.GetClientRect(_hwnd, out RECT clientRect))
 		{
-			this.LogError()?.Error($"{nameof(PInvoke.GetClientRect)} failed: {Win32Helper.GetErrorMessage()}");
-			return;
+			return null;
 		}
-		// this may call WM_ERASEBKGND
-		_renderer.CopyPixels(clientRect.Width, clientRect.Height);
+
+		return (clipPath, clientRect.Width, clientRect.Height);
+	}
+
+	/// <summary>
+	/// Posted to the UI thread by the render thread after a frame is presented.
+	/// Clears the throttle so the next FrameTick can be scheduled.
+	/// </summary>
+	private void OnFramePresented()
+	{
+		var ct = ((IXamlRootHost)this).RootElement?.Visual.CompositionTarget as CompositionTarget;
+		ct?.OnFramePresented();
 	}
 }

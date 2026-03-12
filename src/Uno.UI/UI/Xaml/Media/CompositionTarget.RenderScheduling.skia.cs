@@ -57,13 +57,38 @@ public partial class CompositionTarget
 	/// </summary>
 	private bool _inFrameTick;
 
+	/// <summary>
+	/// Throttle flag: when true, ScheduleFrameTick defers until OnFramePresented clears it.
+	/// Only set on hosts with a render thread (SupportsRenderThrottle == true).
+	/// Prevents the UI thread from recording frames faster than the render thread presents.
+	/// </summary>
+	private bool _waitingForPresent;
+
+	/// <summary>
+	/// Set when ScheduleFrameTick is called while throttled. OnFramePresented schedules
+	/// the deferred FrameTick when it clears the throttle.
+	/// </summary>
+	private bool _pendingFrameRequest;
+
 	void ICompositionTarget.RequestNewFrame()
 	{
+		// Only schedule the next FrameTick. Don't call host.InvalidateRender() here —
+		// the render thread is signaled from Render() after a new frame is recorded.
 		ScheduleFrameTick();
+	}
 
-		if (ContentRoot.XamlRoot is { } xamlRoot && XamlRootMap.GetHostForRoot(xamlRoot) is { } host)
+	/// <summary>
+	/// Called by the host's render thread (posted to UI thread) after a frame is presented.
+	/// Clears the throttle and schedules the next FrameTick if one was deferred.
+	/// </summary>
+	internal void OnFramePresented()
+	{
+		NativeDispatcher.CheckThreadAccess();
+		_waitingForPresent = false;
+		if (_pendingFrameRequest)
 		{
-			host.InvalidateRender();
+			_pendingFrameRequest = false;
+			ScheduleFrameTick();
 		}
 	}
 
@@ -73,6 +98,14 @@ public partial class CompositionTarget
 	/// </summary>
 	internal void ScheduleFrameTick()
 	{
+		if (_waitingForPresent)
+		{
+			// Render thread hasn't finished presenting the previous frame.
+			// Remember the request — it will be scheduled when OnFramePresented fires.
+			_pendingFrameRequest = true;
+			return;
+		}
+
 		if (!Interlocked.Exchange(ref _frameTickScheduled, true))
 		{
 			NativeDispatcher.Main.Enqueue(() =>
@@ -124,6 +157,14 @@ public partial class CompositionTarget
 			if (SkiaRenderHelper.CanRecordPicture(rootElement))
 			{
 				Render();
+
+				// Throttle: don't schedule next FrameTick until render thread presents.
+				// Only set on hosts with a render thread that calls OnFramePresented.
+				if (ContentRoot.XamlRoot is { } xamlRoot
+					&& XamlRootMap.GetHostForRoot(xamlRoot) is { SupportsRenderThrottle: true })
+				{
+					_waitingForPresent = true;
+				}
 			}
 		}
 		finally
