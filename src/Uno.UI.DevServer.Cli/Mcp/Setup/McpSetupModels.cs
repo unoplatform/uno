@@ -20,7 +20,9 @@ internal sealed record IdeProfile(
 	bool IncludeType = false,
 	string? UrlKey = null,
 	IReadOnlyDictionary<string, string>? TypeMap = null,
-	bool MergeCommandArgs = false);
+	bool MergeCommandArgs = false,
+	string Strategy = "file",
+	string? ManualRegistrationMessage = null);
 // Future direction:
 // Some IDE clients expose a native CLI for MCP registration (for example Claude Code).
 // We currently model every profile as file-backed because status/install/uninstall are
@@ -52,7 +54,13 @@ internal sealed record StatusResponse(
 	string ToolVersion,
 	string ExpectedVariant,
 	IReadOnlyList<string> DetectedIdes,
+	IReadOnlyList<SupportedIdeEntry> SupportedIdes,
 	IReadOnlyList<ServerStatusEntry> Servers);
+
+internal sealed record SupportedIdeEntry(
+	string Ide,
+	string Strategy,
+	bool Detected);
 
 internal sealed record ServerStatusEntry(
 	string Name,

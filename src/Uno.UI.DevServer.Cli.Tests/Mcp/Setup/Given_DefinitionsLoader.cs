@@ -11,17 +11,21 @@ public class Given_DefinitionsLoader
 	{
 		var defs = DefinitionsLoader.Load();
 
-		defs.Ides.Should().ContainKey("vscode");
-		defs.Ides.Should().ContainKey("cursor");
-		defs.Ides.Should().ContainKey("windsurf");
-		defs.Ides.Should().ContainKey("kiro");
-		defs.Ides.Should().ContainKey("antigravity");
-		defs.Ides.Should().ContainKey("gemini-cli");
-		defs.Ides.Should().ContainKey("rider");
-		defs.Ides.Should().ContainKey("claude-code");
-		defs.Ides.Should().ContainKey("claude-desktop");
-		defs.Ides.Should().ContainKey("opencode");
-		defs.Ides.Should().ContainKey("unknown");
+		defs.Ides.Keys.Should().Contain([
+			"copilot-vscode",
+			"copilot-vs",
+			"copilot-cli",
+			"cursor",
+			"windsurf",
+			"kiro",
+			"gemini-antigravity",
+			"gemini-cli",
+			"junie-rider",
+			"claude-code",
+			"claude-desktop",
+			"opencode",
+			"unknown",
+		]);
 	}
 
 	[TestMethod]
@@ -56,14 +60,26 @@ public class Given_DefinitionsLoader
 	}
 
 	[TestMethod]
-	public void Load_EmbeddedResources_VsCodeUsesServersRootKey()
+	public void Load_EmbeddedResources_CopilotVsCodeUsesServersRootKey()
 	{
 		var defs = DefinitionsLoader.Load();
-		var vscode = defs.Ides["vscode"];
+		var vscode = defs.Ides["copilot-vscode"];
 
 		vscode.JsonRootKey.Should().Be("servers");
 		vscode.WriteTarget.Should().Contain("{workspace}");
 		vscode.ConfigPaths.Length.Should().BeGreaterThan(1);
+	}
+
+	[TestMethod]
+	public void Load_EmbeddedResources_CopilotVsUsesVsConfigFile()
+	{
+		var defs = DefinitionsLoader.Load();
+		var profile = defs.Ides["copilot-vs"];
+
+		profile.ConfigPaths.Should().Contain("{workspace}/.vscode/mcp.json");
+		profile.ConfigPaths.Should().Contain("{workspace}/.vs/mcp.json");
+		profile.WriteTarget.Should().Be("{workspace}/.vs/mcp.json");
+		profile.JsonRootKey.Should().Be("servers");
 	}
 
 	[TestMethod]
@@ -109,6 +125,37 @@ public class Given_DefinitionsLoader
 	}
 
 	[TestMethod]
+	public void Load_EmbeddedResources_GeminiAntigravityUsesDedicatedConfigFile()
+	{
+		var defs = DefinitionsLoader.Load();
+		var profile = defs.Ides["gemini-antigravity"];
+
+		profile.ConfigPaths.Should().Contain("{home}/.gemini/antigravity/mcp_config.json");
+		profile.WriteTarget.Should().Be("{home}/.gemini/antigravity/mcp_config.json");
+	}
+
+	[TestMethod]
+	public void Load_EmbeddedResources_JunieRiderUsesIdeaConfigFile()
+	{
+		var defs = DefinitionsLoader.Load();
+		var profile = defs.Ides["junie-rider"];
+
+		profile.ConfigPaths.Should().Contain("{workspace}/.idea/mcpServers.json");
+		profile.WriteTarget.Should().Be("{workspace}/.idea/mcpServers.json");
+	}
+
+	[TestMethod]
+	public void Load_EmbeddedResources_CopilotCliIsNative()
+	{
+		var defs = DefinitionsLoader.Load();
+		var profile = defs.Ides["copilot-cli"];
+
+		profile.Strategy.Should().Be("native");
+		profile.ConfigPaths.Should().BeEmpty();
+		profile.ManualRegistrationMessage.Should().NotBeNullOrEmpty();
+	}
+
+	[TestMethod]
 	public void Load_EmbeddedResources_DetectionPatternsPresent()
 	{
 		var defs = DefinitionsLoader.Load();
@@ -136,7 +183,7 @@ public class Given_DefinitionsLoader
 		var defs = DefinitionsLoader.Load(fs, ideDefinitionsPath: "/custom/ides.json");
 
 		defs.Ides.Should().ContainKey("test-ide");
-		defs.Ides.Should().NotContainKey("vscode");
+		defs.Ides.Should().NotContainKey("copilot-vscode");
 	}
 
 	[TestMethod]

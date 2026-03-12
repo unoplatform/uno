@@ -13,9 +13,6 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 	private readonly IFileSystem _fs = fs;
 	private readonly ILogger<McpSetupOrchestrator> _logger = logger;
 
-	/// <summary>
-	/// Reports the installation state of all MCP servers across all IDEs.
-	/// </summary>
 	public StatusResponse Status(
 		Definitions defs,
 		string workspace,
@@ -26,9 +23,10 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		var scanner = new ConfigScanner(_fs);
 		var expectedDefinitions = BuildExpectedDefinitions(defs.Servers, expectedVariant);
 		var detectedIdes = new List<string>();
+		var supportedIdes = new List<SupportedIdeEntry>();
 		var serverEntries = new List<ServerStatusEntry>();
 
-		// Build per-server, per-IDE status
+		// Build per-server, per-client status
 		var ideStatusMap = new Dictionary<string, Dictionary<string, ServerIdeStatus>>();
 
 		foreach (var (ideName, profile) in defs.Ides)
@@ -38,6 +36,7 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 			{
 				detectedIdes.Add(ideName);
 			}
+			supportedIdes.Add(new SupportedIdeEntry(ideName, profile.Strategy, scanResult.Detected));
 
 			foreach (var (serverName, serverResult) in scanResult.ServerResults)
 			{
@@ -75,8 +74,10 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 			toolVersion,
 			expectedVariant,
 			detectedIdes,
+			supportedIdes,
 			serverEntries);
 	}
+
 	public OperationResponse Install(
 		Definitions defs,
 		string workspace,
@@ -88,7 +89,12 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 	{
 		if (!defs.Ides.TryGetValue(targetIde, out var profile))
 		{
-			return ErrorResponse($"Unknown IDE: {targetIde}");
+			return ErrorResponse($"Unknown client: {targetIde}");
+		}
+
+		if (!string.Equals(profile.Strategy, "file", StringComparison.OrdinalIgnoreCase))
+		{
+			return NativeRegistrationResponse(defs, targetIde, profile, serverFilter);
 		}
 
 		var operations = new List<OperationEntry>();
@@ -126,9 +132,6 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		return new OperationResponse(McpSetupProtocol.Version, operations);
 	}
 
-	/// <summary>
-	/// Removes MCP servers from the target IDE's config files.
-	/// </summary>
 	public OperationResponse Uninstall(
 		Definitions defs,
 		string workspace,
@@ -139,7 +142,12 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 	{
 		if (!defs.Ides.TryGetValue(targetIde, out var profile))
 		{
-			return ErrorResponse($"Unknown IDE: {targetIde}");
+			return ErrorResponse($"Unknown client: {targetIde}");
+		}
+
+		if (!string.Equals(profile.Strategy, "file", StringComparison.OrdinalIgnoreCase))
+		{
+			return NativeRegistrationResponse(defs, targetIde, profile, serverFilter);
 		}
 
 		var operations = new List<OperationEntry>();
@@ -278,7 +286,7 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		var isUpdate = serverResult is not null && serverResult.Status == "outdated";
 		var action = isUpdate ? "updated" : "created";
 
-		// Apply IDE-specific transformations
+		// Apply client-specific transformations
 		var installDef = profile.MergeCommandArgs ? MergeCommandAndArgs(definition) : definition;
 		var transportLabel = profile.TypeMap is not null
 			&& profile.TypeMap.TryGetValue(serverDef.Transport, out var mapped)
@@ -326,6 +334,25 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		}
 
 		return clone;
+	}
+
+	private static OperationResponse NativeRegistrationResponse(
+		Definitions defs,
+		string targetIde,
+		IdeProfile profile,
+		IReadOnlyList<string>? serverFilter)
+	{
+		var operations = defs.Servers.Keys
+			.Where(serverName => serverFilter is null || serverFilter.Contains(serverName, StringComparer.OrdinalIgnoreCase))
+			.Select(serverName => new OperationEntry(
+				serverName,
+				targetIde,
+				"error",
+				null,
+				profile.ManualRegistrationMessage ?? $"Use the native registration flow for {targetIde}."))
+			.ToList();
+
+		return new OperationResponse(McpSetupProtocol.Version, operations);
 	}
 
 	private static string? FindServerKeyInConfig(
