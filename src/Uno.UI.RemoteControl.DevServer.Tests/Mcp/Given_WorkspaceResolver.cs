@@ -147,6 +147,11 @@ public class Given_WorkspaceResolver
 			result.IsResolved.Should().BeTrue();
 			result.EffectiveWorkspaceDirectory.Should().Be(srcA);
 			result.SelectedSolutionPath.Should().Be(Path.Combine(srcA, "AppA.slnx"));
+			result.CandidateSolutions.Should().BeEquivalentTo(
+			[
+				Path.Combine(srcA, "AppA.slnx"),
+				Path.Combine(srcB, "AppB.slnx"),
+			]);
 		}
 		finally
 		{

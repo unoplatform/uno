@@ -155,7 +155,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 							_logger.LogDebug($"Using user-specified port {port}");
 						}
 
-						var solution = solutionFiles.FirstOrDefault();
+						var solution = DetermineSolutionToLaunch(_currentDirectory, solutionFiles, _workspaceResolution);
 
 						_logger.LogTrace(
 							"DevServerMonitor launching server from {HostPath} in {WorkingDirectory} on port {Port}",
@@ -254,6 +254,25 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 				await Task.Delay(TimeSpan.FromSeconds(10), ct);
 			}
 		}
+	}
+
+	internal static string? DetermineSolutionToLaunch(string currentDirectory, IReadOnlyList<string> solutionFiles, WorkspaceResolution? workspaceResolution)
+	{
+		if (!string.IsNullOrWhiteSpace(workspaceResolution?.SelectedSolutionPath))
+		{
+			var selectedSolutionPath = Path.GetFullPath(workspaceResolution.SelectedSolutionPath);
+			var matchingSolution = solutionFiles.FirstOrDefault(solution =>
+				string.Equals(Path.GetFullPath(solution), selectedSolutionPath, StringComparison.OrdinalIgnoreCase));
+
+			if (matchingSolution is not null)
+			{
+				return matchingSolution;
+			}
+		}
+
+		return solutionFiles
+			.OrderBy(solution => Path.GetRelativePath(currentDirectory, solution), StringComparer.OrdinalIgnoreCase)
+			.FirstOrDefault();
 	}
 
 	private async Task<bool> WaitForServerReadyAsync(int port, CancellationToken ct)

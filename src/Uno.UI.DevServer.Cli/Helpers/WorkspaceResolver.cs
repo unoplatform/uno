@@ -77,7 +77,7 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger)
 			{
 				RequestedWorkingDirectory = normalizedRequestedDirectory,
 				ResolutionKind = WorkspaceResolutionKind.Ambiguous,
-				CandidateSolutions = [.. bestCandidates.Select(candidate => candidate.SolutionPath)],
+				CandidateSolutions = [.. solutionFiles],
 			};
 		}
 
@@ -94,7 +94,7 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger)
 			SelectedGlobalJsonPath = selected.GlobalJsonPath,
 			ResolutionKind = resolutionKind,
 			SelectionSource = WorkspaceSelectionSource.Automatic,
-			CandidateSolutions = [.. candidates.Select(candidate => candidate.SolutionPath).Distinct(StringComparer.OrdinalIgnoreCase)],
+			CandidateSolutions = [.. solutionFiles],
 		};
 	}
 
