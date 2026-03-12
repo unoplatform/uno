@@ -22,7 +22,7 @@ internal sealed class FileSystem : IFileSystem
 			Directory.CreateDirectory(dir);
 		}
 
-		var tempPath = path + ".tmp";
+		var tempPath = Path.Combine(dir ?? ".", Path.GetRandomFileName());
 		try
 		{
 			File.WriteAllText(tempPath, content, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
@@ -34,6 +34,8 @@ internal sealed class FileSystem : IFileSystem
 			throw;
 		}
 	}
+
+	public void BackupFile(string path) => File.Copy(path, path + ".bak", overwrite: true);
 
 	public void CreateDirectory(string path) => Directory.CreateDirectory(path);
 

@@ -364,6 +364,8 @@ public class Given_ConfigScanner
 
 		public void WriteAllText(string path, string content) => throw new NotSupportedException();
 
+		public void BackupFile(string path) => throw new NotSupportedException();
+
 		public void CreateDirectory(string path) => throw new NotSupportedException();
 
 		public bool IsReadOnly(string path) => false;

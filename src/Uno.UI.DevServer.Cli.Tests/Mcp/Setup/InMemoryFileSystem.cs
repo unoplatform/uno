@@ -61,6 +61,20 @@ internal sealed class InMemoryFileSystem : IFileSystem
 
 	public void CreateDirectory(string path) => _directories.Add(Normalize(path));
 
+	public void BackupFile(string path)
+	{
+		var norm = Normalize(path);
+		if (!_files.TryGetValue(norm, out var content))
+		{
+			throw new FileNotFoundException($"File not found: {path}", path);
+		}
+
+		_files[norm + ".bak"] = content;
+		Backups.Add(norm);
+	}
+
+	public HashSet<string> Backups { get; } = new(StringComparer.OrdinalIgnoreCase);
+
 	public bool IsReadOnly(string path) => _readOnlyFiles.Contains(Normalize(path));
 
 	public string GetUserHomePath() => HomePath;
