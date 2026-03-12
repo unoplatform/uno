@@ -55,6 +55,7 @@ public class TimePickerIntegrationTests
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task VerifyDefaultProperties()
 	{
 		TimePicker timePicker = null;
@@ -245,6 +246,7 @@ public class TimePickerIntegrationTests
 #endif
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task HasPlaceholderTextByDefault()
 	{
 		var timePicker = await SetupTimePickerTestAsync();

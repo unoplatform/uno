@@ -15,6 +15,7 @@ internal sealed record HealthReport
 	public string? UnoSdkVersion { get; init; }
 	public long DiscoveryDurationMs { get; init; }
 	public ConnectionState? ConnectionState { get; init; }
+	public IReadOnlyList<string>? DiscoveredSolutions { get; init; }
 	public required IReadOnlyList<ValidationIssue> Issues { get; init; }
 	public DiscoverySummary? Discovery { get; init; }
 }
@@ -39,6 +40,8 @@ internal sealed record ActiveServerSummary
 	public int ParentProcessId { get; init; }
 	public DateTime StartTime { get; init; }
 	public string? IdeChannelId { get; init; }
+	public string? SolutionPath { get; init; }
+	public bool IsInWorkspace { get; init; }
 }
 
 internal sealed record AddInSummary
@@ -91,4 +94,5 @@ internal enum IssueCode
 	AddInLoadFailed,
 	AddInDiscoveryFallback,
 	UpstreamError,
+	NoSolutionFound,
 }

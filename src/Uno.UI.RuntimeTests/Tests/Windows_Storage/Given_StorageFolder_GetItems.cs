@@ -12,6 +12,7 @@ using System.Linq;
 namespace Uno.UI.RuntimeTests.Tests
 {
 	[TestClass]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // Cleanup crashes Samples app
 	public class Given__StorageFolder_GetItems
 	{
 

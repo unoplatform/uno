@@ -56,6 +56,11 @@ The CLI can also run in **MCP mode** (`--mcp-app`), acting as a Model Context Pr
 | `ToolListManager.cs` | Tool list management and caching |
 | `DevServerMonitor.cs` | DevServer process health monitoring and crash recovery |
 | `MonitorDecisions.cs` | Pure decision logic extracted from DevServerMonitor for testability |
+| `HealthService.cs` | Health reports (`uno_health` tool, `uno://health` resource) |
+| `HealthReport.cs` | Data models: `HealthReport`, `IssueCode`, `ValidationSeverity`, `ConnectionState` |
+| `DiscoveryIssueMapper.cs` | Static mapper: `DiscoveryInfo` → `ValidationIssue[]` |
+| `ConnectionState.cs` | Observational state machine for MCP bridge lifecycle |
+| `SolutionFileFinder.cs` | Recursive `.sln`/`.slnx` search with `.gitignore` awareness |
 | `RemoteControlServer.cs` | Host: WebSocket server, processor management |
 | `AddIns.cs` | Host: add-in discovery and assembly loading |
 
@@ -172,6 +177,38 @@ The MCP proxy (`McpStdioServer.cs` / `ProxyLifecycleManager.cs`) runs in STDIO m
 - Sends `tools/list_changed` notification when tools become available
 - Detects client capabilities (roots support) via `ClientCapabilities.Roots` to adapt behavior
 
+### MCP Roots (Two Modes)
+
+Only some MCP clients support roots natively (Claude Code, VS Code Copilot, Cursor). Others (Windsurf, JetBrains, Gemini CLI, Claude Desktop) do not.
+
+- **Default mode** (no `--force-roots-fallback`): DevServer starts immediately using `--solution-dir` or the current directory. If the client supports roots, they are requested but not required for startup.
+- **`--force-roots-fallback` mode**: DevServer startup is deferred until the client calls the `uno_app_set_roots` tool. Used for clients without native roots support that need to specify the workspace explicitly.
+
+The `StartOnceGuard` in `MonitorDecisions.cs` prevents duplicate DevServer starts when roots arrive after an immediate start.
+
+### Solution Discovery
+
+`SolutionFileFinder` performs recursive search for `.sln`/`.slnx` files:
+
+- Searches up to **3 levels deep** from the working directory
+- Respects `.gitignore` rules when inside a git repository (via `git check-ignore`)
+- Falls back to a hardcoded skip list (`node_modules`, `bin`, `obj`, `.vs`, `.idea`, `packages`) when git is unavailable
+- Discovered solutions are exposed as relative paths in `HealthReport.DiscoveredSolutions`
+
+### ConnectionState Lifecycle
+
+The `ConnectionState` enum tracks the MCP bridge lifecycle (see `Mcp/ConnectionState.cs` for the full state diagram):
+
+```
+Initializing → Discovering → Launching → Connecting → Connected
+                                                         ↓ (crash)
+                                                    Reconnecting → Discovering (cycle)
+                                                         ↓ (max retries)
+                                                      Degraded
+```
+
+Two separate retry counters: DevServerMonitor (3 startup attempts) and ProxyLifecycleManager (3 crash→restart cycles).
+
 ### Key Files
 
 | File | Role |
@@ -253,6 +290,8 @@ The Host accepts arguments via `ConfigurationBuilder.AddCommandLine()`. The `--a
 ## 11. References
 
 - [Dev Server documentation](../../doc/articles/dev-server.md)
+- [Health & Diagnostics](../../src/Uno.UI.DevServer.Cli/health-diagnostics.md)
+- [Add-in Discovery](../../src/Uno.UI.DevServer.Cli/addin-discovery.md)
 - [Specs](../../specs/001-fast-devserver-startup/)
 - [Integration test script](../../build/test-scripts/run-devserver-cli-tests.ps1)
 - [NuGet spec](../../build/nuget/Uno.WinUI.DevServer.nuspec)

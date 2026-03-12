@@ -68,6 +68,10 @@ partial class InputManager
 			var manipulation = _directManipulations.Get(pointer);
 			if (manipulation is null)
 			{
+				// Stop any inertial DMs sharing this handler to prevent dual-DM coexistence
+				// where old inertial deltas fight the new manipulation's direction.
+				_directManipulations.CompleteInertialForHandler(handler);
+
 				manipulation = new DirectManipulation(this, _directManipulations, pointer);
 
 				_directManipulations.Add(manipulation);

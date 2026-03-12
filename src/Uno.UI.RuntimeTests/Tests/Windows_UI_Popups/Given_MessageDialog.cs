@@ -25,6 +25,7 @@ using Uno.UI.Helpers;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 {
 	[TestClass]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public class Given_MessageDialog
 	{
 		[TestMethod]

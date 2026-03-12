@@ -199,14 +199,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void OnLayoutUpdated(object? sender, object e)
-		{
-			//if (m_layoutTransitionElement is { })
-			//{
-			//	PositionLTEs();
-			//}
-		}
-
 		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
 		{
 			RefreshContentHeight();
@@ -274,8 +266,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private protected override void OnUnloaded()
 		{
-			LayoutUpdated -= OnLayoutUpdated;
-			SizeChanged -= OnSizeChanged;
 			if (m_isInOverlayState)
 			{
 				TeardownOverlayState();
@@ -284,7 +274,6 @@ namespace Microsoft.UI.Xaml.Controls
 			UnregisterEvents();
 
 			base.OnUnloaded();
-
 		}
 
 		protected override void OnApplyTemplate()

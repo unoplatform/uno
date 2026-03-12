@@ -59,12 +59,28 @@ internal sealed class HostHealthTool
 		PropertyNameCaseInsensitive = true,
 	};
 
+	private static string GetAssemblyVersion()
+	{
+		var version = VersionHelper.GetVersion(typeof(HostHealthTool).Assembly);
+
+		// Strip the commit hash after '+' (e.g. "5.5.100-dev.1+abc123" → "5.5.100-dev.1")
+		var plusIndex = version.IndexOf('+');
+		return plusIndex >= 0 ? version[..plusIndex] : version;
+	}
+
 	/// <summary>
 	/// Registers the Host-level MCP health tool and resource on the given service collection.
 	/// </summary>
 	internal static void Configure(IServiceCollection services)
 	{
-		services.AddMcpServer()
+		services.AddMcpServer(options =>
+			{
+				options.ServerInfo = new Implementation
+				{
+					Name = "Uno Server",
+					Version = GetAssemblyVersion(),
+				};
+			})
 			.WithTools<HostHealthTool>()
 			.WithListResourcesHandler((ctx, ct) =>
 			{

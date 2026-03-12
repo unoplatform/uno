@@ -177,6 +177,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __APPLE_UIKIT__
 		[Ignore("Currently fails on iOS https://github.com/unoplatform/uno/issues/9080")]
 #endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Flipview_Items_Modified()
 		{
 			var itemsSource = new ObservableCollection<string>();
@@ -247,6 +248,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __APPLE_UIKIT__
 		[Ignore("Currently fails on iOS, https://github.com/unoplatform/uno/issues/9080")]
 #endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Flipview_DataTemplateSelector()
 		{
 			var dataContext = new When_Flipview_DataTemplateSelector_DataContext();
@@ -431,6 +433,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Navigate_Skips_An_Item()
 		{
 			var flipView = new FlipView

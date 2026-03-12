@@ -157,11 +157,9 @@ internal class ProxyLifecycleManager
 	{
 		_logger.LogTrace("Processing MCP Client Roots: {Roots}", string.Join(", ", _roots));
 
-		if (_devServerStartGuard.IsStarted)
-		{
-			_logger.LogTrace("DevServer monitor already running; skipping additional root processing");
-			return;
-		}
+		// The StartOnceGuard inside StartDevServerMonitor() prevents concurrent starts.
+		// We don't early-return here so that roots from the MCP client can trigger
+		// the monitor when no --solution-dir was provided.
 
 		if (_roots.FirstOrDefault() is { } rootUri)
 		{
@@ -176,9 +174,9 @@ internal class ProxyLifecycleManager
 				_logger.LogWarning("Unable to resolve MCP root '{RootUri}' to a local path", rootUri);
 			}
 		}
-		else if (!_forceRootsFallback)
+		else if (_forceRootsFallback)
 		{
-			_logger.LogWarning("No roots found and roots fallback is disabled; devserver was not started");
+			_logger.LogWarning("No roots provided via uno_app_set_roots; DevServer startup is deferred until roots are set");
 		}
 	}
 
@@ -237,22 +235,23 @@ internal class ProxyLifecycleManager
 			return;
 		}
 
-		var directory = string.IsNullOrWhiteSpace(_solutionDirectory)
-			? _currentDirectory
-			: _solutionDirectory;
-
 		_logger.LogTrace(
 			"EnsureDevServerStartedFromSolutionDirectory (solutionDir: {SolutionDir}, currentDir: {CurrentDir})",
 			_solutionDirectory,
 			_currentDirectory);
 
-		if (string.IsNullOrWhiteSpace(directory))
+		if (!string.IsNullOrWhiteSpace(_solutionDirectory))
 		{
-			_logger.LogTrace("No directory available to start the DevServer monitor; skipping initial start");
+			StartDevServerMonitor(_solutionDirectory);
 			return;
 		}
 
-		StartDevServerMonitor(directory);
+		// No explicit --solution-dir was provided. Use the current directory
+		// so the monitor can scan for solutions immediately. MCP roots received
+		// later will be processed via ProcessRoots() which can trigger the
+		// monitor if it hasn't started yet (StartOnceGuard prevents duplicates).
+		_logger.LogTrace("No explicit solution directory; using current directory {Directory}", _currentDirectory);
+		StartDevServerMonitor(_currentDirectory);
 	}
 
 	private void StartDevServerMonitor(string? directory)

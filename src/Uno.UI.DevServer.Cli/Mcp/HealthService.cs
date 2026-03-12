@@ -58,6 +58,17 @@ internal class HealthService(
 			});
 		}
 
+		if (devServerMonitor.SolutionNotFound)
+		{
+			issues.Add(new ValidationIssue
+			{
+				Code = IssueCode.NoSolutionFound,
+				Severity = ValidationSeverity.Warning,
+				Message = "No .sln or .slnx file found in the working directory or its subdirectories.",
+				Remediation = "Create an Uno Platform project first (e.g. 'dotnet new unoapp'), then tools will become available automatically.",
+			});
+		}
+
 		if (ConnectionState == ConnectionState.Reconnecting)
 		{
 			issues.Add(new ValidationIssue
@@ -111,6 +122,10 @@ internal class HealthService(
 				? HealthStatus.Degraded
 				: HealthStatus.Healthy;
 
+		var discoveredSolutions = devServerMonitor.DiscoveredSolutions is { Count: > 0 }
+			? devServerMonitor.DiscoveredSolutions
+			: null;
+
 		return new HealthReport
 		{
 			Status = status,
@@ -120,6 +135,7 @@ internal class HealthService(
 			UnoSdkVersion = devServerMonitor.UnoSdkVersion,
 			DiscoveryDurationMs = devServerMonitor.DiscoveryDurationMs,
 			ConnectionState = ConnectionState,
+			DiscoveredSolutions = discoveredSolutions,
 			Issues = issues,
 			Discovery = MapDiscovery(devServerMonitor.LastDiscoveryInfo),
 		};
@@ -156,6 +172,8 @@ internal class HealthService(
 					ParentProcessId = s.ParentProcessId,
 					StartTime = s.StartTime,
 					IdeChannelId = s.IdeChannelId,
+					SolutionPath = s.SolutionPath,
+					IsInWorkspace = s.IsInWorkspace,
 				}).ToList()
 				: null,
 		};

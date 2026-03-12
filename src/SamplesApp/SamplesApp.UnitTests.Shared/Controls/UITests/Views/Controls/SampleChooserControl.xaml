@@ -23,9 +23,9 @@
         <ResourceDictionary>
             <!--  Merged Dictionaries  -->
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../Styles/Application/_Application.xaml" />
-                <ResourceDictionary Source="../Styles/Controls/_Controls.xaml" />
-                <ResourceDictionary Source="../Styles/SampleControl.xaml" />
+                <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/Application/_Application.xaml" />
+                <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/Controls/_Controls.xaml" />
+                <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/SampleControl.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <Thickness x:Key="NavIconMargin">0,0,0,4</Thickness>
@@ -257,7 +257,10 @@
                             Command="{Binding OpenRuntimeTestsCommand}"
                             Style="{StaticResource IconButtonStyle}">
                             <Button.KeyboardAccelerators>
-                                <KeyboardAccelerator Key="T" Modifiers="Control" Invoked="RuntimeTestsAccelerator_Invoked" />
+                                <KeyboardAccelerator
+                                    Key="T"
+                                    Invoked="RuntimeTestsAccelerator_Invoked"
+                                    Modifiers="Control" />
                             </Button.KeyboardAccelerators>
                             <u:PathControl Margin="5,0" Style="{StaticResource Icon_RuntimeTests}" />
                         </Button>
@@ -271,7 +274,10 @@
                             Foreground="{ThemeResource AccentFillColorDefaultBrush}"
                             Style="{StaticResource IconButtonStyle}">
                             <Button.KeyboardAccelerators>
-                                <KeyboardAccelerator Key="P" Modifiers="Control" Invoked="PlaygroundAccelerator_Invoked" />
+                                <KeyboardAccelerator
+                                    Key="P"
+                                    Invoked="PlaygroundAccelerator_Invoked"
+                                    Modifiers="Control" />
                             </Button.KeyboardAccelerators>
                             <FontIcon Glyph="&#xE7FC;" />
                         </Button>
@@ -333,7 +339,10 @@
                             TextChanged="SearchBox_TextChanged"
                             TextMemberPath="ControlName">
                             <AutoSuggestBox.KeyboardAccelerators>
-                                <KeyboardAccelerator Key="F" Modifiers="Control" Invoked="FocusSearchAccelerator_Invoked" />
+                                <KeyboardAccelerator
+                                    Key="F"
+                                    Invoked="FocusSearchAccelerator_Invoked"
+                                    Modifiers="Control" />
                             </AutoSuggestBox.KeyboardAccelerators>
                             <AutoSuggestBox.ItemTemplate>
                                 <DataTemplate x:DataType="entities:SampleChooserContent">
@@ -438,7 +447,10 @@
                                 IsChecked="{Binding FavoritesSelected, Mode=TwoWay}"
                                 Style="{StaticResource SampleChooserNavRadioButtonStyle}">
                                 <RadioButton.KeyboardAccelerators>
-                                    <KeyboardAccelerator Key="F" Modifiers="Control,Shift" Invoked="FavoritesViewAccelerator_Invoked" />
+                                    <KeyboardAccelerator
+                                        Key="F"
+                                        Invoked="FavoritesViewAccelerator_Invoked"
+                                        Modifiers="Control,Shift" />
                                 </RadioButton.KeyboardAccelerators>
                                 <StackPanel VerticalAlignment="Center" Orientation="Vertical">
                                     <FontIcon Glyph="&#xE734;" />
@@ -456,7 +468,10 @@
                                 IsChecked="{Binding RecentsSelected, Mode=TwoWay}"
                                 Style="{StaticResource SampleChooserNavRadioButtonStyle}">
                                 <RadioButton.KeyboardAccelerators>
-                                    <KeyboardAccelerator Key="H" Modifiers="Control" Invoked="HistoryViewAccelerator_Invoked" />
+                                    <KeyboardAccelerator
+                                        Key="H"
+                                        Invoked="HistoryViewAccelerator_Invoked"
+                                        Modifiers="Control" />
                                 </RadioButton.KeyboardAccelerators>
                                 <StackPanel VerticalAlignment="Center" Orientation="Vertical">
                                     <FontIcon Glyph="&#xE823;" />
@@ -547,7 +562,10 @@
                             CommandParameter="{Binding CurrentSelectedSample}"
                             Style="{StaticResource IconButtonStyle}">
                             <Button.KeyboardAccelerators>
-                                <KeyboardAccelerator Key="Left" Modifiers="Menu" Invoked="PreviousSampleAccelerator_Invoked" />
+                                <KeyboardAccelerator
+                                    Key="Left"
+                                    Invoked="PreviousSampleAccelerator_Invoked"
+                                    Modifiers="Menu" />
                             </Button.KeyboardAccelerators>
                             <FontIcon Foreground="{ThemeResource AccentFillColorDefaultBrush}" Glyph="&#xE76B;" />
                         </Button>
@@ -571,7 +589,10 @@
                             CommandParameter="{Binding CurrentSelectedSample}"
                             Style="{StaticResource IconButtonStyle}">
                             <Button.KeyboardAccelerators>
-                                <KeyboardAccelerator Key="Right" Modifiers="Menu" Invoked="NextSampleAccelerator_Invoked" />
+                                <KeyboardAccelerator
+                                    Key="Right"
+                                    Invoked="NextSampleAccelerator_Invoked"
+                                    Modifiers="Menu" />
                             </Button.KeyboardAccelerators>
                             <FontIcon Foreground="{ThemeResource AccentFillColorDefaultBrush}" Glyph="&#xE76C;" />
                         </Button>

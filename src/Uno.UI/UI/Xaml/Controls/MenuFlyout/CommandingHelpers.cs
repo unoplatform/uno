@@ -72,6 +72,7 @@ namespace Microsoft.UI.Xaml.Controls
 						keyboardAcceleratorCopy.SetBinding(KeyboardAccelerator.KeyProperty, new Binding { Path = "Key", Source = keyboardAccelerator });
 						keyboardAcceleratorCopy.SetBinding(KeyboardAccelerator.ModifiersProperty, new Binding { Path = "Modifiers", Source = keyboardAccelerator });
 						keyboardAcceleratorCopy.SetBinding(KeyboardAccelerator.ScopeOwnerProperty, new Binding { Path = "ScopeOwner", Source = keyboardAccelerator });
+						returnValueAsKeyboardAcceleratorCollection.Add(keyboardAcceleratorCopy);
 					}
 
 					return returnValueAsKeyboardAcceleratorCollection;

@@ -81,6 +81,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
@@ -109,6 +110,7 @@ public partial class Given_GridLayouting
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Grid_Has_One_Element_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center()
 	{
 		using var _ = new AssertionScope();
@@ -141,6 +143,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
@@ -189,6 +192,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
@@ -226,6 +230,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
@@ -269,6 +274,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
@@ -325,6 +331,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
@@ -381,6 +388,7 @@ public partial class Given_GridLayouting
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Grid_Has_Two_Colums_And_One_Row_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_With_ColumnSpan_And_Centered()
 	{
 		using var _ = new AssertionScope();
@@ -434,6 +442,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
@@ -489,6 +498,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
@@ -543,6 +553,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
@@ -598,6 +609,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
@@ -670,6 +682,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
@@ -759,6 +772,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #elif __ANDROID__
@@ -820,6 +834,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #elif __ANDROID__
@@ -887,6 +902,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
@@ -934,6 +950,7 @@ public partial class Given_GridLayouting
 	[Ignore("Fails on Android in CI, but passes locally.")]
 #endif
 	[RequiresScaling(1f)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Grid_Has_Two_Variable_Sized_Element_With_ColSpan_and_One_Auto_Columns()
 	{
 		using var _ = new AssertionScope();
@@ -1017,6 +1034,7 @@ public partial class Given_GridLayouting
 	[Ignore("Fails on iOS.")]
 #endif
 	[RequiresScaling(1f)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Grid_Has_One_Element_With_ColSpan_and_Three_Columns()
 	{
 		using var _ = new AssertionScope();
@@ -1053,6 +1071,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
@@ -1126,6 +1145,7 @@ public partial class Given_GridLayouting
 	[Ignore("Fails on iOS.")]
 #endif
 	[RequiresScaling(1f)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Grid_Has_One_Element_With_ColSpan_and_RowSpan_and_Three_Columns()
 	{
 		using var _ = new AssertionScope();
@@ -1167,6 +1187,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
@@ -1211,6 +1232,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
@@ -1249,6 +1271,7 @@ public partial class Given_GridLayouting
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS for child.SizePassedToArrangeOverride https://github.com/unoplatform/uno/issues/9080")]
 #endif
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Grid_RowCollection_Changes()
 	{
 		var SUT = new Grid();
@@ -1299,6 +1322,7 @@ public partial class Given_GridLayouting
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Grid_ColumnCollection_Changes()
 	{
 		using var _ = new AssertionScope();
@@ -1385,6 +1409,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
@@ -1422,6 +1447,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
@@ -1487,6 +1513,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
@@ -1572,6 +1599,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #elif __ANDROID__
@@ -1779,6 +1807,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_One_Child_With_Margin_5()
 	{
 		var SUT = new Grid() { Name = "test" };
@@ -1822,6 +1851,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_One_Child_With_Margin_1234()
 	{
 		var SUT = new Grid
@@ -1869,6 +1899,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_One_Child_With_Margin_1234_Size8()
 	{
 		using var _ = new AssertionScope();
@@ -1923,6 +1954,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_One_Child_With_Margin_Center_And_Center()
 	{
 		using var _ = new AssertionScope();
@@ -1979,6 +2011,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_One_Child_With_Margin_Center_And_Bottom()
 	{
 		using var _ = new AssertionScope();
@@ -2039,6 +2072,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_One_Child_With_Margin_Center_And_Top()
 	{
 		using var _ = new AssertionScope();
@@ -2092,6 +2126,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_One_Fixed_Size_Child_With_Margin_Right_And_Stretch()
 	{
 		var SUT = new Grid() { Name = "test" };
@@ -2149,6 +2184,7 @@ public partial class Given_GridLayouting
 #endif
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_One_Auto_Columns_and_one_star_and_two_children()
 	{
 		var SUT = new Grid() { Name = "test" };
@@ -2178,6 +2214,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Two_Auto_Columns_two_children()
 	{
 		var SUT = new Grid() { Name = "test" };
@@ -2207,6 +2244,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_One_Auto_and_one_abs_and_one_star_and_three_children()
 	{
 		using var _ = new AssertionScope();
@@ -2247,6 +2285,7 @@ public partial class Given_GridLayouting
 
 	[TestMethod]
 	[RequiresScaling(1f)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Nine_grid_and_one_auto_cell_and_three_children()
 	{
 		using var _ = new AssertionScope();
@@ -2297,6 +2336,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Quad_two_auto_and_four_children()
 	{
 		var SUT = new Grid() { Name = "test" };
@@ -2344,6 +2384,7 @@ public partial class Given_GridLayouting
 
 	[TestMethod]
 	[RequiresScaling(1f)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Nine_grid_and_one_auto_cell_and_four_children()
 	{
 		using var _ = new AssertionScope();
@@ -2403,6 +2444,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Three_Rows_One_Auto_Two_Fixed_And_Row_Span_Full()
 	{
 		using var _ = new AssertionScope();
@@ -2443,6 +2485,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Three_Colums_One_Auto_Two_Fixed_And_Column_Span_Full()
 	{
 		using var _ = new AssertionScope();
@@ -2483,6 +2526,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_One_Child_With_VerticalTopAlignment_and_Fixed_Height()
 	{
 		var SUT = new Grid() { Name = "test" };
@@ -2510,6 +2554,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_One_Child_With_VerticalBottomAlignment_and_Fixed_Height()
 	{
 		var SUT = new Grid() { Name = "test" };
@@ -2538,6 +2583,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_One_Child_With_VerticalCenterAlignment_and_Fixed_Height()
 	{
 		var SUT = new Grid() { Name = "test" };
@@ -2567,6 +2613,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_One_Child_With_HorizontalLeftAlignment_and_Fixed_Width()
 	{
 		var SUT = new Grid() { Name = "test" };
@@ -2595,6 +2642,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_One_Child_With_HorizontalRightAlignment_and_Fixed_Width()
 	{
 		var SUT = new Grid() { Name = "test" };
@@ -2624,6 +2672,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_One_Child_With_HorizontalCenterAlignment_and_Fixed_Width()
 	{
 		var SUT = new Grid() { Name = "test" };
@@ -2654,6 +2703,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_One_Child_With_VerticalTopAlignment_and_Variable_Height()
 	{
 		var SUT = new Grid() { Name = "test" };
@@ -2681,6 +2731,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_One_Child_With_VerticalCenterAlignment_and_Variable_Height()
 	{
 		var SUT = new Grid() { Name = "test" };
@@ -2709,6 +2760,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_One_Child_With_HorizontalStretchAlignment_and_MaxWidth()
 	{
 		var SUT = new Grid() { Name = "test" };
@@ -2736,6 +2788,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_One_Child_With_VerticalStretchAlignment_and_MaxHeight()
 	{
 		var SUT = new Grid() { Name = "test" };
@@ -2765,6 +2818,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_One_Child_With_VerticalCenterAlignment_HorizontalCenterAlignment_and_Variable_Height_and_Variable_Width()
 	{
 		var SUT = new Grid() { Name = "test" };
@@ -2794,6 +2848,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_One_Child_Centered_And_Auto_row_And_Fixed_Column()
 	{
 		var SUT = new Grid() { Name = "test" };
@@ -2832,6 +2887,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	[RequiresScaling(1f)]
 	public void When_One_Child_Centered_And_Auto_row_And_Star_Column()
 	{
@@ -2997,6 +3053,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_One_Child_and_Measure_Bigger_than_arrange()
 	{
 		var SUT = new Grid() { Name = "test" };

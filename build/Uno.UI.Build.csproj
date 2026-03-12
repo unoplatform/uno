@@ -359,7 +359,22 @@
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.WebAssembly.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 	</Target>
 
-	<Target Name="ValidatePackage" AfterTargets="BuildNuGetPackage" Condition="'$(BuildingInsideVisualStudio)'==''">
+	<!--
+		Skip ValidatePackage on CI for stable release branches.
+		We key off Azure Pipelines env vars:
+		- TF_BUILD: set to True when running under Azure Pipelines
+		- SYSTEM_PULLREQUEST_TARGETBRANCH: PR target branch (e.g. refs/heads/release/stable/1.2)
+		- BUILD_SOURCEBRANCH: source branch for non-PR builds (e.g. refs/heads/release/stable/1.2)
+	-->
+	<PropertyGroup>
+		<_IsCiBuild Condition="'$(TF_BUILD)'=='True'">true</_IsCiBuild>
+		<_CiTargetBranch>$(SYSTEM_PULLREQUEST_TARGETBRANCH)</_CiTargetBranch>
+		<_CiTargetBranch Condition="'$(_CiTargetBranch)'==''">$(BUILD_SOURCEBRANCH)</_CiTargetBranch>
+		<_IsStableReleaseBranch Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(_CiTargetBranch)', '^(refs/heads/)?release/stable/.*'))">true</_IsStableReleaseBranch>
+		<SkipValidatePackage Condition="'$(_IsCiBuild)'=='true' and '$(_IsStableReleaseBranch)'=='true'">true</SkipValidatePackage>
+	</PropertyGroup>
+
+	<Target Name="ValidatePackage" AfterTargets="BuildNuGetPackage" Condition="'$(BuildingInsideVisualStudio)'=='' and '$(SkipValidatePackage)'!='true'">
 		<PropertyGroup>
 			<PackageNamePrefix>Uno.WinUI</PackageNamePrefix>
 			<PackageNamePrefix Condition="'$(UNO_UWP_BUILD)'=='true'">Uno.UI</PackageNamePrefix>

@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Shapes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
 
 #if WINAPPSDK
 using Uno.UI.Extensions;
@@ -28,6 +29,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	{
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ContentShouldCenter_WithMinWidth()
 		{
 			// all colored elements should be concentric

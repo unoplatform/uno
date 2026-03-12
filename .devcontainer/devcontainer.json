@@ -1,52 +1,69 @@
 {
-  "name": "Uno Platform",
+  // Linux / WSL host only — Windows-native Docker hosts are not supported
+  // (mounts rely on $HOME which is unset on Windows).
+  "name": "Uno Platform — Agent Sandbox",
   "build": {
     "dockerfile": "Dockerfile",
     "args": {
-      // Update 'VARIANT' to pick a .NET Core version. Rebuild the container if
-      // it already exists to update. Example variants: 2.1-bionic, 3.1-bionic
-      "VARIANT": "3.1-bionic",
-      // Options
-      "INSTALL_NODE": "true",
-      "NODE_VERSION": "lts/*",
-      "INSTALL_AZURE_CLI": "false",
-      "UPGRADE_PACKAGES": "false"
+      "TZ": "${localEnv:TZ:America/Los_Angeles}",
+      "CLAUDE_CODE_VERSION": "latest",
+      "ZSH_IN_DOCKER_VERSION": "1.2.0"
     }
   },
-
-  // Set *default* container specific settings.json values on container create.
-  "settings": {
-    "terminal.integrated.shell.linux": "/bin/bash"
+  "runArgs": [
+    "--cap-add=NET_ADMIN",
+    "--cap-add=NET_RAW",
+    "--shm-size=2g"
+  ],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "anthropic.claude-code",
+        "unoplatform.vscode",
+        "ms-dotnettools.csdevkit",
+        "eamodio.gitlens"
+      ],
+      "settings": {
+        "explorer.fileNesting.enabled": true,
+        "explorer.fileNesting.expand": false,
+        "explorer.fileNesting.patterns": {
+          "*.xaml": "$(capture).xaml.cs"
+        },
+        "files.associations": {
+          "global.json": "jsonc"
+        },
+        "unoplatform.ignoreCheck": true,
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "bash",
+            "icon": "terminal-bash"
+          },
+          "zsh": {
+            "path": "zsh"
+          }
+        }
+      }
+    }
   },
-
-  // Add the IDs of extensions you want installed when the container is created.
-  "extensions": [
-    "ms-dotnettools.csharp"
-  ],
-
-  // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  "forwardPorts": [ 8000, 53487 ],
-
-  // [Optional] To reuse of your local HTTPS dev cert, first export it locally using this command:
-  //  * Windows PowerShell:
-  //     dotnet dev-certs https --trust; dotnet dev-certs https -ep "$env:USERPROFILE/.aspnet/https/aspnetapp.pfx" -p "SecurePwdGoesHere"
-  //  * macOS/Linux terminal:
-  //     dotnet dev-certs https --trust; dotnet dev-certs https -ep "${HOME}/.aspnet/https/aspnetapp.pfx" -p "SecurePwdGoesHere"
-  //
-  // Next, after running the command above, uncomment lines in the 'mounts' and 'remoteEnv' lines below,
-  // and open / rebuild the container so the settings take effect.
-  //
+  "remoteUser": "developer",
   "mounts": [
-    // "source=${env:HOME}${env:USERPROFILE}/.aspnet/https,target=/home/vscode/.aspnet/https,type=bind"
+    "source=uno-claude-config-${devcontainerId},target=/home/developer/.claude,type=volume",
+    "source=uno-commandhistory-${devcontainerId},target=/commandhistory,type=volume",
+    "source=uno-nuget-cache-${devcontainerId},target=/home/developer/.nuget,type=volume",
+    "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind",
+    "source=${localEnv:HOME}/.local/share/Uno Platform,target=/tmp/uno-platform-host,type=bind,readonly"
   ],
-  "remoteEnv": {
-    // "ASPNETCORE_Kestrel__Certificates__Default__Password": "SecurePwdGoesHere",
-    // "ASPNETCORE_Kestrel__Certificates__Default__Path": "/home/vscode/.aspnet/https/aspnetapp.pfx",
-  }
-
-  // Use 'postCreateCommand' to run commands after the container is created.
-  // "postCreateCommand": "dotnet restore",
-
-  // Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
-  // "remoteUser": "vscode"
+  "containerEnv": {
+    "DEVCONTAINER": "true",
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "DISPLAY": "${localEnv:DISPLAY::0}",
+    "CLAUDE_CONFIG_DIR": "/home/developer/.claude",
+    "POWERLEVEL9K_DISABLE_GITSTATUS": "true"
+  },
+  "initializeCommand": "mkdir -p \"${HOME}/.local/share/Uno Platform\"",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/uno,type=bind,consistency=delegated",
+  "workspaceFolder": "/uno",
+  "postStartCommand": "bash /uno/.devcontainer/post-start.sh",
+  "waitFor": "postStartCommand"
 }

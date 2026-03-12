@@ -64,11 +64,9 @@ namespace Microsoft.UI.Xaml.Controls
 		TrackerCollection<ICommandBarElement>? m_tpPrimaryCommandsInPreviousTransition;
 
 
-		private readonly SerialDisposable m_unloadedEventHandler = new SerialDisposable();
 		private readonly SerialDisposable m_primaryCommandsChangedEventHandler = new SerialDisposable();
 		private readonly SerialDisposable m_secondaryCommandsChangedEventHandler = new SerialDisposable();
 		private readonly SerialDisposable m_secondaryItemsControlLoadedEventHandler = new SerialDisposable();
-		private readonly SerialDisposable m_contentRootSizeChangedEventHandler = new SerialDisposable();
 		private readonly SerialDisposable m_overflowContentSizeChangedEventHandler = new SerialDisposable();
 		private readonly SerialDisposable m_overflowPopupClosedEventHandler = new SerialDisposable();
 		private readonly SerialDisposable m_overflowPresenterItemsPresenterKeyDownEventHandler = new SerialDisposable();
@@ -134,17 +132,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnUnloaded();
 
-			m_unloadedEventHandler.Disposable = null;
-			m_primaryCommandsChangedEventHandler.Disposable = null;
-			m_secondaryCommandsChangedEventHandler.Disposable = null;
-			m_secondaryItemsControlLoadedEventHandler.Disposable = null;
-			m_contentRootSizeChangedEventHandler.Disposable = null;
-			m_overflowContentSizeChangedEventHandler.Disposable = null;
-			m_overflowPopupClosedEventHandler.Disposable = null;
-			m_overflowPresenterItemsPresenterKeyDownEventHandler.Disposable = null;
-
-			m_accessKeyInvokedEventHandler.Disposable = null;
-			m_overflowPopupOpenedEventHandler.Disposable = null;
+			// WinUI does not detach event handlers in CommandBar::OnUnloaded.
+			// All event sources (template parts, owned collections, self) share
+			// the CommandBar's lifetime and are collected together — no leak risk.
+			// SerialDisposable in OnApplyTemplate prevents accumulation if the
+			// template is ever reapplied.
 
 			// Make sure our popup is closed.
 			if (m_tpOverflowPopup is { })
@@ -1483,8 +1475,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (element is { })
 				{
-					element.SetParent(this);
-
 					PropagateDefaultLabelPositionToElement(element);
 					SetOverflowStyleAndInputModeOnSecondaryCommand((int)changeIndex, true);
 					PropagateDefaultLabelPositionToElement(element);
@@ -1500,8 +1490,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 					if (element is { })
 					{
-						element.SetParent(null);
-
 						SetOverflowStyleAndInputModeOnSecondaryCommand(i, true);
 						PropagateDefaultLabelPositionToElement(element);
 					}

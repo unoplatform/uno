@@ -15,7 +15,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	/// Transition : Based on WinRT Transition
 	/// (https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.media.animation.transition.Aspx)
 	/// </summary>
-	public partial class Transition : DependencyObject
+	public partial class Transition : DependencyObject, IMultiParentShareableDependencyObject
 	{
 		private Transform _elementTransform;
 

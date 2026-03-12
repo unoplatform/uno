@@ -899,6 +899,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task VerifyTwoWayBinding()
 		{
 			TestCleanupWrapper cleanup;

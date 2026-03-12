@@ -12,6 +12,7 @@ namespace Uno.UI.RuntimeTests.Tests.UnitTestsTests
 
 		// This tests that automatic retry is working.
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_UnhandledException()
 		{
 			if (When_UnhandledException_Count++ < 2)
@@ -37,6 +38,7 @@ namespace Uno.UI.RuntimeTests.Tests.UnitTestsTests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Success()
 		{
 		}

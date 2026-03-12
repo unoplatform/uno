@@ -240,9 +240,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if !__APPLE_UIKIT__ // Disabled due to #10791
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public Task When_Switch_Theme_Fluent() => When_Switch_Theme_Inner(brush => (brush as AcrylicBrush).TintColor);
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Switch_Theme_Uwp()
 		{
 			using var _ = StyleHelper.UseUwpStyles();
@@ -304,7 +306,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_ToolTip_Dismissed_On_PointerCanceled()
 		{
-			TextBox tb;
+			var border = new Border() { Margin = new Thickness(30), Width = 30, Height = 30, Background = new SolidColorBrush(Colors.Red) };
 			var sv = new ScrollViewer
 			{
 				Content = new StackPanel
@@ -312,7 +314,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					Height = 1000,
 					Children =
 					{
-						(tb = new TextBox().Apply(tb => ToolTipService.SetToolTip(tb, new ToolTip { Content = "Simple ToolTip 1" })))
+						border.Apply(tb => ToolTipService.SetToolTip(tb, new ToolTip { Content = "Simple ToolTip 1" }))
 					}
 				}
 			};
@@ -322,13 +324,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var finger = injector.GetFinger();
 
-			finger.Press(tb.GetAbsoluteBoundsRect().GetCenter());
+			finger.Press(border.GetAbsoluteBoundsRect().GetCenter());
 			await Task.Delay(TimeSpan.FromMilliseconds(FeatureConfiguration.ToolTip.ShowDelay + 300));
-			Assert.HasCount(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(tb.XamlRoot));
+			Assert.HasCount(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(border.XamlRoot));
 
 			finger.MoveBy(0, -50);
 			await UITestHelper.WaitForIdle();
-			Assert.IsEmpty(VisualTreeHelper.GetOpenPopupsForXamlRoot(tb.XamlRoot));
+			Assert.IsEmpty(VisualTreeHelper.GetOpenPopupsForXamlRoot(border.XamlRoot));
 		}
 #endif
 

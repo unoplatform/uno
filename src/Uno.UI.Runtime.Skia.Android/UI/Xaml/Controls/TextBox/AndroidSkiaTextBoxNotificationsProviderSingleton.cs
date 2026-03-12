@@ -84,6 +84,10 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 		}
 	}
 
+	public void NotifySelectionChanged(TextBox textBox)
+	{
+	}
+
 	private static bool CouldRequireKeyboard(FrameworkElement? element)
 	{
 		return element
