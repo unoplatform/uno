@@ -273,6 +273,8 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		_skCanvasView?.QueueRender();
 	}
 
+	public bool SupportsRenderThrottle => true;
+
 	public UIElement? RootElement => _xamlRoot?.VisualTree.RootElement;
 
 	public UIView TextInputLayer => _textInputLayer!;

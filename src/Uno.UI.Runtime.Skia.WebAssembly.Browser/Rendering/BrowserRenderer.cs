@@ -4,6 +4,7 @@ using System.Runtime.InteropServices.JavaScript;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Foundation.Logging;
+using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
 
 namespace Uno.UI.Runtime.Skia;
@@ -96,6 +97,10 @@ internal partial class BrowserRenderer
 			_canvas.Flush();
 			_renderer.Flush();
 		}
+
+		NativeDispatcher.Main.Enqueue(
+			compositionTarget.OnFramePresented,
+			NativeDispatcherPriority.Render);
 
 		var (path, fillType) = !currentClipPath.IsEmpty ? (currentClipPath.ToSvgPathData(), currentClipPath.FillType is SKPathFillType.EvenOdd ? "evenodd" : "nonzero") : ("", "nonzero");
 		BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHost(path, fillType);
