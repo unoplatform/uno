@@ -67,27 +67,12 @@ internal class McpStdioServer(
 
 				if (toolName == selectSolutionTool.Name)
 				{
-					if (ctx.Params?.Arguments is not { } arguments ||
-						!arguments.TryGetValue("solutionPath", out var solutionPathElement))
+					if (!TryGetSelectSolutionPath(ctx.Params?.Arguments, out var solutionPath, out var errorResult))
 					{
-						return new CallToolResult()
-						{
-							Content = [new TextContentBlock() { Text = "Missing required 'solutionPath' argument." }],
-							IsError = true
-						};
+						return errorResult;
 					}
 
-					var solutionPath = solutionPathElement.GetString();
-					if (string.IsNullOrWhiteSpace(solutionPath))
-					{
-						return new CallToolResult()
-						{
-							Content = [new TextContentBlock() { Text = "The 'solutionPath' argument must be a non-empty absolute path." }],
-							IsError = true
-						};
-					}
-
-					return await selectSolutionHandler(solutionPath);
+					return await selectSolutionHandler(solutionPath!);
 				}
 
 				// Handle the built-in uno_health tool before upstream is ready
@@ -191,5 +176,46 @@ internal class McpStdioServer(
 		var host = builder.Build();
 
 		return (host, tcs);
+	}
+
+	internal static bool TryGetSelectSolutionPath(
+		IDictionary<string, JsonElement>? arguments,
+		out string? solutionPath,
+		out CallToolResult errorResult)
+	{
+		solutionPath = null;
+		errorResult = new CallToolResult()
+		{
+			Content = [new TextContentBlock() { Text = "Missing required 'solutionPath' argument." }],
+			IsError = true
+		};
+
+		if (arguments is null || !arguments.TryGetValue("solutionPath", out var solutionPathElement))
+		{
+			return false;
+		}
+
+		if (solutionPathElement.ValueKind != JsonValueKind.String)
+		{
+			errorResult = new CallToolResult()
+			{
+				Content = [new TextContentBlock() { Text = "The 'solutionPath' argument must be a JSON string containing a non-empty absolute path." }],
+				IsError = true
+			};
+			return false;
+		}
+
+		solutionPath = solutionPathElement.GetString();
+		if (string.IsNullOrWhiteSpace(solutionPath))
+		{
+			errorResult = new CallToolResult()
+			{
+				Content = [new TextContentBlock() { Text = "The 'solutionPath' argument must be a non-empty absolute path." }],
+				IsError = true
+			};
+			return false;
+		}
+
+		return true;
 	}
 }

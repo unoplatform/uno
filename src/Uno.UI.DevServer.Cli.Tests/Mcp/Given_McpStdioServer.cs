@@ -1,6 +1,7 @@
 using AwesomeAssertions;
 using ModelContextProtocol.Protocol;
 using Uno.UI.DevServer.Cli.Mcp;
+using System.Text.Json;
 
 namespace Uno.UI.DevServer.Cli.Tests.Mcp;
 
@@ -157,5 +158,22 @@ public class Given_McpStdioServer
 			ProxyLifecycleManager.SelectSolutionTool.Name,
 			"uno_app_get_info",
 			"uno_app_set_roots");
+	}
+
+	[TestMethod]
+	[Description("Select-solution argument parsing rejects non-string JSON values with a structured MCP error")]
+	public void TryGetSelectSolutionPath_WhenValueIsNotString_ReturnsStructuredError()
+	{
+		var arguments = new Dictionary<string, JsonElement>
+		{
+			["solutionPath"] = JsonDocument.Parse("42").RootElement.Clone(),
+		};
+
+		var success = McpStdioServer.TryGetSelectSolutionPath(arguments, out var solutionPath, out var errorResult);
+
+		success.Should().BeFalse();
+		solutionPath.Should().BeNull();
+		errorResult.IsError.Should().BeTrue();
+		((TextContentBlock)errorResult.Content.Single()).Text.Should().Contain("JSON string");
 	}
 }

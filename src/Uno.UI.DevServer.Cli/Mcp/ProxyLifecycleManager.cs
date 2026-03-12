@@ -734,7 +734,7 @@ internal class ProxyLifecycleManager
 		}, CancellationToken.None);
 	}
 
-	private static void TryCancelAndDispose(CancellationTokenSource? cts)
+	private static void TryCancel(CancellationTokenSource? cts)
 	{
 		if (cts is null)
 		{
@@ -749,24 +749,41 @@ internal class ProxyLifecycleManager
 		{
 			// A late watcher callback raced with teardown; disposal already completed.
 		}
-		finally
+	}
+
+	private static void TryDispose(CancellationTokenSource? cts)
+	{
+		if (cts is null)
 		{
-			try
-			{
-				cts.Dispose();
-			}
-			catch (ObjectDisposedException)
-			{
-				// Ignore duplicate disposal from concurrent watcher callbacks.
-			}
+			return;
 		}
+
+		try
+		{
+			cts.Dispose();
+		}
+		catch (ObjectDisposedException)
+		{
+			// Ignore duplicate disposal from concurrent watcher callbacks.
+		}
+	}
+
+	private static void TryCancelAndDispose(CancellationTokenSource? cts)
+	{
+		if (cts is null)
+		{
+			return;
+		}
+
+		TryCancel(cts);
+		TryDispose(cts);
 	}
 
 	internal static CancellationTokenSource ReplaceWorkspaceMutationDebounceSource(ref CancellationTokenSource? field)
 	{
 		var next = new CancellationTokenSource();
 		var previous = Interlocked.Exchange(ref field, next);
-		TryCancelAndDispose(previous);
+		TryCancel(previous);
 		return next;
 	}
 
