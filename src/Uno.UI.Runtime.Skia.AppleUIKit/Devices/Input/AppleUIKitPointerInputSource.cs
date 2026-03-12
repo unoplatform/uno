@@ -364,6 +364,9 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 
 		var scrollX = (nfloat)Math.Truncate(_activeScrollPendingX);
 		var scrollY = (nfloat)Math.Truncate(_activeScrollPendingY);
+		// Subtract only the integer part so the fractional remainder (e.g. 3.7 → 0.7)
+		// carries over to the next frame. This preserves sub-pixel precision across
+		// vsync frames, preventing choppy trackpad scroll at low velocities.
 		_activeScrollPendingX -= (double)scrollX;
 		_activeScrollPendingY -= (double)scrollY;
 
