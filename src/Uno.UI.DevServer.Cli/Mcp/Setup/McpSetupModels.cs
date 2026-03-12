@@ -4,6 +4,11 @@ using System.Text.Json.Serialization;
 
 namespace Uno.UI.DevServer.Cli.Mcp.Setup;
 
+internal static class McpSetupProtocol
+{
+	public const string Version = "1.0";
+}
+
 // ──────────────────────────────────────────────
 // Definition records (deserialized from embedded JSON)
 // ──────────────────────────────────────────────

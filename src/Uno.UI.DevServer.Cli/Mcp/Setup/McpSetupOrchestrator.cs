@@ -10,8 +10,6 @@ namespace Uno.UI.DevServer.Cli.Mcp.Setup;
 /// </summary>
 internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrchestrator> logger)
 {
-	private const string ProtocolVersion = "1.0";
-
 	private readonly IFileSystem _fs = fs;
 	private readonly ILogger<McpSetupOrchestrator> _logger = logger;
 
@@ -72,23 +70,13 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		}
 
 		return new StatusResponse(
-			ProtocolVersion,
+			McpSetupProtocol.Version,
 			callerIde,
 			toolVersion,
 			expectedVariant,
 			detectedIdes,
 			serverEntries);
 	}
-
-	/// <summary>
-	/// Registers MCP servers in the target IDE's config files.
-	/// </summary>
-	/// <remarks>
-	/// Today install/uninstall are file-backed for every profile. Some clients may later
-	/// get a native registration path (for example a vendor CLI), but status should still
-	/// be able to scan the persisted config files so externally-created registrations
-	/// remain visible.
-	/// </remarks>
 	public OperationResponse Install(
 		Definitions defs,
 		string workspace,
@@ -135,7 +123,7 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 			}
 		}
 
-		return new OperationResponse(ProtocolVersion, operations);
+		return new OperationResponse(McpSetupProtocol.Version, operations);
 	}
 
 	/// <summary>
@@ -223,7 +211,7 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 			}
 		}
 
-		return new OperationResponse(ProtocolVersion, operations);
+		return new OperationResponse(McpSetupProtocol.Version, operations);
 	}
 
 	private OperationEntry InstallServer(
@@ -369,5 +357,5 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 	}
 
 	private static OperationResponse ErrorResponse(string message) =>
-		new(ProtocolVersion, [new OperationEntry("*", "*", "error", null, message)]);
+		new(McpSetupProtocol.Version, [new OperationEntry("*", "*", "error", null, message)]);
 }

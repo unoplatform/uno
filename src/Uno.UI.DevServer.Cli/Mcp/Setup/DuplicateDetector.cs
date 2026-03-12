@@ -42,10 +42,6 @@ internal static class DuplicateDetector
 		return null;
 	}
 
-	/// <summary>
-	/// Detects the variant of an existing entry by examining command/args/url content.
-	/// Returns <c>"stable"</c>, <c>"prerelease"</c>, <c>"pinned:&lt;ver&gt;"</c>, or <c>"legacy-http"</c>.
-	/// </summary>
 	public static string DetectVariant(JsonObject entryJson, ServerDefinition serverDef)
 	{
 		// Check for legacy HTTP (localhost URL for a stdio server)

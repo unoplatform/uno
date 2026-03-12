@@ -545,7 +545,7 @@ internal class CliManager
 			allOperations.AddRange(result.Operations);
 		}
 
-		var combined = new OperationResponse("1.0", allOperations);
+		var combined = new OperationResponse(McpSetupProtocol.Version, allOperations);
 		if (parsed.JsonOutput)
 		{
 			Console.WriteLine(JsonSerializer.Serialize(combined, McpSetupJson.OutputOptions));
@@ -575,7 +575,7 @@ internal class CliManager
 			allOperations.AddRange(result.Operations);
 		}
 
-		var combined = new OperationResponse("1.0", allOperations);
+		var combined = new OperationResponse(McpSetupProtocol.Version, allOperations);
 		if (parsed.JsonOutput)
 		{
 			Console.WriteLine(JsonSerializer.Serialize(combined, McpSetupJson.OutputOptions));

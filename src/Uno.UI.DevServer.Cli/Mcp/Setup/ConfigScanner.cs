@@ -43,7 +43,7 @@ internal sealed class ConfigScanner(IFileSystem fs)
 
 			foreach (var configPath in resolvedPaths)
 			{
-				ScanConfigFile(configPath, profile.JsonRootKey, serverName, serverDef, locations, warnings, ref effectiveEntry);
+				ScanConfigFile(configPath, profile.JsonRootKey, serverName, serverDef, servers, locations, warnings, ref effectiveEntry);
 			}
 
 			if (locations.Count > 1)
@@ -76,6 +76,7 @@ internal sealed class ConfigScanner(IFileSystem fs)
 		string rootKey,
 		string serverName,
 		ServerDefinition serverDef,
+		IReadOnlyDictionary<string, ServerDefinition> servers,
 		List<LocationEntry> locations,
 		List<string> warnings,
 		ref JsonObject? effectiveEntry)
@@ -125,12 +126,9 @@ internal sealed class ConfigScanner(IFileSystem fs)
 				continue;
 			}
 
-			var matchedServer = DuplicateDetector.FindMatchingServer(keyName, entryJson, new Dictionary<string, ServerDefinition>
-			{
-				[serverName] = serverDef,
-			});
+			var matchedServer = DuplicateDetector.FindMatchingServer(keyName, entryJson, servers);
 
-			if (matchedServer is not null)
+			if (string.Equals(matchedServer, serverName, StringComparison.OrdinalIgnoreCase))
 			{
 				var variant = DuplicateDetector.DetectVariant(entryJson, serverDef);
 				var transport = DetectTransport(entryJson);
