@@ -16,6 +16,7 @@ public class Given_DefinitionsLoader
 		defs.Ides.Should().ContainKey("windsurf");
 		defs.Ides.Should().ContainKey("kiro");
 		defs.Ides.Should().ContainKey("antigravity");
+		defs.Ides.Should().ContainKey("gemini-cli");
 		defs.Ides.Should().ContainKey("rider");
 		defs.Ides.Should().ContainKey("claude-code");
 		defs.Ides.Should().ContainKey("claude-desktop");
@@ -94,6 +95,17 @@ public class Given_DefinitionsLoader
 		claudeDesktop.ConfigPaths.Should().Contain("{appdata}/Claude/claude_desktop_config.json");
 		claudeDesktop.WriteTarget.Should().Be("{appdata}/Claude/claude_desktop_config.json");
 		claudeDesktop.JsonRootKey.Should().Be("mcpServers");
+	}
+
+	[TestMethod]
+	public void Load_EmbeddedResources_GeminiCliUsesSettingsJson()
+	{
+		var defs = DefinitionsLoader.Load();
+		var geminiCli = defs.Ides["gemini-cli"];
+
+		geminiCli.ConfigPaths.Should().Contain("{home}/.gemini/settings.json");
+		geminiCli.WriteTarget.Should().Be("{home}/.gemini/settings.json");
+		geminiCli.JsonRootKey.Should().Be("mcpServers");
 	}
 
 	[TestMethod]

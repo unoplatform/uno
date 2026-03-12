@@ -8,6 +8,13 @@
     "includeType": true,
     "urlKey": "serverUrl"
   },
+  "gemini-cli": {
+    "configPaths": [
+      "{home}/.gemini/settings.json"
+    ],
+    "writeTarget": "{home}/.gemini/settings.json",
+    "jsonRootKey": "mcpServers"
+  },
   "claude-code": {
     "configPaths": [
       "{workspace}/.mcp.json",
