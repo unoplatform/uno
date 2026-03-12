@@ -283,10 +283,6 @@ internal partial class InputManager
 		}
 		#endregion
 
-		// Stores the last wheel args so a future PointerMoved can reconcile hover state
-		// after scrolling changed the content under the pointer.
-		private Windows.UI.Core.PointerEventArgs? _deferredAfterWheelArgs;
-
 		// Cached hit-test result for iOS trackpad scroll.
 		// During continuous trackpad scroll the cursor position doesn't change — only content
 		// moves underneath — so we cache the originalSource from the first hit-test and reuse
@@ -368,13 +364,12 @@ internal partial class InputManager
 			// On iOS (trackpad scroll), skip the expensive post-scroll hit-test during active scrolling.
 			// The pointer hasn't physically moved — only the content underneath has scrolled.
 			// Hover state will be reconciled when the next PointerMoved event fires (user moves cursor).
-			if (OperatingSystem.IsIOS())
+			if (!OperatingSystem.IsIOS())
 			{
-				_deferredAfterWheelArgs = args;
-			}
-			else
-			{
-				// Scrolling can change the element underneath the pointer, so we need to update over state
+				// Scrolling can change the element underneath the pointer, so we need to update over state.
+				// On iOS (trackpad/wheel scroll), skip the post-scroll hit-test during active scrolling —
+				// the pointer hasn't physically moved, only the content underneath has scrolled.
+				// Hover state will be reconciled when the next PointerMoved fires (user moves cursor).
 				HitTestOrRoot(args, _isOver, out originalSource, out var staleBranch, reason: "after_wheel");
 				result += RaiseLeaveEnter(routedArgs, staleBranch, ref originalSource!, needsNonStaleOriginalSource: false);
 			}
@@ -562,10 +557,9 @@ internal partial class InputManager
 
 		private void OnPointerMoved(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
-			// Clear wheel caches — pointer has moved, so the cached hit-test and
-			// deferred hover reconciliation are stale. PointerMoved already does a full
-			// hit-test + RaiseLeaveEnter which will reconcile hover state.
-			_deferredAfterWheelArgs = null;
+			// Clear wheel hit-test cache — pointer has moved, so the cached source
+			// is stale. PointerMoved already does a full hit-test + RaiseLeaveEnter
+			// which will reconcile hover state.
 			_cachedWheelHitTestSource = null;
 
 			if (BeforeMoveTryRedirectToManipulations(args))
