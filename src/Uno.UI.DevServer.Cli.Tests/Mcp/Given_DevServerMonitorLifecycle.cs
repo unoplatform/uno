@@ -13,19 +13,19 @@ public class Given_DevServerMonitorLifecycle
 	[Description("When an explicit solution is selected, DevServerMonitor launches that exact solution instead of an arbitrary directory scan result")]
 	public void WhenWorkspaceResolutionHasSelectedSolution_UsesSelectedSolutionForLaunch()
 	{
-		var currentDirectory = @"D:\repo";
-		var selectedSolution = @"D:\repo\srcB\AppB.slnx";
+		var currentDirectory = CreatePath("repo");
+		var selectedSolution = CreatePath("repo", "srcB", "AppB.slnx");
 		string[] solutionFiles =
 		[
-			@"D:\repo\srcA\AppA.slnx",
+			CreatePath("repo", "srcA", "AppA.slnx"),
 			selectedSolution,
 		];
 		var workspaceResolution = new WorkspaceResolution
 		{
 			RequestedWorkingDirectory = currentDirectory,
-			EffectiveWorkspaceDirectory = @"D:\repo\srcB",
+			EffectiveWorkspaceDirectory = CreatePath("repo", "srcB"),
 			SelectedSolutionPath = selectedSolution,
-			SelectedGlobalJsonPath = @"D:\repo\srcB\global.json",
+			SelectedGlobalJsonPath = CreatePath("repo", "srcB", "global.json"),
 			ResolutionKind = WorkspaceResolutionKind.AutoDiscovered,
 			CandidateSolutions = solutionFiles,
 		};
@@ -39,16 +39,51 @@ public class Given_DevServerMonitorLifecycle
 	[Description("When no explicit solution is selected, DevServerMonitor chooses a deterministic default solution")]
 	public void WhenWorkspaceResolutionDoesNotSelectSolution_UsesSortedSolutionOrder()
 	{
-		var currentDirectory = @"D:\repo";
+		var currentDirectory = CreatePath("repo");
 		string[] solutionFiles =
 		[
-			@"D:\repo\srcB\AppB.slnx",
-			@"D:\repo\srcA\AppA.slnx",
+			CreatePath("repo", "srcB", "AppB.slnx"),
+			CreatePath("repo", "srcA", "AppA.slnx"),
 		];
 
 		var solution = DevServerMonitor.DetermineSolutionToLaunch(currentDirectory, solutionFiles, workspaceResolution: null);
 
-		solution.Should().Be(@"D:\repo\srcA\AppA.slnx");
+		solution.Should().Be(CreatePath("repo", "srcA", "AppA.slnx"));
+	}
+
+	[TestMethod]
+	[Description("Selected-solution matching follows platform path semantics so Linux keeps case-sensitive distinctions")]
+	public void WhenSelectedSolutionDiffersOnlyByCase_SelectionMatchesCurrentPlatformSemantics()
+	{
+		var currentDirectory = CreatePath("repo");
+		var firstSolution = CreatePath("repo", "srcA", "AppA.slnx");
+		var selectedSolution = CreatePath("repo", "srcB", "AppB.slnx");
+		var requestedSolution = selectedSolution.ToUpperInvariant();
+		string[] solutionFiles =
+		[
+			firstSolution,
+			selectedSolution,
+		];
+		var workspaceResolution = new WorkspaceResolution
+		{
+			RequestedWorkingDirectory = currentDirectory,
+			EffectiveWorkspaceDirectory = CreatePath("repo", "srcB"),
+			SelectedSolutionPath = requestedSolution,
+			SelectedGlobalJsonPath = CreatePath("repo", "srcB", "global.json"),
+			ResolutionKind = WorkspaceResolutionKind.AutoDiscovered,
+			CandidateSolutions = solutionFiles,
+		};
+
+		var solution = DevServerMonitor.DetermineSolutionToLaunch(currentDirectory, solutionFiles, workspaceResolution);
+
+		if (OperatingSystem.IsLinux())
+		{
+			solution.Should().Be(firstSolution);
+		}
+		else
+		{
+			solution.Should().Be(selectedSolution);
+		}
 	}
 
 	[TestMethod]
@@ -112,6 +147,17 @@ public class Given_DevServerMonitorLifecycle
 	{
 		var path = Path.Combine(Path.GetTempPath(), $"uno-monitor-tests-{Guid.NewGuid():N}");
 		Directory.CreateDirectory(path);
+		return path;
+	}
+
+	private static string CreatePath(params string[] segments)
+	{
+		var path = Path.GetTempPath();
+		foreach (var segment in segments)
+		{
+			path = Path.Combine(path, segment);
+		}
+
 		return path;
 	}
 }

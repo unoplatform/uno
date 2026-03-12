@@ -11,7 +11,7 @@ public class Given_WorkspaceTransitionDecisions
 	public void WhenNoCandidatesThenUnoWorkspace_ActionIsStart()
 	{
 		var previous = CreateUnresolved(WorkspaceResolutionKind.NoCandidates);
-		var current = CreateResolved(@"D:\repo\src", @"D:\repo\src\App.slnx");
+		var current = CreateResolved(CreatePath("repo", "src"), CreatePath("repo", "src", "App.slnx"));
 
 		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.FileSystem, devServerStarted: false);
 
@@ -21,8 +21,9 @@ public class Given_WorkspaceTransitionDecisions
 	[TestMethod]
 	public void WhenNoValidWorkspaceThenUnoWorkspace_ActionIsStart()
 	{
-		var previous = CreateUnresolved(WorkspaceResolutionKind.NoValidWorkspace, @"D:\repo\App.slnx");
-		var current = CreateResolved(@"D:\repo", @"D:\repo\App.slnx");
+		var solutionPath = CreatePath("repo", "App.slnx");
+		var previous = CreateUnresolved(WorkspaceResolutionKind.NoValidWorkspace, solutionPath);
+		var current = CreateResolved(CreatePath("repo"), solutionPath);
 
 		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.FileSystem, devServerStarted: false);
 
@@ -33,7 +34,7 @@ public class Given_WorkspaceTransitionDecisions
 	public void WhenNoCandidatesThenNonUnoSolution_ActionIsDiagnose()
 	{
 		var previous = CreateUnresolved(WorkspaceResolutionKind.NoCandidates);
-		var current = CreateUnresolved(WorkspaceResolutionKind.NoValidWorkspace, @"D:\repo\App.slnx");
+		var current = CreateUnresolved(WorkspaceResolutionKind.NoValidWorkspace, CreatePath("repo", "App.slnx"));
 
 		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.FileSystem, devServerStarted: false);
 
@@ -43,8 +44,9 @@ public class Given_WorkspaceTransitionDecisions
 	[TestMethod]
 	public void WhenValidWorkspaceLosesGlobalJson_ActionIsStop()
 	{
-		var previous = CreateResolved(@"D:\repo", @"D:\repo\App.slnx");
-		var current = CreateUnresolved(WorkspaceResolutionKind.NoValidWorkspace, @"D:\repo\App.slnx");
+		var solutionPath = CreatePath("repo", "App.slnx");
+		var previous = CreateResolved(CreatePath("repo"), solutionPath);
+		var current = CreateUnresolved(WorkspaceResolutionKind.NoValidWorkspace, solutionPath);
 
 		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.FileSystem, devServerStarted: true);
 
@@ -54,7 +56,7 @@ public class Given_WorkspaceTransitionDecisions
 	[TestMethod]
 	public void WhenValidWorkspaceLosesSolution_ActionIsStop()
 	{
-		var previous = CreateResolved(@"D:\repo", @"D:\repo\App.slnx");
+		var previous = CreateResolved(CreatePath("repo"), CreatePath("repo", "App.slnx"));
 		var current = CreateUnresolved(WorkspaceResolutionKind.NoCandidates);
 
 		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.FileSystem, devServerStarted: true);
@@ -65,8 +67,8 @@ public class Given_WorkspaceTransitionDecisions
 	[TestMethod]
 	public void WhenWorkspaceChangesFromAToB_ActionIsRestart()
 	{
-		var previous = CreateResolved(@"D:\repo\a", @"D:\repo\a\AppA.slnx");
-		var current = CreateResolved(@"D:\repo\b", @"D:\repo\b\AppB.slnx");
+		var previous = CreateResolved(CreatePath("repo", "a"), CreatePath("repo", "a", "AppA.slnx"));
+		var current = CreateResolved(CreatePath("repo", "b"), CreatePath("repo", "b", "AppB.slnx"));
 
 		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.FileSystem, devServerStarted: true);
 
@@ -76,8 +78,10 @@ public class Given_WorkspaceTransitionDecisions
 	[TestMethod]
 	public void WhenWorkspaceIdentityIsUnchanged_ActionIsRefresh()
 	{
-		var previous = CreateResolved(@"D:\repo\src", @"D:\repo\src\App.slnx");
-		var current = CreateResolved(@"D:\repo\src", @"D:\repo\src\App.slnx");
+		var workspace = CreatePath("repo", "src");
+		var solution = CreatePath("repo", "src", "App.slnx");
+		var previous = CreateResolved(workspace, solution);
+		var current = CreateResolved(workspace, solution);
 
 		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.FileSystem, devServerStarted: true);
 
@@ -87,8 +91,9 @@ public class Given_WorkspaceTransitionDecisions
 	[TestMethod]
 	public void WhenSelectedSolutionChangesWithinSameWorkspace_UserSelectionActionIsRestart()
 	{
-		var previous = CreateResolved(@"D:\repo\src", @"D:\repo\src\AppA.slnx");
-		var current = CreateResolved(@"D:\repo\src", @"D:\repo\src\AppB.slnx");
+		var workspace = CreatePath("repo", "src");
+		var previous = CreateResolved(workspace, CreatePath("repo", "src", "AppA.slnx"));
+		var current = CreateResolved(workspace, CreatePath("repo", "src", "AppB.slnx"));
 
 		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.UserSelection, devServerStarted: true);
 
@@ -98,11 +103,11 @@ public class Given_WorkspaceTransitionDecisions
 	[TestMethod]
 	public void WhenWorkspaceBecomesAmbiguous_ActionIsStopForFileSystem()
 	{
-		var previous = CreateResolved(@"D:\repo\src", @"D:\repo\src\App.slnx");
+		var previous = CreateResolved(CreatePath("repo", "src"), CreatePath("repo", "src", "App.slnx"));
 		var current = CreateUnresolved(
 			WorkspaceResolutionKind.Ambiguous,
-			@"D:\repo\srcA\AppA.slnx",
-			@"D:\repo\srcB\AppB.slnx");
+			CreatePath("repo", "srcA", "AppA.slnx"),
+			CreatePath("repo", "srcB", "AppB.slnx"));
 
 		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.FileSystem, devServerStarted: true);
 
@@ -114,9 +119,9 @@ public class Given_WorkspaceTransitionDecisions
 	{
 		var previous = CreateUnresolved(
 			WorkspaceResolutionKind.Ambiguous,
-			@"D:\repo\srcA\AppA.slnx",
-			@"D:\repo\srcB\AppB.slnx");
-		var current = CreateResolved(@"D:\repo\srcA", @"D:\repo\srcA\AppA.slnx");
+			CreatePath("repo", "srcA", "AppA.slnx"),
+			CreatePath("repo", "srcB", "AppB.slnx"));
+		var current = CreateResolved(CreatePath("repo", "srcA"), CreatePath("repo", "srcA", "AppA.slnx"));
 
 		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.FileSystem, devServerStarted: false);
 
@@ -126,8 +131,10 @@ public class Given_WorkspaceTransitionDecisions
 	[TestMethod]
 	public void WhenMcpRootsConfirmSameWorkspace_ActionIsRefresh()
 	{
-		var previous = CreateResolved(@"D:\repo\src", @"D:\repo\src\App.slnx");
-		var current = CreateResolved(@"D:\repo\src", @"D:\repo\src\App.slnx");
+		var workspace = CreatePath("repo", "src");
+		var solution = CreatePath("repo", "src", "App.slnx");
+		var previous = CreateResolved(workspace, solution);
+		var current = CreateResolved(workspace, solution);
 
 		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.McpRoots, devServerStarted: true);
 
@@ -137,8 +144,10 @@ public class Given_WorkspaceTransitionDecisions
 	[TestMethod]
 	public void WhenMcpRootsConfirmSameWorkspaceAfterDeferredStartup_ActionIsStart()
 	{
-		var previous = CreateResolved(@"D:\repo\src", @"D:\repo\src\App.slnx");
-		var current = CreateResolved(@"D:\repo\src", @"D:\repo\src\App.slnx");
+		var workspace = CreatePath("repo", "src");
+		var solution = CreatePath("repo", "src", "App.slnx");
+		var previous = CreateResolved(workspace, solution);
+		var current = CreateResolved(workspace, solution);
 
 		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.McpRoots, devServerStarted: false);
 
@@ -148,18 +157,31 @@ public class Given_WorkspaceTransitionDecisions
 	[TestMethod]
 	public void WhenMcpRootsPointToDifferentWorkspace_ActionIsDiagnose()
 	{
-		var previous = CreateResolved(@"D:\repo\a", @"D:\repo\a\AppA.slnx");
-		var current = CreateResolved(@"D:\repo\b", @"D:\repo\b\AppB.slnx");
+		var previous = CreateResolved(CreatePath("repo", "a"), CreatePath("repo", "a", "AppA.slnx"));
+		var current = CreateResolved(CreatePath("repo", "b"), CreatePath("repo", "b", "AppB.slnx"));
 
 		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.McpRoots, devServerStarted: true);
 
 		action.Should().Be(WorkspaceTransitionAction.Diagnose);
 	}
 
+	[TestMethod]
+	public void WhenWorkspacePathsDifferOnlyByCase_EqualityMatchesCurrentPlatformSemantics()
+	{
+		var workspace = CreatePath("repo", "src");
+		var solution = CreatePath("repo", "src", "App.slnx");
+		var previous = CreateResolved(workspace, solution);
+		var current = CreateResolved(workspace.ToUpperInvariant(), solution.ToUpperInvariant());
+
+		var isSame = WorkspaceTransitionDecisions.IsSameWorkspace(previous, current);
+
+		isSame.Should().Be(!OperatingSystem.IsLinux());
+	}
+
 	private static WorkspaceResolution CreateResolved(string workspaceDirectory, string solutionPath)
 		=> new()
 		{
-			RequestedWorkingDirectory = Path.GetDirectoryName(solutionPath)!,
+			RequestedWorkingDirectory = workspaceDirectory,
 			EffectiveWorkspaceDirectory = workspaceDirectory,
 			SelectedSolutionPath = solutionPath,
 			SelectedGlobalJsonPath = Path.Combine(workspaceDirectory, "global.json"),
@@ -170,8 +192,19 @@ public class Given_WorkspaceTransitionDecisions
 	private static WorkspaceResolution CreateUnresolved(WorkspaceResolutionKind resolutionKind, params string[] candidates)
 		=> new()
 		{
-			RequestedWorkingDirectory = @"D:\repo",
+			RequestedWorkingDirectory = CreatePath("repo"),
 			ResolutionKind = resolutionKind,
 			CandidateSolutions = candidates,
 		};
+
+	private static string CreatePath(params string[] segments)
+	{
+		var path = Path.GetTempPath();
+		foreach (var segment in segments)
+		{
+			path = Path.Combine(path, segment);
+		}
+
+		return path;
+	}
 }

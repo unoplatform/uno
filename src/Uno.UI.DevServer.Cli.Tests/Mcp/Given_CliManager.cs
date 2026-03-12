@@ -188,6 +188,25 @@ public class Given_CliManager
 		}
 	}
 
+	[TestMethod]
+	[Description("Non-workspace commands like list do not force a workspace resolution scan before invoking the host")]
+	public async Task List_WhenWorkspaceResolutionIsNotRequired_DoesNotResolveWorkspace()
+	{
+		var services = new ServiceCollection()
+			.AddLogging(builder => builder.SetMinimumLevel(LogLevel.None))
+			.BuildServiceProvider();
+		var resolver = new ThrowingWorkspaceResolver();
+		var cliManager = new CliManager(
+			services,
+			new UnoToolsLocator(NullLogger<UnoToolsLocator>.Instance),
+			resolver);
+
+		var exitCode = await cliManager.RunAsync(["list"]);
+
+		exitCode.Should().Be(1);
+		resolver.ResolveAsyncCallCount.Should().Be(0);
+	}
+
 	private static string CreateTempDirectory()
 	{
 		var path = Path.Combine(Path.GetTempPath(), $"uno-cli-tests-{Guid.NewGuid():N}");
@@ -218,5 +237,19 @@ public class Given_CliManager
 		{
 			_messages.Add(formatter(state, exception));
 		}
+	}
+
+	private sealed class ThrowingWorkspaceResolver : IWorkspaceResolver
+	{
+		public int ResolveAsyncCallCount { get; private set; }
+
+		public Task<WorkspaceResolution> ResolveAsync(string requestedDirectory)
+		{
+			ResolveAsyncCallCount++;
+			throw new InvalidOperationException("Workspace resolution should not be called for this command.");
+		}
+
+		public Task<WorkspaceResolution> ResolveSolutionAsync(string requestedDirectory, string solutionPath, WorkspaceSelectionSource selectionSource = WorkspaceSelectionSource.UserSelected)
+			=> throw new NotSupportedException();
 	}
 }

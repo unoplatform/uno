@@ -14,7 +14,7 @@ internal class CliManager
 {
 	private readonly IServiceProvider _services;
 	private readonly UnoToolsLocator _unoToolsLocator;
-	private readonly WorkspaceResolver _workspaceResolver;
+	private readonly IWorkspaceResolver _workspaceResolver;
 	private readonly ILogger<CliManager> _logger;
 	private static readonly JsonSerializerOptions _discoJsonOptions = new()
 	{
@@ -22,7 +22,7 @@ internal class CliManager
 		PropertyNamingPolicy = JsonNamingPolicy.CamelCase
 	};
 
-	public CliManager(IServiceProvider services, UnoToolsLocator unoToolsLocator, WorkspaceResolver workspaceResolver)
+	public CliManager(IServiceProvider services, UnoToolsLocator unoToolsLocator, IWorkspaceResolver workspaceResolver)
 	{
 		_services = services;
 		_unoToolsLocator = unoToolsLocator;
@@ -45,16 +45,15 @@ internal class CliManager
 
 			originalArgs = solutionDirParseResult.FilteredArgs;
 			var requestedWorkingDirectory = solutionDirParseResult.SolutionDirectory ?? Environment.CurrentDirectory;
-			var workspaceResolution = await _workspaceResolver.ResolveAsync(requestedWorkingDirectory);
-			var workingDirectory = workspaceResolution.EffectiveWorkspaceDirectory ?? requestedWorkingDirectory;
 
 			if (originalArgs.Contains("--mcp-app"))
 			{
+				var mcpWorkspaceResolution = await _workspaceResolver.ResolveAsync(requestedWorkingDirectory);
 				LogVersionBanner();
 				return await RunMcpProxyAsync(
 					originalArgs.Where(a => a != "--mcp-app").ToArray(),
 					requestedWorkingDirectory,
-					workspaceResolution);
+					mcpWorkspaceResolution);
 			}
 
 			var isDisco = originalArgs is { Length: > 0 } &&
@@ -67,38 +66,50 @@ internal class CliManager
 				string.Equals(originalArgs[0], "health", StringComparison.OrdinalIgnoreCase);
 			var healthJson = isHealth &&
 				originalArgs.Any(a => string.Equals(a, "--json", StringComparison.OrdinalIgnoreCase));
+			var command = originalArgs.Length == 0 ? "start" : originalArgs[0];
+			var requiresWorkspaceResolution = RequiresWorkspaceResolution(command);
+			WorkspaceResolution? workspaceResolution = null;
+			string? workingDirectory = null;
 
 			if ((!isDisco || (!discoJson && !discoAddInsOnly)) && !(isHealth && healthJson))
 			{
 				ShowBanner();
 			}
 
+			if (requiresWorkspaceResolution)
+			{
+				workspaceResolution = await _workspaceResolver.ResolveAsync(requestedWorkingDirectory);
+				workingDirectory = workspaceResolution.EffectiveWorkspaceDirectory ?? requestedWorkingDirectory;
+			}
+
 			if (isDisco && discoAddInsOnly)
 			{
-				return await RunDiscoAddInsOnlyAsync(workingDirectory, outputJson: discoJson);
+				return await RunDiscoAddInsOnlyAsync(workingDirectory!, outputJson: discoJson);
 			}
 
 			if (isDisco && discoJson)
 			{
 				// Avoid banner/log noise when emitting JSON output
-				return await RunDiscoAsync(workingDirectory, workspaceResolution, outputJson: true);
+				return await RunDiscoAsync(workingDirectory!, workspaceResolution!, outputJson: true);
 			}
 
 			if (isDisco)
 			{
-				return await RunDiscoAsync(workingDirectory, workspaceResolution, outputJson: false);
+				return await RunDiscoAsync(workingDirectory!, workspaceResolution!, outputJson: false);
 			}
 
 			if (isHealth)
 			{
-				return await RunHealthAsync(requestedWorkingDirectory, workspaceResolution, healthJson);
+				return await RunHealthAsync(requestedWorkingDirectory, workspaceResolution!, healthJson);
 			}
 
 			if (originalArgs is { Length: > 0 } && string.Equals(originalArgs[0], "login", StringComparison.OrdinalIgnoreCase))
 			{
-				return await OpenSettings(originalArgs, workingDirectory);
+				var loginWorkspace = (await _workspaceResolver.ResolveAsync(requestedWorkingDirectory)).EffectiveWorkspaceDirectory ?? requestedWorkingDirectory;
+				return await OpenSettings(originalArgs, loginWorkspace);
 			}
 
+			workingDirectory ??= requestedWorkingDirectory;
 			var hostPath = await _unoToolsLocator.ResolveHostExecutableAsync(workingDirectory);
 
 			if (hostPath is null)
@@ -137,6 +148,12 @@ internal class CliManager
 	{
 		LogVersionBanner();
 	}
+
+	private static bool RequiresWorkspaceResolution(string command)
+		=> string.Equals(command, "start", StringComparison.OrdinalIgnoreCase)
+			|| string.Equals(command, "stop", StringComparison.OrdinalIgnoreCase)
+			|| string.Equals(command, "disco", StringComparison.OrdinalIgnoreCase)
+			|| string.Equals(command, "health", StringComparison.OrdinalIgnoreCase);
 
 	internal void LogVersionBanner()
 	{

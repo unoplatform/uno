@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Uno.UI.DevServer.Cli.Helpers;
 
-internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger)
+internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger) : IWorkspaceResolver
 {
 	private readonly ILogger<WorkspaceResolver> _logger = logger;
 
@@ -22,9 +22,9 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger)
 		}
 
 		var candidates = new List<WorkspaceCandidate>();
-		var globalJsonCache = new Dictionary<string, (string? sdkPackage, string? sdkVersion)>(StringComparer.OrdinalIgnoreCase);
+		var globalJsonCache = new Dictionary<string, (string? sdkPackage, string? sdkVersion)>(PathComparison.FileSystemComparer);
 
-		foreach (var solutionPath in solutionFiles.OrderBy(path => path, StringComparer.OrdinalIgnoreCase))
+		foreach (var solutionPath in solutionFiles.OrderBy(path => path, PathComparison.FileSystemComparer))
 		{
 			var solutionDirectory = Path.GetDirectoryName(solutionPath);
 			if (string.IsNullOrWhiteSpace(solutionDirectory))
@@ -69,7 +69,7 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger)
 		var bestDistance = candidates.Min(candidate => candidate.GlobalJsonDistance);
 		var bestCandidates = candidates
 			.Where(candidate => candidate.GlobalJsonDistance == bestDistance)
-			.OrderBy(candidate => candidate.SolutionPath, StringComparer.OrdinalIgnoreCase)
+			.OrderBy(candidate => candidate.SolutionPath, PathComparison.FileSystemComparer)
 			.ToList();
 
 		if (bestCandidates.Count > 1)
@@ -83,7 +83,7 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger)
 		}
 
 		var selected = bestCandidates[0];
-		var resolutionKind = string.Equals(selected.WorkspaceDirectory, normalizedRequestedDirectory, StringComparison.OrdinalIgnoreCase)
+		var resolutionKind = PathComparison.PathsEqual(selected.WorkspaceDirectory, normalizedRequestedDirectory)
 			? WorkspaceResolutionKind.CurrentDirectory
 			: WorkspaceResolutionKind.AutoDiscovered;
 
@@ -104,10 +104,10 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger)
 		var normalizedRequestedDirectory = Path.GetFullPath(requestedDirectory);
 		var normalizedSolutionPath = Path.GetFullPath(solutionPath);
 		var candidateSolutions = SolutionFileFinder.FindSolutionFiles(normalizedRequestedDirectory);
-		var globalJsonCache = new Dictionary<string, (string? sdkPackage, string? sdkVersion)>(StringComparer.OrdinalIgnoreCase);
+		var globalJsonCache = new Dictionary<string, (string? sdkPackage, string? sdkVersion)>(PathComparison.FileSystemComparer);
 
 		if (!File.Exists(normalizedSolutionPath)
-			|| !candidateSolutions.Contains(normalizedSolutionPath, StringComparer.OrdinalIgnoreCase))
+			|| !candidateSolutions.Any(candidate => PathComparison.PathsEqual(candidate, normalizedSolutionPath)))
 		{
 			return new WorkspaceResolution
 			{
@@ -151,7 +151,7 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger)
 				var parsed = await GetCachedGlobalJsonResultAsync(globalJsonPath, globalJsonCache);
 				if (!string.IsNullOrWhiteSpace(parsed.sdkPackage) && !string.IsNullOrWhiteSpace(parsed.sdkVersion))
 				{
-					var resolutionKind = string.Equals(currentDirectory, requestedDirectory, StringComparison.OrdinalIgnoreCase)
+					var resolutionKind = PathComparison.PathsEqual(currentDirectory, requestedDirectory)
 						? WorkspaceResolutionKind.CurrentDirectory
 						: WorkspaceResolutionKind.AutoDiscovered;
 
@@ -198,7 +198,7 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger)
 		var current = Path.GetFullPath(solutionDirectory);
 		var target = Path.GetFullPath(workspaceDirectory);
 
-		while (!string.Equals(current, target, StringComparison.OrdinalIgnoreCase))
+		while (!PathComparison.PathsEqual(current, target))
 		{
 			var parent = Directory.GetParent(current);
 			if (parent is null)
