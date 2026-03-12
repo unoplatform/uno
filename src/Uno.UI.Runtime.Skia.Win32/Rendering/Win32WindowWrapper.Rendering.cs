@@ -1,38 +1,56 @@
 using System;
+using System.Drawing;
+using System.Threading;
+using Windows.Win32;
+using Windows.Win32.Foundation;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
-using Uno.UI.Runtime.Skia.Hosting;
-using Windows.Win32;
-using Windows.Win32.Foundation;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
 internal partial class Win32WindowWrapper
 {
-	private readonly FramePacer _framePacer;
 	private int _renderCount;
 	private SKSurface? _surface;
 	private bool _rendering;
+	private bool _blitScheduled;
+	private bool _inSizeMove;
 
 	public event EventHandler<SKPath>? RenderingNegativePathReevaluated; // not necessarily changed
 
-	private FramePacer CreateFramePacer()
-	{
-		return new FramePacer(
-			_refreshRate,
-			() => NativeDispatcher.Main.Enqueue(Render, NativeDispatcherPriority.High));
-	}
-
 	unsafe void IXamlRootHost.InvalidateRender()
 	{
-		var success = PInvoke.InvalidateRect(_hwnd, default(RECT*), true);
-		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.InvalidateRect)} failed: {Win32Helper.GetErrorMessage()}"); }
+		// Mark the window dirty for WM_PAINT. This handles external repaints (window
+		// uncovering, restore from minimized) where Windows generates WM_PAINT.
+		// Like WPF (InvalidateRect in HwndTarget) and Avalonia (InvalidateRect in WindowImpl).
+		PInvoke.InvalidateRect(_hwnd, default(RECT*), false);
 
-		_framePacer.RequestFrame();
+		// During the modal resize/move loop, rendering is driven synchronously from
+		// WM_SIZE. Don't schedule dispatcher-based blits — they would flood the modal
+		// loop's message queue and starve resize messages (each FrameTick posts the
+		// next via PostMessage, and GL's SwapBuffers blocks for VSync per blit).
+		if (_inSizeMove)
+		{
+			return;
+		}
+
+		// Schedule a single coalesced blit at Render priority. Neither WPF nor Avalonia
+		// rely on WM_PAINT for the primary blit — WM_PAINT is too low priority in the
+		// Windows message queue (starved by PostMessage'd dispatcher items during
+		// continuous animation). Like Avalonia's compositor-driven render loop, we
+		// schedule the blit as part of the render pass via the dispatcher.
+		if (!Interlocked.Exchange(ref _blitScheduled, true))
+		{
+			NativeDispatcher.Main.Enqueue(() =>
+			{
+				Interlocked.Exchange(ref _blitScheduled, false);
+				Render();
+			}, NativeDispatcherPriority.Render);
+		}
 	}
 
 	private void ReinitializeRenderer()
@@ -48,8 +66,6 @@ internal partial class Win32WindowWrapper
 		{
 			return;
 		}
-
-		_framePacer.OnFrameStart();
 
 		this.LogTrace()?.Trace($"Render {this._renderCount++}");
 
