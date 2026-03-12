@@ -48,13 +48,15 @@ internal class Program
 			WriteCommand("mcp uninstall", "Remove MCP servers from IDE config files");
 			Console.WriteLine();
 			Console.WriteLine("MCP setup options:");
-			WriteOption("<ide>", "Target IDE (positional): vscode, cursor, windsurf, kiro, antigravity, rider, claude-code, opencode, unknown");
+			WriteOption("<ide>", "Target IDE (positional, or use --all-ides): vscode, cursor, windsurf, kiro, antigravity, rider, claude-code, opencode, unknown");
 			WriteOption("--workspace <path>", "Workspace root (default: current directory)");
 			WriteOption("--release", "Use stable variant");
 			WriteOption("--prerelease", "Use prerelease variant");
 			WriteOption("--version <ver>", "Pin to specific version");
 			WriteOption("--servers <list>", "Comma-separated server names (default: all)");
 			WriteOption("--all-scopes", "For mcp uninstall, remove matching registrations from every configured scope");
+			WriteOption("--all-ides", "For mcp install/uninstall without <ide>, target all detected IDEs");
+			WriteOption("--dry-run", "Show what would be done without modifying any files");
 			WriteOption("--json", "Emit JSON output");
 			WriteOption("--ide-definitions <path>", "Override embedded IDE profiles");
 			WriteOption("--server-definitions <path>", "Override embedded server definitions");
