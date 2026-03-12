@@ -59,18 +59,9 @@ internal static class WorkspaceTransitionDecisions
 	internal static bool IsSameWorkspace(WorkspaceResolution left, WorkspaceResolution right)
 		=> left.IsResolved
 			&& right.IsResolved
-			&& string.Equals(
-				left.EffectiveWorkspaceDirectory,
-				right.EffectiveWorkspaceDirectory,
-				StringComparison.OrdinalIgnoreCase)
-			&& string.Equals(
-				left.SelectedSolutionPath ?? string.Empty,
-				right.SelectedSolutionPath ?? string.Empty,
-				StringComparison.OrdinalIgnoreCase)
-			&& string.Equals(
-				left.SelectedGlobalJsonPath ?? string.Empty,
-				right.SelectedGlobalJsonPath ?? string.Empty,
-				StringComparison.OrdinalIgnoreCase);
+			&& PathComparison.PathsEqual(left.EffectiveWorkspaceDirectory, right.EffectiveWorkspaceDirectory)
+			&& PathComparison.PathsEqual(left.SelectedSolutionPath ?? string.Empty, right.SelectedSolutionPath ?? string.Empty)
+			&& PathComparison.PathsEqual(left.SelectedGlobalJsonPath ?? string.Empty, right.SelectedGlobalJsonPath ?? string.Empty);
 }
 
 internal enum WorkspaceTransitionTrigger

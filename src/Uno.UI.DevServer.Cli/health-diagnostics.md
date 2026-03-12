@@ -64,7 +64,7 @@ Three codes exist in the `IssueCode` enum but are **not currently mapped** in CL
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `DiscoveredSolutions` | `string[]?` | Relative paths to `.sln`/`.slnx` files found by recursive search (null when none found) |
+| `DiscoveredSolutions` | `string[]?` | Absolute `.sln`/`.slnx` paths exposed to health consumers. This may be `null` when a caller omits the field, or an empty array when discovery completed with no candidates. |
 | `ConnectionState` | `ConnectionState?` | Lifecycle state of the MCP bridge (see `Mcp/ConnectionState.cs` for state diagram) |
 | `EffectiveWorkspaceDirectory` | `string?` | Resolved workspace directory used for discovery and cache identity |
 | `SelectedSolutionPath` | `string?` | Solution selected for the current workspace |

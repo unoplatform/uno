@@ -84,6 +84,7 @@ internal class Program
 		services.AddSingleton<CliManager>();
 		services.AddSingleton<UnoToolsLocator>();
 		services.AddSingleton<WorkspaceResolver>();
+		services.AddSingleton<IWorkspaceResolver>(sp => sp.GetRequiredService<WorkspaceResolver>());
 		services.AddSingleton(sp =>
 		new ManifestAddInResolver(
 			sp.GetRequiredService<ILogger<ManifestAddInResolver>>(),

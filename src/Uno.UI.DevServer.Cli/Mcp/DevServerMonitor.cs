@@ -70,8 +70,9 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 			_originalPort,
 			forwardedArgsDisplay);
 
-		_cts = new CancellationTokenSource();
-		_monitor = Task.Run(() => RunMonitor(_cts.Token), _cts.Token);
+		var cts = new CancellationTokenSource();
+		_cts = cts;
+		_monitor = Task.Run(() => RunMonitor(cts.Token), cts.Token);
 	}
 
 	internal async Task StopMonitoringAsync()
@@ -264,7 +265,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 		{
 			var selectedSolutionPath = Path.GetFullPath(workspaceResolution.SelectedSolutionPath);
 			var matchingSolution = solutionFiles.FirstOrDefault(solution =>
-				string.Equals(Path.GetFullPath(solution), selectedSolutionPath, StringComparison.OrdinalIgnoreCase));
+				PathComparison.PathsEqual(solution, selectedSolutionPath));
 
 			if (matchingSolution is not null)
 			{
@@ -273,7 +274,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 		}
 
 		return solutionFiles
-			.OrderBy(solution => Path.GetRelativePath(currentDirectory, solution), StringComparer.OrdinalIgnoreCase)
+			.OrderBy(solution => Path.GetRelativePath(currentDirectory, solution), PathComparison.FileSystemComparer)
 			.FirstOrDefault();
 	}
 
