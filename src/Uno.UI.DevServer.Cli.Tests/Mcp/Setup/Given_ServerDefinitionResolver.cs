@@ -10,44 +10,44 @@ public class Given_ServerDefinitionResolver
 	// ── ResolveExpectedVariant ──
 
 	[TestMethod]
-	public void ResolveExpectedVariant_StableVersion_NoFlags_ReturnsStable()
+	public void ResolveExpectedVariant_StableVersion_NoOverrides_ReturnsStable()
 	{
-		var result = ServerDefinitionResolver.ResolveExpectedVariant("5.6.0", false, false, null);
+		var result = ServerDefinitionResolver.ResolveExpectedVariant("5.6.0", null, null);
 		result.Should().Be("stable");
 	}
 
 	[TestMethod]
-	public void ResolveExpectedVariant_PrereleaseVersion_NoFlags_ReturnsPrerelease()
+	public void ResolveExpectedVariant_PrereleaseVersion_NoOverrides_ReturnsPrerelease()
 	{
-		var result = ServerDefinitionResolver.ResolveExpectedVariant("5.6.0-dev.42", false, false, null);
+		var result = ServerDefinitionResolver.ResolveExpectedVariant("5.6.0-dev.42", null, null);
 		result.Should().Be("prerelease");
 	}
 
 	[TestMethod]
-	public void ResolveExpectedVariant_PrereleaseVersion_ReleaseFlag_ReturnsStable()
+	public void ResolveExpectedVariant_ChannelStable_ReturnsStable()
 	{
-		var result = ServerDefinitionResolver.ResolveExpectedVariant("5.6.0-dev.42", releaseFlag: true, false, null);
+		var result = ServerDefinitionResolver.ResolveExpectedVariant("5.6.0-dev.42", "stable", null);
 		result.Should().Be("stable");
 	}
 
 	[TestMethod]
-	public void ResolveExpectedVariant_StableVersion_PrereleaseFlag_ReturnsPrerelease()
+	public void ResolveExpectedVariant_ChannelPrerelease_ReturnsPrerelease()
 	{
-		var result = ServerDefinitionResolver.ResolveExpectedVariant("5.6.0", false, prereleaseFlag: true, null);
+		var result = ServerDefinitionResolver.ResolveExpectedVariant("5.6.0", "prerelease", null);
 		result.Should().Be("prerelease");
 	}
 
 	[TestMethod]
-	public void ResolveExpectedVariant_VersionFlag_ReturnsPinned()
+	public void ResolveExpectedVariant_ToolVersion_ReturnsPinned()
 	{
-		var result = ServerDefinitionResolver.ResolveExpectedVariant("5.6.0", false, false, versionFlag: "5.5.0");
+		var result = ServerDefinitionResolver.ResolveExpectedVariant("5.6.0", null, "5.5.0");
 		result.Should().Be("pinned:5.5.0");
 	}
 
 	[TestMethod]
-	public void ResolveExpectedVariant_VersionFlag_TakesPrecedence()
+	public void ResolveExpectedVariant_ToolVersion_TakesPrecedence()
 	{
-		var result = ServerDefinitionResolver.ResolveExpectedVariant("5.6.0-dev.42", true, true, versionFlag: "5.5.0");
+		var result = ServerDefinitionResolver.ResolveExpectedVariant("5.6.0-dev.42", "prerelease", "5.5.0");
 		result.Should().Be("pinned:5.5.0");
 	}
 

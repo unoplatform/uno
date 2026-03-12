@@ -50,9 +50,8 @@ internal class Program
 			Console.WriteLine("MCP setup options:");
 			WriteOption("<ide>", "Target IDE (positional, or use --all-ides): vscode, cursor, windsurf, kiro, antigravity, gemini-cli, rider, claude-code, claude-desktop, opencode, unknown");
 			WriteOption("--workspace <path>", "Workspace root (default: current directory)");
-			WriteOption("--release", "Use stable variant");
-			WriteOption("--prerelease", "Use prerelease variant");
-			WriteOption("--version <ver>", "Pin to specific version");
+			WriteOption("--channel <stable|prerelease>", "Select the Uno MCP definition channel");
+			WriteOption("--tool-version <ver>", "Pin the Uno MCP tool definition to a specific version");
 			WriteOption("--servers <list>", "Comma-separated server names (default: all)");
 			WriteOption("--all-scopes", "For mcp uninstall, remove matching registrations from every configured scope");
 			WriteOption("--all-ides", "For mcp install/uninstall without <ide>, target all detected IDEs");
@@ -60,6 +59,9 @@ internal class Program
 			WriteOption("--json", "Emit JSON output");
 			WriteOption("--ide-definitions <path>", "Override embedded IDE profiles");
 			WriteOption("--server-definitions <path>", "Override embedded server definitions");
+			Console.WriteLine();
+			Console.WriteLine("Note: MCP setup options choose the expected Uno MCP definition.");
+			Console.WriteLine("      Any dnx --prerelease or dnx --version written to config files is derived output.");
 			Console.WriteLine();
 			return 0;
 		}
