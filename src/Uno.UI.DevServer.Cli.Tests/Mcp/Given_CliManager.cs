@@ -180,6 +180,7 @@ public class Given_CliManager
 			root.GetProperty("effectiveWorkspaceDirectory").GetString().Should().Be(workspace);
 			root.GetProperty("selectedSolutionPath").GetString().Should().Be(Path.Combine(workspace, "StudioLive.slnx"));
 			root.GetProperty("resolutionKind").GetString().Should().Be("AutoDiscovered");
+			root.GetProperty("discoveredSolutions").ValueKind.Should().Be(JsonValueKind.Null);
 		}
 		finally
 		{

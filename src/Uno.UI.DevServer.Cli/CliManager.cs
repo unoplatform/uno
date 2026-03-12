@@ -269,7 +269,7 @@ internal class CliManager
 			upstreamConnected: false,
 			toolCount: 0,
 			connectionState: null,
-			discoveredSolutions: info.CandidateSolutions.Count > 0 ? info.CandidateSolutions : null);
+			discoveredSolutions: null);
 
 		if (outputJson)
 		{

@@ -1281,7 +1281,7 @@ public class Given_ProxyLifecycleManager
 	}
 
 	[TestMethod]
-	[Description("Replacing the workspace debounce source installs the newest token source and cancels the previous one")]
+	[Description("Replacing the workspace debounce source installs the newest token source and cancels the previous one without disposing the superseded source yet")]
 	public void ReplaceWorkspaceMutationDebounceSource_WhenCalled_ReplacesAndCancelsPrevious()
 	{
 		CancellationTokenSource? field = new();
@@ -1291,15 +1291,15 @@ public class Given_ProxyLifecycleManager
 
 		field.Should().BeSameAs(second);
 		first!.IsCancellationRequested.Should().BeTrue();
-		Action cancelDisposedFirst = () => first.Cancel();
-		cancelDisposedFirst.Should().Throw<ObjectDisposedException>();
+		Action disposeFirst = () => first.Dispose();
+		disposeFirst.Should().NotThrow();
 
 		var third = ProxyLifecycleManager.ReplaceWorkspaceMutationDebounceSource(ref field);
 
 		field.Should().BeSameAs(third);
 		second.IsCancellationRequested.Should().BeTrue();
-		Action cancelDisposedSecond = () => second.Cancel();
-		cancelDisposedSecond.Should().Throw<ObjectDisposedException>();
+		Action disposeSecond = () => second.Dispose();
+		disposeSecond.Should().NotThrow();
 
 		third.Dispose();
 	}
