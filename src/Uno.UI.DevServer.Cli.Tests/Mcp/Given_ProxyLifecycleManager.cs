@@ -1305,6 +1305,37 @@ public class Given_ProxyLifecycleManager
 	}
 
 	[TestMethod]
+	[Description("A completed debounce source is cleared and disposed only if it is still the current debounce source")]
+	public void ClearCompletedWorkspaceMutationDebounceSource_WhenCurrent_ClearsAndDisposes()
+	{
+		CancellationTokenSource? field = new();
+		var current = field;
+
+		ProxyLifecycleManager.ClearCompletedWorkspaceMutationDebounceSource(ref field, current!);
+
+		field.Should().BeNull();
+		current!.IsCancellationRequested.Should().BeTrue();
+		Action cancelDisposedCurrent = () => current.Cancel();
+		cancelDisposedCurrent.Should().Throw<ObjectDisposedException>();
+	}
+
+	[TestMethod]
+	[Description("A completed debounce source does not clear or dispose a newer current debounce source")]
+	public void ClearCompletedWorkspaceMutationDebounceSource_WhenSuperseded_LeavesCurrentSourceIntact()
+	{
+		CancellationTokenSource? field = new();
+		var completed = field;
+		var current = ProxyLifecycleManager.ReplaceWorkspaceMutationDebounceSource(ref field);
+
+		ProxyLifecycleManager.ClearCompletedWorkspaceMutationDebounceSource(ref field, completed!);
+
+		field.Should().BeSameAs(current);
+		current.IsCancellationRequested.Should().BeFalse();
+
+		current.Dispose();
+	}
+
+	[TestMethod]
 	[Description("Watcher startup failures are logged and do not leave a partially initialized watcher behind")]
 	public void WhenWatcherStartupFails_NoExceptionEscapesAndNoWatcherIsRetained()
 	{
