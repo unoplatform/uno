@@ -161,7 +161,7 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 				? profile.ConfigPaths
 				: [profile.WriteTarget];
 
-			foreach (var configTemplate in uninstallPaths.Distinct(StringComparer.OrdinalIgnoreCase))
+			foreach (var configTemplate in uninstallPaths.Distinct(FileSystem.PathComparer))
 			{
 				var configPath = ConfigScanner.ResolvePath(configTemplate, workspace, home, appdata);
 

@@ -8,10 +8,6 @@ namespace Uno.UI.DevServer.Cli.Mcp.Setup;
 /// </summary>
 internal sealed class ConfigScanner(IFileSystem fs)
 {
-	/// <summary>
-	/// Scans all config paths for an IDE profile, resolving path template tokens.
-	/// Returns per-server scan results with status, locations, and warnings.
-	/// </summary>
 	public ScanResult Scan(
 		IdeProfile profile,
 		string workspace,
@@ -20,6 +16,7 @@ internal sealed class ConfigScanner(IFileSystem fs)
 	{
 		var home = fs.GetUserHomePath();
 		var appdata = fs.GetAppDataPath();
+		var pathComparer = FileSystem.PathComparer;
 
 		var resolvedPaths = profile.ConfigPaths
 			.Select(p => ResolvePath(p, workspace, home, appdata))
@@ -48,13 +45,13 @@ internal sealed class ConfigScanner(IFileSystem fs)
 
 			var distinctConfigPathCount = locations
 				.Select(static location => location.Path)
-				.Distinct(StringComparer.OrdinalIgnoreCase)
+				.Distinct(pathComparer)
 				.Count();
 			if (distinctConfigPathCount > 1)
 			{
 				warnings.Add("Registered in multiple config files");
 			}
-			if (locations.GroupBy(static location => location.Path, StringComparer.OrdinalIgnoreCase)
+			if (locations.GroupBy(static location => location.Path, pathComparer)
 				.Any(static group => group.Count() > 1))
 			{
 				warnings.Add("Multiple entries found in the same config file");
