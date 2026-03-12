@@ -66,8 +66,9 @@ public class Given_CliManager
 	public void RunMcpSubcommand_ConflictingVariantFlags_ReturnsUsageError()
 	{
 		var manager = CreateManager();
+		var workspace = CreateWorkspacePath();
 
-		var result = manager.RunMcpSubcommand(["status", "--release", "--prerelease"], "/project", null);
+		var result = manager.RunMcpSubcommand(["status", "--release", "--prerelease"], workspace, null);
 
 		result.Should().Be(2);
 	}
@@ -75,14 +76,17 @@ public class Given_CliManager
 	[TestMethod]
 	public void RunMcpSubcommand_StatusUnknown_ReturnsSuccess()
 	{
-		var manager = CreateManager();
+		var workspace = CreateWorkspacePath();
+		var fs = new InMemoryFileSystem();
+		fs.AddDirectory(workspace);
+		var manager = CreateManager(fs);
 		var previousOut = Console.Out;
 		using var writer = new StringWriter();
 		Console.SetOut(writer);
 
 		try
 		{
-			var result = manager.RunMcpSubcommand(["status", "unknown", "--json"], "/project", null);
+			var result = manager.RunMcpSubcommand(["status", "unknown", "--json"], workspace, null);
 
 			result.Should().Be(0);
 			writer.ToString().Should().Contain("\"callerIde\": \"unknown\"");
@@ -96,8 +100,10 @@ public class Given_CliManager
 	[TestMethod]
 	public void RunMcpSubcommand_InstallNoIde_InstallsInAllDetected()
 	{
+		var workspace = CreateWorkspacePath();
 		var fs = new InMemoryFileSystem();
-		fs.AddDirectory("/project/.cursor");
+		fs.AddDirectory(workspace);
+		fs.AddDirectory(Path.Combine(workspace, ".cursor"));
 
 		var manager = CreateManager(fs);
 		var previousOut = Console.Out;
@@ -106,7 +112,7 @@ public class Given_CliManager
 
 		try
 		{
-			var result = manager.RunMcpSubcommand(["install", "--all-ides", "--json"], "/project", null);
+			var result = manager.RunMcpSubcommand(["install", "--all-ides", "--json"], workspace, null);
 
 			result.Should().Be(0);
 			var output = writer.ToString();
@@ -120,22 +126,39 @@ public class Given_CliManager
 	}
 
 	[TestMethod]
-	public void RunMcpSubcommand_InstallNoIde_NoDetected_ReturnsError()
+	public void RunMcpSubcommand_InstallNoIde_InstallsWorkspaceBackedProfiles()
 	{
+		var workspace = CreateWorkspacePath();
 		var fs = new InMemoryFileSystem();
+		fs.AddDirectory(workspace);
 		var manager = CreateManager(fs);
+		var previousOut = Console.Out;
+		using var writer = new StringWriter();
+		Console.SetOut(writer);
 
-		var result = manager.RunMcpSubcommand(["install", "--all-ides", "--json"], "/project", null);
+		try
+		{
+			var result = manager.RunMcpSubcommand(["install", "--all-ides", "--json"], workspace, null);
 
-		result.Should().Be(1);
+			result.Should().Be(0);
+			var output = writer.ToString();
+			output.Should().Contain("\"ide\": \"claude-code\"");
+			output.Should().Contain("\"ide\": \"opencode\"");
+		}
+		finally
+		{
+			Console.SetOut(previousOut);
+		}
 	}
 
 	[TestMethod]
 	public void RunMcpSubcommand_UninstallNoIde_UninstallsFromAllDetected()
 	{
+		var workspace = CreateWorkspacePath();
 		var fs = new InMemoryFileSystem();
-		fs.AddDirectory("/project/.cursor");
-		fs.AddFile("/project/.cursor/mcp.json", """
+		fs.AddDirectory(workspace);
+		fs.AddDirectory(Path.Combine(workspace, ".cursor"));
+		fs.AddFile(Path.Combine(workspace, ".cursor", "mcp.json"), """
 		{
 		  "mcpServers": {
 		    "UnoApp": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]}
@@ -150,7 +173,7 @@ public class Given_CliManager
 
 		try
 		{
-			var result = manager.RunMcpSubcommand(["uninstall", "--all-ides", "--json"], "/project", null);
+			var result = manager.RunMcpSubcommand(["uninstall", "--all-ides", "--json"], workspace, null);
 
 			result.Should().Be(0);
 			var output = writer.ToString();
@@ -166,11 +189,13 @@ public class Given_CliManager
 	[TestMethod]
 	public void RunMcpSubcommand_InstallNoIde_NoAllIdesFlag_ReturnsUsageError()
 	{
+		var workspace = CreateWorkspacePath();
 		var fs = new InMemoryFileSystem();
-		fs.AddDirectory("/project/.cursor");
+		fs.AddDirectory(workspace);
+		fs.AddDirectory(Path.Combine(workspace, ".cursor"));
 		var manager = CreateManager(fs);
 
-		var result = manager.RunMcpSubcommand(["install", "--json"], "/project", null);
+		var result = manager.RunMcpSubcommand(["install", "--json"], workspace, null);
 
 		result.Should().Be(2);
 	}
@@ -178,11 +203,13 @@ public class Given_CliManager
 	[TestMethod]
 	public void RunMcpSubcommand_UninstallNoIde_NoAllIdesFlag_ReturnsUsageError()
 	{
+		var workspace = CreateWorkspacePath();
 		var fs = new InMemoryFileSystem();
-		fs.AddDirectory("/project/.cursor");
+		fs.AddDirectory(workspace);
+		fs.AddDirectory(Path.Combine(workspace, ".cursor"));
 		var manager = CreateManager(fs);
 
-		var result = manager.RunMcpSubcommand(["uninstall", "--json"], "/project", null);
+		var result = manager.RunMcpSubcommand(["uninstall", "--json"], workspace, null);
 
 		result.Should().Be(2);
 	}
@@ -197,6 +224,31 @@ public class Given_CliManager
 		result.Should().NotBeNull();
 		result!.Value.DryRun.Should().BeTrue();
 	}
+
+	[TestMethod]
+	public void RunMcpSubcommand_WorkspaceDoesNotExist_ReturnsUsageError()
+	{
+		var manager = CreateManager(new FileSystem());
+		var missingPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+
+		var result = manager.RunMcpSubcommand(["status", "cursor", "--workspace", missingPath, "--json"], "/project", null);
+
+		result.Should().Be(2);
+	}
+
+	[TestMethod]
+	public void RunMcpSubcommand_WorkspaceRoot_ReturnsUsageError()
+	{
+		var manager = CreateManager(new FileSystem());
+		var rootPath = Path.GetPathRoot(Environment.CurrentDirectory)!;
+
+		var result = manager.RunMcpSubcommand(["status", "cursor", "--workspace", rootPath, "--json"], "/project", null);
+
+		result.Should().Be(2);
+	}
+
+	private static string CreateWorkspacePath() =>
+		Path.GetFullPath(Path.Combine(Path.GetTempPath(), "uno-mcp-tests", Guid.NewGuid().ToString("N")));
 
 	private static CliManager CreateManager() => CreateManager(new InMemoryFileSystem());
 

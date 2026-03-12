@@ -512,6 +512,10 @@ internal class CliManager
 			}
 
 			var workspace = parsed.Value.Workspace ?? workingDirectory;
+			if (!TryValidateWorkspace(workspace, _services.GetRequiredService<IFileSystem>(), out var normalizedWorkspace))
+			{
+				return 2;
+			}
 			var toolVersion = ServerDefinitionResolver.GetToolVersion();
 			var expectedVariant = ServerDefinitionResolver.ResolveExpectedVariant(
 				toolVersion, parsed.Value.ReleaseFlag, parsed.Value.PrereleaseFlag, parsed.Value.VersionFlag);
@@ -520,11 +524,11 @@ internal class CliManager
 
 			return subcommand switch
 			{
-				"status" => RunMcpStatus(orchestrator, defs, workspace, parsed.Value, expectedVariant, toolVersion),
-				"install" when parsed.Value.Ide is not null => RunMcpInstall(orchestrator, defs, workspace, parsed.Value, expectedVariant, toolVersion),
-				"install" => RunMcpInstallAllDetected(orchestrator, defs, workspace, parsed.Value, expectedVariant, toolVersion),
-				"uninstall" when parsed.Value.Ide is not null => RunMcpUninstall(orchestrator, defs, workspace, parsed.Value),
-				"uninstall" => RunMcpUninstallAllDetected(orchestrator, defs, workspace, parsed.Value),
+				"status" => RunMcpStatus(orchestrator, defs, normalizedWorkspace, parsed.Value, expectedVariant, toolVersion),
+				"install" when parsed.Value.Ide is not null => RunMcpInstall(orchestrator, defs, normalizedWorkspace, parsed.Value, expectedVariant, toolVersion),
+				"install" => RunMcpInstallAllDetected(orchestrator, defs, normalizedWorkspace, parsed.Value, expectedVariant, toolVersion),
+				"uninstall" when parsed.Value.Ide is not null => RunMcpUninstall(orchestrator, defs, normalizedWorkspace, parsed.Value),
+				"uninstall" => RunMcpUninstallAllDetected(orchestrator, defs, normalizedWorkspace, parsed.Value),
 				_ => 2,
 			};
 		}
@@ -657,6 +661,49 @@ internal class CliManager
 	{
 		var status = orchestrator.Status(defs, workspace, null, expectedVariant, toolVersion);
 		return status.DetectedIdes;
+	}
+
+	private bool TryValidateWorkspace(string workspace, IFileSystem fs, out string normalizedWorkspace)
+	{
+		normalizedWorkspace = workspace;
+		try
+		{
+			normalizedWorkspace = Path.GetFullPath(workspace);
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Invalid workspace path '{Workspace}'", workspace);
+			return false;
+		}
+
+		if (!fs.DirectoryExists(normalizedWorkspace))
+		{
+			_logger.LogError("Workspace directory does not exist: {Workspace}", normalizedWorkspace);
+			return false;
+		}
+
+		if (IsFileSystemRoot(normalizedWorkspace))
+		{
+			_logger.LogError("Workspace cannot be a filesystem root: {Workspace}", normalizedWorkspace);
+			return false;
+		}
+
+		return true;
+	}
+
+	private static bool IsFileSystemRoot(string path)
+	{
+		var root = Path.GetPathRoot(path);
+		if (string.IsNullOrEmpty(root))
+		{
+			return false;
+		}
+
+		var trimChars = new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
+		return string.Equals(
+			path.TrimEnd(trimChars),
+			root.TrimEnd(trimChars),
+			OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
 	}
 
 	internal static int DetermineMcpSetupExitCode(OperationResponse result) =>

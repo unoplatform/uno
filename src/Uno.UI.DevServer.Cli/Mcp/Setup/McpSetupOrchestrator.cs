@@ -95,7 +95,7 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		var scanner = new ConfigScanner(_fs);
 		var expectedDefinitions = BuildExpectedDefinitions(defs.Servers, expectedVariant);
 		var scanResult = scanner.Scan(profile, workspace, defs.Servers, expectedDefinitions);
-		var backedUpFiles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+		var backedUpFiles = new HashSet<string>(FileSystem.PathComparer);
 		foreach (var (serverName, serverDef) in defs.Servers)
 		{
 			if (serverFilter is not null && !serverFilter.Contains(serverName, StringComparer.OrdinalIgnoreCase))
@@ -146,7 +146,7 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		var scanner = new ConfigScanner(_fs);
 		var home = _fs.GetUserHomePath();
 		var appdata = _fs.GetAppDataPath();
-		var backedUpFiles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+		var backedUpFiles = new HashSet<string>(FileSystem.PathComparer);
 
 		foreach (var (serverName, serverDef) in defs.Servers)
 		{
@@ -173,29 +173,44 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 				try
 				{
 					var content = _fs.ReadAllText(configPath);
-					var matchedKey = FindServerKeyInConfig(content, profile.JsonRootKey, serverName, serverDef, defs.Servers);
+					var updatedContent = content;
+					var removedAny = false;
 
-					if (matchedKey is null)
+					while (true)
+					{
+						var matchedKey = FindServerKeyInConfig(updatedContent, profile.JsonRootKey, serverName, serverDef, defs.Servers);
+						if (matchedKey is null)
+						{
+							break;
+						}
+
+						var updated = ConfigWriter.RemoveServer(updatedContent, profile.JsonRootKey, matchedKey);
+						if (updated is null)
+						{
+							break;
+						}
+
+						updatedContent = updated;
+						removedAny = true;
+					}
+
+					if (!removedAny)
 					{
 						continue;
 					}
 
-					var updated = ConfigWriter.RemoveServer(content, profile.JsonRootKey, matchedKey);
-					if (updated is not null)
+					if (!dryRun)
 					{
-						if (!dryRun)
+						if (backedUpFiles.Add(configPath))
 						{
-							if (backedUpFiles.Add(configPath))
-							{
-								_fs.BackupFile(configPath);
-							}
-
-							_fs.WriteAllText(configPath, updated);
+							_fs.BackupFile(configPath);
 						}
 
-						operations.Add(new OperationEntry(serverName, targetIde, "removed", configPath, null, $"Modified {targetIde} configuration file"));
-						found = true;
+						_fs.WriteAllText(configPath, updatedContent);
 					}
+
+					operations.Add(new OperationEntry(serverName, targetIde, "removed", configPath, null, $"Modified {targetIde} configuration file"));
+					found = true;
 				}
 				catch (Exception ex)
 				{

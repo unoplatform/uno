@@ -246,4 +246,29 @@ public class Given_DuplicateDetector
 		act.Should().Throw<InvalidOperationException>()
 			.WithMessage("*timed out*");
 	}
+
+	[TestMethod]
+	public void FindMatchingServer_InvalidRegexPattern_ThrowsInvalidOperationException()
+	{
+		var servers = new Dictionary<string, ServerDefinition>
+		{
+			["UnoApp"] = new(
+				Transport: "stdio",
+				Variants: new Dictionary<string, JsonObject>
+				{
+					["stable"] = JsonNode.Parse("""{"command":"dnx","args":["-y","uno.devserver","--mcp-app"]}""")!.AsObject(),
+				},
+				Detection: new(
+					KeyPatterns: ["^UnoApp$"],
+					CommandPatterns: ["("],
+					UrlPatterns: null)),
+		};
+
+		var entry = JsonNode.Parse("""{"command":"dnx"}""")!.AsObject();
+
+		var act = () => DuplicateDetector.FindMatchingServer("not-uno", entry, servers);
+
+		act.Should().Throw<InvalidOperationException>()
+			.WithMessage("*Invalid regex pattern*");
+	}
 }

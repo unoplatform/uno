@@ -258,6 +258,10 @@ internal static class DuplicateDetector
 			{
 				throw new InvalidOperationException($"Regex pattern match timed out for pattern '{pattern}'.", ex);
 			}
+			catch (ArgumentException ex)
+			{
+				throw new InvalidOperationException($"Invalid regex pattern '{pattern}'.", ex);
+			}
 		}
 
 		return false;

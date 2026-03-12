@@ -700,6 +700,33 @@ public class Given_McpSetupOrchestrator
 	}
 
 	[TestMethod]
+	public void Uninstall_MultipleMatchingEntriesInSameFile_RemovesAllMatches()
+	{
+		var fs = new InMemoryFileSystem(StringComparer.Ordinal);
+		fs.AddFile("/project/.cursor/mcp.json", """
+		{
+		  "mcpServers": {
+		    "UnoApp": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]},
+		    "uno-app-alias": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]},
+		    "Other": {"command": "echo", "args": ["hello"]}
+		  }
+		}
+		""");
+
+		var orch = CreateOrchestrator(fs);
+		var result = orch.Uninstall(TestDefs, "/project", "cursor", serverFilter: ["UnoApp"]);
+
+		result.Operations.Should().ContainSingle(o => o.Server == "UnoApp" && o.Action == "removed");
+
+		var content = fs.GetFileContent("/project/.cursor/mcp.json")!;
+		var parsed = JsonNode.Parse(content)!.AsObject();
+		var servers = parsed["mcpServers"]!.AsObject();
+		servers.ContainsKey("UnoApp").Should().BeFalse();
+		servers.ContainsKey("uno-app-alias").Should().BeFalse();
+		servers.ContainsKey("Other").Should().BeTrue();
+	}
+
+	[TestMethod]
 	public void Install_MultipleServers_BackupPreservesOriginal()
 	{
 		var fs = new InMemoryFileSystem();

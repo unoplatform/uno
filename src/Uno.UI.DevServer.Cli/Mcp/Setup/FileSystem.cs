@@ -8,6 +8,12 @@ namespace Uno.UI.DevServer.Cli.Mcp.Setup;
 /// </summary>
 internal sealed class FileSystem : IFileSystem
 {
+	internal static StringComparer PathComparer =>
+		GetPathComparer(OperatingSystem.IsWindows());
+
+	internal static StringComparer GetPathComparer(bool isWindows) =>
+		isWindows ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
+
 	public bool FileExists(string path) => File.Exists(path);
 
 	public bool DirectoryExists(string path) => Directory.Exists(path);

@@ -46,9 +46,18 @@ internal sealed class ConfigScanner(IFileSystem fs)
 				ScanConfigFile(configPath, profile.JsonRootKey, serverName, serverDef, servers, locations, warnings, ref effectiveEntry);
 			}
 
-			if (locations.Count > 1)
+			var distinctConfigPathCount = locations
+				.Select(static location => location.Path)
+				.Distinct(StringComparer.OrdinalIgnoreCase)
+				.Count();
+			if (distinctConfigPathCount > 1)
 			{
 				warnings.Add("Registered in multiple config files");
+			}
+			if (locations.GroupBy(static location => location.Path, StringComparer.OrdinalIgnoreCase)
+				.Any(static group => group.Count() > 1))
+			{
+				warnings.Add("Multiple entries found in the same config file");
 			}
 
 			var status = DetermineStatus(serverName, serverDef, locations, effectiveEntry, expectedDefinitions);
