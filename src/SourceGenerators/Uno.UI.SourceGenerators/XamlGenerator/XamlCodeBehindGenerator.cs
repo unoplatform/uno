@@ -47,7 +47,7 @@ internal sealed class XamlCodeBehindGenerator : IIncrementalGenerator
 				var options = optionsProvider.GetOptions(file);
 
 				options.TryGetValue("build_metadata.AdditionalFiles.SourceItemGroup", out var sourceItemGroup);
-				options.TryGetValue("build_metadata.AdditionalFiles.GenerateCodeBehind", out var perFileOverride);
+				options.TryGetValue("build_metadata.AdditionalFiles.UnoGenerateCodeBehind", out var perFileOverride);
 
 				if (!ValidSourceItemGroups.Contains(sourceItemGroup))
 				{

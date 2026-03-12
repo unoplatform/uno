@@ -129,7 +129,7 @@ internal static class XamlCodeBehindParser
 	/// Determines whether code-behind generation should occur for a file, based on
 	/// per-file metadata and project-level property with proper precedence.
 	/// </summary>
-	/// <param name="perFileValue">Per-file GenerateCodeBehind metadata value (null if not set).</param>
+	/// <param name="perFileValue">Per-file UnoGenerateCodeBehind metadata value (null if not set).</param>
 	/// <param name="globalValue">Project-level UnoGenerateCodeBehind property value (null if not set).</param>
 	/// <returns>True if code-behind generation should occur.</returns>
 	public static bool ShouldGenerateCodeBehind(string? perFileValue, string? globalValue)

@@ -120,7 +120,7 @@
 		<CompilerVisibleProperty Include="UnoCodeBehindGeneratorOnly" />
 
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="SourceItemGroup" />
-		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="GenerateCodeBehind" />
+		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="UnoGenerateCodeBehind" />
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="Link" />
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="TargetPath" />
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="FullPath" />

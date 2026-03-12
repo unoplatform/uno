@@ -18,7 +18,7 @@
 		<CompilerVisibleProperty Include="UnoGenerateCodeBehind" />
 		<CompilerVisibleProperty Include="UnoCodeBehindGeneratorOnly" />
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="SourceItemGroup" />
-		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="GenerateCodeBehind" />
+		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="UnoGenerateCodeBehind" />
 	</ItemGroup>
 
 	<Target Name="_AddCodeBehindGeneratorForWinUI"

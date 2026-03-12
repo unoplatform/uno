@@ -286,11 +286,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_generateCodeBehindEnabled = string.IsNullOrEmpty(generateCodeBehindValue)
 				|| string.Equals(generateCodeBehindValue, "true", StringComparison.OrdinalIgnoreCase);
 
-			// Build per-file GenerateCodeBehind metadata map for O(1) lookup
+			// Build per-file UnoGenerateCodeBehind metadata map for O(1) lookup
 			_perFileGenerateCodeBehind = new Dictionary<string, string?>(_xamlSources.Length, StringComparer.OrdinalIgnoreCase);
 			foreach (var source in _xamlSources)
 			{
-				var perFileValue = source.Item.GetMetadataValue("GenerateCodeBehind");
+				var perFileValue = source.Item.GetMetadataValue("UnoGenerateCodeBehind");
 				_perFileGenerateCodeBehind[source.Item.Identity] = string.IsNullOrEmpty(perFileValue) ? null : perFileValue;
 			}
 

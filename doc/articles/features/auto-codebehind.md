@@ -111,14 +111,14 @@ The default value is `true` (enabled).
 
 ### Per-file control
 
-You can override the project-level setting for individual XAML files using the `GenerateCodeBehind` item metadata:
+You can override the project-level setting for individual XAML files using the `UnoGenerateCodeBehind` item metadata:
 
 ```xml
 <!-- Disable auto code-behind for a specific file -->
-<Page Update="MainPage.xaml" GenerateCodeBehind="false" />
+<Page Update="MainPage.xaml" UnoGenerateCodeBehind="false" />
 
 <!-- Enable auto code-behind for a specific file even when globally disabled -->
-<Page Update="SimplePage.xaml" GenerateCodeBehind="true" />
+<Page Update="SimplePage.xaml" UnoGenerateCodeBehind="true" />
 ```
 
 Per-file metadata always takes precedence over the project-level property.
