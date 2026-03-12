@@ -10,7 +10,7 @@
 
 ### The Problem
 
-The Uno DevServer exposes two MCP servers (UnoApp for in-app tooling, UnoDocs for documentation). Today, these are registered via `vscode.lm.registerMcpServerDefinitionProvider` — an API exclusive to VS Code. Users on **Cursor, Anti-Gravity, Windsurf, Kiro, Rider**, desktop clients like **Claude Desktop**, and CLI agents like **Claude Code and OpenCode** get no MCP integration at all.
+The Uno DevServer exposes two MCP servers (UnoApp for in-app tooling, UnoDocs for documentation). Today, these are registered via `vscode.lm.registerMcpServerDefinitionProvider` — an API exclusive to VS Code. Users on **Cursor, Anti-Gravity, Gemini CLI, Windsurf, Kiro, Rider**, desktop clients like **Claude Desktop**, and CLI agents like **Claude Code and OpenCode** get no MCP integration at all.
 
 Each editor has its own MCP config format and file location. There is no cross-editor registration API.
 
@@ -36,7 +36,7 @@ uno.devserver mcp uninstall  # Remove servers from IDE configs
 
 ### Scope
 
-- 10 IDE profiles in v1 (VS Code, Cursor, Windsurf, Kiro, Anti-Gravity, Rider, Claude Code, Claude Desktop, OpenCode, unknown)
+- 11 IDE profiles in v1 (VS Code, Cursor, Windsurf, Kiro, Anti-Gravity, Gemini CLI, Rider, Claude Code, Claude Desktop, OpenCode, unknown)
 - 2 MCP servers (UnoApp stdio, UnoDocs HTTP) — extensible without protocol changes
 - 3 operations: status, install, uninstall
 - Config file merge with preservation of existing entries
@@ -119,7 +119,7 @@ uno.devserver mcp uninstall <ide> [--workspace <path>] [--servers UnoApp,UnoDocs
 
 ### IDE Identifiers
 
-`vscode`, `cursor`, `windsurf`, `kiro`, `antigravity`, `rider`, `claude-code`, `claude-desktop`, `opencode`, `unknown`
+`vscode`, `cursor`, `windsurf`, `kiro`, `antigravity`, `gemini-cli`, `rider`, `claude-code`, `claude-desktop`, `opencode`, `unknown`
 
 > **v2 (deferred):** `continue`, `zed` — excluded from initial implementation due to non-standard config formats (see [IDE Profiles §5](#5-ide-profiles)).
 
@@ -1110,6 +1110,13 @@ The root is a JSON object keyed by IDE identifier (matching the `--ide` paramete
     "jsonRootKey": "mcpServers",
     "includeType": true,
     "urlKey": "serverUrl"
+  },
+  "gemini-cli": {
+    "configPaths": [
+      "{home}/.gemini/settings.json"
+    ],
+    "writeTarget": "{home}/.gemini/settings.json",
+    "jsonRootKey": "mcpServers"
   },
   "claude-code": {
     "configPaths": [
