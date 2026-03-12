@@ -101,6 +101,50 @@ namespace Uno.Utils {
 			return Promise.resolve("");
 		}
 
+		public static async getImage(): Promise<string> {
+			// we return "" on failure instead of null to avoid crashing with an NRE if there
+			// are no try blocks in the stack frames above.
+			const nav = navigator as NavigatorClipboard;
+			if (nav.clipboard && nav.clipboard.read) {
+				try {
+					const items = await nav.clipboard.read();
+					for (const item of items) {
+						const imageType = item.types.find(t => t.startsWith('image/'));
+						if (imageType) {
+							const blob = await item.getType(imageType);
+							const arrayBuffer = await blob.arrayBuffer();
+							const bytes = new Uint8Array(arrayBuffer);
+							let binary = '';
+							for (let i = 0; i < bytes.length; i++) {
+								binary += String.fromCharCode(bytes[i]);
+							}
+							return btoa(binary);
+						}
+					}
+					return "";
+				} catch (reason) {
+					console.error(`Failed to read image from clipboard: ${reason}`);
+					return "";
+				}
+			}
+			return Promise.resolve("");
+		}
+
+		public static async setImage(base64: string, mimeType: string): Promise<void> {
+			const nav = navigator as any;
+			if (nav.clipboard && nav.clipboard.write && typeof ClipboardItem !== 'undefined') {
+				try {
+					const bytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+					const blob = new Blob([bytes], { type: mimeType });
+					const item = new ClipboardItem({ [mimeType]: blob });
+					await nav.clipboard.write([item]);
+					Clipboard.onClipboardChanged();
+				} catch (reason) {
+					console.error(`Failed to write image to clipboard: ${reason}`);
+				}
+			}
+		}
+
 		public static async setHtml(html: string, text: string): Promise<void> {
 			const nav = navigator as any;
 			if (nav.clipboard && nav.clipboard.write && typeof ClipboardItem !== 'undefined') {

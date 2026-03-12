@@ -1,9 +1,11 @@
-﻿#nullable disable // Not supported by WinUI yet
+#nullable disable // Not supported by WinUI yet
 
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
+using Windows.Storage.Streams;
 using Windows.UI.Core;
 using Uno.Extensions.Specialized;
 using Uno.Foundation;
@@ -28,11 +30,16 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			var data = content?.GetView(); // Freezes the DataPackage
 
-			// Handle both HTML and text formats - both should be written if present
+			var hasBitmap = data?.Contains(StandardDataFormats.Bitmap) ?? false;
 			var hasHtml = data?.Contains(StandardDataFormats.Html) ?? false;
 			var hasText = data?.Contains(StandardDataFormats.Text) ?? false;
 
-			if (hasHtml)
+			if (hasBitmap)
+			{
+				var bitmapRef = await data.GetBitmapAsync();
+				await SetClipboardBitmap(bitmapRef);
+			}
+			else if (hasHtml)
 			{
 				var html = await data.GetHtmlFormatAsync();
 				// Get text for fallback - either from explicit text or extract from HTML
@@ -55,6 +62,7 @@ namespace Windows.ApplicationModel.DataTransfer
 
 			dataPackage.SetDataProvider(StandardDataFormats.Text, async ct => await GetClipboardText(ct));
 			dataPackage.SetDataProvider(StandardDataFormats.Html, async ct => await GetClipboardHtml(ct));
+			dataPackage.SetDataProvider(StandardDataFormats.Bitmap, async ct => await GetClipboardBitmap(ct));
 
 			return dataPackage.GetView();
 		}
@@ -69,6 +77,27 @@ namespace Windows.ApplicationModel.DataTransfer
 			return await NativeMethods.GetHtmlAsync();
 		}
 
+		private static async Task<RandomAccessStreamReference> GetClipboardBitmap(CancellationToken ct)
+		{
+			var base64 = await NativeMethods.GetImageAsync();
+			if (string.IsNullOrEmpty(base64))
+			{
+				return null;
+			}
+
+			var bytes = Convert.FromBase64String(base64);
+			var ras = new InMemoryRandomAccessStream();
+			var stream = ras.AsStreamForWrite();
+			{
+				stream.Write(bytes, 0, bytes.Length);
+				stream.Flush();
+
+				stream.Position = 0;
+			}
+
+			return RandomAccessStreamReference.CreateFromStream(ras);
+		}
+
 		private static void SetClipboardText(string text)
 		{
 			NativeMethods.SetText(text);
@@ -77,6 +106,20 @@ namespace Windows.ApplicationModel.DataTransfer
 		private static async Task SetClipboardHtml(string html, string text)
 		{
 			await NativeMethods.SetHtmlAsync(html, text);
+		}
+
+		private static async Task SetClipboardBitmap(RandomAccessStreamReference reference)
+		{
+			using var ras = await reference.OpenReadAsync();
+			using var stream = ras.AsStreamForRead();
+
+			var buffer = new MemoryStream((int)ras.Size);
+			stream.CopyTo(buffer);
+
+			var base64 = Convert.ToBase64String(buffer.ToArray());
+			var mimeType = string.IsNullOrEmpty(ras.ContentType) ? "image/png" : ras.ContentType;
+
+			await NativeMethods.SetImageAsync(base64, mimeType);
 		}
 
 		private static void StartContentChanged()
