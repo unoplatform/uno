@@ -117,6 +117,8 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 
 	internal void RemoveSplashScreen() => NativeMethods.RemoveLoading();
 
+	bool IXamlRootHost.SupportsRenderThrottle => true;
+
 	UIElement? IXamlRootHost.RootElement => Window.CurrentSafe!.RootElement;
 
 	private static partial class NativeMethods
