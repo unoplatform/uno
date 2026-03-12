@@ -204,7 +204,27 @@ internal class ProxyLifecycleManager
 				]);
 		}
 
-		var normalizedSolutionPath = Path.GetFullPath(solutionPath);
+		string normalizedSolutionPath;
+		try
+		{
+			normalizedSolutionPath = Path.GetFullPath(solutionPath);
+		}
+		catch (Exception)
+		{
+			return CreateRejectedSelectionResult(
+				solutionPath,
+				"The solutionPath argument must be a valid absolute path to a .sln or .slnx file.",
+				[
+					new ValidationIssue
+					{
+						Code = IssueCode.WorkspaceNotResolved,
+						Severity = ValidationSeverity.Warning,
+						Message = "The requested solution path could not be normalized.",
+						Remediation = "Call uno_health to inspect candidateSolutions, then provide a valid absolute path to one of those solutions.",
+					},
+				]);
+		}
+
 		var observationRoot = GetWorkspaceObservationRoot()
 			?? _solutionDirectory
 			?? _currentDirectory
@@ -783,7 +803,7 @@ internal class ProxyLifecycleManager
 	private async Task EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync()
 	{
 		var expectedRoot = GetWorkspaceObservationRoot();
-		if (string.Equals(_workspaceMutationWatcherRoot, expectedRoot, StringComparison.OrdinalIgnoreCase))
+		if (PathComparison.PathsEqual(_workspaceMutationWatcherRoot, expectedRoot))
 		{
 			return;
 		}
@@ -801,13 +821,11 @@ internal class ProxyLifecycleManager
 
 	private static bool IsPathWithinRoot(string path, string root)
 	{
-		var fullPath = Path.GetFullPath(path).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-		var fullRoot = Path.GetFullPath(root).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+		var fullPath = PathComparison.Normalize(path).TrimEnd('/');
+		var fullRoot = PathComparison.Normalize(root).TrimEnd('/');
 
-		return fullPath.StartsWith(fullRoot, StringComparison.OrdinalIgnoreCase)
-			&& (fullPath.Length == fullRoot.Length
-				|| fullPath[fullRoot.Length] == Path.DirectorySeparatorChar
-				|| fullPath[fullRoot.Length] == Path.AltDirectorySeparatorChar);
+		return string.Equals(fullPath, fullRoot, StringComparison.Ordinal)
+			|| fullPath.StartsWith($"{fullRoot}/", StringComparison.Ordinal);
 	}
 
 	private string? NormalizeSolutionDirectory(string? directory)

@@ -32,7 +32,7 @@ internal static class PathComparison
 	}
 
 	private static bool IsCaseInsensitiveFileSystem()
-		=> OperatingSystem.IsWindows() || OperatingSystem.IsMacOS();
+		=> OperatingSystem.IsWindows();
 
 	private static bool IsCaseInsensitivePath(string normalizedPath)
 		=> IsCaseInsensitiveFileSystem()

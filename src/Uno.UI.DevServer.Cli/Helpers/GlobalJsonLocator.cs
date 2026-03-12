@@ -7,7 +7,7 @@ internal static class GlobalJsonLocator
 {
 	public static string? FindGlobalJson(string startPath)
 	{
-		var currentPath = Path.GetFullPath(startPath);
+		string? currentPath = Path.GetFullPath(startPath);
 		while (currentPath is not null)
 		{
 			var globalJsonPath = Path.Combine(currentPath, "global.json");
