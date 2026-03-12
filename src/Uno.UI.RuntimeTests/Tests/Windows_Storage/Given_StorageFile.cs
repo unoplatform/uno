@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams;
 using Windows.Storage;
 
@@ -59,6 +60,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_OpenRead()
 		{
 			var path = GetRandomFilePath();
@@ -78,6 +80,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Open_Read()
 		{
 			var path = GetRandomFilePath();
@@ -97,6 +100,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Open_ReadWrite()
 		{
 			var path = GetRandomFilePath();
@@ -108,6 +112,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Open_Read_AndGetInputStream()
 		{
 			var path = GetRandomFilePath();
@@ -118,6 +123,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Open_Read_AndGetOutputStream()
 		{
 			var path = GetRandomFilePath();
@@ -127,6 +133,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Open_ReadWrite_AndGetInputStream()
 		{
 			var path = GetRandomFilePath();
@@ -137,6 +144,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Open_ReadWrite_AndGetOutputStream()
 		{
 			var path = GetRandomFilePath();
@@ -147,6 +155,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_CloneStream_Then_PositionAreNotShared()
 		{
 			var path = GetRandomFilePath();
@@ -342,6 +351,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Open_Multiple_Reads_Single_Write()
 		{
 			var uri = new Uri($"ms-appx:///Assets/Asset With Spaces.svg");

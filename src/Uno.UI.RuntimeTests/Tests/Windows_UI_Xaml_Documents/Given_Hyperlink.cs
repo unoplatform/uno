@@ -26,6 +26,7 @@ public class Given_Hyperlink
 	[DataRow(false, false, "#FF0078D7")]
 	[DataRow(true, true, "#FFA6D8FF")]
 	[DataRow(false, true, "#FF004275")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task TestSimpleHyperlink(bool useDark, bool useFluent, string expectedColorCode)
 	{
 		var expectedColor = (Color)XamlBindingHelper.ConvertValue(typeof(Color), expectedColorCode);
@@ -165,6 +166,7 @@ public class Given_Hyperlink
 	[DataRow(false, false, "#FF0078D7")]
 	[DataRow(true, true, "#FFA6D8FF")]
 	[DataRow(false, true, "#FF004275")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task TestNotInheritedFromTextBlock(bool useDark, bool useFluent, string expectedColorCode)
 	{
 		var expectedColor = (Color)XamlBindingHelper.ConvertValue(typeof(Color), expectedColorCode);

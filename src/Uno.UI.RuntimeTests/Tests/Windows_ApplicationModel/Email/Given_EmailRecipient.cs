@@ -13,6 +13,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel.Email
 	public class Given_EmailRecipient
 	{
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Address_Is_Null()
 		{
 			Assert.ThrowsExactly<ArgumentNullException>(
@@ -20,6 +21,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel.Email
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Name_Is_Null()
 		{
 			Assert.ThrowsExactly<ArgumentNullException>(
@@ -27,6 +29,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel.Email
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Address_Set_Null()
 		{
 			var emailRecipient = new EmailRecipient();
@@ -35,6 +38,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel.Email
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Name_Set_Null()
 		{
 			var emailRecipient = new EmailRecipient();

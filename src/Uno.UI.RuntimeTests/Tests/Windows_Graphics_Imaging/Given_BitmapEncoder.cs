@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Private.Infrastructure;
 using Windows.Graphics.Imaging;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_Graphics_Imaging
@@ -11,6 +12,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Graphics_Imaging
 	{
 		[TestMethod]
 		[DynamicData(nameof(GetEncoders))]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_CreateAsync_With(Guid encoderId, bool notImplementedException)
 		{
 			Exception excption = default;

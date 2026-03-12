@@ -7,6 +7,9 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using System.Diagnostics.CodeAnalysis;
+#if !WINAPPSDK
+using DirectUI;
+#endif
 
 namespace Private.Infrastructure
 {
@@ -23,8 +26,15 @@ namespace Private.Infrastructure
 			{
 			}
 
-			internal static void InjectBackButtonPress(ref bool backButtonPressHandled)
+			internal static async Task<bool> InjectBackButtonPress()
 			{
+#if !WINAPPSDK
+				var handled = false;
+				await RunOnUIThread(() => handled = BackButtonIntegration.InjectBackButtonPress());
+				return handled;
+#else
+				throw new NotSupportedException("Back button injection is only supported in Uno Platform targets");
+#endif
 			}
 
 			public static void SetTimeZone(string tzid)
@@ -47,7 +57,23 @@ namespace Private.Infrastructure
 
 		internal static async Task RunOnUIThread(Action action)
 		{
-			await WindowHelper.RootElementDispatcher.RunAsync(() => action());
+			Exception exception = null;
+			await WindowHelper.RootElementDispatcher.RunAsync(() =>
+			{
+				try
+				{
+					action();
+				}
+				catch (Exception ex)
+				{
+					exception = ex;
+				}
+			});
+
+			if (exception != null)
+			{
+				throw new InvalidOperationException("Exception thrown by action on the UI thread", exception);
+			}
 		}
 
 		internal static async Task RunOnUIThread(Func<Task> asyncAction)

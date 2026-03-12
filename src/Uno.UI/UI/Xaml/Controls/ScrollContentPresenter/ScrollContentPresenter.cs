@@ -272,15 +272,54 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else if (canScrollHorizontally && (properties.IsHorizontalMouseWheel || e.KeyModifiers == VirtualKeyModifiers.Shift))
 				{
+#if __WASM__
 					success = Set(
 						horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, delta),
 						disableAnimation: false);
+#else
+					// Trackpad/touchpad-style scroll events can arrive at display-refresh rate (~60/s) with precise
+					// pixel-level deltas. The 1-second composition animation is NOT suitable because:
+					// 1. When many events have accumulated the target far ahead of the visual, the animation's
+					// first step jumps (target-visual)*0.149 pixels, causing a blank frame before items can be realized for the new position.
+					// 2. VerticalOffset accumulates the target at 68px*60fps, hitting ScrollableHeight quickly and making scroll appear to stop prematurely.
+					// Immediate updates (DisableAnimation:true, IsIntermediate:false) ensure that:
+					// visual == logical == new position, one small per-event delta, no animation lag.
+					// On iOS/macOS, all wheel events currently take this immediate path because we do not have a reliable
+					// signal to distinguish touchpad/precise scrolling from discrete mouse-wheel input.
+					if (OperatingSystem.IsIOS() || OperatingSystem.IsMacOS())
+					{
+						success = Set(
+							horizontalOffset: HorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, delta),
+							options: new(DisableAnimation: true, IsIntermediate: false));
+					}
+					else
+					{
+						success = Set(
+							horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, delta),
+							disableAnimation: false);
+					}
+#endif
 				}
 				else if (canScrollVertically && !properties.IsHorizontalMouseWheel)
 				{
+#if __WASM__
 					success = Set(
 						verticalOffset: TargetVerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
 						disableAnimation: false);
+#else
+					if (OperatingSystem.IsIOS() || OperatingSystem.IsMacOS())
+					{
+						success = Set(
+							verticalOffset: VerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
+							options: new(DisableAnimation: true, IsIntermediate: false));
+					}
+					else
+					{
+						success = Set(
+							verticalOffset: TargetVerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
+							disableAnimation: false);
+					}
+#endif
 				}
 
 				// This is not similar to what WinUI is doing, since we already differ quite a bit from

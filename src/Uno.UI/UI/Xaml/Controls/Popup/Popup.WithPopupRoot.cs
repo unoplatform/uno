@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using System;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using Uno.UI.Dispatching;
@@ -90,6 +91,19 @@ public partial class Popup
 				PopupPanel.Visibility = Visibility.Visible;
 
 				var currentXamlRoot = XamlRoot ?? Child?.XamlRoot ?? WinUICoreServices.Instance.ContentRootCoordinator.Unsafe_IslandsIncompatible_CoreWindowContentRoot?.XamlRoot;
+
+				// When a popup is reused across different windows (e.g., shared
+				// TextCommandBarFlyout), the PopupPanel and its children may retain
+				// stale VisualTreeCache entries from the previous window. Propagate
+				// the correct VisualTree before opening so that layout, hit-testing,
+				// and XamlRoot queries all use the correct window context.
+				// WinUI does this in CDependencyObject::EnterImpl (SetVisualTree on
+				// live-tree enter), but Uno hasn't ported that path yet.
+				if (currentXamlRoot?.VisualTree is { } targetTree)
+				{
+					EnsureVisualTreeOnSubtree(PopupPanel, targetTree);
+				}
+
 				_closePopup.Disposable = currentXamlRoot?.OpenPopup(this);
 
 			}
@@ -149,4 +163,28 @@ public partial class Popup
 #if __ANDROID__
 	partial void OnPopupPanelChangedPartialNative(PopupPanel previousPanel, PopupPanel newPanel);
 #endif
+
+	/// <summary>
+	/// Recursively ensures the <paramref name="element"/> and all its visual children
+	/// have their <see cref="UIElement.VisualTreeCache"/> set to <paramref name="targetTree"/>.
+	/// Short-circuits when a subtree already has the correct value.
+	/// </summary>
+	private static void EnsureVisualTreeOnSubtree(UIElement element, VisualTree targetTree)
+	{
+		if (element.GetVisualTree() == targetTree)
+		{
+			return;
+		}
+
+		element.SetVisualTree(targetTree);
+
+		var count = VisualTreeHelper.GetChildrenCount(element);
+		for (var i = 0; i < count; i++)
+		{
+			if (VisualTreeHelper.GetChild(element, i) is UIElement child)
+			{
+				EnsureVisualTreeOnSubtree(child, targetTree);
+			}
+		}
+	}
 }

@@ -169,7 +169,9 @@ internal static class ToolCacheFile
 		}
 
 		var normalized = solutionDirectory.Replace('\\', '/');
-		if (OperatingSystem.IsWindows())
+
+		// Only case-fold on case-insensitive filesystems: Windows, or WSL-mounted Windows drives.
+		if (OperatingSystem.IsWindows() || normalized.StartsWith("/mnt/", StringComparison.Ordinal))
 		{
 			normalized = normalized.ToLowerInvariant();
 		}

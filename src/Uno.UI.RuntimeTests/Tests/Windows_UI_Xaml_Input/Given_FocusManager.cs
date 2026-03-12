@@ -147,6 +147,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task IsTabStop_False_Check_Inner()
 		{
 			var outerControl = new ContentControl() { IsTabStop = false };
@@ -177,6 +178,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Page_Navigates_Focus_Without_Outer_Wrapper()
 		{
 			var frame = new Frame();
@@ -407,6 +409,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Page_Navigates_Back_With_Outer_After()
 		{
 			var stackPanel = new StackPanel();
@@ -440,6 +443,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Page_Navigates_From_Page_ListViewItem()
 		{
 			var stackPanel = new StackPanel();
@@ -524,6 +528,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("https://github.com/unoplatform/uno/issues/15457")]
 #endif
@@ -570,6 +575,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 		[RunsOnUIThread]
 		[RequiresFullWindow]
 		[GitHubWorkItem("https://github.com/unoplatform/uno-private/issues/868")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Focus_TextBox_Inside_NavigationView()
 		{
 			var SUT = new NavigationViewPage();
@@ -607,6 +613,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Focus_Same_Input_Multiple_Times()
 		{
 			const int waitAfterFocus = 600;

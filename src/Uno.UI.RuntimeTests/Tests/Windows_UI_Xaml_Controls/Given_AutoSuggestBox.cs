@@ -1050,6 +1050,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if RUNTIME_NATIVE_AOT
 		[Ignore("TODO: figure out why this fails, how to fix")]
 #endif  // RUNTIME_NATIVE_AOT

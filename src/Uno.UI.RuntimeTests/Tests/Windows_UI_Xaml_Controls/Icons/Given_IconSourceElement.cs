@@ -12,6 +12,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Icons;
 public class Given_IconSourceElement
 {
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Switch_Sources()
 	{
 		// SymbolIconSource

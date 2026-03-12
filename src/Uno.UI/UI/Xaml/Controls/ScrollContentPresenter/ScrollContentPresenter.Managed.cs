@@ -360,6 +360,10 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <inheritdoc />
 		ManipulationModes IDirectManipulationHandler.OnStarting(GestureRecognizer _, ManipulationStartingEventArgs args)
 		{
+			// If a previous inertia is still tracked, clear it immediately so old inertial deltas
+			// cannot fight with the new manipulation's direction.
+			_touchInertia = null;
+
 			var mode = ManipulationModes.None;
 			var scrollable = GetScrollableOffsets();
 			if (scrollable.Horizontally)

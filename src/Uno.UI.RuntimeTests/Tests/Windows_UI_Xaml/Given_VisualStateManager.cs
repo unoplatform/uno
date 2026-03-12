@@ -45,6 +45,7 @@ public partial class Given_VisualStateManager
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task SelectorItem_SelectedState()
 	{
 		var items = Enumerable.Range(0, 3).ToArray();
@@ -63,9 +64,11 @@ public partial class Given_VisualStateManager
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public Task SelectorItem_MultiSelectState_GV() => SelectorItem_MultiSelectState_Impl<GridView>();
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public Task SelectorItem_MultiSelectState_LV() => SelectorItem_MultiSelectState_Impl<ListView>();
 
 	public async Task SelectorItem_MultiSelectState_Impl<T>() where T : ListViewBase, new()

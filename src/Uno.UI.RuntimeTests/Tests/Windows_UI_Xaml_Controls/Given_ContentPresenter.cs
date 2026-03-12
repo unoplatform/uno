@@ -90,6 +90,7 @@ public partial class Given_ContentPresenter
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Content_Presenter_Empty()
 	{
 		var sut = new ContentPresenter_Content_DataContext();
@@ -104,6 +105,7 @@ public partial class Given_ContentPresenter
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Content_Presenter_Priority()
 	{
 		var sut = new ContentPresenter_Content_DataContext();
@@ -123,6 +125,7 @@ public partial class Given_ContentPresenter
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Content_Presenter_SameValue()
 	{
 		var sut = new ContentPresenter_Content_DataContext();
@@ -133,6 +136,7 @@ public partial class Given_ContentPresenter
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Content_Presenter_Inheritance()
 	{
 		var sut = new ContentPresenter_Content_DataContext();
@@ -155,6 +159,7 @@ public partial class Given_ContentPresenter
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Inside_ContentControl_Template()
 	{
 		var control = new ContentPresenter_Inside_ContentControlTemplate();
@@ -194,6 +199,7 @@ public partial class Given_ContentPresenter
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Content_Presenter_SameValue_Changing()
 	{
 		var sut = new ContentPresenter_Content_DataContext();
@@ -204,6 +210,7 @@ public partial class Given_ContentPresenter
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Content_Presenter_Null_Content_Changed()
 	{
 		var sut = new ContentPresenter_Content_DataContext();
@@ -214,6 +221,7 @@ public partial class Given_ContentPresenter
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_ContentPresenter_ContentBindingNonPath()
 	{
 		var setup = new ContentPresenter_ContentBindings();
@@ -445,6 +453,7 @@ public partial class Given_ContentPresenter
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Content_Unset_Release()
 	{
 		var SUT = new ContentPresenter();

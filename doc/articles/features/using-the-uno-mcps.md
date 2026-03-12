@@ -56,6 +56,10 @@ These tools give "eyes" and "hands" to Agents in order to validate their assumpt
 
 ### App MCP Tools
 
+The following diagnostic tool is always available, even before the app connects:
+
+- `uno_health`, used to get the health status of the DevServer MCP bridge, including connection state, tool count, discovered solutions, and any issues detected during startup
+
 The Community license MCP app tools are:
 
 - `uno_app_get_runtime_info`, used to get general information about the running app, such as its PID, OS, Platform, etc...
@@ -72,6 +76,22 @@ The Pro license App MCP app tools are:
 
 - `uno_app_element_peer_action`, used to invoke a specific element automation peer action
 - `uno_app_get_element_datacontext`, used to get a textual representation of the DataContext on a FrameworkElement
+
+### MCP Roots Compatibility
+
+The App MCP uses [MCP roots](https://modelcontextprotocol.io/docs/concepts/roots) to determine which workspace directory to scan for solutions. Not all agents support this capability:
+
+| Agent | Roots Support |
+|-------|:------------:|
+| Claude Code | Yes |
+| VS Code Copilot | Yes |
+| Cursor | Yes |
+| Google Antigravity | No |
+| Claude Desktop | No |
+| Windsurf | No |
+| JetBrains AI | No |
+
+For agents without roots support, the DevServer CLI uses the `--force-roots-fallback` flag to expose a `uno_app_set_roots` tool, allowing the agent to specify the workspace directory manually.
 
 ## Troubleshooting MCP Servers
 

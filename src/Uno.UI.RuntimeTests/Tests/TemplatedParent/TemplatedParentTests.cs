@@ -109,6 +109,7 @@ public partial class TemplatedParentTests // tests
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task Uno17313_Test()
 	{
 		var setup = new Uno17313();
@@ -235,6 +236,7 @@ public partial class TemplatedParentTests // tests
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task ItemsControl_ItemTemplate_Test()
 	{
 		var setup = new ItemsControl_ItemTemplate();
@@ -266,6 +268,7 @@ public partial class TemplatedParentTests // tests
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task VisualStateGroup_TP_Inheritance()
 	{
 		var setup = new VisualStateGroup_Full();
@@ -291,9 +294,11 @@ public partial class TemplatedParentTests // tests
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public Task LateTemplateSwapping_NonContentControl() => LateTemplateSwapping<TextBox>();
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public Task LateTemplateSwapping_ContentControl() => LateTemplateSwapping<ContentControl>();
 
 	public async Task LateTemplateSwapping<TControl>() where TControl : Control, new()
@@ -325,6 +330,7 @@ public partial class TemplatedParentTests // tests
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task Uno19264_Test()
 	{
 		var setup = new Uno19264();

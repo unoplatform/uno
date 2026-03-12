@@ -56,7 +56,12 @@ public partial class WebView2
 				var webView = (WebView2)s;
 				if (!webView._sourceChangeFromCore)
 				{
-					webView.CoreWebView2.Navigate(((Uri)e.NewValue)?.ToString());
+					var newUri = (Uri)e.NewValue;
+					if (newUri != null)
+					{
+						var targetUrl = newUri.IsAbsoluteUri ? newUri.AbsoluteUri : newUri.OriginalString;
+						webView.CoreWebView2.Navigate(targetUrl);
+					}
 				}
 			}));
 

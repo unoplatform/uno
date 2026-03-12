@@ -797,10 +797,28 @@ namespace Microsoft.UI.Xaml
 				// This ensures the GestureRecognizer is created and configured to detect these gestures,
 				// which then raise ContextRequested via ContextMenuProcessor.
 				EnableContextMenuGestures();
+
+				// Propagate VisualTree to the flyout (matches WinUI IsVisualTreeProperty behavior
+				// where EnterEffectiveValue calls Enter on the new value).
+				if (this.GetVisualTree() is { } visualTree)
+				{
+					newValue.SetVisualTree(visualTree);
+				}
 			}
 		}
 
 		partial void EnableContextMenuGestures();
+
+		/// <summary>
+		/// Enables gesture recognition for context menu (RightTap for mouse/pen, Hold for touch).
+		/// This ensures the GestureRecognizer is created and configured to detect these gestures,
+		/// which then raise ContextRequested via ContextMenuProcessor.
+		/// </summary>
+		/// <remarks>
+		/// This method is useful for text controls like TextBlock that get their default ContextFlyout
+		/// via GetDefaultValue (which doesn't trigger OnContextFlyoutChanged).
+		/// </remarks>
+		private protected void EnsureContextMenuGesturesEnabled() => EnableContextMenuGestures();
 
 		internal bool IsRenderingSuspended { get; set; }
 

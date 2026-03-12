@@ -282,7 +282,16 @@ namespace Microsoft.UI.Xaml
 						Controls.Primitives.FlyoutBase fb => fb.GetPresenter()?.FindName(name) as IFrameworkElement
 					};
 
-				if (e is UIElement uiElement && uiElement.ContextFlyout is Controls.Primitives.FlyoutBase contextFlyout)
+				if (e is UIElement uiElement &&
+					uiElement.ContextFlyout is Controls.Primitives.FlyoutBase contextFlyout &&
+					// TextCommandBarFlyout's presenter tree contains TextBlock/TextBox controls.
+					// Those inner controls get their own default TextCommandBarFlyout assigned as
+					// ContextFlyout/SelectionFlyout (via GetDefaultValue). If we searched into a
+					// ContextFlyout that was set at DefaultValue precedence, FindName would recurse
+					// into the presenter -> inner TextBlock -> its default flyout -> its presenter -> ...
+					// We skip only when ContextFlyout is at DefaultValue precedence; user-set flyouts
+					// are always searched.
+					(contextFlyout is not TextCommandBarFlyout || uiElement.GetCurrentHighestValuePrecedence(UIElement.ContextFlyoutProperty) != DependencyPropertyValuePrecedences.DefaultValue))
 				{
 					return FindInFlyout(name, contextFlyout);
 				}

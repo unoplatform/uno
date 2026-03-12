@@ -4,10 +4,19 @@
 	<PageExclusions>$(MSBuildThisFileDirectory)Resources\**\*.xaml</PageExclusions>
   </PropertyGroup>
 
-  <UsingTask TaskName="BatchMergeXaml" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" />
+  <ItemGroup>
+	<!-- Expand merge inputs at evaluation time so target incremental checks can compare timestamps. -->
+	<ThemeResourceV2MergeInput Include="$(MSBuildThisFileDirectory)Resources\Version2\**\*.xaml" />
+	<ThemeResourceV2MergeInput Include="$(MSBuildThisFileFullPath)" />
+  </ItemGroup>
 
   <!-- This task is temporarily placed in debug configuration to avoid parallel build concurrency issues -->
-  <Target Name="GenerateThemeResourceV2File" DependsOnTargets="ResolveProjectReferences" BeforeTargets="BeforeBuild" Outputs="themeresources_v2.xaml" Condition="'$(Configuration)'=='Debug'">
+  <Target Name="GenerateThemeResourceV2File"
+          DependsOnTargets="ResolveProjectReferences"
+          BeforeTargets="BeforeBuild"
+          Inputs="@(ThemeResourceV2MergeInput)"
+          Outputs="$(IntermediateOutputPath)\Version2\GenerateThemeResourceFile.write.1u.tlog"
+          Condition="'$(Configuration)'=='Debug'">
     <ItemGroup>
       <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\RadioMenuFlyoutItem_themeresources.xaml" />      
       <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\ProgressRing.xaml" />
@@ -25,7 +34,7 @@
     <MakeDir Directories="$(IntermediateOutputPath)\Version2" />
     <BatchMergeXaml
 	  Pages="@(WinUIStylePageV2)"
-	  MergedXamlFile="themeresources_v2.xaml"
+	  MergedXamlFile="$(MSBuildThisFileDirectory)themeresources_v2.xaml"
 	  TlogReadFilesOutputPath="$(IntermediateOutputPath)\Version2\GenerateThemeResourceFile.read.1u.tlog"
 	  TlogWriteFilesOutputPath="$(IntermediateOutputPath)\Version2\GenerateThemeResourceFile.write.1u.tlog" />
     <Message Text="Theme resources XAML file was generated" />

@@ -93,6 +93,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __APPLE_UIKIT__
 		[Ignore("VerticalAlignment asserts fail. Might be because of different timing.")]
 #endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Expanded_Then_Collapsed_MoreButton_VerticalAlignment()
 		{
 			var SUT = new CommandBar

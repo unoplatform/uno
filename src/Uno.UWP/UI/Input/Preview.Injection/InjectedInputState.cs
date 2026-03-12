@@ -21,6 +21,8 @@ internal class InjectedInputState
 
 	public PointerDeviceType Type { get; }
 
+	public uint PointerId { get; set; }
+
 	public uint FrameId { get; set; }
 
 	public ulong Timestamp { get; set; }
@@ -45,6 +47,7 @@ internal class InjectedInputState
 
 	public void Update(PointerEventArgs args)
 	{
+		PointerId = args.CurrentPoint.PointerId;
 		FrameId = args.CurrentPoint.FrameId;
 		Timestamp = args.CurrentPoint.Timestamp;
 		Position = args.CurrentPoint.Position;

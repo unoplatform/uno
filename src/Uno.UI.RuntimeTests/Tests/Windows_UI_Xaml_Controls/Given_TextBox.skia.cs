@@ -39,9 +39,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	/// </summary>
 	public partial class Given_TextBox
 	{
-		// Apple platforms (macOS, iOS, Mac Catalyst, tvOS) use Command key for standard shortcuts
-		private readonly VirtualKeyModifiers _platformCtrlKey = DeviceTargetHelper.PlatformCommandModifier;
-
 		[TestMethod]
 		public async Task When_Basic_Input()
 		{
@@ -380,6 +377,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await Task.Delay(1000); // Allow the ScrollViewer to update its offset
 
 			((ScrollViewer)SUT.ContentElement).VerticalOffset.Should().BeApproximately(((ScrollViewer)SUT.ContentElement).ScrollableHeight, 1.0);
+		}
+
+		[TestMethod]
+		public async Task When_Trailing_Space_Overflows_ScrollViewer_Viewport()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "some text that is longer than the width of the text box"
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var scrollableWidthWithoutTrailingSpaces = ((ScrollViewer)SUT.ContentElement).ScrollableWidth;
+
+			SUT.Text += new string(' ', 20);
+			await UITestHelper.WaitForIdle();
+			Assert.IsGreaterThan(scrollableWidthWithoutTrailingSpaces + 50, ((ScrollViewer)SUT.ContentElement).ScrollableWidth);
 		}
 
 		[TestMethod]
@@ -3371,6 +3388,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var _ = new TextBoxFeatureConfigDisposable();
 			using var __ = new DisposableAction(() => (VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
 
+			Clipboard.Clear();
+
 			var SUT = new TextBox
 			{
 				Width = 40
@@ -3384,15 +3403,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
-			await WindowHelper.WaitForIdle();
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
-			await WindowHelper.WaitForIdle();
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
-			await WindowHelper.WaitForIdle();
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
-			await WindowHelper.WaitForIdle();
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await KeyboardHelper.InputText("hello", SUT);
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual("hello", SUT.Text);
@@ -3403,30 +3414,50 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.MoveTo(SUT.GetAbsoluteBounds().GetCenter());
 			await WindowHelper.WaitForIdle();
 
+			// Right-click to open context menu
 			mouse.PressRight();
 			mouse.ReleaseRight();
 			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForIdle();
 
-			var flyoutItems = (VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot)[0].Child as FrameworkElement).FindChildren<MenuFlyoutItem>().ToList();
-			Assert.HasCount(3, flyoutItems);
+			Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout);
+			var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
 
-			mouse.MoveTo(flyoutItems[1].GetAbsoluteBounds().GetCenter());
+			await WindowHelper.WaitFor(() => flyout.IsOpen);
+
+			var undoButton = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands)
+				.OfType<AppBarButton>()
+				.FirstOrDefault(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.Z && ka.Modifiers.HasFlag(_platformCtrlKey)));
+			Assert.IsNotNull(undoButton, "Undo button should be present in the context menu");
+
+			await WindowHelper.WaitFor(() => undoButton.IsLoaded);
+
+			mouse.MoveTo(undoButton.GetAbsoluteBounds().GetCenter());
 			mouse.Press();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => !flyout.IsOpen);
+
 			Assert.AreEqual("", SUT.Text);
 
 			mouse.MoveTo(SUT.GetAbsoluteBounds().GetCenter());
 			await WindowHelper.WaitForIdle();
 
+			// Right-click to open context menu again
 			mouse.PressRight();
 			mouse.ReleaseRight();
 			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForIdle();
 
-			flyoutItems = (VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot)[0].Child as FrameworkElement).FindChildren<MenuFlyoutItem>().ToList();
-			Assert.HasCount(3, flyoutItems);
+			await WindowHelper.WaitFor(() => flyout.IsOpen);
 
-			mouse.MoveTo(flyoutItems[1].GetAbsoluteBounds().GetCenter());
+			var redoButton = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands)
+				.OfType<AppBarButton>()
+				.FirstOrDefault(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.Y && ka.Modifiers.HasFlag(_platformCtrlKey)));
+			Assert.IsNotNull(redoButton, "Redo button should be present in the context menu");
+			await WindowHelper.WaitFor(() => redoButton.IsLoaded);
+
+			mouse.MoveTo(redoButton.GetAbsoluteBounds().GetCenter());
 			mouse.Press();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
@@ -4878,6 +4909,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			return false;
 		}
+
+#if HAS_UNO // SelectAll is not available for PasswordBox on WinUI.
+		[TestMethod]
+		public async Task When_PasswordBox_ContextFlyout_Commands_Available()
+		{
+			try
+			{
+				var SUT = new PasswordBox { Password = "secret pass", Width = 200 };
+				CopyPlaceholderTextToClipboard();
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				SUT.Focus(FocusState.Programmatic);
+				SUT.Select(0, 4);
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout, "PasswordBox should have TextCommandBarFlyout as ContextFlyout");
+				var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
+
+				flyout.ShowAt(SUT);
+				await WindowHelper.WaitForIdle();
+
+				var (hasSelectAll, hasCut, hasCopy, hasPaste) = GetAvailableCommands(flyout);
+
+				Assert.IsFalse(hasCut, "Cut should NOT be available for PasswordBox (security)");
+				Assert.IsFalse(hasCopy, "Copy should NOT be available for PasswordBox (security)");
+				Assert.IsTrue(hasPaste, "Paste should be available for PasswordBox");
+				Assert.IsTrue(hasSelectAll, "Select All should be available for PasswordBox");
+
+				flyout.Hide();
+			}
+			finally
+			{
+				ClearClipboard();
+			}
+		}
+#endif
 
 		private class TextBoxFeatureConfigDisposable : IDisposable
 		{

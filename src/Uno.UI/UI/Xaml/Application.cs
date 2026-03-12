@@ -25,7 +25,7 @@ using Windows.Storage;
 using Windows.UI.Popups;
 using Windows.UI.Popups.Internal;
 using Windows.UI.ViewManagement;
-
+using DirectUI;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
@@ -120,6 +120,8 @@ namespace Microsoft.UI.Xaml
 				Current = this;
 				ApplicationLanguages.ApplyCulture();
 
+				BackButtonIntegration.Initialize();
+				
 				InitializePartial();
 			}
 			else
