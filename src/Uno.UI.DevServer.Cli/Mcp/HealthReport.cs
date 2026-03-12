@@ -20,6 +20,7 @@ internal sealed record HealthReport
 	public string? EffectiveWorkspaceDirectory { get; init; }
 	public string? SelectedSolutionPath { get; init; }
 	public WorkspaceResolutionKind? ResolutionKind { get; init; }
+	public WorkspaceSelectionSource? SelectionSource { get; init; }
 	public IReadOnlyList<string>? CandidateSolutions { get; init; }
 	public required IReadOnlyList<ValidationIssue> Issues { get; init; }
 	public DiscoverySummary? Discovery { get; init; }
@@ -33,6 +34,7 @@ internal sealed record DiscoverySummary
 	public string? SelectedSolutionPath { get; init; }
 	public string? SelectedGlobalJsonPath { get; init; }
 	public WorkspaceResolutionKind? ResolutionKind { get; init; }
+	public WorkspaceSelectionSource? SelectionSource { get; init; }
 	public IReadOnlyList<string>? CandidateSolutions { get; init; }
 	public string? DotNetVersion { get; init; }
 	public string? UnoSdkVersion { get; init; }

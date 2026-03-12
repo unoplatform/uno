@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -43,6 +43,7 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 				SelectedSolutionPath = workspaceResolution.SelectedSolutionPath,
 				SelectedGlobalJsonPath = workspaceResolution.SelectedGlobalJsonPath,
 				ResolutionKind = workspaceResolution.ResolutionKind,
+				SelectionSource = workspaceResolution.SelectionSource,
 				CandidateSolutions = workspaceResolution.CandidateSolutions,
 				DiscoveryDurationMs = discoveryStopwatch.ElapsedMilliseconds,
 				Errors = workspaceResolution.ResolutionKind == WorkspaceResolutionKind.NoCandidates
@@ -253,6 +254,7 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 			SelectedSolutionPath = workspaceResolution.SelectedSolutionPath,
 			SelectedGlobalJsonPath = workspaceResolution.SelectedGlobalJsonPath,
 			ResolutionKind = workspaceResolution.ResolutionKind,
+			SelectionSource = workspaceResolution.SelectionSource,
 			CandidateSolutions = workspaceResolution.CandidateSolutions,
 			DiscoveryDurationMs = discoveryStopwatch.ElapsedMilliseconds,
 			GlobalJsonPath = globalJsonPath,

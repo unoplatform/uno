@@ -26,6 +26,7 @@ public class Given_HealthService
 			DevServerVersion = "1.0.0",
 			UpstreamConnected = true,
 			ToolCount = 5,
+			SelectionSource = WorkspaceSelectionSource.UserSelected,
 			Issues = [],
 		};
 
@@ -36,6 +37,7 @@ public class Given_HealthService
 		deserialized!.Status.Should().Be(HealthStatus.Healthy);
 		deserialized.UpstreamConnected.Should().BeTrue();
 		deserialized.ToolCount.Should().Be(5);
+		deserialized.SelectionSource.Should().Be(WorkspaceSelectionSource.UserSelected);
 		deserialized.Issues.Should().BeEmpty();
 	}
 
@@ -225,6 +227,35 @@ public class Given_HealthService
 		report.Status.Should().Be(HealthStatus.Unhealthy);
 		report.Issues.Should().Contain(issue => issue.Code == IssueCode.HostNotStarted);
 		report.Issues.Should().Contain(issue => issue.Code == IssueCode.NoSolutionFound);
+	}
+
+	[TestMethod]
+	public void HealthReport_WhenWorkspaceWasExplicitlySelected_ExposesSelectionSource()
+	{
+		var discovery = new DiscoveryInfo
+		{
+			RequestedWorkingDirectory = @"D:\src\repo",
+			EffectiveWorkspaceDirectory = @"D:\src\repo\src",
+			SelectedSolutionPath = @"D:\src\repo\src\App.slnx",
+			ResolutionKind = WorkspaceResolutionKind.AutoDiscovered,
+			SelectionSource = WorkspaceSelectionSource.UserSelected,
+			CandidateSolutions =
+			[
+				@"D:\src\repo\src\App.slnx",
+			],
+		};
+
+		var report = HealthReportFactory.Create(
+			discovery,
+			devServerStarted: true,
+			upstreamConnected: true,
+			toolCount: 4,
+			connectionState: ConnectionState.Connected,
+			discoveredSolutions: discovery.CandidateSolutions);
+
+		report.SelectionSource.Should().Be(WorkspaceSelectionSource.UserSelected);
+		report.Discovery.Should().NotBeNull();
+		report.Discovery!.SelectionSource.Should().Be(WorkspaceSelectionSource.UserSelected);
 	}
 
 	[TestMethod]

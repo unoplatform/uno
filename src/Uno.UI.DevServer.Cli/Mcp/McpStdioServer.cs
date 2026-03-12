@@ -25,9 +25,11 @@ internal class McpStdioServer(
 	public (IHost Host, TaskCompletionSource ToolsReadyTcs) BuildHost(
 		Func<RequestContext<ListToolsRequestParams>, TaskCompletionSource, CancellationToken, Task> ensureRootsInitialized,
 		Tool addRootsTool,
+		Tool selectSolutionTool,
 		bool forceRootsFallback,
 		Func<string[]> getRoots,
-		Func<string[], Task> setRootsHandler)
+		Func<string[], Task> setRootsHandler,
+		Func<string, Task<CallToolResult>> selectSolutionHandler)
 	{
 		var tcs = new TaskCompletionSource();
 
@@ -60,6 +62,31 @@ internal class McpStdioServer(
 
 					await setRootsHandler(rootsElement.Deserialize<string[]>() ?? []);
 					return new CallToolResult() { Content = [new TextContentBlock() { Text = "Ok" }] };
+				}
+
+				if (toolName == selectSolutionTool.Name)
+				{
+					if (ctx.Params?.Arguments is not { } arguments ||
+						!arguments.TryGetValue("solutionPath", out var solutionPathElement))
+					{
+						return new CallToolResult()
+						{
+							Content = [new TextContentBlock() { Text = "Missing required 'solutionPath' argument." }],
+							IsError = true
+						};
+					}
+
+					var solutionPath = solutionPathElement.GetString();
+					if (string.IsNullOrWhiteSpace(solutionPath))
+					{
+						return new CallToolResult()
+						{
+							Content = [new TextContentBlock() { Text = "The 'solutionPath' argument must be a non-empty absolute path." }],
+							IsError = true
+						};
+					}
+
+					return await selectSolutionHandler(solutionPath);
 				}
 
 				// Handle the built-in uno_health tool before upstream is ready

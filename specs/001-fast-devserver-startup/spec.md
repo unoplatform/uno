@@ -1,4 +1,4 @@
-﻿# Spec 001: Fast DevServer Startup
+# Spec 001: Fast DevServer Startup
 
 > **Status**: Draft v1
 > **Author**: Carl de Billy
@@ -72,7 +72,7 @@ Today, IDE extensions and CLI launch DevServer instances independently with no a
 | [Appendix B: Add-In Discovery](spec-appendix-b-addin-discovery.md) | Add-in discovery system: algorithms, conventions, author guide, package layout |
 | [Appendix C: Testing](spec-appendix-c-testing.md) | Verification plan, test strategy, compatibility matrix |
 | [Appendix D: MCP Improvements](spec-appendix-d-mcp-improvements.md) | MCP protocol optimization and DI refactoring recommendations |
-| [Appendix E: Reference](spec-appendix-e-reference.md) | MCP tools list, IDE extension analysis, convergence analysis |
+| [Appendix E: Reference](spec-appendix-e-reference.md) | MCP built-in tools, upstream app tools list, IDE extension analysis, convergence analysis |
 | [Appendix F: Discovery Roadmap](spec-appendix-f-discovery-roadmap.md) | Broader discovery roadmap (absorbed from DevServerDiscovery.md) |
 | [Appendix G: Compatibility Matrix](spec-appendix-g-compatibility-matrix.md) | Exhaustive backward/forward compatibility validation matrix |
 | [Appendix H: Manual QA](spec-appendix-h-manual-qa.md) | Scenarios requiring human testing (IDE compat, multi-instance, MCP clients, perf) |
