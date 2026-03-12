@@ -27,6 +27,7 @@ The following rules are part of the supported behavior:
 9. Late MCP roots that confirm the already selected workspace must **not** restart the session.
 10. Late MCP roots that resolve to a different workspace must **not** switch the running session to a new workspace. The session remains diagnostic/degraded for that run.
 11. `uno.devserver health --json` must return the same logical `HealthReport` shape as `uno_health`.
+12. An explicit `uno_app_select_solution` request is authoritative for the current MCP session. The selected path must be an absolute `.sln` / `.slnx` candidate within scope, and it must resolve to a valid Uno workspace before DevServer may start.
 
 ---
 
@@ -55,6 +56,8 @@ The following rules are part of the supported behavior:
 | Solution deeper than 3 levels | Not supported for auto-discovery; result is `NoCandidates` | Resolver unit | Yes | Covered |
 | MCP roots arrive later and confirm same workspace | No restart; session continues unchanged | Lifecycle/proxy unit | Yes | Covered |
 | MCP roots arrive later and point to different workspace | No hot switch; session stays diagnostic/degraded | Lifecycle/proxy unit + health/report unit | Yes | Covered |
+| Explicit `uno_app_select_solution` with valid Uno candidate | Selected workspace becomes authoritative; start or continue on that workspace | Lifecycle/proxy unit + MCP integration + health/report unit | Yes | Covered |
+| Explicit `uno_app_select_solution` with non-Uno / out-of-scope / malformed path | Request rejected with structured diagnostics; no host start | Lifecycle/proxy unit + MCP integration | Yes | Covered |
 | CLI `health --json` | Same logical payload shape as `uno_health` | CLI integration + formatter/model unit | Yes | Covered |
 
 ---

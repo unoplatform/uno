@@ -115,7 +115,8 @@ public class Given_McpStdioServer
 
 		var healthCount = result.Count(t => t.Name == HealthService.HealthTool.Name);
 		healthCount.Should().Be(1, "AppendBuiltInTools deduplication ensures uno_health appears exactly once");
-		result.Should().HaveCount(3, "addRoots + uno_health (from cache) + uno_app_get_info");
+		result.Should().ContainSingle(t => t.Name == ProxyLifecycleManager.SelectSolutionTool.Name);
+		result.Should().HaveCount(4, "addRoots + uno_health (from cache) + uno_app_select_solution + uno_app_get_info");
 	}
 
 	[TestMethod]
@@ -130,7 +131,8 @@ public class Given_McpStdioServer
 		// Call the real production code
 		var result = ToolListManager.AppendBuiltInTools(tools);
 
-		result.Should().HaveCount(2, "uno_health + addRoots when no cache is available");
+		result.Should().HaveCount(3, "uno_health + uno_app_select_solution + addRoots when no cache is available");
 		result[0].Name.Should().Be(HealthService.HealthTool.Name, "uno_health should be first");
+		result[1].Name.Should().Be(ProxyLifecycleManager.SelectSolutionTool.Name, "uno_app_select_solution should be second");
 	}
 }

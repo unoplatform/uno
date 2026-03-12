@@ -19,7 +19,7 @@ internal static class WorkspaceTransitionDecisions
 
 		if (previousResolved && currentResolved && IsSameWorkspace(previous!, current))
 		{
-			if (trigger == WorkspaceTransitionTrigger.McpRoots && !devServerStarted)
+			if ((trigger == WorkspaceTransitionTrigger.McpRoots || trigger == WorkspaceTransitionTrigger.UserSelection) && !devServerStarted)
 			{
 				return WorkspaceTransitionAction.Start;
 			}
@@ -41,6 +41,13 @@ internal static class WorkspaceTransitionDecisions
 
 		if (previousResolved && currentResolved)
 		{
+			if (trigger == WorkspaceTransitionTrigger.UserSelection)
+			{
+				return devServerStarted
+					? WorkspaceTransitionAction.Restart
+					: WorkspaceTransitionAction.Start;
+			}
+
 			return trigger == WorkspaceTransitionTrigger.FileSystem
 				? WorkspaceTransitionAction.Restart
 				: WorkspaceTransitionAction.Diagnose;
@@ -62,6 +69,7 @@ internal enum WorkspaceTransitionTrigger
 {
 	FileSystem,
 	McpRoots,
+	UserSelection,
 }
 
 internal enum WorkspaceTransitionAction

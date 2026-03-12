@@ -93,8 +93,82 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger)
 			SelectedSolutionPath = selected.SolutionPath,
 			SelectedGlobalJsonPath = selected.GlobalJsonPath,
 			ResolutionKind = resolutionKind,
+			SelectionSource = WorkspaceSelectionSource.Automatic,
 			CandidateSolutions = [.. candidates.Select(candidate => candidate.SolutionPath).Distinct(StringComparer.OrdinalIgnoreCase)],
 		};
+	}
+
+	public async Task<WorkspaceResolution> ResolveSolutionAsync(string requestedDirectory, string solutionPath, WorkspaceSelectionSource selectionSource = WorkspaceSelectionSource.UserSelected)
+	{
+		var normalizedRequestedDirectory = Path.GetFullPath(requestedDirectory);
+		var normalizedSolutionPath = Path.GetFullPath(solutionPath);
+		var candidateSolutions = SolutionFileFinder.FindSolutionFiles(normalizedRequestedDirectory);
+
+		if (!File.Exists(normalizedSolutionPath)
+			|| !candidateSolutions.Contains(normalizedSolutionPath, StringComparer.OrdinalIgnoreCase))
+		{
+			return new WorkspaceResolution
+			{
+				RequestedWorkingDirectory = normalizedRequestedDirectory,
+				ResolutionKind = candidateSolutions.Length == 0
+					? WorkspaceResolutionKind.NoCandidates
+					: WorkspaceResolutionKind.NoValidWorkspace,
+				CandidateSolutions = candidateSolutions,
+				SelectionSource = selectionSource,
+			};
+		}
+
+		var resolved = await ResolveSolutionCoreAsync(normalizedRequestedDirectory, normalizedSolutionPath, selectionSource);
+		return resolved ?? new WorkspaceResolution
+		{
+			RequestedWorkingDirectory = normalizedRequestedDirectory,
+			ResolutionKind = WorkspaceResolutionKind.NoValidWorkspace,
+			CandidateSolutions = candidateSolutions,
+			SelectionSource = selectionSource,
+		};
+	}
+
+	private async Task<WorkspaceResolution?> ResolveSolutionCoreAsync(string requestedDirectory, string solutionPath, WorkspaceSelectionSource selectionSource)
+	{
+		var solutionDirectory = Path.GetDirectoryName(solutionPath);
+		if (string.IsNullOrWhiteSpace(solutionDirectory))
+		{
+			return null;
+		}
+
+		var currentDirectory = Path.GetFullPath(solutionDirectory);
+		while (currentDirectory is not null)
+		{
+			var globalJsonPath = Path.Combine(currentDirectory, "global.json");
+			if (File.Exists(globalJsonPath))
+			{
+				var parsed = await GlobalJsonLocator.ParseGlobalJsonFileForUnoSdkAsync(globalJsonPath, _logger);
+				if (!string.IsNullOrWhiteSpace(parsed.sdkPackage) && !string.IsNullOrWhiteSpace(parsed.sdkVersion))
+				{
+					var resolutionKind = string.Equals(currentDirectory, requestedDirectory, StringComparison.OrdinalIgnoreCase)
+						? WorkspaceResolutionKind.CurrentDirectory
+						: WorkspaceResolutionKind.AutoDiscovered;
+
+					return new WorkspaceResolution
+					{
+						RequestedWorkingDirectory = requestedDirectory,
+						EffectiveWorkspaceDirectory = currentDirectory,
+						SelectedSolutionPath = solutionPath,
+						SelectedGlobalJsonPath = globalJsonPath,
+						ResolutionKind = resolutionKind,
+						SelectionSource = selectionSource,
+						CandidateSolutions = SolutionFileFinder.FindSolutionFiles(requestedDirectory),
+					};
+				}
+
+				break;
+			}
+
+			var parent = Directory.GetParent(currentDirectory);
+			currentDirectory = parent?.FullName;
+		}
+
+		return null;
 	}
 
 	private static int GetDirectoryDistance(string workspaceDirectory, string solutionDirectory)
@@ -132,6 +206,7 @@ internal sealed record WorkspaceResolution
 	public string? SelectedSolutionPath { get; init; }
 	public string? SelectedGlobalJsonPath { get; init; }
 	public required WorkspaceResolutionKind ResolutionKind { get; init; }
+	public WorkspaceSelectionSource SelectionSource { get; init; } = WorkspaceSelectionSource.Automatic;
 	public IReadOnlyList<string> CandidateSolutions { get; init; } = [];
 
 	public bool IsResolved => !string.IsNullOrWhiteSpace(EffectiveWorkspaceDirectory);
@@ -145,4 +220,12 @@ public enum WorkspaceResolutionKind
 	Ambiguous,
 	NoValidWorkspace,
 	NoCandidates,
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum WorkspaceSelectionSource
+{
+	Automatic,
+	RootsConfirmed,
+	UserSelected,
 }

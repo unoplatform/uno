@@ -29,6 +29,7 @@ The following rules define the required behavior for dynamic workspace changes:
 6. If the recomputed result is `Ambiguous`, the bridge must **not** arbitrarily choose a workspace. It must surface diagnostics and must not switch silently.
 7. If a repo mutation does not change the effective workspace identity, the session must remain stable even if many unrelated files changed.
 8. Health must update immediately after each recomputation; no transition may wait for an upstream timeout before surfacing the new state.
+9. An explicit `uno_app_select_solution` request may override auto-discovery for the current session and is allowed to trigger `Start` or `Restart` when the selected solution resolves to a valid Uno workspace.
 
 ---
 
@@ -47,6 +48,8 @@ The following rules define the required behavior for dynamic workspace changes:
 | `Ambiguous` | Repo mutation leaves one clear valid Uno workspace | Single valid Uno workspace | Start or resume on the single clear workspace | Lifecycle/proxy unit + integration | Covered |
 | Single valid Uno workspace | MCP roots confirm the same workspace | Same workspace | No restart | Lifecycle/proxy unit | Covered |
 | Single valid Uno workspace A | MCP roots point to different valid workspace B | Single valid Uno workspace B or diagnostic state, according to session policy | Stop A then start B once dynamic switching is implemented; until then, stay diagnostic and never switch silently | Lifecycle/proxy unit | Covered |
+| Deferred or ambiguous session | Explicit `uno_app_select_solution` for current valid Uno workspace | Single valid Uno workspace | Start DevServer on selected workspace without restarting the MCP session | Lifecycle/proxy unit + MCP integration | Covered |
+| Running workspace A | Explicit `uno_app_select_solution` for valid Uno workspace B | Single valid Uno workspace B | Stop A then start B; refresh health and cache identity | Lifecycle/proxy unit + MCP integration | Covered |
 
 ---
 

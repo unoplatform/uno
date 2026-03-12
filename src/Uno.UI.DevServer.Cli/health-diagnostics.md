@@ -1,6 +1,6 @@
 # Health & Diagnostics
 
-`HealthService` exposes an always-available `uno_health` MCP tool and a `uno://health` resource so AI agents can inspect DevServer state even before the upstream Host is ready. The CLI also exposes `uno.devserver health`, with `--json` returning the same `HealthReport` payload.
+`HealthService` exposes an always-available `uno_health` MCP tool and a `uno://health` resource so AI agents can inspect DevServer state even before the upstream Host is ready. The CLI also exposes `uno.devserver health`, with `--json` returning the same `HealthReport` payload. The bridge also exposes `uno_app_select_solution` so an agent can explicitly choose a Uno solution when auto-discovery is ambiguous or deferred.
 
 ## Data Flow
 
@@ -68,6 +68,7 @@ Three codes exist in the `IssueCode` enum but are **not currently mapped** in CL
 | `ConnectionState` | `ConnectionState?` | Lifecycle state of the MCP bridge (see `Mcp/ConnectionState.cs` for state diagram) |
 | `EffectiveWorkspaceDirectory` | `string?` | Resolved workspace directory used for discovery and cache identity |
 | `SelectedSolutionPath` | `string?` | Solution selected for the current workspace |
+| `SelectionSource` | `WorkspaceSelectionSource?` | Whether the current selection was automatic, roots-confirmed, or explicitly user-selected |
 | `ResolutionKind` | `WorkspaceResolutionKind?` | How the workspace was selected (`CurrentDirectory`, `AutoDiscovered`, `Ambiguous`, `NoValidWorkspace`, `NoCandidates`) |
 | `Discovery` | `DiscoverySummary?` | Full discovery info including `ActiveServers[]` with `IsInWorkspace` flag |
 

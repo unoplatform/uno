@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -26,6 +27,12 @@ internal class ProxyLifecycleManager
 	private readonly McpStdioServer _mcpStdioServer;
 	private readonly WorkspaceResolver _workspaceResolver;
 	private readonly Tool _addRootsTool;
+	internal static readonly Tool SelectSolutionTool = new()
+	{
+		Name = "uno_app_select_solution",
+		Description = "Explicitly selects the Uno solution to use for this MCP session by absolute solution path. Starts or restarts the DevServer if required.",
+		InputSchema = JsonSerializer.Deserialize<JsonElement>("""{"type":"object","required":["solutionPath"],"properties":{"solutionPath":{"type":"string","description":"Absolute path to the .sln or .slnx file to use for this session."}}}"""),
+	};
 	private bool _waitForTools;
 	private bool _forceRootsFallback;
 	private bool _forceGenerateToolCache;
@@ -179,6 +186,98 @@ internal class ProxyLifecycleManager
 		await ProcessRoots();
 	}
 
+	internal async Task<SelectSolutionResult> SelectSolutionAsync(string solutionPath, CancellationToken ct = default)
+	{
+		if (string.IsNullOrWhiteSpace(solutionPath) || !Path.IsPathRooted(solutionPath))
+		{
+			return CreateRejectedSelectionResult(
+				solutionPath,
+				"The solutionPath argument must be an absolute path to a .sln or .slnx file.",
+				[
+					new ValidationIssue
+					{
+						Code = IssueCode.WorkspaceNotResolved,
+						Severity = ValidationSeverity.Warning,
+						Message = "The requested solution path is invalid.",
+						Remediation = "Call uno_health to inspect candidateSolutions, then provide an absolute path to one of those solutions.",
+					},
+				]);
+		}
+
+		var normalizedSolutionPath = Path.GetFullPath(solutionPath);
+		var observationRoot = GetWorkspaceObservationRoot()
+			?? _solutionDirectory
+			?? _currentDirectory
+			?? Path.GetDirectoryName(normalizedSolutionPath);
+
+		if (string.IsNullOrWhiteSpace(observationRoot))
+		{
+			return CreateRejectedSelectionResult(
+				normalizedSolutionPath,
+				"Unable to determine the workspace root for this session.",
+				[
+					new ValidationIssue
+					{
+						Code = IssueCode.WorkspaceNotResolved,
+						Severity = ValidationSeverity.Warning,
+						Message = "The MCP bridge could not determine a workspace root for this session.",
+						Remediation = "Call uno_health for diagnostics, or restart the MCP bridge from the intended repository.",
+					},
+				]);
+		}
+
+		var availableSolutions = SolutionFileFinder.FindSolutionFiles(observationRoot);
+		if (!availableSolutions.Contains(normalizedSolutionPath, StringComparer.OrdinalIgnoreCase))
+		{
+			return CreateRejectedSelectionResult(
+				normalizedSolutionPath,
+				"The requested solution is not one of the current candidate solutions for this session.",
+				[
+					new ValidationIssue
+					{
+						Code = IssueCode.WorkspaceNotResolved,
+						Severity = ValidationSeverity.Warning,
+						Message = "The requested solution is outside the candidate solution set for the current MCP session.",
+						Remediation = "Call uno_health to inspect candidateSolutions, then choose one of those paths or restart the MCP bridge from a different repository root.",
+					},
+				]);
+		}
+
+		var nextResolution = await _workspaceResolver.ResolveSolutionAsync(observationRoot, normalizedSolutionPath);
+		if (!nextResolution.IsResolved)
+		{
+			var discovery = await BuildDiscoveryInfoForSelectionAsync(observationRoot, nextResolution);
+			return CreateRejectedSelectionResult(
+				normalizedSolutionPath,
+				"The requested solution does not resolve to a valid Uno workspace.",
+				DiscoveryIssueMapper.MapDiscoveryIssues(discovery));
+		}
+
+		var previousResolution = _workspaceResolution;
+		var transitionAction = await ApplyWorkspaceResolutionAsync(nextResolution, WorkspaceTransitionTrigger.UserSelection, ct);
+		var selectedResolution = _workspaceResolution ?? nextResolution;
+
+		return new SelectSolutionResult
+		{
+			Status = DetermineSelectionStatus(previousResolution, selectedResolution, transitionAction),
+			SelectedSolutionPath = selectedResolution.SelectedSolutionPath ?? normalizedSolutionPath,
+			EffectiveWorkspaceDirectory = selectedResolution.EffectiveWorkspaceDirectory,
+			DevServerAction = transitionAction.ToSelectionAction(),
+			Message = BuildSelectionMessage(selectedResolution, transitionAction),
+		};
+	}
+
+	private async Task<CallToolResult> SelectSolution(string solutionPath)
+	{
+		var result = await SelectSolutionAsync(solutionPath);
+		var json = JsonSerializer.Serialize(result, McpJsonUtilities.DefaultOptions);
+		return new CallToolResult
+		{
+			Content = [new TextContentBlock() { Text = json }],
+			IsError = string.Equals(result.Status, "rejected", StringComparison.Ordinal),
+		};
+	}
+
 	private async Task ProcessRoots()
 	{
 		_logger.LogTrace("Processing MCP Client Roots: {Roots}", string.Join(", ", _roots));
@@ -192,7 +291,10 @@ internal class ProxyLifecycleManager
 			var rootPath = GetRootPath(rootUri);
 			if (!string.IsNullOrWhiteSpace(rootPath))
 			{
-				var rootWorkspaceResolution = await _workspaceResolver.ResolveAsync(rootPath);
+				var rootWorkspaceResolution = (await _workspaceResolver.ResolveAsync(rootPath)) with
+				{
+					SelectionSource = WorkspaceSelectionSource.RootsConfirmed,
+				};
 				_logger.LogTrace("Resolved MCP root '{RootUri}' into path '{RootPath}'", rootUri, rootPath);
 				await ApplyWorkspaceResolutionAsync(rootWorkspaceResolution, WorkspaceTransitionTrigger.McpRoots);
 				return;
@@ -222,7 +324,7 @@ internal class ProxyLifecycleManager
 		await ApplyWorkspaceResolutionAsync(nextResolution, trigger, ct);
 	}
 
-	internal async Task ApplyWorkspaceResolutionAsync(WorkspaceResolution nextResolution, WorkspaceTransitionTrigger trigger, CancellationToken ct = default)
+	internal async Task<WorkspaceTransitionAction> ApplyWorkspaceResolutionAsync(WorkspaceResolution nextResolution, WorkspaceTransitionTrigger trigger, CancellationToken ct = default)
 	{
 		await _workspaceTransitionGate.WaitAsync(ct);
 		try
@@ -243,14 +345,14 @@ internal class ProxyLifecycleManager
 					_workspaceResolution = nextResolution;
 					UpdateWorkspaceHash(nextResolution);
 					await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
-					return;
+					return transitionAction;
 
 				case WorkspaceTransitionAction.Start:
 					_workspaceResolution = nextResolution;
 					UpdateWorkspaceHash(nextResolution);
 					await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
 					StartDevServerMonitor(nextResolution.EffectiveWorkspaceDirectory);
-					return;
+					return transitionAction;
 
 				case WorkspaceTransitionAction.Stop:
 					_logger.LogInformation(
@@ -263,7 +365,7 @@ internal class ProxyLifecycleManager
 					await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
 					SetConnectionState(ConnectionState.Degraded);
 					FailToolCachePriming();
-					return;
+					return transitionAction;
 
 				case WorkspaceTransitionAction.Restart:
 					_logger.LogInformation(
@@ -275,7 +377,7 @@ internal class ProxyLifecycleManager
 					UpdateWorkspaceHash(nextResolution);
 					await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
 					StartDevServerMonitor(nextResolution.EffectiveWorkspaceDirectory);
-					return;
+					return transitionAction;
 
 				case WorkspaceTransitionAction.Diagnose:
 					if (_workspaceResolution?.IsResolved == true && nextResolution.IsResolved && trigger == WorkspaceTransitionTrigger.McpRoots)
@@ -298,13 +400,13 @@ internal class ProxyLifecycleManager
 
 					SetConnectionState(ConnectionState.Degraded);
 					FailToolCachePriming();
-					return;
+					return transitionAction;
 
 				default:
 					_logger.LogWarning("Unexpected workspace transition action {Action} for trigger {Trigger}", transitionAction, trigger);
 					SetConnectionState(ConnectionState.Degraded);
 					FailToolCachePriming();
-					return;
+					return transitionAction;
 			}
 		}
 		finally
@@ -827,9 +929,11 @@ internal class ProxyLifecycleManager
 		var (host, tcs) = _mcpStdioServer.BuildHost(
 			EnsureRootsInitialized,
 			_addRootsTool,
+			SelectSolutionTool,
 			_forceRootsFallback,
 			() => _roots,
-			async roots => await SetRoots(roots));
+			async roots => await SetRoots(roots),
+			async solutionPath => await SelectSolution(solutionPath));
 
 		StartCachePrimingWatcher(host);
 
@@ -1009,5 +1113,72 @@ internal class ProxyLifecycleManager
 			return directory;
 		}
 	}
+	private async Task<DiscoveryInfo> BuildDiscoveryInfoForSelectionAsync(string observationRoot, WorkspaceResolution resolution)
+	{
+		var unoToolsLocator = new UnoToolsLocator(Microsoft.Extensions.Logging.Abstractions.NullLogger<UnoToolsLocator>.Instance);
+		return await unoToolsLocator.DiscoverAsync(observationRoot, resolution);
+	}
 
+	private static string DetermineSelectionStatus(
+		WorkspaceResolution? previousResolution,
+		WorkspaceResolution selectedResolution,
+		WorkspaceTransitionAction transitionAction)
+	{
+		return transitionAction switch
+		{
+			WorkspaceTransitionAction.Start => "started",
+			WorkspaceTransitionAction.Restart => "restarted",
+			WorkspaceTransitionAction.Refresh when previousResolution?.IsResolved == true
+				&& WorkspaceTransitionDecisions.IsSameWorkspace(previousResolution, selectedResolution) => "already_selected",
+			_ => "selected",
+		};
+	}
+
+	private static string BuildSelectionMessage(WorkspaceResolution resolution, WorkspaceTransitionAction action)
+	{
+		return action switch
+		{
+			WorkspaceTransitionAction.Start => $"Selected solution '{resolution.SelectedSolutionPath}' and started DevServer for '{resolution.EffectiveWorkspaceDirectory}'.",
+			WorkspaceTransitionAction.Restart => $"Selected solution '{resolution.SelectedSolutionPath}' and restarted DevServer for '{resolution.EffectiveWorkspaceDirectory}'.",
+			WorkspaceTransitionAction.Refresh => $"Solution '{resolution.SelectedSolutionPath}' is already selected for this session.",
+			_ => $"Selected solution '{resolution.SelectedSolutionPath}'.",
+		};
+	}
+
+	private static SelectSolutionResult CreateRejectedSelectionResult(
+		string? solutionPath,
+		string message,
+		IReadOnlyList<ValidationIssue> issues)
+	{
+		return new SelectSolutionResult
+		{
+			Status = "rejected",
+			SelectedSolutionPath = solutionPath,
+			DevServerAction = "None",
+			Message = message,
+			Issues = issues,
+		};
+	}
+
+}
+
+internal sealed record SelectSolutionResult
+{
+	public required string Status { get; init; }
+	public string? SelectedSolutionPath { get; init; }
+	public string? EffectiveWorkspaceDirectory { get; init; }
+	public required string DevServerAction { get; init; }
+	public required string Message { get; init; }
+	public IReadOnlyList<ValidationIssue>? Issues { get; init; }
+}
+
+internal static class WorkspaceTransitionActionExtensions
+{
+	public static string ToSelectionAction(this WorkspaceTransitionAction action)
+		=> action switch
+		{
+			WorkspaceTransitionAction.Start => "Start",
+			WorkspaceTransitionAction.Restart => "Restart",
+			_ => "None",
+		};
 }

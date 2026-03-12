@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using AwesomeAssertions;
 
@@ -38,6 +39,68 @@ public class Given_McpRootsFallbackProcess
 			if (!started)
 			{
 				Assert.Fail($"Expected deferred DevServer to start after roots were provided.{Environment.NewLine}STDOUT:{Environment.NewLine}{stdout}{Environment.NewLine}STDERR:{Environment.NewLine}{stderr}");
+			}
+		}
+		finally
+		{
+			if (process is not null && !process.HasExited)
+			{
+				try
+				{
+					process.Kill(entireProcessTree: true);
+				}
+				catch
+				{
+					// Best-effort cleanup for integration test teardown.
+				}
+
+				try
+				{
+					await process.WaitForExitAsync();
+				}
+				catch
+				{
+					// Ignore teardown wait failures.
+				}
+			}
+
+			await StopDevServerAsync(cliDllPath, workspaceDirectory);
+		}
+	}
+
+	[TestMethod]
+	[Description("The MCP proxy starts the selected DevServer after uno_app_select_solution is called in force-roots-fallback mode")]
+	public async Task WhenSolutionIsSelectedViaToolCall_DeferredDevServerStarts()
+	{
+		var cliDllPath = GetCliDllPath();
+		var workspaceDirectory = GetTemplateWorkspaceDirectory();
+		var solutionPath = Directory.EnumerateFiles(workspaceDirectory, "*.slnx").FirstOrDefault()
+			?? Directory.EnumerateFiles(workspaceDirectory, "*.sln").First();
+		var port = GetFreeTcpPort();
+		var stdout = new StringBuilder();
+		var stderr = new StringBuilder();
+		Process? process = null;
+
+		try
+		{
+			await StopDevServerAsync(cliDllPath, workspaceDirectory);
+
+			process = StartMcpProxy(cliDllPath, workspaceDirectory, port, stdout, stderr);
+
+			await Task.Delay(TimeSpan.FromSeconds(3));
+
+			stderr.ToString().Should().NotContain("Starting DevServer monitor using solution directory", "force-roots-fallback should still defer monitor startup until a selection command is provided");
+
+			await SendInitializeAsync(process);
+			await SendSelectSolutionAsync(process, solutionPath);
+
+			var started = await WaitUntilAsync(
+				() => stderr.ToString().Contains("Starting DevServer monitor using solution directory", StringComparison.Ordinal),
+				timeout: TimeSpan.FromSeconds(60));
+
+			if (!started)
+			{
+				Assert.Fail($"Expected deferred DevServer to start after solution selection was provided.{Environment.NewLine}STDOUT:{Environment.NewLine}{stdout}{Environment.NewLine}STDERR:{Environment.NewLine}{stderr}");
 			}
 		}
 		finally
@@ -134,6 +197,26 @@ public class Given_McpRootsFallbackProcess
 				arguments = new
 				{
 					roots = new[] { workspaceDirectory }
+				}
+			}
+		});
+		await process.StandardInput.WriteLineAsync(request);
+		await process.StandardInput.FlushAsync();
+	}
+
+	private static async Task SendSelectSolutionAsync(Process process, string solutionPath)
+	{
+		var request = System.Text.Json.JsonSerializer.Serialize(new
+		{
+			jsonrpc = "2.0",
+			id = 3,
+			method = "tools/call",
+			@params = new
+			{
+				name = "uno_app_select_solution",
+				arguments = new
+				{
+					solutionPath
 				}
 			}
 		});

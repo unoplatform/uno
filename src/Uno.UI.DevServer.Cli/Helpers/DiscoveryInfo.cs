@@ -33,6 +33,11 @@ public sealed class DiscoveryInfo
 	public WorkspaceResolutionKind? ResolutionKind { get; init; }
 
 	/// <summary>
+	/// Gets whether the selected workspace was automatic, roots-confirmed, or explicitly chosen.
+	/// </summary>
+	public WorkspaceSelectionSource? SelectionSource { get; init; }
+
+	/// <summary>
 	/// Gets all candidate solution paths that were considered during workspace resolution.
 	/// </summary>
 	public IReadOnlyList<string> CandidateSolutions { get; init; } = [];

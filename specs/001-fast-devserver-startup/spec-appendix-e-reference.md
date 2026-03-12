@@ -4,7 +4,21 @@
 
 ---
 
-## E.1 MCP Tools (reference from uno.app-mcp)
+## E.1 MCP Tools
+
+### E.1a Built-in bridge tools (`uno.devserver`)
+
+These tools are provided directly by the DevServer MCP bridge before the upstream add-ins are connected. They are always available to support discovery, diagnostics, and workspace selection.
+
+| Tool Name | Description | Availability |
+|-----------|-------------|:------------:|
+| `uno_health` | Returns the current `HealthReport` state for the bridge and selected workspace | Always |
+| `uno_app_select_solution` | Explicitly selects a Uno solution by absolute solution path and starts/restarts DevServer when needed | Always |
+| `uno_app_set_roots` | Updates MCP roots used for workspace discovery fallback | Force-roots-fallback only |
+
+`uno_app_select_solution` is implemented in `uno.devserver`, not `uno.app-mcp`, because solution selection affects pre-host behavior: workspace resolution, DevServer lifecycle, tool-cache identity, and health.
+
+### E.1b Upstream app tools (reference from uno.app-mcp)
 
 > **Note**: The tool count visible to the AI model depends on the user's license tier. `MCPToolsObserverService` filters tools via `[LicenseFeatures]` attributes. The tool cache (`tools-cache.json`) reflects the license tier active at cache time.
 >
@@ -24,7 +38,7 @@
 | `uno_app_element_peer_action` | Advanced automation action | Pro |
 | `uno_app_get_element_datacontext` | Element data context | Pro |
 
-**Visible tools by tier**: Community 9, Pro 11 (verified against `MCPToolsObserverService`). Counts may change as tools are added.
+**Visible upstream app tools by tier**: Community 9, Pro 11 (verified against `MCPToolsObserverService`). Counts may change as tools are added.
 
 ---
 

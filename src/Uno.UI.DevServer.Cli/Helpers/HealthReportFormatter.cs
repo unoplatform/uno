@@ -17,6 +17,7 @@ internal static class HealthReportFormatter
 		builder.AppendLine($"Workspace: {report.EffectiveWorkspaceDirectory ?? "<unresolved>"}");
 		builder.AppendLine($"Solution: {report.SelectedSolutionPath ?? "<none>"}");
 		builder.AppendLine($"Resolution: {report.ResolutionKind?.ToString() ?? "<unknown>"}");
+		builder.AppendLine($"Selection: {report.SelectionSource?.ToString() ?? "<unknown>"}");
 		builder.AppendLine($"Tools: {report.ToolCount}");
 
 		if (report.CandidateSolutions is { Count: > 0 })

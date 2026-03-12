@@ -12,6 +12,262 @@ namespace Uno.UI.DevServer.Cli.Tests.Mcp;
 public class Given_ProxyLifecycleManager
 {
 	[TestMethod]
+	[Description("Selecting a valid Uno candidate starts the deferred DevServer and marks the workspace as explicitly selected")]
+	public async Task WhenSelectingValidUnoSolutionAfterDeferredStartup_DevServerStarts()
+	{
+		var root = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
+		DevServerMonitor? monitor = null;
+
+		try
+		{
+			var workspaceDirectory = await CreateUnoWorkspaceAsync(root, "src", "StudioLive.slnx", "6.6.0-dev.1");
+			var solutionPath = Path.Combine(workspaceDirectory, "StudioLive.slnx");
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
+			var workspaceResolution = await resolver.ResolveAsync(root);
+
+			var created = CreateSubject();
+			subject = created.Subject;
+			var healthService = created.HealthService;
+			monitor = created.Monitor;
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_workspaceResolution", workspaceResolution);
+			SetPrivateField(subject, "_devServerPort", 0);
+			SetPrivateField(subject, "_forwardedArgs", new List<string>());
+
+			var result = await subject.SelectSolutionAsync(solutionPath);
+
+			result.Status.Should().Be("started");
+			result.DevServerAction.Should().Be("Start");
+			result.SelectedSolutionPath.Should().Be(solutionPath);
+			result.EffectiveWorkspaceDirectory.Should().Be(workspaceDirectory);
+			result.Issues.Should().BeNull();
+			healthService.DevServerStarted.Should().BeTrue();
+			GetPrivateField<Task?>(monitor, "_monitor").Should().NotBeNull();
+			GetPrivateField<WorkspaceResolution>(subject, "_workspaceResolution").SelectionSource.Should().Be(WorkspaceSelectionSource.UserSelected);
+		}
+		finally
+		{
+			if (monitor is not null)
+			{
+				await monitor.StopMonitoringAsync();
+			}
+
+			await DeleteDirectoryWithRetriesAsync(root);
+		}
+	}
+
+	[TestMethod]
+	[Description("Selecting the already-running solution returns already_selected without restarting the session")]
+	public async Task WhenSelectingCurrentRunningSolution_NoRestartOccurs()
+	{
+		var root = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
+		DevServerMonitor? monitor = null;
+
+		try
+		{
+			var workspaceDirectory = await CreateUnoWorkspaceAsync(root, "src", "StudioLive.slnx", "6.6.0-dev.1");
+			var solutionPath = Path.Combine(workspaceDirectory, "StudioLive.slnx");
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
+			var workspaceResolution = await resolver.ResolveAsync(root);
+
+			var created = CreateSubject();
+			subject = created.Subject;
+			var healthService = created.HealthService;
+			monitor = created.Monitor;
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_workspaceResolution", workspaceResolution with { SelectionSource = WorkspaceSelectionSource.UserSelected });
+			SetPrivateField(subject, "_devServerPort", 0);
+			SetPrivateField(subject, "_forwardedArgs", new List<string>());
+
+			monitor.StartMonitoring(workspaceDirectory, port: 0, forwardedArgs: [], workspaceResolution);
+			healthService.DevServerStarted = true;
+
+			var initialMonitorTask = GetPrivateField<Task?>(monitor, "_monitor");
+			var result = await subject.SelectSolutionAsync(solutionPath);
+
+			result.Status.Should().Be("already_selected");
+			result.DevServerAction.Should().Be("None");
+			healthService.DevServerStarted.Should().BeTrue();
+			GetPrivateField<Task?>(monitor, "_monitor").Should().BeSameAs(initialMonitorTask);
+		}
+		finally
+		{
+			if (monitor is not null)
+			{
+				await monitor.StopMonitoringAsync();
+			}
+
+			await DeleteDirectoryWithRetriesAsync(root);
+		}
+	}
+
+	[TestMethod]
+	[Description("Selecting a different valid Uno solution restarts the DevServer on the newly selected workspace")]
+	public async Task WhenSelectingDifferentUnoSolution_DevServerRestartsOnSelectedWorkspace()
+	{
+		var root = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
+		DevServerMonitor? monitor = null;
+
+		try
+		{
+			var workspaceA = await CreateUnoWorkspaceAsync(root, "srcA", "AppA.slnx", "6.6.0-dev.1");
+			var workspaceB = await CreateUnoWorkspaceAsync(root, "srcB", "AppB.slnx", "6.6.0-dev.2");
+			var solutionB = Path.Combine(workspaceB, "AppB.slnx");
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
+			var resolutionA = await resolver.ResolveAsync(workspaceA);
+
+			var created = CreateSubject();
+			subject = created.Subject;
+			var healthService = created.HealthService;
+			monitor = created.Monitor;
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_workspaceResolution", resolutionA);
+			SetPrivateField(subject, "_devServerPort", 0);
+			SetPrivateField(subject, "_forwardedArgs", new List<string>());
+
+			monitor.StartMonitoring(workspaceA, port: 0, forwardedArgs: [], resolutionA);
+			healthService.DevServerStarted = true;
+
+			var result = await subject.SelectSolutionAsync(solutionB);
+
+			result.Status.Should().Be("restarted");
+			result.DevServerAction.Should().Be("Restart");
+			result.SelectedSolutionPath.Should().Be(solutionB);
+			GetPrivateField<string>(monitor, "_currentDirectory").Should().Be(workspaceB);
+			GetPrivateField<WorkspaceResolution>(subject, "_workspaceResolution").SelectionSource.Should().Be(WorkspaceSelectionSource.UserSelected);
+			healthService.DevServerStarted.Should().BeTrue();
+		}
+		finally
+		{
+			if (monitor is not null)
+			{
+				await monitor.StopMonitoringAsync();
+			}
+
+			await DeleteDirectoryWithRetriesAsync(root);
+		}
+	}
+
+	[TestMethod]
+	[Description("Selecting a non-Uno solution is rejected with a diagnostic result and does not start the DevServer")]
+	public async Task WhenSelectingNonUnoSolution_RequestIsRejected()
+	{
+		var root = CreateTempDirectory();
+
+		try
+		{
+			var workspaceDirectory = await CreateNonUnoWorkspaceAsync(root, "src", "StudioLive.slnx");
+			var solutionPath = Path.Combine(workspaceDirectory, "StudioLive.slnx");
+			var unresolvedWorkspace = new WorkspaceResolution
+			{
+				RequestedWorkingDirectory = root,
+				ResolutionKind = WorkspaceResolutionKind.NoCandidates,
+				CandidateSolutions = [],
+			};
+
+			var created = CreateSubject();
+			var subject = created.Subject;
+			var healthService = created.HealthService;
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_workspaceResolution", unresolvedWorkspace);
+
+			var result = await subject.SelectSolutionAsync(solutionPath);
+
+			result.Status.Should().Be("rejected");
+			result.DevServerAction.Should().Be("None");
+			result.Issues.Should().NotBeNull();
+			result.Issues!.Should().Contain(issue => issue.Code == IssueCode.WorkspaceNotResolved || issue.Code == IssueCode.UnoSdkNotInGlobalJson || issue.Code == IssueCode.NoSolutionFound);
+			healthService.DevServerStarted.Should().BeFalse();
+		}
+		finally
+		{
+			await DeleteDirectoryWithRetriesAsync(root);
+		}
+	}
+
+	[TestMethod]
+	[Description("Selecting a solution that is not one of the current candidates is rejected cleanly")]
+	public async Task WhenSelectingSolutionOutsideCandidates_RequestIsRejected()
+	{
+		var root = CreateTempDirectory();
+		var externalRoot = CreateTempDirectory();
+
+		try
+		{
+			var workspaceDirectory = await CreateUnoWorkspaceAsync(root, "src", "StudioLive.slnx", "6.6.0-dev.1");
+			var externalWorkspace = await CreateUnoWorkspaceAsync(externalRoot, "other", "Other.slnx", "6.6.0-dev.2");
+			var externalSolution = Path.Combine(externalWorkspace, "Other.slnx");
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
+			var workspaceResolution = await resolver.ResolveAsync(root);
+
+			var created = CreateSubject();
+			var subject = created.Subject;
+			var healthService = created.HealthService;
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_workspaceResolution", workspaceResolution);
+
+			var result = await subject.SelectSolutionAsync(externalSolution);
+
+			result.Status.Should().Be("rejected");
+			result.Message.Should().ContainEquivalentOf("candidate");
+			result.Issues.Should().NotBeNull();
+			healthService.DevServerStarted.Should().BeFalse();
+		}
+		finally
+		{
+			await DeleteDirectoryWithRetriesAsync(root);
+			await DeleteDirectoryWithRetriesAsync(externalRoot);
+		}
+	}
+
+	[TestMethod]
+	[Description("Explicit solution selection resolves an ambiguous workspace and starts the selected Uno solution")]
+	public async Task WhenSelectingSolutionFromAmbiguousWorkspace_SelectedWorkspaceStarts()
+	{
+		var root = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
+		DevServerMonitor? monitor = null;
+
+		try
+		{
+			var workspaceA = await CreateUnoWorkspaceAsync(root, "srcA", "AppA.slnx", "6.6.0-dev.1");
+			var workspaceB = await CreateUnoWorkspaceAsync(root, "srcB", "AppB.slnx", "6.6.0-dev.1");
+			var solutionB = Path.Combine(workspaceB, "AppB.slnx");
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
+			var ambiguous = await resolver.ResolveAsync(root);
+
+			var created = CreateSubject();
+			subject = created.Subject;
+			var healthService = created.HealthService;
+			monitor = created.Monitor;
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_workspaceResolution", ambiguous);
+			SetPrivateField(subject, "_devServerPort", 0);
+			SetPrivateField(subject, "_forwardedArgs", new List<string>());
+
+			var result = await subject.SelectSolutionAsync(solutionB);
+
+			result.Status.Should().Be("started");
+			result.SelectedSolutionPath.Should().Be(solutionB);
+			healthService.DevServerStarted.Should().BeTrue();
+			GetPrivateField<WorkspaceResolution>(subject, "_workspaceResolution").EffectiveWorkspaceDirectory.Should().Be(workspaceB);
+			GetPrivateField<Task?>(monitor, "_monitor").Should().NotBeNull();
+		}
+		finally
+		{
+			if (monitor is not null)
+			{
+				await monitor.StopMonitoringAsync();
+			}
+
+			await DeleteDirectoryWithRetriesAsync(root);
+		}
+	}
+
+	[TestMethod]
 	[Description("Deferred MCP roots that confirm the selected workspace start the DevServer when roots fallback postponed startup")]
 	public async Task WhenRootsConfirmCurrentWorkspaceAfterDeferredStartup_DevServerStarts()
 	{
@@ -891,6 +1147,36 @@ public class Given_ProxyLifecycleManager
 		finally
 		{
 			Directory.Delete(workspaceRoot, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	[Description("Explicit solution selection updates the workspace hash to the selected workspace")]
+	public async Task WhenSelectingSolution_WorkspaceHashTracksSelectedWorkspace()
+	{
+		var root = CreateTempDirectory();
+
+		try
+		{
+			var workspaceA = await CreateUnoWorkspaceAsync(root, "srcA", "AppA.slnx", "6.6.0-dev.1");
+			var workspaceB = await CreateUnoWorkspaceAsync(root, "srcB", "AppB.slnx", "6.6.0-dev.2");
+			var solutionB = Path.Combine(workspaceB, "AppB.slnx");
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
+			var resolutionA = await resolver.ResolveAsync(workspaceA);
+
+			var created = CreateSubject();
+			var subject = created.Subject;
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_workspaceResolution", resolutionA);
+
+			await subject.SelectSolutionAsync(solutionB);
+
+			GetPrivateField<string?>(subject, "_workspaceHash")
+				.Should().Be(ToolCacheFile.ComputeWorkspaceHash(workspaceB));
+		}
+		finally
+		{
+			await DeleteDirectoryWithRetriesAsync(root);
 		}
 	}
 
