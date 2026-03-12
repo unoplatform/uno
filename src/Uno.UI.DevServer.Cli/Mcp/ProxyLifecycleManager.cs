@@ -227,7 +227,7 @@ internal class ProxyLifecycleManager
 		}
 
 		var availableSolutions = SolutionFileFinder.FindSolutionFiles(observationRoot);
-		if (!availableSolutions.Contains(normalizedSolutionPath, StringComparer.OrdinalIgnoreCase))
+		if (!availableSolutions.Any(candidate => PathComparison.PathsEqual(candidate, normalizedSolutionPath)))
 		{
 			return CreateRejectedSelectionResult(
 				normalizedSolutionPath,

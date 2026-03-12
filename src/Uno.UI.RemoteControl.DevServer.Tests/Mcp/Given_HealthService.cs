@@ -467,6 +467,34 @@ public class Given_HealthService
 	}
 
 	[TestMethod]
+	[Description("Diagnostic degraded mode does not report HostCrashed when no DevServer host was ever started")]
+	public void HealthReport_WhenDegradedWithoutStartedHost_DoesNotReportHostCrashed()
+	{
+		var discovery = new DiscoveryInfo
+		{
+			RequestedWorkingDirectory = @"D:\src\repo",
+			ResolutionKind = WorkspaceResolutionKind.Ambiguous,
+			CandidateSolutions =
+			[
+				@"D:\src\repo\srcA\AppA.slnx",
+				@"D:\src\repo\srcB\AppB.slnx",
+			],
+		};
+
+		var report = HealthReportFactory.Create(
+			discovery,
+			devServerStarted: false,
+			upstreamConnected: false,
+			toolCount: 0,
+			connectionState: ConnectionState.Degraded,
+			discoveredSolutions: discovery.CandidateSolutions);
+
+		report.Status.Should().Be(HealthStatus.Unhealthy);
+		report.Issues.Should().NotContain(issue => issue.Code == IssueCode.HostCrashed);
+		report.Issues.Should().Contain(issue => issue.Code == IssueCode.WorkspaceAmbiguous);
+	}
+
+	[TestMethod]
 	[Description("HealthReport with ConnectionState.Launching roundtrips correctly")]
 	public void HealthReport_WithLaunchingState_Roundtrip()
 	{
