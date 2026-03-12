@@ -16,7 +16,7 @@ namespace Uno.UI.Xaml.Controls
 		/// The ViewChanged event is raised and the VerticalOffset and HorizontalOffset are updated
 		/// as soon as the native scroll presenter notifies an update.
 		/// </summary>
-		/// <remarks>This mode is required to support advance scrolling feature like parallax effect.</remarks>
+		/// <remarks>This mode matches WinUI behavior and is required to support advance scrolling feature like parallax effect.</remarks>
 		Synchronous,
 
 		/// <summary>
@@ -24,7 +24,6 @@ namespace Uno.UI.Xaml.Controls
 		/// queued and dispatcher one idle dispatcher. Some updates may be dropped if the dispatcher is busy,
 		/// but the last update will always be notified synchronously.
 		/// </summary>
-		/// <remarks>This mode is the closest to the windows behavior.</remarks>
 		AsynchronousIdle
 	}
 
