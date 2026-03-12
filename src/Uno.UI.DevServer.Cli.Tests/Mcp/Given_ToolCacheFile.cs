@@ -257,6 +257,30 @@ public class Given_ToolCacheFile
 	}
 
 	[TestMethod]
+	[Description("Normalized /mnt paths remain deterministic and hash-equivalent even when the raw casing differs")]
+	public void ComputeWorkspaceHash_OnMntPaths_UsesNormalizedOrdering()
+	{
+		if (OperatingSystem.IsWindows())
+		{
+			Assert.Inconclusive("This test validates /mnt path behavior on non-Windows hosts.");
+			return;
+		}
+
+		var paths = new[]
+		{
+			"/mnt/c/USERS/TEST/PROJECT",
+			"/mnt/c/Users/Test/Project",
+		};
+
+		var ordered = paths
+			.OrderBy(PathComparison.Normalize, StringComparer.Ordinal)
+			.ToArray();
+
+		PathComparison.PathsEqual(ordered[0], ordered[1]).Should().BeTrue();
+		ToolCacheFile.ComputeWorkspaceHash(ordered[0]).Should().Be(ToolCacheFile.ComputeWorkspaceHash(ordered[1]));
+	}
+
+	[TestMethod]
 	[Description("ComputeWorkspaceHash is case-sensitive on native Linux paths (no /mnt/ prefix)")]
 	public void ComputeWorkspaceHash_IsCaseSensitive_OnNativeLinuxPaths()
 	{

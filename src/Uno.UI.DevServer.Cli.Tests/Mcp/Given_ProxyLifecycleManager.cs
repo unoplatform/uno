@@ -1281,6 +1281,30 @@ public class Given_ProxyLifecycleManager
 	}
 
 	[TestMethod]
+	[Description("Replacing the workspace debounce source installs the newest token source and cancels the previous one")]
+	public void ReplaceWorkspaceMutationDebounceSource_WhenCalled_ReplacesAndCancelsPrevious()
+	{
+		CancellationTokenSource? field = new();
+		var first = field;
+
+		var second = ProxyLifecycleManager.ReplaceWorkspaceMutationDebounceSource(ref field);
+
+		field.Should().BeSameAs(second);
+		first!.IsCancellationRequested.Should().BeTrue();
+		Action cancelDisposedFirst = () => first.Cancel();
+		cancelDisposedFirst.Should().Throw<ObjectDisposedException>();
+
+		var third = ProxyLifecycleManager.ReplaceWorkspaceMutationDebounceSource(ref field);
+
+		field.Should().BeSameAs(third);
+		second.IsCancellationRequested.Should().BeTrue();
+		Action cancelDisposedSecond = () => second.Cancel();
+		cancelDisposedSecond.Should().Throw<ObjectDisposedException>();
+
+		third.Dispose();
+	}
+
+	[TestMethod]
 	[Description("Watcher startup failures are logged and do not leave a partially initialized watcher behind")]
 	public void WhenWatcherStartupFails_NoExceptionEscapesAndNoWatcherIsRetained()
 	{

@@ -274,7 +274,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 		}
 
 		return solutionFiles
-			.OrderBy(solution => Path.GetRelativePath(currentDirectory, solution), PathComparison.FileSystemComparer)
+			.OrderBy(PathComparison.Normalize, StringComparer.Ordinal)
 			.FirstOrDefault();
 	}
 

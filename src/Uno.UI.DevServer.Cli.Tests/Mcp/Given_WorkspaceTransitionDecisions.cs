@@ -178,6 +178,29 @@ public class Given_WorkspaceTransitionDecisions
 		isSame.Should().Be(!OperatingSystem.IsLinux());
 	}
 
+	[TestMethod]
+	public void WhenResolvedWorkspacesOmitSolutionAndGlobalJsonPaths_EqualityDoesNotThrow()
+	{
+		var workspace = CreatePath("repo", "src");
+		var left = new WorkspaceResolution
+		{
+			RequestedWorkingDirectory = workspace,
+			EffectiveWorkspaceDirectory = workspace,
+			ResolutionKind = WorkspaceResolutionKind.CurrentDirectory,
+		};
+		var right = new WorkspaceResolution
+		{
+			RequestedWorkingDirectory = workspace,
+			EffectiveWorkspaceDirectory = workspace,
+			ResolutionKind = WorkspaceResolutionKind.CurrentDirectory,
+		};
+
+		var action = () => WorkspaceTransitionDecisions.IsSameWorkspace(left, right);
+
+		action.Should().NotThrow();
+		WorkspaceTransitionDecisions.IsSameWorkspace(left, right).Should().BeTrue();
+	}
+
 	private static WorkspaceResolution CreateResolved(string workspaceDirectory, string solutionPath)
 		=> new()
 		{
