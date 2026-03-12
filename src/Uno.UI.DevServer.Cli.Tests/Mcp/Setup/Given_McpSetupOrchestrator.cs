@@ -601,4 +601,179 @@ public class Given_McpSetupOrchestrator
 		result.Operations.Should().HaveCount(1);
 		result.Operations[0].Action.Should().Be("error");
 	}
+
+	// ── R1: Note field ──
+
+	[TestMethod]
+	public void Install_ExistingFile_HasNote()
+	{
+		var fs = new InMemoryFileSystem();
+		fs.AddFile("/project/.cursor/mcp.json", """
+		{
+		  "mcpServers": {
+		    "UnoApp": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]}
+		  }
+		}
+		""");
+
+		var orch = CreateOrchestrator(fs);
+		var result = orch.Install(TestDefs, "/project", "cursor", "prerelease", "5.6.0-dev.42", null);
+
+		var unoAppOp = result.Operations.First(o => o.Server == "UnoApp");
+		unoAppOp.Note.Should().Contain("Modified cursor configuration file");
+	}
+
+	[TestMethod]
+	public void Install_NewFile_NoNote()
+	{
+		var fs = new InMemoryFileSystem();
+		var orch = CreateOrchestrator(fs);
+
+		var result = orch.Install(TestDefs, "/project", "cursor", "stable", "5.6.0", serverFilter: ["UnoApp"]);
+
+		var op = result.Operations.First(o => o.Server == "UnoApp");
+		op.Note.Should().BeNull();
+	}
+
+	[TestMethod]
+	public void Install_Skipped_NoNote()
+	{
+		var fs = new InMemoryFileSystem();
+		fs.AddFile("/project/.cursor/mcp.json", """
+		{
+		  "mcpServers": {
+		    "UnoApp": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]}
+		  }
+		}
+		""");
+
+		var orch = CreateOrchestrator(fs);
+		var result = orch.Install(TestDefs, "/project", "cursor", "stable", "5.6.0", serverFilter: ["UnoApp"]);
+
+		var op = result.Operations.First(o => o.Server == "UnoApp");
+		op.Action.Should().Be("skipped");
+		op.Note.Should().BeNull();
+	}
+
+	// ── R4: Backup ──
+
+	[TestMethod]
+	public void Install_ExistingFile_CreatesBackup()
+	{
+		var fs = new InMemoryFileSystem();
+		fs.AddFile("/project/.cursor/mcp.json", """{"mcpServers":{}}""");
+
+		var orch = CreateOrchestrator(fs);
+		orch.Install(TestDefs, "/project", "cursor", "stable", "5.6.0", serverFilter: ["UnoApp"]);
+
+		fs.Backups.Should().Contain("/project/.cursor/mcp.json");
+		fs.GetFileContent("/project/.cursor/mcp.json.bak").Should().Be("""{"mcpServers":{}}""");
+	}
+
+	[TestMethod]
+	public void Install_NewFile_NoBackup()
+	{
+		var fs = new InMemoryFileSystem();
+		var orch = CreateOrchestrator(fs);
+
+		orch.Install(TestDefs, "/project", "cursor", "stable", "5.6.0", serverFilter: ["UnoApp"]);
+
+		fs.Backups.Should().BeEmpty();
+	}
+
+	[TestMethod]
+	public void Uninstall_ExistingServer_CreatesBackup()
+	{
+		var fs = new InMemoryFileSystem();
+		fs.AddFile("/project/.cursor/mcp.json", """
+		{
+		  "mcpServers": {
+		    "UnoApp": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]}
+		  }
+		}
+		""");
+
+		var orch = CreateOrchestrator(fs);
+		orch.Uninstall(TestDefs, "/project", "cursor", serverFilter: ["UnoApp"]);
+
+		fs.Backups.Should().NotBeEmpty();
+	}
+
+	[TestMethod]
+	public void Install_MultipleServers_BackupPreservesOriginal()
+	{
+		var fs = new InMemoryFileSystem();
+		var originalContent = """{"mcpServers":{}}""";
+		fs.AddFile("/project/.cursor/mcp.json", originalContent);
+
+		var orch = CreateOrchestrator(fs);
+		// Install both UnoApp and UnoDocs — both write to same file
+		orch.Install(TestDefs, "/project", "cursor", "stable", "5.6.0", null);
+
+		// The .bak should contain the original content, not an intermediate state
+		fs.GetFileContent("/project/.cursor/mcp.json.bak").Should().Be(originalContent);
+		// But the actual file should have both servers
+		var content = fs.GetFileContent("/project/.cursor/mcp.json")!;
+		var parsed = System.Text.Json.Nodes.JsonNode.Parse(content)!.AsObject();
+		parsed["mcpServers"]!.AsObject().ContainsKey("UnoApp").Should().BeTrue();
+		parsed["mcpServers"]!.AsObject().ContainsKey("UnoDocs").Should().BeTrue();
+	}
+
+	// ── R2: Dry-run ──
+
+	[TestMethod]
+	public void Install_DryRun_DoesNotWriteFile()
+	{
+		var fs = new InMemoryFileSystem();
+		var orch = CreateOrchestrator(fs);
+
+		orch.Install(TestDefs, "/project", "cursor", "stable", "5.6.0", serverFilter: ["UnoApp"], dryRun: true);
+
+		fs.GetFileContent("/project/.cursor/mcp.json").Should().BeNull();
+	}
+
+	[TestMethod]
+	public void Install_DryRun_ReturnsCorrectOperations()
+	{
+		var fs = new InMemoryFileSystem();
+		var orch = CreateOrchestrator(fs);
+
+		var result = orch.Install(TestDefs, "/project", "cursor", "stable", "5.6.0", null, dryRun: true);
+
+		result.Operations.Should().HaveCount(2);
+		result.Operations.Should().AllSatisfy(o => o.Action.Should().Be("created"));
+	}
+
+	[TestMethod]
+	public void Install_DryRun_NoBackup()
+	{
+		var fs = new InMemoryFileSystem();
+		fs.AddFile("/project/.cursor/mcp.json", """{"mcpServers":{}}""");
+
+		var orch = CreateOrchestrator(fs);
+		orch.Install(TestDefs, "/project", "cursor", "stable", "5.6.0", serverFilter: ["UnoApp"], dryRun: true);
+
+		fs.Backups.Should().BeEmpty();
+	}
+
+	[TestMethod]
+	public void Uninstall_DryRun_DoesNotModifyFile()
+	{
+		var fs = new InMemoryFileSystem();
+		var originalContent = """
+		{
+		  "mcpServers": {
+		    "UnoApp": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]}
+		  }
+		}
+		""";
+		fs.AddFile("/project/.cursor/mcp.json", originalContent);
+
+		var orch = CreateOrchestrator(fs);
+		var result = orch.Uninstall(TestDefs, "/project", "cursor", serverFilter: ["UnoApp"], dryRun: true);
+
+		result.Operations.First(o => o.Server == "UnoApp").Action.Should().Be("removed");
+		fs.GetFileContent("/project/.cursor/mcp.json").Should().Be(originalContent);
+		fs.Backups.Should().BeEmpty();
+	}
 }

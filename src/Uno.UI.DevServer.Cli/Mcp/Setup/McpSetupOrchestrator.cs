@@ -89,7 +89,8 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		string targetIde,
 		string expectedVariant,
 		string toolVersion,
-		IReadOnlyList<string>? serverFilter)
+		IReadOnlyList<string>? serverFilter,
+		bool dryRun = false)
 	{
 		if (!defs.Ides.TryGetValue(targetIde, out var profile))
 		{
@@ -100,6 +101,7 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		var scanner = new ConfigScanner(_fs);
 		var expectedDefinitions = BuildExpectedDefinitions(defs.Servers, expectedVariant);
 		var scanResult = scanner.Scan(profile, workspace, defs.Servers, expectedDefinitions);
+		var backedUpFiles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 		foreach (var (serverName, serverDef) in defs.Servers)
 		{
 			if (serverFilter is not null && !serverFilter.Contains(serverName, StringComparer.OrdinalIgnoreCase))
@@ -117,7 +119,7 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 			try
 			{
 				var entry = InstallServer(
-					targetIde, profile, scanResult, serverName, serverDef, serverResult, definition);
+					targetIde, profile, scanResult, serverName, serverDef, serverResult, definition, dryRun, backedUpFiles);
 				operations.Add(entry);
 			}
 			catch (Exception ex)
@@ -138,7 +140,8 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		string workspace,
 		string targetIde,
 		IReadOnlyList<string>? serverFilter,
-		bool allScopes = false)
+		bool allScopes = false,
+		bool dryRun = false)
 	{
 		if (!defs.Ides.TryGetValue(targetIde, out var profile))
 		{
@@ -149,6 +152,7 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		var scanner = new ConfigScanner(_fs);
 		var home = _fs.GetUserHomePath();
 		var appdata = _fs.GetAppDataPath();
+		var backedUpFiles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
 		foreach (var (serverName, serverDef) in defs.Servers)
 		{
@@ -185,8 +189,17 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 					var updated = ConfigWriter.RemoveServer(content, profile.JsonRootKey, matchedKey);
 					if (updated is not null)
 					{
-						_fs.WriteAllText(configPath, updated);
-						operations.Add(new OperationEntry(serverName, targetIde, "removed", configPath, null));
+						if (!dryRun)
+						{
+							if (backedUpFiles.Add(configPath))
+							{
+								_fs.BackupFile(configPath);
+							}
+
+							_fs.WriteAllText(configPath, updated);
+						}
+
+						operations.Add(new OperationEntry(serverName, targetIde, "removed", configPath, null, $"Modified {targetIde} configuration file"));
 						found = true;
 					}
 				}
@@ -214,7 +227,9 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		string serverName,
 		ServerDefinition serverDef,
 		ServerScanResult? serverResult,
-		JsonObject definition)
+		JsonObject definition,
+		bool dryRun,
+		HashSet<string> backedUpFiles)
 	{
 		var targetPath = scanResult.ResolvedWriteTarget;
 
@@ -263,14 +278,23 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 			transportLabel,
 			profile.UrlKey);
 
-		_fs.WriteAllText(targetPath, updated);
+		if (!dryRun)
+		{
+			if (existingContent is not null && backedUpFiles.Add(targetPath))
+			{
+				_fs.BackupFile(targetPath);
+			}
 
-		return new OperationEntry(serverName, targetIde, action, targetPath, null);
+			_fs.WriteAllText(targetPath, updated);
+		}
+
+		var note = existingContent is not null ? $"Modified {targetIde} configuration file" : null;
+		return new OperationEntry(serverName, targetIde, action, targetPath, null, note);
 	}
 
 	private static JsonObject MergeCommandAndArgs(JsonObject definition)
 	{
-		var clone = JsonNode.Parse(definition.ToJsonString())!.AsObject();
+		var clone = definition.DeepClone().AsObject();
 
 		if (clone["command"]?.GetValue<string>() is { } cmd
 			&& clone.Remove("args", out var argsNode)

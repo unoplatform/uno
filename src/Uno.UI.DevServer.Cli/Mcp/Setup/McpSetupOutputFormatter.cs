@@ -74,18 +74,24 @@ internal static class McpSetupOutputFormatter
 		}
 	}
 
-	public static void WriteInstall(OperationResponse response, string workspace)
+	public static void WriteInstall(OperationResponse response, string workspace, bool dryRun = false)
 	{
-		WriteOperations("MCP Install", response, workspace);
+		WriteOperations("MCP Install", response, workspace, dryRun);
 	}
 
-	public static void WriteUninstall(OperationResponse response, string workspace)
+	public static void WriteUninstall(OperationResponse response, string workspace, bool dryRun = false)
 	{
-		WriteOperations("MCP Uninstall", response, workspace);
+		WriteOperations("MCP Uninstall", response, workspace, dryRun);
 	}
 
-	private static void WriteOperations(string title, OperationResponse response, string workspace)
+	private static void WriteOperations(string title, OperationResponse response, string workspace, bool dryRun)
 	{
+		if (dryRun)
+		{
+			AnsiConsole.MarkupLine("[yellow]DRY RUN — no files will be modified[/]");
+			AnsiConsole.WriteLine();
+		}
+
 		var table = new Table()
 			.Border(TableBorder.Rounded)
 			.Title($"[white]{Escape(title)}[/]")
@@ -97,11 +103,12 @@ internal static class McpSetupOutputFormatter
 		foreach (var op in response.Operations)
 		{
 			var actionMarkup = FormatAction(op.Action);
+			var details = FormatDetails(op.Reason, op.Note);
 			table.AddRow(
 				new Markup($"[white]{Escape(op.Server)}[/]"),
 				actionMarkup,
 				new Markup($"[grey]{Escape(ShortenPath(op.Path ?? "-", workspace))}[/]"),
-				new Markup($"[grey]{Escape(op.Reason ?? "")}[/]"));
+				details);
 		}
 
 		AnsiConsole.Write(table);
@@ -125,6 +132,26 @@ internal static class McpSetupOutputFormatter
 		"error" => new Markup("[red]error[/]"),
 		_ => new Markup($"[grey]{Escape(action)}[/]"),
 	};
+
+	private static Markup FormatDetails(string? reason, string? note)
+	{
+		if (reason is not null && note is not null)
+		{
+			return new Markup($"[grey]{Escape(reason)} · {Escape(note)}[/]");
+		}
+
+		if (reason is not null)
+		{
+			return new Markup($"[grey]{Escape(reason)}[/]");
+		}
+
+		if (note is not null)
+		{
+			return new Markup($"[grey]{Escape(note)}[/]");
+		}
+
+		return new Markup("");
+	}
 
 	private static string Escape(string text) => text.Replace("[", "[[").Replace("]", "]]");
 

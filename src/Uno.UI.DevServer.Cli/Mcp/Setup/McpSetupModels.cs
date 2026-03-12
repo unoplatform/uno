@@ -70,7 +70,8 @@ internal sealed record OperationEntry(
 	string Ide,
 	string Action, // "created", "updated", "skipped", "removed", "not_found", "error"
 	string? Path,
-	string? Reason);
+	string? Reason,
+	string? Note = null);
 
 // ──────────────────────────────────────────────
 // Scan result (internal, used by ConfigScanner)

@@ -16,6 +16,11 @@ internal interface IFileSystem
 	/// </summary>
 	void WriteAllText(string path, string content);
 
+	/// <summary>
+	/// Creates a backup copy of the file at <paramref name="path"/> with a <c>.bak</c> extension.
+	/// </summary>
+	void BackupFile(string path);
+
 	void CreateDirectory(string path);
 	bool IsReadOnly(string path);
 	string GetUserHomePath();
