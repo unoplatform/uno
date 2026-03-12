@@ -31,7 +31,7 @@ public partial class CompositionEffectBrush : CompositionBrush
 
 	internal override bool RequiresRepaintOnEveryFrame => HasBackdropBrushInput;
 
-	internal bool UseBlurPadding { get; set; }
+	internal bool UseBackdropBlurClamp { get; set; }
 
 	private SKImageFilter? GenerateGaussianBlurEffect(IGraphicsEffectD2D1Interop effectInterop, SKRect bounds)
 	{
@@ -49,7 +49,7 @@ public partial class CompositionEffectBrush : CompositionBrush
 			effectInterop.GetNamedPropertyMapping("BlurAmount", out uint sigmaProp, out _);
 			float sigma = (float)(effectInterop.GetProperty(sigmaProp) ?? throw new InvalidOperationException("The effect property was null"));
 
-			if (UseBlurPadding)
+			if (UseBackdropBlurClamp)
 			{
 				// Use Clamp tile mode to prevent the blur from sampling outside the
 				// element's backdrop area. Without clamping, a backdrop blur will read
