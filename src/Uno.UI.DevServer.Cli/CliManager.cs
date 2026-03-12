@@ -404,10 +404,10 @@ internal class CliManager
 			return 2; // error already logged
 		}
 
-		// Validate IDE requirement for install/uninstall
-		if (subcommand is "install" or "uninstall" && parsed.Value.Ide is null)
+		// When no IDE is specified, require --all-ides to confirm multi-IDE operation
+		if (subcommand is "install" or "uninstall" && parsed.Value.Ide is null && !parsed.Value.AllIdes)
 		{
-			_logger.LogError("Missing IDE argument. Usage: mcp {Subcommand} <ide>", subcommand);
+			_logger.LogError("Missing IDE argument. Usage: mcp {Subcommand} <ide>, or use --all-ides to target all detected IDEs", subcommand);
 			return 2;
 		}
 
@@ -458,8 +458,10 @@ internal class CliManager
 			return subcommand switch
 			{
 				"status" => RunMcpStatus(orchestrator, defs, workspace, parsed.Value, expectedVariant, toolVersion),
-				"install" => RunMcpInstall(orchestrator, defs, workspace, parsed.Value, expectedVariant, toolVersion),
-				"uninstall" => RunMcpUninstall(orchestrator, defs, workspace, parsed.Value),
+				"install" when parsed.Value.Ide is not null => RunMcpInstall(orchestrator, defs, workspace, parsed.Value, expectedVariant, toolVersion),
+				"install" => RunMcpInstallAllDetected(orchestrator, defs, workspace, parsed.Value, expectedVariant, toolVersion),
+				"uninstall" when parsed.Value.Ide is not null => RunMcpUninstall(orchestrator, defs, workspace, parsed.Value),
+				"uninstall" => RunMcpUninstallAllDetected(orchestrator, defs, workspace, parsed.Value),
 				_ => 2,
 			};
 		}
@@ -496,14 +498,14 @@ internal class CliManager
 		McpSetupOrchestrator orchestrator, Definitions defs, string workspace,
 		McpSetupParsedArgs parsed, string expectedVariant, string toolVersion)
 	{
-		var result = orchestrator.Install(defs, workspace, parsed.Ide!, expectedVariant, toolVersion, parsed.Servers);
+		var result = orchestrator.Install(defs, workspace, parsed.Ide!, expectedVariant, toolVersion, parsed.Servers, parsed.DryRun);
 		if (parsed.JsonOutput)
 		{
 			Console.WriteLine(JsonSerializer.Serialize(result, McpSetupJson.OutputOptions));
 		}
 		else
 		{
-			McpSetupOutputFormatter.WriteInstall(result, workspace);
+			McpSetupOutputFormatter.WriteInstall(result, workspace, parsed.DryRun);
 		}
 
 		return DetermineMcpSetupExitCode(result);
@@ -512,17 +514,86 @@ internal class CliManager
 	private static int RunMcpUninstall(
 		McpSetupOrchestrator orchestrator, Definitions defs, string workspace, McpSetupParsedArgs parsed)
 	{
-		var result = orchestrator.Uninstall(defs, workspace, parsed.Ide!, parsed.Servers, parsed.AllScopes);
+		var result = orchestrator.Uninstall(defs, workspace, parsed.Ide!, parsed.Servers, parsed.AllScopes, parsed.DryRun);
 		if (parsed.JsonOutput)
 		{
 			Console.WriteLine(JsonSerializer.Serialize(result, McpSetupJson.OutputOptions));
 		}
 		else
 		{
-			McpSetupOutputFormatter.WriteUninstall(result, workspace);
+			McpSetupOutputFormatter.WriteUninstall(result, workspace, parsed.DryRun);
 		}
 
 		return DetermineMcpSetupExitCode(result);
+	}
+
+	private int RunMcpInstallAllDetected(
+		McpSetupOrchestrator orchestrator, Definitions defs, string workspace,
+		McpSetupParsedArgs parsed, string expectedVariant, string toolVersion)
+	{
+		var detectedIdes = GetDetectedIdes(orchestrator, defs, workspace, expectedVariant, toolVersion);
+		if (detectedIdes.Count == 0)
+		{
+			_logger.LogError("No IDEs detected. Specify an IDE explicitly: mcp install <ide>");
+			return 1;
+		}
+
+		var allOperations = new List<OperationEntry>();
+		foreach (var ide in detectedIdes)
+		{
+			var result = orchestrator.Install(defs, workspace, ide, expectedVariant, toolVersion, parsed.Servers, parsed.DryRun);
+			allOperations.AddRange(result.Operations);
+		}
+
+		var combined = new OperationResponse("1.0", allOperations);
+		if (parsed.JsonOutput)
+		{
+			Console.WriteLine(JsonSerializer.Serialize(combined, McpSetupJson.OutputOptions));
+		}
+		else
+		{
+			McpSetupOutputFormatter.WriteInstall(combined, workspace, parsed.DryRun);
+		}
+
+		return DetermineMcpSetupExitCode(combined);
+	}
+
+	private int RunMcpUninstallAllDetected(
+		McpSetupOrchestrator orchestrator, Definitions defs, string workspace, McpSetupParsedArgs parsed)
+	{
+		var detectedIdes = GetDetectedIdes(orchestrator, defs, workspace, "stable", "0.0.0");
+		if (detectedIdes.Count == 0)
+		{
+			_logger.LogError("No IDEs detected. Specify an IDE explicitly: mcp uninstall <ide>");
+			return 1;
+		}
+
+		var allOperations = new List<OperationEntry>();
+		foreach (var ide in detectedIdes)
+		{
+			var result = orchestrator.Uninstall(defs, workspace, ide, parsed.Servers, parsed.AllScopes, parsed.DryRun);
+			allOperations.AddRange(result.Operations);
+		}
+
+		var combined = new OperationResponse("1.0", allOperations);
+		if (parsed.JsonOutput)
+		{
+			Console.WriteLine(JsonSerializer.Serialize(combined, McpSetupJson.OutputOptions));
+		}
+		else
+		{
+			McpSetupOutputFormatter.WriteUninstall(combined, workspace, parsed.DryRun);
+		}
+
+		return DetermineMcpSetupExitCode(combined);
+	}
+
+	private static IReadOnlyList<string> GetDetectedIdes(
+		McpSetupOrchestrator orchestrator, Definitions defs, string workspace,
+		string expectedVariant, string toolVersion)
+	{
+		var status = orchestrator.Status(defs, workspace, null, expectedVariant, toolVersion);
+		return status.DetectedIdes;
 	}
 
 	internal static int DetermineMcpSetupExitCode(OperationResponse result) =>
@@ -540,6 +611,8 @@ internal class CliManager
 		List<string>? Servers,
 		bool JsonOutput,
 		bool AllScopes,
+		bool AllIdes,
+		bool DryRun,
 		string? IdeDefinitionsPath,
 		string? ServerDefinitionsPath);
 
@@ -553,6 +626,8 @@ internal class CliManager
 		List<string>? servers = null;
 		var jsonOutput = false;
 		var allScopes = false;
+		var dryRun = false;
+		var allIdes = false;
 		string? ideDefinitionsPath = null;
 		string? serverDefinitionsPath = null;
 
@@ -585,6 +660,12 @@ internal class CliManager
 				case "--all-scopes":
 					allScopes = true;
 					break;
+				case "--dry-run":
+					dryRun = true;
+					break;
+				case "--all-ides":
+					allIdes = true;
+					break;
 				case "--ide-definitions":
 					if (i + 1 >= args.Length) { _logger.LogError("Missing value for --ide-definitions"); return null; }
 					ideDefinitionsPath = args[++i];
@@ -614,7 +695,7 @@ internal class CliManager
 		}
 
 		return new McpSetupParsedArgs(ide, workspace, releaseFlag, prereleaseFlag, versionFlag,
-			servers, jsonOutput, allScopes, ideDefinitionsPath, serverDefinitionsPath);
+			servers, jsonOutput, allScopes, allIdes, dryRun, ideDefinitionsPath, serverDefinitionsPath);
 	}
 
 	private ProcessStartInfo BuildHostArgs(string hostPath, string[] originalArgs, string workingDirectory, bool redirectOutput = true, string? addins = null)

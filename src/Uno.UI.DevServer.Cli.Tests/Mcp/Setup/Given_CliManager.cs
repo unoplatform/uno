@@ -93,11 +93,118 @@ public class Given_CliManager
 		}
 	}
 
-	private static CliManager CreateManager()
+	[TestMethod]
+	public void RunMcpSubcommand_InstallNoIde_InstallsInAllDetected()
+	{
+		var fs = new InMemoryFileSystem();
+		fs.AddDirectory("/project/.cursor");
+
+		var manager = CreateManager(fs);
+		var previousOut = Console.Out;
+		using var writer = new StringWriter();
+		Console.SetOut(writer);
+
+		try
+		{
+			var result = manager.RunMcpSubcommand(["install", "--all-ides", "--json"], "/project", null);
+
+			result.Should().Be(0);
+			var output = writer.ToString();
+			output.Should().Contain("\"ide\": \"cursor\"");
+			output.Should().Contain("\"action\": \"created\"");
+		}
+		finally
+		{
+			Console.SetOut(previousOut);
+		}
+	}
+
+	[TestMethod]
+	public void RunMcpSubcommand_InstallNoIde_NoDetected_ReturnsError()
+	{
+		var fs = new InMemoryFileSystem();
+		var manager = CreateManager(fs);
+
+		var result = manager.RunMcpSubcommand(["install", "--all-ides", "--json"], "/project", null);
+
+		result.Should().Be(1);
+	}
+
+	[TestMethod]
+	public void RunMcpSubcommand_UninstallNoIde_UninstallsFromAllDetected()
+	{
+		var fs = new InMemoryFileSystem();
+		fs.AddDirectory("/project/.cursor");
+		fs.AddFile("/project/.cursor/mcp.json", """
+		{
+		  "mcpServers": {
+		    "UnoApp": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]}
+		  }
+		}
+		""");
+
+		var manager = CreateManager(fs);
+		var previousOut = Console.Out;
+		using var writer = new StringWriter();
+		Console.SetOut(writer);
+
+		try
+		{
+			var result = manager.RunMcpSubcommand(["uninstall", "--all-ides", "--json"], "/project", null);
+
+			result.Should().Be(0);
+			var output = writer.ToString();
+			output.Should().Contain("\"ide\": \"cursor\"");
+			output.Should().Contain("\"action\": \"removed\"");
+		}
+		finally
+		{
+			Console.SetOut(previousOut);
+		}
+	}
+
+	[TestMethod]
+	public void RunMcpSubcommand_InstallNoIde_NoAllIdesFlag_ReturnsUsageError()
+	{
+		var fs = new InMemoryFileSystem();
+		fs.AddDirectory("/project/.cursor");
+		var manager = CreateManager(fs);
+
+		var result = manager.RunMcpSubcommand(["install", "--json"], "/project", null);
+
+		result.Should().Be(2);
+	}
+
+	[TestMethod]
+	public void RunMcpSubcommand_UninstallNoIde_NoAllIdesFlag_ReturnsUsageError()
+	{
+		var fs = new InMemoryFileSystem();
+		fs.AddDirectory("/project/.cursor");
+		var manager = CreateManager(fs);
+
+		var result = manager.RunMcpSubcommand(["uninstall", "--json"], "/project", null);
+
+		result.Should().Be(2);
+	}
+
+	[TestMethod]
+	public void ParseMcpSetupArgs_DryRun_SetsFlag()
+	{
+		var manager = CreateManager();
+
+		var result = manager.ParseMcpSetupArgs(["cursor", "--dry-run"], "install");
+
+		result.Should().NotBeNull();
+		result!.Value.DryRun.Should().BeTrue();
+	}
+
+	private static CliManager CreateManager() => CreateManager(new InMemoryFileSystem());
+
+	private static CliManager CreateManager(IFileSystem fs)
 	{
 		var services = new ServiceCollection();
 		services.AddLogging();
-		services.AddSingleton<IFileSystem>(new InMemoryFileSystem());
+		services.AddSingleton(fs);
 		services.AddSingleton<McpSetupOrchestrator>();
 
 		var provider = services.BuildServiceProvider();
