@@ -309,8 +309,7 @@ internal partial class InputManager
 			// we must re-hit-test so the event routes to an element that can still bubble
 			// to the ScrollViewer.
 			if (OperatingSystem.IsIOS()
-				&& _cachedWheelHitTestSource is not null
-				&& _cachedWheelHitTestSource.IsLoaded
+				&& _cachedWheelHitTestSource is { IsLoaded: true }
 				&& pointerPosition == _cachedWheelHitTestPosition)
 			{
 				originalSource = _cachedWheelHitTestSource;
