@@ -1040,6 +1040,44 @@ public class Given_ProxyLifecycleManager
 	}
 
 	[TestMethod]
+	[Description("An unresolved workspace with a populated solution directory does not start the DevServer monitor during initial MCP startup")]
+	public void WhenEnsuringStartupWithUnresolvedWorkspaceAndSolutionDirectory_DevServerDoesNotStart()
+	{
+		var root = CreateTempDirectory();
+
+		try
+		{
+			var unresolvedWorkspace = new WorkspaceResolution
+			{
+				RequestedWorkingDirectory = root,
+				ResolutionKind = WorkspaceResolutionKind.NoCandidates,
+				CandidateSolutions = [],
+			};
+
+			var created = CreateSubject();
+			var subject = created.Subject;
+			var healthService = created.HealthService;
+			var monitor = created.Monitor;
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_solutionDirectory", root);
+			SetPrivateField(subject, "_workspaceResolution", unresolvedWorkspace);
+
+			var method = typeof(ProxyLifecycleManager).GetMethod("EnsureDevServerStartedFromSolutionDirectory", BindingFlags.Instance | BindingFlags.NonPublic);
+			method.Should().NotBeNull();
+
+			method!.Invoke(subject, []);
+
+			healthService.DevServerStarted.Should().BeFalse();
+			subject.ConnectionState.Should().Be(ConnectionState.Degraded);
+			GetPrivateField<Task?>(monitor, "_monitor").Should().BeNull();
+		}
+		finally
+		{
+			DeleteDirectoryWithRetriesAsync(root).GetAwaiter().GetResult();
+		}
+	}
+
+	[TestMethod]
 	[Description("Explicit solution selection uses filesystem-aware path comparison when validating candidate solutions")]
 	public async Task WhenSelectingSolutionWithDifferentCase_UsesFilesystemPathSemantics()
 	{

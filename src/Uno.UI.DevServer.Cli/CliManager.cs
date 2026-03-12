@@ -368,6 +368,9 @@ internal class CliManager
 			}
 
 			var waitForTools = mcpWaitToolsList;
+			var startupSolutionDirectory = workspaceResolution.IsResolved
+				? workspaceResolution.EffectiveWorkspaceDirectory
+				: null;
 			return await _services.GetRequiredService<ProxyLifecycleManager>().RunAsync(
 				requestedWorkingDirectory,
 				workspaceResolution,
@@ -376,7 +379,7 @@ internal class CliManager
 				waitForTools,
 				forceRootsFallback,
 				forceGenerateToolCache,
-				workspaceResolution.EffectiveWorkspaceDirectory ?? requestedWorkingDirectory,
+				startupSolutionDirectory,
 				CancellationToken.None);
 		}
 		catch (Exception ex)

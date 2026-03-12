@@ -508,12 +508,6 @@ internal class ProxyLifecycleManager
 			_solutionDirectory,
 			_currentDirectory);
 
-		if (!string.IsNullOrWhiteSpace(_solutionDirectory))
-		{
-			StartDevServerMonitor(_solutionDirectory);
-			return;
-		}
-
 		if (_workspaceResolution?.IsResolved != true)
 		{
 			_logger.LogWarning(
@@ -524,10 +518,12 @@ internal class ProxyLifecycleManager
 			return;
 		}
 
-		// No explicit --solution-dir was provided. Use the current directory
-		// so the monitor can scan for solutions immediately. MCP roots received
-		// later will be processed via ProcessRoots() which can trigger the
-		// monitor if it hasn't started yet (StartOnceGuard prevents duplicates).
+		if (!string.IsNullOrWhiteSpace(_solutionDirectory))
+		{
+			StartDevServerMonitor(_solutionDirectory);
+			return;
+		}
+
 		_logger.LogTrace("No explicit solution directory; using resolved workspace {Directory}", _workspaceResolution.EffectiveWorkspaceDirectory);
 		StartDevServerMonitor(_workspaceResolution.EffectiveWorkspaceDirectory);
 	}
