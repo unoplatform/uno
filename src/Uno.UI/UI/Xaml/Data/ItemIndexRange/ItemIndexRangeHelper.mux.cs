@@ -528,24 +528,24 @@ internal static partial class ItemIndexRangeHelper
 				m_selectedRanges.RemoveAt(currentRangeIndex);
 			}
 			else
-			// update current to second part
-			if (updatedLength1 == 0)
-			{
-				currentRange = new Range(lastIndex + 1, (uint)updatedLength2);
-				m_selectedRanges[currentRangeIndex] = currentRange;
-			}
-			else
-			// update current to first part
-			{
-				currentRange = new Range(currentRange.FirstIndex, (uint)updatedLength1);
-				m_selectedRanges[currentRangeIndex] = currentRange;
-
-				// insert new range
-				if (updatedLength2 != 0)
+				// update current to second part
+				if (updatedLength1 == 0)
 				{
-					m_selectedRanges.Insert(currentRangeIndex + 1, new Range(lastIndex + 1, (uint)updatedLength2));
+					currentRange = new Range(lastIndex + 1, (uint)updatedLength2);
+					m_selectedRanges[currentRangeIndex] = currentRange;
 				}
-			}
+				else
+				// update current to first part
+				{
+					currentRange = new Range(currentRange.FirstIndex, (uint)updatedLength1);
+					m_selectedRanges[currentRangeIndex] = currentRange;
+
+					// insert new range
+					if (updatedLength2 != 0)
+					{
+						m_selectedRanges.Insert(currentRangeIndex + 1, new Range(lastIndex + 1, (uint)updatedLength2));
+					}
+				}
 
 			// append to removed ranges
 			removedRanges.Add(new Range(firstIndex, length));

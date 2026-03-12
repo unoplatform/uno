@@ -1540,16 +1540,16 @@ public partial class TabView : Control
 				return vector.Count;
 			}
 			else
-			if (itemsSource is IEnumerable iterable)
-			{
-				var i = 0;
-				foreach (var o in iterable)
+				if (itemsSource is IEnumerable iterable)
 				{
-					i++;
-				}
+					var i = 0;
+					foreach (var o in iterable)
+					{
+						i++;
+					}
 
-				return i;
-			}
+					return i;
+				}
 			return 0;
 		}
 		else
@@ -1807,13 +1807,13 @@ public partial class TabView : Control
 			}
 		}
 		else
-		if (m_inputNonClientPointerSource != null)
-		{
-			m_enteringMoveSizeToken.Disposable = null;
-			m_enteredMoveSizeToken.Disposable = null;
-			m_windowRectChangingToken.Disposable = null;
-			m_exitedMoveSizeToken.Disposable = null;
-		}
+			if (m_inputNonClientPointerSource != null)
+			{
+				m_enteringMoveSizeToken.Disposable = null;
+				m_enteredMoveSizeToken.Disposable = null;
+				m_windowRectChangingToken.Disposable = null;
+				m_exitedMoveSizeToken.Disposable = null;
+			}
 #pragma warning restore CS0162
 	}
 
@@ -2144,40 +2144,40 @@ public partial class TabView : Control
 			}
 		}
 		else
-		if (otherTabView.GetItemCount() > 0)
-		{
-			// If there was no tab, under the cursor, then that suggests we want to insert the tab either at the very beginning or at the very end.
-			// We'll first check whether the screen position is to the left of the bounds of the first tab.  If so, we'll set the insertion position
-			// to be the start of the item list.
-			var firstTab = otherTabView.ContainerFromIndex(0) as TabViewItem;
-
-			if (firstTab is { })
+			if (otherTabView.GetItemCount() > 0)
 			{
-				var firstTabRect = otherTabView.XamlRoot.CoordinateConverter.ConvertLocalToScreen(firstTab.TransformToVisual(null).TransformBounds(new Rect(0, 0, firstTab.ActualWidth, firstTab.ActualHeight)));
+				// If there was no tab, under the cursor, then that suggests we want to insert the tab either at the very beginning or at the very end.
+				// We'll first check whether the screen position is to the left of the bounds of the first tab.  If so, we'll set the insertion position
+				// to be the start of the item list.
+				var firstTab = otherTabView.ContainerFromIndex(0) as TabViewItem;
 
-				if (screenPosition.X < firstTabRect.X)
+				if (firstTab is { })
 				{
-					index = 0;
-				}
-			}
+					var firstTabRect = otherTabView.XamlRoot.CoordinateConverter.ConvertLocalToScreen(firstTab.TransformToVisual(null).TransformBounds(new Rect(0, 0, firstTab.ActualWidth, firstTab.ActualHeight)));
 
-			// If that wasn't the case, then next we'll check whether the screen position is to the right of the bounds of the last tab.
-			// If so, we'll set the insertion position to be the end of the item list.
-			if (index < 0)
-			{
-				var lastTabIndex = otherTabView.GetItemCount() - 1;
-				var lastTab = otherTabView.ContainerFromIndex(lastTabIndex) as TabViewItem;
-
-				if (lastTab is { })
-				{
-					var lastTabRect = otherTabView.XamlRoot.CoordinateConverter.ConvertLocalToScreen(lastTab.TransformToVisual(null).TransformBounds(new Rect(0, 0, lastTab.ActualWidth, lastTab.ActualHeight)));
-					if (screenPosition.X > lastTabRect.X + lastTabRect.Width)
+					if (screenPosition.X < firstTabRect.X)
 					{
-						index = otherTabView.GetItemCount();
+						index = 0;
+					}
+				}
+
+				// If that wasn't the case, then next we'll check whether the screen position is to the right of the bounds of the last tab.
+				// If so, we'll set the insertion position to be the end of the item list.
+				if (index < 0)
+				{
+					var lastTabIndex = otherTabView.GetItemCount() - 1;
+					var lastTab = otherTabView.ContainerFromIndex(lastTabIndex) as TabViewItem;
+
+					if (lastTab is { })
+					{
+						var lastTabRect = otherTabView.XamlRoot.CoordinateConverter.ConvertLocalToScreen(lastTab.TransformToVisual(null).TransformBounds(new Rect(0, 0, lastTab.ActualWidth, lastTab.ActualHeight)));
+						if (screenPosition.X > lastTabRect.X + lastTabRect.Width)
+						{
+							index = otherTabView.GetItemCount();
+						}
 					}
 				}
 			}
-		}
 
 		return index;
 	}
