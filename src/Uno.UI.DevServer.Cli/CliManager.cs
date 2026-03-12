@@ -765,7 +765,14 @@ internal class CliManager
 					break;
 				case "--servers":
 					if (i + 1 >= args.Length) { _logger.LogError("Missing value for --servers"); return null; }
-					servers = [.. args[++i].Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)];
+					var parsedServers = args[++i].Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+					if (parsedServers.Length == 0)
+					{
+						_logger.LogError("Empty value for --servers");
+						return null;
+					}
+
+					servers = [.. parsedServers];
 					break;
 				case "--json":
 					jsonOutput = true;

@@ -119,7 +119,7 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 			catch (Exception ex)
 			{
 				_logger.LogError(ex, "Failed to install server {Server} for {Ide}", serverName, targetIde);
-				operations.Add(new OperationEntry(serverName, targetIde, "error", null, ex.Message));
+				operations.Add(new OperationEntry(serverName, targetIde, "error", scanResult.ResolvedWriteTarget, ex.Message));
 			}
 		}
 
@@ -201,6 +201,13 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 
 					if (!dryRun)
 					{
+						if (_fs.IsReadOnly(configPath))
+						{
+							operations.Add(new OperationEntry(serverName, targetIde, "error", configPath, "File is read-only"));
+							found = true;
+							continue;
+						}
+
 						if (backedUpFiles.Add(configPath))
 						{
 							_fs.BackupFile(configPath);

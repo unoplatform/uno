@@ -85,6 +85,16 @@ public class Given_CliManager
 	}
 
 	[TestMethod]
+	public void ParseMcpSetupArgs_EmptyServersValue_ReturnsNull()
+	{
+		var manager = CreateManager();
+
+		var result = manager.ParseMcpSetupArgs(["cursor", "--servers", ","], "install");
+
+		result.Should().BeNull();
+	}
+
+	[TestMethod]
 	public void RunMcpSubcommand_ConflictingVariantOptions_ReturnsUsageError()
 	{
 		var manager = CreateManager();
