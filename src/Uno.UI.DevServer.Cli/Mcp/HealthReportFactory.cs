@@ -39,7 +39,7 @@ internal static class HealthReportFactory
 				Remediation = "Wait a few seconds for the host to restart. Tools will become available again once the connection is re-established.",
 			});
 		}
-		else if (connectionState == ConnectionState.Degraded)
+		else if (connectionState == ConnectionState.Degraded && devServerStarted)
 		{
 			issues.Add(new ValidationIssue
 			{

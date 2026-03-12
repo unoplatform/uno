@@ -1,6 +1,7 @@
 using System.Text.Json;
 using AwesomeAssertions;
 using ModelContextProtocol.Protocol;
+using Uno.UI.DevServer.Cli.Helpers;
 using Uno.UI.DevServer.Cli.Mcp;
 
 namespace Uno.UI.DevServer.Cli.Tests.Mcp;
@@ -232,18 +233,32 @@ public class Given_ToolCacheFile
 	}
 
 	[TestMethod]
-	[Description("ComputeWorkspaceHash is case-insensitive on Windows paths and WSL-mounted drives")]
-	public void ComputeWorkspaceHash_IsCaseInsensitive_OnWindowsAndWslMounts()
+	[Description("ComputeWorkspaceHash follows the same normalization rules as PathComparison for case-insensitive paths")]
+	public void ComputeWorkspaceHash_MatchesPathComparisonNormalization_OnCaseInsensitivePaths()
 	{
-		// Windows paths are always case-folded
-		var hash1 = ToolCacheFile.ComputeWorkspaceHash(@"C:\Users\Test\Project");
-		var hash2 = ToolCacheFile.ComputeWorkspaceHash(@"C:\USERS\TEST\PROJECT");
-		hash1.Should().Be(hash2, "Windows paths should be case-insensitive");
+		string path1;
+		string path2;
 
-		// WSL-mounted paths (/mnt/...) are case-folded
-		var hash3 = ToolCacheFile.ComputeWorkspaceHash("/mnt/c/Users/Test/Project");
-		var hash4 = ToolCacheFile.ComputeWorkspaceHash("/mnt/c/USERS/TEST/PROJECT");
-		hash3.Should().Be(hash4, "WSL mount paths should be case-insensitive");
+		if (OperatingSystem.IsWindows())
+		{
+			path1 = @"C:\Users\Test\Project";
+			path2 = @"C:\USERS\TEST\PROJECT";
+		}
+		else if (OperatingSystem.IsMacOS())
+		{
+			path1 = "/Users/Test/Project";
+			path2 = "/Users/TEST/PROJECT";
+		}
+		else
+		{
+			path1 = "/mnt/c/Users/Test/Project";
+			path2 = "/mnt/c/USERS/TEST/PROJECT";
+		}
+
+		PathComparison.PathsEqual(path1, path2).Should().BeTrue();
+		var hash1 = ToolCacheFile.ComputeWorkspaceHash(path1);
+		var hash2 = ToolCacheFile.ComputeWorkspaceHash(path2);
+		hash1.Should().Be(hash2);
 	}
 
 	[TestMethod]

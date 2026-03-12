@@ -1011,6 +1011,44 @@ public class Given_ProxyLifecycleManager
 	}
 
 	[TestMethod]
+	[Description("Explicit solution selection uses filesystem-aware path comparison when validating candidate solutions")]
+	public async Task WhenSelectingSolutionWithDifferentCase_UsesFilesystemPathSemantics()
+	{
+		var root = CreateTempDirectory();
+
+		try
+		{
+			var workspaceDirectory = await CreateUnoWorkspaceAsync(root, "src", "StudioLive.slnx", "6.6.0-dev.1");
+			var solutionPath = Path.Combine(workspaceDirectory, "StudioLive.slnx");
+			var alteredCaseSolutionPath = AlterPathCase(solutionPath);
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
+			var workspaceResolution = await resolver.ResolveAsync(root);
+
+			var created = CreateSubject();
+			var subject = created.Subject;
+			var healthService = created.HealthService;
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_workspaceResolution", workspaceResolution);
+
+			var result = await subject.SelectSolutionAsync(alteredCaseSolutionPath);
+
+			if (PathComparison.PathsEqual(solutionPath, alteredCaseSolutionPath))
+			{
+				result.Status.Should().NotBe("rejected");
+			}
+			else
+			{
+				result.Status.Should().Be("rejected");
+				healthService.DevServerStarted.Should().BeFalse();
+			}
+		}
+		finally
+		{
+			await DeleteDirectoryWithRetriesAsync(root);
+		}
+	}
+
+	[TestMethod]
 	[Description("Rename events re-evaluate the workspace when a relevant file is renamed away from the watched set")]
 	public async Task WhenWorkspaceMutationRenamesRelevantFileAway_DevServerStopsAndDegrades()
 	{
@@ -1361,6 +1399,14 @@ public class Given_ProxyLifecycleManager
 				await Task.Delay(delayMs);
 			}
 		}
+	}
+
+	private static string AlterPathCase(string path)
+	{
+		return string.Concat(path.Select(c =>
+			char.IsLetter(c)
+				? (char.IsUpper(c) ? char.ToLowerInvariant(c) : char.ToUpperInvariant(c))
+				: c));
 	}
 
 	private sealed class CollectingLoggerProvider
