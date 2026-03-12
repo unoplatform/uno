@@ -467,10 +467,10 @@ internal class CliManager
 			return 2; // error already logged
 		}
 
-		// When no IDE is specified, require --all-ides to confirm multi-IDE operation
+		// When no client is specified, require --all-ides to confirm multi-client operation
 		if (subcommand is "install" or "uninstall" && parsed.Value.Ide is null && !parsed.Value.AllIdes)
 		{
-			_logger.LogError("Missing IDE argument. Usage: mcp {Subcommand} <ide>, or use --all-ides to target all detected IDEs", subcommand);
+			_logger.LogError("Missing client argument. Usage: mcp {Subcommand} <client>, or use --all-ides to target all detected clients", subcommand);
 			return 2;
 		}
 
@@ -496,10 +496,10 @@ internal class CliManager
 				parsed.Value.IdeDefinitionsPath,
 				parsed.Value.ServerDefinitionsPath);
 
-			// Validate IDE if specified
+			// Validate client if specified
 			if (parsed.Value.Ide is not null && !defs.Ides.ContainsKey(parsed.Value.Ide))
 			{
-				_logger.LogError("Unknown IDE '{Ide}'. Known IDEs: {KnownIdes}",
+				_logger.LogError("Unknown client '{Ide}'. Known clients: {KnownIdes}",
 					parsed.Value.Ide, string.Join(", ", defs.Ides.Keys));
 				return 1;
 			}
@@ -608,7 +608,7 @@ internal class CliManager
 		var detectedIdes = GetDetectedIdes(orchestrator, defs, workspace, expectedVariant, toolVersion);
 		if (detectedIdes.Count == 0)
 		{
-			_logger.LogError("No IDEs detected. Specify an IDE explicitly: mcp install <ide>");
+			_logger.LogError("No clients detected. Specify a client explicitly: mcp install <client>");
 			return 1;
 		}
 
@@ -638,7 +638,7 @@ internal class CliManager
 		var detectedIdes = GetDetectedIdes(orchestrator, defs, workspace, "stable", "0.0.0");
 		if (detectedIdes.Count == 0)
 		{
-			_logger.LogError("No IDEs detected. Specify an IDE explicitly: mcp uninstall <ide>");
+			_logger.LogError("No clients detected. Specify a client explicitly: mcp uninstall <client>");
 			return 1;
 		}
 
@@ -800,7 +800,7 @@ internal class CliManager
 						_logger.LogError("Unknown option '{Option}' for mcp {Subcommand}", a, subcommand);
 						return null;
 					}
-					// Positional: IDE identifier
+					// Positional: MCP client identifier
 					if (ide is null)
 					{
 						ide = a;

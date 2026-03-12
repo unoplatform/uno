@@ -18,12 +18,23 @@ public class Given_McpSetupOrchestrator
 				ConfigPaths: ["{workspace}/.cursor/mcp.json", "{home}/.cursor/mcp.json"],
 				WriteTarget: "{workspace}/.cursor/mcp.json",
 				JsonRootKey: "mcpServers"),
-			["vscode"] = new(
+			["copilot-vscode"] = new(
 				ConfigPaths: ["{workspace}/.vscode/mcp.json", "{home}/.vscode/mcp.json"],
 				WriteTarget: "{workspace}/.vscode/mcp.json",
 				JsonRootKey: "servers",
 				IncludeType: true),
-			["antigravity"] = new(
+			["copilot-vs"] = new(
+				ConfigPaths: ["{workspace}/.vs/mcp.json", "{workspace}/.vscode/mcp.json"],
+				WriteTarget: "{workspace}/.vs/mcp.json",
+				JsonRootKey: "servers",
+				IncludeType: true),
+			["copilot-cli"] = new(
+				ConfigPaths: [],
+				WriteTarget: "",
+				JsonRootKey: "mcpServers",
+				Strategy: "native",
+				ManualRegistrationMessage: "Use the native registration flow for GitHub Copilot CLI."),
+			["gemini-antigravity"] = new(
 				ConfigPaths: ["{home}/.gemini/antigravity/mcp_config.json"],
 				WriteTarget: "{home}/.gemini/antigravity/mcp_config.json",
 				JsonRootKey: "mcpServers",
@@ -34,6 +45,10 @@ public class Given_McpSetupOrchestrator
 				WriteTarget: "{workspace}/.windsurf/mcp.json",
 				JsonRootKey: "mcpServers",
 				UrlKey: "serverUrl"),
+			["junie-rider"] = new(
+				ConfigPaths: ["{workspace}/.idea/mcpServers.json"],
+				WriteTarget: "{workspace}/.idea/mcpServers.json",
+				JsonRootKey: "mcpServers"),
 			["opencode"] = new(
 				ConfigPaths: ["{workspace}/opencode.json", "{workspace}/opencode.jsonc"],
 				WriteTarget: "{workspace}/opencode.json",
@@ -130,7 +145,7 @@ public class Given_McpSetupOrchestrator
 		var result = orch.Status(TestDefs, "/project", null, "stable", "5.6.0");
 
 		result.DetectedIdes.Should().Contain("cursor");
-		result.DetectedIdes.Should().NotContain("vscode");
+		result.DetectedIdes.Should().NotContain("copilot-vscode");
 	}
 
 	[TestMethod]
@@ -151,8 +166,43 @@ public class Given_McpSetupOrchestrator
 		var json = JsonSerializer.Serialize(result, McpSetupJson.OutputOptions);
 
 		json.Should().Contain("\"detectedIdes\"");
+		json.Should().Contain("\"supportedIdes\"");
 		json.Should().Contain("\"ide\": \"cursor\"");
 		json.Should().Contain("\"transport\": \"stdio\"");
+	}
+
+	[TestMethod]
+	public void Status_SupportedIdes_IncludeNativeCopilotCli()
+	{
+		var fs = new InMemoryFileSystem();
+		var orch = CreateOrchestrator(fs);
+
+		var result = orch.Status(TestDefs, "/project", null, "stable", "5.6.0");
+
+		result.SupportedIdes.Should().ContainEquivalentOf(new SupportedIdeEntry("copilot-cli", "native", false));
+	}
+
+	[TestMethod]
+	public void Status_CopilotVs_UsesSharedVsCodeWorkspaceConfig()
+	{
+		var fs = new InMemoryFileSystem();
+		fs.AddFile("/project/.vscode/mcp.json", """
+		{
+		  "servers": {
+		    "UnoApp": {"type": "stdio", "command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]}
+		  }
+		}
+		""");
+
+		var orch = CreateOrchestrator(fs);
+		var result = orch.Status(TestDefs, "/project", "copilot-vscode", "stable", "5.6.0");
+
+		var unoApp = result.Servers.First(s => s.Name == "UnoApp");
+		unoApp.Ides.First(i => i.Ide == "copilot-vscode").Status.Should().Be("registered");
+		var visualStudioStatus = unoApp.Ides.First(i => i.Ide == "copilot-vs");
+		visualStudioStatus.Status.Should().Be("registered");
+		visualStudioStatus.Locations.Should().ContainSingle();
+		visualStudioStatus.Locations[0].Path.Replace('\\', '/').Should().Be("/project/.vscode/mcp.json");
 	}
 
 	// ── Install ──
@@ -245,7 +295,7 @@ public class Given_McpSetupOrchestrator
 		var fs = new InMemoryFileSystem();
 		var orch = CreateOrchestrator(fs);
 
-		orch.Install(TestDefs, "/project", "vscode", "stable", "5.6.0", serverFilter: ["UnoApp"]);
+		orch.Install(TestDefs, "/project", "copilot-vscode", "stable", "5.6.0", serverFilter: ["UnoApp"]);
 
 		var content = fs.GetFileContent("/project/.vscode/mcp.json")!;
 		var parsed = JsonNode.Parse(content)!.AsObject();
@@ -273,7 +323,7 @@ public class Given_McpSetupOrchestrator
 		var fs = new InMemoryFileSystem();
 		var orch = CreateOrchestrator(fs);
 
-		orch.Install(TestDefs, "/project", "antigravity", "stable", "5.6.0", serverFilter: ["UnoDocs"]);
+		orch.Install(TestDefs, "/project", "gemini-antigravity", "stable", "5.6.0", serverFilter: ["UnoDocs"]);
 
 		var content = fs.GetFileContent("/home/testuser/.gemini/antigravity/mcp_config.json")!;
 		var parsed = JsonNode.Parse(content)!.AsObject();
@@ -289,7 +339,7 @@ public class Given_McpSetupOrchestrator
 		var fs = new InMemoryFileSystem();
 		var orch = CreateOrchestrator(fs);
 
-		orch.Install(TestDefs, "/project", "antigravity", "stable", "5.6.0", serverFilter: ["UnoApp"]);
+		orch.Install(TestDefs, "/project", "gemini-antigravity", "stable", "5.6.0", serverFilter: ["UnoApp"]);
 
 		var content = fs.GetFileContent("/home/testuser/.gemini/antigravity/mcp_config.json")!;
 		var parsed = JsonNode.Parse(content)!.AsObject();
@@ -698,6 +748,33 @@ public class Given_McpSetupOrchestrator
 		orch.Uninstall(TestDefs, "/project", "cursor", serverFilter: ["UnoApp"]);
 
 		fs.Backups.Should().NotBeEmpty();
+	}
+
+	[TestMethod]
+	public void Install_CopilotVs_WritesVsConfigFile()
+	{
+		var fs = new InMemoryFileSystem();
+		var orch = CreateOrchestrator(fs);
+
+		orch.Install(TestDefs, "/project", "copilot-vs", "stable", "5.6.0", serverFilter: ["UnoApp"]);
+
+		var content = fs.GetFileContent("/project/.vs/mcp.json")!;
+		var parsed = JsonNode.Parse(content)!.AsObject();
+		parsed["servers"]!["UnoApp"].Should().NotBeNull();
+	}
+
+	[TestMethod]
+	public void Install_CopilotCli_ReturnsNativeRegistrationError()
+	{
+		var fs = new InMemoryFileSystem();
+		var orch = CreateOrchestrator(fs);
+
+		var result = orch.Install(TestDefs, "/project", "copilot-cli", "stable", "5.6.0", serverFilter: ["UnoApp"]);
+
+		var op = result.Operations.Should().ContainSingle().Subject;
+		op.Action.Should().Be("error");
+		op.Ide.Should().Be("copilot-cli");
+		op.Reason.Should().Contain("native registration flow");
 	}
 
 	[TestMethod]

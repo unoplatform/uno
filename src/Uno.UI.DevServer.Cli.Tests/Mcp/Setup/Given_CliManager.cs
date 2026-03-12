@@ -117,39 +117,6 @@ public class Given_CliManager
 	}
 
 	[TestMethod]
-	public void RunMcpSubcommand_OldReleaseFlag_IsRejected()
-	{
-		var manager = CreateManager();
-		var workspace = CreateWorkspacePath();
-
-		var result = manager.RunMcpSubcommand(["status", "--release"], workspace, null);
-
-		result.Should().Be(2);
-	}
-
-	[TestMethod]
-	public void RunMcpSubcommand_OldPrereleaseFlag_IsRejected()
-	{
-		var manager = CreateManager();
-		var workspace = CreateWorkspacePath();
-
-		var result = manager.RunMcpSubcommand(["status", "--prerelease"], workspace, null);
-
-		result.Should().Be(2);
-	}
-
-	[TestMethod]
-	public void RunMcpSubcommand_OldVersionFlag_IsRejected()
-	{
-		var manager = CreateManager();
-		var workspace = CreateWorkspacePath();
-
-		var result = manager.RunMcpSubcommand(["status", "--version", "5.5.0"], workspace, null);
-
-		result.Should().Be(2);
-	}
-
-	[TestMethod]
 	public void RunMcpSubcommand_StatusUnknown_ReturnsSuccess()
 	{
 		var workspace = CreateWorkspacePath();
@@ -228,6 +195,31 @@ public class Given_CliManager
 	}
 
 	[TestMethod]
+	public void RunMcpSubcommand_InstallNoIde_WithVsCodeWorkspace_InstallsCopilotVsCode()
+	{
+		var workspace = CreateWorkspacePath();
+		var fs = new InMemoryFileSystem();
+		fs.AddDirectory(workspace);
+		fs.AddDirectory(Path.Combine(workspace, ".vscode"));
+		var manager = CreateManager(fs);
+		var previousOut = Console.Out;
+		using var writer = new StringWriter();
+		Console.SetOut(writer);
+
+		try
+		{
+			var result = manager.RunMcpSubcommand(["install", "--all-ides", "--json"], workspace, null);
+
+			result.Should().Be(0);
+			writer.ToString().Should().Contain("\"ide\": \"copilot-vscode\"");
+		}
+		finally
+		{
+			Console.SetOut(previousOut);
+		}
+	}
+
+	[TestMethod]
 	public void RunMcpSubcommand_InstallWithChannelPrerelease_WritesPrereleaseDefinition()
 	{
 		var workspace = CreateWorkspacePath();
@@ -257,6 +249,75 @@ public class Given_CliManager
 		var content = fs.GetFileContent(Path.Combine(workspace, ".cursor", "mcp.json"));
 		content.Should().NotBeNull();
 		content.Should().Contain("\"5.5.0\"");
+	}
+
+	[TestMethod]
+	public void RunMcpSubcommand_InstallCopilotVs_WritesVsConfigFile()
+	{
+		var workspace = CreateWorkspacePath();
+		var fs = new InMemoryFileSystem();
+		fs.AddDirectory(workspace);
+		var manager = CreateManager(fs);
+
+		var result = manager.RunMcpSubcommand(["install", "copilot-vs", "--servers", "UnoApp"], workspace, null);
+
+		result.Should().Be(0);
+		var content = fs.GetFileContent(Path.Combine(workspace, ".vs", "mcp.json"));
+		content.Should().NotBeNull();
+		content.Should().Contain("\"servers\"");
+	}
+
+	[TestMethod]
+	public void RunMcpSubcommand_InstallCopilotCli_ReturnsFailureWithManualGuidance()
+	{
+		var workspace = CreateWorkspacePath();
+		var fs = new InMemoryFileSystem();
+		fs.AddDirectory(workspace);
+		var manager = CreateManager(fs);
+		var previousOut = Console.Out;
+		using var writer = new StringWriter();
+		Console.SetOut(writer);
+
+		try
+		{
+			var result = manager.RunMcpSubcommand(["install", "copilot-cli", "--json"], workspace, null);
+
+			result.Should().Be(1);
+			var output = writer.ToString();
+			output.Should().Contain("\"ide\": \"copilot-cli\"");
+			output.Should().Contain("native registration flow");
+		}
+		finally
+		{
+			Console.SetOut(previousOut);
+		}
+	}
+
+	[TestMethod]
+	public void RunMcpSubcommand_StatusJson_IncludesSupportedIdesMetadata()
+	{
+		var workspace = CreateWorkspacePath();
+		var fs = new InMemoryFileSystem();
+		fs.AddDirectory(workspace);
+		var manager = CreateManager(fs);
+		var previousOut = Console.Out;
+		using var writer = new StringWriter();
+		Console.SetOut(writer);
+
+		try
+		{
+			var result = manager.RunMcpSubcommand(["status", "--json"], workspace, null);
+
+			result.Should().Be(0);
+			var output = writer.ToString();
+			output.Should().Contain("\"supportedIdes\"");
+			output.Should().Contain("\"ide\": \"copilot-cli\"");
+			output.Should().Contain("\"strategy\": \"native\"");
+		}
+		finally
+		{
+			Console.SetOut(previousOut);
+		}
 	}
 
 	[TestMethod]

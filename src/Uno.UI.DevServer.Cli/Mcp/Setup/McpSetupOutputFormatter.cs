@@ -13,7 +13,7 @@ internal static class McpSetupOutputFormatter
 			.Border(TableBorder.Rounded)
 			.Title("[white]MCP Server Status[/]")
 			.AddColumn(new TableColumn("[grey]Server[/]").LeftAligned())
-			.AddColumn(new TableColumn("[grey]IDE[/]").LeftAligned())
+			.AddColumn(new TableColumn("[grey]Client[/]").LeftAligned())
 			.AddColumn(new TableColumn("[grey]Status[/]").LeftAligned())
 			.AddColumn(new TableColumn("[grey]Cfg File[/]").LeftAligned())
 			.AddColumn(new TableColumn("[grey]Transport[/]").LeftAligned())
@@ -65,12 +65,12 @@ internal static class McpSetupOutputFormatter
 
 		if (response.DetectedIdes.Count > 0)
 		{
-			AnsiConsole.MarkupLine($"[grey]IDEs detected:[/] [white]{Escape(string.Join(", ", response.DetectedIdes))}[/]");
+			AnsiConsole.MarkupLine($"[grey]Clients detected:[/] [white]{Escape(string.Join(", ", response.DetectedIdes))}[/]");
 		}
 
 		if (response.CallerIde is not null)
 		{
-			AnsiConsole.MarkupLine($"[grey]Caller IDE:[/] [white]{Escape(response.CallerIde)}[/]");
+			AnsiConsole.MarkupLine($"[grey]Caller client:[/] [white]{Escape(response.CallerIde)}[/]");
 		}
 	}
 

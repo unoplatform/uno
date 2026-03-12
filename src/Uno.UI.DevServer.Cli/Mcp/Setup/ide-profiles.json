@@ -1,5 +1,5 @@
 {
-  "antigravity": {
+  "gemini-antigravity": {
     "configPaths": [
       "{home}/.gemini/antigravity/mcp_config.json"
     ],
@@ -14,6 +14,13 @@
     ],
     "writeTarget": "{home}/.gemini/settings.json",
     "jsonRootKey": "mcpServers"
+  },
+  "copilot-cli": {
+    "configPaths": [],
+    "writeTarget": "",
+    "jsonRootKey": "mcpServers",
+    "strategy": "native",
+    "manualRegistrationMessage": "Use the native registration flow for GitHub Copilot CLI."
   },
   "claude-code": {
     "configPaths": [
@@ -46,20 +53,29 @@
     "writeTarget": "{workspace}/.kiro/settings/mcp.json",
     "jsonRootKey": "mcpServers"
   },
-  "rider": {
+  "junie-rider": {
     "configPaths": [
       "{workspace}/.idea/mcpServers.json"
     ],
     "writeTarget": "{workspace}/.idea/mcpServers.json",
     "jsonRootKey": "mcpServers"
   },
-  "vscode": {
+  "copilot-vscode": {
     "configPaths": [
       "{workspace}/.vscode/mcp.json",
       "{home}/.vscode/mcp.json",
       "{appdata}/Code/User/settings.json"
     ],
     "writeTarget": "{workspace}/.vscode/mcp.json",
+    "jsonRootKey": "servers",
+    "includeType": true
+  },
+  "copilot-vs": {
+    "configPaths": [
+      "{workspace}/.vs/mcp.json",
+      "{workspace}/.vscode/mcp.json"
+    ],
+    "writeTarget": "{workspace}/.vs/mcp.json",
     "jsonRootKey": "servers",
     "includeType": true
   },

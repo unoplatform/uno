@@ -81,8 +81,23 @@ internal static class DefinitionsLoader
 			}
 
 			var mergeCommandArgs = element.TryGetProperty("mergeCommandArgs", out var mca) && mca.GetBoolean();
+			var strategy = element.TryGetProperty("strategy", out var strategyElement)
+				? strategyElement.GetString() ?? "file"
+				: "file";
+			var manualRegistrationMessage = element.TryGetProperty("manualRegistrationMessage", out var messageElement)
+				? messageElement.GetString()
+				: null;
 
-			result[key] = new IdeProfile(configPaths, writeTarget, jsonRootKey, includeType, urlKey, typeMap, mergeCommandArgs);
+			result[key] = new IdeProfile(
+				configPaths,
+				writeTarget,
+				jsonRootKey,
+				includeType,
+				urlKey,
+				typeMap,
+				mergeCommandArgs,
+				strategy,
+				manualRegistrationMessage);
 		}
 
 		return result;
