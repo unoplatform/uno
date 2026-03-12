@@ -8,12 +8,23 @@ namespace Uno.UI.DevServer.Cli.Tests.Mcp.Setup;
 /// </summary>
 internal sealed class InMemoryFileSystem : IFileSystem
 {
-	private readonly Dictionary<string, string> _files = new(StringComparer.OrdinalIgnoreCase);
-	private readonly HashSet<string> _directories = new(StringComparer.OrdinalIgnoreCase);
-	private readonly HashSet<string> _readOnlyFiles = new(StringComparer.OrdinalIgnoreCase);
+	private readonly Dictionary<string, string> _files;
+	private readonly HashSet<string> _directories;
+	private readonly HashSet<string> _readOnlyFiles;
 
 	public string HomePath { get; set; } = "/home/testuser";
 	public string AppDataPath { get; set; } = "/home/testuser/.config";
+
+	public InMemoryFileSystem(StringComparer? pathComparer = null)
+	{
+		PathComparer = pathComparer ?? StringComparer.OrdinalIgnoreCase;
+		_files = new Dictionary<string, string>(PathComparer);
+		_directories = new HashSet<string>(PathComparer);
+		_readOnlyFiles = new HashSet<string>(PathComparer);
+		Backups = new HashSet<string>(PathComparer);
+	}
+
+	public StringComparer PathComparer { get; }
 
 	public bool FileExists(string path) => _files.ContainsKey(Normalize(path));
 
@@ -27,7 +38,9 @@ internal sealed class InMemoryFileSystem : IFileSystem
 
 		// A directory implicitly exists if any file is under it
 		var prefix = norm.EndsWith('/') ? norm : norm + "/";
-		return _files.Keys.Any(k => k.StartsWith(prefix, StringComparison.OrdinalIgnoreCase));
+		return _files.Keys.Any(k => k.StartsWith(prefix, PathComparer == StringComparer.OrdinalIgnoreCase
+			? StringComparison.OrdinalIgnoreCase
+			: StringComparison.Ordinal));
 	}
 
 	public string ReadAllText(string path)
@@ -73,7 +86,7 @@ internal sealed class InMemoryFileSystem : IFileSystem
 		Backups.Add(norm);
 	}
 
-	public HashSet<string> Backups { get; } = new(StringComparer.OrdinalIgnoreCase);
+	public HashSet<string> Backups { get; }
 
 	public bool IsReadOnly(string path) => _readOnlyFiles.Contains(Normalize(path));
 

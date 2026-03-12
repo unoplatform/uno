@@ -74,4 +74,20 @@ public class Given_FileSystem
 
 		result.Should().Be("/mnt/c/Users/TestUser/AppData/Roaming");
 	}
+
+	[TestMethod]
+	public void GetPathComparer_Windows_IsCaseInsensitive()
+	{
+		var comparer = FileSystem.GetPathComparer(isWindows: true);
+
+		comparer.Equals("/project/.cursor/mcp.json", "/project/.CURSOR/mcp.json").Should().BeTrue();
+	}
+
+	[TestMethod]
+	public void GetPathComparer_NonWindows_IsCaseSensitive()
+	{
+		var comparer = FileSystem.GetPathComparer(isWindows: false);
+
+		comparer.Equals("/project/.cursor/mcp.json", "/project/.CURSOR/mcp.json").Should().BeFalse();
+	}
 }

@@ -183,6 +183,30 @@ public class Given_ConfigScanner
 		result.ServerResults["UnoApp"].Warnings.Should().Contain("Registered in multiple config files");
 	}
 
+	[TestMethod]
+	public void Scan_MultipleMatchesInSameFile_WarnsAboutSameFileDuplicatesOnly()
+	{
+		var fs = new InMemoryFileSystem();
+		fs.AddFile("/project/.cursor/mcp.json", """
+		{
+		  "mcpServers": {
+		    "UnoApp": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]},
+		    "uno-app-alias": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]}
+		  }
+		}
+		""");
+
+		var stableDef = JsonNode.Parse("""{"command":"dnx","args":["-y","uno.devserver","--mcp-app"]}""")!.AsObject();
+		var expectedDefs = new Dictionary<string, JsonObject> { ["UnoApp"] = stableDef, ["UnoDocs"] = JsonNode.Parse("""{"url":"https://mcp.platform.uno/v1"}""")!.AsObject() };
+
+		var scanner = new ConfigScanner(fs);
+		var result = scanner.Scan(CursorProfile, "/project", TestServers, expectedDefs);
+
+		result.ServerResults["UnoApp"].Locations.Should().HaveCount(2);
+		result.ServerResults["UnoApp"].Warnings.Should().Contain("Multiple entries found in the same config file");
+		result.ServerResults["UnoApp"].Warnings.Should().NotContain("Registered in multiple config files");
+	}
+
 	// ── IDE detection ──
 
 	[TestMethod]
