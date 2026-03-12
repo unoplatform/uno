@@ -19,7 +19,18 @@ uid: Uno.GettingStarted.CreateAnApp.AI.Cursor
     dnx -y uno.devserver login
     ```
 
-1. Create a file named `.cursor/mcp.json` and place the following content:
+1. Register the Uno Platform MCPs. For Cursor, you can either:
+
+    - Use `dnx -y uno.devserver mcp install cursor`, which writes the supported MCP registration for you
+    - Or create `.cursor/mcp.json` manually if you prefer direct file editing
+
+    Example using the Dev Server CLI:
+
+    ```bash
+    dnx -y uno.devserver mcp install cursor
+    ```
+
+    Manual configuration example:
 
     ```json
     {
@@ -34,6 +45,8 @@ uid: Uno.GettingStarted.CreateAnApp.AI.Cursor
       }
     }
     ```
+
+    See [The Uno Platform MCPs](xref:Uno.Features.Uno.MCPs) for additional details about MCP registration and diagnostics.
 
 ## Next Steps
 
