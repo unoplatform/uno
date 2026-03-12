@@ -86,7 +86,7 @@ internal static class DiscoveryIssueMapper
 				Code = IssueCode.SdkNotInCache,
 				Severity = ValidationSeverity.Fatal,
 				Message = $"Uno SDK package {discovery.UnoSdkPackage} {discovery.UnoSdkVersion} not found in NuGet cache.",
-				Remediation = "Run 'dotnet restore' to download the Uno SDK package.",
+				Remediation = "Run 'dotnet restore' to download the Uno SDK package, then call 'uno_app_select_solution' again with the intended solution path to retry startup.",
 			});
 			return issues;
 		}
@@ -120,7 +120,7 @@ internal static class DiscoveryIssueMapper
 				Code = IssueCode.DevServerPackageNotCached,
 				Severity = ValidationSeverity.Fatal,
 				Message = $"Uno.WinUI.DevServer {discovery.DevServerPackageVersion} not found in NuGet cache.",
-				Remediation = "Run 'dotnet restore' to download the DevServer package.",
+				Remediation = "Run 'dotnet restore' to download the DevServer package, then call 'uno_app_select_solution' again with the intended solution path to retry startup.",
 			});
 		}
 
@@ -143,7 +143,7 @@ internal static class DiscoveryIssueMapper
 				Code = IssueCode.AddInPackageNotCached,
 				Severity = ValidationSeverity.Warning,
 				Message = $"Add-in package uno.settings.devserver {discovery.SettingsPackageVersion} not found in NuGet cache.",
-				Remediation = "Run 'dotnet restore' to download the package.",
+				Remediation = "Run 'dotnet restore' to download the package, then call 'uno_app_select_solution' again with the intended solution path to retry startup.",
 			});
 		}
 

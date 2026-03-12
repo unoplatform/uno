@@ -108,6 +108,8 @@ public class Given_DiscoveryIssueMapper
 		issues.Should().HaveCount(1);
 		issues[0].Code.Should().Be(IssueCode.SdkNotInCache);
 		issues[0].Severity.Should().Be(ValidationSeverity.Fatal);
+		issues[0].Remediation.Should().Contain("dotnet restore");
+		issues[0].Remediation.Should().Contain("uno_app_select_solution");
 	}
 
 	[TestMethod]
@@ -150,6 +152,7 @@ public class Given_DiscoveryIssueMapper
 
 		issues.Should().Contain(i => i.Code == IssueCode.DevServerPackageNotCached);
 		issues.First(i => i.Code == IssueCode.DevServerPackageNotCached).Severity.Should().Be(ValidationSeverity.Fatal);
+		issues.First(i => i.Code == IssueCode.DevServerPackageNotCached).Remediation.Should().Contain("uno_app_select_solution");
 	}
 
 	[TestMethod]
@@ -264,6 +267,7 @@ public class Given_DiscoveryIssueMapper
 
 		issues.Should().Contain(i => i.Code == IssueCode.AddInPackageNotCached);
 		issues.First(i => i.Code == IssueCode.AddInPackageNotCached).Severity.Should().Be(ValidationSeverity.Warning);
+		issues.First(i => i.Code == IssueCode.AddInPackageNotCached).Remediation.Should().Contain("uno_app_select_solution");
 	}
 
 	[TestMethod]
