@@ -33,7 +33,7 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger) : IWo
 				continue;
 			}
 
-			var currentDirectory = Path.GetFullPath(solutionDirectory);
+			string? currentDirectory = Path.GetFullPath(solutionDirectory);
 			while (currentDirectory is not null)
 			{
 				var globalJsonPath = Path.Combine(currentDirectory, "global.json");
@@ -183,7 +183,7 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger) : IWo
 			return null;
 		}
 
-		var currentDirectory = Path.GetFullPath(solutionDirectory);
+		string? currentDirectory = Path.GetFullPath(solutionDirectory);
 		while (currentDirectory is not null)
 		{
 			var globalJsonPath = Path.Combine(currentDirectory, "global.json");

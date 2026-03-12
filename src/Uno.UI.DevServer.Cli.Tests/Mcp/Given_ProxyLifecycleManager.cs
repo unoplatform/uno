@@ -679,10 +679,9 @@ public class Given_ProxyLifecycleManager
 			await subject.ApplyWorkspaceResolutionAsync(resolvedWorkspace, WorkspaceTransitionTrigger.FileSystem);
 			subject.StartWorkspaceMutationWatcher();
 			await WaitUntilAsync(() =>
-				string.Equals(
+				PathComparison.PathsEqual(
 					GetPrivateField<string?>(subject, "_workspaceMutationWatcherRoot"),
-					root,
-					StringComparison.OrdinalIgnoreCase));
+					root));
 
 			File.Delete(Path.Combine(workspace, "global.json"));
 
@@ -882,10 +881,9 @@ public class Given_ProxyLifecycleManager
 			await subject.ApplyWorkspaceResolutionAsync(resolvedWorkspaceA, WorkspaceTransitionTrigger.FileSystem);
 			subject.StartWorkspaceMutationWatcher();
 			await WaitUntilAsync(() =>
-				string.Equals(
+				PathComparison.PathsEqual(
 					GetPrivateField<string?>(subject, "_workspaceMutationWatcherRoot"),
-					root,
-					StringComparison.OrdinalIgnoreCase));
+					root));
 
 			File.Delete(Path.Combine(workspaceA, "global.json"));
 			await File.WriteAllTextAsync(workspaceBGlobalJson, """{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.2"}}""");
@@ -1006,6 +1004,37 @@ public class Given_ProxyLifecycleManager
 				await StopWatcherAndMonitorAsync(subject);
 			}
 
+			await DeleteDirectoryWithRetriesAsync(root);
+		}
+	}
+
+	[TestMethod]
+	[Description("Selecting a malformed absolute solution path is rejected cleanly instead of throwing from path normalization")]
+	public async Task WhenSelectingMalformedAbsoluteSolutionPath_RequestIsRejected()
+	{
+		var root = CreateTempDirectory();
+
+		try
+		{
+			var workspaceDirectory = await CreateUnoWorkspaceAsync(root, "src", "StudioLive.slnx", "6.6.0-dev.1");
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
+			var workspaceResolution = await resolver.ResolveAsync(root);
+
+			var created = CreateSubject();
+			var subject = created.Subject;
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_workspaceResolution", workspaceResolution);
+
+			var result = await subject.SelectSolutionAsync("C:\\\0\\bad.slnx");
+
+			result.Status.Should().Be("rejected");
+			result.DevServerAction.Should().Be("None");
+			result.Message.Should().ContainEquivalentOf("valid absolute path");
+			result.Issues.Should().NotBeNull();
+			result.Issues!.Should().Contain(issue => issue.Code == IssueCode.WorkspaceNotResolved);
+		}
+		finally
+		{
 			await DeleteDirectoryWithRetriesAsync(root);
 		}
 	}
@@ -1176,10 +1205,9 @@ public class Given_ProxyLifecycleManager
 			await subject.ApplyWorkspaceResolutionAsync(resolvedExternalWorkspace, WorkspaceTransitionTrigger.McpRoots);
 
 			await WaitUntilAsync(() =>
-				string.Equals(
+				PathComparison.PathsEqual(
 					GetPrivateField<string?>(subject, "_workspaceMutationWatcherRoot"),
-					externalRoot,
-					StringComparison.OrdinalIgnoreCase));
+					externalRoot));
 
 			GetPrivateField<string?>(subject, "_workspaceMutationWatcherRoot").Should().Be(externalRoot);
 			GetPrivateField<WorkspaceResolution>(subject, "_workspaceResolution").RequestedWorkingDirectory.Should().Be(externalRoot);

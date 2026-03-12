@@ -244,11 +244,6 @@ public class Given_ToolCacheFile
 			path1 = @"C:\Users\Test\Project";
 			path2 = @"C:\USERS\TEST\PROJECT";
 		}
-		else if (OperatingSystem.IsMacOS())
-		{
-			path1 = "/Users/Test/Project";
-			path2 = "/Users/TEST/PROJECT";
-		}
 		else
 		{
 			path1 = "/mnt/c/Users/Test/Project";
@@ -267,9 +262,7 @@ public class Given_ToolCacheFile
 	{
 		if (OperatingSystem.IsWindows())
 		{
-			// On Windows, all paths are case-folded (OperatingSystem.IsWindows() == true),
-			// so this test only validates behavior on native Linux.
-			Assert.Inconclusive("This test validates Linux-specific case-sensitive behavior.");
+			Assert.Inconclusive("This test validates POSIX case-sensitive behavior.");
 			return;
 		}
 
