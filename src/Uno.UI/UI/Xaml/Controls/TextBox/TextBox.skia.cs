@@ -989,6 +989,10 @@ public partial class TextBox
 					selectionLength = text.Length;
 				}
 				break;
+			case VirtualKey.Tab:
+				// Tab is handled by UnoFocusInputHandler for focus navigation.
+				// Never insert a tab character in TextBox (no AcceptsTab property).
+				return;
 			default:
 				var isEnterKey = args.UnicodeKey is '\r' or '\n' || args.Key == VirtualKey.Enter;
 				if (!IsReadOnly && !HasPointerCapture && args.UnicodeKey is { } key && (!isEnterKey || AcceptsReturn))
