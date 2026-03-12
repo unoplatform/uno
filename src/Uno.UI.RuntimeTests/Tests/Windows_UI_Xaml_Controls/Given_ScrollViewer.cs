@@ -1732,7 +1732,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var sut = new ScrollViewer()
 			{
-				UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous, // Make sure the VerticalOffset is being updated without any delay
 				Width = 100,
 				Height = 100,
 				HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
@@ -1883,7 +1882,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Width = 100,
 				Height = 250,
 				IsScrollInertiaEnabled = true,
-				UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous, // Make sure to get the VerticalOffset updated immediately while dragging
 				Content = child = new ScrollViewer
 				{
 					Height = 500,
@@ -1986,7 +1984,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Height = 100,
 				Width = 100,
 				Content = content,
-				UpdatesMode = Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
 			};
 
 			var bounds = await UITestHelper.Load(sut);
@@ -2066,6 +2063,69 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// The scroll offset should remain 0 — there's nothing to scroll
 			Assert.AreEqual(0d, sut.VerticalOffset, "Should not have scrolled");
+		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Scrolling_Then_ScrollBarValueTracksVerticalOffset()
+		{
+			var content = new Border
+			{
+				Height = 2000,
+				Background = new SolidColorBrush(Colors.CornflowerBlue)
+			};
+			var sut = new ScrollViewer
+			{
+				Height = 200,
+				Width = 200,
+				VerticalScrollBarVisibility = ScrollBarVisibility.Visible,
+				Content = content,
+			};
+
+			await UITestHelper.Load(sut);
+
+			// Find the vertical ScrollBar in the visual tree
+			var verticalScrollBar = sut.FindVisualChildByType<Microsoft.UI.Xaml.Controls.Primitives.ScrollBar>();
+
+			Assert.IsNotNull(verticalScrollBar, "Vertical ScrollBar should exist in the visual tree.");
+			Assert.AreEqual(0d, sut.VerticalOffset, "Initial VerticalOffset should be 0.");
+			Assert.AreEqual(0d, verticalScrollBar.Value, "Initial ScrollBar.Value should be 0.");
+
+			// Track ScrollBar values during intermediate ViewChanged events
+			var intermediateScrollBarValues = new List<(double offset, double scrollBarValue)>();
+			sut.ViewChanged += (s, e) =>
+			{
+				if (e.IsIntermediate)
+				{
+					intermediateScrollBarValues.Add((sut.VerticalOffset, verticalScrollBar.Value));
+				}
+			};
+
+			// Scroll using touch to generate intermediate events
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			var bounds = sut.GetAbsoluteBounds();
+			finger.Press(bounds.GetCenter());
+			finger.MoveBy(0, -150, steps: 10);
+			finger.Release();
+
+			// Wait for scroll to complete
+			await WindowHelper.WaitFor(
+				() => sut.VerticalOffset > 0,
+				timeoutMS: 5000,
+				message: "ScrollViewer should have scrolled.");
+
+			// Verify that during intermediate events, ScrollBar.Value tracked VerticalOffset
+			Assert.IsTrue(intermediateScrollBarValues.Count > 0, "Should have received intermediate ViewChanged events.");
+			foreach (var (offset, scrollBarValue) in intermediateScrollBarValues)
+			{
+				Assert.AreEqual(offset, scrollBarValue, 1.0,
+					$"ScrollBar.Value ({scrollBarValue}) should track VerticalOffset ({offset}) during intermediate scrolling.");
+			}
 		}
 	}
 }
