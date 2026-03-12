@@ -235,6 +235,7 @@ public class Given_McpSetupOrchestrator
 
 		var op = result.Operations.First(o => o.Server == "UnoApp");
 		op.Action.Should().Be("error");
+		op.Path!.Replace('\\', '/').Should().EndWith("/project/.cursor/mcp.json");
 		op.Reason.Should().Contain("read-only");
 	}
 
@@ -697,6 +698,29 @@ public class Given_McpSetupOrchestrator
 		orch.Uninstall(TestDefs, "/project", "cursor", serverFilter: ["UnoApp"]);
 
 		fs.Backups.Should().NotBeEmpty();
+	}
+
+	[TestMethod]
+	public void Uninstall_ReadOnlyFile_ReportsError_WithoutCreatingBackup()
+	{
+		var fs = new InMemoryFileSystem();
+		fs.AddFile("/project/.cursor/mcp.json", """
+		{
+		  "mcpServers": {
+		    "UnoApp": {"command": "dnx", "args": ["-y", "uno.devserver", "--mcp-app"]}
+		  }
+		}
+		""");
+		fs.SetReadOnly("/project/.cursor/mcp.json");
+
+		var orch = CreateOrchestrator(fs);
+		var result = orch.Uninstall(TestDefs, "/project", "cursor", serverFilter: ["UnoApp"]);
+
+		var op = result.Operations.First(o => o.Server == "UnoApp");
+		op.Action.Should().Be("error");
+		op.Path!.Replace('\\', '/').Should().EndWith("/project/.cursor/mcp.json");
+		op.Reason.Should().Contain("read-only");
+		fs.Backups.Should().NotContain("/project/.cursor/mcp.json");
 	}
 
 	[TestMethod]
