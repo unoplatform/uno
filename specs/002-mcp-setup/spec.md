@@ -110,7 +110,7 @@ uno.devserver mcp uninstall <ide> [--workspace <path>] [--servers UnoApp,UnoDocs
 | `--workspace <path>` | No | status, install, uninstall | Absolute path to workspace root. **Default: current working directory.** Must be an existing directory. Filesystem root paths (`/`, `C:\`, etc.) are rejected (exit code 2). |
 | `--channel <stable|prerelease>` | No | status, install | Force the expected Uno MCP definition channel (overrides auto-detection) |
 | `--tool-version <ver>` | No | status, install | Pin a specific Uno MCP tool version in the server definition (for QA). Mutually exclusive with `--channel` |
-| `--servers <list>` | No | install, uninstall | Comma-separated server names from the server definitions. Unknown names are rejected (exit code 2). Duplicates are silently deduplicated. Default: all servers. |
+| `--servers <list>` | No | install, uninstall | Comma-separated server names from the server definitions. Unknown names are rejected (exit code 2). Duplicates are permitted but do not change behavior. Default: all servers. |
 | `--all-scopes` | No | uninstall | Remove matching registrations from every configured path for the target IDE. Without this flag, uninstall only modifies the IDE profile's `writeTarget`, matching the default install scope. |
 | `--json` | No | status, install, uninstall | Emit JSON output to stdout. Without this flag, output is human-readable text to stdout |
 | `--ide-definitions <path>` | No | status, install, uninstall | Path to an external `ide-profiles.json`, replacing the embedded IDE profiles (see [Definitions Files](#12-definitions-files)) |
@@ -299,7 +299,7 @@ The `status` is determined by examining the **effective configuration** — the 
 | Warning | Trigger |
 |---------|---------|
 | `Registered in multiple config files` | Server found in 2+ config files for the same IDE (e.g., workspace and global) |
-| `Multiple entries match server {name}` | 2+ keys in the same config file match the detection patterns for the same server |
+| `Multiple entries found in the same config file` | 2+ keys in the same config file match the detection patterns for the same server |
 
 ### Variant Values
 
@@ -652,7 +652,7 @@ This two-tier approach avoids false positives: a key-only match (`^UnoApp$`) is 
 
 #### Multiple Matches in Same File
 
-If multiple keys in the same config file match the same server's detection patterns, the **first match** (in JSON key order) is used for status/update. A warning `"Multiple entries match server {name}"` is emitted. During `install`, only the first match is updated; during `uninstall`, all matches are removed.
+If multiple keys in the same config file match the same server's detection patterns, the **first match** (in JSON key order) is used for status/update. A warning `"Multiple entries found in the same config file"` is emitted. During `install`, only the first match is updated; during `uninstall`, all matches are removed.
 
 ### Outdated Detection
 
