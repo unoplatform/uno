@@ -47,7 +47,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 																							);
 		public static readonly DiagnosticDescriptor InvalidXClassRule = new DiagnosticDescriptor(
 #pragma warning disable RS2008 // Enable analyzer release tracking
-																							 "UNOB0001",
+																							 "UXAML0004",
 #pragma warning restore RS2008 // Enable analyzer release tracking
 																							 "Invalid x:Class Value",
 																							 "{0}",

@@ -47,7 +47,7 @@ Developers only create the XAML file. The code-behind is auto-generated at build
 </Page>
 ```
 
-Build output automatically includes a generated `MainPage.g.cs` with the constructor.
+Build output automatically includes a generated `MainPage.codebehind.g.cs` with the constructor.
 
 ## Configuration
 
@@ -68,7 +68,7 @@ Auto code-behind generation is **enabled by default**. No configuration needed.
 ```xml
 <ItemGroup>
   <Page Update="Views/SpecialPage.xaml">
-    <GenerateCodeBehind>false</GenerateCodeBehind>
+    <UnoGenerateCodeBehind>false</UnoGenerateCodeBehind>
   </Page>
 </ItemGroup>
 ```
@@ -82,7 +82,7 @@ Auto code-behind generation is **enabled by default**. No configuration needed.
 
 <ItemGroup>
   <Page Update="Views/SimplePage.xaml">
-    <GenerateCodeBehind>true</GenerateCodeBehind>
+    <UnoGenerateCodeBehind>true</UnoGenerateCodeBehind>
   </Page>
 </ItemGroup>
 ```
@@ -100,9 +100,9 @@ Auto code-behind generation is **enabled by default**. No configuration needed.
 |------|---------|
 | `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeGeneration.cs` | Modified: integrated code-behind generation for Uno targets |
 | `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.cs` | Modified: suppress `#warning` and handle x:Bind when code-behind is auto-generated |
-| `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeBehindGenerator.cs` | New `IIncrementalGenerator` for WinUI targets only |
+| `src/SourceGenerators/Uno.UI.SourceGenerators.WinAppSDK/XamlCodeBehindGenerator.cs` | Standalone `IIncrementalGenerator` for WinUI targets only |
 | `src/SourceGenerators/Uno.UI.SourceGenerators/Content/Uno.UI.SourceGenerators.props` | Modified: add CompilerVisibleProperty/Metadata for code-behind settings |
-| `src/Uno.Sdk/targets/Uno.CodeBehind.targets` | New: re-add analyzer for WinUI targets |
+| `src/Uno.Sdk/targets/Uno.UI.SourceGenerators.WinAppSdk.props` | MSBuild plumbing for WinUI code-behind generation |
 
 ## Build Verification
 

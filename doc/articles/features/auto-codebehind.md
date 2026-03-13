@@ -4,7 +4,7 @@ uid: Uno.Features.AutoCodeBehind
 
 # Auto-Generated Code-Behind
 
-Uno Platform can automatically generate minimal code-behind files for XAML pages that don't have a developer-authored `.xaml.cs` file. This eliminates boilerplate when your page only needs a default constructor that calls `InitializeComponent()`.
+Uno Platform can automatically generate minimal code-behind files for XAML pages that don't have a developer-authored code-behind class. This eliminates boilerplate when your page only needs a default constructor that calls `InitializeComponent()`.
 
 ## Overview
 
@@ -127,7 +127,7 @@ Per-file metadata always takes precedence over the project-level property.
 
 | Code | Severity | Description |
 |---|---|---|
-| UNOB0001 | Warning | The `x:Class` attribute value is malformed. The value must include a namespace (e.g., `MyApp.MainPage`, not just `MainPage`). |
+| UXAML0004 | Warning | The `x:Class` attribute value is malformed. The value must include a namespace (e.g., `MyApp.MainPage`, not just `MainPage`). |
 
 ## Platform support
 

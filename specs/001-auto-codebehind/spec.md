@@ -49,8 +49,8 @@ A developer wants to exclude specific XAML files from auto code-behind generatio
 
 **Acceptance Scenarios**:
 
-1. **Given** auto code-behind is globally enabled and a XAML file has `<Page Include="Special.xaml"><GenerateCodeBehind>false</GenerateCodeBehind></Page>`, **When** the project is built, **Then** no code-behind is generated for `Special.xaml`.
-2. **Given** auto code-behind is globally disabled and a XAML file has `<Page Include="Simple.xaml"><GenerateCodeBehind>true</GenerateCodeBehind></Page>`, **When** the project is built, **Then** code-behind is generated for `Simple.xaml`.
+1. **Given** auto code-behind is globally enabled and a XAML file has `<Page Include="Special.xaml"><UnoGenerateCodeBehind>false</UnoGenerateCodeBehind></Page>`, **When** the project is built, **Then** no code-behind is generated for `Special.xaml`.
+2. **Given** auto code-behind is globally disabled and a XAML file has `<Page Include="Simple.xaml"><UnoGenerateCodeBehind>true</UnoGenerateCodeBehind></Page>`, **When** the project is built, **Then** code-behind is generated for `Simple.xaml`.
 
 ---
 
@@ -89,7 +89,7 @@ A developer using Uno Platform targets (Skia, WebAssembly, Mobile) and/or WinUI 
 - **FR-005**: The system MUST NOT generate code-behind for XAML files where the `x:Class` type already exists in the compilation (i.e., the developer has provided a code-behind file or the class is defined elsewhere).
 - **FR-006**: The system MUST NOT generate code-behind for XAML files that lack an `x:Class` attribute.
 - **FR-007**: The system MUST support a project-level MSBuild property (`UnoGenerateCodeBehind`) to enable or disable the feature globally. The default value MUST be `true` (enabled).
-- **FR-008**: The system MUST support per-file MSBuild item metadata (`GenerateCodeBehind`) on `Page`, `UnoPage`, `ApplicationDefinition`, and `UnoApplicationDefinition` items to override the project-level setting.
+- **FR-008**: The system MUST support per-file MSBuild item metadata (`UnoGenerateCodeBehind`) on `Page`, `UnoPage`, `ApplicationDefinition`, and `UnoApplicationDefinition` items to override the project-level setting.
 - **FR-009**: Per-file metadata MUST take precedence over the project-level property.
 - **FR-010**: The feature MUST work on all Uno Platform target frameworks (Skia, WebAssembly, Android, iOS, macOS, tvOS).
 - **FR-011**: The feature MUST work on WinUI target frameworks (`net10.0-windows10.0.*`) via Uno.Sdk integration.
