@@ -89,7 +89,12 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		#region ISwipeControl
-		public async void Close()
+		public void Close()
+		{
+			_ = CloseInnerAsync();
+		}
+
+		private async Task CloseInnerAsync()
 		{
 			//CheckThread();
 			try
@@ -108,7 +113,7 @@ namespace Microsoft.UI.Xaml.Controls
 					await Task.Delay(TimeSpan.FromSeconds(0.250));
 
 					await AnimateTransforms(false, 0d);
-					OnSwipeManipulationCompleted(this, null);
+					await OnSwipeManipulationCompletedAsync(null);
 
 					//if (!m_isIdle)
 					//{
