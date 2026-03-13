@@ -41,7 +41,12 @@ internal static class FrameProviderFactory
 		if (codec.FrameInfo.Length < 2)
 		{
 			// FrameInfo can be zero for single-frame images
-			codec.GetPixels(imageInfo, bitmap.GetPixels());
+			var result = codec.GetPixels(imageInfo, bitmap.GetPixels());
+			if (result is not SKCodecResult.Success and not SKCodecResult.IncompleteInput)
+			{
+				provider = null;
+				return false;
+			}
 			var image = GetImage(bitmap, origin);
 			image = ScaleToTargetIfNeeded(image, origin, codecWidth, codecHeight, targetWidth, targetHeight);
 			provider = new SingleFrameProvider(image);
@@ -73,7 +78,12 @@ internal static class FrameProviderFactory
 			// correct prior frame pixels from the previous iteration.
 
 			var options = new SKCodecOptions(i, requiredFrame);
-			codec.GetPixels(imageInfo, bitmap.GetPixels(), options);
+			var result = codec.GetPixels(imageInfo, bitmap.GetPixels(), options);
+			if (result is not SKCodecResult.Success and not SKCodecResult.IncompleteInput)
+			{
+				provider = null;
+				return false;
+			}
 
 			var currentBitmap = GetImage(bitmap, origin);
 			if (currentBitmap is null)
@@ -105,6 +115,11 @@ internal static class FrameProviderFactory
 		SKCodec codec, SKEncodedOrigin origin,
 		int? targetWidth, int? targetHeight)
 	{
+		// Normalize non-positive dimensions to null so downstream branches
+		// only deal with genuinely positive values.
+		if (targetWidth is <= 0) targetWidth = null;
+		if (targetHeight is <= 0) targetHeight = null;
+
 		var codecWidth = codec.Info.Width;
 		var codecHeight = codec.Info.Height;
 
@@ -159,6 +174,9 @@ internal static class FrameProviderFactory
 		int codecWidth, int codecHeight,
 		int? targetWidth, int? targetHeight)
 	{
+		if (targetWidth is <= 0) targetWidth = null;
+		if (targetHeight is <= 0) targetHeight = null;
+
 		if (targetWidth is null && targetHeight is null)
 		{
 			return image;
@@ -238,16 +256,16 @@ internal static class FrameProviderFactory
 	private static bool SkEncodedOriginSwapsWidthHeight(SKEncodedOrigin origin)
 	{
 		return origin is
-			// Reflected across x - axis.Rotated 90� counter - clockwise.
+			// Reflected across x - axis.Rotated 90° counter - clockwise.
 			SKEncodedOrigin.LeftTop or
 
-			// Rotated 90� clockwise.
+			// Rotated 90° clockwise.
 			SKEncodedOrigin.RightTop or
 
-			// Reflected across x-axis. Rotated 90� clockwise.
+			// Reflected across x-axis. Rotated 90° clockwise.
 			SKEncodedOrigin.RightBottom or
 
-			// Rotated 90� counter-clockwise.
+			// Rotated 90° counter-clockwise.
 			SKEncodedOrigin.LeftBottom;
 	}
 
