@@ -8,15 +8,15 @@ namespace Windows.System
 #endif
 	public static partial class Launcher
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFolderPathAsync(string path)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> Launcher.LaunchFolderPathAsync(string path) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20Launcher.LaunchFolderPathAsync%28string%20path%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFolderPathAsync(string path, global::Windows.System.FolderLauncherOptions options)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> Launcher.LaunchFolderPathAsync(string path, FolderLauncherOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20Launcher.LaunchFolderPathAsync%28string%20path%2C%20FolderLauncherOptions%20options%29");
@@ -92,15 +92,15 @@ namespace Windows.System
 			throw new global::System.NotImplementedException("The member IAsyncOperation<LaunchUriResult> Launcher.LaunchUriForResultsForUserAsync(User user, Uri uri, LauncherOptions options, ValueSet inputData) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CLaunchUriResult%3E%20Launcher.LaunchUriForResultsForUserAsync%28User%20user%2C%20Uri%20uri%2C%20LauncherOptions%20options%2C%20ValueSet%20inputData%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFileAsync(global::Windows.Storage.IStorageFile file)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> Launcher.LaunchFileAsync(IStorageFile file) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20Launcher.LaunchFileAsync%28IStorageFile%20file%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFileAsync(global::Windows.Storage.IStorageFile file, global::Windows.System.LauncherOptions options)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> Launcher.LaunchFileAsync(IStorageFile file, LauncherOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20Launcher.LaunchFileAsync%28IStorageFile%20file%2C%20LauncherOptions%20options%29");
@@ -114,15 +114,15 @@ namespace Windows.System
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> Launcher.LaunchUriAsync(Uri uri, LauncherOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20Launcher.LaunchUriAsync%28Uri%20uri%2C%20LauncherOptions%20options%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFolderAsync(global::Windows.Storage.IStorageFolder folder)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> Launcher.LaunchFolderAsync(IStorageFolder folder) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20Launcher.LaunchFolderAsync%28IStorageFolder%20folder%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFolderAsync(global::Windows.Storage.IStorageFolder folder, global::Windows.System.FolderLauncherOptions options)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> Launcher.LaunchFolderAsync(IStorageFolder folder, FolderLauncherOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20Launcher.LaunchFolderAsync%28IStorageFolder%20folder%2C%20FolderLauncherOptions%20options%29");
