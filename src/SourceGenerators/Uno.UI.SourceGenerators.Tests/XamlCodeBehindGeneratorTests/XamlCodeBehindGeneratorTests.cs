@@ -97,7 +97,6 @@ public class XamlCodeBehindGeneratorTests
 		// Build global config with build properties and per-file metadata
 		var configBuilder = new StringBuilder();
 		configBuilder.AppendLine("is_global = true");
-		configBuilder.AppendLine("build_property.UnoCodeBehindGeneratorOnly = true");
 
 		if (globalGenerateCodeBehind is not null)
 		{

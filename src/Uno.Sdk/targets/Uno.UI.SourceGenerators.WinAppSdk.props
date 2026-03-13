@@ -4,30 +4,17 @@
 	<!--
 		Auto Code-Behind Generation for WinUI targets.
 
-		On WinUI builds (IsWinAppSdk=true), the Uno.UI.SourceGenerators analyzer is removed.
-		This targets file re-adds it specifically for code-behind generation.
-		The standalone XamlCodeBehindGenerator checks UnoCodeBehindGeneratorOnly=true to know it should run.
+		On WinUI builds (IsWinAppSdk=true), the main Uno.UI.SourceGenerators analyzer is removed.
+		The separate Uno.UI.SourceGenerators.WinAppSDK assembly provides the standalone
+		XamlCodeBehindGenerator which always runs when loaded.
 	-->
 
-	<PropertyGroup Condition="'$(IsWinAppSdk)'=='true' and '$(ShouldRunGenerator)'!='true'">
-		<UnoCodeBehindGeneratorOnly>true</UnoCodeBehindGeneratorOnly>
-	</PropertyGroup>
-
 	<!-- CompilerVisible items must be outside targets so GenerateMSBuildEditorConfigFile sees them -->
-	<ItemGroup Condition="'$(UnoCodeBehindGeneratorOnly)'=='true'">
+	<ItemGroup Condition="'$(IsWinAppSdk)'=='true'">
 		<CompilerVisibleProperty Include="UnoGenerateCodeBehind" />
-		<CompilerVisibleProperty Include="UnoCodeBehindGeneratorOnly" />
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="SourceItemGroup" />
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="UnoGenerateCodeBehind" />
 	</ItemGroup>
-
-	<Target Name="_AddCodeBehindGeneratorForWinUI"
-			AfterTargets="_RemoveRoslynUnoSourceGeneration;_RemoveRoslynUnoSourceGenerationWinUI"
-			Condition="'$(UnoCodeBehindGeneratorOnly)'=='true'">
-		<ItemGroup>
-			<Analyzer Include="@(_UnoSourceGeneratorsAnalyzerPath)" />
-		</ItemGroup>
-	</Target>
 
 	<!--
 		On WinUI builds, Uno.UI.SourceGenerators.props is not imported, so XAML files
@@ -35,7 +22,7 @@
 	-->
 	<Target Name="_InjectAdditionalFilesForWinUI"
 			BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun;GenerateMSBuildEditorConfigFileCore"
-			Condition="'$(UnoCodeBehindGeneratorOnly)'=='true'">
+			Condition="'$(IsWinAppSdk)'=='true'">
 		<ItemGroup>
 			<AdditionalFiles Include="@(Page)" SourceItemGroup="Page" />
 			<AdditionalFiles Include="@(ApplicationDefinition)" SourceItemGroup="ApplicationDefinition" />
@@ -44,6 +31,15 @@
 			<_AdditionalFilesCleanup Include="@(AdditionalFiles)" />
 			<AdditionalFiles Remove="@(_AdditionalFilesCleanup)" />
 			<AdditionalFiles Condition="'@(_AdditionalFilesCleanup)'!=''" Include="@(_AdditionalFilesCleanup->'$([System.IO.Path]::GetFullPath('%(_AdditionalFilesCleanup.Identity)'))')" />
+		</ItemGroup>
+	</Target>
+
+	<!-- Local-dev: add the WinAppSDK generator from build output when building from source -->
+	<Target Name="_AddWinAppSDKSourceGeneratorLocalDev"
+			BeforeTargets="CoreCompile"
+			Condition="'$(IsWinAppSdk)'=='true' and Exists('$(MSBuildThisFileDirectory)..\..\SourceGenerators\Uno.UI.SourceGenerators.WinAppSDK\Uno.UI.SourceGenerators.WinAppSDK.csproj')">
+		<ItemGroup>
+			<Analyzer Include="$(MSBuildThisFileDirectory)..\..\SourceGenerators\Uno.UI.SourceGenerators.WinAppSDK\bin\$(Configuration)\netstandard2.0\Uno.UI.SourceGenerators.WinAppSDK.dll" />
 		</ItemGroup>
 	</Target>
 
