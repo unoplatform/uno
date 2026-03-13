@@ -51,7 +51,11 @@
 			if (isPasswordBox) {
 				(input as HTMLInputElement).type = "password";
 				input.autocomplete = "password";
+			} else {
+				input.autocomplete = "off";
 			}
+			input.setAttribute("autocorrect", "off");
+			input.setAttribute("autocapitalize", "off");
 
 			input.id = BrowserInvisibleTextBoxViewExtension.inputElementId;
 			input.spellcheck = false;
