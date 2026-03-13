@@ -22,13 +22,14 @@ internal class MacOSCameraCaptureUIExtension : ICameraCaptureUIExtension
 	private CameraCaptureUIMode _mode;
 	private CameraCaptureUIPhotoFormat _photoFormat;
 	private CameraCaptureUIVideoFormat _videoFormat;
-	private bool _allowCropping;
+
+	// Note: PhotoSettings.AllowCropping is not supported on macOS.
+	// The captured photo is returned as-is without cropping UI.
 
 	public void Customize(CameraCaptureUI picker, CameraCaptureUIMode mode)
 	{
 		_mode = mode;
 		_photoFormat = picker.PhotoSettings.Format;
-		_allowCropping = picker.PhotoSettings.AllowCropping;
 		_videoFormat = picker.VideoSettings.Format;
 
 		if (_mode == CameraCaptureUIMode.Video && _videoFormat != CameraCaptureUIVideoFormat.Mp4)
