@@ -1,11 +1,9 @@
 #nullable enable
 
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Extensions.Media.Capture;
 using Uno.Foundation.Extensibility;
-using Windows.Foundation;
 using Windows.Storage;
 
 namespace Windows.Media.Capture
