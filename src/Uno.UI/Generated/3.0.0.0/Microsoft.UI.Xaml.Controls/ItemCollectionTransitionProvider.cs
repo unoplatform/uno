@@ -3,64 +3,19 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ItemCollectionTransitionProvider
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ItemCollectionTransitionProvider()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider", "ItemCollectionTransitionProvider.ItemCollectionTransitionProvider()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.ItemCollectionTransitionProvider()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.ItemCollectionTransitionProvider()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ShouldAnimate(global::Microsoft.UI.Xaml.Controls.ItemCollectionTransition transition)
-		{
-			throw new global::System.NotImplementedException("The member bool ItemCollectionTransitionProvider.ShouldAnimate(ItemCollectionTransition transition) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ItemCollectionTransitionProvider.ShouldAnimate%28ItemCollectionTransition%20transition%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void QueueTransition(global::Microsoft.UI.Xaml.Controls.ItemCollectionTransition transition)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider", "void ItemCollectionTransitionProvider.QueueTransition(ItemCollectionTransition transition)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.ShouldAnimate(Microsoft.UI.Xaml.Controls.ItemCollectionTransition)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.QueueTransition(Microsoft.UI.Xaml.Controls.ItemCollectionTransition)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.TransitionCompleted.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.TransitionCompleted.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		protected virtual bool ShouldAnimateCore(global::Microsoft.UI.Xaml.Controls.ItemCollectionTransition transition)
-		{
-			throw new global::System.NotImplementedException("The member bool ItemCollectionTransitionProvider.ShouldAnimateCore(ItemCollectionTransition transition) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ItemCollectionTransitionProvider.ShouldAnimateCore%28ItemCollectionTransition%20transition%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		protected virtual void StartTransitions(global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.ItemCollectionTransition> transitions)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider", "void ItemCollectionTransitionProvider.StartTransitions(IList<ItemCollectionTransition> transitions)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider, global::Microsoft.UI.Xaml.Controls.ItemCollectionTransitionCompletedEventArgs> TransitionCompleted
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider", "event TypedEventHandler<ItemCollectionTransitionProvider, ItemCollectionTransitionCompletedEventArgs> ItemCollectionTransitionProvider.TransitionCompleted");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider", "event TypedEventHandler<ItemCollectionTransitionProvider, ItemCollectionTransitionCompletedEventArgs> ItemCollectionTransitionProvider.TransitionCompleted");
-			}
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.ShouldAnimateCore(Microsoft.UI.Xaml.Controls.ItemCollectionTransition)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.StartTransitions(System.Collections.Generic.IList<Microsoft.UI.Xaml.Controls.ItemCollectionTransition>)
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider.TransitionCompleted
 	}
 }
