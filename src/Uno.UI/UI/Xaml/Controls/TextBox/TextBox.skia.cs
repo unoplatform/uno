@@ -56,6 +56,8 @@ public partial class TextBox
 	private (int start, int length)? _pendingSelection;
 
 	private bool _clearHistoryOnTextChanged = true;
+	private CompositionBrush _cachedCaretBrush;
+	private Color _cachedCaretColor;
 
 	private static readonly VirtualKeyModifiers _platformCtrlKey;
 
@@ -637,8 +639,19 @@ public partial class TextBox
 				// Force fully opaque for caret visibility
 				color = Color.FromArgb(255, color.R, color.G, color.B);
 			}
-			return compositor.CreateColorBrush(color);
+
+			if (_cachedCaretBrush is not null && _cachedCaretColor == color)
+			{
+				return _cachedCaretBrush;
+			}
+
+			_cachedCaretColor = color;
+			_cachedCaretBrush = compositor.CreateColorBrush(color);
+			return _cachedCaretBrush;
 		}
+
+		_cachedCaretBrush = null;
+		_cachedCaretColor = default;
 		return DefaultBrushes.TextForegroundBrush.GetOrCreateCompositionBrush(compositor);
 	}
 
