@@ -793,6 +793,7 @@ namespace Microsoft.UI.Xaml
 			/// </summary>
 			public static void PopRequestedThemeForSubTree()
 			{
+				Debug.Assert(_requestedThemeForSubTree.Count > 0, "PopRequestedThemeForSubTree called with empty stack");
 				if (_requestedThemeForSubTree.Count > 0)
 				{
 					_requestedThemeForSubTree.Pop();
