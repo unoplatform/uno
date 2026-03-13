@@ -26,6 +26,12 @@
 	<Import Project="$(MSBuildThisFileDirectory)..\targets\Uno.SingleProject.Desktop.targets"
 			Condition=" $(UnoSingleProject) == 'true' " />
 
+	<Target Name="_UnoDesktopFeatureDefines" AfterTargets="PrepareForBuild">
+		<PropertyGroup>
+			<DefineConstants>$(DefineConstants);UNO_REFERENCE_API;HAS_UNO_SKIA;__SKIA__;__DESKTOP__</DefineConstants>
+		</PropertyGroup>
+	</Target>
+
 	<Target Name="RemoveTransitiveWindowsDesktopDependencies"
 		AfterTargets="ResolvePackageAssets"
 		BeforeTargets="_CheckForTransitiveWindowsDesktopDependencies"
