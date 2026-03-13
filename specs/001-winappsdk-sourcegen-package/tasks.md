@@ -19,7 +19,7 @@
 
 **Purpose**: Create the new project skeleton and directory structure
 
-- [ ] T001 Create new project file at `src/SourceGenerators/Uno.UI.SourceGenerators.WinAppSDK/Uno.UI.SourceGenerators.WinAppSDK.csproj` targeting `netstandard2.0` with `Microsoft.CodeAnalysis.CSharp` (v4.0.1) dependency, `EnforceExtendedAnalyzerRules`, and analyzer packaging properties (`IncludeBuildOutput=false`, pack DLL into `analyzers/dotnet/cs/`)
+- [x] T001 Create new project file at `src/SourceGenerators/Uno.UI.SourceGenerators.WinAppSDK/Uno.UI.SourceGenerators.WinAppSDK.csproj` targeting `netstandard2.0` with `Microsoft.CodeAnalysis.CSharp` (v4.0.1) dependency, `EnforceExtendedAnalyzerRules`, and analyzer packaging properties (`IncludeBuildOutput=false`, pack DLL into `analyzers/dotnet/cs/`)
 
 ---
 
@@ -29,11 +29,11 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T002 [P] Create `src/SourceGenerators/Uno.UI.SourceGenerators.WinAppSDK/XamlClassInfo.cs` — copy the `XamlClassInfo` record struct from `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlClassInfo.cs`, update namespace to `Uno.UI.SourceGenerators.WinAppSDK`
-- [ ] T003 [P] Create `src/SourceGenerators/Uno.UI.SourceGenerators.WinAppSDK/XamlCodeBehindDiagnostics.cs` — define static class with `UNOB0001` `DiagnosticDescriptor` (Warning, category "XAML", title "Invalid x:Class Value", message format `{0}`), per research Decision 3
-- [ ] T004 [P] Create `src/SourceGenerators/Uno.UI.SourceGenerators.WinAppSDK/XamlCodeBehindParser.cs` — copy from `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeBehindParser.cs`, update namespace and change `XamlCodeGenerationDiagnostics.InvalidXClassRule` reference to use local `XamlCodeBehindDiagnostics`
-- [ ] T005 [P] Create `src/SourceGenerators/Uno.UI.SourceGenerators.WinAppSDK/XamlCodeBehindEmitter.cs` — copy from `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeBehindEmitter.cs`, update namespace
-- [ ] T006 Create `src/SourceGenerators/Uno.UI.SourceGenerators.WinAppSDK/XamlCodeBehindGenerator.cs` — copy from `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeBehindGenerator.cs`, update namespace and ensure references to parser, emitter, diagnostics, and class info resolve to the local types (depends on T002–T005)
+- [x] T002 [P] Create `src/SourceGenerators/Uno.UI.SourceGenerators.WinAppSDK/XamlClassInfo.cs` — copy the `XamlClassInfo` record struct from `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlClassInfo.cs`, update namespace to `Uno.UI.SourceGenerators.WinAppSDK`
+- [x] T003 [P] Create `src/SourceGenerators/Uno.UI.SourceGenerators.WinAppSDK/XamlCodeBehindDiagnostics.cs` — define static class with `UNOB0001` `DiagnosticDescriptor` (Warning, category "XAML", title "Invalid x:Class Value", message format `{0}`), per research Decision 3
+- [x] T004 [P] Create `src/SourceGenerators/Uno.UI.SourceGenerators.WinAppSDK/XamlCodeBehindParser.cs` — copy from `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeBehindParser.cs`, update namespace and change `XamlCodeGenerationDiagnostics.InvalidXClassRule` reference to use local `XamlCodeBehindDiagnostics`
+- [x] T005 [P] Create `src/SourceGenerators/Uno.UI.SourceGenerators.WinAppSDK/XamlCodeBehindEmitter.cs` — copy from `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeBehindEmitter.cs`, update namespace
+- [x] T006 Create `src/SourceGenerators/Uno.UI.SourceGenerators.WinAppSDK/XamlCodeBehindGenerator.cs` — copy from `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeBehindGenerator.cs`, update namespace and ensure references to parser, emitter, diagnostics, and class info resolve to the local types (depends on T002–T005)
 
 **Checkpoint**: New project builds successfully — `dotnet build src/SourceGenerators/Uno.UI.SourceGenerators.WinAppSDK/Uno.UI.SourceGenerators.WinAppSDK.csproj`
 
@@ -47,10 +47,10 @@
 
 ### Implementation for User Story 1
 
-- [ ] T007 [US1] Create MSBuild props file at `src/SourceGenerators/Uno.UI.SourceGenerators.WinAppSDK/Content/Uno.UI.SourceGenerators.WinAppSDK.props` — define `CompilerVisibleProperty` for `UnoGenerateCodeBehind`, `CompilerVisibleItemMetadata` for `AdditionalFiles` (`SourceItemGroup` and `UnoGenerateCodeBehind`), and `_InjectAdditionalFilesForWinAppSDK` target that injects `Page` and `ApplicationDefinition` items into `AdditionalFiles`, per contracts/msbuild-contract.md
-- [ ] T008 [P] [US1] Create NuGet package spec at `build/nuget/Uno.UI.SourceGenerators.WinAppSDK.nuspec` — package the DLL into `analyzers/dotnet/cs/`, props file into `buildTransitive/`, follow existing Uno versioning (`$version$`), no dependencies on `Uno.Xaml` or telemetry, per research Decision 6
-- [ ] T009 [US1] Update `src/Uno.Sdk/targets/Uno.UI.SourceGenerators.WinAppSdk.props` — replace the current gated analyzer approach with a direct `PackageReference` to `Uno.UI.SourceGenerators.WinAppSDK`, per research Decision 5
-- [ ] T010 [US1] Simplify `build/nuget/uno.winui.winappsdk.targets` — remove the `_AddCodeBehindGeneratorForWinUI` and `_InjectAdditionalFilesForWinUI` targets, keep `_RemoveRoslynUnoSourceGenerationWinUI` (still removes `Uno.UI.SourceGenerators` analyzer), per contracts/msbuild-contract.md "Removed Contracts" table
+- [x] T007 [US1] Create MSBuild props file at `src/SourceGenerators/Uno.UI.SourceGenerators.WinAppSDK/Content/Uno.UI.SourceGenerators.WinAppSDK.props` — define `CompilerVisibleProperty` for `UnoGenerateCodeBehind`, `CompilerVisibleItemMetadata` for `AdditionalFiles` (`SourceItemGroup` and `UnoGenerateCodeBehind`), and `_InjectAdditionalFilesForWinAppSDK` target that injects `Page` and `ApplicationDefinition` items into `AdditionalFiles`, per contracts/msbuild-contract.md
+- [x] T008 [P] [US1] Create NuGet package spec at `build/nuget/Uno.UI.SourceGenerators.WinAppSDK.nuspec` — package the DLL into `analyzers/dotnet/cs/`, props file into `buildTransitive/`, follow existing Uno versioning (`$version$`), no dependencies on `Uno.Xaml` or telemetry, per research Decision 6
+- [x] T009 [US1] Update `src/Uno.Sdk/targets/Uno.UI.SourceGenerators.WinAppSdk.props` — replace the current gated analyzer approach with a direct `PackageReference` to `Uno.UI.SourceGenerators.WinAppSDK`, per research Decision 5
+- [x] T010 [US1] Simplify `build/nuget/uno.winui.winappsdk.targets` — remove the `_AddCodeBehindGeneratorForWinUI` and `_InjectAdditionalFilesForWinUI` targets, keep `_RemoveRoslynUnoSourceGenerationWinUI` (still removes `Uno.UI.SourceGenerators` analyzer), per contracts/msbuild-contract.md "Removed Contracts" table
 
 **Checkpoint**: New package is wired into the build — WinAppSDK targets reference the new package and the remove-and-re-add dance is eliminated
 
@@ -64,10 +64,10 @@
 
 ### Implementation for User Story 2
 
-- [ ] T011 [P] [US2] Delete standalone code-behind source files from old project: `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeBehindGenerator.cs`, `XamlCodeBehindParser.cs`, `XamlCodeBehindEmitter.cs`, and `XamlClassInfo.cs`, per research Decision 2
-- [ ] T012 [P] [US2] Remove `UnoCodeBehindGeneratorOnly` property handling from `src/SourceGenerators/Uno.UI.SourceGenerators/Content/Uno.UI.SourceGenerators.props` — remove the CompilerVisibleProperty entry and any conditional logic gated on this property
-- [ ] T013 [US2] Review and update `build/nuget/Uno.WinUI.nuspec` — verify no references to the removed code-behind files or `UnoCodeBehindGeneratorOnly` property remain
-- [ ] T014 [US2] Update test project: add project reference to `Uno.UI.SourceGenerators.WinAppSDK` in `src/SourceGenerators/Uno.UI.SourceGenerators.Tests/Uno.UI.SourceGenerators.Tests.csproj` and update `XamlCodeBehindGeneratorTests.cs` to reference the generator type from the new assembly namespace
+- [x] T011 [P] [US2] Delete standalone code-behind source files from old project: `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeBehindGenerator.cs`, `XamlCodeBehindParser.cs`, `XamlCodeBehindEmitter.cs`, and `XamlClassInfo.cs`, per research Decision 2
+- [x] T012 [P] [US2] Remove `UnoCodeBehindGeneratorOnly` property handling from `src/SourceGenerators/Uno.UI.SourceGenerators/Content/Uno.UI.SourceGenerators.props` — remove the CompilerVisibleProperty entry and any conditional logic gated on this property
+- [x] T013 [US2] Review and update `build/nuget/Uno.WinUI.nuspec` — verify no references to the removed code-behind files or `UnoCodeBehindGeneratorOnly` property remain
+- [x] T014 [US2] Update test project: add project reference to `Uno.UI.SourceGenerators.WinAppSDK` in `src/SourceGenerators/Uno.UI.SourceGenerators.Tests/Uno.UI.SourceGenerators.Tests.csproj` and update `XamlCodeBehindGeneratorTests.cs` to reference the generator type from the new assembly namespace
 
 **Checkpoint**: Existing Uno Platform builds work identically — `dotnet build src/Uno.UI-UnitTests-only.slnf --no-restore` succeeds, `dotnet test src/SourceGenerators/Uno.UI.SourceGenerators.Tests/ --filter "FullyQualifiedName~XamlCodeBehind"` passes
 
@@ -81,8 +81,8 @@
 
 ### Implementation for User Story 3
 
-- [ ] T015 [US3] Verify that the props file created in T007 exposes `UnoGenerateCodeBehind` as a `CompilerVisibleProperty` and per-file `UnoGenerateCodeBehind` as `CompilerVisibleItemMetadata` on `AdditionalFiles` — ensure the generator code copied in T006 reads both `build_property.UnoGenerateCodeBehind` and `build_metadata.AdditionalFiles.UnoGenerateCodeBehind` and applies per-file precedence over project-level setting
-- [ ] T016 [US3] Verify that `UnoGenerateCodeBehind` defaults to `true` when not explicitly set — confirm the generator treats missing/empty property value as enabled, per data-model.md MSBuild Properties table
+- [x] T015 [US3] Verify that the props file created in T007 exposes `UnoGenerateCodeBehind` as a `CompilerVisibleProperty` and per-file `UnoGenerateCodeBehind` as `CompilerVisibleItemMetadata` on `AdditionalFiles` — ensure the generator code copied in T006 reads both `build_property.UnoGenerateCodeBehind` and `build_metadata.AdditionalFiles.UnoGenerateCodeBehind` and applies per-file precedence over project-level setting
+- [x] T016 [US3] Verify that `UnoGenerateCodeBehind` defaults to `true` when not explicitly set — confirm the generator treats missing/empty property value as enabled, per data-model.md MSBuild Properties table
 
 **Checkpoint**: Configuration parity confirmed — project-level disable prevents all generation, per-file override re-enables for specific files
 
@@ -92,9 +92,9 @@
 
 **Purpose**: Final validation and cleanup across all stories
 
-- [ ] T017 [P] Run full build verification per quickstart.md: `dotnet build src/SourceGenerators/Uno.UI.SourceGenerators.WinAppSDK/Uno.UI.SourceGenerators.WinAppSDK.csproj`, then `dotnet test src/SourceGenerators/Uno.UI.SourceGenerators.Tests/ --filter "FullyQualifiedName~XamlCodeBehind"`, then `dotnet build src/Uno.UI-UnitTests-only.slnf --no-restore` and `dotnet test src/Uno.UI/Uno.UI.Tests.csproj --no-build`
-- [ ] T018 Verify the new nuspec produces a valid package structure matching contracts/msbuild-contract.md: DLL in `analyzers/dotnet/cs/`, props in `buildTransitive/`, no unexpected dependencies
-- [ ] T019 Verify edge case: ensure that if both `Uno.UI.SourceGenerators` and `Uno.UI.SourceGenerators.WinAppSDK` are accidentally referenced, no duplicate generated files or build errors occur (the old project no longer contains the standalone code-behind generator after T011)
+- [x] T017 [P] Run full build verification per quickstart.md: `dotnet build src/SourceGenerators/Uno.UI.SourceGenerators.WinAppSDK/Uno.UI.SourceGenerators.WinAppSDK.csproj`, then `dotnet test src/SourceGenerators/Uno.UI.SourceGenerators.Tests/ --filter "FullyQualifiedName~XamlCodeBehind"`, then `dotnet build src/Uno.UI-UnitTests-only.slnf --no-restore` and `dotnet test src/Uno.UI/Uno.UI.Tests.csproj --no-build`
+- [x] T018 Verify the new nuspec produces a valid package structure matching contracts/msbuild-contract.md: DLL in `analyzers/dotnet/cs/`, props in `buildTransitive/`, no unexpected dependencies
+- [x] T019 Verify edge case: ensure that if both `Uno.UI.SourceGenerators` and `Uno.UI.SourceGenerators.WinAppSDK` are accidentally referenced, no duplicate generated files or build errors occur (the old project no longer contains the standalone code-behind generator after T011)
 
 ---
 

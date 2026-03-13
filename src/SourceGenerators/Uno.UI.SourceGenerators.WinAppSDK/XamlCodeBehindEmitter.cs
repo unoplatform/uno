@@ -1,6 +1,6 @@
 #nullable enable
 
-namespace Uno.UI.SourceGenerators.XamlGenerator;
+namespace Uno.UI.SourceGenerators.WinAppSDK;
 
 /// <summary>
 /// Emits the code-behind source text for a XAML file that has no developer-authored code-behind.

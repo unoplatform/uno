@@ -107,11 +107,10 @@
 	<Target Name="_RemoveRoslynUnoSourceGenerationWinUI" BeforeTargets="CoreCompile;XamlPreCompile">
 		<!---
 		Remove uno source generators when building under WinAppSDK.
-		Save the resolved path so _AddCodeBehindGeneratorForWinUI can re-add it.
+		The dedicated Uno.UI.SourceGenerators.WinAppSDK package handles code-behind generation.
 		-->
 		<ItemGroup>
 			<_AnalyzerToRemove Include="@(Analyzer)" Condition="'%(FileName)'=='Uno.UI.SourceGenerators'" />
-			<_UnoSourceGeneratorsAnalyzerPath Include="@(_AnalyzerToRemove)" />
 			<Analyzer Remove="@(_AnalyzerToRemove)"/>
 		</ItemGroup>
 	</Target>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<!-- Compiler-visible properties and metadata for the WinAppSDK code-behind generator -->
+	<ItemGroup>
+		<CompilerVisibleProperty Include="UnoGenerateCodeBehind" />
+		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="SourceItemGroup" />
+		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="UnoGenerateCodeBehind" />
+	</ItemGroup>
+
+	<!--
+		Inject Page and ApplicationDefinition items into AdditionalFiles so the generator can see them.
+		Must run before GenerateMSBuildEditorConfigFile so the metadata is available.
+	-->
+	<Target Name="_InjectAdditionalFilesForWinAppSDK"
+			BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun;GenerateMSBuildEditorConfigFileCore">
+		<ItemGroup>
+			<AdditionalFiles Include="@(Page)" SourceItemGroup="Page" />
+			<AdditionalFiles Include="@(ApplicationDefinition)" SourceItemGroup="ApplicationDefinition" />
+		</ItemGroup>
+	</Target>
+
+</Project>

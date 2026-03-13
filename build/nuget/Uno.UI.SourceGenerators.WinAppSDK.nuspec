@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+	<metadata minClientVersion="5.0">
+		<id>Uno.UI.SourceGenerators.WinAppSDK</id>
+		<version>$version$</version>
+		<title>Uno.UI.SourceGenerators.WinAppSDK</title>
+		<authors>Uno Platform</authors>
+		<owners>unoplatform</owners>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<projectUrl>https://platform.uno/</projectUrl>
+		<license type="expression">Apache-2.0</license>
+		<icon>uno.png</icon>
+		<description>XAML code-behind source generator for WinAppSDK targets. Automatically generates partial class code-behind files for XAML pages that lack explicit code-behind.</description>
+		<copyright>Copyright (C) 2015-2025 Uno Platform Inc. - all rights reserved</copyright>
+		<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
+	</metadata>
+	<files>
+		<!-- Analyzer DLL -->
+		<file src="$sourcepath$\Uno.UI.SourceGenerators.WinAppSDK.dll" target="analyzers\dotnet\cs\" />
+		<file src="$sourcepath$\Uno.UI.SourceGenerators.WinAppSDK.pdb" target="analyzers\dotnet\cs\" />
+
+		<!-- Props file for automatic import -->
+		<file src="$sourcepath$\..\Content\Uno.UI.SourceGenerators.WinAppSDK.props" target="buildTransitive\" />
+
+		<!-- Icon -->
+		<file src="..\..\src\global\uno.png" target="" />
+	</files>
+</package>

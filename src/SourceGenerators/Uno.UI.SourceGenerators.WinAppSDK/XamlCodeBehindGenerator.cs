@@ -9,12 +9,11 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 
-namespace Uno.UI.SourceGenerators.XamlGenerator;
+namespace Uno.UI.SourceGenerators.WinAppSDK;
 
 /// <summary>
-/// Standalone IIncrementalGenerator for auto code-behind generation on WinUI targets.
-/// This generator only runs when UnoCodeBehindGeneratorOnly=true (set by Uno.CodeBehind.targets on WinUI builds).
-/// On Uno Platform targets, code-behind generation is handled by the integrated XamlCodeGeneration pipeline.
+/// Standalone IIncrementalGenerator for auto code-behind generation on WinAppSDK targets.
+/// This generator always runs when present — it is only packaged for WinAppSDK builds.
 /// </summary>
 [Generator]
 internal sealed class XamlCodeBehindGenerator : IIncrementalGenerator
@@ -23,13 +22,6 @@ internal sealed class XamlCodeBehindGenerator : IIncrementalGenerator
 
 	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
-		// Gate: Only run on WinUI targets where UnoCodeBehindGeneratorOnly=true
-		var isActive = context.AnalyzerConfigOptionsProvider.Select(static (provider, ct) =>
-		{
-			provider.GlobalOptions.TryGetValue("build_property.UnoCodeBehindGeneratorOnly", out var value);
-			return string.Equals(value, "true", StringComparison.OrdinalIgnoreCase);
-		});
-
 		// Read global UnoGenerateCodeBehind property
 		var globalEnabled = context.AnalyzerConfigOptionsProvider.Select(static (provider, ct) =>
 		{
@@ -66,15 +58,14 @@ internal sealed class XamlCodeBehindGenerator : IIncrementalGenerator
 
 		// Combine all inputs
 		var combined = xamlFiles
-			.Combine(isActive)
 			.Combine(globalEnabled)
 			.Combine(context.CompilationProvider);
 
 		context.RegisterSourceOutput(combined, static (ctx, input) =>
 		{
-			var (((xamlFile, isActive), globalEnabled), compilation) = input;
+			var ((xamlFile, globalEnabled), compilation) = input;
 
-			if (!isActive || xamlFile.Path is null)
+			if (xamlFile.Path is null)
 			{
 				return;
 			}
@@ -105,7 +96,7 @@ internal sealed class XamlCodeBehindGenerator : IIncrementalGenerator
 			// Report diagnostic for malformed x:Class
 			context.ReportDiagnostic(
 				Diagnostic.Create(
-					XamlCodeGenerationDiagnostics.InvalidXClassRule,
+					XamlCodeBehindDiagnostics.InvalidXClassRule,
 					Location.None,
 					$"{errorMessage} in '{filePath}'"));
 			return;

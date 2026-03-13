@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
 
-namespace Uno.UI.SourceGenerators.XamlGenerator;
+namespace Uno.UI.SourceGenerators.WinAppSDK;
 
 /// <summary>
 /// Lightweight XAML parser for the standalone WinUI code-behind generator path.

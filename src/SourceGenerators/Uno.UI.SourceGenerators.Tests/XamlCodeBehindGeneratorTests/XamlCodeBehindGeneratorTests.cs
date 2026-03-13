@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.Testing;
 using Microsoft.CodeAnalysis.Text;
 using System.Text;
 using Uno.UI.SourceGenerators.Tests.Verifiers;
-using Uno.UI.SourceGenerators.XamlGenerator;
+using Uno.UI.SourceGenerators.WinAppSDK;
 
 namespace Uno.UI.SourceGenerators.Tests.XamlCodeBehindGeneratorTests;
 
@@ -97,7 +97,7 @@ public class XamlCodeBehindGeneratorTests
 		// Build global config with build properties and per-file metadata
 		var configBuilder = new StringBuilder();
 		configBuilder.AppendLine("is_global = true");
-		configBuilder.AppendLine("build_property.UnoCodeBehindGeneratorOnly = true");
+		// The WinAppSDK generator always runs when present — no gate property needed
 
 		if (globalGenerateCodeBehind is not null)
 		{
