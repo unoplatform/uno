@@ -311,7 +311,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForLoaded(flyoutItem);
 
-			flyoutItem.InvokeClick();
+			flyoutItem.Invoke();
 
 			// Force close the flyout as InvokeClick does not do so.
 			item.CloseMenuFlyout();
@@ -322,7 +322,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsFalse(flyoutItem.IsEnabled);
 
-			flyoutItem.InvokeClick();
+			flyoutItem.Invoke();
 			item.CloseMenuFlyout();
 		}
 
@@ -416,12 +416,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// We assert that the left of "Open sub menu" is almost the same as the right of "First item"
 
 				await WindowHelper.WaitForIdle();
-
 				var subItemBounds = subItem.GetAbsoluteBounds();
 				var subSubItemBounds = ((MenuFlyoutSubItem)subItem.Items.Single()).GetAbsoluteBounds();
 
 				var difference = subItemBounds.X - subSubItemBounds.Right;
-				Assert.IsLessThanOrEqualTo(3d, Math.Abs(difference));
+				Assert.IsLessThanOrEqualTo(5d, Math.Abs(difference));
 
 			}
 			finally

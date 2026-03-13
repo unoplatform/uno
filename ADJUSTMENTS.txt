@@ -1,0 +1,173 @@
+Uno-Specific vs WinUI-Matching Changes
+
+  1. EnterParams.VisualTree / LeaveParams.VisualTree — Matches WinUI ✅
+
+  WinUI's EnterParams has VisualTree* visualTree (line 23 of EnterParams.h).
+  Our addition matches exactly. WinUI's LeaveParams does not have a visualTree
+  field though — that's a minor Uno addition.
+
+  Action: Remove VisualTree from LeaveParams if not needed, or keep it as a
+  pragmatic convenience.
+
+  2. UIElement.EnterImpl — VisualTree resolution — Uno-specific workaround ⚠️
+
+  In WinUI, CDependencyObject::EnterImpl (depends.cpp:806-809) calls
+  SetVisualTree(params.visualTree) which stores the visual tree pointer on
+  every element during Enter. Then GetForElementNoRef (VisualTree.cpp:1378)
+  reads it back via element->GetVisualTree(). This means any element that's
+  been entered always knows its VisualTree.
+
+  In Uno, we don't have SetVisualTree/GetVisualTree on DependencyObject.
+  Instead we resolve it dynamically via tree walk in VisualTree.GetForElement.
+  Our fallback resolution in EnterImpl (if params.VisualTree is null, resolve
+  it) compensates for this missing cached pointer.
+
+  Action: Implement SetVisualTree/GetVisualTree on DependencyObject (a stored
+  VisualTree field, set during EnterImpl, cleared during LeaveImpl). This would
+   make the tree walk unnecessary and let GetContentRootForElement work
+  naturally for flyout content — just like WinUI.
+
+  3. UIElement.EnterImpl — KA collection propagation — Uno-specific workaround
+  ⚠️
+
+  // Lines 1263-1273: Explicit KA collection Enter
+  if (this.IsDependencyPropertySet(KeyboardAcceleratorsProperty))
+  {
+      if (GetValue(KeyboardAcceleratorsProperty) is
+  KeyboardAcceleratorCollection kac)
+          kac.Enter(null, @params);
+  }
+  In WinUI, this is handled generically by CDependencyObject::EnterImpl calling
+   EnterSparseProperties (depends.cpp:1013), which iterates ALL sparse DP
+  values and calls Enter on any that are IsVisualTreeProperty(). The
+  KeyboardAccelerators DP has IsVisualTreeProperty() = true, so it gets entered
+   automatically.
+
+  Action: Implement EnterSparseProperties (or an equivalent) in Uno's
+  DependencyObject.EnterImpl. This would generically enter all DP values that
+  are visual-tree-aware DOs, eliminating the need for per-property explicit
+  Enter calls.
+
+  4. UIElement.Properties.cs — OnKeyboardAcceleratorsChanged — Uno-specific
+  workaround ⚠️
+
+  #if HAS_UNO // TODO: Uno specific - WinUI does analogous action in
+  Enter/LeaveEffectiveValue
+  In WinUI, CDependencyObject::EnterEffectiveValue
+  (PropertySystem.cpp:1093-1161) is called whenever a DP value is set on a live
+   element. It checks IsVisualTreeProperty() and calls Enter on the new value.
+  For UIElement_KeyboardAccelerators, it also sets fIsForKeyboardAccelerator =
+  true.
+
+  Action: Implement EnterEffectiveValue/LeaveEffectiveValue in Uno's DP system.
+   When a DP value that is a DependencyObject is set on a live element, call
+  Enter on it. This would eliminate the explicit OnKeyboardAcceleratorsChanged
+  handler.
+
+  5. Button.mux.cs — Enter/Leave Flyout — Matches WinUI ✅
+
+  WinUI's CButton::EnterImpl does the same thing — enters the Flyout. This is a
+   direct port.
+
+  6. Flyout.mux.cs — Enter/Leave content — Matches WinUI ✅
+
+  WinUI's CFlyout::EnterImpl (Flyout.cpp:9-30) does the same — dead enter on
+  Content with fIsForKeyboardAccelerator = TRUE. Our code matches except we
+  also propagate VisualTree via params (Uno-specific need because of #2).
+
+  7. MenuFlyout.mux.cs — KeyboardAcceleratorFlyoutItemEnter/Leave — Partially
+  matches WinUI ⚠️
+
+  The outer structure matches WinUI's
+  CMenuFlyout::KeyboardAcceleratorFlyoutItemEnter. However, the inner loop is
+  Uno-specific:
+  - WinUI: Calls item->Enter(pNamescopeOwner, params) on each item. Because
+  CDependencyObject::EnterImpl has EnterSparseProperties, this automatically
+  propagates to the item's KA collection.
+  - Uno: Explicitly accesses item.KeyboardAccelerators and calls kac.Enter(),
+  plus special-cases MenuFlyoutSubItem. This is because Uno lacks
+  EnterSparseProperties.
+
+  Action: With EnterSparseProperties implemented, the inner loop could just
+  call item.Enter(pNamescopeOwner, parameters) — matching WinUI exactly.
+
+  8. MenuBarItem.cs — EnterImpl/LeaveImpl — Uno-specific workaround ⚠️
+
+  WinUI's MenuBarItem has no EnterImpl override. It doesn't need one because:
+  - MenuBarItem.Items is a CDOCollection (inherits CDependencyObject)
+  - The DP for Items has IsVisualTreeProperty() = true
+  - So EnterSparseProperties automatically enters the Items collection
+  - Each item in the collection gets Enter called via CDOCollection::EnterImpl
+  - Each item's sparse properties (including KA collections) get entered via
+  EnterSparseProperties
+
+  In Uno, MenuBarItem.Items is an ObservableVector<MenuFlyoutItemBase> — not a
+  DependencyObject, so no generic mechanism applies.
+
+  Action: Two options:
+  1. Make MenuBarItem.Items use a DependencyObjectCollection-based type (like
+  WinUI's CDOCollection) instead of ObservableVector. Then with
+  EnterSparseProperties, it would work generically.
+  2. Or, with just EnterSparseProperties, keep the explicit override but
+  simplify it to call item.Enter() on each item.
+
+  9. MenuFlyoutSubItem.mux.cs — OnProcessKeyboardAccelerators — Matches WinUI
+  pattern ✅
+
+  The EnterImpl/LeaveImpl methods match WinUI's CMenuFlyoutSubItem pattern
+  (delegating to KeyboardAcceleratorFlyoutItemEnter).
+
+  The OnProcessKeyboardAccelerators override walks sub-items, matching how
+  WinUI's core-level TryInvokeKeyboardAccelerator handles it.
+
+  10. KeyboardAcceleratorCollection.h.mux.cs — VisualTree fallback —
+  Uno-specific workaround ⚠️
+
+  if (pContentRoot is null && enterParams.VisualTree is not null)
+  {
+      pContentRoot = enterParams.VisualTree.ContentRoot;
+  }
+  WinUI doesn't need this. In WinUI, GetContentRootForElement(this) works
+  because:
+  1. SetVisualTree was called during Enter, so the collection has a cached
+  VisualTree pointer
+  2. If not, the parent walk works because CDOCollection.AddParent() is called
+  by EnterEffectiveValue, establishing the parent chain
+
+  Action: With SetVisualTree on DependencyObject + EnterEffectiveValue calling
+  AddParent, GetContentRootForElement would work without the fallback.
+
+  ---
+  Summary: Root Causes
+
+  All Uno-specific workarounds trace back to three missing WinUI mechanisms:
+
+  Missing WinUI Mechanism: SetVisualTree/GetVisualTree on DependencyObject
+  Where in WinUI: depends.cpp:809 + CDependencyObject.h
+  What it does: Caches the VisualTree pointer on each DO during Enter
+  Which workarounds it would eliminate: #2 (VisualTree resolution in
+  EnterImpl),
+    #10 (KA collection VisualTree fallback), LeaveParams.VisualTree
+  ────────────────────────────────────────
+  Missing WinUI Mechanism: EnterSparseProperties
+  Where in WinUI: PropertySystem.cpp:1163 + depends.cpp:1013
+  What it does: During Enter, iterates all sparse DP values and calls Enter on
+    DOs that are IsVisualTreeProperty
+  Which workarounds it would eliminate: #3 (explicit KA Enter in UIElement), #7
+
+    (explicit KA loop in MenuFlyout), #8 (MenuBarItem override)
+  ────────────────────────────────────────
+  Missing WinUI Mechanism: EnterEffectiveValue/LeaveEffectiveValue
+  Where in WinUI: PropertySystem.cpp:1093
+  What it does: When a DP is set on a live element, calls Enter on the new DO
+    value + AddParent
+  Which workarounds it would eliminate: #4 (OnKeyboardAcceleratorsChanged
+    handler)
+
+  Priority recommendation: Implementing SetVisualTree/GetVisualTree is the
+  smallest change with the biggest impact — it would eliminate the VisualTree
+  field on LeaveParams (which WinUI doesn't have) and the fallback in KA
+  collection. EnterSparseProperties is the next highest value — it would
+  eliminate 3 workarounds and is the most "generic" fix. EnterEffectiveValue is
+   a DP-system-level change with wider implications, so it's the most complex
+  to implement correctly.

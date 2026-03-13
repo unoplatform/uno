@@ -865,24 +865,18 @@ namespace Microsoft.UI.Xaml
 
 			try
 			{
-				// UNO TODO: We naively call EnterImpl right away.
-				EnterImpl(@params, depth);
-
 				//if (this is XamlIslandRoot xamlIsland)
 				//{
-				//	// The CXamlIslandRoot can enter the tree in a few different ways, and we need to make sure
-				//	// that however it enters, we override the params.visualTree with the one from the CXamlIslandRoot.
-				//	// CXamlIslandRoot always defines its own visual tree, so we must set it here.  Note that after
-				//	// the tree refactoring, this won't be necessary because the XamlIslandRoot won't be in the tree
-				//	// anymore.
 				//	@params.VisualTree = xamlIsland.GetVisualTreeNoRef();
 				//}
 
-				//if (@params.IsLive && @params.VisualTree is not null)
-				//{
-				//	// As the DO enters the live tree, we call SetVisualTree to remember which one it's associated with
-				//	SetVisualTree(@params.VisualTree);
-				//}
+				if (@params.IsLive && @params.VisualTree is not null)
+				{
+					// As the DO enters the live tree, we call SetVisualTree to remember which one it's associated with
+					this.SetVisualTree(@params.VisualTree);
+				}
+
+				EnterImpl(@params, depth);
 
 				//DependencyObject pAdjustedNamescopeOwner = pNamescopeOwner;
 
@@ -1110,6 +1104,13 @@ namespace Microsoft.UI.Xaml
 			}
 			// ----------------------- UNO-specific END -----------------------
 
+			// Propagate Enter to KeyboardAccelerators collection so it registers with ContentRoot.
+			// In WinUI, this is handled by EnterSparseProperties walking all sparse property values.
+			if ((@params.IsLive || @params.IsForKeyboardAccelerator)
+				&& KeyboardAccelerators is KeyboardAcceleratorCollection kac)
+			{
+				kac.Enter(null, @params);
+			}
 
 			//if (@params.IsLive && m_bitFields.fWantsInheritanceContextChanged)
 			//{
@@ -1149,6 +1150,14 @@ namespace Microsoft.UI.Xaml
 		internal virtual void EnterImpl(EnterParams @params, int depth)
 		{
 			Depth = depth;
+
+			// Ensure VisualTree is propagated through the Enter walk.
+			// ChildEnter may call EnterImpl directly (bypassing UIElement.Enter),
+			// so we resolve the VisualTree here as a fallback.
+			if (@params.VisualTree is null)
+			{
+				@params.VisualTree = Uno.UI.Xaml.Core.VisualTree.GetForElement(this, Uno.UI.Xaml.Core.VisualTree.LookupOptions.NoFallback);
+			}
 
 			var core = this.GetContext();
 			//bool isParentEnabled = @params.CoercedIsEnabled;
@@ -1238,17 +1247,24 @@ namespace Microsoft.UI.Xaml
 			// Pass updated params to children.
 			DependencyObject_EnterImpl(@params);
 
-			//// Extends EnterImpl to the ContextFlyout
-			//FlyoutBase pFlyoutBase = this.ContextFlyout;
-			//if (pFlyoutBase is not null)
-			//{
-			//	// This FlyoutBase can be shared between ContentRoots -- remove the VisualTree
-			//	// pointer here for this enter.  TODO: figure out why this happens
-			//	// Bug 19548424: Investigate places where an element entering the tree doesn't have a unique VisualTree ptr
-			//	EnterParams newParams = @params;
-			//	newParams.VisualTree = null;
-			//	pFlyoutBase.Enter(pNamescopeOwner, newParams/*EnterParams*/);
-			//}
+			// Extends EnterImpl to the ContextFlyout
+			FlyoutBase pFlyoutBase = this.ContextFlyout;
+			if (pFlyoutBase is not null)
+			{
+				pFlyoutBase.Enter(null, @params);
+			}
+
+			// Propagate Enter to KeyboardAccelerators collection.
+			// In WinUI, CDependencyObject::EnterImpl propagates Enter to all effective sparse values.
+			// In Uno, we need to do this explicitly for the KeyboardAccelerators collection.
+			// Use GetValue with IsDependencyPropertyValueSet to avoid creating default empty collections.
+			if (this.IsDependencyPropertySet(KeyboardAcceleratorsProperty))
+			{
+				if (GetValue(KeyboardAcceleratorsProperty) is KeyboardAcceleratorCollection kac)
+				{
+					kac.Enter(null, @params);
+				}
+			}
 
 			//// Work on the children
 			//if (m_pChildren is not null)
@@ -1402,7 +1418,7 @@ namespace Microsoft.UI.Xaml
 		// then the object is leaving the "Live" tree, and the object can no
 		// longer respond to OM requests related to being Live.   Actions
 		// like downloads and animation will be halted.
-		private void Leave(LeaveParams @params)
+		internal void Leave(LeaveParams @params)
 		{
 			// If IsProcessingEnterLeave is true, then this element is already part of the
 			// Enter/Leave walk.  This can happen, for instance, if a custom DP's value has
@@ -1649,6 +1665,15 @@ namespace Microsoft.UI.Xaml
 			//}
 
 			//LeaveSparseProperties(pNamescopeOwner, @params);
+
+			// Propagate Leave to KeyboardAccelerators collection so it unregisters from ContentRoot.
+			// In WinUI, this is handled by LeaveSparseProperties walking all sparse property values.
+			if ((@params.IsLive || @params.IsForKeyboardAccelerator)
+				&& KeyboardAccelerators is KeyboardAcceleratorCollection kac)
+			{
+				kac.Leave(null, @params);
+			}
+
 			//if (@params.IsLive)
 			//{
 			//	// If we're currently the focused element, remove ourselves from being focused
@@ -1681,6 +1706,12 @@ namespace Microsoft.UI.Xaml
 
 		internal virtual void LeaveImpl(LeaveParams @params)
 		{
+			// Ensure VisualTree is propagated through the Leave walk.
+			if (@params.VisualTree is null)
+			{
+				@params.VisualTree = Uno.UI.Xaml.Core.VisualTree.GetForElement(this, Uno.UI.Xaml.Core.VisualTree.LookupOptions.NoFallback);
+			}
+
 			// --------- UNO Specific BEGIN ---------
 			// This should be done in FrameworkElement's override of LeaveImpl.
 			// But:
@@ -1884,12 +1915,23 @@ namespace Microsoft.UI.Xaml
 
 			DependencyObject_LeaveImpl(@params);
 
-			//// Extends LeaveImpl to the ContextFlyout.
-			//FlyoutBase pFlyoutBase = ContextFlyout;
-			//if (pFlyoutBase is not null)
-			//{
-			//	pFlyoutBase.Leave(pNamescopeOwner, @params /*LeaveParams*/);
-			//}
+			// Extends LeaveImpl to the ContextFlyout.
+			FlyoutBase pFlyoutBase = ContextFlyout;
+			if (pFlyoutBase is not null)
+			{
+				pFlyoutBase.Leave(null, @params);
+			}
+
+			// Propagate Leave to KeyboardAccelerators collection.
+			// In WinUI, CDependencyObject::LeaveImpl propagates Leave to all effective sparse values.
+			// In Uno, we need to do this explicitly for the KeyboardAccelerators collection.
+			if (this.IsDependencyPropertySet(KeyboardAcceleratorsProperty))
+			{
+				if (GetValue(KeyboardAcceleratorsProperty) is KeyboardAcceleratorCollection kac)
+				{
+					kac.Leave(null, @params);
+				}
+			}
 
 			//if (EventEnabledElementRemovedInfo() && @params.fIsLive)
 			//{
