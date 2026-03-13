@@ -2079,7 +2079,7 @@ public class Given_ElementTheme
 		// Change theme while in PointerOver — the setter's ThemeResource value should
 		// re-resolve AND re-apply to the target.
 		root.RequestedTheme = ElementTheme.Dark;
-		await WindowHelper.WaitForIdle();
+		await WindowHelper.WaitFor(() => (contentText.Foreground as SolidColorBrush)?.Color != lightFg);
 
 		var darkFg = (contentText.Foreground as SolidColorBrush)?.Color;
 
