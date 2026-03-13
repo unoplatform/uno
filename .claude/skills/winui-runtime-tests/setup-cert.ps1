@@ -84,16 +84,14 @@ OID=1.3.6.1.5.5.7.3.3
     if ($thumbprintFromReq) {
         $thumbprint = $thumbprintFromReq.Matches[0].Groups[1].Value.Trim()
     } else {
-        # Fallback: list ALL certs, find CN=Uno Platform entries, take the last hash
-        $certutilOutput = & certutil -user -store My 2>&1
-        # Filter to lines near "Subject: CN=Uno Platform" and extract hash
-        $allHashes = $certutilOutput | Select-String "Cert Hash\(sha1\):"
-        if (-not $allHashes -or $allHashes.Count -eq 0) {
-            throw "Could not find any certificates in the user store."
+        # Fallback: query user cert store for certs with the expected subject
+        $matchingCerts = Get-ChildItem -Path Cert:\CurrentUser\My |
+            Where-Object { $_.Subject -eq $certSubject }
+        if (-not $matchingCerts -or $matchingCerts.Count -eq 0) {
+            throw "Could not find any certificates in the user store with subject '$certSubject'."
         }
-        # Take the most recently added (last entry)
-        $thumbprintLine = $allHashes[-1].ToString()
-        $thumbprint = ($thumbprintLine -replace '.*:\s*', '').Trim()
+        $latestCert = $matchingCerts | Sort-Object NotBefore | Select-Object -Last 1
+        $thumbprint = $latestCert.Thumbprint.Trim()
     }
 
     Write-Host "Certificate created. Thumbprint: $thumbprint"

@@ -22,11 +22,6 @@ $ResultsFile = [System.IO.Path]::GetFullPath($ResultsFile)
 if (Test-Path $ResultsFile) {
     Remove-Item $ResultsFile -Force
 }
-$canaryFile = "$ResultsFile.canary"
-if (Test-Path $canaryFile) {
-    Remove-Item $canaryFile -Force
-}
-
 # Build arguments
 $runtimeTestArgs = @("--runtime-tests=`"$ResultsFile`"")
 if ($Filter) {
@@ -45,14 +40,28 @@ $elapsed = 0
 $checkInterval = 5
 
 while ($elapsed -lt $timeout) {
-    if ($process.HasExited) {
-        Write-Host "App exited with code: $($process.ExitCode)"
-        break
-    }
+    # Check results file first (may appear just as process exits)
     if (Test-Path $ResultsFile) {
         Write-Host "Results file found after $elapsed seconds."
-        # Give the app a moment to finish writing
         Start-Sleep -Seconds 5
+        break
+    }
+    if ($process.HasExited) {
+        Write-Host "App exited with code: $($process.ExitCode)"
+        # Grace period: wait up to 10s for results file after exit
+        $remaining = $timeout - $elapsed
+        $grace = [Math]::Min(10, $remaining)
+        Write-Host "Waiting up to $grace seconds for results file after process exit..."
+        $graceElapsed = 0
+        while (($graceElapsed -lt $grace) -and -not (Test-Path $ResultsFile)) {
+            Start-Sleep -Seconds 1
+            $graceElapsed++
+            $elapsed++
+        }
+        if (Test-Path $ResultsFile) {
+            Write-Host "Results file found after process exit (elapsed: $elapsed seconds)."
+            Start-Sleep -Seconds 5
+        }
         break
     }
     Start-Sleep -Seconds $checkInterval
