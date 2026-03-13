@@ -20,7 +20,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 	/// </summary>
 	public class BindableTypeLinkerGeneratorTask_v0 : Microsoft.Build.Utilities.Task
 	{
-		private const MessageImportance DefaultLogMessageLevel
+		internal const MessageImportance DefaultLogMessageLevel
 #if DEBUG
 			= MessageImportance.High;
 #else
@@ -49,7 +49,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				var typeCache = new TypeDefinitionCache();
 				var typesToProperties = FindReferencedPropertyTypes(bindableTypes, typeCache);
 
-				var typesWithProperties = typesToProperties.Count(kvp => kvp.Value.Count > 0);
+				var typesWithProperties = typesToProperties.GetTypeProperties().Count(kvp => kvp.Value.Count > 0);
 				if (typesWithProperties > 0)
 				{
 					GenerateLinkerDescriptor(typesToProperties);
@@ -70,9 +70,9 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			}
 		}
 
-		private DefaultAssemblyResolver BuildAssemblyResolver()
+		private ReferencePathAssemblyResolver BuildAssemblyResolver()
 		{
-			var resolver = new DefaultAssemblyResolver();
+			var resolver = new ReferencePathAssemblyResolver(BuildReferencePaths(), Log);
 
 			var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
@@ -107,9 +107,36 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			}
 		}
 
-		private HashSet<AssemblyDefinition> BuildAssemblyList(DefaultAssemblyResolver resolver)
+		private Dictionary<string, string> BuildReferencePaths()
 		{
-			var rootAssembly = resolver.Resolve(AssemblyNameReference.Parse(Path.GetFileNameWithoutExtension(AssemblyPath)));
+			var dict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+			AddPath(dict, AssemblyPath);
+
+			foreach (var item in ReferencePath ?? [])
+			{
+				AddPath(dict, item.ItemSpec);
+			}
+
+			return dict;
+
+			static void AddPath(Dictionary<string, string> dict, string path)
+			{
+				var fileName = Path.GetFileName(path);
+				if (!dict.ContainsKey(fileName))
+				{
+					dict[fileName] = path;
+				}
+			}
+		}
+
+		private HashSet<AssemblyDefinition> BuildAssemblyList(IAssemblyResolver resolver)
+		{
+			var readerParameters = new ReaderParameters
+			{
+				AssemblyResolver = resolver,
+			};
+			var rootAssembly = resolver.Resolve(AssemblyNameReference.Parse(Path.GetFileNameWithoutExtension(AssemblyPath)), readerParameters);
 			Log.LogMessage(DefaultLogMessageLevel, $"Resolved Root Assembly reference `{rootAssembly.FullName}`.");
 
 			var assemblies = new HashSet<AssemblyDefinition>()
@@ -139,11 +166,16 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			return assemblies;
 		}
 
-		private AssemblyDefinition? TryResolveAssembly(DefaultAssemblyResolver resolver, AssemblyNameReference assemblyName)
+		private AssemblyDefinition? TryResolveAssembly(IAssemblyResolver resolver, AssemblyNameReference assemblyName)
 		{
+			var readerParameters = new ReaderParameters
+			{
+				AssemblyResolver = resolver,
+			};
+
 			try
 			{
-				return resolver.Resolve(assemblyName);
+				return resolver.Resolve(assemblyName, readerParameters);
 			}
 			catch (Exception ex)
 			{
@@ -192,9 +224,9 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				attr.AttributeType.FullName.EndsWith(".BindableAttribute", StringComparison.Ordinal));
 		}
 
-		private Dictionary<PreserveTypeDefinition, HashSet<PreservePropertyInfo>> FindReferencedPropertyTypes(IEnumerable<TypeDefinition> bindableTypes, TypeDefinitionCache typeCache)
+		private PreservePropertyInfoMap FindReferencedPropertyTypes(IEnumerable<TypeDefinition> bindableTypes, TypeDefinitionCache typeCache)
 		{
-			var typesToProperties = new Dictionary<PreserveTypeDefinition, HashSet<PreservePropertyInfo>>();
+			var typesToProperties = new PreservePropertyInfoMap();
 
 			foreach (var bindableType in bindableTypes)
 			{
@@ -206,22 +238,23 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				// Iterate over all public properties
 				foreach (var property in bindableType.Properties.Where(ShouldProcessPropertyType))
 				{
-					AddDeclaredPropertyTypes(typeCache, property.PropertyType, typesToProperties);
+					AddDeclaredPropertyTypes(typeCache, property.PropertyType, typesToProperties)
+						?.AddContext($"From Property `{property.Name} : {property.PropertyType.FullName}` on bindable type `{bindableType.FullName}`");
 				}
 			}
 
-			Log.LogMessage(DefaultLogMessageLevel, $"Found {typesToProperties.Values.Count(v => v.Count > 0)} implicitly referenced types.");
+			Log.LogMessage(DefaultLogMessageLevel, $"Found {typesToProperties.GetTypeProperties().Count(kvp => kvp.Value.Count > 0)} implicitly referenced types.");
 			return typesToProperties;
 		}
 
 		static readonly HashSet<PreservePropertyInfo> EmptyPreservedPropertyInfo = [];
 
-		private void AddDeclaredPropertyTypes(TypeDefinitionCache typeCache, TypeReference typeReference, Dictionary<PreserveTypeDefinition, HashSet<PreservePropertyInfo>> typesToProperties)
+		private PreserveTypeDefinition? AddDeclaredPropertyTypes(TypeDefinitionCache typeCache, TypeReference typeReference, PreservePropertyInfoMap typesToProperties)
 		{
 			var typeDefinition = TryResolveTypeDefinition(typeCache, typeReference);
 			if (typeDefinition == null)
 			{
-				return;
+				return null;
 			}
 
 			// Process generic arguments (e.g., List<Entity> should also process Entity)
@@ -229,27 +262,34 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			{
 				foreach (var genericArg in genericType.GenericArguments)
 				{
-					AddDeclaredPropertyTypes(typeCache, genericArg, typesToProperties);
+					AddDeclaredPropertyTypes(typeCache, genericArg, typesToProperties)
+						?.AddContext($"Generic type parameter from {typeReference.FullName}");
 				}
 			}
 
-			if (typeDefinition.BaseType != null)
+			if (typesToProperties.TryGetPreserveType(typeDefinition.FullName, out var existingType))
 			{
-				AddDeclaredPropertyTypes(typeCache, typeDefinition.BaseType, typesToProperties);
+				// Already processed; return the *existing* key, so that callers can call `.AddContext()`
+				return existingType;
 			}
 
 			var key = new PreserveTypeDefinition(typeDefinition.FullName, typeDefinition);
 
-			if (typesToProperties.ContainsKey(key) ||
-					HasBindableAttribute(typeDefinition))
+			if (HasBindableAttribute(typeDefinition))
 			{
-				return;
+				return null;
+			}
+
+			if (typeDefinition.BaseType != null)
+			{
+				AddDeclaredPropertyTypes(typeCache, typeDefinition.BaseType, typesToProperties)
+					?.AddContext($"Base type of {typeDefinition.FullName}");
 			}
 
 			if (!typeDefinition.HasProperties)
 			{
 				typesToProperties[key] = EmptyPreservedPropertyInfo;
-				return;
+				return key;
 			}
 
 			var declaredProperties = new HashSet<PreservePropertyInfo>();
@@ -262,8 +302,10 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 			foreach (var property in declaredProperties)
 			{
-				AddDeclaredPropertyTypes(typeCache, property.PropertyType, typesToProperties);
+				AddDeclaredPropertyTypes(typeCache, property.PropertyType, typesToProperties)
+					?.AddContext($"From Property `{property.PropertyName} : {property.PropertyType.FullName}` on type `{typeDefinition.FullName}`");
 			}
+			return key;
 		}
 
 		static bool ShouldProcessPropertyType(PropertyDefinition property)
@@ -290,10 +332,11 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			}
 		}
 
-		private void GenerateLinkerDescriptor(Dictionary<PreserveTypeDefinition, HashSet<PreservePropertyInfo>> referencedTypes)
+		private void GenerateLinkerDescriptor(PreservePropertyInfoMap referencedTypes)
 		{
 			// Group types by assembly
 			var typesByAssembly = referencedTypes
+				.GetTypeProperties()
 				.GroupBy(kvp => kvp.Key.TypeDefinition.Module.Assembly.Name.Name)
 				.OrderBy(g => g.Key);
 
@@ -325,24 +368,40 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				return new XElement("assembly",
 					new XAttribute("fullname", assemblyName),
 					types.OrderBy(t => t.Key.FullName).Select(typeEntry =>
-						CreateTypeElement(typeEntry.Key.FullName, typeEntry.Value)));
+						CreateTypeElement(typeEntry.Key, typeEntry.Value)));
 			}
 
-			static XElement? CreateTypeElement(string typeFullName, HashSet<PreservePropertyInfo> properties)
+			static IEnumerable<XNode> CreateTypeElement(PreserveTypeDefinition preserveTypeDefinition, HashSet<PreservePropertyInfo> properties)
 			{
 				if (properties.Count == 0)
 				{
-					return null; // Skip types with no public properties
+					yield break; // Skip types with no public properties
 				}
 
-				return new XElement("type",
-					new XAttribute("fullname", typeFullName),
+				yield return new XElement("type",
+					new XAttribute("fullname", preserveTypeDefinition.FullName),
 					new XAttribute("required", "false"),
+					OrderedDistinct(preserveTypeDefinition.Context).Select(c => new XComment(c)),
 					properties.OrderBy(p => p.PropertyName)
 						.Select(p =>
 							new XElement("property",
 								new XAttribute("name", p.PropertyName),
 								new XComment($" {p.PropertyType.FullName} {p.PropertyName} {{get;}} "))));
+			}
+		}
+
+		// *Implementation-wise*, `Enumerable.Distinct()` preserves order.
+		// However, that isn't documented behavior, so "appease" Copilot by implementing our version
+		// in which the order is preserved.
+		private static IEnumerable<T> OrderedDistinct<T>(IEnumerable<T> sequence)
+		{
+			var seen = new HashSet<T>();
+			foreach (var item in sequence)
+			{
+				if (seen.Add(item))
+				{
+					yield return item;
+				}
 			}
 		}
 	}
@@ -351,6 +410,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 	{
 		public string FullName { get; }
 		public TypeDefinition TypeDefinition { get; }
+		public List<string> Context { get; } = new List<string>();
 
 		public PreserveTypeDefinition(string fullName, TypeDefinition typeDefinition)
 		{
@@ -372,6 +432,11 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 		public override int GetHashCode()
 		{
 			return FullName.GetHashCode();
+		}
+
+		public void AddContext(string context)
+		{
+			Context.Add(context);
 		}
 	}
 
@@ -429,6 +494,107 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			if (methods.TryGetValue(method, out var methodDefinition))
 				return methodDefinition;
 			return methods[method] = method.Resolve();
+		}
+	}
+
+	internal class PreservePropertyInfoMap
+	{
+		private Dictionary<string, PreserveTypeDefinition> typeMap = new();
+		private Dictionary<PreserveTypeDefinition, HashSet<PreservePropertyInfo>> propertiesMap = new();
+
+		public bool TryGetPreserveType(string fullName, out PreserveTypeDefinition? preserveTypeDefinition)
+		{
+			return typeMap.TryGetValue(fullName, out preserveTypeDefinition!);
+		}
+
+		public HashSet<PreservePropertyInfo>? this[PreserveTypeDefinition preserveType]
+		{
+			get
+			{
+				if (propertiesMap.TryGetValue(preserveType, out var properties))
+				{
+					return properties;
+				}
+				return null;
+			}
+			set
+			{
+				if (value == null)
+				{
+					propertiesMap.Remove(preserveType);
+					return;
+				}
+				typeMap[preserveType.FullName] = preserveType;
+				propertiesMap[preserveType] = value;
+			}
+		}
+
+		public IEnumerable<KeyValuePair<PreserveTypeDefinition, HashSet<PreservePropertyInfo>>> GetTypeProperties()
+		{
+			return propertiesMap;
+		}
+	}
+
+	internal class ReferencePathAssemblyResolver : BaseAssemblyResolver
+	{
+		private Dictionary<string, string> referencePaths;
+		private TaskLoggingHelper log;
+		private Dictionary<string, AssemblyDefinition> cache = new();
+
+		public ReferencePathAssemblyResolver(Dictionary<string, string> referencePaths, TaskLoggingHelper log)
+		{
+			this.referencePaths = referencePaths;
+			this.log = log;
+		}
+
+		public override AssemblyDefinition Resolve(AssemblyNameReference name, ReaderParameters parameters)
+		{
+			if (cache.TryGetValue(name.FullName, out var assembly))
+			{
+				return assembly;
+			}
+
+			assembly = base.Resolve(name, parameters);
+			cache[name.FullName] = assembly;
+
+			return assembly;
+		}
+
+		protected override AssemblyDefinition SearchDirectory(AssemblyNameReference name, IEnumerable<string> directories, ReaderParameters parameters)
+		{
+			// Modified from: https://github.com/jbevain/cecil/blob/882ca5eedda1e62eb41bd5869aeb15d8f1538e51/Mono.Cecil/BaseAssemblyResolver.cs#L210-L227
+			var extensions = name.IsWindowsRuntime
+				? new[] { ".winmd", ".dll" }
+				: new[] { ".dll", ".exe" };
+			foreach (var extension in extensions)
+			{
+				var fileName = name.Name + extension;
+				if (referencePaths.TryGetValue(fileName, out var path))
+				{
+					return ReadAssembly(path, name.Name, parameters);
+				}
+			}
+
+			log.LogMessage(MessageImportance.High, $"Assembly name `{name.FullName}` was not in @(ReferencePath); falling back to arbitrary directories…");
+			return base.SearchDirectory(name, directories, parameters);
+		}
+
+		private AssemblyDefinition ReadAssembly(string path, string assemblyName, ReaderParameters parameters)
+		{
+			return AssemblyDefinition.ReadAssembly(path, parameters);
+		}
+
+		protected override void Dispose(bool disposing)
+		{
+			// Copied from: https://github.com/jbevain/cecil/blob/882ca5eedda1e62eb41bd5869aeb15d8f1538e51/Mono.Cecil/DefaultAssemblyResolver.cs#L53-L58
+			foreach (var assembly in cache.Values)
+			{
+				assembly.Dispose();
+			}
+
+			cache.Clear();
+
+			base.Dispose(disposing);
 		}
 	}
 }
