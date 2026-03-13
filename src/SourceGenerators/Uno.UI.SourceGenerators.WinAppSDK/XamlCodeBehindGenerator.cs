@@ -112,9 +112,12 @@ public sealed class XamlCodeBehindGenerator : IIncrementalGenerator
 
 		var info = classInfo.Value;
 
-		// Check if the class already exists in the compilation
+		// Check if the class already exists in user-authored source.
+		// On WinAppSDK the WinUI XAML compiler emits partial-class declarations
+		// (*.g.cs / *.g.i.cs) inside the obj directory.  Those must be ignored;
+		// we only skip generation when the developer has a real code-behind file.
 		var existingType = compilation.GetTypeByMetadataName(info.FullClassName);
-		if (existingType is not null)
+		if (existingType is not null && HasUserAuthoredDeclaration(existingType))
 		{
 			return;
 		}
@@ -124,5 +127,33 @@ public sealed class XamlCodeBehindGenerator : IIncrementalGenerator
 		var hintName = XamlCodeBehindEmitter.GetHintName(info);
 
 		context.AddSource(hintName, SourceText.From(sourceText, Encoding.UTF8));
+	}
+
+	/// <summary>
+	/// Returns true when the type has at least one declaration in a user-authored
+	/// source file (i.e. NOT inside the obj directory where the WinUI XAML compiler
+	/// places its *.g.cs / *.g.i.cs output).
+	/// </summary>
+	private static bool HasUserAuthoredDeclaration(INamedTypeSymbol type)
+	{
+		foreach (var syntaxRef in type.DeclaringSyntaxReferences)
+		{
+			var filePath = syntaxRef.SyntaxTree.FilePath;
+			if (string.IsNullOrEmpty(filePath))
+			{
+				continue;
+			}
+
+			// WinUI XAML compiler output lives in the obj directory
+			if (filePath.IndexOf("\\obj\\", StringComparison.OrdinalIgnoreCase) >= 0
+				|| filePath.IndexOf("/obj/", StringComparison.OrdinalIgnoreCase) >= 0)
+			{
+				continue;
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 }
