@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<!--
+		Auto Code-Behind Generation for WinUI targets.
+
+		On WinUI builds (IsWinAppSdk=true), the main Uno.UI.SourceGenerators analyzer is removed.
+		The separate Uno.UI.SourceGenerators.WinAppSDK assembly provides the standalone
+		XamlCodeBehindGenerator which always runs when loaded.
+	-->
+
+	<!-- CompilerVisible items must be outside targets so GenerateMSBuildEditorConfigFile sees them -->
+	<ItemGroup Condition="'$(IsWinAppSdk)'=='true'">
+		<CompilerVisibleProperty Include="UnoGenerateCodeBehind" />
+		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="SourceItemGroup" />
+		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="UnoGenerateCodeBehind" />
+	</ItemGroup>
+
+</Project>
