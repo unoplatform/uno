@@ -36,11 +36,19 @@ namespace Uno.UI.RuntimeTests.Helpers
 		public static IDisposable UseApplicationDarkTheme()
 		{
 			var originalTheme = Application.Current.RequestedTheme;
+			var wasExplicit = Application.Current.IsThemeSetExplicitly;
 			Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Dark);
 
 			return new DisposableAction(() =>
 			{
-				Application.Current.SetExplicitRequestedTheme(originalTheme);
+				if (wasExplicit)
+				{
+					Application.Current.SetExplicitRequestedTheme(originalTheme);
+				}
+				else
+				{
+					Application.Current.SetExplicitRequestedTheme(null);
+				}
 			});
 		}
 #endif
