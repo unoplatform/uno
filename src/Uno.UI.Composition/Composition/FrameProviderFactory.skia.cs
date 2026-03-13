@@ -13,6 +13,9 @@ internal static class FrameProviderFactory
 		=> new SingleFrameProvider(image);
 
 	public static bool TryCreate(SKManagedStream stream, Action onFrameChanged, [NotNullWhen(true)] out IFrameProvider? provider)
+		=> TryCreate(stream, onFrameChanged, null, null, out provider);
+
+	public static bool TryCreate(SKManagedStream stream, Action onFrameChanged, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out IFrameProvider? provider)
 	{
 		using var codec = SKCodec.Create(stream);
 
@@ -22,16 +25,35 @@ internal static class FrameProviderFactory
 			return false;
 		}
 
-		var imageInfo = codec.Info;
+		var origin = codec.EncodedOrigin;
+		var codecWidth = codec.Info.Width;
+		var codecHeight = codec.Info.Height;
+
+		// Use the smallest codec-supported decode size that covers the target.
+		// JPEG codecs support native downscaling (1/2, 1/4, 1/8) which saves memory.
+		// PNG and other codecs that don't support scaling return the native size.
+		// After decoding at the supported size, we scale to the exact target.
+		var decodeSize = GetSupportedDecodeDimensions(codec, origin, targetWidth, targetHeight);
+		var imageInfo = new SKImageInfo(decodeSize.Width, decodeSize.Height, SKColorType.Bgra8888, SKAlphaType.Premul);
 		var frameInfos = codec.FrameInfo;
-		imageInfo = new SKImageInfo(imageInfo.Width, imageInfo.Height, SKColorType.Bgra8888, SKAlphaType.Premul);
 		using var bitmap = new SKBitmap(imageInfo);
 
 		if (codec.FrameInfo.Length < 2)
 		{
 			// FrameInfo can be zero for single-frame images
-			codec.GetPixels(imageInfo, bitmap.GetPixels());
-			provider = new SingleFrameProvider(GetImage(bitmap, codec.EncodedOrigin));
+			var result = codec.GetPixels(imageInfo, bitmap.GetPixels());
+			if (result is not SKCodecResult.Success and not SKCodecResult.IncompleteInput)
+			{
+				provider = null;
+				return false;
+			}
+			var image = GetImage(bitmap, origin);
+			var scaled = ScaleToTargetIfNeeded(image, origin, codecWidth, codecHeight, targetWidth, targetHeight);
+			if (scaled != image)
+			{
+				image.Dispose();
+			}
+			provider = new SingleFrameProvider(scaled);
 			return true;
 		}
 
@@ -60,9 +82,14 @@ internal static class FrameProviderFactory
 			// correct prior frame pixels from the previous iteration.
 
 			var options = new SKCodecOptions(i, requiredFrame);
-			codec.GetPixels(imageInfo, bitmap.GetPixels(), options);
+			var result = codec.GetPixels(imageInfo, bitmap.GetPixels(), options);
+			if (result is not SKCodecResult.Success and not SKCodecResult.IncompleteInput)
+			{
+				provider = null;
+				return false;
+			}
 
-			var currentBitmap = GetImage(bitmap, codec.EncodedOrigin);
+			var currentBitmap = GetImage(bitmap, origin);
 			if (currentBitmap is null)
 			{
 				provider = null;
@@ -78,8 +105,130 @@ internal static class FrameProviderFactory
 			totalDuration += durations[i];
 		}
 
+		// Scale frames in a second pass. The first pass needs unscaled images
+		// because they serve as reference frames during decoding.
+		for (int i = 0; i < images.Length; i++)
+		{
+			var scaled = ScaleToTargetIfNeeded(images[i], origin, codecWidth, codecHeight, targetWidth, targetHeight);
+			if (scaled != images[i])
+			{
+				images[i].Dispose();
+				images[i] = scaled;
+			}
+		}
+
 		provider = new AnimatedImageFrameProvider(images, durations, totalDuration, onFrameChanged);
 		return true;
+	}
+
+	/// <summary>
+	/// Returns the smallest codec-supported decode dimensions that cover the target size.
+	/// For codecs that support native downscaling (e.g. JPEG: 1/2, 1/4, 1/8), this
+	/// returns a reduced size that saves memory. For codecs that only support native
+	/// size (e.g. PNG), this returns the original dimensions.
+	/// </summary>
+	private static SKSizeI GetSupportedDecodeDimensions(
+		SKCodec codec, SKEncodedOrigin origin,
+		int? targetWidth, int? targetHeight)
+	{
+		// Normalize non-positive dimensions to null so downstream branches
+		// only deal with genuinely positive values.
+		if (targetWidth is <= 0) targetWidth = null;
+		if (targetHeight is <= 0) targetHeight = null;
+
+		var codecWidth = codec.Info.Width;
+		var codecHeight = codec.Info.Height;
+
+		if (targetWidth is null && targetHeight is null)
+		{
+			return new SKSizeI(codecWidth, codecHeight);
+		}
+
+		// Target dimensions are in display (post-rotation) space.
+		// Convert to codec (pre-rotation) space for the scale calculation.
+		bool swaps = SkEncodedOriginSwapsWidthHeight(origin);
+		int displayWidth = swaps ? codecHeight : codecWidth;
+		int displayHeight = swaps ? codecWidth : codecHeight;
+
+		int targetCodecW, targetCodecH;
+
+		if (targetWidth is > 0 && targetHeight is > 0)
+		{
+			targetCodecW = swaps ? targetHeight.Value : targetWidth.Value;
+			targetCodecH = swaps ? targetWidth.Value : targetHeight.Value;
+		}
+		else if (targetWidth is > 0)
+		{
+			int targetDisplayW = targetWidth.Value;
+			int targetDisplayH = (int)Math.Max(1, (long)displayHeight * targetDisplayW / displayWidth);
+			targetCodecW = swaps ? targetDisplayH : targetDisplayW;
+			targetCodecH = swaps ? targetDisplayW : targetDisplayH;
+		}
+		else
+		{
+			int targetDisplayH = targetHeight!.Value;
+			int targetDisplayW = (int)Math.Max(1, (long)displayWidth * targetDisplayH / displayHeight);
+			targetCodecW = swaps ? targetDisplayH : targetDisplayW;
+			targetCodecH = swaps ? targetDisplayW : targetDisplayH;
+		}
+
+		// Use the larger scale factor so the decoded image covers the target in both dimensions.
+		float desiredScale = Math.Max(
+			(float)targetCodecW / codecWidth,
+			(float)targetCodecH / codecHeight);
+
+		return codec.GetScaledDimensions(desiredScale);
+	}
+
+	/// <summary>
+	/// Scales an image (already in display/post-EXIF-rotation space) to the exact
+	/// target dimensions. When only one dimension is specified, the other is computed
+	/// to preserve the source aspect ratio.
+	/// </summary>
+	private static SKImage ScaleToTargetIfNeeded(
+		SKImage image, SKEncodedOrigin origin,
+		int codecWidth, int codecHeight,
+		int? targetWidth, int? targetHeight)
+	{
+		if (targetWidth is <= 0) targetWidth = null;
+		if (targetHeight is <= 0) targetHeight = null;
+
+		if (targetWidth is null && targetHeight is null)
+		{
+			return image;
+		}
+
+		bool swaps = SkEncodedOriginSwapsWidthHeight(origin);
+		int originalDisplayW = swaps ? codecHeight : codecWidth;
+		int originalDisplayH = swaps ? codecWidth : codecHeight;
+
+		int dstW, dstH;
+		if (targetWidth is > 0 && targetHeight is > 0)
+		{
+			dstW = targetWidth.Value;
+			dstH = targetHeight.Value;
+		}
+		else if (targetWidth is > 0)
+		{
+			dstW = targetWidth.Value;
+			dstH = (int)Math.Max(1, (long)originalDisplayH * dstW / originalDisplayW);
+		}
+		else
+		{
+			dstH = targetHeight!.Value;
+			dstW = (int)Math.Max(1, (long)originalDisplayW * dstH / originalDisplayH);
+		}
+
+		if (dstW == image.Width && dstH == image.Height)
+		{
+			return image;
+		}
+
+		var dstInfo = new SKImageInfo(dstW, dstH, SKColorType.Bgra8888, SKAlphaType.Premul);
+		using var dstBitmap = new SKBitmap(dstInfo);
+		using var srcBitmap = SKBitmap.FromImage(image);
+		srcBitmap.ScalePixels(dstBitmap, new SKSamplingOptions(SKCubicResampler.CatmullRom));
+		return SKImage.FromBitmap(dstBitmap);
 	}
 
 	private static SKImage GetImage(SKBitmap bitmap, SKEncodedOrigin origin)
@@ -123,16 +272,16 @@ internal static class FrameProviderFactory
 	private static bool SkEncodedOriginSwapsWidthHeight(SKEncodedOrigin origin)
 	{
 		return origin is
-			// Reflected across x - axis.Rotated 90� counter - clockwise.
+			// Reflected across x - axis.Rotated 90° counter - clockwise.
 			SKEncodedOrigin.LeftTop or
 
-			// Rotated 90� clockwise.
+			// Rotated 90° clockwise.
 			SKEncodedOrigin.RightTop or
 
-			// Reflected across x-axis. Rotated 90� clockwise.
+			// Reflected across x-axis. Rotated 90° clockwise.
 			SKEncodedOrigin.RightBottom or
 
-			// Rotated 90� counter-clockwise.
+			// Rotated 90° counter-clockwise.
 			SKEncodedOrigin.LeftBottom;
 	}
 
