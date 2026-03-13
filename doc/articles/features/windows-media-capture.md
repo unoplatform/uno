@@ -52,7 +52,25 @@ On iOS, CameraCaptureUI uses the native `UIImagePickerController` to capture med
 
 #### macOS
 
-On macOS (Skia Desktop), `CameraCaptureUI` uses AVFoundation to capture photos and videos from the built-in FaceTime camera or external USB cameras. A modal dialog presents a live camera preview with capture controls. The app's `Info.plist` must include an `NSCameraUsageDescription` key, and if you are capturing video with audio, an `NSMicrophoneUsageDescription` key as well; otherwise, access may be denied or the app may terminate. Based on these keys, the system will automatically prompt the user for camera and microphone access the first time the app attempts to use them.
+On macOS (Skia Desktop), `CameraCaptureUI` uses AVFoundation to capture photos and videos from the built-in FaceTime camera or external USB cameras. A modal dialog presents a live camera preview with capture controls.
+
+To request the necessary permissions, ensure that the `NSCameraUsageDescription` and (for video with audio) `NSMicrophoneUsageDescription` keys are added to the app's `Info.plist` file. Without these keys, access to the camera and microphone may be denied or the app may be terminated. Based on these keys, the system will automatically prompt the user for camera and microphone access the first time the app attempts to use them.
+
+> [!NOTE]
+> The `NSMicrophoneUsageDescription` key is required only if you are capturing videos with audio. If you are only capturing photos (no audio), you can omit this key.
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>NSCameraUsageDescription</key>
+    <string>We need access to the camera to capture photos and videos.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>We need access to the microphone to record audio with videos.</string>
+</dict>
+</plist>
+```
 
 > [!NOTE]
 > Video capture on macOS records to MP4 format. The video capture dialog provides Record/Stop and Cancel controls.
