@@ -360,7 +360,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			private set
 			{
 				// MUX Reference: FlyoutBase_partial.cpp SetPlacementTarget (lines 2978-3006)
-				// Detach ActualThemeChanged from old target
+				// Detach ActualThemeChanged from old target on reassignment
 				if (_targetWeakRef?.IsAlive == true && _targetWeakRef.Target is FrameworkElement oldTarget)
 				{
 					oldTarget.ActualThemeChanged -= OnPlacementTargetActualThemeChanged;
@@ -368,12 +368,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 				WeakReferencePool.ReturnWeakReference(this, _targetWeakRef);
 				_targetWeakRef = value is not null ? WeakReferencePool.RentWeakReference(this, value) : null;
-
-				// Attach ActualThemeChanged to new target
-				if (value is not null)
-				{
-					value.ActualThemeChanged += OnPlacementTargetActualThemeChanged;
-				}
 			}
 		}
 
@@ -409,6 +403,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			if (!cancel)
 			{
+				// Detach ActualThemeChanged on close to avoid holding the flyout alive
+				if (_targetWeakRef?.IsAlive == true && _targetWeakRef.Target is FrameworkElement closingTarget)
+				{
+					closingTarget.ActualThemeChanged -= OnPlacementTargetActualThemeChanged;
+				}
+
 				m_openingCanceled = true;
 
 				if (_popup != null)
@@ -486,6 +486,13 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 
 			Target = placementTarget;
+
+			// Attach ActualThemeChanged while open so flyout tracks target's theme
+			if (placementTarget is not null)
+			{
+				placementTarget.ActualThemeChanged += OnPlacementTargetActualThemeChanged;
+			}
+
 			ForwardTargetPropertiesToPresenter();
 
 			// Capture the input device that triggered this flyout (mirrors WinUI ValidateAndSetParameters)
