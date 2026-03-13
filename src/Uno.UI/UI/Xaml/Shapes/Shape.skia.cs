@@ -55,6 +55,10 @@ namespace Microsoft.UI.Xaml.Shapes
 			OnStrokeBrushChanged();
 			UpdateStrokeThickness();
 			UpdateStrokeDashArray();
+			UpdateStrokeCaps();
+			UpdateStrokeLineJoin();
+			UpdateStrokeMiterLimit();
+			UpdateStrokeDashOffset();
 		}
 
 		private void OnFillBrushChanged()
@@ -88,6 +92,28 @@ namespace Microsoft.UI.Xaml.Shapes
 		private void OnStrokeBrushChanged()
 		{
 			_shape.StrokeBrush = Stroke?.GetOrCreateCompositionBrush(Visual.Compositor);
+		}
+
+		private void UpdateStrokeCaps()
+		{
+			_shape.StrokeStartCap = (CompositionStrokeCap)StrokeStartLineCap;
+			_shape.StrokeEndCap = (CompositionStrokeCap)StrokeEndLineCap;
+			_shape.StrokeDashCap = (CompositionStrokeCap)StrokeDashCap;
+		}
+
+		private void UpdateStrokeLineJoin()
+		{
+			_shape.StrokeLineJoin = (CompositionStrokeLineJoin)StrokeLineJoin;
+		}
+
+		private void UpdateStrokeMiterLimit()
+		{
+			_shape.StrokeMiterLimit = (float)StrokeMiterLimit;
+		}
+
+		private void UpdateStrokeDashOffset()
+		{
+			_shape.StrokeDashOffset = (float)StrokeDashOffset;
 		}
 	}
 }
