@@ -222,7 +222,10 @@ namespace Microsoft.UI.Xaml.Media
 				throw new ArgumentNullException(nameof(xamlRoot));
 			}
 
-			return GetOpenPopups(xamlRoot.VisualTree);
+			return GetOpenPopups(xamlRoot.VisualTree)
+				.Where(p => !p.IsSystemPopup)
+				.ToList()
+				.AsReadOnly();
 		}
 
 		private static IReadOnlyList<Popup> GetOpenPopups(VisualTree visualTree)
