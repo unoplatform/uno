@@ -5,7 +5,9 @@
 #pragma warning disable 114 // new keyword hiding
 #pragma warning disable 67 // new keyword hiding
 using System;
-using Uno;
+using System.Threading;
+using System.Threading.Tasks;
+using Windows.Foundation;
 
 namespace Windows.Storage;
 
@@ -23,6 +25,8 @@ public sealed partial class ApplicationData
 	private readonly Lazy<ApplicationDataContainer> _localSettingsLazy;
 	private readonly Lazy<ApplicationDataContainer> _roamingSettingsLazy;
 
+	private const string VersionSettingKey = ApplicationDataContainer.InternalSettingPrefix + "ApplicationDataVersion";
+
 	private ApplicationData()
 	{
 		_localFolderLazy = new(() => CreateStorageFolder(GetLocalFolder()));
@@ -35,8 +39,8 @@ public sealed partial class ApplicationData
 		_localCacheFolderLazy = new(() => CreateStorageFolder(GetLocalCacheFolder()));
 		_temporaryFolderLazy = new(() => CreateStorageFolder(GetTemporaryFolder()));
 
-		_localSettingsLazy = new(() => new ApplicationDataContainer(this, "Local", ApplicationDataLocality.Local));
-		_roamingSettingsLazy = new(() => new ApplicationDataContainer(this, "Roaming", ApplicationDataLocality.Roaming));
+		_localSettingsLazy = new(() => new ApplicationDataContainer("Local", ApplicationDataLocality.Local));
+		_roamingSettingsLazy = new(() => new ApplicationDataContainer("Roaming", ApplicationDataLocality.Roaming));
 
 		InitializePartial();
 	}
@@ -86,8 +90,14 @@ public sealed partial class ApplicationData
 	[Uno.NotImplemented]
 	public ulong RoamingStorageQuota => 0;
 
-	[Uno.NotImplemented]
-	public uint Version => 0;
+	/// <summary>
+	/// Gets the version number of the application data in the app data store.
+	/// </summary>
+	public uint Version
+	{
+		get => GetVersionSetting();
+		private set => SetVersionSetting(value);
+	}
 
 	[Uno.NotImplemented]
 	public void SignalDataChanged()
@@ -115,6 +125,58 @@ public sealed partial class ApplicationData
 
 	[Uno.NotImplemented]
 	public event Foundation.TypedEventHandler<ApplicationData, object>? DataChanged;
+
+	/// <summary>
+	/// Sets the version number of the application data in the app data store.
+	/// </summary>
+	/// <param name="desiredVersion">The new version number.</param>
+	/// <param name="handler">The set version event handler.</param>
+	/// <returns>An object that is used to manage the asynchronous set version operation.</returns>
+	public IAsyncAction SetVersionAsync(uint desiredVersion, ApplicationDataSetVersionHandler handler)
+	{
+		if (handler is null)
+		{
+			throw new ArgumentNullException(nameof(handler));
+		}
+
+		return AsyncAction.FromTask(async ct => await SetVersionTaskAsync(desiredVersion, handler, ct));
+	}
+
+	private async Task SetVersionTaskAsync(uint desiredVersion, ApplicationDataSetVersionHandler handler, CancellationToken ct)
+	{
+		var request = new SetVersionRequest(Version, desiredVersion);
+		handler?.Invoke(request);
+		request.DeferralManager.EventRaiseCompleted();
+		await request.DeferralManager.WhenAllCompletedAsync();
+		Version = desiredVersion;
+	}
+
+	private uint GetVersionSetting()
+	{
+		if (LocalSettings.Values is not ApplicationDataContainerSettings settings)
+		{
+			throw new InvalidOperationException("The settings container is not initialized.");
+		}
+
+		if (settings.TryGetValue(VersionSettingKey, out var version))
+		{
+			if (version is uint versionValue)
+			{
+				return versionValue;
+			}
+		}
+
+		return 0;
+	}
+
+	private void SetVersionSetting(uint version)
+	{
+		if (LocalSettings.Values is not ApplicationDataContainerSettings settings)
+		{
+			throw new InvalidOperationException("The settings container is not initialized.");
+		}
+		settings[VersionSettingKey] = version;
+	}
 
 	private static StorageFolder CreateStorageFolder(string folder)
 	{
