@@ -12,24 +12,18 @@ using Microsoft.CodeAnalysis.Text;
 namespace Uno.UI.SourceGenerators.XamlGenerator;
 
 /// <summary>
-/// Standalone IIncrementalGenerator for auto code-behind generation on WinUI targets.
-/// This generator only runs when UnoCodeBehindGeneratorOnly=true (set by Uno.CodeBehind.targets on WinUI builds).
+/// Standalone IIncrementalGenerator for auto code-behind generation on WinAppSDK targets.
+/// This generator always runs when loaded. It is only loaded on WinAppSDK builds
+/// via the Uno.UI.SourceGenerators.WinAppSDK analyzer assembly.
 /// On Uno Platform targets, code-behind generation is handled by the integrated XamlCodeGeneration pipeline.
 /// </summary>
 [Generator]
-internal sealed class XamlCodeBehindGenerator : IIncrementalGenerator
+public sealed class XamlCodeBehindGenerator : IIncrementalGenerator
 {
 	private static readonly string[] ValidSourceItemGroups = { "Page", "ApplicationDefinition" };
 
 	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
-		// Gate: Only run on WinUI targets where UnoCodeBehindGeneratorOnly=true
-		var isActive = context.AnalyzerConfigOptionsProvider.Select(static (provider, ct) =>
-		{
-			provider.GlobalOptions.TryGetValue("build_property.UnoCodeBehindGeneratorOnly", out var value);
-			return string.Equals(value, "true", StringComparison.OrdinalIgnoreCase);
-		});
-
 		// Read global UnoGenerateCodeBehind property
 		var globalEnabled = context.AnalyzerConfigOptionsProvider.Select(static (provider, ct) =>
 		{
@@ -66,15 +60,14 @@ internal sealed class XamlCodeBehindGenerator : IIncrementalGenerator
 
 		// Combine all inputs
 		var combined = xamlFiles
-			.Combine(isActive)
 			.Combine(globalEnabled)
 			.Combine(context.CompilationProvider);
 
 		context.RegisterSourceOutput(combined, static (ctx, input) =>
 		{
-			var (((xamlFile, isActive), globalEnabled), compilation) = input;
+			var ((xamlFile, globalEnabled), compilation) = input;
 
-			if (!isActive || xamlFile.Path is null)
+			if (xamlFile.Path is null)
 			{
 				return;
 			}

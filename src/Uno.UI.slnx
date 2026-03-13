@@ -385,6 +385,9 @@
     <Project Path="SourceGenerators/Uno.UI.SourceGenerators/Uno.UI.SourceGenerators.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
+    <Project Path="SourceGenerators/Uno.UI.SourceGenerators.WinAppSDK/Uno.UI.SourceGenerators.WinAppSDK.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Release" />
+    </Project>
     <Project Path="SourceGenerators/Uno.UI.Tasks/Uno.UI.Tasks.csproj">
       <BuildDependency Project="SourceGenerators/Uno.UI.SourceGenerators/Uno.UI.SourceGenerators.csproj" />
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
