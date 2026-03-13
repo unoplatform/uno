@@ -32,6 +32,20 @@ internal class MacOSCameraCaptureUIExtension : ICameraCaptureUIExtension
 		_photoFormat = picker.PhotoSettings.Format;
 		_videoFormat = picker.VideoSettings.Format;
 
+		if (_mode != CameraCaptureUIMode.Video)
+		{
+			switch (_photoFormat)
+			{
+				case CameraCaptureUIPhotoFormat.Jpeg:
+				case CameraCaptureUIPhotoFormat.Png:
+					break;
+
+				default:
+					throw new NotSupportedException(
+						$"Only {CameraCaptureUIPhotoFormat.Jpeg} and {CameraCaptureUIPhotoFormat.Png} photo formats are supported on macOS.");
+			}
+		}
+
 		if (_mode == CameraCaptureUIMode.Video && _videoFormat != CameraCaptureUIVideoFormat.Mp4)
 		{
 			throw new NotSupportedException($"Only {CameraCaptureUIVideoFormat.Mp4} video format is supported on macOS.");
