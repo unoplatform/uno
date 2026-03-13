@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI;
@@ -81,6 +82,35 @@ internal partial class PopupRoot : Canvas
 				else
 				{
 					popup.IsOpen = false;
+				}
+			}
+			node = next;
+		}
+	}
+
+	// MUX Reference: Popup.cpp CPopupRoot::NotifyThemeChanged
+	// In WinUI, PopupRoot iterates all open popups and explicitly calls
+	// NotifyThemeChanged on each, because popup children are visually
+	// parented under PopupRoot but their logical parent is the Popup itself.
+	// Without this, theme walks that reach PopupRoot via the visual tree
+	// would not propagate to popup content.
+	private protected override void NotifyThemeChangedCore(Theme theme, bool forceRefresh)
+	{
+		base.NotifyThemeChangedCore(theme, forceRefresh);
+
+		// Propagate theme to all open popups
+		var node = _openPopups.First;
+		while (node != null)
+		{
+			var next = node.Next;
+			if (node.Value.TryGetTarget<Popup>(out var popup))
+			{
+				// MUX Reference: Popup.cpp ShouldPopupRootNotifyThemeChange (lines 3551-3563)
+				// Skip parented popups — they receive theme from their parent walk.
+				// Only notify popups whose visual parent is null or PopupRoot itself.
+				if (VisualTreeHelper.GetParent(popup) is null or PopupRoot)
+				{
+					popup.NotifyThemeChanged(theme, forceRefresh);
 				}
 			}
 			node = next;
