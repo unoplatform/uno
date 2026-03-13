@@ -264,6 +264,13 @@ void uno_native_dispose(NSView<UNONativeElement>* element)
 const char* _Nullable uno_capture_photo(bool useJpeg)
 {
     @autoreleasepool {
+        // Ensure required privacy usage string is present to avoid OS termination
+        if (![[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSCameraUsageDescription"])
+        {
+            NSLog(@"[uno_capture_photo] Missing NSCameraUsageDescription in Info.plist. Camera access is not permitted.");
+            return NULL;
+        }
+
         // Find camera device
         AVCaptureDevice *camera = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
         if (!camera) {
