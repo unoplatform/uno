@@ -52,7 +52,7 @@ On iOS, CameraCaptureUI uses the native `UIImagePickerController` to capture med
 
 #### macOS
 
-On macOS (Skia Desktop), `CameraCaptureUI` uses AVFoundation to capture photos and videos from the built-in FaceTime camera or external USB cameras. A modal dialog presents a live camera preview with capture controls. No special permissions are required in the app manifest, but the system will automatically prompt the user for camera and microphone access the first time the app attempts to use them.
+On macOS (Skia Desktop), `CameraCaptureUI` uses AVFoundation to capture photos and videos from the built-in FaceTime camera or external USB cameras. A modal dialog presents a live camera preview with capture controls. The app's `Info.plist` must include an `NSCameraUsageDescription` key, and if you are capturing video with audio, an `NSMicrophoneUsageDescription` key as well; otherwise, access may be denied or the app may terminate. Based on these keys, the system will automatically prompt the user for camera and microphone access the first time the app attempts to use them.
 
 > [!NOTE]
 > Video capture on macOS records to MP4 format. The video capture dialog provides Record/Stop and Cancel controls.
