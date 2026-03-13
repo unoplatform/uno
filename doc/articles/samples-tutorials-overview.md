@@ -30,9 +30,11 @@ Expand your skills with these in-depth tutorials.
 
 Explore a range of sample projects showcasing the versatility of Uno Platform.
 
+[**Samples Catalog**](xref:Uno.Samples.Catalog): A comprehensive catalog with detailed information about each sample including .NET version, project structure, target frameworks, UnoFeatures, dependencies, and tutorial availability. **Use this to quickly find samples matching your requirements.**
+
 [**Chefs**](xref:Uno.Chefs.Overview): A recipe app that combines recipe browsing with interactive features, allowing users to explore step-by-step instructions, video tutorials, nutritional information, user reviews, and even create their own personalized cookbooks, all while showcasing powerful features of the Uno Platform in a practical, real-world scenario.
 
-[**Samples Repository**](xref:Uno.Samples): A curated list of sample projects that demonstrate various functionalities and use cases ranging from small single-feature samples to larger showcase applications.
+[**Samples Repository**](xref:Uno.Samples): The GitHub repository containing all sample projects that demonstrate various functionalities and use cases ranging from small single-feature samples to larger showcase applications.
 
 ## Additional Resources
 
