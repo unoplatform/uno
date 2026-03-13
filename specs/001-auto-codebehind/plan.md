@@ -72,7 +72,7 @@ src/Uno.UI.RuntimeTests/
     └── Given_AutoCodeBehind.cs             # Runtime tests
 
 src/Uno.Sdk/targets/
-└── Uno.CodeBehind.targets                  # New: MSBuild targets for WinUI support
+└── Uno.Common.WinAppSdk.targets             # Modified: imports WinAppSdk.props for code-behind
 ```
 
 **Structure Decision**: Two integration paths in the same assembly:
@@ -176,14 +176,14 @@ The simplest implementation: when the code-behind is auto-generated, create a sy
 <!-- Per-file override (in .csproj) -->
 <ItemGroup>
   <Page Update="Special.xaml">
-    <GenerateCodeBehind>false</GenerateCodeBehind>
+    <UnoGenerateCodeBehind>false</UnoGenerateCodeBehind>
   </Page>
 </ItemGroup>
 ```
 
 Flow to generator:
 - `<CompilerVisibleProperty Include="UnoGenerateCodeBehind" />` → `build_property.UnoGenerateCodeBehind`
-- `<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="GenerateCodeBehind" />` → `build_metadata.AdditionalFiles.GenerateCodeBehind`
+- `<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="UnoGenerateCodeBehind" />` → `build_metadata.AdditionalFiles.GenerateCodeBehind`
 
 ## Complexity Tracking
 

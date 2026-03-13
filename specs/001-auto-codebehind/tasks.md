@@ -19,8 +19,8 @@
 
 **Purpose**: MSBuild property/metadata plumbing so the source generators can read project configuration
 
-- [X] T001 Add `CompilerVisibleProperty` for `UnoGenerateCodeBehind` and `CompilerVisibleItemMetadata` for `GenerateCodeBehind` on all four item types (`AdditionalFiles` with `SourceItemGroup` of `Page`, `UnoPage`, `ApplicationDefinition`, `UnoApplicationDefinition`) in `src/SourceGenerators/Uno.UI.SourceGenerators/Content/Uno.UI.SourceGenerators.props`
-- [X] T002 Create MSBuild targets file for WinUI support at `src/Uno.Sdk/targets/Uno.CodeBehind.targets` that re-adds the analyzer DLL (path: `$(MSBuildThisFileDirectory)../analyzers/dotnet/cs/Uno.UI.SourceGenerators.dll` or equivalent resolved from Uno.Sdk package layout) on WinUI builds when `UnoGenerateCodeBehind` is not `false`, and sets `UnoCodeBehindGeneratorOnly=true`
+- [X] T001 Add `CompilerVisibleProperty` for `UnoGenerateCodeBehind` and `CompilerVisibleItemMetadata` for `UnoGenerateCodeBehind` on all four item types (`AdditionalFiles` with `SourceItemGroup` of `Page`, `UnoPage`, `ApplicationDefinition`, `UnoApplicationDefinition`) in `src/SourceGenerators/Uno.UI.SourceGenerators/Content/Uno.UI.SourceGenerators.props`
+- [X] T002 Create MSBuild targets file for WinUI support at `src/Uno.Sdk/targets/Uno.UI.SourceGenerators.WinAppSdk.props` that re-adds the analyzer DLL (path: `$(MSBuildThisFileDirectory)../analyzers/dotnet/cs/Uno.UI.SourceGenerators.dll` or equivalent resolved from Uno.Sdk package layout) on WinUI builds when `UnoGenerateCodeBehind` is not `false`, and sets `UnoCodeBehindGeneratorOnly=true`
 
 ---
 
@@ -31,7 +31,7 @@
 **CRITICAL**: Both US1 and US4 depend on these shared components
 
 - [X] T003 [P] Create `XamlClassInfo` record/struct (FullClassName, Namespace, ClassName, RootElementName, RootElementNamespace, BaseTypeFullName) in `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlClassInfo.cs`
-- [X] T004 Create XAML `x:Class` and root element parser using `XDocument` in `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeBehindParser.cs`. This parser is primarily used by the standalone WinUI path (US4). The integrated Uno path (US1) reuses existing `XamlCodeGeneration` type resolution infrastructure. Include: (a) `x:Class` extraction returning `XamlClassInfo?` (null when no `x:Class`), (b) root element type map (Page, UserControl, Window, Application, ResourceDictionary, ContentDialog, SwapChainPanel to fully-qualified WinUI types), (c) `GenerateCodeBehind` config reading helper that resolves per-file metadata vs project-level property precedence (FR-009)
+- [X] T004 Create XAML `x:Class` and root element parser using `XDocument` in `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeBehindParser.cs`. This parser is primarily used by the standalone WinUI path (US4). The integrated Uno path (US1) reuses existing `XamlCodeGeneration` type resolution infrastructure. Include: (a) `x:Class` extraction returning `XamlClassInfo?` (null when no `x:Class`), (b) root element type map (Page, UserControl, Window, Application, ResourceDictionary, ContentDialog, SwapChainPanel to fully-qualified WinUI types), (c) `UnoGenerateCodeBehind` config reading helper that resolves per-file metadata vs project-level property precedence (FR-009)
 - [X] T005 [P] Create code-behind source text emitter method that takes `XamlClassInfo` and returns formatted C# source string matching the template in data-model.md in `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeBehindEmitter.cs`
 
 **Checkpoint**: Foundation ready - shared parsing and emitting infrastructure complete
@@ -53,12 +53,12 @@
 
 ### Implementation for User Story 1
 
-- [X] T008 [US1] Modify `XamlCodeGeneration.Generate()` to detect XAML files where `FindClassSymbol()` returns null, check `UnoGenerateCodeBehind` property and per-file `GenerateCodeBehind` metadata, and emit code-behind source using shared emitter. Note: for root element type resolution, reuse existing `GetType(topLevelControl.Type)` from the `XamlCodeGeneration` pipeline (do NOT use the `XDocument`-based parser from T004 - that is for the WinUI standalone path only) in `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeGeneration.cs`
+- [X] T008 [US1] Modify `XamlCodeGeneration.Generate()` to detect XAML files where `FindClassSymbol()` returns null, check `UnoGenerateCodeBehind` property and per-file `UnoGenerateCodeBehind` metadata, and emit code-behind source using shared emitter. Note: for root element type resolution, reuse existing `GetType(topLevelControl.Type)` from the `XamlCodeGeneration` pipeline (do NOT use the `XDocument`-based parser from T004 - that is for the WinUI standalone path only) in `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeGeneration.cs`
 - [X] T009 [US1] Add internal flag/set in `XamlCodeGeneration` to track which XAML files have auto-generated code-behind, so `XamlFileGenerator` can query it in `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeGeneration.cs`
 - [X] T010 [US1] Modify `XamlFileGenerator.TryGenerateWarningForInconsistentBaseType` to suppress `#warning` when code-behind is auto-generated in `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.cs`
 - [X] T011 [US1] Modify `XamlFileGenerator` x:Bind resolution paths (`GetXBindPropertyPathType`, `GetTargetType`, `XBindExpressionParser.Rewrite`) to use XAML-derived base type when code-behind is auto-generated. Implementation: use the base type `INamedTypeSymbol` resolved by `XamlCodeGeneration` pipeline and pass it as a substitute for `_xClassName.Symbol` in affected code paths in `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.cs`
 - [X] T012 [US1] Handle edge case: XAML files with no `x:Class` attribute are skipped (FR-006) - verify existing `XamlCodeGeneration` pipeline already filters these, add guard if not in `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeGeneration.cs`
-- [X] T013 [US1] Handle edge case: malformed `x:Class` (no namespace separator) emits diagnostic `UNOB0001` and skips generation. First verify `UNOB0001` is not already in use in `src/SourceGenerators/` (search existing diagnostics). In `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeGeneration.cs`
+- [X] T013 [US1] Handle edge case: malformed `x:Class` (no namespace separator) emits diagnostic `UXAML0004` and skips generation. First verify `UXAML0004` is not already in use in `src/SourceGenerators/` (search existing diagnostics). In `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeGeneration.cs`
 
 > **GREEN**: Runtime tests from T007 should now pass. Verify before proceeding.
 
@@ -79,7 +79,7 @@
 - [X] T016 [P] [US4] Test: XAML with `x:Class` and existing code-behind class in compilation produces no generated output in `src/SourceGenerators/Uno.UI.SourceGenerators.Tests/XamlCodeBehindGeneratorTests/XamlCodeBehindGeneratorTests.cs`
 - [X] T017 [P] [US4] Test: XAML with `x:Class` where class exists in non-conventional file (not `.xaml.cs`) produces no generated output in `src/SourceGenerators/Uno.UI.SourceGenerators.Tests/XamlCodeBehindGeneratorTests/XamlCodeBehindGeneratorTests.cs`
 - [X] T018 [P] [US4] Test: XAML with no `x:Class` attribute produces no generated output in `src/SourceGenerators/Uno.UI.SourceGenerators.Tests/XamlCodeBehindGeneratorTests/XamlCodeBehindGeneratorTests.cs`
-- [X] T019 [P] [US4] Test: Malformed `x:Class` (no namespace) emits `UNOB0001` diagnostic in `src/SourceGenerators/Uno.UI.SourceGenerators.Tests/XamlCodeBehindGeneratorTests/XamlCodeBehindGeneratorTests.cs`
+- [X] T019 [P] [US4] Test: Malformed `x:Class` (no namespace) emits `UXAML0004` diagnostic in `src/SourceGenerators/Uno.UI.SourceGenerators.Tests/XamlCodeBehindGeneratorTests/XamlCodeBehindGeneratorTests.cs`
 - [X] T020 [P] [US4] Test: Correct base type resolution for Page, UserControl, Window, ContentDialog root elements in `src/SourceGenerators/Uno.UI.SourceGenerators.Tests/XamlCodeBehindGeneratorTests/XamlCodeBehindGeneratorTests.cs`
 
 > **RED**: Tests should fail at this point (standalone generator does not exist yet). Verify failure before proceeding.
@@ -88,8 +88,8 @@
 
 - [X] T021 [US4] Create `XamlCodeBehindGenerator` class implementing `IIncrementalGenerator` in `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeBehindGenerator.cs`
 - [X] T022 [US4] Implement `Initialize` method: register provider pipeline that filters `AdditionalFiles` by `SourceItemGroup` metadata (`Page`, `UnoPage`, `ApplicationDefinition`, `UnoApplicationDefinition`), reads `build_property.UnoCodeBehindGeneratorOnly` to gate activation (only runs when property is `true`, i.e., WinUI builds) in `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeBehindGenerator.cs`
-- [X] T023 [US4] Implement incremental pipeline: parse XAML with shared `XamlCodeBehindParser` (from T004), check `Compilation.GetTypeByMetadataName()` for existing class, read `UnoGenerateCodeBehind` property and per-file `GenerateCodeBehind` metadata, emit source via shared emitter in `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeBehindGenerator.cs`
-- [X] T024 [US4] Verify `Uno.CodeBehind.targets` (T002) correctly re-adds analyzer DLL and sets gating property on WinUI builds in `src/Uno.Sdk/targets/Uno.CodeBehind.targets`
+- [X] T023 [US4] Implement incremental pipeline: parse XAML with shared `XamlCodeBehindParser` (from T004), check `Compilation.GetTypeByMetadataName()` for existing class, read `UnoGenerateCodeBehind` property and per-file `UnoGenerateCodeBehind` metadata, emit source via shared emitter in `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeBehindGenerator.cs`
+- [X] T024 [US4] Verify `Uno.UI.SourceGenerators.WinAppSdk.props` (T002) correctly re-adds analyzer DLL and sets gating property on WinUI builds in `src/Uno.Sdk/targets/Uno.UI.SourceGenerators.WinAppSdk.props`
 
 > **GREEN**: Unit tests from T014-T020 should now pass. Verify before proceeding.
 
@@ -99,17 +99,17 @@
 
 ## Phase 5: User Story 2 + User Story 3 - Configuration Controls (Priority: P2)
 
-**Goal**: Project-level `UnoGenerateCodeBehind` property and per-file `GenerateCodeBehind` metadata correctly enable/disable generation with proper precedence (per-file overrides project-level)
+**Goal**: Project-level `UnoGenerateCodeBehind` property and per-file `UnoGenerateCodeBehind` metadata correctly enable/disable generation with proper precedence (per-file overrides project-level)
 
 **Independent Test (US2)**: Set `UnoGenerateCodeBehind=false` in `.csproj`, create XAML file without code-behind, build and verify no code-behind is generated
 
-**Independent Test (US3)**: With `UnoGenerateCodeBehind=true`, add `<GenerateCodeBehind>false</GenerateCodeBehind>` to a specific XAML file, verify it is skipped. Conversely, with global `false`, set per-file `true` and verify generation occurs.
+**Independent Test (US3)**: With `UnoGenerateCodeBehind=true`, add `<UnoGenerateCodeBehind>false</UnoGenerateCodeBehind>` to a specific XAML file, verify it is skipped. Conversely, with global `false`, set per-file `true` and verify generation occurs.
 
 ### Tests for User Story 2 + 3 (Write FIRST - must FAIL before hardening)
 
 - [X] T025 [P] [US2] Test: `UnoGenerateCodeBehind=false` suppresses generation in `src/SourceGenerators/Uno.UI.SourceGenerators.Tests/XamlCodeBehindGeneratorTests/XamlCodeBehindGeneratorTests.cs`
-- [X] T026 [P] [US3] Test: Per-file `GenerateCodeBehind=false` overrides global `true` in `src/SourceGenerators/Uno.UI.SourceGenerators.Tests/XamlCodeBehindGeneratorTests/XamlCodeBehindGeneratorTests.cs`
-- [X] T027 [P] [US3] Test: Per-file `GenerateCodeBehind=true` overrides global `false` in `src/SourceGenerators/Uno.UI.SourceGenerators.Tests/XamlCodeBehindGeneratorTests/XamlCodeBehindGeneratorTests.cs`
+- [X] T026 [P] [US3] Test: Per-file `UnoGenerateCodeBehind=false` overrides global `true` in `src/SourceGenerators/Uno.UI.SourceGenerators.Tests/XamlCodeBehindGeneratorTests/XamlCodeBehindGeneratorTests.cs`
+- [X] T027 [P] [US3] Test: Per-file `UnoGenerateCodeBehind=true` overrides global `false` in `src/SourceGenerators/Uno.UI.SourceGenerators.Tests/XamlCodeBehindGeneratorTests/XamlCodeBehindGeneratorTests.cs`
 
 > **RED/GREEN**: Some tests may already pass if config logic was correctly wired in T008/T023. Verify and fix any failures.
 
@@ -118,7 +118,7 @@
 > Note: The core property/metadata reading logic is built in Phase 2 (T004) and wired into both generators in T008 and T023. This phase validates and hardens the configuration behavior.
 
 - [X] T028 [US2] [US3] Verify and harden integrated path (XamlCodeGeneration) correctly reads `build_property.UnoGenerateCodeBehind` and respects `true`/`false`/absent (default `true`) in `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeGeneration.cs`
-- [X] T029 [US2] [US3] Verify and harden integrated path reads per-file `build_metadata.AdditionalFiles.GenerateCodeBehind` and applies precedence (per-file wins over project-level) in `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeGeneration.cs`
+- [X] T029 [US2] [US3] Verify and harden integrated path reads per-file `build_metadata.AdditionalFiles.UnoGenerateCodeBehind` and applies precedence (per-file wins over project-level) in `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeGeneration.cs`
 - [X] T030 [US2] [US3] Verify and harden standalone path (XamlCodeBehindGenerator) reads the same properties with identical behavior in `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeBehindGenerator.cs`
 
 > **GREEN**: All config tests T025-T027 must pass. Verify before proceeding.

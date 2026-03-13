@@ -13,7 +13,7 @@ Represents a XAML file candidate for code-behind generation.
 | `FilePath` | `string` | `AdditionalText.Path` | Absolute path to the `.xaml` file |
 | `Content` | `SourceText` | `AdditionalText.GetText()` | XAML file content for parsing |
 | `SourceItemGroup` | `string` | `build_metadata.AdditionalFiles.SourceItemGroup` | MSBuild item type: `Page` or `ApplicationDefinition` |
-| `GenerateCodeBehindOverride` | `string?` | `build_metadata.AdditionalFiles.GenerateCodeBehind` | Per-file override: `"true"`, `"false"`, or `null` (use project default) |
+| `GenerateCodeBehindOverride` | `string?` | `build_metadata.AdditionalFiles.UnoGenerateCodeBehind` | Per-file override: `"true"`, `"false"`, or `null` (use project default) |
 
 ### 2. XamlClassInfo (Parsed Result)
 
@@ -40,7 +40,7 @@ The generated source file for a single XAML file.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `HintName` | `string` | Source generator hint name (e.g., `"MyApp.Views.MainPage.g.cs"`) |
+| `HintName` | `string` | Source generator hint name (e.g., `"MyApp.Views.MainPage.codebehind.g.cs"`) |
 | `SourceText` | `string` | Generated C# source code |
 
 ## State Transitions
@@ -54,9 +54,9 @@ XAML File Discovered
   │
   ├─ x:Class malformed? ─────────────────── DIAGNOSTIC + SKIP (Edge case)
   │
-  ├─ Per-file GenerateCodeBehind="false"? ── SKIP (FR-008, FR-009)
+  ├─ Per-file UnoGenerateCodeBehind="false"? ── SKIP (FR-008, FR-009)
   │
-  ├─ Per-file GenerateCodeBehind="true"? ─── FORCE GENERATE (check class exists)
+  ├─ Per-file UnoGenerateCodeBehind="true"? ─── FORCE GENERATE (check class exists)
   │                                           │
   │                                           ├─ Class exists? ── SKIP (FR-005)
   │                                           └─ Class missing? ─ GENERATE
@@ -89,7 +89,7 @@ XAML File Discovered
 
 namespace {Namespace}
 {{
-    partial class {ClassName} : {BaseType}
+    public partial class {ClassName} : {BaseType}
     {{
         public {ClassName}()
         {{
@@ -114,6 +114,6 @@ namespace {Namespace}
 
 ## Validation Rules
 
-1. **x:Class format**: Must contain at least one `.` separating namespace from class name. If not, emit diagnostic `UNOB0001: Invalid x:Class value '{value}' - must include namespace`.
+1. **x:Class format**: Must contain at least one `.` separating namespace from class name. If not, emit diagnostic `UXAML0004: Invalid x:Class value '{value}' - must include namespace`.
 2. **Duplicate generation**: Generator must not produce output if `Compilation.GetTypeByMetadataName(fullClassName)` returns non-null.
-3. **Per-file override precedence**: `GenerateCodeBehind` item metadata always wins over `UnoGenerateCodeBehind` project property.
+3. **Per-file override precedence**: `UnoGenerateCodeBehind` item metadata always wins over `UnoGenerateCodeBehind` project property.

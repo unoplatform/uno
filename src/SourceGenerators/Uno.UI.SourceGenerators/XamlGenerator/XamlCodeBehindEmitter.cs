@@ -19,7 +19,7 @@ internal static class XamlCodeBehindEmitter
 
 namespace {classInfo.Namespace}
 {{
-	partial class {classInfo.ClassName} : {classInfo.BaseTypeFullName}
+	public partial class {classInfo.ClassName} : {classInfo.BaseTypeFullName}
 	{{
 		public {classInfo.ClassName}()
 		{{
