@@ -152,14 +152,12 @@ void uno_native_dispose(NSView<UNONativeElement>* element)
     [transients removeObject:element];
 }
 
-// Camera capture dialog using AVFoundation.
-// Presents a modal window with a live camera preview and Capture/Cancel buttons.
-// This function must be called from the main thread (same pattern as file pickers).
+// Camera capture using AVFoundation.
+// Both photo and video present a modal window with a live camera preview.
+// These functions must be called from the main thread (same pattern as file pickers).
 
-// Receives the async photo capture result and dismisses the modal.
-// The delegate callback fires on the session's internal queue (not main thread),
-// so it dispatches stopModal back to the main queue where the modal run loop
-// will process it.
+// --- Photo capture delegate ---
+
 @interface UNOCameraCaptureDelegate : NSObject <AVCapturePhotoCaptureDelegate>
 @property (nonatomic, strong) NSData *capturedImageData;
 @end
@@ -173,7 +171,6 @@ void uno_native_dispose(NSView<UNONativeElement>* element)
     if (!error) {
         self.capturedImageData = [photo fileDataRepresentation];
     }
-    // Dismiss the modal from the main thread (the modal run loop drains the main queue)
     dispatch_async(dispatch_get_main_queue(), ^{
         [NSApp stopModal];
     });
@@ -181,25 +178,84 @@ void uno_native_dispose(NSView<UNONativeElement>* element)
 
 @end
 
-// Handles button clicks for the camera modal dialog.
-@interface UNOCameraModalHelper : NSObject
+// --- Photo modal helper ---
+
+@interface UNOPhotoModalHelper : NSObject
 @property (nonatomic, strong) AVCapturePhotoOutput *photoOutput;
 @property (nonatomic, strong) UNOCameraCaptureDelegate *captureDelegate;
 @end
 
-@implementation UNOCameraModalHelper
+@implementation UNOPhotoModalHelper
 
 - (void)capturePhoto:(NSButton *)sender {
-    // Disable button to prevent double-tap
     sender.enabled = NO;
-
-    // Initiate async photo capture — the delegate callback will dismiss the modal
     self.captureDelegate = [[UNOCameraCaptureDelegate alloc] init];
     AVCapturePhotoSettings *settings = [AVCapturePhotoSettings photoSettings];
     [self.photoOutput capturePhotoWithSettings:settings delegate:self.captureDelegate];
 }
 
 - (void)cancel:(NSButton *)sender {
+    [NSApp abortModal];
+}
+
+@end
+
+// --- Video recording delegate ---
+
+@interface UNOVideoRecordingDelegate : NSObject <AVCaptureFileOutputRecordingDelegate>
+@property (nonatomic, strong) NSURL *outputFileURL;
+@property (nonatomic, assign) BOOL succeeded;
+@end
+
+@implementation UNOVideoRecordingDelegate
+
+- (void)captureOutput:(AVCaptureFileOutput *)output
+    didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
+                        fromConnections:(NSArray<AVCaptureConnection *> *)connections
+                                  error:(NSError *)error
+{
+    self.succeeded = (error == nil);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [NSApp stopModal];
+    });
+}
+
+@end
+
+// --- Video modal helper ---
+
+@interface UNOVideoModalHelper : NSObject
+@property (nonatomic, strong) AVCaptureMovieFileOutput *movieOutput;
+@property (nonatomic, strong) UNOVideoRecordingDelegate *recordingDelegate;
+@property (nonatomic, strong) NSURL *outputFileURL;
+@property (nonatomic, weak) NSButton *recordButton;
+@property (nonatomic, weak) NSButton *cancelButton;
+@property (nonatomic, assign) BOOL isRecording;
+@end
+
+@implementation UNOVideoModalHelper
+
+- (void)toggleRecording:(NSButton *)sender {
+    if (!self.isRecording) {
+        // Start recording
+        self.isRecording = YES;
+        sender.title = @"Stop";
+        self.cancelButton.enabled = NO;
+
+        self.recordingDelegate = [[UNOVideoRecordingDelegate alloc] init];
+        self.recordingDelegate.outputFileURL = self.outputFileURL;
+        [self.movieOutput startRecordingToOutputFileURL:self.outputFileURL recordingDelegate:self.recordingDelegate];
+    } else {
+        // Stop recording — delegate callback will dismiss the modal
+        sender.enabled = NO;
+        [self.movieOutput stopRecording];
+    }
+}
+
+- (void)cancel:(NSButton *)sender {
+    if (self.isRecording) {
+        [self.movieOutput stopRecording];
+    }
     [NSApp abortModal];
 }
 
@@ -258,7 +314,7 @@ const char* _Nullable uno_capture_photo(bool useJpeg)
         [contentView addSubview:previewView];
 
         // Helper that handles button actions
-        UNOCameraModalHelper *helper = [[UNOCameraModalHelper alloc] init];
+        UNOPhotoModalHelper *helper = [[UNOPhotoModalHelper alloc] init];
         helper.photoOutput = photoOutput;
 
         // Capture button — initiates async capture, delegate dismisses modal when done
@@ -322,5 +378,123 @@ const char* _Nullable uno_capture_photo(bool useJpeg)
         }
 
         return NULL;
+    }
+}
+
+const char* _Nullable uno_capture_video(void)
+{
+    @autoreleasepool {
+        // Find camera and microphone
+        AVCaptureDevice *camera = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+        if (!camera) {
+            return NULL;
+        }
+
+        NSError *error = nil;
+        AVCaptureDeviceInput *videoInput = [AVCaptureDeviceInput deviceInputWithDevice:camera error:&error];
+        if (!videoInput) {
+            return NULL;
+        }
+
+        // Set up capture session
+        AVCaptureSession *session = [[AVCaptureSession alloc] init];
+        session.sessionPreset = AVCaptureSessionPresetHigh;
+
+        if (![session canAddInput:videoInput]) {
+            return NULL;
+        }
+        [session addInput:videoInput];
+
+        // Add audio input if available
+        AVCaptureDevice *mic = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
+        if (mic) {
+            AVCaptureDeviceInput *audioInput = [AVCaptureDeviceInput deviceInputWithDevice:mic error:&error];
+            if (audioInput && [session canAddInput:audioInput]) {
+                [session addInput:audioInput];
+            }
+        }
+
+        AVCaptureMovieFileOutput *movieOutput = [[AVCaptureMovieFileOutput alloc] init];
+        if (![session canAddOutput:movieOutput]) {
+            return NULL;
+        }
+        [session addOutput:movieOutput];
+
+        // Prepare output file path
+        NSString *tempDir = NSTemporaryDirectory();
+        NSString *fileName = [NSString stringWithFormat:@"%@.mp4", [[NSUUID UUID] UUIDString]];
+        NSString *filePath = [tempDir stringByAppendingPathComponent:fileName];
+        NSURL *fileURL = [NSURL fileURLWithPath:filePath];
+
+        // Build the modal window with camera preview
+        NSRect windowRect = NSMakeRect(0, 0, 640, 520);
+        NSWindow *window = [[NSWindow alloc]
+            initWithContentRect:windowRect
+                      styleMask:NSWindowStyleMaskTitled | NSWindowStyleMaskClosable
+                        backing:NSBackingStoreBuffered
+                          defer:NO];
+        window.title = @"Video Capture";
+        [window center];
+
+        NSView *contentView = window.contentView;
+
+        // Camera preview layer
+        AVCaptureVideoPreviewLayer *previewLayer = [AVCaptureVideoPreviewLayer layerWithSession:session];
+        previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+        previewLayer.frame = NSMakeRect(0, 60, 640, 460);
+
+        NSView *previewView = [[NSView alloc] initWithFrame:NSMakeRect(0, 60, 640, 460)];
+        previewView.wantsLayer = YES;
+        [previewView.layer addSublayer:previewLayer];
+        [contentView addSubview:previewView];
+
+        // Helper that handles button actions
+        UNOVideoModalHelper *helper = [[UNOVideoModalHelper alloc] init];
+        helper.movieOutput = movieOutput;
+        helper.outputFileURL = fileURL;
+
+        // Record button — toggles between Start/Stop
+        NSButton *recordButton = [[NSButton alloc] initWithFrame:NSMakeRect(270, 15, 100, 32)];
+        recordButton.title = @"Record";
+        recordButton.bezelStyle = NSBezelStyleRounded;
+        recordButton.keyEquivalent = @"\r";
+        recordButton.target = helper;
+        recordButton.action = @selector(toggleRecording:);
+        [contentView addSubview:recordButton];
+        helper.recordButton = recordButton;
+
+        // Cancel button
+        NSButton *cancelButton = [[NSButton alloc] initWithFrame:NSMakeRect(20, 15, 100, 32)];
+        cancelButton.title = @"Cancel";
+        cancelButton.bezelStyle = NSBezelStyleRounded;
+        cancelButton.keyEquivalent = @"\033"; // Escape
+        cancelButton.target = helper;
+        cancelButton.action = @selector(cancel:);
+        [contentView addSubview:cancelButton];
+        helper.cancelButton = cancelButton;
+
+        // Start camera and run modal
+        [session startRunning];
+        NSModalResponse response = [NSApp runModalForWindow:window];
+        [window orderOut:nil];
+        [session stopRunning];
+
+        // NSModalResponseAbort means user cancelled
+        if (response == NSModalResponseAbort) {
+            [[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
+            return NULL;
+        }
+
+        if (!helper.recordingDelegate.succeeded) {
+            [[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
+            return NULL;
+        }
+
+        // Verify the file was written
+        if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+            return NULL;
+        }
+
+        return strdup([filePath UTF8String]);
     }
 }

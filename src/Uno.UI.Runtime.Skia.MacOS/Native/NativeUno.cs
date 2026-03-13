@@ -506,4 +506,7 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial string? /* const char* _Nullable */ uno_capture_photo([MarshalAs(UnmanagedType.I1)] bool useJpeg);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial string? /* const char* _Nullable */ uno_capture_video();
 }
