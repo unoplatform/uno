@@ -544,7 +544,7 @@
                             FontWeight="SemiBold"
                             Foreground="{ThemeResource AccentFillColorDefaultBrush}"
                             Style="{StaticResource IconButtonStyle}"
-                            Visibility="{Binding IsDebug}">
+                            >
                             <Button.Content>
                                 <SymbolIcon Symbol="Help" />
                             </Button.Content>

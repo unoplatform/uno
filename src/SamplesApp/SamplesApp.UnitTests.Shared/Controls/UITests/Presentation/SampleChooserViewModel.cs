@@ -839,7 +839,8 @@ namespace SampleControl.Presentation
 				IgnoreInSnapshotTests = attribute.IgnoreInSnapshotTests,
 				IsManualTest = attribute.IsManualTest,
 				UsesFrame = attribute.UsesFrame,
-				DisableKeyboardShortcuts = attribute.DisableKeyboardShortcuts
+				DisableKeyboardShortcuts = attribute.DisableKeyboardShortcuts,
+				SourceFilePath = _allSamplePaths.GetValueOrDefault(type.AsType())
 			};
 
 		private static IEnumerable<TypeInfo> FindDefinedAssemblies(Assembly assembly)
