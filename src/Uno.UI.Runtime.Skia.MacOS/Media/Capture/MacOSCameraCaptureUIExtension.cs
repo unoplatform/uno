@@ -21,6 +21,7 @@ internal class MacOSCameraCaptureUIExtension : ICameraCaptureUIExtension
 
 	private CameraCaptureUIMode _mode;
 	private CameraCaptureUIPhotoFormat _photoFormat;
+	private CameraCaptureUIVideoFormat _videoFormat;
 	private bool _allowCropping;
 
 	public void Customize(CameraCaptureUI picker, CameraCaptureUIMode mode)
@@ -28,6 +29,12 @@ internal class MacOSCameraCaptureUIExtension : ICameraCaptureUIExtension
 		_mode = mode;
 		_photoFormat = picker.PhotoSettings.Format;
 		_allowCropping = picker.PhotoSettings.AllowCropping;
+		_videoFormat = picker.VideoSettings.Format;
+
+		if (_mode == CameraCaptureUIMode.Video && _videoFormat != CameraCaptureUIVideoFormat.Mp4)
+		{
+			throw new NotSupportedException($"Only {CameraCaptureUIVideoFormat.Mp4} video format is supported on macOS.");
+		}
 	}
 
 	public async Task<StorageFile?> CaptureFileAsync(CancellationToken token)
