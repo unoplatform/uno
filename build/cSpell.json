@@ -134,7 +134,8 @@
 	"subviews",
 	"Swipeable",
 	"backgrounded",
-	"Agentic"
+	"Agentic",
+	"Logcat"
   ],
   "ignoreWords": [
 	"ADAL",
