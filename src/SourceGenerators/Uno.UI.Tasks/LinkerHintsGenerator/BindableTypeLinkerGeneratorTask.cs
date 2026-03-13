@@ -20,7 +20,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 	/// </summary>
 	public class BindableTypeLinkerGeneratorTask_v0 : Microsoft.Build.Utilities.Task
 	{
-		private const MessageImportance DefaultLogMessageLevel
+		internal const MessageImportance DefaultLogMessageLevel
 #if DEBUG
 			= MessageImportance.High;
 #else
@@ -72,7 +72,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 		private DefaultAssemblyResolver BuildAssemblyResolver()
 		{
-			var resolver = new DefaultAssemblyResolver();
+			var resolver = new ReferencePathAssemblyResolver(ReferencePath ?? [], Log);
 
 			var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
@@ -206,7 +206,8 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				// Iterate over all public properties
 				foreach (var property in bindableType.Properties.Where(ShouldProcessPropertyType))
 				{
-					AddDeclaredPropertyTypes(typeCache, property.PropertyType, typesToProperties);
+					AddDeclaredPropertyTypes(typeCache, property.PropertyType, typesToProperties)
+						?.AddContext($"From Property `{property.Name} : {property.PropertyType.FullName}` on bindable type `{bindableType.FullName}`");
 				}
 			}
 
@@ -216,12 +217,12 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 		static readonly HashSet<PreservePropertyInfo> EmptyPreservedPropertyInfo = [];
 
-		private void AddDeclaredPropertyTypes(TypeDefinitionCache typeCache, TypeReference typeReference, Dictionary<PreserveTypeDefinition, HashSet<PreservePropertyInfo>> typesToProperties)
+		private PreserveTypeDefinition? AddDeclaredPropertyTypes(TypeDefinitionCache typeCache, TypeReference typeReference, Dictionary<PreserveTypeDefinition, HashSet<PreservePropertyInfo>> typesToProperties)
 		{
 			var typeDefinition = TryResolveTypeDefinition(typeCache, typeReference);
 			if (typeDefinition == null)
 			{
-				return;
+				return null;
 			}
 
 			// Process generic arguments (e.g., List<Entity> should also process Entity)
@@ -229,27 +230,34 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			{
 				foreach (var genericArg in genericType.GenericArguments)
 				{
-					AddDeclaredPropertyTypes(typeCache, genericArg, typesToProperties);
+					AddDeclaredPropertyTypes(typeCache, genericArg, typesToProperties)
+						?.AddContext($"Generic type parameter from {typeReference.FullName}");
 				}
-			}
-
-			if (typeDefinition.BaseType != null)
-			{
-				AddDeclaredPropertyTypes(typeCache, typeDefinition.BaseType, typesToProperties);
 			}
 
 			var key = new PreserveTypeDefinition(typeDefinition.FullName, typeDefinition);
 
-			if (typesToProperties.ContainsKey(key) ||
-					HasBindableAttribute(typeDefinition))
+			if (typesToProperties.ContainsKey(key))
 			{
-				return;
+				// Already processed; return the *existing* key, so that callers can call `.AddComment()`
+				return typesToProperties.Keys.First(k => k.Equals(key));
+			}
+
+			if (HasBindableAttribute(typeDefinition))
+			{
+				return null;
+			}
+
+			if (typeDefinition.BaseType != null)
+			{
+				AddDeclaredPropertyTypes(typeCache, typeDefinition.BaseType, typesToProperties)
+					?.AddContext($"Base type of {typeDefinition.FullName}");
 			}
 
 			if (!typeDefinition.HasProperties)
 			{
 				typesToProperties[key] = EmptyPreservedPropertyInfo;
-				return;
+				return key;
 			}
 
 			var declaredProperties = new HashSet<PreservePropertyInfo>();
@@ -262,8 +270,10 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 			foreach (var property in declaredProperties)
 			{
-				AddDeclaredPropertyTypes(typeCache, property.PropertyType, typesToProperties);
+				AddDeclaredPropertyTypes(typeCache, property.PropertyType, typesToProperties)
+					?.AddContext($"From Property `{property.PropertyName} : {property.PropertyType.FullName}` on type `{typeDefinition.FullName}`");
 			}
+			return key;
 		}
 
 		static bool ShouldProcessPropertyType(PropertyDefinition property)
@@ -325,19 +335,20 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				return new XElement("assembly",
 					new XAttribute("fullname", assemblyName),
 					types.OrderBy(t => t.Key.FullName).Select(typeEntry =>
-						CreateTypeElement(typeEntry.Key.FullName, typeEntry.Value)));
+						CreateTypeElement(typeEntry.Key, typeEntry.Value)));
 			}
 
-			static XElement? CreateTypeElement(string typeFullName, HashSet<PreservePropertyInfo> properties)
+			static IEnumerable<XNode> CreateTypeElement(PreserveTypeDefinition preserveTypeDefinition, HashSet<PreservePropertyInfo> properties)
 			{
 				if (properties.Count == 0)
 				{
-					return null; // Skip types with no public properties
+					yield break; // Skip types with no public properties
 				}
 
-				return new XElement("type",
-					new XAttribute("fullname", typeFullName),
+				yield return new XElement("type",
+					new XAttribute("fullname", preserveTypeDefinition.FullName),
 					new XAttribute("required", "false"),
+					preserveTypeDefinition.Context.Distinct().Select(c => new XComment(c)),
 					properties.OrderBy(p => p.PropertyName)
 						.Select(p =>
 							new XElement("property",
@@ -351,6 +362,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 	{
 		public string FullName { get; }
 		public TypeDefinition TypeDefinition { get; }
+		public List<string> Context { get; } = new List<string>();
 
 		public PreserveTypeDefinition(string fullName, TypeDefinition typeDefinition)
 		{
@@ -372,6 +384,11 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 		public override int GetHashCode()
 		{
 			return FullName.GetHashCode();
+		}
+
+		public void AddContext(string context)
+		{
+			Context.Add(context);
 		}
 	}
 
@@ -429,6 +446,58 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			if (methods.TryGetValue(method, out var methodDefinition))
 				return methodDefinition;
 			return methods[method] = method.Resolve();
+		}
+	}
+
+	internal class ReferencePathAssemblyResolver : DefaultAssemblyResolver
+	{
+		private ITaskItem[] referencePath;
+		private TaskLoggingHelper log;
+
+		public ReferencePathAssemblyResolver(ITaskItem[] referencePath, TaskLoggingHelper log)
+		{
+			this.referencePath = referencePath;
+			this.log = log;
+		}
+
+		protected override AssemblyDefinition SearchDirectory(AssemblyNameReference name, IEnumerable<string> directories, ReaderParameters parameters)
+		{
+			// Modified from: https://github.com/jbevain/cecil/blob/882ca5eedda1e62eb41bd5869aeb15d8f1538e51/Mono.Cecil/BaseAssemblyResolver.cs#L210-L227
+			var extensions = name.IsWindowsRuntime
+				? new[] { ".winmd", ".dll" }
+				: new[] { ".dll", ".exe" };
+			foreach (var extension in extensions)
+			{
+				var fileName = name.Name + extension;
+				foreach (var path in referencePath)
+				{
+					if (!path.ItemSpec.EndsWith(fileName, StringComparison.OrdinalIgnoreCase))
+					{
+						continue;
+					}
+					if (path.ItemSpec.Length <= fileName.Length)
+					{
+						// not sure how this is realistically plausible, but sure.
+						return ReadAssembly(path.ItemSpec, name.Name);
+					}
+					var directorySeparatorChar = path.ItemSpec[path.ItemSpec.Length - fileName.Length - 1];
+					if (directorySeparatorChar != Path.DirectorySeparatorChar && directorySeparatorChar != Path.AltDirectorySeparatorChar)
+					{
+						continue;
+					}
+					return ReadAssembly(path.ItemSpec, name.Name);
+				}
+			}
+
+			log.LogMessage(MessageImportance.High, $"Assembly name `{name.FullName}` was not in @(ReferencePath); falling back to arbitrary directories…");
+			return base.SearchDirectory(name, directories, parameters);
+		}
+
+		private AssemblyDefinition ReadAssembly(string path, string assemblyName)
+		{
+			log.LogMessage(BindableTypeLinkerGeneratorTask_v0.DefaultLogMessageLevel,
+				$"Resolving assembly name `{assemblyName}` to path `{path}`.");
+			return AssemblyDefinition.ReadAssembly(path);
 		}
 	}
 }
