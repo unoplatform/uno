@@ -797,9 +797,20 @@ namespace Microsoft.UI.Xaml
 			bool themeChanged = oldBase != newBase || forceRefresh;
 
 			// 2. PUSH this element's theme to global context for resource lookups
-			var themeKey = newBase == Theme.Light ? "Light" : "Dark";
 			var currentActiveTheme = ResourceDictionary.GetActiveTheme();
-			var needsPush = !themeKey.Equals(currentActiveTheme.Key);
+			string themeKey;
+			bool needsPush;
+			if (newBase == Theme.None)
+			{
+				// No explicit theme resolved - use current active theme, don't push
+				themeKey = currentActiveTheme.Key;
+				needsPush = false;
+			}
+			else
+			{
+				themeKey = newBase == Theme.Light ? "Light" : "Dark";
+				needsPush = !themeKey.Equals(currentActiveTheme.Key);
+			}
 
 			if (needsPush)
 			{
