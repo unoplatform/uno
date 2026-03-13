@@ -528,13 +528,12 @@ namespace Microsoft.UI.Xaml
 			if (instance is FrameworkElement fe)
 			{
 				// If element has explicit RequestedTheme and this is a theme change,
-				// the element controls its own subtree - don't override its theme
+				// the element controls its own subtree - don't override its theme.
+				// Push the element's own theme context so ThemeResource lookups
+				// resolve against its RequestedTheme, not the app-level theme.
 				if (updateReason == ResourceUpdateReason.ThemeResource &&
 					fe.RequestedTheme != ElementTheme.Default)
 				{
-					// Update this element's bindings but don't propagate to children
-					// The element's subtree will use its own RequestedTheme
-					fe.UpdateThemeBindings(updateReason);
 					return;
 				}
 
