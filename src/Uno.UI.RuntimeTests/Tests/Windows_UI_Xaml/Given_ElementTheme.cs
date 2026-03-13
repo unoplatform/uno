@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI;
@@ -191,6 +192,8 @@ public class Given_ElementTheme
 		WindowHelper.WindowContent = parent;
 		await WindowHelper.WaitForLoaded(parent);
 
+		childThemeChangedCount = 0; // Reset after load
+
 		// Change parent's theme
 		parent.RequestedTheme = ElementTheme.Dark;
 		await WindowHelper.WaitForIdle();
@@ -244,70 +247,89 @@ public class Given_ElementTheme
 	[TestMethod]
 	public async Task When_Element_Has_Dark_Theme_Uses_Dark_Resources()
 	{
-		var border = (Border)XamlReader.Load(
+		var root = (StackPanel)XamlReader.Load(
 			"""
-			<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-					RequestedTheme="Dark"
-					Background="{ThemeResource SystemControlBackgroundAltHighBrush}"
-					Width="100" Height="100" />
+			<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<Border x:Name="darkBorder" RequestedTheme="Dark"
+						Background="{ThemeResource SystemControlBackgroundAltHighBrush}"
+						Width="100" Height="100" />
+				<Border x:Name="lightBorder" RequestedTheme="Light"
+						Background="{ThemeResource SystemControlBackgroundAltHighBrush}"
+						Width="100" Height="100" />
+			</StackPanel>
 			""");
 
-		WindowHelper.WindowContent = border;
-		await WindowHelper.WaitForLoaded(border);
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
 
-		var brush = border.Background as SolidColorBrush;
-		Assert.IsNotNull(brush);
+		var darkBrush = ((Border)root.FindName("darkBorder")).Background as SolidColorBrush;
+		var lightBrush = ((Border)root.FindName("lightBorder")).Background as SolidColorBrush;
 
-		// In Dark theme, SystemControlBackgroundAltHighBrush should be a dark color
-		// The exact value may vary, but it should be darker than light theme
-		Assert.IsTrue(brush.Color.R < 128 || brush.Color.G < 128 || brush.Color.B < 128,
-			$"Expected dark color but got {brush.Color}");
+		Assert.IsNotNull(darkBrush);
+		Assert.IsNotNull(lightBrush);
+		Assert.AreNotEqual(darkBrush.Color, lightBrush.Color,
+			$"Dark border ({darkBrush.Color}) should have different color than Light border ({lightBrush.Color})");
 	}
 
 	[TestMethod]
 	public async Task When_Element_Has_Light_Theme_Uses_Light_Resources()
 	{
-		var border = (Border)XamlReader.Load(
+		var root = (StackPanel)XamlReader.Load(
 			"""
-			<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-					RequestedTheme="Light"
-					Background="{ThemeResource SystemControlBackgroundAltHighBrush}"
-					Width="100" Height="100" />
+			<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<Border x:Name="lightBorder" RequestedTheme="Light"
+						Background="{ThemeResource SystemControlBackgroundAltHighBrush}"
+						Width="100" Height="100" />
+				<Border x:Name="darkBorder" RequestedTheme="Dark"
+						Background="{ThemeResource SystemControlBackgroundAltHighBrush}"
+						Width="100" Height="100" />
+			</StackPanel>
 			""");
 
-		WindowHelper.WindowContent = border;
-		await WindowHelper.WaitForLoaded(border);
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
 
-		var brush = border.Background as SolidColorBrush;
-		Assert.IsNotNull(brush);
+		var lightBrush = ((Border)root.FindName("lightBorder")).Background as SolidColorBrush;
+		var darkBrush = ((Border)root.FindName("darkBorder")).Background as SolidColorBrush;
 
-		// In Light theme, SystemControlBackgroundAltHighBrush should be a light color
-		Assert.IsTrue(brush.Color.R > 128 || brush.Color.G > 128 || brush.Color.B > 128,
-			$"Expected light color but got {brush.Color}");
+		Assert.IsNotNull(lightBrush);
+		Assert.IsNotNull(darkBrush);
+		Assert.AreNotEqual(lightBrush.Color, darkBrush.Color,
+			$"Light border ({lightBrush.Color}) should have different color than Dark border ({darkBrush.Color})");
 	}
 
 	[TestMethod]
 	public async Task When_Child_Inherits_Theme_Uses_Correct_Resources()
 	{
-		var stackPanel = (StackPanel)XamlReader.Load(
+		var root = (StackPanel)XamlReader.Load(
 			"""
 			<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-						RequestedTheme="Dark">
-				<Border x:Name="child" Background="{ThemeResource SystemControlBackgroundAltHighBrush}" Width="100" Height="100" />
+						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<StackPanel RequestedTheme="Dark">
+					<Border x:Name="child" Background="{ThemeResource SystemControlBackgroundAltHighBrush}" Width="100" Height="100" />
+				</StackPanel>
+				<Border x:Name="darkReference" RequestedTheme="Dark"
+						Background="{ThemeResource SystemControlBackgroundAltHighBrush}" Width="100" Height="100" />
 			</StackPanel>
 			""");
 
-		WindowHelper.WindowContent = stackPanel;
-		await WindowHelper.WaitForLoaded(stackPanel);
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
 
-		var child = (Border)stackPanel.FindName("child");
-		var brush = child.Background as SolidColorBrush;
-		Assert.IsNotNull(brush);
+		var child = (Border)root.FindName("child");
+		var darkReference = (Border)root.FindName("darkReference");
 
-		// Child should use Dark theme resources
-		Assert.IsTrue(brush.Color.R < 128 || brush.Color.G < 128 || brush.Color.B < 128,
-			$"Expected dark color for child but got {brush.Color}");
+		var childBrush = child.Background as SolidColorBrush;
+		var darkBrush = darkReference.Background as SolidColorBrush;
+
+		Assert.IsNotNull(childBrush);
+		Assert.IsNotNull(darkBrush);
+
+		// Child should use same Dark theme resources as the Dark reference
+		Assert.AreEqual(darkBrush.Color, childBrush.Color,
+			$"Child ({childBrush.Color}) should match Dark reference ({darkBrush.Color})");
 	}
 
 	[TestMethod]
@@ -3084,6 +3106,150 @@ public class Given_ElementTheme
 			flyout.Hide();
 			await WindowHelper.WaitForIdle();
 		}
+	}
+
+	#endregion
+
+	#region PR Review Comment Tests
+
+#if HAS_UNO
+	[TestMethod]
+	public async Task When_App_Theme_Changes_Explicit_Element_Keeps_Own_Resources()
+	{
+		// Element with RequestedTheme=Light should keep Light resources
+		// even when app theme changes to Dark
+		var root = (StackPanel)XamlReader.Load(
+			"""
+			<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<Border x:Name="explicitLight" RequestedTheme="Light"
+						Background="{ThemeResource SystemControlBackgroundAltHighBrush}"
+						Width="100" Height="100" />
+				<Border x:Name="darkReference" RequestedTheme="Dark"
+						Background="{ThemeResource SystemControlBackgroundAltHighBrush}"
+						Width="100" Height="100" />
+			</StackPanel>
+			""");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+
+		var explicitLight = (Border)root.FindName("explicitLight");
+		var darkReference = (Border)root.FindName("darkReference");
+
+		var lightBrush = explicitLight.Background as SolidColorBrush;
+		var darkBrush = darkReference.Background as SolidColorBrush;
+		Assert.IsNotNull(lightBrush);
+		Assert.IsNotNull(darkBrush);
+
+		var initialLightColor = lightBrush.Color;
+
+		// Sanity: Light and Dark should differ
+		Assert.AreNotEqual(lightBrush.Color, darkBrush.Color,
+			"Light and Dark should differ initially");
+
+		// Change app theme to Dark
+		using (ThemeHelper.UseApplicationDarkTheme())
+		{
+			await WindowHelper.WaitForIdle();
+
+			var afterBrush = explicitLight.Background as SolidColorBrush;
+			Assert.IsNotNull(afterBrush);
+
+			// Element with explicit Light theme should still have Light color
+			Assert.AreEqual(initialLightColor, afterBrush.Color,
+				$"Explicit Light element should keep Light resources after app changes to Dark. " +
+				$"Expected {initialLightColor}, got {afterBrush.Color}");
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Element_Theme_None_Does_Not_Force_Dark()
+	{
+		// Element enters tree with no explicit theme and no parent theme
+		// Should use app theme (Light), not default to Dark
+		var element = new Border { Width = 100, Height = 100 };
+
+		WindowHelper.WindowContent = element;
+		await WindowHelper.WaitForLoaded(element);
+
+		var appTheme = Application.Current?.ActualElementTheme ?? ElementTheme.Light;
+		Assert.AreEqual(appTheme, element.ActualTheme,
+			$"Element with no explicit theme should use app theme ({appTheme}), not force Dark");
+	}
+
+	[TestMethod]
+	public async Task When_UseApplicationDarkTheme_Disposed_IsThemeSetExplicitly_Restored()
+	{
+		// Verify IsThemeSetExplicitly is restored to false after dispose
+		var wasExplicitBefore = Application.Current.IsThemeSetExplicitly;
+
+		using (ThemeHelper.UseApplicationDarkTheme())
+		{
+			Assert.IsTrue(Application.Current.IsThemeSetExplicitly,
+				"IsThemeSetExplicitly should be true while dark theme is active");
+		}
+
+		Assert.AreEqual(wasExplicitBefore, Application.Current.IsThemeSetExplicitly,
+			$"IsThemeSetExplicitly should be restored to {wasExplicitBefore} after dispose");
+	}
+#endif
+
+	[TestMethod]
+	public async Task When_Flyout_Closed_Target_Does_Not_Hold_Flyout()
+	{
+		var button = new Button { Content = "Target" };
+		WeakReference flyoutWeak;
+
+		WindowHelper.WindowContent = button;
+		await WindowHelper.WaitForLoaded(button);
+
+		{
+			var flyout = new Flyout { Content = new Border { Width = 50, Height = 50 } };
+			flyoutWeak = new WeakReference(flyout);
+
+			flyout.ShowAt(button);
+			await WindowHelper.WaitForIdle();
+
+			flyout.Hide();
+			await WindowHelper.WaitForIdle();
+		}
+
+		var collected = await TestHelper.TryWaitUntilCollected(flyoutWeak);
+		Assert.IsTrue(collected, "Flyout should be collected after being closed and released");
+	}
+
+	[TestMethod]
+	public async Task When_TextBox_Theme_Changes_Caret_Updates()
+	{
+		// TextBox foreground changes with theme, which drives caret color
+		var root = (StackPanel)XamlReader.Load(
+			"""
+			<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+						RequestedTheme="Dark">
+				<TextBox x:Name="textBox" Text="Hello" Width="200" />
+			</StackPanel>
+			""");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+
+		var textBox = (TextBox)root.FindName("textBox");
+		var darkForeground = textBox.Foreground as SolidColorBrush;
+		Assert.IsNotNull(darkForeground);
+		var darkColor = darkForeground.Color;
+
+		// Change to Light theme
+		root.RequestedTheme = ElementTheme.Light;
+		await WindowHelper.WaitForIdle();
+
+		var lightForeground = textBox.Foreground as SolidColorBrush;
+		Assert.IsNotNull(lightForeground);
+
+		// Foreground (which drives caret color) should change with theme
+		Assert.AreNotEqual(darkColor, lightForeground.Color,
+			$"TextBox foreground should change when theme changes. Dark: {darkColor}, Light: {lightForeground.Color}");
 	}
 
 	#endregion
