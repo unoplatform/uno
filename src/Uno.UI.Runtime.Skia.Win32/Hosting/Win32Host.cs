@@ -99,6 +99,8 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		}
 		ApiExtensibility.Register(typeof(ITextBoxNotificationsProviderSingleton), _ => Win32TextBoxNotificationsProviderSingleton.Instance);
 		ApiExtensibility.Register<XamlRoot>(typeof(INativeOpenGLWrapper), xamlRoot => new Win32NativeOpenGLWrapper(xamlRoot));
+
+		Uno.UI.Runtime.Skia.Win32.Devices.Geolocation.Win32GeolocatorExtension.Register();
 	}
 
 	public Win32Host(Func<Application> appBuilder) : this(appBuilder, false)
