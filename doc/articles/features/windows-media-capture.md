@@ -52,10 +52,10 @@ On iOS, CameraCaptureUI uses the native `UIImagePickerController` to capture med
 
 #### macOS
 
-On macOS (Skia Desktop), `CameraCaptureUI` uses the native `IKPictureTaker` API to capture photos from the built-in FaceTime camera or external USB cameras. No special permissions are required in the app manifest, but the system will automatically prompt the user for camera access the first time the app attempts to use the camera.
+On macOS (Skia Desktop), `CameraCaptureUI` uses AVFoundation to capture photos and videos from the built-in FaceTime camera or external USB cameras. A modal dialog presents a live camera preview with capture controls. No special permissions are required in the app manifest, but the system will automatically prompt the user for camera and microphone access the first time the app attempts to use them.
 
 > [!NOTE]
-> Video capture is not yet supported on macOS. Calling `CaptureFileAsync` with `CameraCaptureUIMode.Video` will return `null`.
+> Video capture on macOS records to MP4 format. The video capture dialog provides Record/Stop and Cancel controls.
 
 #### WinUI
 
