@@ -781,7 +781,6 @@ public class Given_InputManager
 			{
 				(sv = new ScrollViewer
 				{
-					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
 					Background = new SolidColorBrush(Colors.DeepPink),
 					Content = elt = new Border
 					{
@@ -839,7 +838,6 @@ public class Given_InputManager
 			{
 				(sv = new ScrollViewer
 				{
-					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
 					Background = new SolidColorBrush(Colors.DeepPink),
 					Content = new Border
 					{
@@ -910,7 +908,6 @@ public class Given_InputManager
 			{
 				(sv1 = new ScrollViewer
 				{
-					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
 					Background = new SolidColorBrush(Colors.DeepPink),
 					Content = new Border
 					{
@@ -922,7 +919,6 @@ public class Given_InputManager
 				}.Apply(sv => Grid.SetColumn(sv, 0))),
 				(sv2 = new ScrollViewer
 				{
-					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
 					Background = new SolidColorBrush(Colors.Chartreuse),
 					Content = new Border
 					{
@@ -979,7 +975,6 @@ public class Given_InputManager
 			{
 				(sv1 = new ScrollViewer
 				{
-					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
 					Background = new SolidColorBrush(Colors.DeepPink),
 					Content = new Border
 					{
@@ -991,7 +986,6 @@ public class Given_InputManager
 				}.Apply(sv => Grid.SetColumn(sv, 0))),
 				(sv2 = new ScrollViewer
 				{
-					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
 					Background = new SolidColorBrush(Colors.Chartreuse),
 					Content = new Border
 					{
@@ -1044,7 +1038,6 @@ public class Given_InputManager
 			{
 				(sv1 = new ScrollViewer
 				{
-					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
 					IsScrollInertiaEnabled = true,
 					Background = new SolidColorBrush(Colors.DeepPink),
 					Content = new Border
@@ -1057,7 +1050,6 @@ public class Given_InputManager
 				}.Apply(sv => Grid.SetColumn(sv, 0))),
 				(sv2 = new ScrollViewer
 				{
-					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
 					IsScrollInertiaEnabled = false,
 					Background = new SolidColorBrush(Colors.Chartreuse),
 					Content = new Border
@@ -1117,7 +1109,6 @@ public class Given_InputManager
 			{
 				(sv1 = new ScrollViewer
 				{
-					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
 					IsScrollInertiaEnabled = true,
 					Background = new SolidColorBrush(Colors.DeepPink),
 					Content = new Border
@@ -1130,7 +1121,6 @@ public class Given_InputManager
 				}.Apply(sv => Grid.SetColumn(sv, 0))),
 				(sv2 = new ScrollViewer
 				{
-					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
 					IsScrollInertiaEnabled = true,
 					Background = new SolidColorBrush(Colors.Chartreuse),
 					Content = new Border
@@ -1208,7 +1198,6 @@ public class Given_InputManager
 			{
 				(sv1 = new ScrollViewer
 				{
-					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
 					IsScrollInertiaEnabled = false,
 					Background = new SolidColorBrush(Colors.DeepPink),
 					Content = elt = new Border
@@ -1220,7 +1209,6 @@ public class Given_InputManager
 						Height = 800,
 						Child = (sv2 = new ScrollViewer
 						{
-							UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
 							IsScrollInertiaEnabled = false,
 							Content = new Border
 							{
@@ -1275,7 +1263,6 @@ public class Given_InputManager
 			{
 				(sv1 = new ScrollViewer
 				{
-					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
 					IsScrollInertiaEnabled = false,
 					Background = new SolidColorBrush(Colors.DeepPink),
 					Content = elt = new Border
@@ -1287,7 +1274,6 @@ public class Given_InputManager
 						Height = 800,
 						Child = (sv2 = new ScrollViewer
 						{
-							UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
 							IsScrollInertiaEnabled = false,
 							Content = new Border
 							{
@@ -1342,7 +1328,6 @@ public class Given_InputManager
 			{
 				(sv1 = new ScrollViewer
 				{
-					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
 					IsScrollInertiaEnabled = false,
 					Background = new SolidColorBrush(Colors.DeepPink),
 					Content = elt = new Border
@@ -1354,7 +1339,6 @@ public class Given_InputManager
 						Height = 800,
 						Child = (sv2 = new ScrollViewer
 						{
-							UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
 							IsScrollInertiaEnabled = false,
 							Content = new Border
 							{
@@ -1416,7 +1400,6 @@ public class Given_InputManager
 			{
 				(sv = new ScrollViewer
 				{
-					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
 					IsScrollInertiaEnabled = false,
 					Background = new SolidColorBrush(Colors.DeepPink),
 					Content = new Border
@@ -1475,7 +1458,6 @@ public class Given_InputManager
 			{
 				(sv = new ScrollViewer
 				{
-					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
 					IsScrollInertiaEnabled = false,
 					Content = new StackPanel
 					{
