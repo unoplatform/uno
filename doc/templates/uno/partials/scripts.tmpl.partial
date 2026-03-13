@@ -48,7 +48,90 @@ mermaid.init(undefined, ".lang-mermaid");
                         appId: 'PHB9D8WS99',
                         indexName: 'platform',
                         apiKey: '7877394996f96cde1a9b795dce3f7787',
-                        placeholder: 'Search Docs...'
+                        placeholder: 'Search Docs...',
+                        transformItems(items) {
+                            // 1. Remove breadcrumb-anchored entries (crawler artifact).
+                            var filtered = items.filter(function(item) {
+                                return !(item.url && item.url.includes('#breadcrumb'));
+                            });
+
+                            // 2. Deduplicate: keep only the first (highest-ranked) hit
+                            //    per base page URL. The Algolia crawler creates separate
+                            //    records for each heading level (lvl1, lvl2, lvl3, …) on
+                            //    the same page, which causes the same page to appear
+                            //    multiple times in results. We strip the fragment and
+                            //    query string to identify the base page, then keep only
+                            //    the first occurrence so each page shows up once.
+                            var seen = {};
+                            filtered = filtered.filter(function(item) {
+                                if (!item.url) return true;
+                                var base = item.url.split('#')[0].split('?')[0];
+                                if (seen[base]) return false;
+                                seen[base] = true;
+                                return true;
+                            });
+
+                            // 3. Disambiguate same-titled results that point to
+                            //    different pages (e.g. XAML vs C# Markup workshop
+                            //    variants). Append a path-derived suffix so they
+                            //    are visually distinguishable in the dropdown.
+                            var titleGroups = {};
+                            filtered.forEach(function(item) {
+                                var key = (item.hierarchy || {})[item.type] || '';
+                                if (key) {
+                                    if (!titleGroups[key]) titleGroups[key] = [];
+                                    titleGroups[key].push(item);
+                                }
+                            });
+                            Object.keys(titleGroups).forEach(function(title) {
+                                var group = titleGroups[title];
+                                if (group.length < 2) return;
+                                // Split each URL into path segments
+                                var segArrays = group.map(function(item) {
+                                    return (item.url || '').split('#')[0].split('?')[0]
+                                        .split('/').filter(Boolean);
+                                });
+                                var maxSegments = segArrays.reduce(function(max, segments) {
+                                    return Math.max(max, segments.length);
+                                }, 0);
+                                // Find the first segment index that differs
+                                var diffIdx = -1;
+                                for (var s = 0; s < maxSegments; s++) {
+                                    var val = segArrays[0][s];
+                                    for (var g = 1; g < segArrays.length; g++) {
+                                        if (!segArrays[g][s] || segArrays[g][s] !== val) {
+                                            diffIdx = s;
+                                            break;
+                                        }
+                                    }
+                                    if (diffIdx >= 0) break;
+                                }
+                                if (diffIdx < 0) return;
+                                group.forEach(function(item, gi) {
+                                    var seg = segArrays[gi][diffIdx] || '';
+                                    seg = decodeURIComponent(seg)
+                                        .replace(/[-_]/g, ' ')
+                                        .replace(/\b\w/g, function(c) { return c.toUpperCase(); });
+                                    if (seg && item.hierarchy) {
+                                        var newTitle = title + ' \u2014 ' + seg;
+                                        item.hierarchy[item.type] = newTitle;
+                                        // DocSearch renders display text from
+                                        // _snippetResult / _highlightResult,
+                                        // not raw hierarchy. Update those too.
+                                        var sr = (item._snippetResult || {}).hierarchy;
+                                        if (sr && sr[item.type]) {
+                                            sr[item.type].value = newTitle;
+                                        }
+                                        var hr = (item._highlightResult || {}).hierarchy;
+                                        if (hr && hr[item.type]) {
+                                            hr[item.type].value = newTitle;
+                                        }
+                                    }
+                                });
+                            });
+
+                            return filtered;
+                        }
                     });
                     console.log("DocSearch initialized.");
                     // Disconnect the observer after initialization
