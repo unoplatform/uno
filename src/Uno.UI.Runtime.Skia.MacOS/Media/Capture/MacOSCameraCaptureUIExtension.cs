@@ -39,6 +39,8 @@ internal class MacOSCameraCaptureUIExtension : ICameraCaptureUIExtension
 
 	public async Task<StorageFile?> CaptureFileAsync(CancellationToken token)
 	{
+		token.ThrowIfCancellationRequested();
+
 		string? nativePath;
 
 		if (_mode == CameraCaptureUIMode.Video)
@@ -49,6 +51,8 @@ internal class MacOSCameraCaptureUIExtension : ICameraCaptureUIExtension
 		{
 			nativePath = NativeUno.uno_capture_photo(_photoFormat == CameraCaptureUIPhotoFormat.Jpeg);
 		}
+
+		token.ThrowIfCancellationRequested();
 
 		if (string.IsNullOrEmpty(nativePath))
 		{
