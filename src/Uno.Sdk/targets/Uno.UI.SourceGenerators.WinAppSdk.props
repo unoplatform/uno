@@ -25,8 +25,25 @@
 			AfterTargets="_RemoveRoslynUnoSourceGeneration;_RemoveRoslynUnoSourceGenerationWinUI"
 			Condition="'$(UnoCodeBehindGeneratorOnly)'=='true'">
 		<ItemGroup>
-			<Analyzer Include="$(MSBuildThisFileDirectory)../analyzers/dotnet/cs/Uno.UI.SourceGenerators.dll"
-					  Condition="Exists('$(MSBuildThisFileDirectory)../analyzers/dotnet/cs/Uno.UI.SourceGenerators.dll')" />
+			<Analyzer Include="@(_UnoSourceGeneratorsAnalyzerPath)" />
+		</ItemGroup>
+	</Target>
+
+	<!--
+		On WinUI builds, Uno.UI.SourceGenerators.props is not imported, so XAML files
+		are never added to AdditionalFiles. The code-behind generator needs them there.
+	-->
+	<Target Name="_InjectAdditionalFilesForWinUI"
+			BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun;GenerateMSBuildEditorConfigFileCore"
+			Condition="'$(UnoCodeBehindGeneratorOnly)'=='true'">
+		<ItemGroup>
+			<AdditionalFiles Include="@(Page)" SourceItemGroup="Page" />
+			<AdditionalFiles Include="@(ApplicationDefinition)" SourceItemGroup="ApplicationDefinition" />
+
+			<!-- Normalize paths to absolute so the generator sees consistent identities -->
+			<_AdditionalFilesCleanup Include="@(AdditionalFiles)" />
+			<AdditionalFiles Remove="@(_AdditionalFilesCleanup)" />
+			<AdditionalFiles Condition="'@(_AdditionalFilesCleanup)'!=''" Include="@(_AdditionalFilesCleanup->'$([System.IO.Path]::GetFullPath('%(_AdditionalFilesCleanup.Identity)'))')" />
 		</ItemGroup>
 	</Target>
 
