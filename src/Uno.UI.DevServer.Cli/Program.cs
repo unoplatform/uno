@@ -38,6 +38,7 @@ internal class Program
 			WriteCommand("stop", "Stop the DevServer for the current folder");
 			WriteCommand("list", "List active DevServer instances");
 			WriteCommand("disco", "Discover environment and SDK details");
+			WriteCommand("health", "Report Uno DevServer health for the current workspace");
 			Console.WriteLine();
 			return 0;
 		}
@@ -82,10 +83,12 @@ internal class Program
 		});
 		services.AddSingleton<CliManager>();
 		services.AddSingleton<UnoToolsLocator>();
+		services.AddSingleton<WorkspaceResolver>();
+		services.AddSingleton<IWorkspaceResolver>(sp => sp.GetRequiredService<WorkspaceResolver>());
 		services.AddSingleton(sp =>
 		new ManifestAddInResolver(
 			sp.GetRequiredService<ILogger<ManifestAddInResolver>>(),
-			McpStdioServer.GetAssemblyVersion()));
+			AssemblyVersionHelper.GetAssemblyVersion(typeof(Program).Assembly)));
 		services.AddSingleton<TargetsAddInResolver>();
 		services.AddSingleton<DevServerMonitor>();
 		services.AddSingleton<McpUpstreamClient>();

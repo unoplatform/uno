@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using ModelContextProtocol;
 using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
+using Uno.UI.DevServer.Cli.Helpers;
 
 namespace Uno.UI.DevServer.Cli.Mcp;
 
@@ -25,9 +26,11 @@ internal class McpStdioServer(
 	public (IHost Host, TaskCompletionSource ToolsReadyTcs) BuildHost(
 		Func<RequestContext<ListToolsRequestParams>, TaskCompletionSource, CancellationToken, Task> ensureRootsInitialized,
 		Tool addRootsTool,
+		Tool selectSolutionTool,
 		bool forceRootsFallback,
 		Func<string[]> getRoots,
-		Func<string[], Task> setRootsHandler)
+		Func<string[], Task> setRootsHandler,
+		Func<string, Task<CallToolResult>> selectSolutionHandler)
 	{
 		var tcs = new TaskCompletionSource();
 
@@ -38,7 +41,7 @@ internal class McpStdioServer(
 				options.ServerInfo = new Implementation
 				{
 					Name = "uno-devserver",
-					Version = GetAssemblyVersion(),
+					Version = AssemblyVersionHelper.GetAssemblyVersion(typeof(McpStdioServer).Assembly),
 				};
 			})
 			.WithStdioServerTransport()
@@ -60,6 +63,16 @@ internal class McpStdioServer(
 
 					await setRootsHandler(rootsElement.Deserialize<string[]>() ?? []);
 					return new CallToolResult() { Content = [new TextContentBlock() { Text = "Ok" }] };
+				}
+
+				if (toolName == selectSolutionTool.Name)
+				{
+					if (!TryGetSelectSolutionPath(ctx.Params?.Arguments, out var solutionPath, out var errorResult))
+					{
+						return errorResult;
+					}
+
+					return await selectSolutionHandler(solutionPath!);
 				}
 
 				// Handle the built-in uno_health tool before upstream is ready
@@ -165,20 +178,44 @@ internal class McpStdioServer(
 		return (host, tcs);
 	}
 
-	internal static string GetAssemblyVersion()
+	internal static bool TryGetSelectSolutionPath(
+		IDictionary<string, JsonElement>? arguments,
+		out string? solutionPath,
+		out CallToolResult errorResult)
 	{
-		var attr = typeof(McpStdioServer).Assembly
-			.GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false)
-			.OfType<System.Reflection.AssemblyInformationalVersionAttribute>()
-			.FirstOrDefault();
-
-		if (attr is not null)
+		solutionPath = null;
+		errorResult = new CallToolResult()
 		{
-			// Strip the commit hash after '+' (e.g. "5.5.100-dev.1+abc123" → "5.5.100-dev.1")
-			var parts = attr.InformationalVersion.Split('+', StringSplitOptions.RemoveEmptyEntries);
-			return parts[0];
+			Content = [new TextContentBlock() { Text = "Missing required 'solutionPath' argument." }],
+			IsError = true
+		};
+
+		if (arguments is null || !arguments.TryGetValue("solutionPath", out var solutionPathElement))
+		{
+			return false;
 		}
 
-		return typeof(McpStdioServer).Assembly.GetName().Version?.ToString() ?? "0.0.0";
+		if (solutionPathElement.ValueKind != JsonValueKind.String)
+		{
+			errorResult = new CallToolResult()
+			{
+				Content = [new TextContentBlock() { Text = "The 'solutionPath' argument must be a JSON string containing a non-empty absolute path." }],
+				IsError = true
+			};
+			return false;
+		}
+
+		solutionPath = solutionPathElement.GetString();
+		if (string.IsNullOrWhiteSpace(solutionPath))
+		{
+			errorResult = new CallToolResult()
+			{
+				Content = [new TextContentBlock() { Text = "The 'solutionPath' argument must be a non-empty absolute path." }],
+				IsError = true
+			};
+			return false;
+		}
+
+		return true;
 	}
 }

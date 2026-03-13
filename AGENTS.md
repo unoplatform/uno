@@ -141,6 +141,24 @@ Auto-generated stubs marked with `[Uno.NotImplemented]` allow compilation but wa
 
 ## Development Workflow
 
+### Public Documentation and Spec References (MANDATORY)
+
+When editing specifications, documentation, or other repo-tracked design artifacts intended to be shareable:
+
+1. **Do not reference private artifacts** from the document.
+   - Do not link to private issues, private pull requests, private boards, private docs, or private repositories.
+   - If related work is tracked privately, mention it only in generic terms.
+
+2. **Public specs are source-of-truth documents**.
+   - Public or repo-local specs may be referenced by private trackers.
+   - Private trackers must not be required to understand the public spec.
+
+3. **Keep the dependency direction one-way**.
+   - Allowed: private issues/PRs referencing a public spec in this repo.
+   - Not allowed: a public spec in this repo referencing a private issue/PR/doc as normative context.
+
+4. **If implementation follow-up exists in private repos**, describe it as alignment or downstream tracking work without identifiers or URLs.
+
 ### Root-Cause First Debugging Protocol (MANDATORY)
 
 When fixing crashes, rendering issues, or selection/indexing bugs,

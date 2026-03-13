@@ -14,6 +14,7 @@ internal class CliManager
 {
 	private readonly IServiceProvider _services;
 	private readonly UnoToolsLocator _unoToolsLocator;
+	private readonly IWorkspaceResolver _workspaceResolver;
 	private readonly ILogger<CliManager> _logger;
 	private static readonly JsonSerializerOptions _discoJsonOptions = new()
 	{
@@ -21,10 +22,11 @@ internal class CliManager
 		PropertyNamingPolicy = JsonNamingPolicy.CamelCase
 	};
 
-	public CliManager(IServiceProvider services, UnoToolsLocator unoToolsLocator)
+	public CliManager(IServiceProvider services, UnoToolsLocator unoToolsLocator, IWorkspaceResolver workspaceResolver)
 	{
 		_services = services;
 		_unoToolsLocator = unoToolsLocator;
+		_workspaceResolver = workspaceResolver;
 		_logger = _services.GetRequiredService<ILogger<CliManager>>();
 	}
 
@@ -42,14 +44,17 @@ internal class CliManager
 			}
 
 			originalArgs = solutionDirParseResult.FilteredArgs;
-			var workingDirectory = solutionDirParseResult.SolutionDirectory ?? Environment.CurrentDirectory;
+			var requestedWorkingDirectory = solutionDirParseResult.SolutionDirectory ?? Environment.CurrentDirectory;
+			var hasExplicitWorkspaceOverride = solutionDirParseResult.SolutionDirectory is not null;
 
 			if (originalArgs.Contains("--mcp-app"))
 			{
+				var mcpWorkspaceResolution = await ResolveWorkspaceAsync(requestedWorkingDirectory, hasExplicitWorkspaceOverride);
+				LogVersionBanner();
 				return await RunMcpProxyAsync(
 					originalArgs.Where(a => a != "--mcp-app").ToArray(),
-					workingDirectory,
-					solutionDirParseResult.SolutionDirectory);
+					requestedWorkingDirectory,
+					mcpWorkspaceResolution);
 			}
 
 			var isDisco = originalArgs is { Length: > 0 } &&
@@ -58,33 +63,54 @@ internal class CliManager
 				originalArgs.Any(a => string.Equals(a, "--json", StringComparison.OrdinalIgnoreCase));
 			var discoAddInsOnly = isDisco &&
 				originalArgs.Any(a => string.Equals(a, "--addins-only", StringComparison.OrdinalIgnoreCase));
+			var isHealth = originalArgs is { Length: > 0 } &&
+				string.Equals(originalArgs[0], "health", StringComparison.OrdinalIgnoreCase);
+			var healthJson = isHealth &&
+				originalArgs.Any(a => string.Equals(a, "--json", StringComparison.OrdinalIgnoreCase));
+			var command = originalArgs.Length == 0 ? "start" : originalArgs[0];
+			var requiresWorkspaceResolution = RequiresWorkspaceResolution(command);
+			WorkspaceResolution? workspaceResolution = null;
+			string? workingDirectory = null;
 
-			if (!isDisco || (!discoJson && !discoAddInsOnly))
+			if ((!isDisco || (!discoJson && !discoAddInsOnly)) && !(isHealth && healthJson))
 			{
 				ShowBanner();
 			}
 
+			if (requiresWorkspaceResolution)
+			{
+				workspaceResolution = await ResolveWorkspaceAsync(requestedWorkingDirectory, hasExplicitWorkspaceOverride);
+				workingDirectory = workspaceResolution.EffectiveWorkspaceDirectory ?? requestedWorkingDirectory;
+			}
+
 			if (isDisco && discoAddInsOnly)
 			{
-				return await RunDiscoAddInsOnlyAsync(workingDirectory, outputJson: discoJson);
+				return await RunDiscoAddInsOnlyAsync(workingDirectory!, outputJson: discoJson);
 			}
 
 			if (isDisco && discoJson)
 			{
 				// Avoid banner/log noise when emitting JSON output
-				return await RunDiscoAsync(workingDirectory, outputJson: true);
+				return await RunDiscoAsync(workingDirectory!, workspaceResolution!, outputJson: true);
 			}
 
 			if (isDisco)
 			{
-				return await RunDiscoAsync(workingDirectory, outputJson: false);
+				return await RunDiscoAsync(workingDirectory!, workspaceResolution!, outputJson: false);
+			}
+
+			if (isHealth)
+			{
+				return await RunHealthAsync(requestedWorkingDirectory, workspaceResolution!, healthJson);
 			}
 
 			if (originalArgs is { Length: > 0 } && string.Equals(originalArgs[0], "login", StringComparison.OrdinalIgnoreCase))
 			{
-				return await OpenSettings(originalArgs, workingDirectory);
+				var loginWorkspace = (await ResolveWorkspaceAsync(requestedWorkingDirectory, hasExplicitWorkspaceOverride)).EffectiveWorkspaceDirectory ?? requestedWorkingDirectory;
+				return await OpenSettings(originalArgs, loginWorkspace);
 			}
 
+			workingDirectory ??= requestedWorkingDirectory;
 			var hostPath = await _unoToolsLocator.ResolveHostExecutableAsync(workingDirectory);
 
 			if (hostPath is null)
@@ -121,20 +147,31 @@ internal class CliManager
 
 	private void ShowBanner()
 	{
-		// get the assembly informational version
-		var attrs = typeof(CliManager).Assembly.GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false);
+		LogVersionBanner();
+	}
 
-		if (attrs.Length > 0 && attrs[0] is System.Reflection.AssemblyInformationalVersionAttribute versionAttr)
-		{
-			// Take only what's before a `+`, we don't want the commit hash here
-			var items = versionAttr.InformationalVersion.Split('+', StringSplitOptions.RemoveEmptyEntries);
+	private static bool RequiresWorkspaceResolution(string command)
+		=> string.Equals(command, "start", StringComparison.OrdinalIgnoreCase)
+			|| string.Equals(command, "stop", StringComparison.OrdinalIgnoreCase)
+			|| string.Equals(command, "disco", StringComparison.OrdinalIgnoreCase)
+			|| string.Equals(command, "health", StringComparison.OrdinalIgnoreCase);
 
-			_logger.LogInformation("Uno Platform DevServer CLI - Version {Version}", items[0]);
-		}
-		else
-		{
-			_logger.LogInformation("Uno Platform DevServer CLI - Dev Version");
-		}
+	private Task<WorkspaceResolution> ResolveWorkspaceAsync(string requestedWorkingDirectory, bool hasExplicitWorkspaceOverride)
+		=> hasExplicitWorkspaceOverride
+			? _workspaceResolver.ResolveExplicitWorkspaceAsync(requestedWorkingDirectory)
+			: _workspaceResolver.ResolveAsync(requestedWorkingDirectory);
+
+	internal void LogVersionBanner()
+	{
+		_logger.LogInformation(GetVersionBannerText());
+	}
+
+	internal static string GetVersionBannerText()
+	{
+		var version = AssemblyVersionHelper.GetAssemblyVersion(typeof(CliManager).Assembly);
+		return string.IsNullOrWhiteSpace(version)
+			? "Uno Platform DevServer CLI - Dev Version"
+			: $"Uno Platform DevServer CLI - Version {version}";
 	}
 
 	private async Task<int> RunDiscoAddInsOnlyAsync(string workingDirectory, bool outputJson)
@@ -205,9 +242,9 @@ internal class CliManager
 		}
 	}
 
-	private async Task<int> RunDiscoAsync(string workingDirectory, bool outputJson)
+	private async Task<int> RunDiscoAsync(string workingDirectory, WorkspaceResolution workspaceResolution, bool outputJson)
 	{
-		var info = await _unoToolsLocator.DiscoverAsync(workingDirectory);
+		var info = await _unoToolsLocator.DiscoverAsync(workingDirectory, workspaceResolution);
 
 		if (outputJson)
 		{
@@ -220,6 +257,30 @@ internal class CliManager
 		}
 
 		return info.Errors.Count > 0 ? 1 : 0;
+	}
+
+	private async Task<int> RunHealthAsync(string requestedWorkingDirectory, WorkspaceResolution workspaceResolution, bool outputJson)
+	{
+		var workingDirectory = workspaceResolution.EffectiveWorkspaceDirectory ?? requestedWorkingDirectory;
+		var info = await _unoToolsLocator.DiscoverAsync(workingDirectory, workspaceResolution);
+		var report = HealthReportFactory.Create(
+			info,
+			devServerStarted: false,
+			upstreamConnected: false,
+			toolCount: 0,
+			connectionState: null,
+			discoveredSolutions: null);
+
+		if (outputJson)
+		{
+			Console.WriteLine(HealthReportFormatter.FormatJson(report));
+		}
+		else
+		{
+			Console.WriteLine(HealthReportFormatter.FormatPlainText(report));
+		}
+
+		return report.Status == HealthStatus.Healthy ? 0 : 1;
 	}
 
 	private async Task<int> OpenSettings(string[] originalArgs, string workingDirectory)
@@ -258,7 +319,7 @@ internal class CliManager
 		}
 	}
 
-	private async Task<int> RunMcpProxyAsync(string[] args, string workingDirectory, string? solutionDirectory)
+	private async Task<int> RunMcpProxyAsync(string[] args, string requestedWorkingDirectory, WorkspaceResolution workspaceResolution)
 	{
 		try
 		{
@@ -306,17 +367,19 @@ internal class CliManager
 				forwardedArgs.Add(a);
 			}
 
-			var normalizedSolutionDirectory = solutionDirectory ?? (forceGenerateToolCache ? workingDirectory : null);
-
 			var waitForTools = mcpWaitToolsList;
+			var startupSolutionDirectory = workspaceResolution.IsResolved
+				? workspaceResolution.EffectiveWorkspaceDirectory
+				: null;
 			return await _services.GetRequiredService<ProxyLifecycleManager>().RunAsync(
-				workingDirectory,
+				requestedWorkingDirectory,
+				workspaceResolution,
 				requestedPort,
 				forwardedArgs,
 				waitForTools,
 				forceRootsFallback,
 				forceGenerateToolCache,
-				normalizedSolutionDirectory,
+				startupSolutionDirectory,
 				CancellationToken.None);
 		}
 		catch (Exception ex)

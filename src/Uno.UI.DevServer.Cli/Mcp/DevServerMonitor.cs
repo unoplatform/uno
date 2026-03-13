@@ -25,6 +25,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 	private long _discoveryDurationMs;
 	private DiscoveryInfo? _lastDiscoveryInfo;
 	private Process? _serverProcess;
+	private WorkspaceResolution? _workspaceResolution;
 
 	public event Action<string>? ServerStarted;
 	public event Action? ServerFailed;
@@ -50,7 +51,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 	/// </summary>
 	public IReadOnlyList<string> DiscoveredSolutions { get; private set; } = [];
 
-	internal void StartMonitoring(string currentDirectory, int port, List<string> forwardedArgs)
+	internal void StartMonitoring(string currentDirectory, int port, List<string> forwardedArgs, WorkspaceResolution? workspaceResolution = null)
 	{
 		if (_monitor is not null)
 		{
@@ -60,6 +61,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 		_originalPort = port;
 		_forwardedArgs = forwardedArgs;
 		_currentDirectory = currentDirectory;
+		_workspaceResolution = workspaceResolution;
 
 		var forwardedArgsDisplay = string.Join(" ", _forwardedArgs);
 		_logger.LogTrace(
@@ -68,13 +70,16 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 			_originalPort,
 			forwardedArgsDisplay);
 
-		_cts = new CancellationTokenSource();
-		_monitor = Task.Run(() => RunMonitor(_cts.Token), _cts.Token);
+		var cts = new CancellationTokenSource();
+		_cts = cts;
+		_monitor = Task.Run(() => RunMonitor(cts.Token), cts.Token);
 	}
 
 	internal async Task StopMonitoringAsync()
 	{
-		_cts?.Cancel();
+		var cts = _cts;
+		_cts = null;
+		cts?.Cancel();
 		TerminateServerProcess();
 
 		if (_monitor is not null)
@@ -88,6 +93,10 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 				// Expected when canceling
 			}
 		}
+
+		_monitor = null;
+		cts?.Dispose();
+		_serverProcess = null;
 	}
 
 	private async Task RunMonitor(CancellationToken ct)
@@ -119,7 +128,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 					// Run full discovery to get DiscoveryInfo (used by health reports)
 					var discoveryStopwatch = System.Diagnostics.Stopwatch.StartNew();
 					var locator = _services.GetRequiredService<UnoToolsLocator>();
-					var discovery = await locator.DiscoverAsync(_currentDirectory);
+					var discovery = await locator.DiscoverAsync(_currentDirectory, _workspaceResolution);
 					discoveryStopwatch.Stop();
 					_lastDiscoveryInfo = discovery;
 					_unoSdkVersion = discovery.UnoSdkVersion;
@@ -149,7 +158,7 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 							_logger.LogDebug($"Using user-specified port {port}");
 						}
 
-						var solution = solutionFiles.FirstOrDefault();
+						var solution = DetermineSolutionToLaunch(_currentDirectory, solutionFiles, _workspaceResolution);
 
 						_logger.LogTrace(
 							"DevServerMonitor launching server from {HostPath} in {WorkingDirectory} on port {Port}",
@@ -248,6 +257,25 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 				await Task.Delay(TimeSpan.FromSeconds(10), ct);
 			}
 		}
+	}
+
+	internal static string? DetermineSolutionToLaunch(string currentDirectory, IReadOnlyList<string> solutionFiles, WorkspaceResolution? workspaceResolution)
+	{
+		if (!string.IsNullOrWhiteSpace(workspaceResolution?.SelectedSolutionPath))
+		{
+			var selectedSolutionPath = Path.GetFullPath(workspaceResolution.SelectedSolutionPath);
+			var matchingSolution = solutionFiles.FirstOrDefault(solution =>
+				PathComparison.PathsEqual(solution, selectedSolutionPath));
+
+			if (matchingSolution is not null)
+			{
+				return matchingSolution;
+			}
+		}
+
+		return solutionFiles
+			.OrderBy(PathComparison.Normalize, StringComparer.Ordinal)
+			.FirstOrDefault();
 	}
 
 	private async Task<bool> WaitForServerReadyAsync(int port, CancellationToken ct)
