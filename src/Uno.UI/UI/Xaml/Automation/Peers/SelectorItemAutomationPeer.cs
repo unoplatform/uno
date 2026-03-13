@@ -40,11 +40,10 @@ public partial class SelectorItemAutomationPeer : ItemAutomationPeer, Provider.I
 				return this;
 			}
 		}
-		else
-			if (patternInterface == PatternInterface.ScrollItem)
-			{
-				return this;
-			}
+		else if (patternInterface == PatternInterface.ScrollItem)
+		{
+			return this;
+		}
 
 		return spPatternProvider;
 	}

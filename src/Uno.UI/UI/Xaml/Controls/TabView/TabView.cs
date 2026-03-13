@@ -1539,17 +1539,16 @@ public partial class TabView : Control
 			{
 				return vector.Count;
 			}
-			else
-				if (itemsSource is IEnumerable iterable)
+			else if (itemsSource is IEnumerable iterable)
+			{
+				var i = 0;
+				foreach (var o in iterable)
 				{
-					var i = 0;
-					foreach (var o in iterable)
-					{
-						i++;
-					}
-
-					return i;
+					i++;
 				}
+
+				return i;
+			}
 			return 0;
 		}
 		else
@@ -1806,14 +1805,13 @@ public partial class TabView : Control
 				});
 			}
 		}
-		else
-			if (m_inputNonClientPointerSource != null)
-			{
-				m_enteringMoveSizeToken.Disposable = null;
-				m_enteredMoveSizeToken.Disposable = null;
-				m_windowRectChangingToken.Disposable = null;
-				m_exitedMoveSizeToken.Disposable = null;
-			}
+		else if (m_inputNonClientPointerSource != null)
+		{
+			m_enteringMoveSizeToken.Disposable = null;
+			m_enteredMoveSizeToken.Disposable = null;
+			m_windowRectChangingToken.Disposable = null;
+			m_exitedMoveSizeToken.Disposable = null;
+		}
 #pragma warning restore CS0162
 	}
 
@@ -2143,41 +2141,40 @@ public partial class TabView : Control
 				index = tabIndex + 1;
 			}
 		}
-		else
-			if (otherTabView.GetItemCount() > 0)
+		else if (otherTabView.GetItemCount() > 0)
+		{
+			// If there was no tab, under the cursor, then that suggests we want to insert the tab either at the very beginning or at the very end.
+			// We'll first check whether the screen position is to the left of the bounds of the first tab.  If so, we'll set the insertion position
+			// to be the start of the item list.
+			var firstTab = otherTabView.ContainerFromIndex(0) as TabViewItem;
+
+			if (firstTab is { })
 			{
-				// If there was no tab, under the cursor, then that suggests we want to insert the tab either at the very beginning or at the very end.
-				// We'll first check whether the screen position is to the left of the bounds of the first tab.  If so, we'll set the insertion position
-				// to be the start of the item list.
-				var firstTab = otherTabView.ContainerFromIndex(0) as TabViewItem;
+				var firstTabRect = otherTabView.XamlRoot.CoordinateConverter.ConvertLocalToScreen(firstTab.TransformToVisual(null).TransformBounds(new Rect(0, 0, firstTab.ActualWidth, firstTab.ActualHeight)));
 
-				if (firstTab is { })
+				if (screenPosition.X < firstTabRect.X)
 				{
-					var firstTabRect = otherTabView.XamlRoot.CoordinateConverter.ConvertLocalToScreen(firstTab.TransformToVisual(null).TransformBounds(new Rect(0, 0, firstTab.ActualWidth, firstTab.ActualHeight)));
-
-					if (screenPosition.X < firstTabRect.X)
-					{
-						index = 0;
-					}
+					index = 0;
 				}
+			}
 
-				// If that wasn't the case, then next we'll check whether the screen position is to the right of the bounds of the last tab.
-				// If so, we'll set the insertion position to be the end of the item list.
-				if (index < 0)
+			// If that wasn't the case, then next we'll check whether the screen position is to the right of the bounds of the last tab.
+			// If so, we'll set the insertion position to be the end of the item list.
+			if (index < 0)
+			{
+				var lastTabIndex = otherTabView.GetItemCount() - 1;
+				var lastTab = otherTabView.ContainerFromIndex(lastTabIndex) as TabViewItem;
+
+				if (lastTab is { })
 				{
-					var lastTabIndex = otherTabView.GetItemCount() - 1;
-					var lastTab = otherTabView.ContainerFromIndex(lastTabIndex) as TabViewItem;
-
-					if (lastTab is { })
+					var lastTabRect = otherTabView.XamlRoot.CoordinateConverter.ConvertLocalToScreen(lastTab.TransformToVisual(null).TransformBounds(new Rect(0, 0, lastTab.ActualWidth, lastTab.ActualHeight)));
+					if (screenPosition.X > lastTabRect.X + lastTabRect.Width)
 					{
-						var lastTabRect = otherTabView.XamlRoot.CoordinateConverter.ConvertLocalToScreen(lastTab.TransformToVisual(null).TransformBounds(new Rect(0, 0, lastTab.ActualWidth, lastTab.ActualHeight)));
-						if (screenPosition.X > lastTabRect.X + lastTabRect.Width)
-						{
-							index = otherTabView.GetItemCount();
-						}
+						index = otherTabView.GetItemCount();
 					}
 				}
 			}
+		}
 
 		return index;
 	}
