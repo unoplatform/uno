@@ -48,8 +48,12 @@ internal static class FrameProviderFactory
 				return false;
 			}
 			var image = GetImage(bitmap, origin);
-			image = ScaleToTargetIfNeeded(image, origin, codecWidth, codecHeight, targetWidth, targetHeight);
-			provider = new SingleFrameProvider(image);
+			var scaled = ScaleToTargetIfNeeded(image, origin, codecWidth, codecHeight, targetWidth, targetHeight);
+			if (scaled != image)
+			{
+				image.Dispose();
+			}
+			provider = new SingleFrameProvider(scaled);
 			return true;
 		}
 
@@ -99,6 +103,18 @@ internal static class FrameProviderFactory
 			var duration = frameInfos[i].Duration;
 			durations[i] = duration > 0 ? duration : 100;
 			totalDuration += durations[i];
+		}
+
+		// Scale frames in a second pass. The first pass needs unscaled images
+		// because they serve as reference frames during decoding.
+		for (int i = 0; i < images.Length; i++)
+		{
+			var scaled = ScaleToTargetIfNeeded(images[i], origin, codecWidth, codecHeight, targetWidth, targetHeight);
+			if (scaled != images[i])
+			{
+				images[i].Dispose();
+				images[i] = scaled;
+			}
 		}
 
 		provider = new AnimatedImageFrameProvider(images, durations, totalDuration, onFrameChanged);
@@ -209,7 +225,7 @@ internal static class FrameProviderFactory
 		}
 
 		var dstInfo = new SKImageInfo(dstW, dstH, SKColorType.Bgra8888, SKAlphaType.Premul);
-		var dstBitmap = new SKBitmap(dstInfo);
+		using var dstBitmap = new SKBitmap(dstInfo);
 		using var srcBitmap = SKBitmap.FromImage(image);
 		srcBitmap.ScalePixels(dstBitmap, new SKSamplingOptions(SKCubicResampler.CatmullRom));
 		return SKImage.FromBitmap(dstBitmap);
