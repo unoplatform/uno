@@ -1,0 +1,109 @@
+{
+  "gemini-antigravity": {
+    "configPaths": [
+      "{home}/.gemini/antigravity/mcp_config.json"
+    ],
+    "writeTarget": "{home}/.gemini/antigravity/mcp_config.json",
+    "jsonRootKey": "mcpServers",
+    "includeType": true,
+    "urlKey": "serverUrl"
+  },
+  "gemini-cli": {
+    "configPaths": [
+      "{home}/.gemini/settings.json"
+    ],
+    "writeTarget": "{home}/.gemini/settings.json",
+    "jsonRootKey": "mcpServers"
+  },
+  "copilot-cli": {
+    "configPaths": [],
+    "writeTarget": "",
+    "jsonRootKey": "mcpServers",
+    "strategy": "native",
+    "manualRegistrationMessage": "Use the native registration flow for GitHub Copilot CLI."
+  },
+  "claude-code": {
+    "configPaths": [
+      "{workspace}/.mcp.json",
+      "{home}/.claude.json"
+    ],
+    "writeTarget": "{workspace}/.mcp.json",
+    "jsonRootKey": "mcpServers"
+  },
+  "claude-desktop": {
+    "configPaths": [
+      "{appdata}/Claude/claude_desktop_config.json"
+    ],
+    "writeTarget": "{appdata}/Claude/claude_desktop_config.json",
+    "jsonRootKey": "mcpServers"
+  },
+  "cursor": {
+    "configPaths": [
+      "{workspace}/.cursor/mcp.json",
+      "{home}/.cursor/mcp.json"
+    ],
+    "writeTarget": "{workspace}/.cursor/mcp.json",
+    "jsonRootKey": "mcpServers"
+  },
+  "kiro": {
+    "configPaths": [
+      "{workspace}/.kiro/settings/mcp.json",
+      "{home}/.kiro/settings/mcp.json"
+    ],
+    "writeTarget": "{workspace}/.kiro/settings/mcp.json",
+    "jsonRootKey": "mcpServers"
+  },
+  "junie-rider": {
+    "configPaths": [
+      "{workspace}/.idea/mcpServers.json"
+    ],
+    "writeTarget": "{workspace}/.idea/mcpServers.json",
+    "jsonRootKey": "mcpServers"
+  },
+  "copilot-vscode": {
+    "configPaths": [
+      "{workspace}/.vscode/mcp.json",
+      "{home}/.vscode/mcp.json",
+      "{appdata}/Code/User/settings.json"
+    ],
+    "writeTarget": "{workspace}/.vscode/mcp.json",
+    "jsonRootKey": "servers",
+    "includeType": true
+  },
+  "copilot-vs": {
+    "configPaths": [
+      "{workspace}/.vs/mcp.json",
+      "{workspace}/.vscode/mcp.json"
+    ],
+    "writeTarget": "{workspace}/.vs/mcp.json",
+    "jsonRootKey": "servers",
+    "includeType": true
+  },
+  "windsurf": {
+    "configPaths": [
+      "{workspace}/.windsurf/mcp.json",
+      "{home}/.codeium/windsurf/mcp_config.json"
+    ],
+    "writeTarget": "{workspace}/.windsurf/mcp.json",
+    "jsonRootKey": "mcpServers",
+    "urlKey": "serverUrl"
+  },
+  "opencode": {
+    "configPaths": [
+      "{workspace}/opencode.json",
+      "{workspace}/opencode.jsonc"
+    ],
+    "writeTarget": "{workspace}/opencode.json",
+    "jsonRootKey": "mcp",
+    "includeType": true,
+    "typeMap": {"stdio": "local", "http": "remote"},
+    "mergeCommandArgs": true
+  },
+  "unknown": {
+    "configPaths": [
+      "{workspace}/.vscode/mcp.json"
+    ],
+    "writeTarget": "{workspace}/.vscode/mcp.json",
+    "jsonRootKey": "servers"
+  }
+}
