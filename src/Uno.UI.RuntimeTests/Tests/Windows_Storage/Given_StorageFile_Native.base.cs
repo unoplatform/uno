@@ -291,6 +291,57 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 			}
 		}
 
+		[TestMethod]
+		public async Task When_OpenStreamForReadAsync_Stream_Is_ReadOnly()
+		{
+			StorageFile createdFile = null;
+			try
+			{
+				var rootFolder = await GetRootFolderAsync();
+				var fileName = GetRandomTextFileName();
+				createdFile = await rootFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+				await FileIO.WriteTextAsync(createdFile, "Some content");
+
+				using var stream = await createdFile.OpenStreamForReadAsync();
+				Assert.IsTrue(stream.CanRead, "Read stream should be readable");
+				Assert.IsFalse(stream.CanWrite, "Read stream should not be writable");
+			}
+			finally
+			{
+				await DeleteIfNotNullAsync(createdFile);
+				await CleanupRootFolderAsync();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_OpenStreamForWriteAsync_Stream_CanWrite()
+		{
+			StorageFile createdFile = null;
+			try
+			{
+				var rootFolder = await GetRootFolderAsync();
+				var fileName = GetRandomTextFileName();
+				createdFile = await rootFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+
+				using (var stream = await createdFile.OpenStreamForWriteAsync())
+				{
+					Assert.IsTrue(stream.CanWrite, "Write stream should be writable");
+
+					using var writer = new StreamWriter(stream);
+					await writer.WriteAsync("Test content");
+					await writer.FlushAsync();
+				}
+
+				var content = await FileIO.ReadTextAsync(createdFile);
+				Assert.AreEqual("Test content", content);
+			}
+			finally
+			{
+				await DeleteIfNotNullAsync(createdFile);
+				await CleanupRootFolderAsync();
+			}
+		}
+
 		private string GetRandomFolderName() => Guid.NewGuid().ToString();
 
 		private string GetRandomTextFileName() => Guid.NewGuid().ToString() + ".txt";
