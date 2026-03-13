@@ -1,0 +1,126 @@
+#nullable enable
+
+using System;
+using System.Collections.Immutable;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Text;
+
+namespace Uno.UI.SourceGenerators.WinAppSDK;
+
+/// <summary>
+/// Standalone IIncrementalGenerator for auto code-behind generation on WinAppSDK targets.
+/// This generator always runs when present — it is only packaged for WinAppSDK builds.
+/// </summary>
+[Generator]
+internal sealed class XamlCodeBehindGenerator : IIncrementalGenerator
+{
+	private static readonly string[] ValidSourceItemGroups = { "Page", "ApplicationDefinition" };
+
+	public void Initialize(IncrementalGeneratorInitializationContext context)
+	{
+		// Read global UnoGenerateCodeBehind property
+		var globalEnabled = context.AnalyzerConfigOptionsProvider.Select(static (provider, ct) =>
+		{
+			provider.GlobalOptions.TryGetValue("build_property.UnoGenerateCodeBehind", out var value);
+			// Default is true when not specified
+			return string.IsNullOrEmpty(value) || string.Equals(value, "true", StringComparison.OrdinalIgnoreCase);
+		});
+
+		// Collect XAML files from AdditionalFiles with appropriate SourceItemGroup metadata
+		var xamlFiles = context.AdditionalTextsProvider
+			.Combine(context.AnalyzerConfigOptionsProvider)
+			.Select(static (pair, ct) =>
+			{
+				var (file, optionsProvider) = pair;
+				var options = optionsProvider.GetOptions(file);
+
+				options.TryGetValue("build_metadata.AdditionalFiles.SourceItemGroup", out var sourceItemGroup);
+				options.TryGetValue("build_metadata.AdditionalFiles.UnoGenerateCodeBehind", out var perFileOverride);
+
+				if (!ValidSourceItemGroups.Contains(sourceItemGroup))
+				{
+					return default;
+				}
+
+				var content = file.GetText(ct)?.ToString();
+				if (content is null)
+				{
+					return default;
+				}
+
+				return (Path: file.Path, Content: content, PerFileOverride: perFileOverride);
+			})
+			.Where(static x => x.Path is not null);
+
+		// Combine all inputs
+		var combined = xamlFiles
+			.Combine(globalEnabled)
+			.Combine(context.CompilationProvider);
+
+		context.RegisterSourceOutput(combined, static (ctx, input) =>
+		{
+			var ((xamlFile, globalEnabled), compilation) = input;
+
+			if (xamlFile.Path is null)
+			{
+				return;
+			}
+
+			Execute(ctx, xamlFile.Content, xamlFile.Path, xamlFile.PerFileOverride, globalEnabled, compilation);
+		});
+	}
+
+	private static void Execute(
+		SourceProductionContext context,
+		string xamlContent,
+		string filePath,
+		string? perFileOverride,
+		bool globalEnabled,
+		Compilation compilation)
+	{
+		// Check configuration (per-file override takes precedence)
+		if (!XamlCodeBehindParser.ShouldGenerateCodeBehind(perFileOverride, globalEnabled ? "true" : "false"))
+		{
+			return;
+		}
+
+		// Parse the XAML file
+		var classInfo = XamlCodeBehindParser.Parse(xamlContent, out var errorMessage);
+
+		if (errorMessage is not null)
+		{
+			// Report diagnostic for malformed x:Class
+			context.ReportDiagnostic(
+				Diagnostic.Create(
+					XamlCodeBehindDiagnostics.InvalidXClassRule,
+					Location.None,
+					$"{errorMessage} in '{filePath}'"));
+			return;
+		}
+
+		if (classInfo is null)
+		{
+			// No x:Class attribute - skip
+			return;
+		}
+
+		var info = classInfo.Value;
+
+		// Check if the class already exists in the compilation
+		var existingType = compilation.GetTypeByMetadataName(info.FullClassName);
+		if (existingType is not null)
+		{
+			return;
+		}
+
+		// Generate code-behind
+		var sourceText = XamlCodeBehindEmitter.Emit(info);
+		var hintName = XamlCodeBehindEmitter.GetHintName(info);
+
+		context.AddSource(hintName, SourceText.From(sourceText, Encoding.UTF8));
+	}
+}

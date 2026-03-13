@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<!--
+		WinAppSDK Code-Behind Generation.
+
+		On WinAppSDK builds, the dedicated Uno.UI.SourceGenerators.WinAppSDK package
+		provides code-behind generation. This replaces the previous workaround of
+		removing and re-adding Uno.UI.SourceGenerators in a gated mode.
+	-->
+
+	<ItemGroup Condition="'$(IsWinAppSdk)'=='true' and '$(ShouldRunGenerator)'!='true'">
+		<PackageReference Include="Uno.UI.SourceGenerators.WinAppSDK" Version="$([MSBuild]::ValueOrDefault('$(UnoVersion)', '$(UnoNugetOverrideVersion)'))" PrivateAssets="all" />
+	</ItemGroup>
+
+</Project>

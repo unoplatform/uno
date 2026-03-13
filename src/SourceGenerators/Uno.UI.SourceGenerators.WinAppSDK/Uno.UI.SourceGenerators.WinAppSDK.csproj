@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<!-- Generators must be on netstandard2.0 so that they run in VS (.NET Framework) and dotnet build (.NET Core) -->
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<AssemblyName>Uno.UI.SourceGenerators.WinAppSDK</AssemblyName>
+		<AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
+
+		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+
+		<!-- Analyzer packaging: do not include the DLL in lib/, pack it into analyzers/ -->
+		<IncludeBuildOutput>false</IncludeBuildOutput>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\..\Uno.Foundation\_Compat\IsExternalInit.cs" Link="_Compat\IsExternalInit.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="Content\Uno.UI.SourceGenerators.WinAppSDK.props" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="Uno.UI.SourceGenerators.Tests" />
+	</ItemGroup>
+
+	<Target Name="GetTargetPath" />
+	<Target Name="GetCopyToPublishDirectoryItems" />
+</Project>
