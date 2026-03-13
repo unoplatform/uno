@@ -152,65 +152,175 @@ void uno_native_dispose(NSView<UNONativeElement>* element)
     [transients removeObject:element];
 }
 
-// Camera capture implementation using IKPictureTaker from Quartz framework
-// Note: IKPictureTaker is deprecated in macOS 10.15+, but still functional.
-// A future enhancement could use AVFoundation for modern camera APIs.
+// Camera capture dialog using AVFoundation.
+// Presents a modal window with a live camera preview and Capture/Cancel buttons.
+// This function must be called from the main thread (same pattern as file pickers).
+
+// Receives the async photo capture result and dismisses the modal.
+// The delegate callback fires on the session's internal queue (not main thread),
+// so it dispatches stopModal back to the main queue where the modal run loop
+// will process it.
+@interface UNOCameraCaptureDelegate : NSObject <AVCapturePhotoCaptureDelegate>
+@property (nonatomic, strong) NSData *capturedImageData;
+@end
+
+@implementation UNOCameraCaptureDelegate
+
+- (void)captureOutput:(AVCapturePhotoOutput *)output
+    didFinishProcessingPhoto:(AVCapturePhoto *)photo
+                       error:(NSError *)error
+{
+    if (!error) {
+        self.capturedImageData = [photo fileDataRepresentation];
+    }
+    // Dismiss the modal from the main thread (the modal run loop drains the main queue)
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [NSApp stopModal];
+    });
+}
+
+@end
+
+// Handles button clicks for the camera modal dialog.
+@interface UNOCameraModalHelper : NSObject
+@property (nonatomic, strong) AVCapturePhotoOutput *photoOutput;
+@property (nonatomic, strong) UNOCameraCaptureDelegate *captureDelegate;
+@end
+
+@implementation UNOCameraModalHelper
+
+- (void)capturePhoto:(NSButton *)sender {
+    // Disable button to prevent double-tap
+    sender.enabled = NO;
+
+    // Initiate async photo capture — the delegate callback will dismiss the modal
+    self.captureDelegate = [[UNOCameraCaptureDelegate alloc] init];
+    AVCapturePhotoSettings *settings = [AVCapturePhotoSettings photoSettings];
+    [self.photoOutput capturePhotoWithSettings:settings delegate:self.captureDelegate];
+}
+
+- (void)cancel:(NSButton *)sender {
+    [NSApp abortModal];
+}
+
+@end
+
 const char* _Nullable uno_capture_photo(bool useJpeg)
 {
     @autoreleasepool {
+        // Find camera device
+        AVCaptureDevice *camera = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+        if (!camera) {
+            return NULL;
+        }
+
+        NSError *error = nil;
+        AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:camera error:&error];
+        if (!input) {
+            return NULL;
+        }
+
+        // Set up capture session
+        AVCaptureSession *session = [[AVCaptureSession alloc] init];
+        session.sessionPreset = AVCaptureSessionPresetPhoto;
+
+        if (![session canAddInput:input]) {
+            return NULL;
+        }
+        [session addInput:input];
+
+        AVCapturePhotoOutput *photoOutput = [[AVCapturePhotoOutput alloc] init];
+        if (![session canAddOutput:photoOutput]) {
+            return NULL;
+        }
+        [session addOutput:photoOutput];
+
+        // Build the modal window with camera preview
+        NSRect windowRect = NSMakeRect(0, 0, 640, 520);
+        NSWindow *window = [[NSWindow alloc]
+            initWithContentRect:windowRect
+                      styleMask:NSWindowStyleMaskTitled | NSWindowStyleMaskClosable
+                        backing:NSBackingStoreBuffered
+                          defer:NO];
+        window.title = @"Camera Capture";
+        [window center];
+
+        NSView *contentView = window.contentView;
+
+        // Camera preview layer
+        AVCaptureVideoPreviewLayer *previewLayer = [AVCaptureVideoPreviewLayer layerWithSession:session];
+        previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+        previewLayer.frame = NSMakeRect(0, 60, 640, 460);
+
+        NSView *previewView = [[NSView alloc] initWithFrame:NSMakeRect(0, 60, 640, 460)];
+        previewView.wantsLayer = YES;
+        [previewView.layer addSublayer:previewLayer];
+        [contentView addSubview:previewView];
+
+        // Helper that handles button actions
+        UNOCameraModalHelper *helper = [[UNOCameraModalHelper alloc] init];
+        helper.photoOutput = photoOutput;
+
+        // Capture button — initiates async capture, delegate dismisses modal when done
+        NSButton *captureButton = [[NSButton alloc] initWithFrame:NSMakeRect(270, 15, 100, 32)];
+        captureButton.title = @"Capture";
+        captureButton.bezelStyle = NSBezelStyleRounded;
+        captureButton.keyEquivalent = @"\r";
+        captureButton.target = helper;
+        captureButton.action = @selector(capturePhoto:);
+        [contentView addSubview:captureButton];
+
+        // Cancel button
+        NSButton *cancelButton = [[NSButton alloc] initWithFrame:NSMakeRect(20, 15, 100, 32)];
+        cancelButton.title = @"Cancel";
+        cancelButton.bezelStyle = NSBezelStyleRounded;
+        cancelButton.keyEquivalent = @"\033"; // Escape
+        cancelButton.target = helper;
+        cancelButton.action = @selector(cancel:);
+        [contentView addSubview:cancelButton];
+
+        // Start camera and run modal
+        [session startRunning];
+        NSModalResponse response = [NSApp runModalForWindow:window];
+        [window orderOut:nil];
+        [session stopRunning];
+
+        // NSModalResponseAbort means user cancelled
+        if (response == NSModalResponseAbort) {
+            return NULL;
+        }
+
+        NSData *imageData = helper.captureDelegate.capturedImageData;
+        if (!imageData) {
+            return NULL;
+        }
+
+        // Convert to requested format
+        NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];
+        if (!imageRep) {
+            return NULL;
+        }
+
+        NSData *outputData;
+        if (useJpeg) {
+            outputData = [imageRep representationUsingType:NSBitmapImageFileTypeJPEG properties:@{NSImageCompressionFactor: @0.9}];
+        } else {
+            outputData = [imageRep representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
+        }
+
+        if (!outputData) {
+            return NULL;
+        }
+
+        // Write to temp file
         NSString *tempDir = NSTemporaryDirectory();
         NSString *fileName = [NSString stringWithFormat:@"%@.%@", [[NSUUID UUID] UUIDString], useJpeg ? @"jpg" : @"png"];
         NSString *filePath = [tempDir stringByAppendingPathComponent:fileName];
-        
-        #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        
-        __block NSString *resultPath = nil;
-        __block dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            // Create an IKPictureTaker instance
-            IKPictureTaker *pictureTaker = [IKPictureTaker pictureTaker];
-            
-            // Run the picture taker modal dialog
-            NSInteger result = [pictureTaker runModal];
-            
-            if (result == NSModalResponseOK) {
-                // Get the captured image
-                NSImage *image = [pictureTaker outputImage];
-                
-                if (image) {
-                    // Convert NSImage to the requested format
-                    CGImageRef cgImage = [image CGImageForProposedRect:NULL context:nil hints:nil];
-                    NSBitmapImageRep *imageRep = [[NSBitmapImageRep alloc] initWithCGImage:cgImage];
-                    
-                    NSData *imageData;
-                    if (useJpeg) {
-                        imageData = [imageRep representationUsingType:NSBitmapImageFileTypeJPEG properties:@{NSImageCompressionFactor: @0.9}];
-                    } else {
-                        imageData = [imageRep representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
-                    }
-                    
-                    // Write to file
-                    if ([imageData writeToFile:filePath atomically:YES]) {
-                        resultPath = [filePath copy];
-                    }
-                }
-            }
-            
-            dispatch_semaphore_signal(semaphore);
-        });
-        
-        // Wait for completion (caller is responsible for calling from appropriate thread)
-        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-        
-        #pragma clang diagnostic pop
-        
-        if (resultPath) {
-            // Note: Caller is responsible for freeing the returned string using free()
-            return strdup([resultPath UTF8String]);
+
+        if ([outputData writeToFile:filePath atomically:YES]) {
+            return strdup([filePath UTF8String]);
         }
-        
+
         return NULL;
     }
 }

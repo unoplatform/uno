@@ -34,25 +34,19 @@ internal class MacOSCameraCaptureUIExtension : ICameraCaptureUIExtension
 	{
 		if (_mode == CameraCaptureUIMode.Video)
 		{
-			// Video capture not yet supported on macOS
 			return null;
 		}
 
-		// Capture a photo using native macOS camera
 		var imagePath = NativeUno.uno_capture_photo(_photoFormat == CameraCaptureUIPhotoFormat.Jpeg);
 
 		if (string.IsNullOrEmpty(imagePath))
 		{
-			// User cancelled or error occurred
 			return null;
 		}
 
-		// Copy the captured image to a temporary file
 		var extension = imagePath.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ? ".jpg" : ".png";
 		var tempPath = Path.Combine(ApplicationData.Current.TemporaryFolder.Path, Guid.NewGuid() + extension);
 		File.Copy(imagePath, tempPath);
-
-		// Delete the original captured image
 		File.Delete(imagePath);
 
 		return await StorageFile.GetFileFromPathAsync(tempPath);
