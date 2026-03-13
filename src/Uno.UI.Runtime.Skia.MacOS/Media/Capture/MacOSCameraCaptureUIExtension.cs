@@ -76,8 +76,7 @@ internal class MacOSCameraCaptureUIExtension : ICameraCaptureUIExtension
 
 		var ext = Path.GetExtension(nativePath);
 		var tempPath = Path.Combine(ApplicationData.Current.TemporaryFolder.Path, Guid.NewGuid() + ext);
-		File.Copy(nativePath, tempPath);
-		File.Delete(nativePath);
+		File.Move(nativePath, tempPath);
 
 		return await StorageFile.GetFileFromPathAsync(tempPath);
 	}
