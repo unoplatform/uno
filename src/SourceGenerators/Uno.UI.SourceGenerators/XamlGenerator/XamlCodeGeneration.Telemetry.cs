@@ -86,12 +86,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				try
 				{
-					_telemetry.TrackEvent(
-						"generate-xaml-failed",
-						new[] {
-							("ExceptionType", exception.GetType().ToString())
-						},
-						new[] { ("Duration", elapsed.TotalSeconds) }
+					var measurements = new Dictionary<string, double>
+					{
+						["Duration"] = elapsed.TotalSeconds
+					};
+
+					_telemetry.TrackException(
+						exception,
+						properties: null,
+						measurements
 					);
 				}
 #pragma warning disable CS0168 // unused parameter
