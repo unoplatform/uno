@@ -20,7 +20,6 @@ namespace Windows.Media.Capture
 		{
 			if (_cameraCaptureUIExtension == null)
 			{
-				// Skia platforms without extension support return null
 				return null;
 			}
 
