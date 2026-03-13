@@ -32,22 +32,26 @@ internal class MacOSCameraCaptureUIExtension : ICameraCaptureUIExtension
 
 	public async Task<StorageFile?> CaptureFileAsync(CancellationToken token)
 	{
+		string? nativePath;
+
 		if (_mode == CameraCaptureUIMode.Video)
 		{
-			return null;
+			nativePath = NativeUno.uno_capture_video();
+		}
+		else
+		{
+			nativePath = NativeUno.uno_capture_photo(_photoFormat == CameraCaptureUIPhotoFormat.Jpeg);
 		}
 
-		var imagePath = NativeUno.uno_capture_photo(_photoFormat == CameraCaptureUIPhotoFormat.Jpeg);
-
-		if (string.IsNullOrEmpty(imagePath))
+		if (string.IsNullOrEmpty(nativePath))
 		{
 			return null;
 		}
 
-		var extension = imagePath.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ? ".jpg" : ".png";
-		var tempPath = Path.Combine(ApplicationData.Current.TemporaryFolder.Path, Guid.NewGuid() + extension);
-		File.Copy(imagePath, tempPath);
-		File.Delete(imagePath);
+		var ext = Path.GetExtension(nativePath);
+		var tempPath = Path.Combine(ApplicationData.Current.TemporaryFolder.Path, Guid.NewGuid() + ext);
+		File.Copy(nativePath, tempPath);
+		File.Delete(nativePath);
 
 		return await StorageFile.GetFileFromPathAsync(tempPath);
 	}
