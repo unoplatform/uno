@@ -162,17 +162,12 @@ public partial class CoreWebView2
 
 	internal void OnOwnerApplyTemplate()
 	{
-		DetachWebResourceRequestedSupport();
-		_nativeWebView = GetNativeWebViewFromTemplate();
-		AttachWebResourceRequestedSupport();
-
-		// Signal that native WebView is now initialized
-		_nativeWebViewInitializedTcs.TrySetResult(true);
-
-		//The native WebView already navigate to a blank page if no source is set.
-		//Avoid a bug where invoke GoBack() on WebView do nothing in Android 4.4
-		UpdateFromInternalSource();
-		OnScrollEnabledChanged(_scrollEnabled);
+		var nativeWebView = GetNativeWebViewFromTemplate();
+		SetNativeWebView(nativeWebView);
+		if (_nativeWebView is not null)
+		{
+			ApplyNativeWebViewState();
+		}
 	}
 
 	internal void OnScrollEnabledChanged(bool newValue)
@@ -298,14 +293,97 @@ public partial class CoreWebView2
 	{
 		WebResourceRequested?.Invoke(this, eventArgs);
 	}
-
-
-
-	private TaskCompletionSource<bool> _nativeWebViewInitializedTcs = new TaskCompletionSource<bool>();
+	private TaskCompletionSource<bool> _nativeWebViewInitializedTcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
 	internal Task EnsureNativeWebViewAsync() => _nativeWebViewInitializedTcs.Task;
 	internal static bool GetIsHistoryEntryValid(string url) =>
 		!url.IsNullOrWhiteSpace() &&
 		!url.Equals(BlankUrl, StringComparison.OrdinalIgnoreCase);
+
+	private void SetNativeWebView(INativeWebView? nativeWebView)
+	{
+		// Template re-application can happen many times during a page lifetime (reload, visual tree churn,
+		// style/template updates). This method is the single swap point for the platform-native view instance.
+		if (ReferenceEquals(_nativeWebView, nativeWebView))
+		{
+			// If template resolution produced no native element, EnsureCoreWebView2Async() must fail fast instead of
+			// waiting forever on an initialization task that can never complete.
+			if (nativeWebView is null)
+			{
+				_nativeWebViewInitializedTcs.TrySetException(new InvalidOperationException("Native WebView could not be initialized from the current template."));
+			}
+
+			return;
+		}
+
+		if (_nativeWebView is not null)
+		{
+			ReleaseNativeWebView();
+		}
+		else if (_nativeWebViewInitializedTcs.Task.IsCompleted)
+		{
+			// Recover from a previously faulted initialization task (for example, template resolved to null),
+			// while preserving any in-flight awaiters on the initial unresolved task.
+			_nativeWebViewInitializedTcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
+		}
+
+		_nativeWebView = nativeWebView;
+
+		if (_nativeWebView is not null)
+		{
+			AttachWebResourceRequestedSupport();
+			_nativeWebViewInitializedTcs.TrySetResult(true);
+		}
+		else
+		{
+			_nativeWebViewInitializedTcs.TrySetException(new InvalidOperationException("Native WebView could not be initialized from the current template."));
+		}
+	}
+
+	private void ReleaseNativeWebView()
+	{
+		DetachWebResourceRequestedSupport();
+
+		DisposeNativeWebView(_nativeWebView);
+
+		_nativeWebView = null;
+
+		if (_nativeWebViewInitializedTcs.Task.IsCompleted)
+		{
+			// Prepare a fresh generation token after releasing an existing native instance.
+			// The next native attachment will complete this task.
+			_nativeWebViewInitializedTcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
+		}
+		else
+		{
+			// Existing waiters were tied to the released instance generation; fail fast instead of hanging.
+			_nativeWebViewInitializedTcs.TrySetException(new ObjectDisposedException(nameof(CoreWebView2)));
+		}
+	}
+
+	private void DisposeNativeWebView(INativeWebView? nativeWebView)
+	{
+		if (nativeWebView is IDisposable disposable)
+		{
+			disposable.Dispose();
+		}
+	}
+
+	private void ApplyNativeWebViewState()
+	{
+		// Keep the current URL across template/native handle re-creation.
+		// Without this, rapid template churn can recreate a native view that stays at about:blank.
+		if (_processedSource is null &&
+			Uri.TryCreate(Source, UriKind.Absolute, out var currentSource) &&
+			GetIsHistoryEntryValid(currentSource.ToString()))
+		{
+			_processedSource = currentSource;
+		}
+
+		// The native WebView already navigates to a blank page if no source is set.
+		// Avoid a bug where invoking GoBack() on WebView does nothing in Android 4.4.
+		UpdateFromInternalSource();
+		OnScrollEnabledChanged(_scrollEnabled);
+	}
 
 	[MemberNotNullWhen(true, nameof(_nativeWebView))]
 	private bool VerifyWebViewAvailability()
@@ -417,4 +495,3 @@ public partial class CoreWebView2
 		}
 	}
 }
-

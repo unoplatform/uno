@@ -1,0 +1,10 @@
+GetClientRect
+ClientToScreen
+GetDC
+ReleaseDC
+CreateCompatibleDC
+DeleteDC
+CreateDIBSection
+SelectObject
+DeleteObject
+BitBlt

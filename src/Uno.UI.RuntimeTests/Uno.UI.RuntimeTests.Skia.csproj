@@ -14,6 +14,11 @@
 		<DefineConstants>$(DefineConstants);IS_RUNTIME_UI_TESTS</DefineConstants>
 		<NoWarn>$(NoWarn);CS1998</NoWarn>
 	</PropertyGroup>
+
+	<ItemGroup Condition="'$(OS)' != 'Windows_NT'">
+		<!-- SkiaWin32-only runtime test relies on Win32 capture interop and unsafe code. -->
+		<Compile Remove="Tests\Microsoft_UI_Xaml_Controls\Given_WebView2.SkiaWin32.cs" />
+	</ItemGroup>
 	
 	<ItemGroup Label="GlobalUsings">
 		<Using Include="AwesomeAssertions" />
@@ -32,6 +37,8 @@
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="MSTest.Analyzers" />
 		<PackageReference Include="Combinatorial.MSTest" />
+		<!-- Needed by Win32 screen capture assertions in SkiaWin32-only WebView2 runtime tests. -->
+		<PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.106" />
 	</ItemGroup>
 
 	<ItemGroup>
