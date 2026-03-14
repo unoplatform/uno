@@ -1,5 +1,3 @@
-#nullable enable
-
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Extensions.Media.Capture;
@@ -14,7 +12,7 @@ namespace Windows.Media.Capture
 
 		partial void InitializePlatform() => ApiExtensibility.CreateInstance(this, out _cameraCaptureUIExtension);
 
-		private async Task<StorageFile?> CaptureFile(CancellationToken ct, CameraCaptureUIMode mode)
+		private async Task<StorageFile> CaptureFile(CancellationToken ct, CameraCaptureUIMode mode)
 		{
 			if (_cameraCaptureUIExtension == null)
 			{
