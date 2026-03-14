@@ -539,12 +539,20 @@ static accessibility_expand_collapse_fn_ptr g_expandCollapseCallback = NULL;
 #pragma mark - C API for P/Invoke
 
 void uno_accessibility_init(NSWindow* window) {
-	g_window = window;
-	if (!g_elements) {
+	// Clear all stale state from any previous window. When tests create and
+	// destroy many windows rapidly, g_elements would otherwise accumulate
+	// thousands of stale entries pointing to deallocated views, causing
+	// crashes in Metal rendering and the macOS accessibility system.
+	if (g_elements) {
+		[g_elements removeAllObjects];
+	} else {
 		g_elements = [[NSMutableDictionary alloc] init];
 	}
+	g_rootElement = nil;
+	g_focusedElement = nil;
+	g_window = window;
 #if DEBUG
-	NSLog(@"UNOAccessibility: initialized for window %p", window);
+	NSLog(@"UNOAccessibility: initialized for window %p (cleared stale elements)", window);
 #endif
 }
 
@@ -633,12 +641,23 @@ void uno_accessibility_remove_element(intptr_t parentHandle, intptr_t handle) {
 		return;
 	}
 
-	// Clear global references if this element is the focused or root element
-	if (g_focusedElement == element) {
-		g_focusedElement = nil;
-	}
-	if (g_rootElement == element) {
-		g_rootElement = nil;
+	// Use iterative removal instead of recursion to prevent stack overflow
+	// when removing deeply nested element trees. Collect all handles to remove
+	// by walking the tree breadth-first, then remove them in a single pass.
+	NSMutableArray<NSNumber*> *handlesToRemove = [[NSMutableArray alloc] init];
+	NSMutableArray<UNOAccessibilityElement*> *queue = [[NSMutableArray alloc] initWithObjects:element, nil];
+
+	while (queue.count > 0) {
+		@autoreleasepool {
+			UNOAccessibilityElement *current = queue.firstObject;
+			[queue removeObjectAtIndex:0];
+			[handlesToRemove addObject:@(current.unoHandle)];
+
+			// Enqueue children for processing
+			for (UNOAccessibilityElement *child in current.unoChildren) {
+				[queue addObject:child];
+			}
+		}
 	}
 
 	// Remove from parent's children
@@ -647,16 +666,22 @@ void uno_accessibility_remove_element(intptr_t parentHandle, intptr_t handle) {
 		[parent.unoChildren removeObject:element];
 	}
 
-	// Recursively remove all children from the global dictionary
-	for (UNOAccessibilityElement *child in [element.unoChildren copy]) {
-		uno_accessibility_remove_element(handle, child.unoHandle);
+	// Remove all collected elements from global dictionary and clear global refs
+	for (NSNumber *key in handlesToRemove) {
+		UNOAccessibilityElement *elem = g_elements[key];
+		if (elem) {
+			if (g_focusedElement == elem) {
+				g_focusedElement = nil;
+			}
+			if (g_rootElement == elem) {
+				g_rootElement = nil;
+			}
+		}
+		[g_elements removeObjectForKey:key];
 	}
 
-	// Remove from global dictionary
-	[g_elements removeObjectForKey:@(handle)];
-
 #if DEBUG
-	NSLog(@"UNOAccessibility: removed element handle=%ld", (long)handle);
+	NSLog(@"UNOAccessibility: removed element handle=%ld (and %lu descendants)", (long)handle, (unsigned long)(handlesToRemove.count - 1));
 #endif
 }
 

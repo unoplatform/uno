@@ -222,6 +222,11 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 	internal void Initialize(nint windowHandle)
 	{
 		_windowHandle = windowHandle;
+		// Reset _accessibilityTreeInitialized so TryInitializeAccessibilityTree
+		// will rebuild the tree for the new window. Without this, the native
+		// g_elements dict is cleared by uno_accessibility_init but the managed
+		// side thinks the tree is already initialized and never repopulates it.
+		_accessibilityTreeInitialized = false;
 		NativeUno.uno_accessibility_init(windowHandle);
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
@@ -290,6 +295,16 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 	{
 		if (IsAccessibilityEnabled && _accessibilityTreeInitialized)
 		{
+			// Only process elements that are part of the live visual tree.
+			// ExternalOnChildAdded fires for ANY AddChild call, including during
+			// element construction before the parent is in the visual tree.
+			// Adding elements prematurely corrupts the native accessibility tree
+			// (e.g., incorrectly overwriting g_rootElement).
+			if (!parent.IsActiveInVisualTree)
+			{
+				return;
+			}
+
 			try
 			{
 				// Skip elements with AccessibilityView=Raw, but process their children
@@ -324,6 +339,28 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 	{
 		if (IsAccessibilityEnabled && _accessibilityTreeInitialized)
 		{
+			// Only process removals for elements that are part of the live visual tree.
+			// This mirrors the guard in OnChildAdded: if the parent wasn't in the
+			// visual tree when the child was added, the child was never registered
+			// in the native accessibility tree, so there's nothing to remove.
+			if (!parent.IsActiveInVisualTree)
+			{
+				return;
+			}
+
+			// If the child had AccessibilityView=Raw when added, it was skipped
+			// in the native tree but its children were reparented to the semantic
+			// parent. Remove those reparented children from the native tree.
+			var accessibilityView = AutomationProperties.GetAccessibilityView(child);
+			if (accessibilityView == AccessibilityView.Raw)
+			{
+				foreach (var childChild in child.GetChildren())
+				{
+					OnChildRemoved(parent, childChild);
+				}
+				return;
+			}
+
 			NativeUno.uno_accessibility_remove_element(parent.Visual.Handle, child.Visual.Handle);
 		}
 	}
@@ -332,7 +369,8 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 	{
 		if (IsAccessibilityEnabled && _accessibilityTreeInitialized
 			&& visual is ContainerVisual containerVisual
-			&& containerVisual.Owner?.Target is UIElement)
+			&& containerVisual.Owner?.Target is UIElement owner
+			&& owner.IsActiveInVisualTree)
 		{
 			if (!visual.IsVisible)
 			{
