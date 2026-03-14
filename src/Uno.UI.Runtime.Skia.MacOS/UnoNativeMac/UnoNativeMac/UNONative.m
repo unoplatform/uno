@@ -325,31 +325,13 @@ const char* _Nullable uno_capture_photo(bool useJpeg)
         // Ensure required privacy usage string is present to avoid OS termination
         if (![[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSCameraUsageDescription"])
         {
-            NSLog(@"[uno_capture_photo] Missing NSCameraUsageDescription in Info.plist. Camera access is not permitted.");
-            return NULL;
+            // No-op here: usage description validation and logging are handled centrally
+            // by EnsureCaptureAuthorization(AVMediaTypeVideo).
         }
 
         // Ensure we have authorization to use the camera before accessing the device
-        AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
-        if (authStatus == AVAuthorizationStatusNotDetermined)
+        if (!EnsureCaptureAuthorization(AVMediaTypeVideo))
         {
-            __block BOOL granted = NO;
-            dispatch_semaphore_t sema = dispatch_semaphore_create(0);
-            [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo
-                                     completionHandler:^(BOOL g) {
-                                         granted = g;
-                                         dispatch_semaphore_signal(sema);
-                                     }];
-            dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-            if (!granted)
-            {
-                NSLog(@"[uno_capture_photo] Camera access was not granted by the user.");
-                return NULL;
-            }
-        }
-        else if (authStatus == AVAuthorizationStatusDenied || authStatus == AVAuthorizationStatusRestricted)
-        {
-            NSLog(@"[uno_capture_photo] Camera access is denied or restricted.");
             return NULL;
         }
 
