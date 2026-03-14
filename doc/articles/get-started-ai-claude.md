@@ -145,7 +145,7 @@ Same format as `settings.json`, but never committed (Claude Code auto-gitignores
 
 Here is the full recommended file structure:
 
-```
+```text
 ~/.claude/
 ├── settings.json          # Global permissions and deny rules
 └── CLAUDE.md              # Global instructions (stack identity, scaffolding)
@@ -159,7 +159,6 @@ my-uno-app/
 ├── src/
 └── MyApp.sln
 ```
-
 
 ## Next Steps
 
