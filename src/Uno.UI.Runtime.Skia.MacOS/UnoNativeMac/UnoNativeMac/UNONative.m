@@ -204,6 +204,23 @@ void uno_native_dispose(NSView<UNONativeElement>* element)
 
 @end
 
+// --- Window delegate that aborts the modal when the close button (or Cmd+W) is used ---
+
+@interface UNOCameraWindowDelegate : NSObject <NSWindowDelegate>
+@property (nonatomic, weak) AVCaptureMovieFileOutput *movieOutput;
+@end
+
+@implementation UNOCameraWindowDelegate
+
+- (void)windowWillClose:(NSNotification *)notification {
+    if (self.movieOutput && self.movieOutput.isRecording) {
+        [self.movieOutput stopRecording];
+    }
+    [NSApp abortModal];
+}
+
+@end
+
 // --- Photo modal helper ---
 
 @interface UNOPhotoModalHelper : NSObject
@@ -229,7 +246,6 @@ void uno_native_dispose(NSView<UNONativeElement>* element)
 // --- Video recording delegate ---
 
 @interface UNOVideoRecordingDelegate : NSObject <AVCaptureFileOutputRecordingDelegate>
-@property (nonatomic, strong) NSURL *outputFileURL;
 @property (nonatomic, assign) BOOL succeeded;
 @end
 
@@ -254,7 +270,6 @@ void uno_native_dispose(NSView<UNONativeElement>* element)
 @property (nonatomic, strong) AVCaptureMovieFileOutput *movieOutput;
 @property (nonatomic, strong) UNOVideoRecordingDelegate *recordingDelegate;
 @property (nonatomic, strong) NSURL *outputFileURL;
-@property (nonatomic, weak) NSButton *recordButton;
 @property (nonatomic, weak) NSButton *cancelButton;
 @property (nonatomic, assign) BOOL isRecording;
 @end
@@ -269,7 +284,6 @@ void uno_native_dispose(NSView<UNONativeElement>* element)
         self.cancelButton.enabled = NO;
 
         self.recordingDelegate = [[UNOVideoRecordingDelegate alloc] init];
-        self.recordingDelegate.outputFileURL = self.outputFileURL;
         [self.movieOutput startRecordingToOutputFileURL:self.outputFileURL recordingDelegate:self.recordingDelegate];
     } else {
         // Stop recording — delegate callback will dismiss the modal
@@ -357,6 +371,10 @@ const char* _Nullable uno_capture_photo(bool useJpeg)
                           defer:NO];
         window.title = @"Camera Capture";
         [window center];
+
+        // Wire window delegate so the close button / Cmd+W aborts the modal
+        UNOCameraWindowDelegate *windowDelegate = [[UNOCameraWindowDelegate alloc] init];
+        window.delegate = windowDelegate;
 
         NSView *contentView = window.contentView;
 
@@ -503,6 +521,11 @@ const char* _Nullable uno_capture_video(void)
         window.title = @"Video Capture";
         [window center];
 
+        // Wire window delegate so the close button / Cmd+W aborts the modal
+        UNOCameraWindowDelegate *windowDelegate = [[UNOCameraWindowDelegate alloc] init];
+        windowDelegate.movieOutput = movieOutput;
+        window.delegate = windowDelegate;
+
         NSView *contentView = window.contentView;
 
         // Camera preview layer
@@ -528,7 +551,6 @@ const char* _Nullable uno_capture_video(void)
         recordButton.target = helper;
         recordButton.action = @selector(toggleRecording:);
         [contentView addSubview:recordButton];
-        helper.recordButton = recordButton;
 
         // Cancel button
         NSButton *cancelButton = [[NSButton alloc] initWithFrame:NSMakeRect(20, 15, 100, 32)];
