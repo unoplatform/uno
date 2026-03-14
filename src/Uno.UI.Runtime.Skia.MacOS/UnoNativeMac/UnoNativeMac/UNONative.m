@@ -3,9 +3,35 @@
 //
 
 #import "UNONative.h"
+#import <AVFoundation/AVFoundation.h>
+#import <dispatch/dispatch.h>
 
 static NSMutableSet<NSView*> *elements;
 static NSMutableSet<NSView*> *transients;
+
+static BOOL EnsureCaptureAuthorization(AVMediaType mediaType)
+{
+    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:mediaType];
+    if (status == AVAuthorizationStatusAuthorized) {
+        return YES;
+    }
+
+    if (status == AVAuthorizationStatusNotDetermined) {
+        __block BOOL authorized = NO;
+        dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+
+        [AVCaptureDevice requestAccessForMediaType:mediaType
+                                 completionHandler:^(BOOL granted) {
+                                     authorized = granted;
+                                     dispatch_semaphore_signal(semaphore);
+                                 }];
+
+        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+        return authorized;
+    }
+
+    return NO;
+}
 
 @implementation UNORedView : NSView
 
@@ -271,6 +297,30 @@ const char* _Nullable uno_capture_photo(bool useJpeg)
             return NULL;
         }
 
+        // Ensure we have authorization to use the camera before accessing the device
+        AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+        if (authStatus == AVAuthorizationStatusNotDetermined)
+        {
+            __block BOOL granted = NO;
+            dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+            [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo
+                                     completionHandler:^(BOOL g) {
+                                         granted = g;
+                                         dispatch_semaphore_signal(sema);
+                                     }];
+            dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+            if (!granted)
+            {
+                NSLog(@"[uno_capture_photo] Camera access was not granted by the user.");
+                return NULL;
+            }
+        }
+        else if (authStatus == AVAuthorizationStatusDenied || authStatus == AVAuthorizationStatusRestricted)
+        {
+            NSLog(@"[uno_capture_photo] Camera access is denied or restricted.");
+            return NULL;
+        }
+
         // Find camera device
         AVCaptureDevice *camera = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
         if (!camera) {
@@ -391,7 +441,15 @@ const char* _Nullable uno_capture_photo(bool useJpeg)
 const char* _Nullable uno_capture_video(void)
 {
     @autoreleasepool {
-        // Find camera and microphone
+        // Ensure camera authorization
+        if (!EnsureCaptureAuthorization(AVMediaTypeVideo)) {
+            return NULL;
+        }
+
+        // Determine microphone authorization (audio is optional)
+        BOOL audioAuthorized = EnsureCaptureAuthorization(AVMediaTypeAudio);
+
+        // Find camera and (optionally) microphone
         AVCaptureDevice *camera = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
         if (!camera) {
             return NULL;
@@ -412,12 +470,14 @@ const char* _Nullable uno_capture_video(void)
         }
         [session addInput:videoInput];
 
-        // Add audio input if available
-        AVCaptureDevice *mic = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
-        if (mic) {
-            AVCaptureDeviceInput *audioInput = [AVCaptureDeviceInput deviceInputWithDevice:mic error:&error];
-            if (audioInput && [session canAddInput:audioInput]) {
-                [session addInput:audioInput];
+        // Add audio input if available and authorized
+        if (audioAuthorized) {
+            AVCaptureDevice *mic = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
+            if (mic) {
+                AVCaptureDeviceInput *audioInput = [AVCaptureDeviceInput deviceInputWithDevice:mic error:&error];
+                if (audioInput && [session canAddInput:audioInput]) {
+                    [session addInput:audioInput];
+                }
             }
         }
 
