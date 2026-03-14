@@ -73,6 +73,7 @@
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\TitleBarAndBorder.xaml" />
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\TitleBar_SetDragRectangles.xaml" />
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\MicaBackdropTests.xaml" />
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\AnimatedIconTests\AnimatedIconPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -5793,6 +5794,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)MessageDialogTests\MessageDialogTest.xaml.cs">
       <DependentUpon>MessageDialogTest.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\MicaBackdropTests.xaml.cs">
+      <DependentUpon>MicaBackdropTests.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\AppWindowPositionAndSize.xaml.cs">
       <DependentUpon>AppWindowPositionAndSize.xaml</DependentUpon>

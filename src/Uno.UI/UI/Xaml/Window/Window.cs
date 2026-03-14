@@ -294,6 +294,39 @@ public partial class Window
 		set => AppWindow.TitleBar.ExtendsContentIntoTitleBar = value;
 	}
 
+#if __SKIA__
+	private Microsoft.UI.Xaml.Media.SystemBackdrop? _systemBackdrop;
+
+	/// <summary>
+	/// Gets or sets the system backdrop used to render materials like Mica and Acrylic.
+	/// </summary>
+	public Microsoft.UI.Xaml.Media.SystemBackdrop? SystemBackdrop
+	{
+		get => _systemBackdrop;
+		set
+		{
+			_systemBackdrop = value;
+			NativeWrapper?.SetSystemBackdrop(value);
+			UpdateRootVisualBackgroundForBackdrop(value);
+		}
+	}
+
+	private void UpdateRootVisualBackgroundForBackdrop(Media.SystemBackdrop? backdrop)
+	{
+		if (RootElement is Controls.Panel rootPanel)
+		{
+			if (backdrop is not null)
+			{
+				rootPanel.Background = new Media.SolidColorBrush(Microsoft.UI.Colors.Transparent);
+			}
+			else
+			{
+				rootPanel.Background = new Media.SolidColorBrush(ThemingHelper.GetRootVisualBackground());
+			}
+		}
+	}
+#endif
+
 	internal Brush? Background
 	{
 		get => _background;
