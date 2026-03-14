@@ -56,28 +56,50 @@ internal class MacOSCameraCaptureUIExtension : ICameraCaptureUIExtension
 	{
 		token.ThrowIfCancellationRequested();
 
-		string? nativePath;
+		string? nativePath = null;
 
-		if (_mode == CameraCaptureUIMode.Video)
+		try
 		{
-			nativePath = NativeUno.uno_capture_video();
+			if (_mode == CameraCaptureUIMode.Video)
+			{
+				nativePath = NativeUno.uno_capture_video();
+			}
+			else
+			{
+				nativePath = NativeUno.uno_capture_photo(_photoFormat == CameraCaptureUIPhotoFormat.Jpeg);
+			}
+
+			token.ThrowIfCancellationRequested();
+
+			if (string.IsNullOrEmpty(nativePath))
+			{
+				return null;
+			}
+
+			var ext = Path.GetExtension(nativePath);
+			var tempPath = Path.Combine(ApplicationData.Current.TemporaryFolder.Path, Guid.NewGuid() + ext);
+			File.Move(nativePath, tempPath);
+
+			// Prevent cleanup of the moved file in the catch block.
+			nativePath = null;
+
+			return await StorageFile.GetFileFromPathAsync(tempPath);
 		}
-		else
+		catch (OperationCanceledException) when (!string.IsNullOrEmpty(nativePath))
 		{
-			nativePath = NativeUno.uno_capture_photo(_photoFormat == CameraCaptureUIPhotoFormat.Jpeg);
+			try
+			{
+				if (File.Exists(nativePath))
+				{
+					File.Delete(nativePath);
+				}
+			}
+			catch
+			{
+				// Ignore cleanup failures on cancellation.
+			}
+
+			throw;
 		}
-
-		token.ThrowIfCancellationRequested();
-
-		if (string.IsNullOrEmpty(nativePath))
-		{
-			return null;
-		}
-
-		var ext = Path.GetExtension(nativePath);
-		var tempPath = Path.Combine(ApplicationData.Current.TemporaryFolder.Path, Guid.NewGuid() + ext);
-		File.Move(nativePath, tempPath);
-
-		return await StorageFile.GetFileFromPathAsync(tempPath);
 	}
 }
