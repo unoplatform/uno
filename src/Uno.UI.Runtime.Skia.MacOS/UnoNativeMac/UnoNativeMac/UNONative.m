@@ -319,7 +319,7 @@ void uno_native_dispose(NSView<UNONativeElement>* element)
 
 @end
 
-const char* _Nullable uno_capture_photo(bool useJpeg)
+char* _Nullable uno_capture_photo(bool useJpeg)
 {
     @autoreleasepool {
         // Ensure required privacy usage string is present to avoid OS termination
@@ -460,7 +460,7 @@ const char* _Nullable uno_capture_photo(bool useJpeg)
     }
 }
 
-const char* _Nullable uno_capture_video(void)
+char* _Nullable uno_capture_video(void)
 {
     @autoreleasepool {
         // Ensure camera authorization
