@@ -512,7 +512,14 @@ const char* _Nullable uno_capture_video(void)
         // Prepare output file path
         NSString *tempDir = NSTemporaryDirectory();
         NSString *fileName = [NSString stringWithFormat:@"%@.mp4", [[NSUUID UUID] UUIDString]];
-        NSString *filePath = [tempDir stringByAppendingPathComponent:fileName];
+        // Ensure the output file extension matches the QuickTime container produced by AVCaptureMovieFileOutput.
+        NSString *outputFileName = fileName;
+        NSString *extension = [[fileName pathExtension] lowercaseString];
+        if ([extension isEqualToString:@"mp4"]) {
+            outputFileName = [[fileName stringByDeletingPathExtension] stringByAppendingPathExtension:@"mov"];
+        }
+
+        NSString *filePath = [tempDir stringByAppendingPathComponent:outputFileName];
         NSURL *fileURL = [NSURL fileURLWithPath:filePath];
 
         // Build the modal window with camera preview
