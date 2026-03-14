@@ -121,8 +121,29 @@ internal class X11ClipboardExtension : IClipboardExtension
 		// Query XFixes extension to get the event base for clipboard monitoring
 		if (XLib.XQueryExtension(display, "XFIXES", out _, out _xfixesEventBase, out _))
 		{
-			IntPtr clipboard = X11Helper.GetAtom(display, X11Helper.CLIPBOARD);
-			XLib.XFixesSelectSelectionInput(display, window, clipboard, 1);
+			if (NativeLibrary.TryLoad(XLib.libXfixes, out var xfixesHandle))
+			{
+				// We only need to ensure the library is present; let the runtime manage its own load.
+				NativeLibrary.Free(xfixesHandle);
+				IntPtr clipboard = X11Helper.GetAtom(display, X11Helper.CLIPBOARD);
+				const int XFixesSetSelectionOwnerNotifyMask = 1;
+				XLib.XFixesSelectSelectionInput(display, window, clipboard, XFixesSetSelectionOwnerNotifyMask);
+			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn("XFIXES extension is available, but libXfixes.so.3 could not be loaded. Clipboard change monitoring will be disabled.");
+				}
+				_xfixesEventBase = -1;
+			}
+		}
+		else
+		{
+			if (this.Log().IsEnabled(LogLevel.Information))
+			{
+				this.Log().LogInfo("X11 XFixes extension is not available; clipboard content change monitoring is disabled.");
+			}
 		}
 		_ = XLib.XFlush(display); // unnecessary on most Xlib implementations
 
