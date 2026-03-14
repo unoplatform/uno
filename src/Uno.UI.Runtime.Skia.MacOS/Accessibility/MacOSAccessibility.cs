@@ -235,10 +235,31 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 		}
 	}
 
-	private void OnNativeWindowReady(object? sender, MacOSWindowNative nativeWindow) =>
+	private void OnNativeWindowReady(object? sender, MacOSWindowNative nativeWindow)
+	{
+		// Only initialize the accessibility tree for the window that owns the current
+		// accessibility singleton handle. Secondary windows do not call Initialize() so
+		// their handle will never match _windowHandle, and we skip them safely.
+		if (nativeWindow.Handle != _windowHandle)
+		{
+			return;
+		}
+
+		var capturedHandle = _windowHandle;
 		_ = nativeWindow.Host.RootElement?.Dispatcher.RunAsync(
 			Windows.UI.Core.CoreDispatcherPriority.Low,
-			() => TryInitializeAccessibilityTree(nativeWindow.Host.RootElement));
+			() =>
+			{
+				// Bail out if the window handle changed while we were queued
+				// (e.g. another window was created and reinitialized the singleton).
+				if (_windowHandle != capturedHandle)
+				{
+					return;
+				}
+
+				TryInitializeAccessibilityTree(nativeWindow.Host.RootElement);
+			});
+	}
 
 	private void TryInitializeAccessibilityTree(UIElement? rootElement)
 	{
