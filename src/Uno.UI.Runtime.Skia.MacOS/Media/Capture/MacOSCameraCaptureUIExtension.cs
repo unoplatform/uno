@@ -80,26 +80,27 @@ internal class MacOSCameraCaptureUIExtension : ICameraCaptureUIExtension
 			var tempPath = Path.Combine(ApplicationData.Current.TemporaryFolder.Path, Guid.NewGuid() + ext);
 			File.Move(nativePath, tempPath);
 
-			// Prevent cleanup of the moved file in the catch block.
+			// Prevent cleanup of the moved file in the finally block.
 			nativePath = null;
 
 			return await StorageFile.GetFileFromPathAsync(tempPath);
 		}
-		catch (OperationCanceledException) when (!string.IsNullOrEmpty(nativePath))
+		finally
 		{
-			try
+			if (!string.IsNullOrEmpty(nativePath))
 			{
-				if (File.Exists(nativePath))
+				try
 				{
-					File.Delete(nativePath);
+					if (File.Exists(nativePath))
+					{
+						File.Delete(nativePath);
+					}
+				}
+				catch
+				{
+					// Ignore cleanup failures.
 				}
 			}
-			catch
-			{
-				// Ignore cleanup failures on cancellation.
-			}
-
-			throw;
 		}
 	}
 }
