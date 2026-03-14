@@ -434,6 +434,10 @@ const char* _Nullable uno_capture_photo(bool useJpeg)
         [window orderOut:nil];
         [session stopRunning];
 
+        // Keep the window delegate alive for the duration of the modal
+        // (NSWindow.delegate is weak, so ARC could release it prematurely)
+        (void)windowDelegate;
+
         // NSModalResponseAbort means user cancelled
         if (response == NSModalResponseAbort) {
             return NULL;
@@ -585,6 +589,10 @@ const char* _Nullable uno_capture_video(void)
         NSModalResponse response = [NSApp runModalForWindow:window];
         [window orderOut:nil];
         [session stopRunning];
+
+        // Keep the window delegate alive for the duration of the modal
+        // (NSWindow.delegate is weak, so ARC could release it prematurely)
+        (void)windowDelegate;
 
         // NSModalResponseAbort means user cancelled
         if (response == NSModalResponseAbort) {
