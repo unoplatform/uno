@@ -8,7 +8,7 @@ namespace Windows.Media.Capture
 {
 	public partial class CameraCaptureUI
 	{
-		private ICameraCaptureUIExtension? _cameraCaptureUIExtension;
+		private ICameraCaptureUIExtension _cameraCaptureUIExtension;
 
 		partial void InitializePlatform() => ApiExtensibility.CreateInstance(this, out _cameraCaptureUIExtension);
 
