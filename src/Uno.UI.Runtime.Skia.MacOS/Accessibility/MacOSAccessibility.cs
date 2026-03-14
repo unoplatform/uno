@@ -264,7 +264,27 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 		Control.OnIsFocusableChangedCallback = UpdateIsFocusable;
 	}
 
-	private static Vector3 GetVisualOffset(Visual visual) => visual.GetTotalOffset();
+	/// <summary>
+	/// Gets the absolute position of a visual within the window by walking up
+	/// the parent chain and accumulating all local offsets. This is necessary
+	/// because TotalMatrix may be stale when called from property-change callbacks
+	/// (the dirty flag hasn't been set yet at that point).
+	/// VoiceOver needs absolute window coordinates for the accessibility frame.
+	/// </summary>
+	private static Vector3 GetAbsoluteOffset(Visual visual)
+	{
+		var x = 0f;
+		var y = 0f;
+		var current = visual;
+		while (current is not null)
+		{
+			var offset = current.GetTotalOffset();
+			x += offset.X;
+			y += offset.Y;
+			current = current.Parent;
+		}
+		return new Vector3(x, y, 0);
+	}
 
 	private void OnChildAdded(UIElement parent, UIElement child, int? index)
 	{
@@ -272,6 +292,18 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 		{
 			try
 			{
+				// Skip elements with AccessibilityView=Raw, but process their children
+				// under the Raw element's parent to maintain the semantic tree.
+				var accessibilityView = AutomationProperties.GetAccessibilityView(child);
+				if (accessibilityView == AccessibilityView.Raw)
+				{
+					foreach (var childChild in child.GetChildren())
+					{
+						OnChildAdded(parent, childChild, null);
+					}
+					return;
+				}
+
 				AddAccessibilityElement(parent.Visual.Handle, child, index);
 				foreach (var childChild in child.GetChildren())
 				{
@@ -308,7 +340,7 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 			}
 			else
 			{
-				var totalOffset = GetVisualOffset(visual);
+				var totalOffset = GetAbsoluteOffset(visual);
 				NativeUno.uno_accessibility_update_frame(
 					containerVisual.Handle,
 					containerVisual.Size.X, containerVisual.Size.Y,
@@ -360,7 +392,7 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 		Debug.Assert(IsAccessibilityEnabled);
 
 		var rootHandle = rootElement.Visual.Handle;
-		var totalOffset = GetVisualOffset(rootElement.Visual);
+		var totalOffset = GetAbsoluteOffset(rootElement.Visual);
 		var peer = rootElement.GetOrCreateAutomationPeer();
 		var role = peer != null ? ResolveRole(peer, rootElement) : null;
 		var label = peer != null ? ResolveLabel(peer) : null;
@@ -389,6 +421,21 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 	{
 		Debug.Assert(IsAccessibilityEnabled);
 
+		// Skip elements with AccessibilityView=Raw - they should be completely
+		// hidden from the accessibility tree (VoiceOver skips them).
+		// Their children are still added under the Raw element's parent,
+		// preserving the semantic tree structure.
+		var accessibilityView = AutomationProperties.GetAccessibilityView(child);
+		if (accessibilityView == AccessibilityView.Raw)
+		{
+			// Still process children, but parent them to the Raw element's parent
+			foreach (var childChild in child.GetChildren())
+			{
+				BuildAccessibilityTreeRecursive(parentHandle, childChild);
+			}
+			return;
+		}
+
 		var handle = child.Visual.Handle;
 		AddAccessibilityElement(parentHandle, child, null);
 		foreach (var childChild in child.GetChildren())
@@ -403,7 +450,7 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 	/// </summary>
 	private void AddAccessibilityElement(nint parentHandle, UIElement child, int? index)
 	{
-		var totalOffset = GetVisualOffset(child.Visual);
+		var totalOffset = GetAbsoluteOffset(child.Visual);
 		var peer = child.GetOrCreateAutomationPeer();
 		var isFocusable = IsAccessibilityFocusable(child, child.IsFocusable);
 
@@ -488,20 +535,23 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 	{
 		var attributes = AriaMapper.GetAriaAttributes(peer);
 
-		// Description: prefer FullDescription, fall back to HelpText (from AriaMapper)
+		// FullDescription → accessibilityHelp (VoiceOver reads this as secondary context).
+		// HelpText → accessibilityHelp (fallback when no FullDescription).
+		// These are separate from the short description/placeholder.
 		var fullDescription = peer.GetFullDescription();
+		var helpText = peer.GetHelpText();
 		if (!string.IsNullOrEmpty(fullDescription))
 		{
-			NativeUno.uno_accessibility_update_description(handle, fullDescription);
+			NativeUno.uno_accessibility_update_help(handle, fullDescription);
 		}
-		else if (!string.IsNullOrEmpty(attributes.Description))
+		else if (!string.IsNullOrEmpty(helpText))
 		{
-			NativeUno.uno_accessibility_update_description(handle, attributes.Description);
+			NativeUno.uno_accessibility_update_help(handle, helpText);
 		}
 
-		// PlaceholderText as description when Header is set (macOS-specific label enrichment)
-		if (string.IsNullOrEmpty(fullDescription) && string.IsNullOrEmpty(attributes.Description) &&
-			peer is FrameworkElementAutomationPeer feap)
+		// PlaceholderText as description when Header is set (macOS-specific label enrichment).
+		// VoiceOver reads this as additional context for the text field.
+		if (peer is FrameworkElementAutomationPeer feap)
 		{
 			if (feap.Owner is TextBox tb && !string.IsNullOrEmpty(tb.Header?.ToString()) && !string.IsNullOrEmpty(tb.PlaceholderText))
 			{
@@ -629,6 +679,13 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 			return "text";
 		}
 
+		// Multi-line TextBox (AcceptsReturn=true) should be "textarea" so VoiceOver
+		// announces it as "text area" instead of "text field"
+		if (controlType == AutomationControlType.Edit && owner is TextBox textBox && textBox.AcceptsReturn)
+		{
+			return "textarea";
+		}
+
 		return AriaMapper.GetAriaRole(controlType);
 	}
 
@@ -745,7 +802,7 @@ internal class MacOSAccessibility : IUnoAccessibility, IAutomationPeerListener
 		else if (automationProperty == AutomationElementIdentifiers.HelpTextProperty &&
 			TryGetPeerOwner(peer, out element))
 		{
-			NativeUno.uno_accessibility_update_description(element.Visual.Handle, newValue as string);
+			NativeUno.uno_accessibility_update_help(element.Visual.Handle, newValue as string);
 		}
 		else if (automationProperty == AutomationElementIdentifiers.HeadingLevelProperty &&
 			TryGetPeerOwner(peer, out element))

@@ -300,7 +300,7 @@ public static class AriaMapper
 	/// </summary>
 	public static string? ResolveLabel(AutomationPeer peer)
 	{
-		// 1. Standard automation peer name
+		// 1. Standard automation peer name (includes LabeledBy resolution from the peer itself)
 		var name = peer.GetName();
 		if (!string.IsNullOrEmpty(name))
 		{
@@ -315,14 +315,36 @@ public static class AriaMapper
 
 		var owner = frameworkPeer.Owner;
 
-		// 2. AutomationProperties.Name (explicitly set on the element)
+		// 2. AutomationProperties.LabeledBy - resolve label from the referenced element.
+		// This is used when a TextBlock labels a TextBox, e.g.:
+		//   <TextBlock x:Name="MyLabel" Text="Search:" />
+		//   <TextBox AutomationProperties.LabeledBy="{x:Bind MyLabel}" />
+		var labeledBy = AutomationProperties.GetLabeledBy(owner);
+		if (labeledBy is TextBlock labelTextBlock && !string.IsNullOrEmpty(labelTextBlock.Text))
+		{
+			return labelTextBlock.Text;
+		}
+		else if (labeledBy is UIElement labelElement)
+		{
+			var labelPeer = labelElement.GetOrCreateAutomationPeer();
+			if (labelPeer != null)
+			{
+				var labelName = labelPeer.GetName();
+				if (!string.IsNullOrEmpty(labelName))
+				{
+					return labelName;
+				}
+			}
+		}
+
+		// 3. AutomationProperties.Name (explicitly set on the element)
 		var automationName = AutomationProperties.GetName(owner);
 		if (!string.IsNullOrEmpty(automationName))
 		{
 			return automationName;
 		}
 
-		// 3. For ContentControls, try Content.ToString()
+		// 4. For ContentControls, try Content.ToString()
 		if (owner is ContentControl contentControl && contentControl.Content is not null)
 		{
 			var contentString = contentControl.Content switch
@@ -338,7 +360,7 @@ public static class AriaMapper
 			}
 		}
 
-		// 4. Walk immediate children looking for a TextBlock with text
+		// 5. Walk immediate children looking for a TextBlock with text
 		if (owner is UIElement uiElement)
 		{
 			foreach (var child in uiElement.GetChildren())

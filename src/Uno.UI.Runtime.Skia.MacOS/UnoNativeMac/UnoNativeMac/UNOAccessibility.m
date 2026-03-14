@@ -78,6 +78,7 @@ static accessibility_expand_collapse_fn_ptr g_expandCollapseCallback = NULL;
 	if ([_unoRole isEqualToString:@"combobox"])      return NSAccessibilityComboBoxRole;
 	if ([_unoRole isEqualToString:@"edit"])          return NSAccessibilityTextFieldRole;
 	if ([_unoRole isEqualToString:@"textbox"])       return NSAccessibilityTextFieldRole;
+	if ([_unoRole isEqualToString:@"textarea"])      return NSAccessibilityTextAreaRole;
 	if ([_unoRole isEqualToString:@"link"])          return NSAccessibilityLinkRole;
 	if ([_unoRole isEqualToString:@"hyperlink"])     return NSAccessibilityLinkRole;
 	if ([_unoRole isEqualToString:@"image"])         return NSAccessibilityImageRole;
@@ -142,7 +143,7 @@ static accessibility_expand_collapse_fn_ptr g_expandCollapseCallback = NULL;
 		if ([_unoLandmarkRole isEqualToString:@"navigation"]) return @"AXLandmarkNavigation";
 		if ([_unoLandmarkRole isEqualToString:@"search"])     return @"AXLandmarkSearch";
 		if ([_unoLandmarkRole isEqualToString:@"region"])     return @"AXLandmarkRegion";
-		// Note: "form" has no dedicated AX subrole; it falls through.
+		if ([_unoLandmarkRole isEqualToString:@"form"])       return @"AXLandmarkForm";
 	}
 
 	// Switch subrole for ToggleSwitch elements
@@ -169,12 +170,30 @@ static accessibility_expand_collapse_fn_ptr g_expandCollapseCallback = NULL;
 }
 
 - (NSString *)accessibilityRoleDescription {
+	NSString *baseDescription = nil;
+
 	if (_unoRoleDescription) {
-		return _unoRoleDescription;
+		baseDescription = _unoRoleDescription;
+	} else {
+		NSAccessibilitySubrole subrole = [self accessibilitySubrole];
+		baseDescription = NSAccessibilityRoleDescription([self accessibilityRole], subrole);
 	}
 
-	NSAccessibilitySubrole subrole = [self accessibilitySubrole];
-	return NSAccessibilityRoleDescription([self accessibilityRole], subrole);
+	// Append "X of Y" position info for VoiceOver announcement.
+	// VoiceOver only automatically announces position for list rows and radio buttons,
+	// so we include it in the role description for other control types.
+	if (_unoPositionInSet > 0 && _unoSizeOfSet > 0) {
+		NSAccessibilityRole role = [self accessibilityRole];
+		// Skip for roles where VoiceOver handles position natively
+		if (role != NSAccessibilityRowRole && role != NSAccessibilityRadioButtonRole) {
+			return [NSString stringWithFormat:@"%@, %ld of %ld",
+				baseDescription ?: @"",
+				(long)_unoPositionInSet,
+				(long)_unoSizeOfSet];
+		}
+	}
+
+	return baseDescription;
 }
 
 #pragma mark - NSAccessibility protocol - Label / Value / Help
@@ -213,22 +232,52 @@ static accessibility_expand_collapse_fn_ptr g_expandCollapseCallback = NULL;
 }
 
 - (NSString *)accessibilityTitle {
-	// For buttons and controls, the title is the label
 	NSAccessibilityRole role = [self accessibilityRole];
+	// For buttons and controls, the title is the label
 	if (role == NSAccessibilityButtonRole ||
 		role == NSAccessibilityCheckBoxRole ||
 		role == NSAccessibilityRadioButtonRole) {
+		return _unoLabel;
+	}
+	// For text fields/areas, the title serves as the field label (e.g., "Name", "Email")
+	if (role == NSAccessibilityTextFieldRole ||
+		role == NSAccessibilityTextAreaRole) {
+		return _unoLabel;
+	}
+	// For groups (named containers, landmarks), the title is the group name
+	// so VoiceOver announces it when entering the group
+	if (role == NSAccessibilityGroupRole && _unoLabel) {
+		return _unoLabel;
+	}
+	// For sliders, the title is the header label
+	if (role == NSAccessibilitySliderRole) {
+		return _unoLabel;
+	}
+	// For combo boxes, the title is the header label
+	if (role == NSAccessibilityComboBoxRole) {
+		return _unoLabel;
+	}
+	// For lists, the title is the list name
+	if (role == NSAccessibilityListRole) {
 		return _unoLabel;
 	}
 	return nil;
 }
 
 - (NSString *)accessibilityHelp {
-	// Return description if available (from FullDescription/HelpText), fall back to help
-	if (_unoDescription) {
+	// accessibilityHelp is read by VoiceOver after a pause (secondary context).
+	// It maps to FullDescription or HelpText from WinUI.
+	return _unoHelp;
+}
+
+- (NSString *)accessibilityPlaceholderValue {
+	// accessibilityPlaceholderValue is announced for empty text fields.
+	// It maps to the description (PlaceholderText when Header is set).
+	NSAccessibilityRole role = [self accessibilityRole];
+	if ((role == NSAccessibilityTextFieldRole || role == NSAccessibilityTextAreaRole) && _unoDescription) {
 		return _unoDescription;
 	}
-	return _unoHelp;
+	return nil;
 }
 
 #pragma mark - NSAccessibility protocol - Heading Level
@@ -238,7 +287,26 @@ static accessibility_expand_collapse_fn_ptr g_expandCollapseCallback = NULL;
 	if (_unoHeadingLevel > 0) {
 		[names addObject:@"AXHeadingLevel"];
 	}
+	if (_unoPositionInSet > 0) {
+		[names addObject:@"AXARIAPosInSet"];
+		[names addObject:@"AXARIASetSize"];
+	}
 	return names;
+}
+
+- (id)accessibilityAttributeValue:(NSString *)attribute {
+	// VoiceOver queries AXHeadingLevel to announce "heading level N"
+	if ([attribute isEqualToString:@"AXHeadingLevel"] && _unoHeadingLevel > 0) {
+		return @(_unoHeadingLevel);
+	}
+	// VoiceOver queries AXARIAPosInSet / AXARIASetSize to announce "X of Y"
+	if ([attribute isEqualToString:@"AXARIAPosInSet"] && _unoPositionInSet > 0) {
+		return @(_unoPositionInSet);
+	}
+	if ([attribute isEqualToString:@"AXARIASetSize"] && _unoSizeOfSet > 0) {
+		return @(_unoSizeOfSet);
+	}
+	return [super accessibilityAttributeValue:attribute];
 }
 
 #pragma mark - NSAccessibility protocol - Frame (screen coordinates)
@@ -302,6 +370,11 @@ static accessibility_expand_collapse_fn_ptr g_expandCollapseCallback = NULL;
 	if (!_unoVisible) return NO;
 	if (_unoFocusable) return YES;
 	if (_unoRole != nil) return YES;
+	// Named containers (e.g., StackPanel with AutomationProperties.Name="My albums")
+	// should be accessibility elements so VoiceOver announces the group name.
+	if (_unoLabel != nil && _unoLabel.length > 0) return YES;
+	// Landmark regions should always be accessibility elements
+	if (_unoLandmarkRole != nil) return YES;
 	return NO;
 }
 
@@ -631,6 +704,8 @@ void uno_accessibility_update_enabled(intptr_t handle, bool enabled) {
 	UNOAccessibilityElement *element = findElement(handle);
 	if (element) {
 		element.unoEnabled = enabled;
+		// Notify VoiceOver of the enabled state change so it re-reads the element
+		NSAccessibilityPostNotification(element, NSAccessibilityValueChangedNotification);
 	}
 }
 
