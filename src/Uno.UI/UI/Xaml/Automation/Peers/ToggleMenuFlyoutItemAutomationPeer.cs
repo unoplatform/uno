@@ -1,6 +1,11 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference ToggleMenuFlyoutItemAutomationPeer_Partial.cpp, tag winui3/release/1.8.4
+
+using System.Collections.Generic;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+
 namespace Microsoft.UI.Xaml.Automation.Peers;
 
 /// <summary>
@@ -48,7 +53,7 @@ public partial class ToggleMenuFlyoutItemAutomationPeer : FrameworkElementAutoma
 
 		if (returnValue == -1)
 		{
-			returnValue = GetPositionInSet();
+			returnValue = GetPositionOrSizeOfSetHelper(isSetCount: false);
 		}
 
 		return returnValue;
@@ -60,10 +65,56 @@ public partial class ToggleMenuFlyoutItemAutomationPeer : FrameworkElementAutoma
 
 		if (returnValue == -1)
 		{
-			returnValue = GetPositionInSet();
+			returnValue = GetPositionOrSizeOfSetHelper(isSetCount: true);
 		}
 
 		return returnValue;
+	}
+
+	// MUX reference: GetPositionOrSetCount in ToggleMenuFlyoutItemAutomationPeer_Partial.cpp
+	private int GetPositionOrSizeOfSetHelper(bool isSetCount)
+	{
+		if (Owner is not ToggleMenuFlyoutItem owner)
+		{
+			return -1;
+		}
+
+		IList<MenuFlyoutItemBase> items = null;
+
+		var parent = VisualTreeHelper.GetParent(owner);
+		if (parent is MenuFlyoutSubItem subItem)
+		{
+			items = subItem.Items;
+		}
+		else if (parent is MenuFlyout menuFlyout)
+		{
+			items = menuFlyout.Items;
+		}
+
+		if (items is null)
+		{
+			return -1;
+		}
+
+		var count = 0;
+		var position = -1;
+
+		foreach (var item in items)
+		{
+			if (item is MenuFlyoutSeparator)
+			{
+				continue;
+			}
+
+			count++;
+
+			if (item == owner)
+			{
+				position = count;
+			}
+		}
+
+		return isSetCount ? count : position;
 	}
 
 	/// <summary>
