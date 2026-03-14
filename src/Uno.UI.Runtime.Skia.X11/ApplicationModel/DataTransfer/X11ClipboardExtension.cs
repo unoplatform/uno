@@ -490,7 +490,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 						{
 							if (_isMonitoringEnabled)
 							{
-								ContentChanged?.Invoke(null, EventArgs.Empty);
+								ContentChanged?.Invoke(this, EventArgs.Empty);
 							}
 						}
 						continue;
