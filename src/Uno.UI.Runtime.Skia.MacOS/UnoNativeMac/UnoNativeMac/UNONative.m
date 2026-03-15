@@ -3,6 +3,7 @@
 //
 
 #import "UNONative.h"
+#import "UNOApplication.h"
 #import <AVFoundation/AVFoundation.h>
 #import <dispatch/dispatch.h>
 
@@ -12,20 +13,24 @@ static NSMutableSet<NSView*> *transients;
 static BOOL EnsureCaptureAuthorization(AVMediaType mediaType)
 {
     // Ensure required Info.plist usage description keys are present before requesting access.
-    NSString *usageDescriptionKey = nil;
-    if ([mediaType isEqualToString:AVMediaTypeVideo]) {
-        usageDescriptionKey = @"NSCameraUsageDescription";
-    } else if ([mediaType isEqualToString:AVMediaTypeAudio]) {
-        usageDescriptionKey = @"NSMicrophoneUsageDescription";
-    }
+    // Skip this check when the app is not running as a bundled .app (e.g., during development
+    // via `dotnet run`), since there is no Info.plist to read from in that case.
+    if (uno_application_is_bundled()) {
+        NSString *usageDescriptionKey = nil;
+        if ([mediaType isEqualToString:AVMediaTypeVideo]) {
+            usageDescriptionKey = @"NSCameraUsageDescription";
+        } else if ([mediaType isEqualToString:AVMediaTypeAudio]) {
+            usageDescriptionKey = @"NSMicrophoneUsageDescription";
+        }
 
-    if (usageDescriptionKey != nil) {
-        id usageDescription = [[NSBundle mainBundle] objectForInfoDictionaryKey:usageDescriptionKey];
-        if (usageDescription == nil) {
+        if (usageDescriptionKey != nil) {
+            id usageDescription = [[NSBundle mainBundle] objectForInfoDictionaryKey:usageDescriptionKey];
+            if (usageDescription == nil) {
 #if DEBUG
-            NSLog(@"Missing %@ in Info.plist. Capture authorization denied.", usageDescriptionKey);
+                NSLog(@"Missing %@ in Info.plist. Capture authorization denied.", usageDescriptionKey);
 #endif
-            return NO;
+                return NO;
+            }
         }
     }
 
