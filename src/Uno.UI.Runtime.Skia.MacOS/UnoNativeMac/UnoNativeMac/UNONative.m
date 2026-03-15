@@ -41,23 +41,43 @@ static BOOL EnsureCaptureAuthorization(AVMediaType mediaType)
 
     if (status == AVAuthorizationStatusNotDetermined) {
         __block BOOL authorized = NO;
-        dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+        __block BOOL completed = NO;
 
         [AVCaptureDevice requestAccessForMediaType:mediaType
                                  completionHandler:^(BOOL granted) {
                                      authorized = granted;
-                                     dispatch_semaphore_signal(semaphore);
+                                     completed = YES;
                                  }];
 
-        // Wait for authorization response with a bounded timeout to avoid hanging indefinitely.
-        dispatch_time_t timeout = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(30 * NSEC_PER_SEC));
-        long waitResult = dispatch_semaphore_wait(semaphore, timeout);
+        if ([NSThread isMainThread]) {
+            // Pump the main run loop while waiting to keep the UI responsive
+            // and allow the system permission dialog to be displayed/handled.
+            NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+            while (!completed) {
+                @autoreleasepool {
+                    [runLoop runMode:NSDefaultRunLoopMode
+                            beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+                }
+            }
+        } else {
+            // On a background thread, it is safe to block while waiting for completion.
+            dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 
-        if (waitResult != 0) {
-#if DEBUG
-            NSLog(@"Timed out while waiting for capture authorization for media type %@", mediaType);
-#endif
-            return NO;
+            // Wrap the completion to signal the semaphore when finished.
+            __block BOOL completionInstalled = NO;
+            // Ensure we only install the signaling wrapper once.
+            if (!completionInstalled) {
+                completionInstalled = YES;
+                [AVCaptureDevice requestAccessForMediaType:mediaType
+                                         completionHandler:^(BOOL granted) {
+                                             authorized = granted;
+                                             completed = YES;
+                                             dispatch_semaphore_signal(semaphore);
+                                         }];
+            }
+
+            // Wait indefinitely for the user/system to complete the authorization flow.
+            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
         }
 
         return authorized;
