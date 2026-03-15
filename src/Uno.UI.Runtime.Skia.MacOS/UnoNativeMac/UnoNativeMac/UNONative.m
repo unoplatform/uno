@@ -49,7 +49,17 @@ static BOOL EnsureCaptureAuthorization(AVMediaType mediaType)
                                      dispatch_semaphore_signal(semaphore);
                                  }];
 
-        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+        // Wait for authorization response with a bounded timeout to avoid hanging indefinitely.
+        dispatch_time_t timeout = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(30 * NSEC_PER_SEC));
+        long waitResult = dispatch_semaphore_wait(semaphore, timeout);
+
+        if (waitResult != 0) {
+#if DEBUG
+            NSLog(@"Timed out while waiting for capture authorization for media type %@", mediaType);
+#endif
+            return NO;
+        }
+
         return authorized;
     }
 
