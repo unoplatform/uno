@@ -617,10 +617,20 @@ char* _Nullable uno_capture_video(void)
         [exportSession exportAsynchronouslyWithCompletionHandler:^{
             dispatch_semaphore_signal(exportSema);
         }];
-        dispatch_semaphore_wait(exportSema, DISPATCH_TIME_FOREVER);
+
+        // Wait with a bounded timeout to avoid hanging indefinitely
+        dispatch_time_t exportTimeout = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(120 * NSEC_PER_SEC));
+        long exportWaitResult = dispatch_semaphore_wait(exportSema, exportTimeout);
 
         // Clean up the intermediate MOV file
         [[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
+
+        if (exportWaitResult != 0) {
+            // Timed out — cancel the export and clean up
+            [exportSession cancelExport];
+            [[NSFileManager defaultManager] removeItemAtURL:mp4URL error:nil];
+            return NULL;
+        }
 
         if (exportSession.status != AVAssetExportSessionStatusCompleted) {
             [[NSFileManager defaultManager] removeItemAtURL:mp4URL error:nil];
