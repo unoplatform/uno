@@ -75,7 +75,25 @@ public partial class ResourceQualifier
 
 	private static bool IsLanguageTag(string str)
 	{
-		return LanguageTags.Contains(str);
+		if (LanguageTags.Contains(str))
+		{
+			return true;
+		}
+
+		// Fallback: CultureInfo.GetCultures may not enumerate all valid cultures
+		// on all platforms (e.g., macOS/Linux ICU may use different IETF tags like
+		// zh-Hans-CN instead of zh-CN, or may omit cultures like kok-IN, quz-PE).
+		// Try to create the culture directly as a fallback.
+		try
+		{
+			_ = CultureInfo.GetCultureInfo(str);
+			_languageTags.Add(str);
+			return true;
+		}
+		catch (CultureNotFoundException)
+		{
+			return false;
+		}
 	}
 
 	#endregion
