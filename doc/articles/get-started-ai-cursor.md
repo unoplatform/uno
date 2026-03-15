@@ -21,6 +21,7 @@ There is nothing specific to set up for Cursor. You can proceed to the next sect
 
 ## Uno TechBite
 Getting Started with Uno Platform & Cursor IDE - Complete Setup Guide:
+
 > [!Video https://www.youtube-nocookie.com/embed/H-7WcTKAY3s]
 
 ## Next Steps
