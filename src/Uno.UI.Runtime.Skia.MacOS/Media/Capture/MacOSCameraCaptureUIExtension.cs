@@ -70,19 +70,12 @@ internal class MacOSCameraCaptureUIExtension : ICameraCaptureUIExtension
 
 			token.ThrowIfCancellationRequested();
 
-			// Distinguish user cancellation from permission/configuration failures:
-			// - null: user cancelled the capture
-			// - empty string or invalid path: likely permission / usage-description error
+			// Note: The native implementation currently returns null both when the user cancels
+			// the capture and when the capture fails due to permission or usage-description issues.
+			// As a result, we cannot distinguish between these cases here and simply return null.
 			if (nativePath is null)
 			{
 				return null;
-			}
-
-			if (nativePath.Length == 0)
-			{
-				throw new UnauthorizedAccessException(
-					"Camera capture failed due to missing permissions or usage descriptions. " +
-					"Ensure the application has camera access and required usage descriptions configured.");
 			}
 
 			var ext = Path.GetExtension(nativePath);
