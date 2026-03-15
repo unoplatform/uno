@@ -11,13 +11,12 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal class MacOSCameraCaptureUIExtension : ICameraCaptureUIExtension
 {
-	private static readonly MacOSCameraCaptureUIExtension _instance = new();
-
 	private MacOSCameraCaptureUIExtension()
 	{
 	}
 
-	public static void Register() => ApiExtensibility.Register<CameraCaptureUI>(typeof(ICameraCaptureUIExtension), _ => _instance);
+	public static void Register() =>
+		ApiExtensibility.Register<CameraCaptureUI>(typeof(ICameraCaptureUIExtension), _ => new MacOSCameraCaptureUIExtension());
 
 	private CameraCaptureUIMode _mode;
 	private CameraCaptureUIPhotoFormat _photoFormat;
