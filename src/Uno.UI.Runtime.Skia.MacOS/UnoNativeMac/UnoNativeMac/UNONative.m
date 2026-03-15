@@ -337,14 +337,9 @@ void uno_native_dispose(NSView<UNONativeElement>* element)
 char* _Nullable uno_capture_photo(bool useJpeg)
 {
     @autoreleasepool {
-        // Ensure required privacy usage string is present to avoid OS termination
-        if (![[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSCameraUsageDescription"])
-        {
-            // No-op here: usage description validation and logging are handled centrally
-            // by EnsureCaptureAuthorization(AVMediaTypeVideo).
-        }
-
-        // Ensure we have authorization to use the camera before accessing the device
+        // Ensure we have authorization to use the camera before accessing the device.
+        // This also validates that the appropriate Info.plist usage description key
+        // (e.g., NSCameraUsageDescription) is present when running as a bundled app.
         if (!EnsureCaptureAuthorization(AVMediaTypeVideo))
         {
             return NULL;
