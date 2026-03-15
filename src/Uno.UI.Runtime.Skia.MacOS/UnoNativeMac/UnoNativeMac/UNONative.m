@@ -509,17 +509,10 @@ char* _Nullable uno_capture_video(void)
         }
         [session addOutput:movieOutput];
 
-        // Prepare output file path
+        // Prepare output file path (.mov — AVCaptureMovieFileOutput writes QuickTime containers)
         NSString *tempDir = NSTemporaryDirectory();
-        NSString *fileName = [NSString stringWithFormat:@"%@.mp4", [[NSUUID UUID] UUIDString]];
-        // Ensure the output file extension matches the QuickTime container produced by AVCaptureMovieFileOutput.
-        NSString *outputFileName = fileName;
-        NSString *extension = [[fileName pathExtension] lowercaseString];
-        if ([extension isEqualToString:@"mp4"]) {
-            outputFileName = [[fileName stringByDeletingPathExtension] stringByAppendingPathExtension:@"mov"];
-        }
-
-        NSString *filePath = [tempDir stringByAppendingPathComponent:outputFileName];
+        NSString *movFileName = [NSString stringWithFormat:@"%@.mov", [[NSUUID UUID] UUIDString]];
+        NSString *filePath = [tempDir stringByAppendingPathComponent:movFileName];
         NSURL *fileURL = [NSURL fileURLWithPath:filePath];
 
         // Build the modal window with camera preview
@@ -599,6 +592,31 @@ char* _Nullable uno_capture_video(void)
             return NULL;
         }
 
-        return strdup([filePath UTF8String]);
+        // Convert from MOV to MP4 using AVAssetExportSession (passthrough, no re-encoding)
+        NSString *mp4FileName = [NSString stringWithFormat:@"%@.mp4", [[NSUUID UUID] UUIDString]];
+        NSString *mp4Path = [tempDir stringByAppendingPathComponent:mp4FileName];
+        NSURL *mp4URL = [NSURL fileURLWithPath:mp4Path];
+
+        AVAsset *asset = [AVAsset assetWithURL:fileURL];
+        AVAssetExportSession *exportSession = [[AVAssetExportSession alloc] initWithAsset:asset presetName:AVAssetExportPresetPassthrough];
+        exportSession.outputURL = mp4URL;
+        exportSession.outputFileType = AVFileTypeMPEG4;
+        exportSession.shouldOptimizeForNetworkUse = YES;
+
+        dispatch_semaphore_t exportSema = dispatch_semaphore_create(0);
+        [exportSession exportAsynchronouslyWithCompletionHandler:^{
+            dispatch_semaphore_signal(exportSema);
+        }];
+        dispatch_semaphore_wait(exportSema, DISPATCH_TIME_FOREVER);
+
+        // Clean up the intermediate MOV file
+        [[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
+
+        if (exportSession.status != AVAssetExportSessionStatusCompleted) {
+            [[NSFileManager defaultManager] removeItemAtURL:mp4URL error:nil];
+            return NULL;
+        }
+
+        return strdup([mp4Path UTF8String]);
     }
 }
