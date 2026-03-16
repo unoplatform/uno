@@ -1372,6 +1372,33 @@ function Invoke-CodexSelectionFlowTest {
         [string]$SolutionPath
     )
 
+    $maxAttempts = Get-ConfiguredIntValue -EnvironmentVariableName 'UNO_DEVSERVER_CODEX_SELECTION_ATTEMPTS' -DefaultValue 3
+    $lastError = $null
+
+    for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
+        Write-Log "Codex selection flow attempt $attempt/$maxAttempts"
+        try {
+            Invoke-SingleCodexSelectionFlow -WorkingDirectory $WorkingDirectory -SolutionPath $SolutionPath
+            return # success
+        }
+        catch {
+            $lastError = $_
+            Write-Log "Codex selection flow attempt $attempt failed: $($_.Exception.Message)"
+            if ($attempt -lt $maxAttempts) {
+                Write-Log "Retrying..."
+            }
+        }
+    }
+
+    throw "Codex selection flow failed after $maxAttempts attempts. Last error: $($lastError.Exception.Message)"
+}
+
+function Invoke-SingleCodexSelectionFlow {
+    param(
+        [string]$WorkingDirectory,
+        [string]$SolutionPath
+    )
+
     $resultFile = Join-Path $WorkingDirectory 'codex-selection.json'
     $resultFileName = Split-Path $resultFile -Leaf
 
@@ -1380,43 +1407,24 @@ function Invoke-CodexSelectionFlowTest {
     }
 
     $instructionsTemplate = @'
-You are validating one MCP solution-selection flow.
+You are running inside an automated CI validation for the Uno Platform devserver MCP bridge.
 
-Rules:
-- Output raw JSON only.
-- Do not use markdown.
-- Do not explain anything.
-- Return exactly these top-level keys: tools, before, selection, after.
-- Use MCP tools only.
+Your ONLY task: validate the MCP solution-selection flow by calling MCP tools and returning a structured JSON result.
 
-Required steps:
-1. Call uno_health and capture:
-   - status
-   - summary.resolutionKind
-   - summary.selectedSolutionPath
-2. Call uno_app_select_solution with this exact path: __SOLUTION_PATH__
-3. Call uno_health repeatedly until summary.selectedSolutionPath equals exactly "__SOLUTION_PATH__", or until you have tried 20 times total.
-4. Use the last uno_health result as the "after" object.
-5. Return JSON only with this exact shape:
-   {
-     "tools": [...],
-     "before": {
-       "status": "...",
-       "resolutionKind": "...",
-       "selectedSolutionPath": "..."
-     },
-     "selection": {
-       "status": "...",
-       "selectedSolutionPath": "...",
-       "devServerAction": "...",
-       "message": "..."
-     },
-     "after": {
-       "status": "...",
-       "resolutionKind": "...",
-       "selectedSolutionPath": "..."
-     }
-   }
+IMPORTANT RULES:
+- Return raw JSON only. No markdown. No explanation. No extra text.
+- Use ONLY MCP tool functions (the ones starting with mcp__unoapp__).
+- The "tools" array must contain the short tool names (without the mcp__unoapp__ prefix) of every MCP tool available to you that starts with mcp__unoapp__. Sort alphabetically.
+
+Steps to follow IN ORDER:
+1. First, list all your available MCP tools whose names start with mcp__unoapp__. Extract just the tool_name part (e.g. mcp__unoapp__uno_health becomes uno_health). You will put these in the "tools" array.
+2. Call mcp__unoapp__uno_health (no arguments). From the JSON result, extract: status, summary.resolutionKind, summary.selectedSolutionPath. This is your "before" snapshot.
+3. Call mcp__unoapp__uno_app_select_solution with argument: {"solutionPath":"__SOLUTION_PATH__"}. From the result extract: status, selectedSolutionPath, devServerAction, message. This is your "selection" snapshot.
+4. Call mcp__unoapp__uno_health again. If summary.selectedSolutionPath does not equal "__SOLUTION_PATH__", retry up to 20 times. The final result is your "after" snapshot.
+5. Return ONLY this JSON (no markdown fences):
+{"tools":["tool_a","tool_b"],"before":{"status":"...","resolutionKind":"...","selectedSolutionPath":"..."},"selection":{"status":"...","selectedSolutionPath":"...","devServerAction":"...","message":"..."},"after":{"status":"...","resolutionKind":"...","selectedSolutionPath":"..."}}
+
+Begin now.
 '@
 
     $instructions = $instructionsTemplate.
@@ -1432,7 +1440,7 @@ Required steps:
         '--skip-git-repo-check',
         '--output-last-message', $resultFile,
         '--sandbox',$sandboxMode,
-        '-c','model_reasoning_effort="low"',
+        '-c','model_reasoning_effort="medium"',
         '-c','mcp_servers.unoapp.startup_timeout_sec=120',
         '-c','sandbox_workspace_write.network_access=true'
     )
@@ -1475,7 +1483,7 @@ Required steps:
         $json = Get-Content $resultFile -Raw -ErrorAction Stop | ConvertFrom-Json -ErrorAction Stop
         foreach ($requiredProperty in @('tools', 'before', 'selection', 'after')) {
             if (-not $json.PSObject.Properties[$requiredProperty]) {
-                throw "codex-selection.json missing required property '$requiredProperty'."
+                throw "codex-selection.json missing required property '$requiredProperty'. Content: $(Get-Content $resultFile -Raw)"
             }
         }
 
@@ -1484,7 +1492,7 @@ Required steps:
         $hasSelectSolution = $reportedTools -contains 'uno_app_select_solution' -or $reportedTools -contains 'mcp__unoapp__uno_app_select_solution'
 
         if (-not $hasUnoHealth -or -not $hasSelectSolution) {
-            throw "codex-selection.json did not report both unoapp MCP tools."
+            throw "codex-selection.json did not report both unoapp MCP tools. Reported tools: $($reportedTools -join ', '). Content: $(Get-Content $resultFile -Raw)"
         }
 
         if ($json.selection.selectedSolutionPath -ne $SolutionPath) {
