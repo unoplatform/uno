@@ -85,6 +85,7 @@ internal static class FrameProviderFactory
 			var result = codec.GetPixels(imageInfo, bitmap.GetPixels(), options);
 			if (result is not SKCodecResult.Success and not SKCodecResult.IncompleteInput)
 			{
+				DisposeDecodedFrames(images, i);
 				provider = null;
 				return false;
 			}
@@ -92,6 +93,7 @@ internal static class FrameProviderFactory
 			var currentBitmap = GetImage(bitmap, origin);
 			if (currentBitmap is null)
 			{
+				DisposeDecodedFrames(images, i);
 				provider = null;
 				return false;
 			}
@@ -186,8 +188,19 @@ internal static class FrameProviderFactory
 		var dstInfo = new SKImageInfo(dstW, dstH, SKColorType.Bgra8888, SKAlphaType.Premul);
 		using var dstBitmap = new SKBitmap(dstInfo);
 		using var srcBitmap = SKBitmap.FromImage(image);
-		srcBitmap.ScalePixels(dstBitmap, new SKSamplingOptions(SKCubicResampler.CatmullRom));
+		if (!srcBitmap.ScalePixels(dstBitmap, new SKSamplingOptions(SKCubicResampler.CatmullRom)))
+		{
+			return image;
+		}
 		return SKImage.FromBitmap(dstBitmap);
+	}
+
+	private static void DisposeDecodedFrames(SKImage[] images, int count)
+	{
+		for (int j = 0; j < count; j++)
+		{
+			images[j]?.Dispose();
+		}
 	}
 
 	/// <summary>
@@ -201,9 +214,13 @@ internal static class FrameProviderFactory
 		int codecWidth, int codecHeight, bool swaps,
 		int? targetWidth, int? targetHeight)
 	{
+		// Convert codec dimensions to display space (post-EXIF-rotation).
+		// For 90°/270° rotations, width and height are swapped.
 		int displayWidth = swaps ? codecHeight : codecWidth;
 		int displayHeight = swaps ? codecWidth : codecHeight;
 
+		// Compute the target size in display space. Aspect-ratio
+		// calculations use display-space dimensions throughout.
 		int displayW, displayH;
 		if (targetWidth is > 0 && targetHeight is > 0)
 		{
@@ -221,6 +238,8 @@ internal static class FrameProviderFactory
 			displayW = (int)Math.Max(1, (long)displayWidth * displayH / displayHeight);
 		}
 
+		// Convert display-space target back to codec space (pre-rotation)
+		// by reversing the swap, so the decoder sees the right dimensions.
 		int codecW = swaps ? displayH : displayW;
 		int codecH = swaps ? displayW : displayH;
 
