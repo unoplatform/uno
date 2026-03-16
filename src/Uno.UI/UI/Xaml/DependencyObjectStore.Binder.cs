@@ -38,8 +38,9 @@ namespace Microsoft.UI.Xaml
 	{
 		private readonly object _gate = new object();
 
-		private HashtableEx? _childrenBindableMap;
+		private HashtableEx? _childrenBindableMap; // maps DependencyProperty to _childrenBindable[index]
 		private List<object?>? _childrenBindable;
+		private object? _associatedParent; // see note in AssociateParent(object)
 
 		private HashtableEx ChildrenBindableMap => _childrenBindableMap ??= new HashtableEx(DependencyPropertyComparer.Default);
 		private List<object?> ChildrenBindable => _childrenBindable ??= new List<object?>();
@@ -47,6 +48,7 @@ namespace Microsoft.UI.Xaml
 		private bool _isApplyingDataContextBindings;
 		private bool _bindingsSuspended;
 		private readonly DependencyProperty _dataContextProperty;
+		private bool _inheritanceContextEnabled = true;
 
 #if ENABLE_LEGACY_DO_TP_SUPPORT
 		private ManagedWeakReference? _templatedParentWeakRef;
@@ -145,7 +147,16 @@ namespace Microsoft.UI.Xaml
 		}
 
 		private void SetInheritedDataContext(object? dataContext)
-			=> SetValue(_dataContextProperty!, dataContext, DependencyPropertyValuePrecedences.Inheritance, _properties.DataContextPropertyDetails);
+		{
+			if (_inheritanceContextEnabled)
+			{
+				SetValue(_dataContextProperty!, dataContext, DependencyPropertyValuePrecedences.Inheritance, _properties.DataContextPropertyDetails);
+			}
+			else
+			{
+				ClearValue(_dataContextProperty!, DependencyPropertyValuePrecedences.Inheritance);
+			}
+		}
 
 		/// <summary>
 		/// Apply load-time binding updates. Processes the x:Bind markup for the current FrameworkElement, applies load-time ElementName bindings, and updates ResourceBindings.
@@ -574,11 +585,31 @@ namespace Microsoft.UI.Xaml
 		{
 			if (IsCandidateChild(value))
 			{
-				ChildrenBindable[GetOrCreateChildBindablePropertyIndex(propertyDetails.Property)] = value;
+				var index = GetOrCreateChildBindablePropertyIndex(propertyDetails.Property);
+				UpdateChildBindable(index, value);
 			}
 			else if (TryGetChildBindablePropertyIndex(propertyDetails.Property, out var index))
 			{
-				ChildrenBindable[index] = null;
+				// clear the old value if the new value is not a candidate child, to avoid keeping stale reference.
+				UpdateChildBindable(index, null);
+			}
+
+			void UpdateChildBindable(int index, object? newValue)
+			{
+				var oldValue = ChildrenBindable[index];
+				if (ReferenceEquals(oldValue, newValue)) return;
+
+				if (oldValue is IMultiParentShareableDependencyObject &&
+					oldValue is IDependencyObjectStoreProvider { Store: { _inheritanceContextEnabled: true } oldStore })
+				{
+					oldStore.UnassociateParent(ActualInstance);
+				}
+				ChildrenBindable[index] = newValue;
+				if (newValue is IMultiParentShareableDependencyObject &&
+					newValue is IDependencyObjectStoreProvider { Store: { _inheritanceContextEnabled: true } newStore })
+				{
+					newStore.AssociateParent(ActualInstance);
+				}
 			}
 		}
 
@@ -615,6 +646,44 @@ namespace Microsoft.UI.Xaml
 			return false;
 		}
 
+		private void AssociateParent(object? parent)
+		{
+			if (parent == null) return;
+			if (!_inheritanceContextEnabled) return;
+
+			// the code below is used to mimic the behavior of: CMultiParentShareableDependencyObject::GetMentor
+			// we are omitting the exception cases with:
+			//		If we have multiple parents, then InheritanceContext is turned off permanently except in the cases
+			//		of ResourceDictionary and ContentControl.  It is ok to have multiple parents as long as
+			//		the first parent is a ResourceDictionary, or if the first parent is a ContentControl and there are at most
+			//		two parents.
+			// todo: if we are to implement that in the future, we should promote `object? _associatedParent` into a `List/HashSet<object?>? _associatedParents`
+
+			if (_associatedParent == null)
+			{
+				_associatedParent = parent;
+			}
+			else
+			{
+				// if there are multiple parents (would be if we count the previous one `_associatedParent` and the current one `parent`),
+				// it means that the current instance is shared across multiple owners/parents,
+				// which means that it should no longer participate in any dc propagation.
+				_inheritanceContextEnabled = false;
+
+				ClearInheritedDataContext();
+				_associatedParent = null;
+			}
+		}
+		private void UnassociateParent(object? parent)
+		{
+			if (parent == null) return;
+			if (!_inheritanceContextEnabled) return;
+
+			if (ReferenceEquals(_associatedParent, parent))
+			{
+				_associatedParent = null;
+			}
+		}
 
 		public BindingExpression GetBindingExpression(DependencyProperty dependencyProperty)
 			=> _properties.GetBindingExpression(dependencyProperty);

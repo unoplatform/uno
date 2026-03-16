@@ -54,5 +54,10 @@ public partial class DispatcherTimer : IDispatcherTimer
 
 	private void OnTick(DispatcherQueueTimer sender, object args) => Tick?.Invoke(this, null);
 
+	/// <summary>
+	/// Gets or sets the <see cref="DependencyObject"/> that this timer is associated with.
+	/// Used by text control flyout infrastructure to track the owning control
+	/// (e.g. for SelectionFlyout visibility updates).
+	/// </summary>
 	internal DependencyObject TargetObject { get; set; }
 }

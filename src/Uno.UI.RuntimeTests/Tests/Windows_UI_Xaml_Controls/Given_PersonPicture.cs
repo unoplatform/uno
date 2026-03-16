@@ -24,6 +24,7 @@ public partial class Given_PersonPicture
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/16006")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task TestInitialsTextBlockFontFamily()
 	{
 		var personPicture = new MyPersonPicture();

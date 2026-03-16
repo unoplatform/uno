@@ -2704,7 +2704,7 @@ public partial class NavigationView : ContentControl
 				var weakThis = WeakReferencePool.RentSelfWeakReference(this);
 				Action completePendingSelectionChange = () =>
 				{
-					if (weakThis.IsAlive && weakThis.Target is NavigationView strongThis)
+					if (weakThis.TryGetTarget<NavigationView>(out var strongThis))
 					{
 						strongThis.CompletePendingSelectionChange();
 					}

@@ -127,6 +127,16 @@ DI_FLAGS
 DWM_WINDOW_CORNER_PREFERENCE
 
 // Functions
+// IMM32 (Input Method Manager) APIs for IME/emoji picker positioning
+ImmGetContext
+ImmSetCompositionWindow
+ImmSetCandidateWindow
+ImmReleaseContext
+// System Caret APIs for OS caret position awareness
+CreateCaret
+SetCaretPos
+DestroyCaret
+
 AdjustWindowRectEx
 AdjustWindowRectExForDpi
 AddClipboardFormatListener

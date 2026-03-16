@@ -87,6 +87,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Native_AppBarButton_And_Managed_Popups()
 		{
 			using (StyleHelper.UseNativeFrameNavigation())

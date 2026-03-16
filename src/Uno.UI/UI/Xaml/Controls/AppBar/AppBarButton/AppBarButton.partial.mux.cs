@@ -171,7 +171,7 @@ partial class AppBarButton : ICommandBarElement2, ICommandBarElement3, ICommandB
 
 		void FlyoutOpenStateChangedHandler(bool isOpen)
 		{
-			if (!wrThis.IsDisposed && wrThis.Target is AppBarButton appBarButton)
+			if (wrThis.TryGetTarget<AppBarButton>(out var appBarButton))
 			{
 				appBarButton.m_isFlyoutClosing = false;
 				appBarButton.UpdateVisualState();
@@ -204,7 +204,7 @@ partial class AppBarButton : ICommandBarElement2, ICommandBarElement3, ICommandB
 		base.OnApplyTemplate();
 		AppBarButtonHelpers<AppBarButton>.OnApplyTemplate(this);
 
-#if HAS_UNO // Uno: Until ContentPresenter supports auto-fallback.
+#if HAS_UNO // Uno: Until ContentPresenter supports auto-fallback (https://github.com/unoplatform/uno/issues/21514)
 		SetupContentUpdate();
 #endif
 	}

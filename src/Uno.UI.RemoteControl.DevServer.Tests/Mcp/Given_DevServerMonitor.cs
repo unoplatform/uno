@@ -6,7 +6,7 @@ namespace Uno.UI.RemoteControl.DevServer.Tests.Mcp;
 
 /// <summary>
 /// Tests for <see cref="DevServerMonitor"/> patterns: ambient registry lookup,
-/// direct launch arg building, and retry logic.
+/// direct launch arg building, retry logic, and <see cref="SolutionFileFinder"/>.
 /// <para>
 /// These tests simulate DevServerMonitor patterns rather than instantiating
 /// the real class because it requires a .sln on disk and a real Uno SDK
@@ -220,7 +220,7 @@ public class Given_DevServerMonitor
 	// -------------------------------------------------------------------
 
 	[TestMethod]
-	[Description("DiscoveryInfo fields map to the values DevServerMonitor exposes")]
+	[Description("DiscoveryInfo exposes the expected values when fully populated")]
 	public void DiscoveryInfo_WhenFullyPopulated_ExposesExpectedFields()
 	{
 		var discovery = new DiscoveryInfo
@@ -297,11 +297,273 @@ public class Given_DevServerMonitor
 	}
 
 	// -------------------------------------------------------------------
+	// FindGitRoot
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	public void FindGitRoot_ReturnsRoot_WhenInGitRepo()
+	{
+		// The test project itself is inside the uno2 git repo
+		var testDir = AppContext.BaseDirectory;
+		var gitRoot = SolutionFileFinder.FindGitRoot(testDir);
+
+		gitRoot.Should().NotBeNull();
+		// .git can be a directory (normal repo) or a file (worktree)
+		var gitPath = Path.Combine(gitRoot!, ".git");
+		(Directory.Exists(gitPath) || File.Exists(gitPath)).Should().BeTrue();
+	}
+
+	[TestMethod]
+	public void FindGitRoot_ReturnsNull_WhenNotInGitRepo()
+	{
+		// Use a temp directory that's not inside any git repo
+		var tempDir = Path.Combine(Path.GetTempPath(), $"no-git-{Guid.NewGuid():N}");
+		Directory.CreateDirectory(tempDir);
+		try
+		{
+			// Temp root is unlikely inside a git repo; if it is, skip
+			if (SolutionFileFinder.FindGitRoot(Path.GetTempPath()) is not null)
+			{
+				Assert.Inconclusive("Temp directory is inside a git repo, cannot test non-git fallback.");
+			}
+
+			var result = SolutionFileFinder.FindGitRoot(tempDir);
+			result.Should().BeNull();
+		}
+		finally
+		{
+			Directory.Delete(tempDir, recursive: true);
+		}
+	}
+
+	// -------------------------------------------------------------------
+	// FindSolutionFiles with .gitignore awareness
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	public void FindSolutionFiles_SkipsGitIgnoredDirectories()
+	{
+		var tempDir = Path.Combine(Path.GetTempPath(), $"git-ignore-test-{Guid.NewGuid():N}");
+		Directory.CreateDirectory(tempDir);
+		try
+		{
+			// Init a git repo
+			RunGit(tempDir, "init");
+			RunGit(tempDir, "config user.email test@test.com");
+			RunGit(tempDir, "config user.name Test");
+
+			// Create .gitignore that ignores the "ignored" directory
+			File.WriteAllText(Path.Combine(tempDir, ".gitignore"), "ignored/\n");
+			RunGit(tempDir, "add .gitignore");
+			RunGit(tempDir, "commit -m init");
+
+			// Create two subdirectories with .sln files
+			var ignoredDir = Path.Combine(tempDir, "ignored");
+			var visibleDir = Path.Combine(tempDir, "visible");
+			Directory.CreateDirectory(ignoredDir);
+			Directory.CreateDirectory(visibleDir);
+			File.WriteAllText(Path.Combine(ignoredDir, "Hidden.sln"), "");
+			File.WriteAllText(Path.Combine(visibleDir, "Visible.sln"), "");
+
+			var solutions = SolutionFileFinder.FindSolutionFiles(tempDir);
+
+			solutions.Should().ContainSingle(s => s.Contains("Visible.sln"));
+			solutions.Should().NotContain(s => s.Contains("Hidden.sln"));
+		}
+		finally
+		{
+			// .git directories on Windows need special cleanup
+			ForceDeleteDirectory(tempDir);
+		}
+	}
+
+	[TestMethod]
+	public void FindSolutionFiles_FallsBackToHardcodedList_WhenNoGit()
+	{
+		var tempDir = Path.Combine(Path.GetTempPath(), $"no-git-test-{Guid.NewGuid():N}");
+		Directory.CreateDirectory(tempDir);
+		try
+		{
+			// Skip if temp dir happens to be inside a git repo
+			if (SolutionFileFinder.FindGitRoot(Path.GetTempPath()) is not null)
+			{
+				Assert.Inconclusive("Temp directory is inside a git repo, cannot test non-git fallback.");
+			}
+
+			// Create node_modules (should be skipped by hardcoded list) and a visible dir
+			var nodeModules = Path.Combine(tempDir, "node_modules");
+			var src = Path.Combine(tempDir, "src");
+			Directory.CreateDirectory(nodeModules);
+			Directory.CreateDirectory(src);
+			File.WriteAllText(Path.Combine(nodeModules, "Bad.sln"), "");
+			File.WriteAllText(Path.Combine(src, "Good.sln"), "");
+
+			var solutions = SolutionFileFinder.FindSolutionFiles(tempDir);
+
+			solutions.Should().ContainSingle(s => s.Contains("Good.sln"));
+			solutions.Should().NotContain(s => s.Contains("Bad.sln"));
+		}
+		finally
+		{
+			Directory.Delete(tempDir, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	public void GetGitIgnoredPaths_ReturnsEmpty_WhenNoPathsProvided()
+	{
+		var result = SolutionFileFinder.GetGitIgnoredPaths(new List<string>(), ".");
+		result.Should().NotBeNull();
+		result!.Should().BeEmpty();
+	}
+
+	[TestMethod]
+	public void GetGitIgnoredPaths_ReturnsNull_WhenGitNotAvailable()
+	{
+		// Use a directory that is NOT a git repo — git check-ignore will fail
+		var tempDir = Path.Combine(Path.GetTempPath(), $"no-git-{Guid.NewGuid():N}");
+		Directory.CreateDirectory(tempDir);
+		try
+		{
+			var subDir = Path.Combine(tempDir, "somedir");
+			Directory.CreateDirectory(subDir);
+
+			// git check-ignore will fail because tempDir is not a git repo
+			var result = SolutionFileFinder.GetGitIgnoredPaths([subDir], tempDir);
+
+			// Should return null (git failed) so caller can fall back to hardcoded list
+			result.Should().BeNull();
+		}
+		finally
+		{
+			Directory.Delete(tempDir, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	public void FindSolutionFiles_UsesHardcodedSkipList_WhenGitFails()
+	{
+		// Even if a .git exists, if git executable is broken or not a real repo,
+		// the hardcoded skip list should kick in as fallback.
+		var tempDir = Path.Combine(Path.GetTempPath(), $"fake-git-{Guid.NewGuid():N}");
+		Directory.CreateDirectory(tempDir);
+		try
+		{
+			// Create a fake .git file (not a real repo — git check-ignore will fail)
+			File.WriteAllText(Path.Combine(tempDir, ".git"), "not a real git repo");
+
+			// Create node_modules (should be skipped by hardcoded fallback) and src
+			var nodeModules = Path.Combine(tempDir, "node_modules");
+			var src = Path.Combine(tempDir, "src");
+			Directory.CreateDirectory(nodeModules);
+			Directory.CreateDirectory(src);
+			File.WriteAllText(Path.Combine(nodeModules, "Bad.sln"), "");
+			File.WriteAllText(Path.Combine(src, "Good.sln"), "");
+
+			var solutions = SolutionFileFinder.FindSolutionFiles(tempDir);
+
+			solutions.Should().ContainSingle(s => s.Contains("Good.sln"));
+			solutions.Should().NotContain(s => s.Contains("Bad.sln"));
+		}
+		finally
+		{
+			Directory.Delete(tempDir, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	public void FindSolutionFiles_RespectsNestedGitignoreInSubdirectories()
+	{
+		var tempDir = Path.Combine(Path.GetTempPath(), $"nested-gi-test-{Guid.NewGuid():N}");
+		Directory.CreateDirectory(tempDir);
+		try
+		{
+			// Init a git repo with a root .gitignore
+			RunGit(tempDir, "init");
+			RunGit(tempDir, "config user.email test@test.com");
+			RunGit(tempDir, "config user.name Test");
+			File.WriteAllText(Path.Combine(tempDir, ".gitignore"), "root-ignored/\n");
+			RunGit(tempDir, "add .gitignore");
+			RunGit(tempDir, "commit -m init");
+
+			// Create a nested .gitignore inside src/
+			var src = Path.Combine(tempDir, "src");
+			Directory.CreateDirectory(src);
+			File.WriteAllText(Path.Combine(src, ".gitignore"), "sub-ignored/\n");
+
+			// Create directories with .sln files at various levels
+			Directory.CreateDirectory(Path.Combine(tempDir, "root-ignored"));
+			File.WriteAllText(Path.Combine(tempDir, "root-ignored", "RootIgnored.sln"), "");
+
+			Directory.CreateDirectory(Path.Combine(src, "sub-ignored"));
+			File.WriteAllText(Path.Combine(src, "sub-ignored", "SubIgnored.sln"), "");
+
+			Directory.CreateDirectory(Path.Combine(src, "visible"));
+			File.WriteAllText(Path.Combine(src, "visible", "Visible.sln"), "");
+
+			var solutions = SolutionFileFinder.FindSolutionFiles(tempDir);
+
+			solutions.Should().ContainSingle(s => s.Contains("Visible.sln"));
+			solutions.Should().NotContain(s => s.Contains("RootIgnored.sln"),
+				"root .gitignore should exclude root-ignored/");
+			solutions.Should().NotContain(s => s.Contains("SubIgnored.sln"),
+				"nested src/.gitignore should exclude sub-ignored/");
+		}
+		finally
+		{
+			ForceDeleteDirectory(tempDir);
+		}
+	}
+
+	// -------------------------------------------------------------------
 	// Helpers
 	// -------------------------------------------------------------------
 
+	private static void RunGit(string workingDir, string args)
+	{
+		System.Diagnostics.Process process;
+		try
+		{
+			var psi = new System.Diagnostics.ProcessStartInfo("git", args)
+			{
+				WorkingDirectory = workingDir,
+				RedirectStandardOutput = true,
+				RedirectStandardError = true,
+				UseShellExecute = false,
+				CreateNoWindow = true,
+			};
+			process = System.Diagnostics.Process.Start(psi)
+				?? throw new InvalidOperationException("Failed to start git process");
+		}
+		catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException)
+		{
+			Assert.Inconclusive($"git is not available: {ex.Message}");
+			return; // unreachable, but satisfies the compiler
+		}
+
+		using (process)
+		{
+			if (!process.WaitForExit(10000))
+			{
+				try { process.Kill(); } catch { /* best effort */ }
+				Assert.Inconclusive("git process timed out");
+			}
+		}
+	}
+
+	private static void ForceDeleteDirectory(string path)
+	{
+		// Remove read-only attributes on .git objects so delete works on Windows
+		foreach (var file in Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories))
+		{
+			File.SetAttributes(file, FileAttributes.Normal);
+		}
+		Directory.Delete(path, recursive: true);
+	}
+
+
 	/// <summary>
-	/// Mirrors the arg-building logic in <see cref="DevServerMonitor.StartProcess"/>
+	/// Mirrors the arg-building logic in DevServerMonitor.StartProcess
 	/// to verify that the direct launch path produces the expected arguments.
 	/// </summary>
 	private static List<string> BuildDirectLaunchArgs(int port, string? solution, string? addins = null)

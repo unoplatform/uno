@@ -39,6 +39,7 @@ public partial class Given_DependencyProperty
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_CreateDefaultValueCallback()
 	{
 		var myButton = new MyButton();
@@ -53,6 +54,7 @@ public partial class Given_DependencyProperty
 	private partial class CustomUserControl : UserControl { }
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_IsTabStop()
 	{
 		var customControl = new CustomControl();

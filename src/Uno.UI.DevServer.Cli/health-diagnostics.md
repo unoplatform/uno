@@ -43,6 +43,7 @@ These are added directly by `HealthService.BuildHealthReport()`:
 | IssueCode | Severity | Trigger |
 |-----------|----------|---------|
 | `HostNotStarted` | Fatal | DevServer not yet started |
+| `NoSolutionFound` | Warning | No `.sln` or `.slnx` file found in working directory tree |
 | `HostCrashed` | Warning/Fatal | Connection state `Reconnecting` / `Degraded` |
 | `HostUnreachable` | Warning | Started but not yet connected |
 | `UpstreamError` | Fatal | Upstream task faulted |
@@ -54,6 +55,14 @@ Three codes exist in the `IssueCode` enum but are **not currently mapped** in CL
 - `DotNetVersionUnsupported`
 - `AddInLoadFailed`
 - `AddInBinaryNotFound`
+
+## Notable HealthReport Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `DiscoveredSolutions` | `string[]?` | Relative paths to `.sln`/`.slnx` files found by recursive search (null when none found) |
+| `ConnectionState` | `ConnectionState?` | Lifecycle state of the MCP bridge (see `Mcp/ConnectionState.cs` for state diagram) |
+| `Discovery` | `DiscoverySummary?` | Full discovery info including `ActiveServers[]` with `IsInWorkspace` flag |
 
 ## Health Status
 

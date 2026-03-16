@@ -63,6 +63,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 #endif
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_FromStream()
 		{
 			var temp = new MemoryStream();

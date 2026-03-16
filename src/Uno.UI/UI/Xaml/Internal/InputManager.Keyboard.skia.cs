@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using Windows.System;
 using DirectUI;
+using Microsoft.UI.Xaml.Internal;
 using Uno.UI.Xaml.Input;
 
 namespace Uno.UI.Xaml.Core;
@@ -75,6 +76,16 @@ partial class InputManager
 			// WinUI doesn't reuse the same args object, but creates a new routed args object and copies the Handled value
 			// To reduce allocations, we reuse the same routed args object twice.
 			originalSource2.RaiseEvent(down ? UIElement.KeyDownEvent : UIElement.KeyUpEvent, routedArgs);
+
+			// Ported from: KeyboardInputProcessor.cpp OnKeyDown (lines 171-192)
+			// Dismiss transient flyouts on unhandled keypress with no modifiers.
+			if (down && !routedArgs.Handled
+				&& args.KeyboardModifiers == VirtualKeyModifiers.None
+				&& TextControlFlyoutHelper.IsElementChildOfTransientOpenedFlyout(originalSource2))
+			{
+				TextControlFlyoutHelper.DismissAllFlyoutsForOwner(originalSource2);
+				routedArgs.Handled = true;
+			}
 
 			// Process context menu keyboard triggers (Shift+F10, Application key, GamepadMenu)
 			// This matches WinUI behavior where context menu is triggered after KeyDown.

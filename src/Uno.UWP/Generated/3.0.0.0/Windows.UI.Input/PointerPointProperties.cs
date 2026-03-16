@@ -24,16 +24,7 @@ namespace Windows.UI.Input
 		// Skipping already declared property IsEraser
 		// Skipping already declared property IsHorizontalMouseWheel
 		// Skipping already declared property IsInRange
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsInverted
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool PointerPointProperties.IsInverted is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PointerPointProperties.IsInverted");
-			}
-		}
-#endif
+		// Skipping already declared property IsInverted
 		// Skipping already declared property IsLeftButtonPressed
 		// Skipping already declared property IsMiddleButtonPressed
 		// Skipping already declared property IsPrimary
@@ -45,16 +36,7 @@ namespace Windows.UI.Input
 		// Skipping already declared property PointerUpdateKind
 		// Skipping already declared property Pressure
 		// Skipping already declared property TouchConfidence
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float Twist
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float PointerPointProperties.Twist is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20PointerPointProperties.Twist");
-			}
-		}
-#endif
+		// Skipping already declared property Twist
 		// Skipping already declared property XTilt
 		// Skipping already declared property YTilt
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
