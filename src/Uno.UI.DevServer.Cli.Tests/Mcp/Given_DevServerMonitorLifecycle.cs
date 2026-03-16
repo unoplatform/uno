@@ -30,7 +30,7 @@ public class Given_DevServerMonitorLifecycle
 			CandidateSolutions = solutionFiles,
 		};
 
-		var solution = DevServerMonitor.DetermineSolutionToLaunch(currentDirectory, solutionFiles, workspaceResolution);
+		var solution = DevServerMonitor.DetermineSolutionToLaunch(solutionFiles, workspaceResolution);
 
 		solution.Should().Be(selectedSolution);
 	}
@@ -46,7 +46,7 @@ public class Given_DevServerMonitorLifecycle
 			CreatePath("repo", "srcA", "AppA.slnx"),
 		];
 
-		var solution = DevServerMonitor.DetermineSolutionToLaunch(currentDirectory, solutionFiles, workspaceResolution: null);
+		var solution = DevServerMonitor.DetermineSolutionToLaunch(solutionFiles, workspaceResolution: null);
 
 		solution.Should().Be(CreatePath("repo", "srcA", "AppA.slnx"));
 	}
@@ -74,7 +74,7 @@ public class Given_DevServerMonitorLifecycle
 			CandidateSolutions = solutionFiles,
 		};
 
-		var solution = DevServerMonitor.DetermineSolutionToLaunch(currentDirectory, solutionFiles, workspaceResolution);
+		var solution = DevServerMonitor.DetermineSolutionToLaunch(solutionFiles, workspaceResolution);
 
 		if (OperatingSystem.IsLinux())
 		{

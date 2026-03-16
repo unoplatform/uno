@@ -107,7 +107,7 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger, ISolu
 		var resolved = await ResolveAsync(normalizedRequestedDirectory);
 		if (resolved.IsResolved || resolved.ResolutionKind != WorkspaceResolutionKind.NoCandidates)
 		{
-			return resolved;
+			return resolved with { SelectionSource = WorkspaceSelectionSource.UserSelected };
 		}
 
 		var globalJsonPath = Path.Combine(normalizedRequestedDirectory, "global.json");
