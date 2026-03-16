@@ -144,33 +144,9 @@ internal static class FrameProviderFactory
 			return new SKSizeI(codecWidth, codecHeight);
 		}
 
-		// Target dimensions are in display (post-rotation) space.
-		// Convert to codec (pre-rotation) space for the scale calculation.
 		bool swaps = SkEncodedOriginSwapsWidthHeight(origin);
-		int displayWidth = swaps ? codecHeight : codecWidth;
-		int displayHeight = swaps ? codecWidth : codecHeight;
-
-		int targetCodecW, targetCodecH;
-
-		if (targetWidth is > 0 && targetHeight is > 0)
-		{
-			targetCodecW = swaps ? targetHeight.Value : targetWidth.Value;
-			targetCodecH = swaps ? targetWidth.Value : targetHeight.Value;
-		}
-		else if (targetWidth is > 0)
-		{
-			int targetDisplayW = targetWidth.Value;
-			int targetDisplayH = (int)Math.Max(1, (long)displayHeight * targetDisplayW / displayWidth);
-			targetCodecW = swaps ? targetDisplayH : targetDisplayW;
-			targetCodecH = swaps ? targetDisplayW : targetDisplayH;
-		}
-		else
-		{
-			int targetDisplayH = targetHeight!.Value;
-			int targetDisplayW = (int)Math.Max(1, (long)displayWidth * targetDisplayH / displayHeight);
-			targetCodecW = swaps ? targetDisplayH : targetDisplayW;
-			targetCodecH = swaps ? targetDisplayW : targetDisplayH;
-		}
+		var (targetCodecW, targetCodecH, _, _) = ComputeTargetDimensions(
+			codecWidth, codecHeight, swaps, targetWidth, targetHeight);
 
 		// Use the larger scale factor so the decoded image covers the target in both dimensions.
 		float desiredScale = Math.Max(
@@ -199,25 +175,8 @@ internal static class FrameProviderFactory
 		}
 
 		bool swaps = SkEncodedOriginSwapsWidthHeight(origin);
-		int originalDisplayW = swaps ? codecHeight : codecWidth;
-		int originalDisplayH = swaps ? codecWidth : codecHeight;
-
-		int dstW, dstH;
-		if (targetWidth is > 0 && targetHeight is > 0)
-		{
-			dstW = targetWidth.Value;
-			dstH = targetHeight.Value;
-		}
-		else if (targetWidth is > 0)
-		{
-			dstW = targetWidth.Value;
-			dstH = (int)Math.Max(1, (long)originalDisplayH * dstW / originalDisplayW);
-		}
-		else
-		{
-			dstH = targetHeight!.Value;
-			dstW = (int)Math.Max(1, (long)originalDisplayW * dstH / originalDisplayH);
-		}
+		var (_, _, dstW, dstH) = ComputeTargetDimensions(
+			codecWidth, codecHeight, swaps, targetWidth, targetHeight);
 
 		if (dstW == image.Width && dstH == image.Height)
 		{
@@ -229,6 +188,43 @@ internal static class FrameProviderFactory
 		using var srcBitmap = SKBitmap.FromImage(image);
 		srcBitmap.ScalePixels(dstBitmap, new SKSamplingOptions(SKCubicResampler.CatmullRom));
 		return SKImage.FromBitmap(dstBitmap);
+	}
+
+	/// <summary>
+	/// Computes target dimensions in both codec (pre-rotation) and display (post-rotation) space.
+	/// <paramref name="targetWidth"/> and <paramref name="targetHeight"/> are in display space.
+	/// When only one dimension is specified, the other is computed to preserve the aspect ratio
+	/// of the original image. The returned codec dimensions are the display dimensions with the
+	/// width/height swap reversed, suitable for passing to the decoder.
+	/// </summary>
+	private static (int codecW, int codecH, int displayW, int displayH) ComputeTargetDimensions(
+		int codecWidth, int codecHeight, bool swaps,
+		int? targetWidth, int? targetHeight)
+	{
+		int displayWidth = swaps ? codecHeight : codecWidth;
+		int displayHeight = swaps ? codecWidth : codecHeight;
+
+		int displayW, displayH;
+		if (targetWidth is > 0 && targetHeight is > 0)
+		{
+			displayW = targetWidth.Value;
+			displayH = targetHeight.Value;
+		}
+		else if (targetWidth is > 0)
+		{
+			displayW = targetWidth.Value;
+			displayH = (int)Math.Max(1, (long)displayHeight * displayW / displayWidth);
+		}
+		else
+		{
+			displayH = targetHeight!.Value;
+			displayW = (int)Math.Max(1, (long)displayWidth * displayH / displayHeight);
+		}
+
+		int codecW = swaps ? displayH : displayW;
+		int codecH = swaps ? displayW : displayH;
+
+		return (codecW, codecH, displayW, displayH);
 	}
 
 	private static SKImage GetImage(SKBitmap bitmap, SKEncodedOrigin origin)

@@ -68,20 +68,31 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 					else
 					{
 						var clonedStream = _stream.CloneStream().AsStreamForRead();
-						var imageData = await Task.Run(async () =>
+						ImageData imageData;
+						try
 						{
-							try
+							imageData = await Task.Run(async () =>
 							{
-								using (clonedStream)
+								try
 								{
-									return await ImageSourceHelpers.ReadFromStreamAsCompositionSurface(clonedStream, ct, targetWidth: decodeWidth, targetHeight: decodeHeight);
+									using (clonedStream)
+									{
+										return await ImageSourceHelpers.ReadFromStreamAsCompositionSurface(clonedStream, ct, targetWidth: decodeWidth, targetHeight: decodeHeight);
+									}
 								}
-							}
-							catch (Exception e)
-							{
-								return ImageData.FromError(e);
-							}
-						}, ct);
+								catch (Exception e)
+								{
+									return ImageData.FromError(e);
+								}
+							}, ct);
+						}
+						catch (OperationCanceledException)
+						{
+							// If ct is already canceled, Task.Run never executes the
+							// delegate and clonedStream would leak.
+							clonedStream.Dispose();
+							throw;
+						}
 
 						if (imageData.Kind == ImageDataKind.Error)
 						{
