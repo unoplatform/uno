@@ -1496,7 +1496,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			_ = Dispatcher.RunIdleAsync(e =>
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				if (_hasPendingUpdate)
 				{
