@@ -82,7 +82,7 @@ Here is a recommended starter for Uno Platform development:
 # Stack
 
 - C# / WinUI 3 / XAML / .NET / Uno Platform
-- Architecture: MVUX (not MVVM)
+- Architecture: MVUX (recommended; MVVM also supported)
 - Styling: Material theme (Uno.Material)
 
 # Framework Rules
