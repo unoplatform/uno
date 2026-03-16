@@ -516,7 +516,7 @@ internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMoni
 			DevServerProcessHelper.CreateDotnetProcessStartInfo(hostPath, args, workingDirectory, redirectOutput: true);
 
 		_logger.LogDebug("Starting server process: {File} {Args}", startInfo.FileName,
-			string.Join(" ", startInfo.ArgumentList));
+			startInfo.Arguments);
 
 		var process = new Process { StartInfo = startInfo, EnableRaisingEvents = true };
 
