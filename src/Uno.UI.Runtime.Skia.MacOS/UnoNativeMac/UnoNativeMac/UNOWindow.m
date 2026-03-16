@@ -95,6 +95,10 @@ NSWindow* uno_app_get_main_window(void)
     return YES;
 }
 
+-(BOOL) acceptsFirstResponder {
+    return YES;
+}
+
 -(instancetype) initWithFrame:(CGRect)frameRect device:(id<MTLDevice>)device {
     self = [super initWithFrame:frameRect device:device];
     if (self) {
