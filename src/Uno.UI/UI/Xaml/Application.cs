@@ -489,7 +489,7 @@ namespace Microsoft.UI.Xaml
 						// updates theme bindings but not stored themes, which causes new elements
 						// entering the tree (via OnLoadingPartial) to inherit stale themes from
 						// their parent.
-						if (updateReason == ResourceUpdateReason.ThemeResource)
+						if ((updateReason & ResourceUpdateReason.ThemeResource) != 0)
 						{
 							var theme = InternalRequestedTheme == ApplicationTheme.Dark ? Theme.Dark : Theme.Light;
 							var rootFe = root as FrameworkElement ?? contentRoot.XamlRoot.Content as FrameworkElement;
@@ -528,10 +528,9 @@ namespace Microsoft.UI.Xaml
 			if (instance is FrameworkElement fe)
 			{
 				// If element has explicit RequestedTheme and this is a theme change,
-				// the element controls its own subtree - don't override its theme.
-				// Push the element's own theme context so ThemeResource lookups
-				// resolve against its RequestedTheme, not the app-level theme.
-				if (updateReason == ResourceUpdateReason.ThemeResource &&
+				// skip it - its subtree is managed by its own theme context and
+				// will be updated via NotifyThemeChanged, not by propagation.
+				if ((updateReason & ResourceUpdateReason.ThemeResource) != 0 &&
 					fe.RequestedTheme != ElementTheme.Default)
 				{
 					return;
