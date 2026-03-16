@@ -87,7 +87,7 @@ Here is a recommended starter for Uno Platform development:
 
 # Framework Rules
 
-- Use `x:Bind` over `{Binding}` — this is a framework-level decision
+- Prefer `x:Bind` for performance where appropriate; keep `{Binding}` when its semantics are required (see Uno `x:Bind` docs)
 - Use `dotnet new unoapp -preset recommended` for scaffolding
 - Always use the latest stable .NET SDK and Uno.Sdk version
 - Search the Uno Platform docs (via MCP) before assuming API patterns
