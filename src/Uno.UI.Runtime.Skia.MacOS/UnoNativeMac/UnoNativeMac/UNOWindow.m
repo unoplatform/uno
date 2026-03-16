@@ -1044,15 +1044,20 @@ NSOperatingSystemVersion _osVersion;
 #endif
 
             // When a native element (e.g. WKWebView) holds first responder and the
-            // user clicks elsewhere, resign it so keyboard events stop going to the
-            // native element. Since mouse events always return handled=0 (see above),
-            // [super sendEvent:] runs next and will re-assign first responder to the
-            // native element if the click actually landed on it. (fixes #22819)
+            // user clicks outside it, resign first responder so keyboard events stop
+            // going to the native element. Hit-test the click location to avoid
+            // resigning when the click is inside the native element. (fixes #22819)
             if (mouse == MouseEventsDown) {
                 NSResponder *fr = self.firstResponder;
                 NSView *cv = self.contentViewController.view;
                 if ([fr isKindOfClass:[NSView class]] && fr != cv && [(NSView *)fr isDescendantOf:cv]) {
-                    [self makeFirstResponder:cv];
+                    NSPoint loc = [cv convertPoint:event.locationInWindow fromView:nil];
+                    NSView *hitView = [cv hitTest:loc];
+                    // hitView lands on cv (Skia layer) when the click is outside any
+                    // native subview — only then do we resign first responder.
+                    if (hitView == cv || hitView == nil) {
+                        [self makeFirstResponder:cv];
+                    }
                 }
             }
         }
