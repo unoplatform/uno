@@ -3,25 +3,36 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input.Preview.Injection
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class InjectedInputPenInfo
 	{
-		// Skipping already declared property Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.TiltY
-		// Skipping already declared property Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.TiltX
-		// Skipping already declared property Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.Rotation
-		// Skipping already declared property Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.Pressure
-		// Skipping already declared property Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.PointerInfo
-		// Skipping already declared property Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.PenParameters
-		// Skipping already declared property Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.PenButtons
+		// Skipping already declared property PenButtons
+		// Skipping already declared property PenParameters
+		// Skipping already declared property PointerInfo
+		// Skipping already declared property Pressure
+		// Skipping already declared property Rotation
+		// Skipping already declared property TiltX
+		// Skipping already declared property TiltY
+		// Skipping already declared method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.InjectedInputPenInfo()
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.InjectedInputPenInfo()
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.PointerInfo.get
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.PointerInfo.set
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.FromAbi(nint)
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.operator ==(Windows.UI.Input.Preview.Injection.InjectedInputPenInfo, Windows.UI.Input.Preview.Injection.InjectedInputPenInfo)
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.operator !=(Windows.UI.Input.Preview.Injection.InjectedInputPenInfo, Windows.UI.Input.Preview.Injection.InjectedInputPenInfo)
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.Equals(Windows.UI.Input.Preview.Injection.InjectedInputPenInfo)
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.Equals(object)
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.GetHashCode()
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.WinRT.IWinRTObject.NativeObject.get
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.PenButtons.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.PenButtons.set
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.PenParameters.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.PenParameters.set
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.PointerInfo.get
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.PointerInfo.set
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.Pressure.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.Pressure.set
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.Rotation.get
@@ -30,5 +41,6 @@ namespace Windows.UI.Input.Preview.Injection
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.TiltX.set
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.TiltY.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.TiltY.set
+		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }
