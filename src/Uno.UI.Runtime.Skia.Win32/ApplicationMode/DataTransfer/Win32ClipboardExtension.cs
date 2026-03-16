@@ -175,7 +175,7 @@ internal partial class Win32ClipboardExtension : IClipboardExtension
 		{
 			_shouldClose = PInvoke.OpenClipboard(hwnd);
 			if (!_shouldClose) { typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.OpenClipboard)} failed: {Win32Helper.GetErrorMessage()}"); }
-			if (ownClipboard)
+			if (ownClipboard && _shouldClose)
 			{
 				var success = PInvoke.EmptyClipboard();
 				if (!success) { typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.EmptyClipboard)} failed: {Win32Helper.GetErrorMessage()}"); }
@@ -234,7 +234,7 @@ partial class Win32ClipboardExtension // from clipboard
 				CLIPBOARD_FORMAT.CF_TEXT => null,
 				CLIPBOARD_FORMAT.CF_LOCALE => GetUnknownData, // 4 bytes CultureInfo.LCID
 				CLIPBOARD_FORMAT.CF_UNICODETEXT => GetText,
-				CLIPBOARD_FORMAT.CF_OEMTEXT => GetOmeText,
+				CLIPBOARD_FORMAT.CF_OEMTEXT => GetOemText,
 
 				// synthesized image formats
 				CLIPBOARD_FORMAT.CF_BITMAP => null, // Windows synthesizes CF_DIB from CF_BITMAP; handled below
@@ -281,7 +281,7 @@ partial class Win32ClipboardExtension // from clipboard
 
 		package.SetText(Marshal.PtrToStringUni((IntPtr)ptr)!);
 	}
-	private static unsafe void GetOmeText(DataPackage package, CLIPBOARD_FORMAT format, HGLOBAL handle)
+	private static unsafe void GetOemText(DataPackage package, CLIPBOARD_FORMAT format, HGLOBAL handle)
 	{
 		using var lockDisposable = Win32Helper.GlobalLock(handle, out var ptr);
 		if (lockDisposable is null) return;
@@ -317,9 +317,8 @@ partial class Win32ClipboardExtension // from clipboard
 	private static unsafe void GetDib(DataPackage package, CLIPBOARD_FORMAT format, HGLOBAL handle)
 	{
 		// we are remapping CF_DIB to bitmap, since there is no good way to load from CF_BITMAP which contains an HBITMAP
-		var name =
-			//"DeviceIndependentBitmap";
-			StandardDataFormats.Bitmap;
+		// normally, this would've been mapped to "DeviceIndependentBitmap"
+		var name = StandardDataFormats.Bitmap;
 
 		package.SetDataProvider(name, _ =>
 		{
@@ -380,10 +379,12 @@ partial class Win32ClipboardExtension // from clipboard
 			}
 
 			var size = (uint)PInvoke.GlobalSize((HGLOBAL)(IntPtr)handle);
-			if (size <= 0)
+			if (size == 0 || size > int.MaxValue)
 			{
 				return Task.FromException<object>(new InvalidOperationException($"{nameof(PInvoke.GlobalSize)} returned {size}: {Win32Helper.GetErrorMessage()}"));
 			}
+
+			var bufferLength = checked((int)size);
 
 			// note: WinUI Clipboard seem to detect certain named format as string, it is unknown by which mechanism.
 			// since HGlobal itself doesnt carry any type metadata, presumably this is done with a white list.
@@ -394,10 +395,10 @@ partial class Win32ClipboardExtension // from clipboard
 				return Task.FromResult<object>(text);
 			}
 
-			var buffer = new byte[size];
+			var buffer = new byte[bufferLength];
 			fixed (byte* pBuffer = buffer)
 			{
-				System.Buffer.MemoryCopy(ptr, pBuffer, size, size);
+				System.Buffer.MemoryCopy(ptr, pBuffer, bufferLength, bufferLength);
 			}
 
 			return Task.FromResult<object>(new MemoryStream(buffer).AsRandomAccessStream());
@@ -624,7 +625,13 @@ partial class Win32ClipboardExtension // to clipboard
 		// since we couldn't create a HBITMAP here, we will just write CF_DIB data directly to the clipboard,
 		// which Windows will synthesize CF_BITMAP for us.
 
-		var bytes = new byte[stream.Size];
+		var size = stream.Size;
+		if (size > int.MaxValue)
+		{
+			throw new InvalidOperationException("Clipboard bitmap data is too large to be processed.");
+		}
+
+		var bytes = new byte[(int)size];
 		stream.AsStreamForRead().ReadExactly(bytes);
 
 		// check for 'BM' file signature, if we got a bitmap image, we can just strip the header and send the pixel data (in DIB format)
@@ -705,7 +712,14 @@ partial class Win32ClipboardExtension // to clipboard
 		if (task.Result is IRandomAccessStream ras)
 		{
 			ras.Seek(0);
-			var bytes = new byte[ras.Size];
+			var size = ras.Size;
+			if (size > int.MaxValue)
+			{
+				typeof(Win32ClipboardExtension).LogError()?.Error($"Clipboard data for format '{format}' is too large to copy (size={size} bytes).");
+				return;
+			}
+
+			var bytes = new byte[checked((int)size)];
 			ras.AsStreamForRead().ReadExactly(bytes);
 
 			SetClipboardData(format, bytes);
@@ -743,6 +757,12 @@ partial class Win32ClipboardExtension // to clipboard
 		if (allocDisposable is null) return;
 
 		using var lockDisposable = Win32Helper.GlobalLock(handle, out var dst);
+		if (lockDisposable is null || dst == null)
+		{
+			typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(Win32Helper.GlobalLock)} failed: {Win32Helper.GetErrorMessage()}");
+			return;
+		}
+
 		fixed (byte* src = &MemoryMarshal.GetReference(data))
 		{
 			Buffer.MemoryCopy(src, dst, data.Length, data.Length);

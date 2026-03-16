@@ -112,13 +112,24 @@ namespace Uno.Utils {
 						const imageType = item.types.find(t => t.startsWith('image/'));
 						if (imageType) {
 							const blob = await item.getType(imageType);
-							const arrayBuffer = await blob.arrayBuffer();
-							const bytes = new Uint8Array(arrayBuffer);
-							let binary = '';
-							for (let i = 0; i < bytes.length; i++) {
-								binary += String.fromCharCode(bytes[i]);
-							}
-							return btoa(binary);
+							const dataUrl = await new Promise<string>((resolve, reject) => {
+								const reader = new FileReader();
+								reader.onload = () => {
+									if (typeof reader.result === "string") {
+										resolve(reader.result);
+									} else {
+										reject(new Error("Unexpected FileReader result type when reading image from clipboard."));
+									}
+								};
+								reader.onerror = () => {
+									reject(reader.error ?? new Error("Failed to read image from clipboard using FileReader."));
+								};
+								reader.readAsDataURL(blob);
+							});
+
+							const commaIndex = dataUrl.indexOf(",");
+							const base64 = commaIndex >= 0 ? dataUrl.substring(commaIndex + 1) : dataUrl;
+							return base64;
 						}
 					}
 					return "";

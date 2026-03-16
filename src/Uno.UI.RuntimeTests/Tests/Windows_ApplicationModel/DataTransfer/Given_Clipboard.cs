@@ -23,7 +23,7 @@ namespace Uno.UI.RuntimeTests.Tests;
 public partial class Given_Clipboard;
 partial class Given_Clipboard // setup and cleanup
 {
-	// limit cross contamination, and (external polution while running manually)
+	// limit cross contamination, and (external pollution while running manually)
 	[TestInitialize]
 	public void Setup() => Clipboard.Clear();
 
@@ -52,6 +52,8 @@ partial class Given_Clipboard
 		package.SetText(TestString);
 
 		Clipboard.SetContent(package);
+
+		await DelayForClipboard();
 
 		var view = Clipboard.GetContent();
 		var text = await view.GetTextAsync();
@@ -131,9 +133,19 @@ partial class Given_Clipboard
 	}
 #endif
 
+	private static async Task DelayForClipboard()
+	{
+		// on some platforms, clipboard operations are not immediately available,
+		// so we need to wait a bit before trying to read the content
+		if (RuntimeTestsPlatformHelper.CurrentPlatform is RuntimeTestPlatforms.SkiaWasm)
+		{
+			await Task.Delay(1000);
+		}
+	}
+
 	// for winui at least: use ToRASTream for SetData, use ToRAReferenceAsync for SetBitmap
-	public static IRandomAccessStream ToRAStream(byte[] buffer) => new MemoryStream(buffer).AsRandomAccessStream();
-	public static async Task<RandomAccessStreamReference> ToRAReferenceAsync(byte[] buffer)
+	private static IRandomAccessStream ToRAStream(byte[] buffer) => new MemoryStream(buffer).AsRandomAccessStream();
+	private static async Task<RandomAccessStreamReference> ToRAReferenceAsync(byte[] buffer)
 	{
 		var stream = new InMemoryRandomAccessStream();
 		await stream.WriteAsync(buffer.AsBuffer());
@@ -142,7 +154,7 @@ partial class Given_Clipboard
 		return RandomAccessStreamReference.CreateFromStream(stream);
 	}
 
-	public static byte[] ToBytes(IRandomAccessStream ras)
+	private static byte[] ToBytes(IRandomAccessStream ras)
 	{
 		using var stream = ras.AsStreamForRead();
 		using var buffer = new MemoryStream((int)ras.Size);

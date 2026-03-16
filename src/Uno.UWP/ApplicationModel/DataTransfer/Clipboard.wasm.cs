@@ -113,13 +113,72 @@ namespace Windows.ApplicationModel.DataTransfer
 			using var ras = await reference.OpenReadAsync();
 			using var stream = ras.AsStreamForRead();
 
+			if (ras.Size > int.MaxValue)
+			{
+				throw new NotSupportedException("Clipboard image is too large.");
+			}
+
 			var buffer = new MemoryStream((int)ras.Size);
 			stream.CopyTo(buffer);
 
-			var base64 = Convert.ToBase64String(buffer.ToArray());
-			var mimeType = string.IsNullOrEmpty(ras.ContentType) ? "image/png" : ras.ContentType;
+			var data = buffer.ToArray();
+			var base64 = Convert.ToBase64String(data);
+			var mimeType = GetImageMimeType(ras, data);
 
 			await NativeMethods.SetImageAsync(base64, mimeType);
+		}
+
+		private static string GetImageMimeType(IRandomAccessStreamWithContentType ras, byte[] data)
+		{
+			if (!string.IsNullOrEmpty(ras.ContentType))
+			{
+				return ras.ContentType;
+			}
+
+			if (data == null || data.Length == 0)
+			{
+				return "application/octet-stream";
+			}
+
+			// PNG signature: 89 50 4E 47 0D 0A 1A 0A
+			if (data.Length >= 8 &&
+				data[0] == 0x89 && data[1] == 0x50 && data[2] == 0x4E && data[3] == 0x47 &&
+				data[4] == 0x0D && data[5] == 0x0A && data[6] == 0x1A && data[7] == 0x0A)
+			{
+				return "image/png";
+			}
+
+			// JPEG signature: FF D8 FF
+			if (data.Length >= 3 &&
+				data[0] == 0xFF && data[1] == 0xD8 && data[2] == 0xFF)
+			{
+				return "image/jpeg";
+			}
+
+			// BMP signature: 42 4D
+			if (data.Length >= 2 &&
+				data[0] == 0x42 && data[1] == 0x4D)
+			{
+				return "image/bmp";
+			}
+
+			// GIF signature: 47 49 46 38 ("GIF8")
+			if (data.Length >= 4 &&
+				data[0] == 0x47 && data[1] == 0x49 && data[2] == 0x46 && data[3] == 0x38)
+			{
+				return "image/gif";
+			}
+
+			// WebP signature: "RIFF"...."WEBP"
+			if (data.Length >= 12 &&
+				data[0] == 0x52 && data[1] == 0x49 && data[2] == 0x46 && data[3] == 0x46 && // "RIFF"
+				data[8] == 0x57 && data[9] == 0x45 && data[10] == 0x42 && data[11] == 0x50)   // "WEBP"
+			{
+				return "image/webp";
+			}
+
+			// Fallback when the format is unknown
+			return "application/octet-stream";
 		}
 
 		private static void StartContentChanged()
