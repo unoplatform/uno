@@ -29,14 +29,6 @@ public partial struct Point
 	{
 	}
 
-#if HAS_UNO_WINUI
-	public Point(float x, float y)
-	{
-		X = x;
-		Y = y;
-	}
-#endif
-
 	internal static Point Zero => new Point(0, 0);
 
 	public double X

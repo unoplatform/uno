@@ -28,14 +28,6 @@ public partial struct Size
 	{
 	}
 
-#if HAS_UNO_WINUI
-	public Size(float width, float height)
-	{
-		Width = width;
-		Height = height;
-	}
-#endif
-
 	public static Size Empty => new Size(double.NegativeInfinity, double.NegativeInfinity);
 
 	public bool IsEmpty => double.IsNegativeInfinity(Width) && double.IsNegativeInfinity(Height);
