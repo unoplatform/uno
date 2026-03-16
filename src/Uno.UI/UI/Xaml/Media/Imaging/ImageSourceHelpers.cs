@@ -39,12 +39,14 @@ internal static partial class ImageSourceHelpers
 	}
 
 #if __SKIA__
-	public static async Task<ImageData> ReadFromStreamAsCompositionSurface(Stream imageStream, CancellationToken ct, bool attemptLoadingWithBrowserCanvasApi = true)
+	public static async Task<ImageData> ReadFromStreamAsCompositionSurface(Stream imageStream, CancellationToken ct, bool attemptLoadingWithBrowserCanvasApi = true, int? targetWidth = null, int? targetHeight = null)
 	{
 		var buffer = new byte[imageStream.Length - imageStream.Position];
 		await imageStream.ReadExactlyAsync(buffer, 0, buffer.Length, ct);
 
-		if (OperatingSystem.IsBrowser() && attemptLoadingWithBrowserCanvasApi)
+		bool hasTargetSize = targetWidth is not null || targetHeight is not null;
+
+		if (OperatingSystem.IsBrowser() && attemptLoadingWithBrowserCanvasApi && !hasTargetSize)
 		{
 			var decodedBufferObject = await LoadFromArray(buffer);
 
@@ -92,7 +94,7 @@ internal static partial class ImageSourceHelpers
 		}
 
 		var surface = new SkiaCompositionSurface();
-		var result = surface.LoadFromStream(new MemoryStream(buffer));
+		var result = surface.LoadFromStream(targetWidth, targetHeight, new MemoryStream(buffer));
 
 		if (result.success)
 		{
@@ -124,12 +126,12 @@ internal static partial class ImageSourceHelpers
 	}
 
 #if __SKIA__
-	public static async Task<ImageData> GetImageDataFromUriAsCompositionSurface(Uri uri, CancellationToken ct)
+	public static async Task<ImageData> GetImageDataFromUriAsCompositionSurface(Uri uri, CancellationToken ct, int? targetWidth = null, int? targetHeight = null)
 	{
 		try
 		{
 			using var stream = await AppDataUriEvaluator.ToStream(uri, ct);
-			return await ReadFromStreamAsCompositionSurface(stream, ct, !IsAnimatableImageFormat(uri));
+			return await ReadFromStreamAsCompositionSurface(stream, ct, !IsAnimatableImageFormat(uri), targetWidth, targetHeight);
 		}
 		catch (Exception e)
 		{
