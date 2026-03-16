@@ -432,18 +432,14 @@ internal class CliManager
 
 	private ProcessStartInfo BuildHostArgs(string hostPath, string[] originalArgs, string workingDirectory, bool redirectOutput = true, string? addins = null)
 	{
-		var args = new List<string> { "--command" };
-		if (originalArgs.Length > 0)
+		// Use --command=<verb> (single token) instead of --command <verb> (two tokens)
+		// to work around argument splitting observed on some CI environments where
+		// the verb string was being split into individual characters.
+		var command = originalArgs.Length > 0 ? originalArgs[0] : "start";
+		var args = new List<string> { $"--command={command}" };
+		for (int i = 1; i < originalArgs.Length; i++)
 		{
-			args.Add(originalArgs[0]);
-			for (int i = 1; i < originalArgs.Length; i++)
-			{
-				args.Add(originalArgs[i]);
-			}
-		}
-		else
-		{
-			args.Add("start");
+			args.Add(originalArgs[i]);
 		}
 
 		if (addins is not null)

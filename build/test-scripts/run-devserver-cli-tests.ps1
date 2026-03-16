@@ -10,12 +10,56 @@ Set-StrictMode -Version Latest
 
 function Write-Log([string]$Message){ Write-Host "[devserver-cli-test] $Message" }
 
+function Write-TimelineEvent {
+    param(
+        [string]$Component,
+        [string]$Stage,
+        [long]$ElapsedMilliseconds,
+        [string]$Details = ''
+    )
+
+    $suffix = if ([string]::IsNullOrWhiteSpace($Details)) { '' } else { " :: $Details" }
+    Write-Host ("[devserver-cli-test][timeline] {0} | {1} | t+{2}ms{3}" -f $Component, $Stage, $ElapsedMilliseconds, $suffix)
+}
+
+function Write-TimelineEventsFromText {
+    param([string]$Text)
+
+    if ([string]::IsNullOrWhiteSpace($Text)) {
+        return 0
+    }
+
+    $count = 0
+    $Text -split "`r?`n" |
+        Where-Object { $_ -like '*TIMELINE|*' } |
+        ForEach-Object {
+            $markerIndex = $_.IndexOf('TIMELINE|', [System.StringComparison]::Ordinal)
+            if ($markerIndex -lt 0) {
+                return
+            }
+
+            $payload = $_.Substring($markerIndex)
+            $parts = $payload.Split('|', 5)
+            if ($parts.Length -lt 5) {
+                return
+            }
+
+            $elapsed = 0L
+            [void][long]::TryParse($parts[3], [ref]$elapsed)
+            Write-TimelineEvent -Component $parts[1] -Stage $parts[2] -ElapsedMilliseconds $elapsed -Details $parts[4]
+            $count++
+        }
+
+    return $count
+}
+
 $script:DevServerHostExecutable = "uno-devserver"
 $script:DevServerCliEntryPoint = $null
 $script:DevServerCliDisplayName = "$script:DevServerHostExecutable $script:DevServerCliEntryPoint"
 $script:DevServerCliUsesDllPath = $false
 $script:DevServerCliResolvedDllPath = $null
 $script:DevServerCliToolPath = $null
+$script:CodexUnoAppLogFile = $null
 
 function Get-ConfiguredIntValue {
     param(
@@ -198,6 +242,10 @@ function Wait-ForDevserverListEntry([int]$Port, [string]$SolutionDirectory, [int
         }
 
         $listText = ($listOutput | Out-String)
+
+        if ($attempt -le 3 -or $attempt -eq $MaxAttempts) {
+            Write-Log "  list output (attempt $attempt, exitCode=$LASTEXITCODE): $($listText.Trim())"
+        }
 
         if ($LASTEXITCODE -eq 0 -and $listText -match $escapedDirectory -and ($listText -match $portPattern -or $listText -match $endpointPattern)) {
             return $true
@@ -443,6 +491,9 @@ function Register-UnoCodexMcps {
         }
 
         $mcpArguments = @("--mcp-app", "--skip-git-repo-check", "-l", "trace")
+        if (-not [string]::IsNullOrWhiteSpace($script:CodexUnoAppLogFile)) {
+            $mcpArguments += @("-fl", $script:CodexUnoAppLogFile)
+        }
         if ($ForceRootsFallback) {
             $mcpArguments += "--force-roots-fallback"
         }
@@ -920,6 +971,46 @@ function Start-DevserverProcessCapture {
     return $context
 }
 
+function Wait-ForProcessLogMarker {
+    param(
+        [string]$LogPath,
+        [string]$Marker,
+        [int]$TimeoutSeconds = 120,
+        [string]$Label = 'MCP process'
+    )
+
+    $deadline = [DateTimeOffset]::UtcNow.AddSeconds($TimeoutSeconds)
+    $pollMs = 500
+
+    while ([DateTimeOffset]::UtcNow -lt $deadline) {
+        if (Test-Path $LogPath) {
+            try {
+                $reader = [System.IO.StreamReader]::new(
+                    [System.IO.FileStream]::new($LogPath, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite))
+                try {
+                    $content = $reader.ReadToEnd()
+                }
+                finally {
+                    $reader.Dispose()
+                }
+
+                if ($content -match [Regex]::Escape($Marker)) {
+                    Write-Log "$Label log marker '$Marker' detected."
+                    return $true
+                }
+            }
+            catch {
+                # file may not be ready yet
+            }
+        }
+
+        Start-Sleep -Milliseconds $pollMs
+    }
+
+    Write-Log "WARNING: $Label log marker '$Marker' not detected within ${TimeoutSeconds}s."
+    return $false
+}
+
 function Test-McpModeWithoutSolutionDir {
     param(
         [string]$SlnDir,
@@ -942,6 +1033,41 @@ function Test-McpModeWithoutSolutionDir {
     $devserverStarted = $true
 
     try {
+        # Wait for the MCP process to actually register the DevServer in the ambient registry
+        # before polling 'list'. On slow CI agents the .NET runtime + discovery + host startup
+        # can take well over 60s, causing the list poll to time out before registration happens.
+        $registrationDetected = Wait-ForProcessLogMarker `
+            -LogPath $processContext.StderrLogPath `
+            -Marker 'DevServer registered:' `
+            -TimeoutSeconds 120 `
+            -Label 'MCP stderr'
+
+        if (-not $registrationDetected) {
+            $stdoutLog = if ($processContext -and (Test-Path $processContext.StdoutLogPath)) { Get-Content $processContext.StdoutLogPath -Raw -ErrorAction SilentlyContinue } else { "" }
+            $stderrLog = if ($processContext -and (Test-Path $processContext.StderrLogPath)) { Get-Content $processContext.StderrLogPath -Raw -ErrorAction SilentlyContinue } else { "" }
+            throw "Devserver MCP mode (no --solution-dir) did not produce a 'DevServer registered:' log within 120s.`nSTDOUT:`n$stdoutLog`nSTDERR:`n$stderrLog"
+        }
+
+        # Verify the registry JSON file actually exists on disk before polling list
+        try {
+            $reader = [System.IO.StreamReader]::new(
+                [System.IO.FileStream]::new($processContext.StderrLogPath, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite))
+            try { $stderrSnapshot = $reader.ReadToEnd() } finally { $reader.Dispose() }
+            $registryMatch = [Regex]::Match($stderrSnapshot, 'DevServer registered:\s*(.+)')
+            if ($registryMatch.Success) {
+                $registryJsonPath = $registryMatch.Groups[1].Value.Trim()
+                Write-Log "Registry JSON path: $registryJsonPath (exists: $(Test-Path $registryJsonPath))"
+                $registryDir = Split-Path $registryJsonPath -Parent
+                if (Test-Path $registryDir) {
+                    $jsonFiles = Get-ChildItem -Path $registryDir -Filter 'devserver-*.json' -ErrorAction SilentlyContinue
+                    Write-Log "Registry dir contents: $($jsonFiles.Name -join ', ')"
+                }
+            }
+        }
+        catch {
+            Write-Log "WARNING: registry diagnostic failed: $_"
+        }
+
         $mcpStarted = Wait-ForDevserverListEntry -Port $mcpTestPort -SolutionDirectory $SlnDir -MaxAttempts $MaxAttempts -DelaySeconds 2
         if (-not $mcpStarted) {
             $stdoutLog = if ($processContext -and (Test-Path $processContext.StdoutLogPath)) { Get-Content $processContext.StdoutLogPath -Raw -ErrorAction SilentlyContinue } else { "" }
@@ -1202,11 +1328,26 @@ function Test-CodexIntegration {
     try {
         $env:CODEX_HOME = $isolatedCodexHome
         Write-Log "Using isolated CODEX_HOME at $isolatedCodexHome for Codex MCP validation."
+        $codexTimeline = [System.Diagnostics.Stopwatch]::StartNew()
+        Write-TimelineEvent -Component 'codex-script' -Stage 'isolated-home-ready' -ElapsedMilliseconds $codexTimeline.ElapsedMilliseconds -Details $isolatedCodexHome
+        $script:CodexUnoAppLogFile = Join-Path $isolatedCodexHome ("unoapp-mcp-" + [Guid]::NewGuid().ToString("N") + ".log")
+        Write-Log "Capturing unoapp MCP logs to $script:CodexUnoAppLogFile"
 
         $nestedRoot = Split-Path $SlnDir -Parent
         $solutionPath = Join-Path $SlnDir 'uno56netcurrent.sln'
+        $mcpRegistrationStopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+        Write-TimelineEvent -Component 'codex-script' -Stage 'mcp-registration.start' -ElapsedMilliseconds $codexTimeline.ElapsedMilliseconds -Details $nestedRoot
         Register-UnoCodexMcps -WorkingDirectory $nestedRoot -ForceRootsFallback
+        $mcpRegistrationStopwatch.Stop()
+        Write-Log ("Codex MCP registration completed in {0} ms" -f $mcpRegistrationStopwatch.ElapsedMilliseconds)
+        Write-TimelineEvent -Component 'codex-script' -Stage 'mcp-registration.complete' -ElapsedMilliseconds $codexTimeline.ElapsedMilliseconds -Details ("duration={0}ms" -f $mcpRegistrationStopwatch.ElapsedMilliseconds)
+
+        $codexFlowStopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+        Write-TimelineEvent -Component 'codex-script' -Stage 'selection-flow.start' -ElapsedMilliseconds $codexTimeline.ElapsedMilliseconds -Details $solutionPath
         Invoke-CodexSelectionFlowTest -WorkingDirectory $nestedRoot -SolutionPath $solutionPath
+        $codexFlowStopwatch.Stop()
+        Write-Log ("Codex MCP selection flow completed in {0} ms" -f $codexFlowStopwatch.ElapsedMilliseconds)
+        Write-TimelineEvent -Component 'codex-script' -Stage 'selection-flow.complete' -ElapsedMilliseconds $codexTimeline.ElapsedMilliseconds -Details ("duration={0}ms" -f $codexFlowStopwatch.ElapsedMilliseconds)
     }
     finally {
         if ($null -ne $previousCodexHome) {
@@ -1219,6 +1360,8 @@ function Test-CodexIntegration {
         if (Test-Path $isolatedCodexHome) {
             Remove-Item -LiteralPath $isolatedCodexHome -Recurse -Force -ErrorAction SilentlyContinue
         }
+
+        $script:CodexUnoAppLogFile = $null
     }
 }
 
@@ -1301,9 +1444,25 @@ Required steps:
 
     try {
         $timeoutMs = (Get-ConfiguredIntValue -EnvironmentVariableName 'UNO_DEVSERVER_CODEX_TIMEOUT_SECONDS' -DefaultValue 120) * 1000
+        $selectionTimeline = [System.Diagnostics.Stopwatch]::StartNew()
+        Write-TimelineEvent -Component 'codex-script' -Stage 'codex-exec.start' -ElapsedMilliseconds $selectionTimeline.ElapsedMilliseconds -Details $WorkingDirectory
         $execution = Invoke-ExternalProcessWithCapturedOutput -FilePath $codexExecutable -Arguments $codexArguments -WorkingDirectory $WorkingDirectory -TimeoutMs $timeoutMs
         $stdout = $execution.StdOut
         $stderr = $execution.StdErr
+        Set-Content -LiteralPath $stdOutFile -Value $stdout -Encoding utf8
+        Set-Content -LiteralPath $stdErrFile -Value $stderr -Encoding utf8
+        Write-TimelineEvent -Component 'codex-script' -Stage 'codex-exec.complete' -ElapsedMilliseconds $selectionTimeline.ElapsedMilliseconds -Details ("exitCode={0}" -f $execution.ExitCode)
+        $stdoutTimelineCount = Write-TimelineEventsFromText -Text $stdout
+        $stderrTimelineCount = Write-TimelineEventsFromText -Text $stderr
+        Write-Log ("Codex exec captured stdoutLength={0}, stderrLength={1}, stdoutTimelineEvents={2}, stderrTimelineEvents={3}" -f $stdout.Length, $stderr.Length, $stdoutTimelineCount, $stderrTimelineCount)
+        if (-not [string]::IsNullOrWhiteSpace($script:CodexUnoAppLogFile) -and (Test-Path $script:CodexUnoAppLogFile)) {
+            $unoAppLogContent = Get-Content -LiteralPath $script:CodexUnoAppLogFile -Raw -ErrorAction SilentlyContinue
+            $unoAppTimelineCount = Write-TimelineEventsFromText -Text $unoAppLogContent
+            Write-Log ("unoapp MCP file log captured length={0}, timelineEvents={1}" -f $unoAppLogContent.Length, $unoAppTimelineCount)
+        }
+        elseif (-not [string]::IsNullOrWhiteSpace($script:CodexUnoAppLogFile)) {
+            Write-Log "unoapp MCP file log was not created at $script:CodexUnoAppLogFile"
+        }
         if ($execution.ExitCode -ne 0) {
             throw "Codex selection flow exited with code $($execution.ExitCode).`nSTDOUT:`n$stdout`nSTDERR:`n$stderr"
         }
@@ -1336,15 +1495,26 @@ Required steps:
         }
 
         $validationSucceeded = $true
+        Write-TimelineEvent -Component 'codex-script' -Stage 'selection-result.validated' -ElapsedMilliseconds $selectionTimeline.ElapsedMilliseconds -Details $json.after.status
         Write-Log "Codex selection flow validated successfully."
     }
     finally {
-        $pathsToDelete = @($stdOutFile, $stdErrFile)
+        $pathsToDelete = @()
         if ($validationSucceeded) {
             $pathsToDelete += $resultFile
+            Write-Log "Codex stdout artifact preserved at $stdOutFile"
+            Write-Log "Codex stderr artifact preserved at $stdErrFile"
+            if (-not [string]::IsNullOrWhiteSpace($script:CodexUnoAppLogFile)) {
+                Write-Log "unoapp MCP log path was $script:CodexUnoAppLogFile"
+            }
         }
         else {
             Write-Log "Codex validation artifacts preserved for debugging at $resultFile"
+            Write-Log "Codex stdout artifact: $stdOutFile"
+            Write-Log "Codex stderr artifact: $stdErrFile"
+            if (-not [string]::IsNullOrWhiteSpace($script:CodexUnoAppLogFile)) {
+                Write-Log "unoapp MCP log artifact: $script:CodexUnoAppLogFile"
+            }
         }
 
         foreach ($path in $pathsToDelete) {
