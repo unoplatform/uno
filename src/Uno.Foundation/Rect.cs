@@ -57,7 +57,7 @@ public partial struct Rect
 
 			if (height < 0)
 			{
-				throw new ArgumentOutOfRangeException(nameof(width), _negativeErrorMessage);
+				throw new ArgumentOutOfRangeException(nameof(height), _negativeErrorMessage);
 			}
 		}
 
