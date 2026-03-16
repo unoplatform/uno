@@ -586,14 +586,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				// Validate x:Class format
 				var lastDot = xClassFullName.LastIndexOf('.');
-				if (lastDot <= 0)
+				string? xClassNs = lastDot > 0 ? xClassFullName.Substring(0, lastDot) : null;
+				string? xClassName = lastDot > 0 ? xClassFullName.Substring(lastDot + 1) : null;
+				if (lastDot <= 0 || string.IsNullOrWhiteSpace(xClassNs) || string.IsNullOrWhiteSpace(xClassName))
 				{
 					// T013: Malformed x:Class - emit diagnostic and skip
+					var location = GetFileLocation(file.FilePath);
 					_generatorContext.ReportDiagnostic(
 						Diagnostic.Create(
 							XamlCodeGenerationDiagnostics.InvalidXClassRule,
-							Location.None,
-							$"Invalid x:Class value '{xClassFullName}' in '{file.FilePath}' - must include namespace"));
+							location ?? Location.None,
+							$"Invalid x:Class value '{xClassFullName}' in '{file.FilePath}' - must include namespace and class name"));
 					continue;
 				}
 
@@ -617,18 +620,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var baseTypeFullName = baseTypeSymbol?.GetFullyQualifiedTypeIncludingGlobal()
 					?? "global::Microsoft.UI.Xaml.Controls.Page";
 
-				var ns = xClassFullName.Substring(0, lastDot);
-				var className = xClassFullName.Substring(lastDot + 1);
-
 				var classInfo = new XamlClassInfo(
 					FullClassName: xClassFullName,
-					Namespace: ns,
-					ClassName: className,
+					Namespace: xClassNs!,
+					ClassName: xClassName!,
 					RootElementName: topLevelControl.Type.Name,
 					RootElementNamespace: topLevelControl.Type.PreferredXamlNamespace,
 					BaseTypeFullName: baseTypeFullName);
 
-				var sourceText = XamlCodeBehindEmitter.Emit(classInfo);
+				var sourceText = XamlCodeBehindEmitter.Emit(classInfo, file.FilePath);
 				var hintName = XamlCodeBehindEmitter.GetHintName(classInfo);
 
 				outputFiles.Add(new(hintName, SourceText.From(sourceText, Encoding.UTF8)));
@@ -762,6 +762,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 
+			return null;
+		}
+
+		private Location? GetFileLocation(string filePath)
+		{
+			var additionalFile = _generatorContext.AdditionalFiles.FirstOrDefault(f => f.Path == filePath);
+			if (additionalFile is not null && additionalFile.GetText() is { } text)
+			{
+				return Location.Create(
+					additionalFile.Path,
+					text.Lines[0].Span,
+					new LinePositionSpan(default, default));
+			}
 			return null;
 		}
 

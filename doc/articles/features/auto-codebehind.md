@@ -4,11 +4,11 @@ uid: Uno.Features.AutoCodeBehind
 
 # Auto-Generated Code-Behind
 
-Uno Platform can automatically generate minimal code-behind files for XAML pages that don't have a developer-authored code-behind class. This eliminates boilerplate when your page only needs a default constructor that calls `InitializeComponent()`.
+Uno Platform can automatically generate minimal code-behind for XAML pages that don't have a developer-authored code-behind class. This eliminates boilerplate when your page only needs a default constructor that calls `InitializeComponent()`.
 
 ## Overview
 
-When you create a XAML file with an `x:Class` attribute but no corresponding `.xaml.cs` file, the build system automatically generates a partial class with a constructor that calls `InitializeComponent()`. This lets you create XAML-only pages without writing any C# boilerplate.
+When you create a XAML file with an `x:Class` attribute but no corresponding code-behind class, the build system automatically generates a partial class with a constructor that calls `InitializeComponent()`. This lets you create XAML-only pages without writing any C# boilerplate.
 
 ### Before (traditional approach)
 
@@ -73,8 +73,8 @@ Custom root elements using `using:` or `clr-namespace:` xmlns prefixes are also 
 ## How it works
 
 1. During build, the source generator scans all XAML files with an `x:Class` attribute.
-2. If the class specified in `x:Class` does not already exist in the compilation (no `.xaml.cs` or other source file defining it), a minimal partial class is generated.
-3. If a developer-authored code-behind file already exists, no code is generated — the existing file takes full precedence.
+2. If the class specified in `x:Class` does not already exist in the compilation (no developer-authored class defining it), a minimal partial class is generated.
+3. If a developer-authored class matching the `x:Class` type already exists, no code is generated — the existing class takes full precedence.
 4. The generated code includes a default constructor that calls `this.InitializeComponent()`.
 
 ### When to use auto code-behind

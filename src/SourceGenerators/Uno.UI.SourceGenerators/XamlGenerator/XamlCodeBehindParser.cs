@@ -72,6 +72,12 @@ internal static class XamlCodeBehindParser
 
 		var ns = xClassValue.Substring(0, lastDot);
 		var className = xClassValue.Substring(lastDot + 1);
+
+		if (string.IsNullOrWhiteSpace(ns) || string.IsNullOrWhiteSpace(className))
+		{
+			errorMessage = $"Invalid x:Class value '{xClassValue}' - must include namespace and class name";
+			return null;
+		}
 		var rootElementName = doc.Root.Name.LocalName;
 		var rootElementNamespace = doc.Root.Name.NamespaceName;
 
@@ -106,19 +112,14 @@ internal static class XamlCodeBehindParser
 
 		// For CLR namespace-based xmlns (e.g., "using:MyApp.Controls" or "clr-namespace:MyApp.Controls"),
 		// try to resolve the full type name
-		if (rootElementNamespace.StartsWith("using:", StringComparison.Ordinal))
+		foreach (var prefix in new[] { "using:", "clr-namespace:" })
 		{
-			return rootElementNamespace.Substring("using:".Length) + "." + rootElementName;
-		}
-		if (rootElementNamespace.StartsWith("clr-namespace:", StringComparison.Ordinal))
-		{
-			var ns = rootElementNamespace.Substring("clr-namespace:".Length);
-			var semiIndex = ns.IndexOf(';');
-			if (semiIndex > 0)
+			var parts = rootElementNamespace.Split(new[] { prefix }, 2, StringSplitOptions.None);
+			if (parts.Length == 2)
 			{
-				ns = ns.Substring(0, semiIndex);
+				var xmlns = parts[1].Split(';')[0];
+				return $"{xmlns}.{rootElementName}";
 			}
-			return ns + "." + rootElementName;
 		}
 
 		// Fallback for unknown namespace URIs
