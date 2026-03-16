@@ -3,14 +3,15 @@ using Microsoft.Extensions.Logging;
 
 namespace Uno.UI.DevServer.Cli.Helpers;
 
-internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger) : IWorkspaceResolver
+internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger, ISolutionFileFinder? solutionFileFinder = null) : IWorkspaceResolver
 {
 	private readonly ILogger<WorkspaceResolver> _logger = logger;
+	private readonly ISolutionFileFinder _solutionFileFinder = solutionFileFinder ?? new FileSystemSolutionFileFinder();
 
 	public async Task<WorkspaceResolution> ResolveAsync(string requestedDirectory)
 	{
 		var normalizedRequestedDirectory = Path.GetFullPath(requestedDirectory);
-		var solutionFiles = SolutionFileFinder.FindSolutionFiles(normalizedRequestedDirectory);
+		var solutionFiles = _solutionFileFinder.FindSolutionFiles(normalizedRequestedDirectory);
 		if (solutionFiles.Length == 0)
 		{
 			return new WorkspaceResolution
@@ -142,9 +143,18 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger) : IWo
 	public async Task<WorkspaceResolution> ResolveSolutionAsync(string requestedDirectory, string solutionPath, WorkspaceSelectionSource selectionSource = WorkspaceSelectionSource.UserSelected)
 	{
 		var normalizedRequestedDirectory = Path.GetFullPath(requestedDirectory);
+		var candidateSolutions = _solutionFileFinder.FindSolutionFiles(normalizedRequestedDirectory);
+		return await ResolveSolutionAsync(normalizedRequestedDirectory, solutionPath, candidateSolutions, selectionSource);
+	}
+
+	internal async Task<WorkspaceResolution> ResolveSolutionAsync(
+		string requestedDirectory,
+		string solutionPath,
+		IReadOnlyList<string> candidateSolutions,
+		WorkspaceSelectionSource selectionSource = WorkspaceSelectionSource.UserSelected)
+	{
+		var normalizedRequestedDirectory = Path.GetFullPath(requestedDirectory);
 		var normalizedSolutionPath = Path.GetFullPath(solutionPath);
-		var candidateSolutions = SolutionFileFinder.FindSolutionFiles(normalizedRequestedDirectory);
-		// Per-selection cache: every explicit selection attempt rebuilds this dictionary.
 		var globalJsonCache = new Dictionary<string, (string? sdkPackage, string? sdkVersion)>(StringComparer.Ordinal);
 
 		if (!File.Exists(normalizedSolutionPath)
@@ -153,7 +163,7 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger) : IWo
 			return new WorkspaceResolution
 			{
 				RequestedWorkingDirectory = normalizedRequestedDirectory,
-				ResolutionKind = candidateSolutions.Length == 0
+				ResolutionKind = candidateSolutions.Count == 0
 					? WorkspaceResolutionKind.NoCandidates
 					: WorkspaceResolutionKind.NoValidWorkspace,
 				CandidateSolutions = candidateSolutions,
@@ -161,7 +171,12 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger) : IWo
 			};
 		}
 
-		var resolved = await ResolveSolutionCoreAsync(normalizedRequestedDirectory, normalizedSolutionPath, selectionSource, globalJsonCache);
+		var resolved = await ResolveSolutionCoreAsync(
+			normalizedRequestedDirectory,
+			normalizedSolutionPath,
+			candidateSolutions,
+			selectionSource,
+			globalJsonCache);
 		return resolved ?? new WorkspaceResolution
 		{
 			RequestedWorkingDirectory = normalizedRequestedDirectory,
@@ -174,6 +189,7 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger) : IWo
 	private async Task<WorkspaceResolution?> ResolveSolutionCoreAsync(
 		string requestedDirectory,
 		string solutionPath,
+		IReadOnlyList<string> candidateSolutions,
 		WorkspaceSelectionSource selectionSource,
 		Dictionary<string, (string? sdkPackage, string? sdkVersion)> globalJsonCache)
 	{
@@ -204,7 +220,7 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger) : IWo
 						SelectedGlobalJsonPath = globalJsonPath,
 						ResolutionKind = resolutionKind,
 						SelectionSource = selectionSource,
-						CandidateSolutions = SolutionFileFinder.FindSolutionFiles(requestedDirectory),
+						CandidateSolutions = [.. candidateSolutions],
 					};
 				}
 

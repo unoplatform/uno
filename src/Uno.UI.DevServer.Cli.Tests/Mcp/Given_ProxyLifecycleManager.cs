@@ -29,6 +29,98 @@ public class Given_ProxyLifecycleManager
 	}
 
 	[TestMethod]
+	[Description("Selecting after roots resolution reuses the fresh candidate snapshot and avoids an extra solution scan")]
+	public async Task WhenSelectingSolutionAfterRootsResolution_FreshCandidatesAreReused()
+	{
+		var root = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
+
+		try
+		{
+			var workspaceA = await CreateUnoWorkspaceAsync(root, "srcA", "AppA.slnx", "6.6.0-dev.1");
+			var workspaceB = await CreateUnoWorkspaceAsync(root, "srcB", "AppB.slnx", "6.6.0-dev.2");
+			var solutionB = Path.Combine(workspaceB, "AppB.slnx");
+			var finder = new CountingSolutionFileFinder(
+			[
+				Path.Combine(workspaceA, "AppA.slnx"),
+				solutionB,
+			]);
+
+			var created = CreateSubject(solutionFileFinder: finder);
+			subject = created.Subject;
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_workspaceResolution", new WorkspaceResolution
+			{
+				RequestedWorkingDirectory = root,
+				ResolutionKind = WorkspaceResolutionKind.NoCandidates,
+				CandidateSolutions = [],
+			});
+
+			await InvokeSetRootsAsync(subject, [$"file:///{root.Replace('\\', '/')}"]);
+			finder.CallCount.Should().Be(1);
+
+			await subject.SelectSolutionAsync(solutionB);
+			finder.CallCount.Should().Be(1);
+		}
+		finally
+		{
+			if (subject is not null)
+			{
+				await StopWatcherAndMonitorAsync(subject);
+			}
+
+			await DeleteDirectoryWithRetriesAsync(root);
+		}
+	}
+
+	[TestMethod]
+	[Description("Any observed workspace mutation invalidates the roots candidate snapshot before the next selection")]
+	public async Task WhenWorkspaceMutatedAfterRootsResolution_CandidatesAreRescanned()
+	{
+		var root = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
+
+		try
+		{
+			var workspaceA = await CreateUnoWorkspaceAsync(root, "srcA", "AppA.slnx", "6.6.0-dev.1");
+			var workspaceB = await CreateUnoWorkspaceAsync(root, "srcB", "AppB.slnx", "6.6.0-dev.2");
+			var solutionB = Path.Combine(workspaceB, "AppB.slnx");
+			var finder = new CountingSolutionFileFinder(
+			[
+				Path.Combine(workspaceA, "AppA.slnx"),
+				solutionB,
+			]);
+
+			var created = CreateSubject(solutionFileFinder: finder);
+			subject = created.Subject;
+			SetPrivateField(subject, "_currentDirectory", root);
+			SetPrivateField(subject, "_workspaceResolution", new WorkspaceResolution
+			{
+				RequestedWorkingDirectory = root,
+				ResolutionKind = WorkspaceResolutionKind.NoCandidates,
+				CandidateSolutions = [],
+			});
+
+			await InvokeSetRootsAsync(subject, [$"file:///{root.Replace('\\', '/')}"]);
+			finder.CallCount.Should().Be(1);
+
+			SetPrivateField(subject, "_workspaceMutationGeneration", 1);
+
+			await subject.SelectSolutionAsync(solutionB);
+			finder.CallCount.Should().Be(2);
+		}
+		finally
+		{
+			if (subject is not null)
+			{
+				await StopWatcherAndMonitorAsync(subject);
+			}
+
+			await DeleteDirectoryWithRetriesAsync(root);
+		}
+	}
+
+	[TestMethod]
 	[Description("Selecting a valid Uno candidate starts the deferred DevServer and marks the workspace as explicitly selected")]
 	public async Task WhenSelectingValidUnoSolutionAfterDeferredStartup_DevServerStarts()
 	{
@@ -1414,6 +1506,7 @@ public class Given_ProxyLifecycleManager
 
 	private static (ProxyLifecycleManager Subject, HealthService HealthService, DevServerMonitor Monitor) CreateSubject(
 		ILogger<ProxyLifecycleManager>? logger = null,
+		ISolutionFileFinder? solutionFileFinder = null,
 		Func<string, FileSystemWatcher>? workspaceMutationWatcherFactory = null)
 	{
 		var services = new ServiceCollection()
@@ -1427,7 +1520,8 @@ public class Given_ProxyLifecycleManager
 		};
 		var healthService = new HealthService(upstreamClient, monitor, toolListManager);
 		var stdioServer = new McpStdioServer(NullLogger<McpStdioServer>.Instance, toolListManager, healthService, upstreamClient);
-		var workspaceResolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
+		var finder = solutionFileFinder ?? new FileSystemSolutionFileFinder();
+		var workspaceResolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance, finder);
 
 		var subject = new ProxyLifecycleManager(
 			logger ?? NullLogger<ProxyLifecycleManager>.Instance,
@@ -1437,6 +1531,7 @@ public class Given_ProxyLifecycleManager
 			toolListManager,
 			stdioServer,
 			workspaceResolver,
+			finder,
 			workspaceMutationWatcherFactory);
 
 		return (subject, healthService, monitor);
@@ -1567,6 +1662,19 @@ public class Given_ProxyLifecycleManager
 		public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
 		{
 			_messages.Add(formatter(state, exception));
+		}
+	}
+
+	private sealed class CountingSolutionFileFinder(string[] solutions) : ISolutionFileFinder
+	{
+		private readonly string[] _solutions = solutions;
+
+		public int CallCount { get; private set; }
+
+		public string[] FindSolutionFiles(string directory, int maxDepth = 3)
+		{
+			CallCount++;
+			return [.. _solutions];
 		}
 	}
 }

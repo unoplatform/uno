@@ -9,6 +9,34 @@ namespace Uno.UI.RemoteControl.DevServer.Tests.Mcp;
 public class Given_WorkspaceResolver
 {
 	[TestMethod]
+	public async Task WhenResolvingExplicitSolution_CandidateScanRunsOnlyOnce()
+	{
+		var root = CreateTempDirectory();
+		try
+		{
+			var workspace = Path.Combine(root, "src");
+			var solutionPath = Path.Combine(workspace, "App.slnx");
+			Directory.CreateDirectory(workspace);
+			await File.WriteAllTextAsync(Path.Combine(workspace, "global.json"), """{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.1"}}""");
+			await File.WriteAllTextAsync(solutionPath, string.Empty);
+
+			var finder = new CountingSolutionFileFinder([solutionPath]);
+			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance, finder);
+
+			var result = await resolver.ResolveSolutionAsync(root, solutionPath);
+
+			result.IsResolved.Should().BeTrue();
+			result.SelectedSolutionPath.Should().Be(solutionPath);
+			result.CandidateSolutions.Should().ContainSingle().Which.Should().Be(solutionPath);
+			finder.CallCount.Should().Be(1);
+		}
+		finally
+		{
+			Directory.Delete(root, recursive: true);
+		}
+	}
+
+	[TestMethod]
 	public async Task WhenSingleValidWorkspaceIsNested_AutoDescendsToWorkspace()
 	{
 		var root = CreateTempDirectory();
@@ -430,5 +458,18 @@ public class Given_WorkspaceResolver
 		var path = Path.Combine(Path.GetTempPath(), $"uno-workspace-{Guid.NewGuid():N}");
 		Directory.CreateDirectory(path);
 		return path;
+	}
+
+	private sealed class CountingSolutionFileFinder(string[] solutions) : ISolutionFileFinder
+	{
+		private readonly string[] _solutions = solutions;
+
+		public int CallCount { get; private set; }
+
+		public string[] FindSolutionFiles(string directory, int maxDepth = 3)
+		{
+			CallCount++;
+			return [.. _solutions];
+		}
 	}
 }

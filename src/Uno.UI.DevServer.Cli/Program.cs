@@ -83,6 +83,7 @@ internal class Program
 		});
 		services.AddSingleton<CliManager>();
 		services.AddSingleton<UnoToolsLocator>();
+		services.AddSingleton<ISolutionFileFinder, FileSystemSolutionFileFinder>();
 		services.AddSingleton<WorkspaceResolver>();
 		services.AddSingleton<IWorkspaceResolver>(sp => sp.GetRequiredService<WorkspaceResolver>());
 		services.AddSingleton(sp =>

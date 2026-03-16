@@ -41,6 +41,7 @@
 		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\ProjectAssetsParser.cs" Link="Helpers\ProjectAssetsParser.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\DiscoveryInfo.cs" Link="Helpers\DiscoveryInfo.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\SolutionFileFinder.cs" Link="Helpers\SolutionFileFinder.cs" />
+		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\ISolutionFileFinder.cs" Link="Helpers\ISolutionFileFinder.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\GlobalJsonLocator.cs" Link="Helpers\GlobalJsonLocator.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\IWorkspaceResolver.cs" Link="Helpers\IWorkspaceResolver.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\PathComparison.cs" Link="Helpers\PathComparison.cs" />

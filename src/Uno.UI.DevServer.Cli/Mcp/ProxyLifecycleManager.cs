@@ -1,6 +1,4 @@
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
+using System.Diagnostics;
 using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,13 +24,18 @@ internal class ProxyLifecycleManager
 	private readonly ToolListManager _toolListManager;
 	private readonly McpStdioServer _mcpStdioServer;
 	private readonly WorkspaceResolver _workspaceResolver;
+	private readonly ISolutionFileFinder _solutionFileFinder;
 	private readonly Tool _addRootsTool;
+
 	internal static readonly Tool SelectSolutionTool = new()
 	{
 		Name = "uno_app_select_solution",
-		Description = "Explicitly selects the Uno solution to use for this MCP session by absolute solution path. Starts or restarts the DevServer if required.",
-		InputSchema = JsonSerializer.Deserialize<JsonElement>("""{"type":"object","required":["solutionPath"],"properties":{"solutionPath":{"type":"string","description":"Absolute path to the .sln or .slnx file to use for this session."}}}"""),
+		Description =
+			"Explicitly selects the Uno solution to use for this MCP session by absolute solution path. Starts or restarts the DevServer if required.",
+		InputSchema = JsonSerializer.Deserialize<JsonElement>(
+			"""{"type":"object","required":["solutionPath"],"properties":{"solutionPath":{"type":"string","description":"Absolute path to the .sln or .slnx file to use for this session."}}}"""),
 	};
+
 	private bool _waitForTools;
 	private bool _forceRootsFallback;
 	private bool _forceGenerateToolCache;
@@ -89,9 +92,20 @@ internal class ProxyLifecycleManager
 	private FileSystemWatcher? _workspaceMutationWatcher;
 	private string? _workspaceMutationWatcherRoot;
 	private CancellationTokenSource? _workspaceMutationDebounceCts;
+	// Tracks whether any relevant filesystem mutation happened since the
+	// last resolved snapshot.
+	private int _workspaceMutationGeneration;
+	// Marks which mutation generation produced the currently cached
+	// workspace resolution.
+	private int _workspaceResolutionGeneration;
 	private readonly SemaphoreSlim _workspaceTransitionGate = new(1, 1);
 	private readonly object _workspaceMutationWatcherGate = new();
 	private readonly Func<string, FileSystemWatcher> _workspaceMutationWatcherFactory;
+
+	private void LogTimeline(string stage, long elapsedMilliseconds, string details)
+	{
+		_logger.LogDebug("TIMELINE|proxy-lifecycle|{Stage}|{ElapsedMs}|{Details}", stage, elapsedMilliseconds, details);
+	}
 
 	public ProxyLifecycleManager(
 		ILogger<ProxyLifecycleManager> logger,
@@ -101,6 +115,7 @@ internal class ProxyLifecycleManager
 		ToolListManager toolListManager,
 		McpStdioServer mcpStdioServer,
 		WorkspaceResolver workspaceResolver,
+		ISolutionFileFinder? solutionFileFinder = null,
 		Func<string, FileSystemWatcher>? workspaceMutationWatcherFactory = null)
 	{
 		_logger = logger;
@@ -110,6 +125,7 @@ internal class ProxyLifecycleManager
 		_toolListManager = toolListManager;
 		_mcpStdioServer = mcpStdioServer;
 		_workspaceResolver = workspaceResolver;
+		_solutionFileFinder = solutionFileFinder ?? new FileSystemSolutionFileFinder();
 		_workspaceMutationWatcherFactory = workspaceMutationWatcherFactory ?? (root => new FileSystemWatcher(root));
 
 		_addRootsTool = McpServerTool.Create(SetRoots, new() { Name = "uno_app_set_roots" }).ProtocolTool;
@@ -141,6 +157,7 @@ internal class ProxyLifecycleManager
 		_forceGenerateToolCache = forceGenerateToolCache;
 		_currentDirectory = currentDirectory;
 		_workspaceResolution = workspaceResolution;
+		_workspaceResolutionGeneration = Volatile.Read(ref _workspaceMutationGeneration);
 		_devServerPort = port;
 		_forwardedArgs = forwardedArgs;
 		_solutionDirectory = NormalizeSolutionDirectory(solutionDirectory);
@@ -180,7 +197,8 @@ internal class ProxyLifecycleManager
 	)
 	{
 		var normalizedRoots = roots ?? Array.Empty<string>();
-		_logger.LogTrace("SetRoots invoked with {Count} roots: {Roots}", normalizedRoots.Length, string.Join(", ", normalizedRoots));
+		_logger.LogTrace("SetRoots invoked with {Count} roots: {Roots}", normalizedRoots.Length,
+			string.Join(", ", normalizedRoots));
 		_roots = normalizedRoots;
 
 		await ProcessRoots();
@@ -188,6 +206,8 @@ internal class ProxyLifecycleManager
 
 	internal async Task<SelectSolutionResult> SelectSolutionAsync(string solutionPath, CancellationToken ct = default)
 	{
+		var selectionStopwatch = Stopwatch.StartNew();
+
 		if (string.IsNullOrWhiteSpace(solutionPath) || !Path.IsPathRooted(solutionPath))
 		{
 			return CreateRejectedSelectionResult(
@@ -199,7 +219,8 @@ internal class ProxyLifecycleManager
 						Code = IssueCode.WorkspaceNotResolved,
 						Severity = ValidationSeverity.Warning,
 						Message = "The requested solution path is invalid.",
-						Remediation = "Call uno_health to inspect candidateSolutions, then provide an absolute path to one of those solutions.",
+						Remediation =
+							"Call uno_health to inspect candidateSolutions, then provide an absolute path to one of those solutions.",
 					},
 				]);
 		}
@@ -220,15 +241,17 @@ internal class ProxyLifecycleManager
 						Code = IssueCode.WorkspaceNotResolved,
 						Severity = ValidationSeverity.Warning,
 						Message = "The requested solution path could not be normalized.",
-						Remediation = "Call uno_health to inspect candidateSolutions, then provide a valid absolute path to one of those solutions.",
+						Remediation =
+							"Call uno_health to inspect candidateSolutions, then provide a valid absolute path to one of those solutions.",
 					},
 				]);
 		}
 
-		var observationRoot = GetWorkspaceObservationRoot()
-			?? _solutionDirectory
-			?? _currentDirectory
-			?? Path.GetDirectoryName(normalizedSolutionPath);
+		var observationRoot =
+			GetWorkspaceObservationRoot()
+				?? _solutionDirectory
+				?? _currentDirectory
+				?? Path.GetDirectoryName(normalizedSolutionPath);
 
 		if (string.IsNullOrWhiteSpace(observationRoot))
 		{
@@ -241,12 +264,17 @@ internal class ProxyLifecycleManager
 						Code = IssueCode.WorkspaceNotResolved,
 						Severity = ValidationSeverity.Warning,
 						Message = "The MCP bridge could not determine a workspace root for this session.",
-						Remediation = "Call uno_health for diagnostics, or restart the MCP bridge from the intended repository.",
+						Remediation =
+							"Call uno_health for diagnostics, or restart the MCP bridge from the intended repository.",
 					},
 				]);
 		}
 
-		var availableSolutions = SolutionFileFinder.FindSolutionFiles(observationRoot);
+		var availableSolutions = GetCandidateSolutionsForSelection(observationRoot);
+		LogTimeline(
+			"select-solution.scan-candidates.complete",
+			selectionStopwatch.ElapsedMilliseconds,
+			$"root={observationRoot};count={availableSolutions.Count}");
 		if (!availableSolutions.Any(candidate => PathComparison.PathsEqual(candidate, normalizedSolutionPath)))
 		{
 			return CreateRejectedSelectionResult(
@@ -257,13 +285,22 @@ internal class ProxyLifecycleManager
 					{
 						Code = IssueCode.WorkspaceNotResolved,
 						Severity = ValidationSeverity.Warning,
-						Message = "The requested solution is outside the candidate solution set for the current MCP session.",
-						Remediation = "Call uno_health to inspect candidateSolutions, then choose one of those paths or restart the MCP bridge from a different repository root.",
+						Message =
+							"The requested solution is outside the candidate solution set for the current MCP session.",
+						Remediation =
+							"Call uno_health to inspect candidateSolutions, then choose one of those paths or restart the MCP bridge from a different repository root.",
 					},
 				]);
 		}
 
-		var nextResolution = await _workspaceResolver.ResolveSolutionAsync(observationRoot, normalizedSolutionPath);
+		var nextResolution = await _workspaceResolver.ResolveSolutionAsync(
+			observationRoot,
+			normalizedSolutionPath,
+			availableSolutions);
+		LogTimeline(
+			"select-solution.resolve-workspace.complete",
+			selectionStopwatch.ElapsedMilliseconds,
+			$"kind={nextResolution.ResolutionKind};workspace={nextResolution.EffectiveWorkspaceDirectory}");
 		if (!nextResolution.IsResolved)
 		{
 			var discovery = await BuildDiscoveryInfoForSelectionAsync(observationRoot, nextResolution);
@@ -274,8 +311,13 @@ internal class ProxyLifecycleManager
 		}
 
 		var previousResolution = _workspaceResolution;
-		var transitionAction = await ApplyWorkspaceResolutionAsync(nextResolution, WorkspaceTransitionTrigger.UserSelection, ct);
+		var transitionAction =
+			await ApplyWorkspaceResolutionAsync(nextResolution, WorkspaceTransitionTrigger.UserSelection, ct);
 		var selectedResolution = _workspaceResolution ?? nextResolution;
+		LogTimeline(
+			"select-solution.apply-transition.complete",
+			selectionStopwatch.ElapsedMilliseconds,
+			$"action={transitionAction};workspace={selectedResolution.EffectiveWorkspaceDirectory}");
 
 		return new SelectSolutionResult
 		{
@@ -300,6 +342,7 @@ internal class ProxyLifecycleManager
 
 	private async Task ProcessRoots()
 	{
+		var processRootsStopwatch = Stopwatch.StartNew();
 		_logger.LogTrace("Processing MCP Client Roots: {Roots}", string.Join(", ", _roots));
 
 		// The StartOnceGuard inside StartDevServerMonitor() prevents concurrent starts.
@@ -315,8 +358,16 @@ internal class ProxyLifecycleManager
 				{
 					SelectionSource = WorkspaceSelectionSource.RootsConfirmed,
 				};
+				LogTimeline(
+					"set-roots.resolve-workspace.complete",
+					processRootsStopwatch.ElapsedMilliseconds,
+					$"root={rootPath};kind={rootWorkspaceResolution.ResolutionKind};workspace={rootWorkspaceResolution.EffectiveWorkspaceDirectory}");
 				_logger.LogTrace("Resolved MCP root '{RootUri}' into path '{RootPath}'", rootUri, rootPath);
 				await ApplyWorkspaceResolutionAsync(rootWorkspaceResolution, WorkspaceTransitionTrigger.McpRoots);
+				LogTimeline(
+					"set-roots.apply-transition.complete",
+					processRootsStopwatch.ElapsedMilliseconds,
+					$"workspace={rootWorkspaceResolution.EffectiveWorkspaceDirectory}");
 				return;
 			}
 			else
@@ -326,7 +377,8 @@ internal class ProxyLifecycleManager
 		}
 		else if (_forceRootsFallback)
 		{
-			_logger.LogWarning("No roots provided via uno_app_set_roots; DevServer startup is deferred until roots are set");
+			_logger.LogWarning(
+				"No roots provided via uno_app_set_roots; DevServer startup is deferred until roots are set");
 		}
 	}
 
@@ -344,8 +396,10 @@ internal class ProxyLifecycleManager
 		await ApplyWorkspaceResolutionAsync(nextResolution, trigger, ct);
 	}
 
-	internal async Task<WorkspaceTransitionAction> ApplyWorkspaceResolutionAsync(WorkspaceResolution nextResolution, WorkspaceTransitionTrigger trigger, CancellationToken ct = default)
+	internal async Task<WorkspaceTransitionAction> ApplyWorkspaceResolutionAsync(WorkspaceResolution nextResolution,
+		WorkspaceTransitionTrigger trigger, CancellationToken ct = default)
 	{
+		var transitionStopwatch = Stopwatch.StartNew();
 		await _workspaceTransitionGate.WaitAsync(ct);
 		try
 		{
@@ -363,15 +417,21 @@ internal class ProxyLifecycleManager
 						trigger,
 						_workspaceResolution?.EffectiveWorkspaceDirectory);
 					_workspaceResolution = nextResolution;
+					_workspaceResolutionGeneration = Volatile.Read(ref _workspaceMutationGeneration);
 					UpdateWorkspaceHash(nextResolution);
 					await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
+					LogTimeline("transition.complete", transitionStopwatch.ElapsedMilliseconds,
+						$"trigger={trigger};action={transitionAction};workspace={nextResolution.EffectiveWorkspaceDirectory}");
 					return transitionAction;
 
 				case WorkspaceTransitionAction.Start:
 					_workspaceResolution = nextResolution;
+					_workspaceResolutionGeneration = Volatile.Read(ref _workspaceMutationGeneration);
 					UpdateWorkspaceHash(nextResolution);
 					await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
 					StartDevServerMonitor(nextResolution.EffectiveWorkspaceDirectory);
+					LogTimeline("transition.complete", transitionStopwatch.ElapsedMilliseconds,
+						$"trigger={trigger};action={transitionAction};workspace={nextResolution.EffectiveWorkspaceDirectory}");
 					return transitionAction;
 
 				case WorkspaceTransitionAction.Stop:
@@ -381,10 +441,13 @@ internal class ProxyLifecycleManager
 						_workspaceResolution?.EffectiveWorkspaceDirectory);
 					await StopCurrentWorkspaceAsync();
 					_workspaceResolution = nextResolution;
+					_workspaceResolutionGeneration = Volatile.Read(ref _workspaceMutationGeneration);
 					UpdateWorkspaceHash(nextResolution);
 					await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
 					SetConnectionState(ConnectionState.Degraded);
 					FailToolCachePriming();
+					LogTimeline("transition.complete", transitionStopwatch.ElapsedMilliseconds,
+						$"trigger={trigger};action={transitionAction};workspace={nextResolution.EffectiveWorkspaceDirectory}");
 					return transitionAction;
 
 				case WorkspaceTransitionAction.Restart:
@@ -394,13 +457,17 @@ internal class ProxyLifecycleManager
 						nextResolution.EffectiveWorkspaceDirectory);
 					await StopCurrentWorkspaceAsync();
 					_workspaceResolution = nextResolution;
+					_workspaceResolutionGeneration = Volatile.Read(ref _workspaceMutationGeneration);
 					UpdateWorkspaceHash(nextResolution);
 					await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
 					StartDevServerMonitor(nextResolution.EffectiveWorkspaceDirectory);
+					LogTimeline("transition.complete", transitionStopwatch.ElapsedMilliseconds,
+						$"trigger={trigger};action={transitionAction};workspace={nextResolution.EffectiveWorkspaceDirectory}");
 					return transitionAction;
 
 				case WorkspaceTransitionAction.Diagnose:
-					if (_workspaceResolution?.IsResolved == true && nextResolution.IsResolved && trigger == WorkspaceTransitionTrigger.McpRoots)
+					if (_workspaceResolution?.IsResolved == true && nextResolution.IsResolved &&
+						trigger == WorkspaceTransitionTrigger.McpRoots)
 					{
 						_logger.LogWarning(
 							"MCP roots resolved to a different workspace ({IncomingWorkspace}) than the running workspace ({CurrentWorkspace}); keeping the existing workspace for this session",
@@ -410,22 +477,28 @@ internal class ProxyLifecycleManager
 					else
 					{
 						_logger.LogWarning(
-						"{Trigger} did not resolve to a valid Uno workspace ({ResolutionKind}); staying in diagnostic mode for this session",
+							"{Trigger} did not resolve to a valid Uno workspace ({ResolutionKind}); staying in diagnostic mode for this session",
 							trigger,
 							nextResolution.ResolutionKind);
 						_workspaceResolution = nextResolution;
+						_workspaceResolutionGeneration = Volatile.Read(ref _workspaceMutationGeneration);
 						UpdateWorkspaceHash(nextResolution);
 						await EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync();
 					}
 
 					SetConnectionState(ConnectionState.Degraded);
 					FailToolCachePriming();
+					LogTimeline("transition.complete", transitionStopwatch.ElapsedMilliseconds,
+						$"trigger={trigger};action={transitionAction};workspace={nextResolution.EffectiveWorkspaceDirectory}");
 					return transitionAction;
 
 				default:
-					_logger.LogWarning("Unexpected workspace transition action {Action} for trigger {Trigger}", transitionAction, trigger);
+					_logger.LogWarning("Unexpected workspace transition action {Action} for trigger {Trigger}",
+						transitionAction, trigger);
 					SetConnectionState(ConnectionState.Degraded);
 					FailToolCachePriming();
+					LogTimeline("transition.complete", transitionStopwatch.ElapsedMilliseconds,
+						$"trigger={trigger};action={transitionAction};workspace={nextResolution.EffectiveWorkspaceDirectory}");
 					return transitionAction;
 			}
 		}
@@ -450,7 +523,8 @@ internal class ProxyLifecycleManager
 
 	private string? GetRootPath(string rootUri)
 	{
-		_logger.LogTrace("Attempting to resolve root URI '{RootUri}' using current directory '{CurrentDirectory}'", rootUri, _currentDirectory);
+		_logger.LogTrace("Attempting to resolve root URI '{RootUri}' using current directory '{CurrentDirectory}'",
+			rootUri, _currentDirectory);
 
 		if (Uri.TryCreate(rootUri, UriKind.Absolute, out var absoluteUri) && absoluteUri.IsFile)
 		{
@@ -484,8 +558,7 @@ internal class ProxyLifecycleManager
 		// which later causes Path.GetFullPath to produce invalid "c:\c:\" style paths. Only strip
 		// the leading slash when it matches the drive letter pattern `/X:/` to avoid altering other
 		// path formats unnecessarily.
-		if (localPath.Length >= 3
-			&& localPath[0] == '/'
+		if (localPath is ['/', _, _, ..]
 			&& char.IsLetter(localPath[1])
 			&& localPath[2] == ':')
 		{
@@ -524,24 +597,31 @@ internal class ProxyLifecycleManager
 			return;
 		}
 
-		_logger.LogTrace("No explicit solution directory; using resolved workspace {Directory}", _workspaceResolution.EffectiveWorkspaceDirectory);
+		_logger.LogTrace("No explicit solution directory; using resolved workspace {Directory}",
+			_workspaceResolution.EffectiveWorkspaceDirectory);
 		StartDevServerMonitor(_workspaceResolution.EffectiveWorkspaceDirectory);
 	}
 
 	private void StartDevServerMonitor(string? directory)
 	{
+		var startMonitorStopwatch = Stopwatch.StartNew();
 		if (!_devServerStartGuard.TryStart())
 		{
 			_logger.LogTrace("StartDevServerMonitor called but monitor already running");
+			LogTimeline("start-monitor.skipped-already-running", startMonitorStopwatch.ElapsedMilliseconds,
+				directory ?? "<null>");
 			return;
 		}
 
 		var normalized = NormalizeSolutionDirectory(directory);
 		if (string.IsNullOrWhiteSpace(normalized))
 		{
-			_logger.LogWarning("Unable to start DevServer monitor because the solution directory '{Directory}' is invalid", directory);
+			_logger.LogWarning(
+				"Unable to start DevServer monitor because the solution directory '{Directory}' is invalid", directory);
 			_devServerStartGuard.Reset();
 			FailToolCachePriming();
+			LogTimeline("start-monitor.rejected-invalid-directory", startMonitorStopwatch.ElapsedMilliseconds,
+				directory ?? "<null>");
 			return;
 		}
 
@@ -553,16 +633,22 @@ internal class ProxyLifecycleManager
 				_workspaceHash = ToolCacheFile.ComputeWorkspaceHash(normalized);
 				_toolListManager.WorkspaceHash = _workspaceHash;
 			}
+
 			_devServerMonitor.StartMonitoring(normalized, _devServerPort, _forwardedArgs, _workspaceResolution);
 			_healthService.DevServerStarted = true;
 			SetConnectionState(ConnectionState.Discovering);
-			_logger.LogTrace("DevServer monitor started for {Directory} (port: {Port}, forwardedArgs: {Args})", normalized, _devServerPort, string.Join(" ", _forwardedArgs));
+			_logger.LogTrace("DevServer monitor started for {Directory} (port: {Port}, forwardedArgs: {Args})",
+				normalized, _devServerPort, string.Join(" ", _forwardedArgs));
+			LogTimeline("start-monitor.dispatched", startMonitorStopwatch.ElapsedMilliseconds,
+				$"directory={normalized};port={_devServerPort}");
 		}
 		catch (Exception ex)
 		{
-			_logger.LogWarning(ex, "Unable to start DevServer monitor for solution directory '{Directory}'", normalized);
+			_logger.LogWarning(ex, "Unable to start DevServer monitor for solution directory '{Directory}'",
+				normalized);
 			_devServerStartGuard.Reset();
 			FailToolCachePriming(ex);
+			LogTimeline("start-monitor.failed", startMonitorStopwatch.ElapsedMilliseconds, normalized);
 		}
 	}
 
@@ -601,7 +687,8 @@ internal class ProxyLifecycleManager
 
 			if (string.IsNullOrWhiteSpace(workspaceRoot) || !Directory.Exists(workspaceRoot))
 			{
-				_logger.LogTrace("Skipping workspace mutation watcher because {WorkspaceRoot} is not available", workspaceRoot);
+				_logger.LogTrace("Skipping workspace mutation watcher because {WorkspaceRoot} is not available",
+					workspaceRoot);
 				return;
 			}
 
@@ -708,6 +795,7 @@ internal class ProxyLifecycleManager
 			_logger.LogTrace("Workspace mutation detected for {Path} ({ChangeType})", args.FullPath, args.ChangeType);
 		}
 
+		Interlocked.Increment(ref _workspaceMutationGeneration);
 		var debounceCts = ReplaceWorkspaceMutationDebounceSource(ref _workspaceMutationDebounceCts);
 
 		_ = Task.Run(async () =>
@@ -803,7 +891,9 @@ internal class ProxyLifecycleManager
 
 	private void OnWorkspaceMutationWatcherError(object sender, ErrorEventArgs args)
 	{
-		_logger.LogWarning(args.GetException(), "Workspace mutation watcher failed; restarting watcher and reevaluating the workspace");
+		Interlocked.Increment(ref _workspaceMutationGeneration);
+		_logger.LogWarning(args.GetException(),
+			"Workspace mutation watcher failed; restarting watcher and reevaluating the workspace");
 
 		_ = Task.Run(async () =>
 		{
@@ -835,6 +925,20 @@ internal class ProxyLifecycleManager
 		return _workspaceResolution?.RequestedWorkingDirectory
 			?? _workspaceResolution?.EffectiveWorkspaceDirectory
 			?? _currentDirectory;
+	}
+
+	private IReadOnlyList<string> GetCandidateSolutionsForSelection(string observationRoot)
+	{
+		// Reuse the latest candidate snapshot only while it is still fresh
+		// for the same observation root.
+		if (_workspaceResolution is { CandidateSolutions.Count: > 0 } resolution
+			&& _workspaceResolutionGeneration == Volatile.Read(ref _workspaceMutationGeneration)
+			&& PathComparison.PathsEqual(resolution.RequestedWorkingDirectory, observationRoot))
+		{
+			return resolution.CandidateSolutions;
+		}
+
+		return _solutionFileFinder.FindSolutionFiles(observationRoot);
 	}
 
 	private async Task EnsureWorkspaceMutationWatcherMatchesCurrentRootAsync()
@@ -937,6 +1041,7 @@ internal class ProxyLifecycleManager
 			{
 				_logger.LogError("Tool cache priming failed");
 			}
+
 			return result;
 		}
 		catch (Exception ex)
@@ -1090,7 +1195,8 @@ internal class ProxyLifecycleManager
 		return 0;
 	}
 
-	private async Task EnsureRootsInitialized(RequestContext<ListToolsRequestParams> ctx, TaskCompletionSource tcs, CancellationToken ct)
+	private async Task EnsureRootsInitialized(RequestContext<ListToolsRequestParams> ctx, TaskCompletionSource tcs,
+		CancellationToken ct)
 	{
 		if (_roots.Length != 0)
 		{
@@ -1110,7 +1216,8 @@ internal class ProxyLifecycleManager
 			{
 				var roots = await ctx.Server.RequestRootsAsync(new(), ct);
 
-				_logger.LogTrace("MCP Client supports roots: {Roots}", string.Join(", ", roots.Roots.Select(r => r.Uri)));
+				_logger.LogTrace("MCP Client supports roots: {Roots}",
+					string.Join(", ", roots.Roots.Select(r => r.Uri)));
 
 				if (roots.Roots.Count != 0)
 				{
@@ -1133,7 +1240,8 @@ internal class ProxyLifecycleManager
 
 		if (_workspaceResolution?.IsResolved != true && !_healthService.DevServerStarted)
 		{
-			_logger.LogTrace("Workspace is unresolved; skipping upstream wait so health can report the failure immediately");
+			_logger.LogTrace(
+				"Workspace is unresolved; skipping upstream wait so health can report the failure immediately");
 			tcs.TrySetResult();
 			return;
 		}
@@ -1151,12 +1259,14 @@ internal class ProxyLifecycleManager
 			}
 			catch (OperationCanceledException) when (!ct.IsCancellationRequested)
 			{
-				_logger.LogWarning("Timed out waiting for upstream tools after {Timeout}ms", ToolListManager.ListToolsTimeoutMs);
+				_logger.LogWarning("Timed out waiting for upstream tools after {Timeout}ms",
+					ToolListManager.ListToolsTimeoutMs);
 			}
 		}
 	}
 
-	internal static bool ShouldWaitForUpstreamTools(bool forceRootsFallback, bool clientSupportsRoots, bool waitForTools)
+	internal static bool ShouldWaitForUpstreamTools(bool forceRootsFallback, bool clientSupportsRoots,
+		bool waitForTools)
 		=> (!forceRootsFallback || !clientSupportsRoots) && waitForTools;
 
 	private string BuildFallbackRoot()
@@ -1182,9 +1292,12 @@ internal class ProxyLifecycleManager
 			return directory;
 		}
 	}
-	private async Task<DiscoveryInfo> BuildDiscoveryInfoForSelectionAsync(string observationRoot, WorkspaceResolution resolution)
+
+	private async Task<DiscoveryInfo> BuildDiscoveryInfoForSelectionAsync(string observationRoot,
+		WorkspaceResolution resolution)
 	{
-		var unoToolsLocator = new UnoToolsLocator(Microsoft.Extensions.Logging.Abstractions.NullLogger<UnoToolsLocator>.Instance);
+		var unoToolsLocator =
+			new UnoToolsLocator(Microsoft.Extensions.Logging.Abstractions.NullLogger<UnoToolsLocator>.Instance);
 		return await unoToolsLocator.DiscoverAsync(observationRoot, resolution);
 	}
 
@@ -1207,9 +1320,12 @@ internal class ProxyLifecycleManager
 	{
 		return action switch
 		{
-			WorkspaceTransitionAction.Start => $"Selected solution '{resolution.SelectedSolutionPath}' and started DevServer for '{resolution.EffectiveWorkspaceDirectory}'.",
-			WorkspaceTransitionAction.Restart => $"Selected solution '{resolution.SelectedSolutionPath}' and restarted DevServer for '{resolution.EffectiveWorkspaceDirectory}'.",
-			WorkspaceTransitionAction.Refresh => $"Solution '{resolution.SelectedSolutionPath}' is already selected for this session.",
+			WorkspaceTransitionAction.Start =>
+				$"Selected solution '{resolution.SelectedSolutionPath}' and started DevServer for '{resolution.EffectiveWorkspaceDirectory}'.",
+			WorkspaceTransitionAction.Restart =>
+				$"Selected solution '{resolution.SelectedSolutionPath}' and restarted DevServer for '{resolution.EffectiveWorkspaceDirectory}'.",
+			WorkspaceTransitionAction.Refresh =>
+				$"Solution '{resolution.SelectedSolutionPath}' is already selected for this session.",
 			_ => $"Selected solution '{resolution.SelectedSolutionPath}'.",
 		};
 	}
@@ -1228,7 +1344,6 @@ internal class ProxyLifecycleManager
 			Issues = issues,
 		};
 	}
-
 }
 
 internal sealed record SelectSolutionResult
