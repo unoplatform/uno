@@ -24,12 +24,13 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 	{
 		var discoveryStopwatch = Stopwatch.StartNew();
 
+		var normalizedWorkDirectory = Path.GetFullPath(workDirectory);
 		workspaceResolution ??= new WorkspaceResolution
 		{
-			RequestedWorkingDirectory = Path.GetFullPath(workDirectory),
-			EffectiveWorkspaceDirectory = Path.GetFullPath(workDirectory),
+			RequestedWorkingDirectory = normalizedWorkDirectory,
+			EffectiveWorkspaceDirectory = normalizedWorkDirectory,
 			ResolutionKind = WorkspaceResolutionKind.CurrentDirectory,
-			CandidateSolutions = SolutionFileFinder.FindSolutionFiles(workDirectory),
+			CandidateSolutions = SolutionFileFinder.FindSolutionFiles(normalizedWorkDirectory),
 		};
 
 		if (!workspaceResolution.IsResolved)

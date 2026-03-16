@@ -130,6 +130,7 @@ function Resolve-DevserverToolShimPath {
     $candidates = if ($IsWindows) {
         @(
             (Join-Path $ToolDirectory 'uno-devserver.exe'),
+            (Join-Path $ToolDirectory 'uno-devserver.cmd'),
             (Join-Path $ToolDirectory 'uno-devserver')
         )
     }

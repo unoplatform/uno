@@ -15,7 +15,7 @@ Set-StrictMode -Version Latest
 function Write-Log([string]$Message) { Write-Host "[devserver-cli-local] $Message" }
 
 function Resolve-CompatibleUnoSdkVersion {
-    $packagesRoot = Join-Path $HOME '.nuget\packages'
+    $packagesRoot = Join-Path $HOME '.nuget' 'packages'
     $sdkRoot = Join-Path $packagesRoot 'uno.sdk.private'
     $devServerRoot = Join-Path $packagesRoot 'uno.winui.devserver'
 
@@ -26,7 +26,7 @@ function Resolve-CompatibleUnoSdkVersion {
     $versions = Get-ChildItem -Path $sdkRoot -Directory |
         ForEach-Object { $_.Name } |
         Where-Object {
-            Test-Path (Join-Path $devServerRoot "$_\tools\rc\host\net10.0\Uno.UI.RemoteControl.Host.dll")
+            Test-Path (Join-Path $devServerRoot $_ 'tools' 'rc' 'host' 'net10.0' 'Uno.UI.RemoteControl.Host.dll')
         } |
         Sort-Object -Descending
 
@@ -42,10 +42,10 @@ function New-LocalDevPackageVersion {
     return "99.0.0-local-dev.$([System.DateTime]::UtcNow.ToString('yyyyMMddHHmmss'))"
 }
 
-$repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..')
+$repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..' '..')
 $buildSourcesDirectory = $repoRoot.Path
 $resolvedPackagesDir = if ([string]::IsNullOrWhiteSpace($PackagesDir)) {
-    Join-Path $buildSourcesDirectory 'src\PackageCache'
+    Join-Path $buildSourcesDirectory 'src' 'PackageCache'
 }
 else {
     $resolved = Resolve-Path -LiteralPath $PackagesDir -ErrorAction SilentlyContinue
@@ -56,9 +56,9 @@ if (-not (Test-Path $resolvedPackagesDir)) {
     New-Item -ItemType Directory -Path $resolvedPackagesDir -Force | Out-Null
 }
 
-$e2eProject = Join-Path $buildSourcesDirectory 'src\Uno.UI.DevServer.Cli.E2E.Tests\Uno.UI.DevServer.Cli.E2E.Tests.csproj'
-$cliProject = Join-Path $buildSourcesDirectory 'src\Uno.UI.DevServer.Cli\Uno.UI.DevServer.Cli.csproj'
-$cliScript = Join-Path $buildSourcesDirectory 'build\test-scripts\run-devserver-cli-tests.ps1'
+$e2eProject = Join-Path $buildSourcesDirectory 'src' 'Uno.UI.DevServer.Cli.E2E.Tests' 'Uno.UI.DevServer.Cli.E2E.Tests.csproj'
+$cliProject = Join-Path $buildSourcesDirectory 'src' 'Uno.UI.DevServer.Cli' 'Uno.UI.DevServer.Cli.csproj'
+$cliScript = Join-Path $buildSourcesDirectory 'build' 'test-scripts' 'run-devserver-cli-tests.ps1'
 $localPackageVersion = New-LocalDevPackageVersion
 
 function New-TemporaryScriptSnapshot {

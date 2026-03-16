@@ -37,7 +37,7 @@ internal sealed class TemporaryUnoWorkspace : IDisposable
 
 internal static partial class TemporaryUnoWorkspaceBuilder
 {
-	private const string TemplateRelativeDirectory = @"src\SolutionTemplate\5.6\uno56netcurrent";
+	private static readonly string TemplateRelativeDirectory = Path.Combine("src", "SolutionTemplate", "5.6", "uno56netcurrent");
 	private const string TemplateSolutionName = "uno56netcurrent.sln";
 	private static readonly string CompatibleUnoSdkVersion = ResolveCompatibleUnoSdkVersion();
 
