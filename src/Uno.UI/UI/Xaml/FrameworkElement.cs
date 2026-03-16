@@ -1029,6 +1029,10 @@ namespace Microsoft.UI.Xaml
 			{
 				return Controls.ContentPresenter.ForegroundProperty;
 			}
+			else if (this is Controls.RichTextBlock)
+			{
+				return Controls.RichTextBlock.ForegroundProperty;
+			}
 			return null;
 		}
 
