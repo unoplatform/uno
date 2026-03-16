@@ -1138,14 +1138,7 @@ internal class ProxyLifecycleManager
 			return;
 		}
 
-		// When there are no cached tools, wait for the upstream server to start
-		// so the first list_tools response includes real tools. Clients that support
-		// tools/list_changed will get updates later; those that don't still get tools
-		// on the first call thanks to this wait.
-		if ((!_forceRootsFallback || !clientSupportsRoots) &&
-			(_waitForTools
-			|| !_toolListManager.HasCachedTools)
-		)
+		if (ShouldWaitForUpstreamTools(_forceRootsFallback, clientSupportsRoots, _waitForTools))
 		{
 			_logger.LogTrace("No cached tools available, waiting for upstream server to start");
 
@@ -1162,6 +1155,9 @@ internal class ProxyLifecycleManager
 			}
 		}
 	}
+
+	internal static bool ShouldWaitForUpstreamTools(bool forceRootsFallback, bool clientSupportsRoots, bool waitForTools)
+		=> (!forceRootsFallback || !clientSupportsRoots) && waitForTools;
 
 	private string BuildFallbackRoot()
 	{

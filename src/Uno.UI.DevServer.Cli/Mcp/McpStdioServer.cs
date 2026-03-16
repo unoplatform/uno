@@ -127,8 +127,14 @@ internal class McpStdioServer(
 
 					logger.LogTrace("Upstream client is not connected, returning {Count} tools", tools.Count);
 
-					// The devserver is not started yet, so there are no tools to report.
 					return new() { Tools = ToolListManager.AppendBuiltInTools(tools) };
+				}
+
+				if (!toolListManager.HasCachedTools
+					&& !mcpUpstreamClient.UpstreamClient.IsCompletedSuccessfully)
+				{
+					logger.LogTrace("Upstream client is not ready and no cached tools are available, returning built-in tools immediately");
+					return new() { Tools = ToolListManager.AppendBuiltInTools([]) };
 				}
 
 				var result = await toolListManager.ListToolsWithTimeoutAsync(ct);

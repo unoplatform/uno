@@ -12,6 +12,23 @@ namespace Uno.UI.DevServer.Cli.Tests.Mcp;
 public class Given_ProxyLifecycleManager
 {
 	[TestMethod]
+	[Description("tools/list must not block on upstream startup unless wait-for-tools was explicitly requested")]
+	public void WhenWaitForToolsIsDisabled_UpstreamWaitIsSkipped()
+	{
+		ProxyLifecycleManager.ShouldWaitForUpstreamTools(
+			forceRootsFallback: false,
+			clientSupportsRoots: false,
+			waitForTools: false)
+			.Should().BeFalse();
+
+		ProxyLifecycleManager.ShouldWaitForUpstreamTools(
+			forceRootsFallback: false,
+			clientSupportsRoots: true,
+			waitForTools: false)
+			.Should().BeFalse();
+	}
+
+	[TestMethod]
 	[Description("Selecting a valid Uno candidate starts the deferred DevServer and marks the workspace as explicitly selected")]
 	public async Task WhenSelectingValidUnoSolutionAfterDeferredStartup_DevServerStarts()
 	{

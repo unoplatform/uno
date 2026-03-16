@@ -30,6 +30,7 @@ public class Given_McpRootsFallbackProcess
 			stderr.ToString().Should().NotContain("Starting DevServer monitor using solution directory", "roots fallback should defer monitor startup until roots are provided");
 
 			await SendInitializeAsync(process);
+			await WaitForInitializeResponseAsync(stdout);
 			await SendSetRootsAsync(process, workspaceDirectory);
 
 			var started = await WaitUntilAsync(
@@ -92,6 +93,7 @@ public class Given_McpRootsFallbackProcess
 			stderr.ToString().Should().NotContain("Starting DevServer monitor using solution directory", "force-roots-fallback should still defer monitor startup until a selection command is provided");
 
 			await SendInitializeAsync(process);
+			await WaitForInitializeResponseAsync(stdout);
 			await SendSelectSolutionAsync(process, solutionPath);
 
 			var started = await WaitUntilAsync(
@@ -182,6 +184,12 @@ public class Given_McpRootsFallbackProcess
 			""";
 		await process.StandardInput.WriteLineAsync(request);
 		await process.StandardInput.FlushAsync();
+
+		var initializedNotification = """
+			{"jsonrpc":"2.0","method":"notifications/initialized"}
+			""";
+		await process.StandardInput.WriteLineAsync(initializedNotification);
+		await process.StandardInput.FlushAsync();
 	}
 
 	private static async Task SendSetRootsAsync(Process process, string workspaceDirectory)
@@ -239,6 +247,16 @@ public class Given_McpRootsFallbackProcess
 		}
 
 		return condition();
+	}
+
+	private static async Task WaitForInitializeResponseAsync(StringBuilder stdout)
+	{
+		var initialized = await WaitUntilAsync(
+			() => stdout.ToString().Contains("\"id\":1", StringComparison.Ordinal),
+			timeout: TimeSpan.FromSeconds(10),
+			pollInterval: TimeSpan.FromMilliseconds(100));
+
+		initialized.Should().BeTrue("the MCP initialize response should be observed before sending follow-up tool calls");
 	}
 
 	private static async Task StopDevServerAsync(string cliDllPath, string workspaceDirectory)
