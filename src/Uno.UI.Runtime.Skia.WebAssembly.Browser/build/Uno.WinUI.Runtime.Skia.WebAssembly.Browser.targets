@@ -57,10 +57,6 @@
 			<EmccExportedRuntimeMethod Include="GL" KeepDuplicates="false" />
 		</ItemGroup>
 
-		<PropertyGroup>
-			<!-- Enable GLCtx when threading is available -->
-			<EmccFlags Condition="'$(WasmShellEnableThreads)'=='True'">$(EmccFlags);-s OFFSCREEN_FRAMEBUFFER=1</EmccFlags>
-		</PropertyGroup>
 	</Target>
 
 </Project>
