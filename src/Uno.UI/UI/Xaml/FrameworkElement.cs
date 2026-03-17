@@ -548,6 +548,16 @@ namespace Microsoft.UI.Xaml
 
 		partial void OnUnloadedPartial()
 		{
+			// Clear inherited theme foreground when leaving the tree to prevent
+			// stale values from leaking to elements loaded later in the same
+			// parent (e.g., between runtime tests). Elements with explicit
+			// RequestedTheme (_isForegroundFrozen) retain their brush because
+			// they own the theme boundary.
+			if (!_isForegroundFrozen)
+			{
+				_themeForeground = null;
+			}
+
 			this.StoreDisableHardReferences();
 		}
 
