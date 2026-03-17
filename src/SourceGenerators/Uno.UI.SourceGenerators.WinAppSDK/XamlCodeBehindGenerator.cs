@@ -116,15 +116,10 @@ public sealed class XamlCodeBehindGenerator : IIncrementalGenerator
 		// On WinAppSDK the WinUI XAML compiler emits partial-class declarations
 		// (*.g.cs / *.g.i.cs) inside the obj directory.  Those must be ignored;
 		// we only skip generation when the developer has a real code-behind file.
-		// Types from referenced assemblies (no DeclaringSyntaxReferences) are also
-		// skipped — they are metadata-only and should not suppress generation.
 		var existingType = compilation.GetTypeByMetadataName(info.FullClassName);
-		if (existingType is not null)
+		if (existingType is not null && HasUserAuthoredDeclaration(existingType))
 		{
-			if (existingType.DeclaringSyntaxReferences.IsEmpty || HasUserAuthoredDeclaration(existingType))
-			{
-				return;
-			}
+			return;
 		}
 
 		// Generate code-behind
