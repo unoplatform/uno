@@ -1,3 +1,4 @@
+#if HAS_UNO
 using System.Numerics;
 using System.Threading.Tasks;
 using Microsoft.Graphics.Canvas.Effects;
@@ -241,3 +242,4 @@ public class Given_CompositionEffectBrush
 	}
 #endif
 }
+#endif
