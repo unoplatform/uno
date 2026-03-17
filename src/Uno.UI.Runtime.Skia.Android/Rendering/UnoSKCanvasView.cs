@@ -219,6 +219,14 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView
 
 			_context!.Flush();
 
+			if (!ApplicationActivity.Instance.FirstFrameRendered)
+			{
+				ApplicationActivity.Instance.FirstFrameRendered = true;
+				// Post invalidation to trigger OnPreDraw re-evaluation so the splash can dismiss
+				ApplicationActivity.RelativeLayout?.Post(() =>
+					ApplicationActivity.RelativeLayout?.Invalidate());
+			}
+
 			// Render throttle is disabled on Android (Choreographer provides pacing),
 			// so OnFramePresented is not needed here. See AndroidSkiaXamlRootHost.
 		}
