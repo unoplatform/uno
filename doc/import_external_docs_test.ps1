@@ -17,11 +17,24 @@ dotnet tool update --global docfx --version 2.73.2 --allow-downgrade
 
 # Older or newer local versions can cause template behavior differences.
 # Verify the actual resolved version and force-install the pinned toolchain when needed.
-$docfxVersionOutput = (docfx --version | Select-Object -First 1).Trim()
+# A Homebrew or other system-wide install may shadow the dotnet tool, so prefer
+# the dotnet tool path explicitly when it exists.
+$dotnetToolDocfx = Join-Path $env:HOME '.dotnet/tools/docfx'
+if (Test-Path $dotnetToolDocfx) {
+    $script:DocfxCmd = $dotnetToolDocfx
+} else {
+    $script:DocfxCmd = 'docfx'
+}
+$docfxVersionOutput = (& $script:DocfxCmd --version | Select-Object -First 1).Trim()
 if ($docfxVersionOutput -notlike '2.73.2*') {
     Write-Host "DocFX version '$docfxVersionOutput' does not match required 2.73.2. Reinstalling pinned version..." -ForegroundColor Black -BackgroundColor DarkYellow
     dotnet tool uninstall --global docfx | Out-Null
     dotnet tool install --global docfx --version 2.73.2
+    $docfxVersionOutput = (& $script:DocfxCmd --version | Select-Object -First 1).Trim()
+    if ($docfxVersionOutput -notlike '2.73.2*') {
+        Write-Error "Failed to install DocFX 2.73.2. Resolved version: $docfxVersionOutput"
+        exit 1
+    }
 }
 
 Write-Host 'Updating dotnet-serve tool...' -ForegroundColor Black -BackgroundColor Green
@@ -73,7 +86,7 @@ This page is generated during CI builds by Uno.UWPSyncGenerator.
 "@
 }
 
-docfx
+& $script:DocfxCmd
 
 if ($LASTEXITCODE -ne 0) {
     throw "DocFX generation failed with exit code $LASTEXITCODE."
