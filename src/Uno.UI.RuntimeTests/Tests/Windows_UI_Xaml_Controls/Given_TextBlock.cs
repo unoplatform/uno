@@ -681,7 +681,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var span = new Span();
 			SUT.Inlines.Add(span);
-			span.Inlines.Add(new Run() { Text = "text" });
+			// Use FULL BLOCK (U+2588) to produce solid foreground pixels without
+			// sub-pixel anti-aliasing artifacts that make exact color matching flaky.
+			span.Inlines.Add(new Run() { Text = "\uFFFD" });
 
 			await UITestHelper.WaitForIdle();
 
