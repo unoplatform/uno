@@ -112,6 +112,21 @@ public sealed class XamlCodeBehindGenerator : IIncrementalGenerator
 
 		var info = classInfo.Value;
 
+		// If the parser couldn't resolve the base type from the hardcoded map,
+		// try resolving via compilation metadata (covers all WinUI types like Grid, Button, etc.)
+		if (info.BaseTypeFullName is null)
+		{
+			var resolved = XamlCodeBehindParser.ResolveBaseTypeFromCompilation(compilation, info.RootElementName);
+			if (resolved is null)
+			{
+				// Cannot determine the base type — skip generation to avoid emitting
+				// a wrong base type that conflicts with the WinUI XAML compiler's output
+				return;
+			}
+
+			info = info with { BaseTypeFullName = resolved };
+		}
+
 		// Check if the class already exists in user-authored source.
 		// On WinAppSDK the WinUI XAML compiler emits partial-class declarations
 		// (*.g.cs / *.g.i.cs) inside the obj directory.  Those must be ignored;

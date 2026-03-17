@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
+using Microsoft.CodeAnalysis;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator;
 
@@ -92,21 +93,44 @@ internal static class XamlCodeBehindParser
 	}
 
 	/// <summary>
-	/// Resolves the fully-qualified base type name from the root element name and namespace.
+	/// Well-known WinUI CLR namespaces to search when resolving default-namespace XAML elements
+	/// via compilation metadata. These match the PresentationNamespaces from XamlConstants.
 	/// </summary>
-	private static string ResolveBaseType(string rootElementName, string rootElementNamespace)
+	private static readonly string[] WinUIPresentationNamespaces =
 	{
-		// Default WinUI namespace elements
+		"Microsoft.UI.Xaml.Controls",
+		"Microsoft.UI.Xaml.Controls.Primitives",
+		"Microsoft.UI.Xaml.Shapes",
+		"Microsoft.UI.Xaml.Input",
+		"Microsoft.UI.Xaml.Media",
+		"Microsoft.UI.Xaml.Media.Animation",
+		"Microsoft.UI.Xaml.Media.Imaging",
+		"Windows.UI",
+		"Microsoft.UI.Xaml",
+		"Microsoft.UI.Xaml.Data",
+		"Microsoft.UI.Xaml.Documents",
+		"Windows.UI.Text",
+		"Microsoft.UI.Xaml.Automation",
+		"System",
+	};
+
+	/// <summary>
+	/// Resolves the fully-qualified base type name from the root element name and namespace.
+	/// Returns null if the type cannot be resolved.
+	/// </summary>
+	private static string? ResolveBaseType(string rootElementName, string rootElementNamespace)
+	{
+		// Default WinUI namespace elements — fast path for the 6 most common root types
 		if (string.Equals(rootElementNamespace, DefaultNamespace.NamespaceName, StringComparison.Ordinal)
 			&& WinUIRootElementMap.TryGetValue(rootElementName, out var knownType))
 		{
 			return knownType;
 		}
 
-		// For unknown types in the default namespace, fall back to Page
+		// For unknown types in the default namespace, return null (caller must resolve via compilation)
 		if (string.Equals(rootElementNamespace, DefaultNamespace.NamespaceName, StringComparison.Ordinal))
 		{
-			return "Microsoft.UI.Xaml.Controls.Page";
+			return null;
 		}
 
 		// For CLR namespace-based xmlns (e.g., "using:MyApp.Controls" or "clr-namespace:MyApp.Controls"),
@@ -121,8 +145,29 @@ internal static class XamlCodeBehindParser
 			}
 		}
 
-		// Fallback for unknown namespace URIs
-		return "Microsoft.UI.Xaml.Controls.Page";
+		// Unknown namespace URI — cannot resolve
+		return null;
+	}
+
+	/// <summary>
+	/// Resolves a default-namespace XAML element type using compilation metadata.
+	/// Probes well-known WinUI CLR namespaces to find the type.
+	/// </summary>
+	/// <param name="compilation">The current compilation.</param>
+	/// <param name="rootElementName">The local name of the root XAML element (e.g. "Button", "Grid").</param>
+	/// <returns>The fully-qualified metadata name if found, null otherwise.</returns>
+	public static string? ResolveBaseTypeFromCompilation(Compilation compilation, string rootElementName)
+	{
+		foreach (var ns in WinUIPresentationNamespaces)
+		{
+			var fullName = ns + "." + rootElementName;
+			if (compilation.GetTypeByMetadataName(fullName) is not null)
+			{
+				return fullName;
+			}
+		}
+
+		return null;
 	}
 
 	/// <summary>

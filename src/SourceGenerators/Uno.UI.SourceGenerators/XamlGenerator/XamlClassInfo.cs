@@ -11,4 +11,4 @@ internal readonly record struct XamlClassInfo(
 	string ClassName,
 	string RootElementName,
 	string RootElementNamespace,
-	string BaseTypeFullName);
+	string? BaseTypeFullName);
