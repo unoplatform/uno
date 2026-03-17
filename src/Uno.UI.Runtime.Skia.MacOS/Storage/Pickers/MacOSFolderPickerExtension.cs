@@ -48,16 +48,22 @@ internal class MacOSFolderPickerExtension : IFolderPickerExtension
 		}
 		else
 		{
-			var tcs = new TaskCompletionSource<string?>();
+			var tcs = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
+			using var registration = token.CanBeCanceled ? token.Register(() => tcs.TrySetCanceled(token)) : default;
 			NativeDispatcher.Main.Enqueue(() =>
 			{
+				if (token.IsCancellationRequested)
+				{
+					tcs.TrySetCanceled(token);
+					return;
+				}
 				try
 				{
-					tcs.SetResult(NativeUno.uno_pick_single_folder(_prompt, _identifier, (int)_suggestedStartLocation));
+					tcs.TrySetResult(NativeUno.uno_pick_single_folder(_prompt, _identifier, (int)_suggestedStartLocation));
 				}
 				catch (Exception ex)
 				{
-					tcs.SetException(ex);
+					tcs.TrySetException(ex);
 				}
 			});
 			folder = await tcs.Task;

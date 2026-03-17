@@ -54,19 +54,30 @@ internal class MacOSFileOpenPickerExtension : IFileOpenPickerExtension
 		}
 		else
 		{
-			var tcs = new TaskCompletionSource<IntPtr>();
+			var tcs = new TaskCompletionSource<IntPtr>(TaskCreationOptions.RunContinuationsAsynchronously);
+			using var registration = token.CanBeCanceled ? token.Register(() => tcs.TrySetCanceled(token)) : default;
 			NativeDispatcher.Main.Enqueue(() =>
 			{
+				if (token.IsCancellationRequested)
+				{
+					tcs.TrySetCanceled(token);
+					return;
+				}
 				try
 				{
-					tcs.SetResult(NativeUno.uno_pick_multiple_files(_prompt, _identifier, (int)_suggestedStartLocation, _filters, _filters.Length));
+					tcs.TrySetResult(NativeUno.uno_pick_multiple_files(_prompt, _identifier, (int)_suggestedStartLocation, _filters, _filters.Length));
 				}
 				catch (Exception ex)
 				{
-					tcs.SetException(ex);
+					tcs.TrySetException(ex);
 				}
 			});
 			array = await tcs.Task;
+		}
+
+		if (array == IntPtr.Zero)
+		{
+			return Array.Empty<StorageFile>();
 		}
 
 		var files = new List<StorageFile>();
@@ -93,16 +104,22 @@ internal class MacOSFileOpenPickerExtension : IFileOpenPickerExtension
 		}
 		else
 		{
-			var tcs = new TaskCompletionSource<string?>();
+			var tcs = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
+			using var registration = token.CanBeCanceled ? token.Register(() => tcs.TrySetCanceled(token)) : default;
 			NativeDispatcher.Main.Enqueue(() =>
 			{
+				if (token.IsCancellationRequested)
+				{
+					tcs.TrySetCanceled(token);
+					return;
+				}
 				try
 				{
-					tcs.SetResult(NativeUno.uno_pick_single_file(_prompt, _identifier, (int)_suggestedStartLocation, _filters, _filters.Length));
+					tcs.TrySetResult(NativeUno.uno_pick_single_file(_prompt, _identifier, (int)_suggestedStartLocation, _filters, _filters.Length));
 				}
 				catch (Exception ex)
 				{
-					tcs.SetException(ex);
+					tcs.TrySetException(ex);
 				}
 			});
 			file = await tcs.Task;

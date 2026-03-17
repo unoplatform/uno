@@ -68,16 +68,22 @@ internal class MacOSFileSavePickerExtension : IFileSavePickerExtension
 		}
 		else
 		{
-			var tcs = new TaskCompletionSource<string?>();
+			var tcs = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
+			using var registration = token.CanBeCanceled ? token.Register(() => tcs.TrySetCanceled(token)) : default;
 			NativeDispatcher.Main.Enqueue(() =>
 			{
+				if (token.IsCancellationRequested)
+				{
+					tcs.TrySetCanceled(token);
+					return;
+				}
 				try
 				{
-					tcs.SetResult(NativeUno.uno_pick_save_file(_prompt, _identifier, _suggestedFileName, (int)_suggestedStartLocation, _filters, _filters.Length));
+					tcs.TrySetResult(NativeUno.uno_pick_save_file(_prompt, _identifier, _suggestedFileName, (int)_suggestedStartLocation, _filters, _filters.Length));
 				}
 				catch (Exception ex)
 				{
-					tcs.SetException(ex);
+					tcs.TrySetException(ex);
 				}
 			});
 			file = await tcs.Task;
