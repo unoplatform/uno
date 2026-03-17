@@ -119,6 +119,11 @@ internal sealed class ConfigScanner(IFileSystem fs)
 			warnings.Add($"Invalid JSON in config file '{configPath}': {ex.Message}");
 			return;
 		}
+		catch (InvalidOperationException)
+		{
+			warnings.Add($"Config file '{configPath}' does not contain a JSON object at root level");
+			return;
+		}
 
 		if (root?[rootKey] is not JsonObject serversObj)
 		{
