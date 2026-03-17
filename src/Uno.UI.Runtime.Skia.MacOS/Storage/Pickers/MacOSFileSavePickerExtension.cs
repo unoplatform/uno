@@ -3,6 +3,7 @@ using Windows.Storage.Pickers;
 
 using Uno.Extensions.Storage.Pickers;
 using Uno.Foundation.Extensibility;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
@@ -60,7 +61,28 @@ internal class MacOSFileSavePickerExtension : IFileSavePickerExtension
 
 	public async Task<StorageFile?> PickSaveFileAsync(CancellationToken token)
 	{
-		var file = NativeUno.uno_pick_save_file(_prompt, _identifier, _suggestedFileName, (int)_suggestedStartLocation, _filters, _filters.Length);
+		string? file;
+		if (NativeDispatcher.Main.HasThreadAccess)
+		{
+			file = NativeUno.uno_pick_save_file(_prompt, _identifier, _suggestedFileName, (int)_suggestedStartLocation, _filters, _filters.Length);
+		}
+		else
+		{
+			var tcs = new TaskCompletionSource<string?>();
+			NativeDispatcher.Main.Enqueue(() =>
+			{
+				try
+				{
+					tcs.SetResult(NativeUno.uno_pick_save_file(_prompt, _identifier, _suggestedFileName, (int)_suggestedStartLocation, _filters, _filters.Length));
+				}
+				catch (Exception ex)
+				{
+					tcs.SetException(ex);
+				}
+			});
+			file = await tcs.Task;
+		}
+
 		return file is null ? null : await StorageFile.GetFileFromPathAsync(file);
 	}
 }
