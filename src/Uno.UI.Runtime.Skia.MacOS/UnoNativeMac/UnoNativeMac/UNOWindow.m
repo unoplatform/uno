@@ -821,6 +821,15 @@ bool uno_window_clip_svg(UNOWindow* window, const char* svg)
     return true;
 }
 
+void uno_window_resign_native_first_responder(UNOWindow* window)
+{
+    NSView *cv = window.contentViewController.view;
+    NSResponder *fr = window.firstResponder;
+    if ([fr isKindOfClass:[NSView class]] && fr != cv && [(NSView *)fr isDescendantOf:cv]) {
+        [window makeFirstResponder:cv];
+    }
+}
+
 @implementation UNOWindow : NSWindow
 
 NSEventModifierFlags _previousFlags;
@@ -1042,24 +1051,6 @@ NSOperatingSystemVersion _osVersion;
 #if DEBUG_MOUSE // very noisy
             NSLog(@"NSEventTypeMouse*: %@ %g %g handled? %s", event, data.x, data.y, handled ? "true" : "false");
 #endif
-
-            // When a native element (e.g. WKWebView) holds first responder and the
-            // user clicks outside it, resign first responder so keyboard events stop
-            // going to the native element. Hit-test the click location to avoid
-            // resigning when the click is inside the native element. (fixes #22819)
-            if (mouse == MouseEventsDown) {
-                NSResponder *fr = self.firstResponder;
-                NSView *cv = self.contentViewController.view;
-                if ([fr isKindOfClass:[NSView class]] && fr != cv && [(NSView *)fr isDescendantOf:cv]) {
-                    NSPoint loc = [cv convertPoint:event.locationInWindow fromView:nil];
-                    NSView *hitView = [cv hitTest:loc];
-                    // hitView lands on cv (Skia layer) when the click is outside any
-                    // native subview — only then do we resign first responder.
-                    if (hitView == cv || hitView == nil) {
-                        [self makeFirstResponder:cv];
-                    }
-                }
-            }
         }
     }
 

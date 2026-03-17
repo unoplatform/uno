@@ -204,6 +204,8 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 	void IXamlRootHost.InvalidateRender() => NativeUno.uno_window_invalidate(_nativeWindow.Handle);
 
+	void IXamlRootHost.ResignNativeFocus() => NativeUno.uno_window_resign_native_first_responder(_nativeWindow.Handle);
+
 	public static void Register(nint handle, XamlRoot xamlRoot, MacOSWindowHost host)
 	{
 		XamlRootMap.Register(xamlRoot, host);
