@@ -88,15 +88,25 @@ internal partial class PopupRoot : Canvas
 		}
 	}
 
-	// MUX Reference: Popup.cpp CPopupRoot::NotifyThemeChanged
-	// In WinUI, PopupRoot iterates all open popups and explicitly calls
-	// NotifyThemeChanged on each, because popup children are visually
-	// parented under PopupRoot but their logical parent is the Popup itself.
-	// Without this, theme walks that reach PopupRoot via the visual tree
-	// would not propagate to popup content.
+	// MUX Reference: Popup.cpp CPopupRoot::NotifyThemeChanged (lines 5339-5374)
+	// PopupRoot should NEVER store a theme. Its GetTheme() must always return
+	// Theme.None so that popup content entering the visual tree under PopupRoot
+	// does not accidentally inherit PopupRoot's theme during deferred Loading.
+	// Instead, PopupRoot only sets a flag and propagates to open popups.
+	//
+	// In WinUI, the ASSERT is: ASSERT(GetTheme() == Theming::Theme::None);
+	// MUX Reference: Popup.h m_hasThemeChanged
+	// "Has theme ever changed from startup theme?" — used when popups are
+	// added to the open list (CompleteAdditionToOpenPopupList) to notify
+	// non-parented popups that missed the theme walk while they were closed.
+	private bool _hasThemeChanged;
+
 	private protected override void NotifyThemeChangedCore(Theme theme, bool forceRefresh)
 	{
-		base.NotifyThemeChangedCore(theme, forceRefresh);
+		// Do NOT call base — PopupRoot must not update its own theme bindings,
+		// propagate to visual children (PopupPanels), or persist a theme.
+		// Open popups are handled exclusively via the open-popup list below.
+		_hasThemeChanged = true;
 
 		// Propagate theme to all open popups
 		var node = _openPopups.First;
@@ -165,6 +175,18 @@ internal partial class PopupRoot : Canvas
 		Children.Add(popupPanel);
 		var disposable = RegisterOpenPopup(popup);
 
+		// MUX Reference: CPopupRoot::CompleteAdditionToOpenPopupList (lines 4289-4302)
+		// If app's theme has changed since startup, notify non-parented popups
+		// that missed the theme walk while they were closed.
+		// Parented popups (ShouldPopupRootNotifyThemeChange == false) already
+		// received the theme from their parent's walk.
+		if (_hasThemeChanged && ShouldPopupRootNotifyThemeChange(popup))
+		{
+			var appTheme = Application.Current?.RequestedTheme == ApplicationTheme.Dark
+				? Theme.Dark : Theme.Light;
+			popup.NotifyThemeChanged(appTheme);
+		}
+
 		return Disposable.Create(() =>
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
@@ -177,6 +199,13 @@ internal partial class PopupRoot : Canvas
 			disposable.Dispose();
 		});
 	}
+
+	// MUX Reference: CPopup::ShouldPopupRootNotifyThemeChange (lines 3551-3563)
+	// A parented popup gets theme change notification from its parent walk.
+	// Only non-parented popups (visual parent is null or PopupRoot) need
+	// explicit notification from PopupRoot.
+	private static bool ShouldPopupRootNotifyThemeChange(Popup popup)
+		=> VisualTreeHelper.GetParent(popup) is null or PopupRoot;
 
 	internal IDisposable RegisterOpenPopup(IPopup popup)
 	{
