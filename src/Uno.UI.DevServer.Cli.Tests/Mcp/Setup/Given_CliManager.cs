@@ -428,9 +428,30 @@ public class Given_CliManager
 		services.AddSingleton(fs);
 		services.AddSingleton<McpSetupOrchestrator>();
 
+		services.AddSingleton<IWorkspaceResolver, NullWorkspaceResolver>();
+
 		var provider = services.BuildServiceProvider();
 		return new CliManager(
 			provider,
-			new UnoToolsLocator(NullLogger<UnoToolsLocator>.Instance));
+			new UnoToolsLocator(NullLogger<UnoToolsLocator>.Instance),
+			provider.GetRequiredService<IWorkspaceResolver>());
+	}
+
+	private class NullWorkspaceResolver : IWorkspaceResolver
+	{
+		public Task<WorkspaceResolution> ResolveAsync(string requestedDirectory) =>
+			Task.FromResult(new WorkspaceResolution
+			{
+				RequestedWorkingDirectory = requestedDirectory,
+				ResolutionKind = WorkspaceResolutionKind.NoCandidates
+			});
+
+		public Task<WorkspaceResolution> ResolveExplicitWorkspaceAsync(string requestedDirectory) =>
+			ResolveAsync(requestedDirectory);
+
+		public Task<WorkspaceResolution> ResolveSolutionAsync(
+			string requestedDirectory, string solutionPath,
+			WorkspaceSelectionSource selectionSource = WorkspaceSelectionSource.UserSelected) =>
+			ResolveAsync(requestedDirectory);
 	}
 }

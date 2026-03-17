@@ -1,4 +1,5 @@
 using System.Text.Json.Nodes;
+using Uno.UI.DevServer.Cli.Helpers;
 
 namespace Uno.UI.DevServer.Cli.Mcp.Setup;
 
@@ -64,9 +65,9 @@ internal static class ServerDefinitionResolver
 
 	/// <summary>
 	/// Returns the tool's assembly version (without commit hash).
-	/// Delegates to <see cref="McpStdioServer.GetAssemblyVersion"/>.
+	/// Delegates to <see cref="AssemblyVersionHelper.GetAssemblyVersion"/>.
 	/// </summary>
-	public static string GetToolVersion() => McpStdioServer.GetAssemblyVersion();
+	public static string GetToolVersion() => AssemblyVersionHelper.GetAssemblyVersion(typeof(ServerDefinitionResolver).Assembly);
 
 	/// <summary>
 	/// Determines whether a version string is prerelease (contains <c>-</c>).

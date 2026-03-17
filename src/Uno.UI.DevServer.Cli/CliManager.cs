@@ -35,11 +35,11 @@ internal class CliManager
 	{
 		try
 		{
-			var (Success, FilteredArgs, SolutionDirectory) = ExtractSolutionDirectory(originalArgs);
+			var solutionDirParseResult = ExtractSolutionDirectory(originalArgs);
 			// --solution-dir is applied uniformly so automation and CI environments can run any
 			// command (start, stop, list, login, MCP) against a target solution even when the
 			// current working directory differs from the solution root.
-			if (!Success)
+			if (!solutionDirParseResult.Success)
 			{
 				return 1;
 			}
@@ -52,7 +52,16 @@ internal class CliManager
 			if (originalArgs is { Length: > 0 } &&
 				string.Equals(originalArgs[0], "mcp", StringComparison.OrdinalIgnoreCase))
 			{
-				return RunMcpSubcommand(originalArgs[1..], workingDirectory, SolutionDirectory);
+				var mcpArgs = originalArgs[1..];
+				// "mcp start" is an alias for --mcp-app and needs workspace resolution
+				if (mcpArgs is { Length: > 0 } && string.Equals(mcpArgs[0], "start", StringComparison.OrdinalIgnoreCase))
+				{
+					var mcpWorkspaceResolution = await ResolveWorkspaceAsync(requestedWorkingDirectory, hasExplicitWorkspaceOverride);
+					LogVersionBanner();
+					return await RunMcpProxyAsync(mcpArgs[1..], requestedWorkingDirectory, mcpWorkspaceResolution);
+				}
+
+				return RunMcpSubcommand(mcpArgs, requestedWorkingDirectory, solutionDirParseResult.SolutionDirectory);
 			}
 
 			if (originalArgs.Contains("--mcp-app"))
@@ -450,8 +459,8 @@ internal class CliManager
 
 		if (subcommand == "start")
 		{
-			// "mcp start" is an alias for --mcp-app
-			return RunMcpProxyAsync(args[1..], workingDirectory, solutionDirectory).GetAwaiter().GetResult();
+			_logger.LogError("The 'mcp start' subcommand should be routed through RunAsync");
+			return 2;
 		}
 
 		if (subcommand is not ("status" or "install" or "uninstall"))
