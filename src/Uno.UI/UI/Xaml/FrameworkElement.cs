@@ -795,9 +795,6 @@ namespace Microsoft.UI.Xaml
 			try
 			{
 				NotifyThemeChangedCore(theme, forceRefresh);
-
-				// MUX Reference: Theming.cpp line 155 - persist AFTER core walk
-				SetTheme(theme);
 			}
 			finally
 			{
@@ -893,10 +890,16 @@ namespace Microsoft.UI.Xaml
 				{
 					RaiseActualThemeChanged();
 				}
+
+				// 7. Persist theme AFTER core walk (MUX Reference: Theming.cpp line 155)
+				// Placed inside the virtual method so subclasses (e.g., PopupRoot)
+				// can omit persistence — matching WinUI where CPopupRoot overrides
+				// NotifyThemeChanged and never calls SetTheme on itself.
+				SetTheme(theme);
 			}
 			finally
 			{
-				// 7. POP the global context
+				// 8. POP the global context
 				if (needsPush)
 				{
 					ResourceDictionary.PopRequestedThemeForSubTree();
