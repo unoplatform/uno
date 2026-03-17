@@ -96,7 +96,7 @@ public partial class AcrylicBrush
 
 		if (forceCreateAcrylicBrush)
 		{
-			_brush = FeatureConfiguration.Rendering.UseCompositionEffectBrushForAcrylicBrush
+			_brush = AcrylicBrushExtensions.GetUseCompositionEffectBrush(this)
 				? CreateAcrylicBrushViaCompositionEffect(compositor, useCrossFadeEffect)
 				: CreateAcrylicBrushDirect(compositor);
 		}
