@@ -436,7 +436,13 @@ namespace Microsoft.UI.Xaml
 			if (RequestedTheme == ElementTheme.Default)
 			{
 				var parent = this.GetParent() as UIElement;
-				if (parent != null && parent.GetTheme() != Theme.None)
+				// Only inherit if our theme hasn't already been set (e.g., by
+				// NotifyThemeChanged from Popup open code before this deferred
+				// Loading fires). Without this guard, popup content that was
+				// correctly themed by Popup.OnIsOpenChangedPartialNative would
+				// be overwritten with PopupRoot's stored theme during the
+				// first Measure pass.
+				if (GetTheme() == Theme.None && parent != null && parent.GetTheme() != Theme.None)
 				{
 					SetTheme(parent.GetTheme());
 				}
@@ -556,6 +562,16 @@ namespace Microsoft.UI.Xaml
 			if (!_isForegroundFrozen)
 			{
 				_themeForeground = null;
+			}
+
+			// Clear stored theme so that when this element re-enters the tree
+			// (possibly under a different theme region), OnLoadingPartial will
+			// correctly inherit the new parent's theme. Elements with explicit
+			// RequestedTheme don't need this because OnLoadingPartial calls
+			// NotifyThemeChanged for them.
+			if (RequestedTheme == ElementTheme.Default)
+			{
+				SetTheme(Theme.None);
 			}
 
 			this.StoreDisableHardReferences();
