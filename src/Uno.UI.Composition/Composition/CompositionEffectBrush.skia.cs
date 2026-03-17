@@ -1482,7 +1482,7 @@ $$"""
 						// Creating a static SKPictureRecorder to be reused for all calls causes a segfault for some reason
 						var recorder = new SKPictureRecorder();
 						brush.Paint(recorder.BeginRecording(srcBounds), 1, srcBounds);
-						return SKImageFilter.CreatePicture(recorder.EndRecording());
+						return SKImageFilter.CreatePicture(recorder.EndRecording(), srcBounds);
 					}
 
 					return null;

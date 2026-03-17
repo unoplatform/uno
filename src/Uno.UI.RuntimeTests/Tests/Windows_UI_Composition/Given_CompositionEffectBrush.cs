@@ -50,7 +50,7 @@ public class Given_CompositionEffectBrush
 
 		var screenshot = await UITestHelper.ScreenShot(host);
 
-		// Red (255,0,0) grayscaled: 0.21*255≈54, 0.72*255≈184, 0.07*255≈18 → ~(54,54,54)
+		// Red (255,0,0) grayscaled should produce approximately equal R,G,B channels.
 		// The key assertion: the center should NOT be transparent/empty (the bug produced nothing).
 		ImageAssert.DoesNotHaveColorAt(screenshot, 50, 50, Colors.Transparent);
 
@@ -59,7 +59,7 @@ public class Given_CompositionEffectBrush
 		Assert.IsTrue(pixel.A > 200, $"Expected mostly opaque pixel, got A={pixel.A}");
 		Assert.IsTrue(
 			System.Math.Abs(pixel.R - pixel.G) < 20 && System.Math.Abs(pixel.G - pixel.B) < 20,
-			$"Expected grayscale pixel (R≈G≈B), got ({pixel.R},{pixel.G},{pixel.B})");
+			$"Expected grayscale pixel (R~=G~=B), got ({pixel.R},{pixel.G},{pixel.B})");
 	}
 
 	[TestMethod]
@@ -75,7 +75,7 @@ public class Given_CompositionEffectBrush
 		var factory = compositor.CreateEffectFactory(invert);
 		var effectBrush = factory.CreateBrush();
 
-		// White (255,255,255) inverted → Black (0,0,0)
+		// White (255,255,255) inverted should produce Black (0,0,0)
 		effectBrush.SetSourceParameter("source", compositor.CreateColorBrush(Colors.White));
 
 		var visual = compositor.CreateShapeVisual();
@@ -165,14 +165,14 @@ public class Given_CompositionEffectBrush
 
 		var screenshot = await UITestHelper.ScreenShot(host);
 
-		// Desaturated red should be a gray — NOT transparent
+		// Desaturated red should be a gray - NOT transparent
 		ImageAssert.DoesNotHaveColorAt(screenshot, 50, 50, Colors.Transparent);
 
 		var pixel = screenshot.GetPixel(50, 50);
 		Assert.IsTrue(pixel.A > 200, $"Expected mostly opaque pixel, got A={pixel.A}");
 		Assert.IsTrue(
 			System.Math.Abs(pixel.R - pixel.G) < 20 && System.Math.Abs(pixel.G - pixel.B) < 20,
-			$"Expected desaturated pixel (R≈G≈B), got ({pixel.R},{pixel.G},{pixel.B})");
+			$"Expected desaturated pixel (R~=G~=B), got ({pixel.R},{pixel.G},{pixel.B})");
 	}
 
 	[TestMethod]
