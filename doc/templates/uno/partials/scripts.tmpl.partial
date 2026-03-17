@@ -49,6 +49,7 @@ mermaid.init(undefined, ".lang-mermaid");
                         indexName: 'platform',
                         apiKey: '7877394996f96cde1a9b795dce3f7787',
                         placeholder: 'Search Docs...',
+                        maxResultsPerGroup: 10,
                         transformItems(items) {
                             // 1. Remove breadcrumb-anchored entries (crawler artifact).
                             var filtered = items.filter(function(item) {
@@ -177,6 +178,7 @@ mermaid.init(undefined, ".lang-mermaid");
 
         console.log("MutationObserver set up to observe 'docsearch' element");
     }
+
 
     /**
      * Retry initialization using requestAnimationFrame
