@@ -26,7 +26,6 @@ internal static class XamlCodeBehindParser
 		["Application"] = "Microsoft.UI.Xaml.Application",
 		["ResourceDictionary"] = "Microsoft.UI.Xaml.ResourceDictionary",
 		["ContentDialog"] = "Microsoft.UI.Xaml.Controls.ContentDialog",
-		["SwapChainPanel"] = "Microsoft.UI.Xaml.Controls.SwapChainPanel",
 	};
 
 	/// <summary>

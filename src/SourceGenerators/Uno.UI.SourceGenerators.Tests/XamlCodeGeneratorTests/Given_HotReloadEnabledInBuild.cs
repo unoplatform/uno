@@ -224,14 +224,14 @@ public class Given_HotReloadEnabledInBuild
 	}
 
 	[TestMethod]
-	public async Task SetOriginalSourceLocationInOutputForTopLevelResourceDictionaries()
+	public async Task ResourceDictionaryCodeBehind()
 	{
 		var xamlFile = new XamlFile("MyDictionary.xaml", """
 			<ResourceDictionary
 			      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 			      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			      xmlns:local="using:TestRepro"
-			      x:Class="TestNamespace.TestClass">
+			      x:Class="Test.RD">
 			</ResourceDictionary>
 			""");
 

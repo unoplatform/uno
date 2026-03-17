@@ -32,10 +32,10 @@ using _View = UIKit.UIView;
 using _View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace TestNamespace
+namespace Test
 {
 	[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-	public sealed partial class TestClass : global::Microsoft.UI.Xaml.ResourceDictionary
+	public sealed partial class RD : global::Microsoft.UI.Xaml.ResourceDictionary
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_prefix_MyDictionary_b7707bcf1e73425b710b6a5d04177088 = "ms-appx:///TestProject/";
@@ -65,7 +65,7 @@ namespace MyProject
 		private const string __baseUri_MyDictionary_b7707bcf1e73425b710b6a5d04177088 = "ms-appx:///TestProject/";
 		// This non-static inner class is a means of reducing size of AOT compilations by avoiding many accesses to static members from a static callsite, which adds costly class initializer checks each time.
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		internal string __MyDictionary_b7707bcf1e73425b710b6a5d04177088_checksum() => "8a20e730b77da8f904f7548b2c39750361332923";
+		internal string __MyDictionary_b7707bcf1e73425b710b6a5d04177088_checksum() => "f5612b407065b7c60b576f1975640cb2ad0e3734";
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
 		internal sealed class ResourceDictionarySingleton__MyDictionary_b7707bcf1e73425b710b6a5d04177088 : global::Uno.UI.IXamlResourceDictionaryProvider
 		{
