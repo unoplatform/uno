@@ -171,6 +171,11 @@ internal static class ConfigWriter
 					}
 
 					writer.WritePropertyName(propertyName);
+					if (!ReadPastComments(reader, writer))
+					{
+						throw new System.Text.Json.JsonException("Unexpected end of JSON while reading property value.");
+					}
+
 					if (string.Equals(propertyName, rootKey, StringComparison.Ordinal))
 					{
 						foundRootKey = true;
@@ -224,6 +229,11 @@ internal static class ConfigWriter
 					}
 
 					writer.WritePropertyName(propertyName);
+					if (!ReadPastComments(reader, writer))
+					{
+						throw new System.Text.Json.JsonException("Unexpected end of JSON while reading property value.");
+					}
+
 					if (string.Equals(propertyName, rootKey, StringComparison.Ordinal))
 					{
 						removed |= WriteServerCollectionForRemove(reader, writer, serverKey);
@@ -277,6 +287,11 @@ internal static class ConfigWriter
 					}
 
 					writer.WritePropertyName(propertyName);
+					if (!ReadPastComments(reader, writer))
+					{
+						throw new System.Text.Json.JsonException("Unexpected end of JSON while reading property value.");
+					}
+
 					if (string.Equals(propertyName, serverKey, StringComparison.Ordinal))
 					{
 						foundEntry = true;
@@ -334,11 +349,17 @@ internal static class ConfigWriter
 					if (string.Equals(propertyName, serverKey, StringComparison.Ordinal))
 					{
 						removed = true;
+						while (reader.TokenType == JsonToken.Comment) { if (!reader.Read()) break; }
 						SkipValue(reader);
 					}
 					else
 					{
 						writer.WritePropertyName(propertyName);
+						if (!ReadPastComments(reader, writer))
+						{
+							throw new System.Text.Json.JsonException("Unexpected end of JSON while reading property value.");
+						}
+
 						CopyValue(reader, writer);
 					}
 
@@ -382,6 +403,8 @@ internal static class ConfigWriter
 					{
 						throw new System.Text.Json.JsonException("Unexpected end of JSON while reading property value.");
 					}
+
+					while (reader.TokenType == JsonToken.Comment) { if (!reader.Read()) break; }
 
 					if (remainingProperties.Remove(propertyName))
 					{
@@ -447,6 +470,11 @@ internal static class ConfigWriter
 						throw new System.Text.Json.JsonException("Unexpected end of JSON while reading property value.");
 					}
 
+					if (!ReadPastComments(reader, writer))
+					{
+						throw new System.Text.Json.JsonException("Unexpected end of JSON while reading property value.");
+					}
+
 					CopyValue(reader, writer);
 				}
 
@@ -502,6 +530,25 @@ internal static class ConfigWriter
 			default:
 				throw new System.Text.Json.JsonException($"Unsupported token type '{reader.TokenType}'.");
 		}
+	}
+
+	/// <summary>
+	/// Advances the reader past any <see cref="JsonToken.Comment"/> tokens,
+	/// writing them to the writer. Returns <c>false</c> if the reader is exhausted.
+	/// After this call, the reader is positioned on the first non-comment token.
+	/// </summary>
+	private static bool ReadPastComments(JsonTextReader reader, JsonTextWriter writer)
+	{
+		while (reader.TokenType == JsonToken.Comment)
+		{
+			writer.WriteComment(reader.Value?.ToString());
+			if (!reader.Read())
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	private static void SkipValue(JsonTextReader reader)
