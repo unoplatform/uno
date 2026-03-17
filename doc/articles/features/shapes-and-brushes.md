@@ -99,6 +99,37 @@ Because many WinUI styles use `AcrylicBrush` on elements which violate this cond
 <AcrylicBrush x:Key="MyAcrylicBrush" AlwaysUseFallback="False" ... />
 ```
 
+### AcrylicBrush rendering on Skia
+
+On Skia targets, Uno Platform provides two rendering implementations for `AcrylicBrush`:
+
+- **CompositionEffectBrush-based**: An implementation that goes through the full composition effect graph (backdrop, blur, luminosity blend, tint blend, noise), matching WinUI's rendering pipeline more closely at the cost of performance.
+- **Optimized**: A Skia-native implementation that performs downscaled blurring for better performance. This produces visually similar but not pixel-identical output compared to CompositionEffectBrush implementation.
+
+By default, the CompositionEffectBrush implementation is used. To opt an individual `AcrylicBrush` into the optimized path, use the `AcrylicBrushExtensions.UseCompositionEffectBrush` attached property:
+
+```xml
+<Page xmlns:media="using:Microsoft.UI.Xaml.Media">
+    <Border>
+        <Border.Background>
+            <AcrylicBrush
+                media:AcrylicBrushExtensions.UseCompositionEffectBrush="False"
+                TintColor="#2E86C1"
+                TintOpacity="0.8" />
+        </Border.Background>
+    </Border>
+</Page>
+```
+
+Or in C#:
+
+```csharp
+var brush = new AcrylicBrush { TintColor = Colors.Blue, TintOpacity = 0.8 };
+AcrylicBrushExtensions.SetUseCompositionEffectBrush(brush, true);
+```
+
+This property has no effect on non-Skia targets.
+
 ## Brushes Usages
 
 Where you can use which brushes

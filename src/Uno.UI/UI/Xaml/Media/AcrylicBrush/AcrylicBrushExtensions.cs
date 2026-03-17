@@ -2,6 +2,12 @@ namespace Microsoft.UI.Xaml.Media;
 
 public static class AcrylicBrushExtensions
 {
+	/// <remarks>
+	/// When set to <c>true</c> on an <see cref="AcrylicBrush"/>, the brush uses the
+	/// CompositionEffectBrush-based rendering pipeline (Skia only). When <c>false</c>,
+	/// the optimized Skia-native implementation is used.
+	/// This property has no effect on non-Skia targets.
+	/// </remarks>
 	public static DependencyProperty UseCompositionEffectBrushProperty { get; } =
 		DependencyProperty.RegisterAttached(
 			"UseCompositionEffectBrush",
@@ -10,18 +16,14 @@ public static class AcrylicBrushExtensions
 			new FrameworkPropertyMetadata(true));
 
 	/// <summary>
-	/// Gets a value indicating whether the specified AcrylicBrush uses the
+	/// Gets a value indicating whether the specified <see cref="AcrylicBrush"/> uses the
 	/// CompositionEffectBrush-based implementation (Skia only).
-	/// When true, uses the CompositionEffectBrush-based implementation which goes through the
-	/// full composition effect graph (blur, luminosity blend, tint blend, noise).
-	/// When false (default), uses an optimized Skia-based implementation that renders
-	/// similar but not identical output.
 	/// </summary>
 	public static bool GetUseCompositionEffectBrush(AcrylicBrush brush) =>
 		(bool)brush.GetValue(UseCompositionEffectBrushProperty);
 
 	/// <summary>
-	/// Sets a value indicating whether the specified AcrylicBrush should use the
+	/// Sets a value indicating whether the specified <see cref="AcrylicBrush"/> should use the
 	/// CompositionEffectBrush-based implementation (Skia only).
 	/// </summary>
 	public static void SetUseCompositionEffectBrush(AcrylicBrush brush, bool value) =>
