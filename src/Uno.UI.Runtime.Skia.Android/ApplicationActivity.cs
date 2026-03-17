@@ -44,6 +44,12 @@ namespace Microsoft.UI.Xaml
 		private bool _isContentViewSet;
 
 		/// <summary>
+		/// Set by the GL thread after the first Skia frame has been rendered.
+		/// Used to keep the splash screen visible until pixels are ready.
+		/// </summary>
+		internal volatile bool FirstFrameRendered;
+
+		/// <summary>
 		/// The windows model implies only one managed activity.
 		/// </summary>
 		internal static ApplicationActivity Instance { get; private set; } = null!;
