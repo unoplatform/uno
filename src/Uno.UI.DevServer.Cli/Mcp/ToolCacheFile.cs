@@ -5,6 +5,7 @@ using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
+using Uno.UI.DevServer.Cli.Helpers;
 
 namespace Uno.UI.DevServer.Cli.Mcp;
 
@@ -168,13 +169,7 @@ internal static class ToolCacheFile
 			return string.Empty;
 		}
 
-		var normalized = solutionDirectory.Replace('\\', '/');
-
-		// Only case-fold on case-insensitive filesystems: Windows, or WSL-mounted Windows drives.
-		if (OperatingSystem.IsWindows() || normalized.StartsWith("/mnt/", StringComparison.Ordinal))
-		{
-			normalized = normalized.ToLowerInvariant();
-		}
+		var normalized = PathComparison.Normalize(solutionDirectory);
 		var bytes = Encoding.UTF8.GetBytes(normalized);
 		var hash = SHA256.HashData(bytes);
 		return Convert.ToHexString(hash)[..16];

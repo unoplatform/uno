@@ -248,15 +248,23 @@ internal class ToolListManager(
 
 	public static IList<Tool> AppendBuiltInTools(IList<Tool> tools)
 	{
-		// Avoid duplicates if the tool already appears (e.g. from cache)
-		if (tools.Any(t => t.Name == HealthService.HealthTool.Name))
+		var result = new List<Tool>(tools.Count + 2);
+		var builtInTools = new[] { HealthService.HealthTool, ProxyLifecycleManager.SelectSolutionTool };
+
+		foreach (var builtInTool in builtInTools)
 		{
-			return tools;
+			var existingTool = tools.FirstOrDefault(t => string.Equals(t.Name, builtInTool.Name, StringComparison.Ordinal));
+			result.Add(existingTool ?? builtInTool);
 		}
 
-		// Prepend so the health tool is always visible
-		var result = new List<Tool>(tools.Count + 1) { HealthService.HealthTool };
-		result.AddRange(tools);
+		foreach (var tool in tools)
+		{
+			if (!builtInTools.Any(builtInTool => string.Equals(tool.Name, builtInTool.Name, StringComparison.Ordinal)))
+			{
+				result.Add(tool);
+			}
+		}
+
 		return result;
 	}
 

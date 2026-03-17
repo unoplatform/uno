@@ -16,6 +16,55 @@ public class Given_DiscoveryIssueMapper
 	}
 
 	[TestMethod]
+	public void WhenNoCandidates_ReportsNoSolutionFound()
+	{
+		var discovery = new DiscoveryInfo
+		{
+			ResolutionKind = WorkspaceResolutionKind.NoCandidates,
+		};
+
+		var issues = DiscoveryIssueMapper.MapDiscoveryIssues(discovery);
+
+		issues.Should().HaveCount(1);
+		issues[0].Code.Should().Be(IssueCode.NoSolutionFound);
+		issues[0].Severity.Should().Be(ValidationSeverity.Warning);
+	}
+
+	[TestMethod]
+	public void WhenAmbiguous_ReportsWorkspaceAmbiguous()
+	{
+		var discovery = new DiscoveryInfo
+		{
+			ResolutionKind = WorkspaceResolutionKind.Ambiguous,
+			CandidateSolutions = ["/tmp/a.slnx", "/tmp/b.slnx"],
+		};
+
+		var issues = DiscoveryIssueMapper.MapDiscoveryIssues(discovery);
+
+		issues.Should().HaveCount(1);
+		issues[0].Code.Should().Be(IssueCode.WorkspaceAmbiguous);
+		issues[0].Severity.Should().Be(ValidationSeverity.Warning);
+		issues[0].Message.Should().Contain("Multiple Uno solutions matched the current directory");
+		issues[0].Remediation.Should().Contain("restart the MCP bridge");
+	}
+
+	[TestMethod]
+	public void WhenNoValidWorkspace_ReportsRestartGuidanceForPostStartupChanges()
+	{
+		var discovery = new DiscoveryInfo
+		{
+			ResolutionKind = WorkspaceResolutionKind.NoValidWorkspace,
+			CandidateSolutions = ["/tmp/app.slnx"],
+		};
+
+		var issues = DiscoveryIssueMapper.MapDiscoveryIssues(discovery);
+
+		issues.Should().HaveCount(1);
+		issues[0].Code.Should().Be(IssueCode.WorkspaceNotResolved);
+		issues[0].Remediation.Should().Contain("restart the MCP bridge");
+	}
+
+	[TestMethod]
 	public void WhenGlobalJsonMissing_ReportsGlobalJsonNotFound()
 	{
 		var discovery = new DiscoveryInfo { GlobalJsonPath = null };
@@ -60,6 +109,8 @@ public class Given_DiscoveryIssueMapper
 		issues.Should().HaveCount(1);
 		issues[0].Code.Should().Be(IssueCode.SdkNotInCache);
 		issues[0].Severity.Should().Be(ValidationSeverity.Fatal);
+		issues[0].Remediation.Should().Contain("dotnet restore");
+		issues[0].Remediation.Should().Contain("uno_app_select_solution");
 	}
 
 	[TestMethod]
@@ -102,6 +153,7 @@ public class Given_DiscoveryIssueMapper
 
 		issues.Should().Contain(i => i.Code == IssueCode.DevServerPackageNotCached);
 		issues.First(i => i.Code == IssueCode.DevServerPackageNotCached).Severity.Should().Be(ValidationSeverity.Fatal);
+		issues.First(i => i.Code == IssueCode.DevServerPackageNotCached).Remediation.Should().Contain("uno_app_select_solution");
 	}
 
 	[TestMethod]
@@ -216,6 +268,7 @@ public class Given_DiscoveryIssueMapper
 
 		issues.Should().Contain(i => i.Code == IssueCode.AddInPackageNotCached);
 		issues.First(i => i.Code == IssueCode.AddInPackageNotCached).Severity.Should().Be(ValidationSeverity.Warning);
+		issues.First(i => i.Code == IssueCode.AddInPackageNotCached).Remediation.Should().Contain("uno_app_select_solution");
 	}
 
 	[TestMethod]
