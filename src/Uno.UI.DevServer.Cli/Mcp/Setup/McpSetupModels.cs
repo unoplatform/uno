@@ -22,7 +22,8 @@ internal sealed record IdeProfile(
 	IReadOnlyDictionary<string, string>? TypeMap = null,
 	bool MergeCommandArgs = false,
 	string Strategy = "file",
-	string? ManualRegistrationMessage = null);
+	string? ManualRegistrationMessage = null,
+	bool ExcludeFromDetection = false);
 // Future direction:
 // Some IDE clients expose a native CLI for MCP registration (for example Claude Code).
 // We currently model every profile as file-backed because status/install/uninstall are

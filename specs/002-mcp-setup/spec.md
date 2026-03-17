@@ -972,8 +972,7 @@ All new code under `src/Uno.UI.DevServer.Cli/Mcp/Setup/`:
 
 | File | Responsibility |
 |------|----------------|
-| `IdeId.cs` | Enum or registry of the supported MCP client identifiers |
-| `IdeProfile.cs` | Record: config paths, write target, JSON root key, strategy, and per-client formatting controls (`includeType`, `urlKey`, `typeMap`, `mergeCommandArgs`) |
+| `McpSetupModels.cs` | All model records: `IdeProfile` (config paths, write target, JSON root key, strategy, per-client formatting controls, `excludeFromDetection`), `ServerDefinition`, `Definitions`, response DTOs (`StatusResponse`, `OperationResponse`, `ServerIdeStatus`, `LocationEntry`, `OperationEntry`) |
 | `DefinitionsLoader.cs` | Loads `ide-profiles.json` and `server-definitions.json` from embedded resources or external files (`--ide-definitions`, `--server-definitions`). See [Definitions Files](#12-definitions-files) |
 | `ServerDefinitionResolver.cs` | Builds concrete `JsonObject` definitions from a `ServerDefinition` template. Applies variant resolution (stable/prerelease/pinned) based on auto-detect + CLI overrides |
 | `DuplicateDetector.cs` | Pure static methods: `IsUnoAppEntry(keyName, jsonObj)`, `IsUnoDocsEntry(keyName, jsonObj)`, `IsUpToDate(existing, expected)` |
@@ -982,13 +981,12 @@ All new code under `src/Uno.UI.DevServer.Cli/Mcp/Setup/`:
 | `IFileSystem.cs` | I/O abstraction: `FileExists`, `DirectoryExists`, `ReadAllText`, `WriteAllText`, `CreateDirectory`, `IsReadOnly`, `GetUserHomePath`, `GetAppDataPath` |
 | `FileSystem.cs` | Production `IFileSystem` wrapping `System.IO` |
 | `McpSetupOrchestrator.cs` | `Status()`, `Install()`, `Uninstall()` — orchestrates scanner + writer via `IFileSystem` |
-| `McpSetupModels.cs` | Response DTOs: `StatusResponse`, `OperationResponse`, and their child records (`ServerIdeStatus`, `LocationEntry`, `OperationEntry`) |
 
 ### Modified Files
 
 | File | Change |
 |------|--------|
-| `CliManager.cs` | `RunMcpSubcommandAsync()` dispatcher: routes `start` to existing proxy, `status/install/uninstall` to orchestrator. `--mcp-app` becomes alias |
+| `CliManager.cs` | `RunMcpSubcommand()` dispatcher: routes `status/install/uninstall` to orchestrator. `mcp start` routed in `RunAsync()` via workspace resolution. `--mcp-app` remains as alias |
 | `Program.cs` | DI registration for `IFileSystem` and `McpSetupOrchestrator`. Updated help text with `mcp` command group |
 
 ### Testability
@@ -1339,37 +1337,40 @@ The canonical invocation (`dnx` runner) is what `install` writes, but `detection
 ### DefinitionsLoader API
 
 ```csharp
-public static class DefinitionsLoader
+internal static class DefinitionsLoader
 {
     /// <summary>
-/// Loads MCP client profiles and server definitions from embedded resources,
+    /// Loads MCP client profiles and server definitions from embedded resources,
     /// with optional external file overrides.
     /// </summary>
     public static Definitions Load(
-        IFileSystem fs,
+        IFileSystem? fs = null,
         string? ideDefinitionsPath = null,
         string? serverDefinitionsPath = null);
 }
 
-public record Definitions(
+internal sealed record Definitions(
     IReadOnlyDictionary<string, IdeProfile> Ides,
     IReadOnlyDictionary<string, ServerDefinition> Servers);
 
-public record IdeProfile(
+internal sealed record IdeProfile(
     string[] ConfigPaths,
     string WriteTarget,
     string JsonRootKey,
     bool IncludeType = false,
     string? UrlKey = null,
     IReadOnlyDictionary<string, string>? TypeMap = null,
-    bool MergeCommandArgs = false);
+    bool MergeCommandArgs = false,
+    string Strategy = "file",
+    string? ManualRegistrationMessage = null,
+    bool ExcludeFromDetection = false);
 
-public record ServerDefinition(
+internal sealed record ServerDefinition(
     string Transport,
-    IReadOnlyDictionary<string, JsonObject> Variants,
+    Dictionary<string, JsonObject> Variants,
     DetectionPatterns Detection);
 
-public record DetectionPatterns(
+internal sealed record DetectionPatterns(
     string[] KeyPatterns,
     string[]? CommandPatterns,
     string[]? UrlPatterns);

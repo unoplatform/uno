@@ -104,6 +104,7 @@
       "{workspace}/.vscode/mcp.json"
     ],
     "writeTarget": "{workspace}/.vscode/mcp.json",
-    "jsonRootKey": "servers"
+    "jsonRootKey": "servers",
+    "excludeFromDetection": true
   }
 }

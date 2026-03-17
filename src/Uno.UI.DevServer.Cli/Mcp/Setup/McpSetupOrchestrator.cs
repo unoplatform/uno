@@ -32,7 +32,7 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 		foreach (var (ideName, profile) in defs.Ides)
 		{
 			var scanResult = scanner.Scan(profile, workspace, defs.Servers, expectedDefinitions);
-			if (scanResult.Detected)
+			if (scanResult.Detected && !profile.ExcludeFromDetection)
 			{
 				detectedIdes.Add(ideName);
 			}
@@ -207,15 +207,15 @@ internal sealed class McpSetupOrchestrator(IFileSystem fs, ILogger<McpSetupOrche
 						continue;
 					}
 
+					if (_fs.IsReadOnly(configPath))
+					{
+						operations.Add(new OperationEntry(serverName, targetIde, "error", configPath, "File is read-only"));
+						found = true;
+						continue;
+					}
+
 					if (!dryRun)
 					{
-						if (_fs.IsReadOnly(configPath))
-						{
-							operations.Add(new OperationEntry(serverName, targetIde, "error", configPath, "File is read-only"));
-							found = true;
-							continue;
-						}
-
 						if (backedUpFiles.Add(configPath))
 						{
 							_fs.BackupFile(configPath);
