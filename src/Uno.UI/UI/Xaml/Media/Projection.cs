@@ -8,7 +8,7 @@ namespace Microsoft.UI.Xaml.Media;
 /// <summary>
 /// Provides a base class for projections, which describe how to transform an object in 3-D space using perspective transforms.
 /// </summary>
-public partial class Projection : DependencyObject
+public partial class Projection : DependencyObject, IMultiParentShareableDependencyObject
 {
 	private WeakReference<UIElement> _owner;
 

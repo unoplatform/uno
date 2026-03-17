@@ -2,9 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 
@@ -44,9 +46,35 @@ internal readonly partial struct UnicodeText
 			{
 				// On Windows, we get the ICU binaries from the uno.icu-win package.
 				_icuVersion = 77;
-				if (!NativeLibrary.TryLoad("icuuc77", typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc))
+
+				LoadNativeLibrary("icuuc77", typeof(ICU).Assembly, NativeLibrarySearchDirectories, out libicuuc);
+
+				void LoadNativeLibrary(string libraryPath, Assembly assembly, DllImportSearchPath? searchPath, out nint handle)
 				{
-					throw new Exception("Failed to load libicuuc.");
+					try
+					{
+						// Use NativeLibrary.Load instead of TryLoad so that the OS error (GetLastError) is preserved and surfaced through the thrown exception.
+						handle = NativeLibrary.Load(libraryPath, assembly, searchPath);
+					}
+					catch (Exception e)
+					{
+						var builder = new StringBuilder()
+							.AppendLine($"Failed to load '{libraryPath}'.")
+							.AppendLine($"- Environment.OSVersion: {Environment.OSVersion.VersionString}")
+							.AppendLine($"- DllImportSearchPath: {searchPath}");
+						CheckAsmPath(DllImportSearchPath.ApplicationDirectory, AppContext.BaseDirectory);
+#pragma warning disable IL3000
+						CheckAsmPath(DllImportSearchPath.AssemblyDirectory, Path.GetDirectoryName(assembly.Location));
+#pragma warning restore IL3000
+						CheckAsmPath(DllImportSearchPath.UserDirectories, "(AddDllDirectory cannot be retroactively retrieved)", ignore: true);
+						void CheckAsmPath(DllImportSearchPath flag, string? path, bool ignore = false)
+						{
+							if (searchPath?.HasFlag(flag) is not true) return;
+							var hit = !ignore && Path.Exists(path) && File.Exists(Path.Combine(path, libraryPath) + ".dll");
+							builder.AppendLine($"  - {flag}: {(ignore ? "N/A" : (hit ? "HIT" : "MISS"))} {path}");
+						}
+						throw new Exception(builder.ToString(), e);
+					}
 				}
 			}
 			else if (OperatingSystem.IsIOS())

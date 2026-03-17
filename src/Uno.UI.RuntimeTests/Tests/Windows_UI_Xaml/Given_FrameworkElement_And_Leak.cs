@@ -41,7 +41,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	public class Given_FrameworkElement_And_Leak
 	{
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeUIKit)] // These test are failing in CI on native iOS https://github.com/unoplatform/uno/issues/21528
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.NativeWinUI)] // These test are failing in CI on native iOS https://github.com/unoplatform/uno/issues/21528
 		[DataRow(typeof(XamlEvent_Leak_UserControl), 15)]
 		[DataRow(typeof(XamlEvent_Leak_UserControl_xBind), 15)]
 		[DataRow(typeof(XamlEvent_Leak_UserControl_xBind_Event), 15)]

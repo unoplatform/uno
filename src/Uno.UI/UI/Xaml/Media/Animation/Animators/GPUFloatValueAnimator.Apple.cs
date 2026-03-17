@@ -239,11 +239,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			{
 				for (int i = _weakActiveInstanceCache.Count - 1; i >= 0; i--)
 				{
-					if (_weakActiveInstanceCache[i] is var pInstance &&
-						pInstance.Target == this)
+					if (_weakActiveInstanceCache[i].TryGetTarget<GPUFloatValueAnimator>(out var pInstance) &&
+						pInstance == this)
 					{
+						WeakReferencePool.ReturnWeakReference(this, _weakActiveInstanceCache[i]);
 						_weakActiveInstanceCache.RemoveAt(i);
-						WeakReferencePool.ReturnWeakReference(this, pInstance);
 					}
 				}
 			}
@@ -520,16 +520,16 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			{
 				for (int i = _weakActiveInstanceCache.Count - 1; i >= 0; i--)
 				{
-					if (_weakActiveInstanceCache[i] is var pInstance &&
-						pInstance.IsAlive &&
-						pInstance.Target is GPUFloatValueAnimator instance)
+					if (_weakActiveInstanceCache[i].TryGetTarget<GPUFloatValueAnimator>(out var instance))
 					{
 						instance.OnCoreWindowVisibilityChangedImpl(args);
 					}
 					else // purge collected instance
 					{
+						var weak = _weakActiveInstanceCache[i];
+						var owner = weak.Owner;
+						WeakReferencePool.ReturnWeakReference(owner, weak);
 						_weakActiveInstanceCache.RemoveAt(i);
-						WeakReferencePool.ReturnWeakReference(pInstance.Owner, pInstance);
 					}
 				}
 			}

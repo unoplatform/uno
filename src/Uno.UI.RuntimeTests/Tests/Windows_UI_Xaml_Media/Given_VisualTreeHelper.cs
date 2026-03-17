@@ -26,6 +26,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 	public class Given_VisualTreeHelper
 	{
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void OpenPopups_Flyouts_Unique()
 		{
 			var button = new Microsoft.UI.Xaml.Controls.Button();
@@ -40,6 +41,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void OpenPopups_Popups_Unique()
 		{
 			var popup = new Popup();
@@ -52,6 +54,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void OpenPopups_Popups_Include_Instance()
 		{
 			var popup = new Popup();

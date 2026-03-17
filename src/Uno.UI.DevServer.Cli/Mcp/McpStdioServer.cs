@@ -105,7 +105,7 @@ internal class McpStdioServer(
 
 				if (forceRootsFallback && getRoots().Length == 0)
 				{
-					List<Tool> tools = [HealthService.HealthTool, addRootsTool];
+					List<Tool> tools = [addRootsTool];
 					var cachedTools = toolListManager.GetCachedTools();
 					if (cachedTools.Length > 0)
 					{
@@ -115,7 +115,7 @@ internal class McpStdioServer(
 					logger.LogTrace("Upstream client is not connected, returning {Count} tools", tools.Count);
 
 					// The devserver is not started yet, so there are no tools to report.
-					return new() { Tools = tools };
+					return new() { Tools = ToolListManager.AppendBuiltInTools(tools) };
 				}
 
 				var result = await toolListManager.ListToolsWithTimeoutAsync(ct);
