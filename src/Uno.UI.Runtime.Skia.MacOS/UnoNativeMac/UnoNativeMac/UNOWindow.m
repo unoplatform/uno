@@ -121,7 +121,10 @@ NSWindow* uno_window_create(double width, double height)
     id device = uno_application_get_metal_device();
     if (device) {
         UNOMetalFlippedView *v = [[UNOMetalFlippedView alloc] initWithFrame:size device:device];
-        v.enableSetNeedsDisplay = YES;
+        // Disable MTKView auto-draw. Frame rendering is driven by the managed
+        // render thread via uno_window_acquire_next_frame / uno_window_present_frame.
+        v.paused = YES;
+        v.enableSetNeedsDisplay = NO;
         window.metalViewDelegate = [[UNOMetalViewDelegate alloc] initWithMetalKitView:v];
         v.delegate = window.metalViewDelegate;
         vc.view = v;
