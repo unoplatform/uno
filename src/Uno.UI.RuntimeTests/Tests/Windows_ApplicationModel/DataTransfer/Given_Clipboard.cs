@@ -45,7 +45,8 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, NativeIOS | NativeAndroid | SkiaWin32 | SkiaWasm)]
+	// note: do not enable this for wasm, without adjust default clipboard permission
+	[PlatformCondition(Include, NativeIOS | NativeAndroid | SkiaWin32)]
 	public async Task When_GetSet_Clipboard_Text()
 	{
 		var package = new DataPackage();

@@ -21,15 +21,18 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading.Tasks;
 using SkiaSharp;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.Win32;
@@ -47,25 +50,31 @@ internal partial class Win32ClipboardExtension : IClipboardExtension
 {
 	public static Win32ClipboardExtension Instance { get; } = new();
 
-	private static readonly Dictionary<string, Func<nint, string?>> _knownTextBasedClipboardFormats = new()
+
+	private static readonly Dictionary<string, (PointerToString FromPointer, StringToPointer ToPointer)> _knownTextBasedClipboardFormats = new()
 	{
-		["HTML Format"] = Marshal.PtrToStringUTF8, // HTML fragment with header metadata
-		["Rich Text Format"] = Marshal.PtrToStringAnsi, // RTF document
-		["Rich Text Format Without Objects"] = Marshal.PtrToStringAnsi, // RTF without embedded objects
-		["Rich Text & Unicode"] = Marshal.PtrToStringUni, // RTF with Unicode support
-		["XML Spreadsheet"] = Marshal.PtrToStringUTF8, // Excel XML format
-		["CSV"] = Marshal.PtrToStringAnsi, // Comma-separated values
-		["Csv"] = Marshal.PtrToStringAnsi, // Alternate CSV registration (Excel)
-		["MIME:text/plain"] = Marshal.PtrToStringUTF8, // Plain text via MIME
-		["MIME:text/html"] = Marshal.PtrToStringUTF8, // HTML via MIME
-		["text/html"] = Marshal.PtrToStringUTF8, // Raw HTML (Chromium/browsers)
-		["text/plain"] = Marshal.PtrToStringUTF8, // Raw plain text (Chromium/browsers)
-		["text/uri-list"] = Marshal.PtrToStringUTF8, // Newline-separated URIs
-		["UniformResourceLocator"] = Marshal.PtrToStringAnsi, // Single URL
-		["UniformResourceLocatorW"] = Marshal.PtrToStringUni, // Single URL (wide)
-		["FileName"] = Marshal.PtrToStringAnsi, // File path
-		["FileNameW"] = Marshal.PtrToStringUni, // File path (wide)
+		["HTML Format"] = (Marshal.PtrToStringUTF8, Marshal.StringToCoTaskMemUTF8), // HTML fragment with header metadata
+		["Rich Text Format"] = (Marshal.PtrToStringAnsi, Marshal.StringToCoTaskMemAnsi), // RTF document
+		["Rich Text & Unicode"] = (Marshal.PtrToStringUni, Marshal.StringToCoTaskMemUni), // RTF with Unicode support
+		["Rich Text Format Without Objects"] = (Marshal.PtrToStringAnsi, Marshal.StringToCoTaskMemAnsi), // RTF without embedded objects
+		["XML Spreadsheet"] = (Marshal.PtrToStringUTF8, Marshal.StringToCoTaskMemUTF8), // Excel XML format
+		["CSV"] = (Marshal.PtrToStringAnsi, Marshal.StringToCoTaskMemAnsi), // Comma-separated values
+		["Csv"] = (Marshal.PtrToStringAnsi, Marshal.StringToCoTaskMemAnsi), // Alternate CSV registration (Excel)
+		["MIME:text/plain"] = (Marshal.PtrToStringUTF8, Marshal.StringToCoTaskMemUTF8), // Plain text via MIME
+		["MIME:text/html"] = (Marshal.PtrToStringUTF8, Marshal.StringToCoTaskMemUTF8), // HTML via MIME
+		["text/html"] = (Marshal.PtrToStringUTF8, Marshal.StringToCoTaskMemUTF8), // Raw HTML (Chromium/browsers)
+		["text/plain"] = (Marshal.PtrToStringUTF8, Marshal.StringToCoTaskMemUTF8), // Raw plain text (Chromium/browsers)
+		["text/uri-list"] = (Marshal.PtrToStringUTF8, Marshal.StringToCoTaskMemUTF8), // Newline-separated URIs
+		["UniformResourceLocator"] = (Marshal.PtrToStringAnsi, Marshal.StringToCoTaskMemAnsi), // Single URL
+		["UniformResourceLocatorW"] = (Marshal.PtrToStringUni, Marshal.StringToCoTaskMemUni), // Single URL (wide)
+		["FileName"] = (Marshal.PtrToStringAnsi, Marshal.StringToCoTaskMemAnsi), // File path
+		["FileNameW"] = (Marshal.PtrToStringUni, Marshal.StringToCoTaskMemUni), // File path (wide)
 	};
+	private static readonly Lazy<Encoding> _oemEncoding = new(() =>
+	{
+		Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+		return Encoding.GetEncoding(CultureInfo.CurrentCulture.TextInfo.OEMCodePage);
+	});
 
 	// _windowClass must be statically stored, otherwise lpfnWndProc will get collected and the CLR will throw some weird exceptions
 	// ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
@@ -191,6 +200,8 @@ internal partial class Win32ClipboardExtension : IClipboardExtension
 			}
 		}
 	}
+	private delegate string? PointerToString(nint p);
+	private delegate nint StringToPointer(string s);
 }
 
 partial class Win32ClipboardExtension // from clipboard
@@ -286,14 +297,12 @@ partial class Win32ClipboardExtension // from clipboard
 		using var lockDisposable = Win32Helper.GlobalLock(handle, out var ptr);
 		if (lockDisposable is null) return;
 
-		package.SetData(GetClipboardFormatName(format), Marshal.PtrToStringUTF8((IntPtr)ptr)!);
-	}
-	private static unsafe void GetString(DataPackage package, CLIPBOARD_FORMAT format, HGLOBAL handle)
-	{
-		using var lockDisposable = Win32Helper.GlobalLock(handle, out var ptr);
-		if (lockDisposable is null) return;
+		var length = (int)PInvoke.GlobalSize((HGLOBAL)(IntPtr)handle);
+		var text = length > 1
+			? _oemEncoding.Value.GetString((byte*)ptr, length - 1)
+			: string.Empty;
 
-		package.SetData(GetClipboardFormatName(format), Marshal.PtrToStringAnsi((IntPtr)ptr)!);
+		package.SetData(GetClipboardFormatName(format), text);
 	}
 #if false // this would require System.Drawing.Common
 	private static void GetBitmap(DataPackage package, CLIPBOARD_FORMAT format, HGLOBAL handle) => package
@@ -388,9 +397,9 @@ partial class Win32ClipboardExtension // from clipboard
 
 			// note: WinUI Clipboard seem to detect certain named format as string, it is unknown by which mechanism.
 			// since HGlobal itself doesnt carry any type metadata, presumably this is done with a white list.
-			if (_knownTextBasedClipboardFormats.TryGetValue(name, out var ptr2str))
+			if (_knownTextBasedClipboardFormats.TryGetValue(name, out var marshaler))
 			{
-				var text = ptr2str.Invoke((IntPtr)ptr) ?? string.Empty;
+				var text = marshaler.FromPointer.Invoke((IntPtr)ptr) ?? string.Empty;
 
 				return Task.FromResult<object>(text);
 			}
@@ -430,7 +439,6 @@ partial class Win32ClipboardExtension // from clipboard
 			}
 		}
 	}
-
 	private static unsafe void GetText(HGLOBAL handle, DataPackage package)
 	{
 		using var lockDisposable = Win32Helper.GlobalLock(handle, out var bytes);
@@ -441,7 +449,6 @@ partial class Win32ClipboardExtension // from clipboard
 
 		package.SetText(Marshal.PtrToStringUni((IntPtr)bytes)!);
 	}
-
 	private static unsafe void GetBitmap(HGLOBAL handle, DataPackage package)
 	{
 		package.SetDataProvider(StandardDataFormats.Bitmap, _ =>
@@ -490,7 +497,6 @@ partial class Win32ClipboardExtension // from clipboard
 			return Task.FromResult<object>(RandomAccessStreamReference.CreateFromStream(new MemoryStream(arr).AsRandomAccessStream()));
 		});
 	}
-
 	internal static unsafe List<IStorageItem>? GetFileDropList(HGLOBAL handle)
 	{
 		using var lockDisposable = Win32Helper.GlobalLock(handle, out var firstByte);
@@ -613,15 +619,15 @@ partial class Win32ClipboardExtension // to clipboard
 		Debug.Assert(stream.CanRead);
 		stream.Seek(0);
 
-#if false // this would require System.Drawing.Common
+#if false
+		// this would require System.Drawing.Common
 		var readStream = stream.AsStreamForRead();
 
 		var bitmap = new Bitmap(readStream);
 		var handle = (HBITMAP)bitmap.GetHbitmap();
 
-		SetClipboardData(CLIPBOARD_FORMAT.CF_BITMAP, handle);
-#endif
-
+		SetClipboardHBitmapData(CLIPBOARD_FORMAT.CF_BITMAP, handle);
+#else
 		// since we couldn't create a HBITMAP here, we will just write CF_DIB data directly to the clipboard,
 		// which Windows will synthesize CF_BITMAP for us.
 
@@ -643,69 +649,65 @@ partial class Win32ClipboardExtension // to clipboard
 		else
 		{
 			// Unknown image format — decode via SkiaSharp and convert to CF_DIB
-			SetBitmapViaSKBitmap(bytes);
-		}
-	}
+			using var skBitmap = SKBitmap.Decode(bytes);
+			if (skBitmap is null)
+			{
+				typeof(Win32ClipboardExtension).LogError()?.Error("SetBitmap: SkiaSharp failed to decode image.");
+				return;
+			}
 
-	private static unsafe void SetBitmapViaSKBitmap(byte[] bytes)
+			// Ensure BGRA8888 so pixel layout matches what CF_DIB BI_RGB 32bpp expects (BGRX, alpha ignored)
+			using var bgra = skBitmap.ColorType == SKColorType.Bgra8888
+				? null
+				: skBitmap.Copy(SKColorType.Bgra8888);
+			var src = bgra ?? skBitmap;
+
+			var width = src.Width;
+			var height = src.Height;
+			var stride = width * 4;
+			var headerSize = Marshal.SizeOf<BITMAPINFOHEADER>();
+			var pixelDataSize = stride * height;
+			var dib = new byte[headerSize + pixelDataSize];
+
+			fixed (byte* pDib = dib)
+			{
+				var header = (BITMAPINFOHEADER*)pDib;
+				header->biSize = (uint)headerSize;
+				header->biWidth = width;
+				header->biHeight = height; // positive = bottom-up storage
+				header->biPlanes = 1;
+				header->biBitCount = 32;
+				header->biCompression = 0; // BI_RGB
+				header->biSizeImage = (uint)pixelDataSize;
+
+				// SkiaSharp rows are top-down; CF_DIB with positive biHeight expects bottom-up
+				var pixelSrc = (byte*)src.GetPixels();
+				var pixelDst = pDib + headerSize;
+				for (var row = 0; row < height; row++)
+				{
+					Buffer.MemoryCopy(
+						pixelSrc + (long)(height - 1 - row) * stride,
+						pixelDst + (long)row * stride,
+						stride, stride);
+				}
+			}
+
+			SetClipboardData(CLIPBOARD_FORMAT.CF_DIB, dib);
+		}
+#endif
+	}
+	private static void SetUnknownData(DataPackageView view, string format)
 	{
-		using var skBitmap = SKBitmap.Decode(bytes);
-		if (skBitmap is null)
+		if (!WaitForAsyncOperation(view.GetDataAsync(format), out var task))
 		{
-			typeof(Win32ClipboardExtension).LogError()?.Error("SetBitmap: SkiaSharp failed to decode image.");
+			typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(view.GetDataAsync)} failed to fetch data to be copied to the clipboard: {task.Status}", task.Exception!);
 			return;
 		}
 
-		// Ensure BGRA8888 so pixel layout matches what CF_DIB BI_RGB 32bpp expects (BGRX, alpha ignored)
-		using var bgra = skBitmap.ColorType == SKColorType.Bgra8888
-			? null
-			: skBitmap.Copy(SKColorType.Bgra8888);
-		var src = bgra ?? skBitmap;
-
-		var width = src.Width;
-		var height = src.Height;
-		var stride = width * 4;
-		var headerSize = Marshal.SizeOf<BITMAPINFOHEADER>();
-		var pixelDataSize = stride * height;
-		var dib = new byte[headerSize + pixelDataSize];
-
-		fixed (byte* pDib = dib)
+		var cfid = (CLIPBOARD_FORMAT)PInvoke.RegisterClipboardFormat(format);
+		if (cfid == 0)
 		{
-			var header = (BITMAPINFOHEADER*)pDib;
-			header->biSize = (uint)headerSize;
-			header->biWidth = width;
-			header->biHeight = height; // positive = bottom-up storage
-			header->biPlanes = 1;
-			header->biBitCount = 32;
-			header->biCompression = 0; // BI_RGB
-			header->biSizeImage = (uint)pixelDataSize;
-
-			// SkiaSharp rows are top-down; CF_DIB with positive biHeight expects bottom-up
-			var pixelSrc = (byte*)src.GetPixels();
-			var pixelDst = pDib + headerSize;
-			for (var row = 0; row < height; row++)
-			{
-				Buffer.MemoryCopy(
-					pixelSrc + (long)(height - 1 - row) * stride,
-					pixelDst + (long)row * stride,
-					stride, stride);
-			}
-		}
-
-		SetClipboardData(CLIPBOARD_FORMAT.CF_DIB, dib);
-	}
-
-	private static void SetUnknownData(DataPackageView view, string format)
-	{
-		var task = view.GetDataAsync(format).AsTask();
-		while (!task.IsCompleted)
-		{
-			Win32EventLoop.RunOnce();
-		}
-
-		if (!task.IsCompletedSuccessfully)
-		{
-			typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(view.GetDataAsync)} failed to fetch data to be copied to the clipboard: {task.Status}", task.Exception);
+			typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.RegisterClipboardFormat)} failed: {Win32Helper.GetErrorMessage()}");
 			return;
 		}
 
@@ -722,27 +724,18 @@ partial class Win32ClipboardExtension // to clipboard
 			var bytes = new byte[checked((int)size)];
 			ras.AsStreamForRead().ReadExactly(bytes);
 
-			SetClipboardData(format, bytes);
+			SetClipboardData(cfid, bytes);
 		}
 		else if (task.Result is string str)
 		{
-			var bytes = new byte[(str.Length + 1) * sizeof(char)]; // +1 char: last 2 bytes remain 0 as null terminator
-			MemoryMarshal.Cast<char, byte>(str.AsSpan()).CopyTo(bytes);
-			SetClipboardData(format, bytes);
+			var p = _knownTextBasedClipboardFormats.TryGetValue(format, out var marshaler)
+				? marshaler.ToPointer(str)
+				: Marshal.StringToCoTaskMemUni(str);
+
+			SetClipboardCoTaskMemData(cfid, p);
 		}
 	}
 
-	private static void SetClipboardData(string formatName, ReadOnlySpan<byte> data)
-	{
-		var format = PInvoke.RegisterClipboardFormat(formatName);
-		if (format == 0)
-		{
-			typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.RegisterClipboardFormat)} failed: {Win32Helper.GetErrorMessage()}");
-			return;
-		}
-
-		SetClipboardData((CLIPBOARD_FORMAT)format, data);
-	}
 	private static unsafe void SetClipboardData(CLIPBOARD_FORMAT format, ReadOnlySpan<byte> data)
 	{
 		// If the hMem parameter identifies a memory object, the object must have been allocated using the function with the GMEM_MOVEABLE flag
@@ -757,12 +750,6 @@ partial class Win32ClipboardExtension // to clipboard
 		if (allocDisposable is null) return;
 
 		using var lockDisposable = Win32Helper.GlobalLock(handle, out var dst);
-		if (lockDisposable is null || dst == null)
-		{
-			typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(Win32Helper.GlobalLock)} failed: {Win32Helper.GetErrorMessage()}");
-			return;
-		}
-
 		fixed (byte* src = &MemoryMarshal.GetReference(data))
 		{
 			Buffer.MemoryCopy(src, dst, data.Length, data.Length);
@@ -780,7 +767,7 @@ partial class Win32ClipboardExtension // to clipboard
 			shouldFree = false;
 		}
 	}
-	private static void SetClipboardData(CLIPBOARD_FORMAT format, HBITMAP hbitmap)
+	private static void SetClipboardHBitmapData(CLIPBOARD_FORMAT format, HBITMAP hbitmap)
 	{
 		var result = PInvoke.SetClipboardData((uint)format, new HANDLE(hbitmap));
 		if (result == HANDLE.Null)
@@ -794,6 +781,32 @@ partial class Win32ClipboardExtension // to clipboard
 		{
 			// On success the system owns the HBITMAP; do not delete it
 		}
+	}
+	private static void SetClipboardCoTaskMemData(CLIPBOARD_FORMAT format, IntPtr p)
+	{
+		var result = PInvoke.SetClipboardData((uint)format, new HANDLE(p));
+		if (result == HANDLE.Null)
+		{
+			typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.SetClipboardData)} failed: {Win32Helper.GetErrorMessage()}");
+
+			Marshal.FreeCoTaskMem(p);
+		}
+		else
+		{
+			// If SetClipboardData succeeds, the system owns the object identified by the hMem parameter.
+			// The application may not write to or free the data once ownership has been transferred to the system
+		}
+	}
+
+	private static bool WaitForAsyncOperation<T>(IAsyncOperation<T> operation, out Task<T> task)
+	{
+		task = operation.AsTask();
+		while (!task.IsCompleted)
+		{
+			Win32EventLoop.RunOnce();
+		}
+
+		return task.IsCompletedSuccessfully;
 	}
 }
 

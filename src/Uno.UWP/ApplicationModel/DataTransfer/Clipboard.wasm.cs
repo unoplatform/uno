@@ -137,7 +137,9 @@ namespace Windows.ApplicationModel.DataTransfer
 
 			if (data == null || data.Length == 0)
 			{
-				return "application/octet-stream";
+				// Even if data is empty, return a generic image MIME type so JS clipboard logic
+				// (which filters on "image/") can handle the entry consistently.
+				return "image/png";
 			}
 
 			// PNG signature: 89 50 4E 47 0D 0A 1A 0A
@@ -177,8 +179,9 @@ namespace Windows.ApplicationModel.DataTransfer
 				return "image/webp";
 			}
 
-			// Fallback when the format is unknown
-			return "application/octet-stream";
+			// Fallback when the format is unknown: use a generic image MIME type so that
+			// the JS clipboard side (which only accepts "image/*") can still consume it.
+			return "image/png";
 		}
 
 		private static void StartContentChanged()
