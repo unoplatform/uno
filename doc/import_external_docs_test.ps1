@@ -13,7 +13,16 @@ param(
 Write-Host 'Updating docfx tool...' -ForegroundColor Black -BackgroundColor Green
 # Intentionally pinned to match the CI docs build toolchain (build/Uno.UI.Build.csproj)
 # so local validation reproduces doc generation behavior consistently.
-dotnet tool update --global docfx --version 2.73.2
+dotnet tool update --global docfx --version 2.73.2 --allow-downgrade
+
+# Older or newer local versions can cause template behavior differences.
+# Verify the actual resolved version and force-install the pinned toolchain when needed.
+$docfxVersionOutput = (docfx --version | Select-Object -First 1).Trim()
+if ($docfxVersionOutput -notlike '2.73.2*') {
+    Write-Host "DocFX version '$docfxVersionOutput' does not match required 2.73.2. Reinstalling pinned version..." -ForegroundColor Black -BackgroundColor DarkYellow
+    dotnet tool uninstall --global docfx | Out-Null
+    dotnet tool install --global docfx --version 2.73.2
+}
 
 Write-Host 'Updating dotnet-serve tool...' -ForegroundColor Black -BackgroundColor Green
 dotnet tool update --global dotnet-serve
