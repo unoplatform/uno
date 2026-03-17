@@ -11,9 +11,14 @@ namespace UITests.Windows_UI_Xaml_Media.AcrylicBrushTests
 		{
 			this.InitializeComponent();
 		}
-		private void OpacitySlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+		private void TintOpacitySlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
 		{
 			InteractiveAcrylic.TintOpacity = e.NewValue;
+		}
+
+		private void TintLuminosityOpacitySlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+		{
+			InteractiveAcrylic.TintLuminosityOpacity = e.NewValue;
 		}
 	}
 }

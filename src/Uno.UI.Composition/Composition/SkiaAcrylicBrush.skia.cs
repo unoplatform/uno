@@ -10,9 +10,6 @@ internal class SkiaAcrylicBrush : CompositionBrush
 	private bool _isOpaque;
 	private SKRect _cachedBounds;
 	private bool? _cachedCompMode;
-	private bool _cachedIsOpaque;
-	private SKColor _cachedLuminosityColor;
-	private SKColor _cachedTintColor;
 
 	private SKImageFilter? _filter;
 	private SKColor _luminosityColor;
@@ -104,6 +101,40 @@ internal class SkiaAcrylicBrush : CompositionBrush
 		canvas.Restore();
 	}
 
+	private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
+	{
+		base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
+
+		switch (propertyName)
+		{
+			case nameof(NoiseImage):
+				if (_noisePaint is not null)
+				{
+					_noisePaint.Shader = _noiseImage?.ToShader(SKShaderTileMode.Repeat, SKShaderTileMode.Repeat);
+				}
+				break;
+			case nameof(NoiseOpacity):
+				if (_noisePaint is not null)
+				{
+					_noisePaint.ColorFilter = SKColorFilter.CreateColorMatrix(new[]
+					{
+						1, 0, 0, 0,
+						0, 0, 1, 0,
+						0, 0, 0, 0,
+						1, 0, 0, 0,
+						0, 0, _noiseOpacity, 0
+					});
+				}
+				break;
+			case nameof(IsOpaque):
+			case nameof(LuminosityColor):
+			case nameof(TintColor):
+				_filter?.Dispose();
+				_filter = null;
+				break;
+		}
+	}
+
 	private void DrawNoise(SKCanvas canvas, SKRect bounds)
 	{
 		if (_noiseImage is not null)
@@ -114,7 +145,10 @@ internal class SkiaAcrylicBrush : CompositionBrush
 				_noisePaint.Shader = _noiseImage.ToShader(SKShaderTileMode.Repeat, SKShaderTileMode.Repeat);
 				_noisePaint.ColorFilter = SKColorFilter.CreateColorMatrix(new[]
 				{
-					1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, _noiseOpacity, 0
+					1, 0, 0, 0, 0,
+					0, 1, 0, 0, 0,
+					0, 0, 1, 0, 0,
+					0, 0, 0, _noiseOpacity, 0
 				});
 			}
 
@@ -124,9 +158,7 @@ internal class SkiaAcrylicBrush : CompositionBrush
 
 	private void EnsureFilter(SKRect bounds)
 	{
-		if (_cachedBounds == bounds && _filter is not null && _cachedCompMode == Compositor.IsSoftwareRenderer
-			&& _cachedLuminosityColor == _luminosityColor && _cachedTintColor == _tintColor
-			&& _cachedIsOpaque == _isOpaque)
+		if (_cachedBounds == bounds && _filter is not null && _cachedCompMode == Compositor.IsSoftwareRenderer)
 		{
 			return;
 		}
@@ -191,9 +223,6 @@ internal class SkiaAcrylicBrush : CompositionBrush
 
 		_cachedBounds = bounds;
 		_cachedCompMode = Compositor.IsSoftwareRenderer;
-		_cachedIsOpaque = _isOpaque;
-		_cachedLuminosityColor = _luminosityColor;
-		_cachedTintColor = _tintColor;
 	}
 
 	private protected override void DisposeInternal()

@@ -162,18 +162,28 @@
                     <RowDefinition Height="300" />
                 </Grid.RowDefinitions>
 
-                <!-- Slider to control TintOpacity -->
-                <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="16" Margin="0,0,0,12"
-                            VerticalAlignment="Center">
-                    <TextBlock Text="TintOpacity:" VerticalAlignment="Center" FontSize="14" />
-                    <Slider x:Name="OpacitySlider"
-                            Minimum="0" Maximum="1" StepFrequency="0.05"
-                            Value="0.6" Width="300"
-                            ValueChanged="OpacitySlider_ValueChanged" />
-                    <TextBlock VerticalAlignment="Center" FontSize="14">
-                        <Run Text="Value: " />
-                        <Run Text="{Binding Value, ElementName=OpacitySlider}" />
-                    </TextBlock>
+                <!-- Sliders to control acrylic opacity properties -->
+                <StackPanel Grid.Row="0" Spacing="8" Margin="0,0,0,12">
+                    <StackPanel Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
+                        <TextBlock Text="TintOpacity:" VerticalAlignment="Center" FontSize="14" Width="150" />
+                        <Slider x:Name="TintOpacitySlider"
+                                Minimum="0" Maximum="1" StepFrequency="0.05"
+                                Value="0.6" Width="300"
+                                ValueChanged="TintOpacitySlider_ValueChanged" />
+                        <TextBlock VerticalAlignment="Center" FontSize="14">
+                            <Run Text="{Binding Value, ElementName=TintOpacitySlider}" />
+                        </TextBlock>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
+                        <TextBlock Text="TintLuminosityOpacity:" VerticalAlignment="Center" FontSize="14" Width="150" />
+                        <Slider x:Name="TintLuminosityOpacitySlider"
+                                Minimum="0" Maximum="1" StepFrequency="0.05"
+                                Value="0.5" Width="300"
+                                ValueChanged="TintLuminosityOpacitySlider_ValueChanged" />
+                        <TextBlock VerticalAlignment="Center" FontSize="14">
+                            <Run Text="{Binding Value, ElementName=TintLuminosityOpacitySlider}" />
+                        </TextBlock>
+                    </StackPanel>
                 </StackPanel>
 
                 <!-- Background with content to blur through -->
