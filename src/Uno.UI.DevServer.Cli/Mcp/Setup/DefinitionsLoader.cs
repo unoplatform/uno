@@ -87,6 +87,7 @@ internal static class DefinitionsLoader
 			var manualRegistrationMessage = element.TryGetProperty("manualRegistrationMessage", out var messageElement)
 				? messageElement.GetString()
 				: null;
+			var excludeFromDetection = element.TryGetProperty("excludeFromDetection", out var efd) && efd.GetBoolean();
 
 			result[key] = new IdeProfile(
 				configPaths,
@@ -97,7 +98,8 @@ internal static class DefinitionsLoader
 				typeMap,
 				mergeCommandArgs,
 				strategy,
-				manualRegistrationMessage);
+				manualRegistrationMessage,
+				excludeFromDetection);
 		}
 
 		return result;

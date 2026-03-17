@@ -770,7 +770,8 @@ internal class CliManager
 					break;
 				case "--tool-version":
 					if (i + 1 >= args.Length) { _logger.LogError("Missing value for --tool-version"); return null; }
-					toolVersion = args[++i];
+					toolVersion = args[++i].Trim();
+					if (string.IsNullOrEmpty(toolVersion)) { _logger.LogError("Empty value for --tool-version"); return null; }
 					break;
 				case "--servers":
 					if (i + 1 >= args.Length) { _logger.LogError("Missing value for --servers"); return null; }
