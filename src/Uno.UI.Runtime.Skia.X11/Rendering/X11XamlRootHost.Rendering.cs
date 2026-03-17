@@ -1,36 +1,53 @@
-using System;
-using System.Diagnostics;
-using Uno.UI;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
-using Timer = System.Timers.Timer;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
 internal partial class X11XamlRootHost
 {
-	private readonly Timer _renderTimer;
+	private X11RenderThread? _renderThread;
 
-	private Timer CreateRenderTimer()
+	bool IXamlRootHost.SupportsRenderThrottle => true;
+
+	private void InitializeRenderThread()
 	{
-		var timer = new Timer { AutoReset = false, Interval = TimeSpan.FromSeconds(1.0 / FeatureConfiguration.CompositionTarget.FrameRate).TotalMilliseconds };
-		timer.Elapsed += (_, _) => _renderer?.Render();
-		return timer;
+		if (_renderer is null)
+		{
+			return;
+		}
+
+		_renderThread = new X11RenderThread(
+			_renderer,
+			onFramePresented: () =>
+			{
+				NativeDispatcher.Main.Enqueue(
+					OnFramePresented,
+					NativeDispatcherPriority.Render);
+			});
 	}
 
+	/// <summary>
+	/// No-op. Previously updated the timer interval based on screen refresh rate.
+	/// With the render thread, VSync pacing comes from glXSwapBuffers/eglSwapBuffers
+	/// blocking, so explicit frame rate configuration is no longer needed.
+	/// </summary>
 	internal void UpdateRenderTimerFps(double fps)
 	{
-		if (FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate)
-		{
-			_renderTimer.Interval = TimeSpan.FromSeconds(1.0 / fps).TotalMilliseconds;
-		}
+		// Render thread is paced by VSync (SwapBuffers blocking).
+	}
+
+	private void OnFramePresented()
+	{
+		var ct = ((IXamlRootHost)this).RootElement?.Visual.CompositionTarget as CompositionTarget;
+		ct?.OnFramePresented();
 	}
 
 	void IXamlRootHost.InvalidateRender()
 	{
 		if (!_closed.Task.IsCompleted)
 		{
-			_renderTimer.Enabled = true;
+			_renderThread?.SignalNewFrame();
 		}
 	}
 }
