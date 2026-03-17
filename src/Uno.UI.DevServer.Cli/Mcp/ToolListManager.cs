@@ -21,11 +21,15 @@ internal class ToolListManager(
 	private bool _toolCacheLoaded;
 	private bool _shouldRefreshToolCache = true;
 	private readonly object _toolCacheLock = new();
+	private volatile int _snapshotToolCount;
 
 	private const string ToolCacheFileName = "tools-cache.json";
 
 	/// <summary>Maximum time to wait for upstream list_tools before returning cached/empty result.</summary>
 	internal const int ListToolsTimeoutMs = 60_000;
+
+	/// <summary>Maximum time to wait for a single upstream ListToolsAsync call.</summary>
+	internal const int UpstreamCallTimeoutMs = 30_000;
 
 	public string? WorkspaceHash { get; set; }
 
@@ -35,6 +39,9 @@ internal class ToolListManager(
 	{
 		get { lock (_toolCacheLock) { return _toolCache.Length; } }
 	}
+
+	/// <summary>Lock-free snapshot of tool count, safe to read from any thread without blocking.</summary>
+	public int SnapshotToolCount => _snapshotToolCount;
 
 	public bool HasCachedTools => GetCachedTools().Length > 0;
 
@@ -97,6 +104,7 @@ internal class ToolListManager(
 				_toolCache = [];
 			}
 
+			_snapshotToolCount = _toolCache.Length;
 			return _toolCache;
 		}
 	}
@@ -140,6 +148,7 @@ internal class ToolListManager(
 				File.Move(tempPath, _toolCachePath, overwrite: true);
 
 				_toolCache = entry.Tools;
+				_snapshotToolCount = entry.Tools.Length;
 				_toolCacheLoaded = true;
 				_shouldRefreshToolCache = false;
 
@@ -180,10 +189,17 @@ internal class ToolListManager(
 		{
 			var upstreamClient = await mcpUpstreamClient.UpstreamClient;
 
-			var list = await upstreamClient.ListToolsAsync();
+			using var cts = new CancellationTokenSource(UpstreamCallTimeoutMs);
+			var list = await upstreamClient.ListToolsAsync(cancellationToken: cts.Token);
 			Tool[] protocolTools = [.. list.Select(t => t.ProtocolTool).DistinctBy(t => t.Name)];
 
 			PersistToolCacheIfNeeded(protocolTools);
+		}
+		catch (OperationCanceledException)
+		{
+			logger.LogWarning(
+				"Timed out refreshing cached tools from upstream after {Timeout}ms",
+				UpstreamCallTimeoutMs);
 		}
 		catch (Exception ex)
 		{
@@ -236,7 +252,10 @@ internal class ToolListManager(
 	{
 		logger.LogTrace("Client requested tools list update");
 
-		var list = await upstreamClient.ListToolsAsync(cancellationToken: ct);
+		using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+		timeoutCts.CancelAfter(UpstreamCallTimeoutMs);
+
+		var list = await upstreamClient.ListToolsAsync(cancellationToken: timeoutCts.Token);
 		Tool[] protocolTools = [.. list.Select(t => t.ProtocolTool).DistinctBy(t => t.Name)];
 
 		logger.LogDebug("Reporting {Count} tools", protocolTools.Length);

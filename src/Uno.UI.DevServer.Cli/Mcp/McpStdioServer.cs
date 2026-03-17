@@ -20,6 +20,9 @@ internal class McpStdioServer(
 	HealthService healthService,
 	McpUpstreamClient mcpUpstreamClient)
 {
+	/// <summary>Maximum time to wait for an upstream tool call before returning a timeout error.</summary>
+	internal const int UpstreamCallToolTimeoutMs = 5 * 60 * 1000; // 5 minutes — tool calls can involve builds
+
 	private static void LogTimeline(ILogger logger, string stage, long elapsedMilliseconds, string details)
 	{
 		logger.LogDebug("TIMELINE|mcp-stdio|{Stage}|{ElapsedMs}|{Details}", stage, elapsedMilliseconds, details);
@@ -56,6 +59,7 @@ internal class McpStdioServer(
 			{
 				var toolName = ctx.Params?.Name ?? "unknown";
 				var toolStopwatch = Stopwatch.StartNew();
+				logger.LogTrace("RECV call_tool {Tool}", toolName);
 
 				if (forceRootsFallback && toolName == addRootsTool.Name)
 				{
@@ -133,21 +137,43 @@ internal class McpStdioServer(
 				var args = ctx.Params.Arguments ?? new Dictionary<string, JsonElement>();
 				var adjustedArguments = args.ToDictionary(v => v.Key, v => (object?)v.Value);
 
-				var result = await upstreamClient.CallToolAsync(
-					name,
-					adjustedArguments,
-					cancellationToken: ct
-				);
+				try
+				{
+					using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+					timeoutCts.CancelAfter(UpstreamCallToolTimeoutMs);
 
-				toolStopwatch.Stop();
-				LogTimeline(logger, "tool.forwarded-upstream.complete", toolStopwatch.ElapsedMilliseconds, toolName);
-				logger.LogDebug("Forwarded MCP tool {Tool} to upstream in {ElapsedMs} ms", toolName,
-					toolStopwatch.ElapsedMilliseconds);
-				return result;
+					var result = await upstreamClient.CallToolAsync(
+						name,
+						adjustedArguments,
+						cancellationToken: timeoutCts.Token
+					);
+
+					toolStopwatch.Stop();
+					LogTimeline(logger, "tool.forwarded-upstream.complete", toolStopwatch.ElapsedMilliseconds, toolName);
+					logger.LogDebug("Forwarded MCP tool {Tool} to upstream in {ElapsedMs} ms", toolName,
+						toolStopwatch.ElapsedMilliseconds);
+					return result;
+				}
+				catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+				{
+					toolStopwatch.Stop();
+					var message = $"Tool '{toolName}' timed out after {UpstreamCallToolTimeoutMs / 1000}s waiting for the DevServer host to respond. " +
+						"The host may be busy (building, restoring packages) or unresponsive. " +
+						"Call uno_health for diagnostics, then retry.";
+					logger.LogWarning("Tool {Tool} timed out after {ElapsedMs} ms", toolName,
+						toolStopwatch.ElapsedMilliseconds);
+					LogTimeline(logger, "tool.forwarded-upstream.timeout", toolStopwatch.ElapsedMilliseconds, toolName);
+					return new CallToolResult()
+					{
+						Content = [new TextContentBlock() { Text = message }],
+						IsError = true,
+					};
+				}
 			})
 			.WithListToolsHandler(async (ctx, ct) =>
 			{
 				var listToolsStopwatch = Stopwatch.StartNew();
+				logger.LogTrace("RECV list_tools");
 				await ensureRootsInitialized(ctx, tcs, ct);
 
 				if (forceRootsFallback && getRoots().Length == 0)

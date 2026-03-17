@@ -46,7 +46,7 @@ internal class HealthService(
 		var upstreamTask = mcpUpstreamClient.UpstreamClient;
 		var upstreamConnected = upstreamTask.IsCompletedSuccessfully;
 
-		var toolCount = toolListManager.GetCachedTools().Length;
+		var toolCount = toolListManager.SnapshotToolCount;
 
 		var discoveredSolutions = devServerMonitor.DiscoveredSolutions is { Count: > 0 }
 			? devServerMonitor.DiscoveredSolutions

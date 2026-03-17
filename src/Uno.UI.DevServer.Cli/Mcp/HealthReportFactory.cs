@@ -41,12 +41,18 @@ internal static class HealthReportFactory
 		}
 		else if (connectionState == ConnectionState.Degraded && devServerStarted)
 		{
+			var hostInfo = discovery?.HostPath is not null
+				? $" Host: {discovery.HostPath}. SDK: {discovery.UnoSdkVersion ?? "unknown"}."
+				: "";
+			var addInInfo = discovery?.AddIns is { Count: > 0 }
+				? $" Add-ins: {string.Join(", ", discovery.AddIns.Select(a => $"{a.PackageName} {a.PackageVersion}"))}."
+				: "";
 			issues.Add(new ValidationIssue
 			{
 				Code = IssueCode.HostCrashed,
 				Severity = ValidationSeverity.Fatal,
-				Message = "The DevServer host process crashed repeatedly and could not be restarted.",
-				Remediation = "Check the DevServer logs for errors. You may need to restart the MCP proxy manually.",
+				Message = $"The DevServer host process crashed repeatedly and could not be restarted.{hostInfo}{addInInfo}",
+				Remediation = "Check the 'discovery' section of this health report for details. Common causes: incompatible add-in versions, missing SDK, or host binary not found.",
 			});
 		}
 
