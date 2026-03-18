@@ -186,8 +186,8 @@ internal class SkiaAcrylicBrush : CompositionBrush
 		const int blurPadding = 100;
 		var blurBounds = bounds with
 		{
-			Left = -blurPadding,
-			Top = -blurPadding,
+			Left = bounds.Left - blurPadding,
+			Top = bounds.Top - blurPadding,
 			Right = bounds.Right + blurPadding,
 			Bottom = bounds.Bottom + blurPadding
 		};
