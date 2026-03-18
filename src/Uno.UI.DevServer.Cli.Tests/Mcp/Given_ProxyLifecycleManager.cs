@@ -1395,12 +1395,13 @@ public class Given_ProxyLifecycleManager
 	public async Task When_WatcherReportsRapidErrors_FindSolutionFiles_IsBounded()
 	{
 		var root = CreateTempDirectory();
+		ProxyLifecycleManager? subject = null;
 
 		try
 		{
 			var finder = new CountingSolutionFileFinder([]);
 			var created = CreateSubject(solutionFileFinder: finder);
-			var subject = created.Subject;
+			subject = created.Subject;
 			SetPrivateField(subject, "_currentDirectory", root);
 
 			var method = typeof(ProxyLifecycleManager)
@@ -1413,8 +1414,10 @@ public class Given_ProxyLifecycleManager
 				method!.Invoke(subject, [subject, new ErrorEventArgs(new InternalBufferOverflowException("simulated overflow"))]);
 			}
 
-			// Wait well beyond the 250 ms debounce window.
-			await Task.Delay(700);
+			// Wait for at least one scan to complete (adaptive, up to 5s), then allow 300ms for
+			// any concurrent calls to land so the count stabilizes before asserting.
+			await WaitUntilAsync(() => finder.CallCount >= 1, timeoutMs: 5000);
+			await Task.Delay(300);
 
 			// With the fix, only the final debounced task runs the workspace scan → ≤ 2 calls.
 			// (≤ 2 instead of 1 to tolerate a single timing edge case where two tasks slip through.)
@@ -1423,6 +1426,11 @@ public class Given_ProxyLifecycleManager
 		}
 		finally
 		{
+			if (subject is not null)
+			{
+				await StopWatcherAndMonitorAsync(subject);
+			}
+
 			await DeleteDirectoryWithRetriesAsync(root);
 		}
 	}
