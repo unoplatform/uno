@@ -1539,11 +1539,12 @@ namespace Uno.UWPSyncGenerator
 				return true;
 			}
 
-			// Explicit interface implementations of non-public interfaces
+			// Explicit interface implementations of WinRT/interop infrastructure interfaces
 			// (e.g., ICustomQueryInterface.GetInterface, IWinRTObject property accessors)
 			if (!method.ExplicitInterfaceImplementations.IsEmpty
 				&& method.ExplicitInterfaceImplementations.All(
-					m => m.ContainingType.DeclaredAccessibility != Accessibility.Public))
+					m => m.ContainingType.Name is "IWinRTObject" or "ICustomQueryInterface"
+						|| m.ContainingType.DeclaredAccessibility != Accessibility.Public))
 			{
 				return true;
 			}
