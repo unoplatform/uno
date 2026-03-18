@@ -20,13 +20,13 @@ namespace Uno.UWPSyncGenerator
 		private static IEnumerable<PortableExecutableReference> _winuiReferences;
 #endif
 
-		private const string UnitTestsDefine = "IS_UNIT_TESTS";
-		private const string AndroidDefine = "__ANDROID__";
-		private const string iOSDefine = "__IOS__";
-		private const string tvOSDefine = "__TVOS__";
-		private const string NetStdReferenceDefine = "__NETSTD_REFERENCE__";
-		private const string WasmDefine = "__WASM__";
-		private const string SkiaDefine = "__SKIA__";
+		protected const string UnitTestsDefine = "IS_UNIT_TESTS";
+		protected const string AndroidDefine = "__ANDROID__";
+		protected const string iOSDefine = "__IOS__";
+		protected const string tvOSDefine = "__TVOS__";
+		protected const string NetStdReferenceDefine = "__NETSTD_REFERENCE__";
+		protected const string WasmDefine = "__WASM__";
+		protected const string SkiaDefine = "__SKIA__";
 
 #if HAS_UNO_WINUI
 		private const string BaseXamlNamespace = "Microsoft.UI.Xaml";

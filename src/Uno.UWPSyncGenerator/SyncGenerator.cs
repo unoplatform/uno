@@ -77,42 +77,72 @@ namespace Uno.UWPSyncGenerator
 
 			var writtenMethods = new List<IMethodSymbol>();
 
-			var uwpAttributes = type.GetAttributes().Where(a => !IsIgnoredAttribute(a));
-			var attributesToGenerate = new HashSet<string>();
+			var uwpAttributes = type.GetAttributes().Where(a => !IsIgnoredAttribute(a)).ToList();
 
-			AddAttributesToGenerate(GetMissingAttributes(uwpAttributes, allSymbols.AndroidSymbol), attributesToGenerate);
-			AddAttributesToGenerate(GetMissingAttributes(uwpAttributes, allSymbols.IOSSymbol), attributesToGenerate);
-			AddAttributesToGenerate(GetMissingAttributes(uwpAttributes, allSymbols.TvOSSymbol), attributesToGenerate);
-			AddAttributesToGenerate(GetMissingAttributes(uwpAttributes, allSymbols.SkiaSymbol), attributesToGenerate);
-			AddAttributesToGenerate(GetMissingAttributes(uwpAttributes, allSymbols.WasmSymbol), attributesToGenerate);
-			AddAttributesToGenerate(GetMissingAttributes(uwpAttributes, allSymbols.UnitTestsymbol), attributesToGenerate);
-			AddAttributesToGenerate(GetMissingAttributes(uwpAttributes, allSymbols.NetStdReferenceSymbol), attributesToGenerate);
-
-			static void AddAttributesToGenerate(IEnumerable<AttributeData> missingAttributes, HashSet<string> attributesToGenerate)
+			// Determine which platforms are missing each attribute so we can
+			// wrap with #if guards and avoid duplicate attribute errors (CS0579)
+			// when a hand-written partial already provides the attribute on some platforms.
+			var platformMissingSets = new (string define, INamedTypeSymbol symbol)[]
 			{
-				foreach (var missingAttribute in missingAttributes)
-				{
-					bool isHandled = false;
-					foreach (var attributeDescription in s_attributeDescriptions)
-					{
-						if (attributeDescription.TryGenerateCodeFromAttributeData(missingAttribute) is { } generatedCode)
-						{
-							attributesToGenerate.Add(generatedCode);
-							isHandled = true;
-							break;
-						}
-					}
+				(AndroidDefine, allSymbols.AndroidSymbol),
+				(iOSDefine, allSymbols.IOSSymbol),
+				(tvOSDefine, allSymbols.TvOSSymbol),
+				(UnitTestsDefine, allSymbols.UnitTestsymbol),
+				(WasmDefine, allSymbols.WasmSymbol),
+				(SkiaDefine, allSymbols.SkiaSymbol),
+				(NetStdReferenceDefine, allSymbols.NetStdReferenceSymbol),
+			};
 
-					if (!isHandled)
+			var perPlatformMissing = platformMissingSets
+				.Select(p => (p.define, missing: GetMissingAttributes(uwpAttributes, p.symbol).ToHashSet(AttributeDataClassComparer.Instance)))
+				.ToList();
+
+			// Collect all attributes that are missing from at least one platform
+			var allMissingAttributes = perPlatformMissing
+				.SelectMany(p => p.missing)
+				.Distinct(AttributeDataClassComparer.Instance)
+				.ToList();
+
+			foreach (var missingAttribute in allMissingAttributes)
+			{
+				var generatedCode = GenerateAttributeCode(missingAttribute);
+
+				// Determine which platforms need this attribute
+				var defines = perPlatformMissing
+					.Select(p => p.missing.Contains(missingAttribute) ? p.define : "false")
+					.ToArray();
+
+				bool allPlatformsMissing = defines.All(d => d != "false");
+
+				if (allPlatformsMissing)
+				{
+					b.AppendLineInvariant("{0}", generatedCode);
+				}
+				else
+				{
+					using (b.Indent(-b.CurrentLevel))
 					{
-						throw new InvalidOperationException($"Attribute {missingAttribute} could not be handled.");
+						b.AppendLineInvariant($"#if {defines.JoinBy(" || ")}");
+					}
+					b.AppendLineInvariant("{0}", generatedCode);
+					using (b.Indent(-b.CurrentLevel))
+					{
+						b.AppendLineInvariant("#endif");
 					}
 				}
 			}
 
-			foreach (var attributeToGenerate in attributesToGenerate)
+			static string GenerateAttributeCode(AttributeData attribute)
 			{
-				b.AppendLineInvariant("{0}", attributeToGenerate);
+				foreach (var attributeDescription in s_attributeDescriptions)
+				{
+					if (attributeDescription.TryGenerateCodeFromAttributeData(attribute) is { } generatedCode)
+					{
+						return generatedCode;
+					}
+				}
+
+				throw new InvalidOperationException($"Attribute {attribute} could not be handled.");
 			}
 
 			if (type.TypeKind == TypeKind.Delegate)
