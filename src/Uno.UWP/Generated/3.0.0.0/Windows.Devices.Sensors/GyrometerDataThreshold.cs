@@ -55,16 +55,11 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.GyrometerDataThreshold.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.GyrometerDataThreshold.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.GyrometerDataThreshold.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Sensors.GyrometerDataThreshold.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.GyrometerDataThreshold.XAxisInDegreesPerSecond.get
 		// Forced skipping of method Windows.Devices.Sensors.GyrometerDataThreshold.XAxisInDegreesPerSecond.set
 		// Forced skipping of method Windows.Devices.Sensors.GyrometerDataThreshold.YAxisInDegreesPerSecond.get
 		// Forced skipping of method Windows.Devices.Sensors.GyrometerDataThreshold.YAxisInDegreesPerSecond.set
 		// Forced skipping of method Windows.Devices.Sensors.GyrometerDataThreshold.ZAxisInDegreesPerSecond.get
 		// Forced skipping of method Windows.Devices.Sensors.GyrometerDataThreshold.ZAxisInDegreesPerSecond.set
-		// Forced skipping of method Windows.Devices.Sensors.GyrometerDataThreshold.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

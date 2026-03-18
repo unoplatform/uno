@@ -23,10 +23,6 @@ namespace Windows.ApplicationModel.Calls
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallEndRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallEndRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallEndRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallEndRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Calls.LockScreenCallEndCallDeferral GetDeferral()
@@ -35,6 +31,5 @@ namespace Windows.ApplicationModel.Calls
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallEndRequestedEventArgs.Deadline.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.LockScreenCallEndRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -26,8 +26,6 @@ namespace Microsoft.UI.Windowing
 		// Skipping already declared method Microsoft.UI.Windowing.OverlappedPresenter.CreateForDialog()
 		// Skipping already declared method Microsoft.UI.Windowing.OverlappedPresenter.CreateForToolWindow()
 		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.RequestedStartupState.get
-		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Windowing.OverlappedPresenter.Maximize()
 		// Skipping already declared method Microsoft.UI.Windowing.OverlappedPresenter.Minimize()
 		// Skipping already declared method Microsoft.UI.Windowing.OverlappedPresenter.Restore()
@@ -55,6 +53,5 @@ namespace Microsoft.UI.Windowing
 		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.PreferredMinimumWidth.get
 		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.PreferredMinimumWidth.set
 		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.State.get
-		// Forced skipping of method Microsoft.UI.Windowing.OverlappedPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

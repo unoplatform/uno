@@ -61,10 +61,6 @@ namespace Windows.Devices.WiFi
 			throw new global::System.NotImplementedException("The member IAsyncOperation<WiFiAccessStatus> WiFiAdapter.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWiFiAccessStatus%3E%20WiFiAdapter.RequestAccessAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.WiFi.WiFiAdapter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.WiFi.WiFiAdapter.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.WiFi.WiFiAdapter.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.WiFi.WiFiAdapter.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ScanAsync()
@@ -118,7 +114,6 @@ namespace Windows.Devices.WiFi
 #endif
 		// Forced skipping of method Windows.Devices.WiFi.WiFiAdapter.NetworkAdapter.get
 		// Forced skipping of method Windows.Devices.WiFi.WiFiAdapter.NetworkReport.get
-		// Forced skipping of method Windows.Devices.WiFi.WiFiAdapter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.WiFi.WiFiAdapter, object> AvailableNetworksChanged

@@ -43,13 +43,8 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.CrossSlidingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.CrossSlidingEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.CrossSlidingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Input.CrossSlidingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Input.CrossSlidingEventArgs.CrossSlidingState.get
 		// Forced skipping of method Microsoft.UI.Input.CrossSlidingEventArgs.PointerDeviceType.get
 		// Forced skipping of method Microsoft.UI.Input.CrossSlidingEventArgs.Position.get
-		// Forced skipping of method Microsoft.UI.Input.CrossSlidingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

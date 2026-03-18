@@ -23,11 +23,6 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageAction.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageAction.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageAction.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageAction.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageAction.Label.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageAction.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

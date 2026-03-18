@@ -73,10 +73,6 @@ namespace Windows.Media.FaceAnalysis
 		}
 #endif
 		// Forced skipping of method Windows.Media.FaceAnalysis.FaceDetector.IsSupported.get
-		// Forced skipping of method Windows.Media.FaceAnalysis.FaceDetector.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.FaceAnalysis.FaceDetector.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.FaceAnalysis.FaceDetector.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.FaceAnalysis.FaceDetector.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<global::Windows.Media.FaceAnalysis.DetectedFace>> DetectFacesAsync(global::Windows.Graphics.Imaging.SoftwareBitmap image)
@@ -95,6 +91,5 @@ namespace Windows.Media.FaceAnalysis
 		// Forced skipping of method Windows.Media.FaceAnalysis.FaceDetector.MaxDetectableFaceSize.set
 		// Forced skipping of method Windows.Media.FaceAnalysis.FaceDetector.MinDetectableFaceSize.get
 		// Forced skipping of method Windows.Media.FaceAnalysis.FaceDetector.MinDetectableFaceSize.set
-		// Forced skipping of method Windows.Media.FaceAnalysis.FaceDetector.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

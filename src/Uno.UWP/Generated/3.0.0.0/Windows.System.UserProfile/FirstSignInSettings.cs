@@ -60,10 +60,6 @@ namespace Windows.System.UserProfile
 			throw new global::System.NotImplementedException("The member FirstSignInSettings FirstSignInSettings.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FirstSignInSettings%20FirstSignInSettings.GetDefault%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.Keys.get
 		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.Values.get
 		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.Count.get
@@ -90,7 +86,6 @@ namespace Windows.System.UserProfile
 		}
 #endif
 		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Windows.System.UserProfile.FirstSignInSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.Collections.Generic.IReadOnlyDictionary<string, object>
 		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, object>>
 		// Processing: System.Collections.IEnumerable

@@ -43,13 +43,8 @@ namespace Windows.Media.Streaming.Adaptive
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCorrelatedTimes.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCorrelatedTimes.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCorrelatedTimes.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCorrelatedTimes.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCorrelatedTimes.Position.get
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCorrelatedTimes.PresentationTimeStamp.get
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCorrelatedTimes.ProgramDateTime.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCorrelatedTimes.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

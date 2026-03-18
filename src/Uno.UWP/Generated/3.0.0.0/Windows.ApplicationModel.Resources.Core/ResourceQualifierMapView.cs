@@ -53,10 +53,6 @@ namespace Windows.ApplicationModel.Resources.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierMapView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierMapView.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierMapView.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierMapView.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierMapView.Keys.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierMapView.Values.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierMapView.Count.get
@@ -83,7 +79,6 @@ namespace Windows.ApplicationModel.Resources.Core
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierMapView.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierMapView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.Collections.Generic.IReadOnlyDictionary<string, string>
 		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>>
 		// Processing: System.Collections.IEnumerable

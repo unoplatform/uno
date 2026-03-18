@@ -36,13 +36,8 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.MaintenanceTrigger.MaintenanceTrigger(uint, bool)
-		// Forced skipping of method Windows.ApplicationModel.Background.MaintenanceTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Background.MaintenanceTrigger.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Background.MaintenanceTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Background.MaintenanceTrigger.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Background.MaintenanceTrigger.FreshnessTime.get
 		// Forced skipping of method Windows.ApplicationModel.Background.MaintenanceTrigger.OneShot.get
-		// Forced skipping of method Windows.ApplicationModel.Background.MaintenanceTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger
 	}
 }

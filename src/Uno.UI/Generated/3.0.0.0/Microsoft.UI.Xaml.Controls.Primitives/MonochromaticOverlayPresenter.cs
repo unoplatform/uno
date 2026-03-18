@@ -16,12 +16,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.MonochromaticOverlayPresenter()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.ReplacementColorProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.SourceElementProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.ReplacementColor.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.ReplacementColor.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.SourceElement.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.SourceElement.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

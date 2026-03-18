@@ -16,12 +16,9 @@ namespace Microsoft.UI.Xaml.Shapes
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Rectangle.Rectangle()
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Rectangle.RadiusXProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Rectangle.RadiusYProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Rectangle.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Rectangle.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Rectangle.RadiusX.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Rectangle.RadiusX.set
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Rectangle.RadiusY.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Rectangle.RadiusY.set
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Rectangle.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

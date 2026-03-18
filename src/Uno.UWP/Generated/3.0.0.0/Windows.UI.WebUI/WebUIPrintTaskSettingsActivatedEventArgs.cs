@@ -63,16 +63,11 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.WebUIPrintTaskSettingsActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIPrintTaskSettingsActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIPrintTaskSettingsActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIPrintTaskSettingsActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIPrintTaskSettingsActivatedEventArgs.ActivatedOperation.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIPrintTaskSettingsActivatedEventArgs.Configuration.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIPrintTaskSettingsActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIPrintTaskSettingsActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIPrintTaskSettingsActivatedEventArgs.SplashScreen.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIPrintTaskSettingsActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IPrintTaskSettingsActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 		// Processing: Windows.UI.WebUI.IActivatedEventArgsDeferral

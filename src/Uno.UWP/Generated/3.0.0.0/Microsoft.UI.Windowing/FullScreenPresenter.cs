@@ -9,8 +9,5 @@ namespace Microsoft.UI.Windowing
 	public partial class FullScreenPresenter : global::Microsoft.UI.Windowing.AppWindowPresenter
 	{
 		// Skipping already declared method Microsoft.UI.Windowing.FullScreenPresenter.Create()
-		// Forced skipping of method Microsoft.UI.Windowing.FullScreenPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Windowing.FullScreenPresenter.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Windowing.FullScreenPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

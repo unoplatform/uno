@@ -203,10 +203,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.CartridgeSensors.get
 		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.ColorCartridgeCapabilities.get
 		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsBoldSupported.get
@@ -226,7 +222,6 @@ namespace Windows.Devices.PointOfService
 		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsSuperscriptSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsUnderlineSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.SupportedCharactersPerLine.get
-		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.PointOfService.ICommonPosPrintStationCapabilities
 	}
 }

@@ -53,14 +53,9 @@ namespace Windows.System
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.AppResourceGroupBackgroundTaskReport.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.AppResourceGroupBackgroundTaskReport.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.AppResourceGroupBackgroundTaskReport.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.AppResourceGroupBackgroundTaskReport.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.AppResourceGroupBackgroundTaskReport.EntryPoint.get
 		// Forced skipping of method Windows.System.AppResourceGroupBackgroundTaskReport.Name.get
 		// Forced skipping of method Windows.System.AppResourceGroupBackgroundTaskReport.TaskId.get
 		// Forced skipping of method Windows.System.AppResourceGroupBackgroundTaskReport.Trigger.get
-		// Forced skipping of method Windows.System.AppResourceGroupBackgroundTaskReport.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

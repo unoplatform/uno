@@ -53,10 +53,6 @@ namespace Windows.Gaming.UI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.UI.GameUIProviderActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Gaming.UI.GameUIProviderActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Gaming.UI.GameUIProviderActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Gaming.UI.GameUIProviderActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ReportCompleted(global::Windows.Foundation.Collections.ValueSet results)
@@ -68,7 +64,6 @@ namespace Windows.Gaming.UI
 		// Forced skipping of method Windows.Gaming.UI.GameUIProviderActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.Gaming.UI.GameUIProviderActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.Gaming.UI.GameUIProviderActivatedEventArgs.SplashScreen.get
-		// Forced skipping of method Windows.Gaming.UI.GameUIProviderActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 	}
 }

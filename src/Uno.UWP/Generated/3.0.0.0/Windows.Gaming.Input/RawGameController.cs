@@ -155,10 +155,6 @@ namespace Windows.Gaming.Input
 		// Forced skipping of method Windows.Gaming.Input.RawGameController.RawGameControllerRemoved.add
 		// Forced skipping of method Windows.Gaming.Input.RawGameController.RawGameControllerRemoved.remove
 		// Forced skipping of method Windows.Gaming.Input.RawGameController.RawGameControllers.get
-		// Forced skipping of method Windows.Gaming.Input.RawGameController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Gaming.Input.RawGameController.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Gaming.Input.RawGameController.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Gaming.Input.RawGameController.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Gaming.Input.GameControllerButtonLabel GetButtonLabel(int buttonIndex)
@@ -205,7 +201,6 @@ namespace Windows.Gaming.Input
 		// Forced skipping of method Windows.Gaming.Input.RawGameController.SimpleHapticsControllers.get
 		// Forced skipping of method Windows.Gaming.Input.RawGameController.SwitchCount.get
 		// Forced skipping of method Windows.Gaming.Input.RawGameController.User.get
-		// Forced skipping of method Windows.Gaming.Input.RawGameController.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static event global::System.EventHandler<global::Windows.Gaming.Input.RawGameController> RawGameControllerAdded

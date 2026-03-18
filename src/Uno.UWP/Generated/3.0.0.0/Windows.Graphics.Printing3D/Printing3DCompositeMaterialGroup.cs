@@ -60,15 +60,10 @@ namespace Windows.Graphics.Printing3D
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DCompositeMaterialGroup.Printing3DCompositeMaterialGroup(uint)
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DCompositeMaterialGroup.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DCompositeMaterialGroup.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DCompositeMaterialGroup.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DCompositeMaterialGroup.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DCompositeMaterialGroup.BaseMaterialGroup.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DCompositeMaterialGroup.BaseMaterialGroup.set
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DCompositeMaterialGroup.Composites.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DCompositeMaterialGroup.MaterialGroupId.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DCompositeMaterialGroup.MaterialIndices.get
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DCompositeMaterialGroup.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

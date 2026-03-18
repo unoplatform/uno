@@ -59,8 +59,6 @@ namespace Microsoft.UI.Composition
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.MaxPlaybackRate.get
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.MinPlaybackRate.get
-		// Forced skipping of method Microsoft.UI.Composition.AnimationController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.AnimationController.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Composition.AnimationController.Pause()
 		// Skipping already declared method Microsoft.UI.Composition.AnimationController.Resume()
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.PlaybackRate.get
@@ -69,6 +67,5 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.Progress.set
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.ProgressBehavior.get
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.ProgressBehavior.set
-		// Forced skipping of method Microsoft.UI.Composition.AnimationController.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

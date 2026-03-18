@@ -42,8 +42,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.GradientStopsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.MappingModeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.SpreadMethodProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.ColorInterpolationMode.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.ColorInterpolationMode.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.GradientStops.get
@@ -52,6 +50,5 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.MappingMode.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.SpreadMethod.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.SpreadMethod.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

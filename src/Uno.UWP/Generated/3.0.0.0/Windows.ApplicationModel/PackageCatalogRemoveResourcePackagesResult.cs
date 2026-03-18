@@ -33,12 +33,7 @@ namespace Windows.ApplicationModel
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalogRemoveResourcePackagesResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalogRemoveResourcePackagesResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalogRemoveResourcePackagesResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalogRemoveResourcePackagesResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.PackageCatalogRemoveResourcePackagesResult.ExtendedError.get
 		// Forced skipping of method Windows.ApplicationModel.PackageCatalogRemoveResourcePackagesResult.PackagesRemoved.get
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalogRemoveResourcePackagesResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

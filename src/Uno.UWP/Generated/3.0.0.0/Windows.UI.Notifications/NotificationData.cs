@@ -56,13 +56,8 @@ namespace Windows.UI.Notifications
 		}
 #endif
 		// Forced skipping of method Windows.UI.Notifications.NotificationData.NotificationData(System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>>)
-		// Forced skipping of method Windows.UI.Notifications.NotificationData.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Notifications.NotificationData.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Notifications.NotificationData.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Notifications.NotificationData.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Notifications.NotificationData.SequenceNumber.get
 		// Forced skipping of method Windows.UI.Notifications.NotificationData.SequenceNumber.set
 		// Forced skipping of method Windows.UI.Notifications.NotificationData.Values.get
-		// Forced skipping of method Windows.UI.Notifications.NotificationData.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

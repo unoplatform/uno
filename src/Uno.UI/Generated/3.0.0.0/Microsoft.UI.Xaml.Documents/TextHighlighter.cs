@@ -17,15 +17,10 @@ namespace Microsoft.UI.Xaml.Documents
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.TextHighlighter()
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.BackgroundProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.ForegroundProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.Background.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.Background.set
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.Foreground.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.Foreground.set
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.Ranges.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

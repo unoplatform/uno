@@ -83,10 +83,6 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription.FrameRate.get
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription.Height.get
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription.IsHdrVideoSupported.get
@@ -94,6 +90,5 @@ namespace Windows.Media.Capture
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription.Properties.get
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription.Subtype.get
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription.Width.get
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

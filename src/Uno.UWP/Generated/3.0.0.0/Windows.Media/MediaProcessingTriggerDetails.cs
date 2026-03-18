@@ -23,11 +23,6 @@ namespace Windows.Media
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.MediaProcessingTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.MediaProcessingTriggerDetails.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.MediaProcessingTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.MediaProcessingTriggerDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.MediaProcessingTriggerDetails.Arguments.get
-		// Forced skipping of method Windows.Media.MediaProcessingTriggerDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

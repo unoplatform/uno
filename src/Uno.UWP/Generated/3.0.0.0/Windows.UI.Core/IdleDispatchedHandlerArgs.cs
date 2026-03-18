@@ -9,11 +9,6 @@ namespace Windows.UI.Core
 	public partial class IdleDispatchedHandlerArgs
 	{
 		// Skipping already declared property IsDispatcherIdle
-		// Forced skipping of method Windows.UI.Core.IdleDispatchedHandlerArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Core.IdleDispatchedHandlerArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Core.IdleDispatchedHandlerArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Core.IdleDispatchedHandlerArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Core.IdleDispatchedHandlerArgs.IsDispatcherIdle.get
-		// Forced skipping of method Windows.UI.Core.IdleDispatchedHandlerArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

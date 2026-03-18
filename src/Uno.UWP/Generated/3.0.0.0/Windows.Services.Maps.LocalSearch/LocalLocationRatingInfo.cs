@@ -43,13 +43,8 @@ namespace Windows.Services.Maps.LocalSearch
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocationRatingInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocationRatingInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocationRatingInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocationRatingInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocationRatingInfo.AggregateRating.get
 		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocationRatingInfo.ProviderIdentifier.get
 		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocationRatingInfo.RatingCount.get
-		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocationRatingInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -94,10 +94,6 @@ namespace Windows.Networking.Sockets
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.AllSockets.get
-		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.Context.get
 		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.DatagramSocket.get
 		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.Id.get
@@ -105,6 +101,5 @@ namespace Windows.Networking.Sockets
 		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.StreamSocket.get
 		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.StreamSocketListener.get
 		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.TaskId.get
-		// Forced skipping of method Windows.Networking.Sockets.SocketActivityInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

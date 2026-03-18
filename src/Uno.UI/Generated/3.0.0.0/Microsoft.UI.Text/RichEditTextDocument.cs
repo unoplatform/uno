@@ -93,10 +93,6 @@ namespace Microsoft.UI.Text
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Text.RichEditTextDocument.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Text.RichEditTextDocument.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Text.RichEditTextDocument.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Text.RichEditTextDocument.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool CanCopy()
@@ -283,6 +279,5 @@ namespace Microsoft.UI.Text
 		// Forced skipping of method Microsoft.UI.Text.RichEditTextDocument.Selection.get
 		// Forced skipping of method Microsoft.UI.Text.RichEditTextDocument.UndoLimit.get
 		// Forced skipping of method Microsoft.UI.Text.RichEditTextDocument.UndoLimit.set
-		// Forced skipping of method Microsoft.UI.Text.RichEditTextDocument.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

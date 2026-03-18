@@ -33,12 +33,7 @@ namespace Windows.Devices.Scanners
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Scanners.ImageScannerPreviewResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Scanners.ImageScannerPreviewResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Scanners.ImageScannerPreviewResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Scanners.ImageScannerPreviewResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Scanners.ImageScannerPreviewResult.Format.get
 		// Forced skipping of method Windows.Devices.Scanners.ImageScannerPreviewResult.Succeeded.get
-		// Forced skipping of method Windows.Devices.Scanners.ImageScannerPreviewResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

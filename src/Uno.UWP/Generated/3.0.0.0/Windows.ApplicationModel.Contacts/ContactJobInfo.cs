@@ -128,10 +128,6 @@ namespace Windows.ApplicationModel.Contacts
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.ContactJobInfo()
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.CompanyAddress.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.CompanyAddress.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.CompanyName.get
@@ -148,6 +144,5 @@ namespace Windows.ApplicationModel.Contacts
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.Office.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.Title.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.Title.set
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactJobInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

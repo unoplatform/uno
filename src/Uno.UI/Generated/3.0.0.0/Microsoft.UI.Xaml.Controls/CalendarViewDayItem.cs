@@ -16,12 +16,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.CalendarViewDayItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.DateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.IsBlackoutProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.SetDensityColors(System.Collections.Generic.IEnumerable<Windows.UI.Color>)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.Date.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.IsBlackout.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.IsBlackout.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewDayItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

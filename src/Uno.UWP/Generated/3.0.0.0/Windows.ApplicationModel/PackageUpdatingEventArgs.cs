@@ -73,16 +73,11 @@ namespace Windows.ApplicationModel
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.PackageUpdatingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.PackageUpdatingEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.PackageUpdatingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.PackageUpdatingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.PackageUpdatingEventArgs.ActivityId.get
 		// Forced skipping of method Windows.ApplicationModel.PackageUpdatingEventArgs.ErrorCode.get
 		// Forced skipping of method Windows.ApplicationModel.PackageUpdatingEventArgs.IsComplete.get
 		// Forced skipping of method Windows.ApplicationModel.PackageUpdatingEventArgs.Progress.get
 		// Forced skipping of method Windows.ApplicationModel.PackageUpdatingEventArgs.SourcePackage.get
 		// Forced skipping of method Windows.ApplicationModel.PackageUpdatingEventArgs.TargetPackage.get
-		// Forced skipping of method Windows.ApplicationModel.PackageUpdatingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

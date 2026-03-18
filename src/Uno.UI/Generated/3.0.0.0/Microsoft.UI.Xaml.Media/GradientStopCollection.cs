@@ -13,10 +13,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.GradientStopCollection.GradientStopCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStopCollection.GradientStopCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStopCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStopCollection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStopCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStopCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStopCollection.Count.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStopCollection.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStopCollection.this[int].get
@@ -31,7 +27,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared method Microsoft.UI.Xaml.Media.GradientStopCollection.Remove(Microsoft.UI.Xaml.Media.GradientStop)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.GradientStopCollection.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStopCollection.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStopCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStopCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.GradientStop>.get_Item(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStopCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.GradientStop>.set_Item(int, Microsoft.UI.Xaml.Media.GradientStop)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.GradientStop>

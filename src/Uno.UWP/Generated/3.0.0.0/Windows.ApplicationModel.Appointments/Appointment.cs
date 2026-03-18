@@ -256,10 +256,6 @@ namespace Windows.ApplicationModel.Appointments
 #endif
 		// Skipping already declared method Windows.ApplicationModel.Appointments.Appointment.Appointment()
 		// Forced skipping of method Windows.ApplicationModel.Appointments.Appointment.Appointment()
-		// Forced skipping of method Windows.ApplicationModel.Appointments.Appointment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.Appointment.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.Appointment.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.Appointment.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.Appointment.AllDay.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.Appointment.AllDay.set
 		// Forced skipping of method Windows.ApplicationModel.Appointments.Appointment.AllowNewTimeProposal.get
@@ -310,6 +306,5 @@ namespace Windows.ApplicationModel.Appointments
 		// Forced skipping of method Windows.ApplicationModel.Appointments.Appointment.Uri.set
 		// Forced skipping of method Windows.ApplicationModel.Appointments.Appointment.UserResponse.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.Appointment.UserResponse.set
-		// Forced skipping of method Windows.ApplicationModel.Appointments.Appointment.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

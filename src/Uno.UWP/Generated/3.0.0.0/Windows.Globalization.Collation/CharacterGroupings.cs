@@ -44,10 +44,6 @@ namespace Windows.Globalization.Collation
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.CharacterGroupings(string)
-		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Lookup(string text)
@@ -65,7 +61,6 @@ namespace Windows.Globalization.Collation
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.System.Collections.Generic.IReadOnlyList<Windows.Globalization.Collation.CharacterGrouping>.get_Item(int)
 		// Processing: System.Collections.Generic.IReadOnlyList<Windows.Globalization.Collation.CharacterGrouping>
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Globalization.Collation.CharacterGrouping>

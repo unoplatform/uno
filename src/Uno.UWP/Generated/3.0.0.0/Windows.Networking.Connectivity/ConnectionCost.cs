@@ -63,15 +63,10 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionCost.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionCost.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionCost.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionCost.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionCost.ApproachingDataLimit.get
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionCost.BackgroundDataUsageRestricted.get
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionCost.NetworkCostType.get
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionCost.OverDataLimit.get
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionCost.Roaming.get
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionCost.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

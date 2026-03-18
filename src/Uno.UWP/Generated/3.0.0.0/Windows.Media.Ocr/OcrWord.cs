@@ -33,12 +33,7 @@ namespace Windows.Media.Ocr
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Ocr.OcrWord.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Ocr.OcrWord.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Ocr.OcrWord.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Ocr.OcrWord.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Ocr.OcrWord.BoundingRect.get
 		// Forced skipping of method Windows.Media.Ocr.OcrWord.Text.get
-		// Forced skipping of method Windows.Media.Ocr.OcrWord.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

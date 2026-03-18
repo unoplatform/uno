@@ -43,13 +43,8 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactMatchReason.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactMatchReason.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactMatchReason.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactMatchReason.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactMatchReason.Field.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactMatchReason.Segments.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactMatchReason.Text.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactMatchReason.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

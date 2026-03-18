@@ -113,10 +113,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.DecodeLength1.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.DecodeLength1.set
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.DecodeLength2.get
@@ -130,6 +126,5 @@ namespace Windows.Devices.PointOfService
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.IsCheckDigitValidationEnabled.set
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.IsCheckDigitValidationSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.IsDecodeLengthSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologyAttributes.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

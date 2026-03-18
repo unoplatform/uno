@@ -11,9 +11,6 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared property Names
 		// Skipping already declared method Microsoft.UI.Xaml.Input.InputScope.InputScope()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.InputScope.InputScope()
-		// Forced skipping of method Microsoft.UI.Xaml.Input.InputScope.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.InputScope.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.InputScope.Names.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.InputScope.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

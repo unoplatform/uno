@@ -271,10 +271,6 @@ namespace Windows.Devices.SerialCommunication
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SerialDevice> SerialDevice.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSerialDevice%3E%20SerialDevice.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.ErrorReceived.add
 		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.ErrorReceived.remove
 		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.PinChanged.add
@@ -315,7 +311,6 @@ namespace Windows.Devices.SerialCommunication
 		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.UsbVendorId.get
 		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.WriteTimeout.get
 		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.WriteTimeout.set
-		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.SerialCommunication.SerialDevice, global::Windows.Devices.SerialCommunication.ErrorReceivedEventArgs> ErrorReceived

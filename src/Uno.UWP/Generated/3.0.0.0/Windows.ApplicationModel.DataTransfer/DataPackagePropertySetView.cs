@@ -26,10 +26,6 @@ namespace Windows.ApplicationModel.DataTransfer
 		// Skipping already declared property Square30x30Logo
 		// Skipping already declared property Thumbnail
 		// Skipping already declared property Title
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.Keys.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.Values.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.Count.get
@@ -52,7 +48,6 @@ namespace Windows.ApplicationModel.DataTransfer
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.Square30x30Logo.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.Thumbnail.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.Title.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackagePropertySetView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.Collections.Generic.IReadOnlyDictionary<string, object>
 		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, object>>
 		// Processing: System.Collections.IEnumerable

@@ -63,15 +63,10 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails.ChatMessage.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails.ShouldDisplayToast.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails.ShouldUpdateActionCenter.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails.ShouldUpdateBadge.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails.ShouldUpdateDetailText.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

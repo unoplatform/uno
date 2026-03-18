@@ -67,10 +67,6 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceThumbnail.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceThumbnail.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceThumbnail.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceThumbnail.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IInputStream GetInputStreamAt(ulong position)
@@ -133,7 +129,6 @@ namespace Windows.Devices.Enumeration
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceThumbnail.Position.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceThumbnail.Size.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceThumbnail.Size.set
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceThumbnail.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Storage.Streams.IRandomAccessStreamWithContentType
 		// Processing: Windows.Storage.Streams.IRandomAccessStream
 		// Processing: System.IDisposable

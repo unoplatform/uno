@@ -11,12 +11,7 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared property Handled
 		// Skipping already declared method Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs.AccessKeyInvokedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs.AccessKeyInvokedEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs.Handled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

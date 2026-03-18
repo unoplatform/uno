@@ -113,10 +113,6 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.FileActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.FileActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.FileActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.FileActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileActivatedEventArgs.CallerPackageFamilyName.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileActivatedEventArgs.CurrentlyShownApplicationViewId.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileActivatedEventArgs.Files.get
@@ -127,7 +123,6 @@ namespace Windows.ApplicationModel.Activation
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileActivatedEventArgs.User.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileActivatedEventArgs.Verb.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileActivatedEventArgs.ViewSwitcher.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.FileActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IFileActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IFileActivatedEventArgsWithNeighboringFiles

@@ -169,10 +169,6 @@ namespace Windows.Devices.AllJoyn
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.AppId.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.AppId.set
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.AppNames.get
@@ -194,6 +190,5 @@ namespace Windows.Devices.AllJoyn
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.SoftwareVersion.set
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.SupportUrl.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.SupportUrl.set
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAboutData.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -9,9 +9,6 @@ namespace Microsoft.UI.Composition
 	public partial class SineEasingFunction : global::Microsoft.UI.Composition.CompositionEasingFunction
 	{
 		// Skipping already declared property Mode
-		// Forced skipping of method Microsoft.UI.Composition.SineEasingFunction.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.SineEasingFunction.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.SineEasingFunction.Mode.get
-		// Forced skipping of method Microsoft.UI.Composition.SineEasingFunction.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -28,8 +28,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.PointerOverImageProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.PointerOverPlaceholderImageProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.UnsetImageProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.DisabledImage.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.DisabledImage.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.Image.get
@@ -42,6 +40,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.PointerOverPlaceholderImage.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.UnsetImage.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.UnsetImage.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemImageInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -165,10 +165,6 @@ namespace Windows.Media.MediaProperties
 			throw new global::System.NotImplementedException("The member AudioEncodingProperties AudioEncodingProperties.CreateFlac(uint sampleRate, uint channelCount, uint bitsPerSample) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioEncodingProperties%20AudioEncodingProperties.CreateFlac%28uint%20sampleRate%2C%20uint%20channelCount%2C%20uint%20bitsPerSample%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.MediaProperties.AudioEncodingProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.MediaProperties.AudioEncodingProperties.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.MediaProperties.AudioEncodingProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.MediaProperties.AudioEncodingProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetFormatUserData(byte[] value)
@@ -203,7 +199,6 @@ namespace Windows.Media.MediaProperties
 		// Forced skipping of method Windows.Media.MediaProperties.AudioEncodingProperties.Subtype.get
 		// Forced skipping of method Windows.Media.MediaProperties.AudioEncodingProperties.Subtype.set
 		// Forced skipping of method Windows.Media.MediaProperties.AudioEncodingProperties.Type.get
-		// Forced skipping of method Windows.Media.MediaProperties.AudioEncodingProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.MediaProperties.IMediaEncodingProperties
 	}
 }

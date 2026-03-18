@@ -8,8 +8,5 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 #endif
 	public partial class ListPickerFlyoutPresenterAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListPickerFlyoutPresenterAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListPickerFlyoutPresenterAutomationPeer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListPickerFlyoutPresenterAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

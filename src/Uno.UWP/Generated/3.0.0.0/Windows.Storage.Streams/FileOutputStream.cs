@@ -8,14 +8,9 @@ namespace Windows.Storage.Streams
 #endif
 	public partial class FileOutputStream : global::Windows.Storage.Streams.IOutputStream, global::System.IDisposable
 	{
-		// Forced skipping of method Windows.Storage.Streams.FileOutputStream.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.Streams.FileOutputStream.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.Streams.FileOutputStream.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.Streams.FileOutputStream.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.Storage.Streams.FileOutputStream.WriteAsync(Windows.Storage.Streams.IBuffer)
 		// Skipping already declared method Windows.Storage.Streams.FileOutputStream.FlushAsync()
 		// Skipping already declared method Windows.Storage.Streams.FileOutputStream.Dispose()
-		// Forced skipping of method Windows.Storage.Streams.FileOutputStream.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Storage.Streams.IOutputStream
 		// Processing: System.IDisposable
 	}

@@ -40,13 +40,8 @@ namespace Windows.AI.MachineLearning
 			throw new global::System.NotImplementedException("The member ImageFeatureValue ImageFeatureValue.CreateFromVideoFrame(VideoFrame image) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ImageFeatureValue%20ImageFeatureValue.CreateFromVideoFrame%28VideoFrame%20image%29");
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureValue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureValue.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureValue.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureValue.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureValue.Kind.get
 		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureValue.VideoFrame.get
-		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureValue.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.AI.MachineLearning.ILearningModelFeatureValue
 	}
 }

@@ -41,14 +41,9 @@ namespace Windows.Media.Devices.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.Auto.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.Auto.set
 		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.Value.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.Value.set
-		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

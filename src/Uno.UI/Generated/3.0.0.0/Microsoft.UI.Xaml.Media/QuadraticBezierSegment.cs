@@ -16,12 +16,9 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.QuadraticBezierSegment()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.Point1Property.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.Point2Property.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.Point1.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.Point1.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.Point2.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.Point2.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.QuadraticBezierSegment.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

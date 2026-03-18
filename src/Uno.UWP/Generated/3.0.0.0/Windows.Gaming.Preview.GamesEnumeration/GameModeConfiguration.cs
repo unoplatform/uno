@@ -135,10 +135,6 @@ namespace Windows.Gaming.Preview.GamesEnumeration
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameModeConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameModeConfiguration.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameModeConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameModeConfiguration.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SaveAsync()
@@ -163,6 +159,5 @@ namespace Windows.Gaming.Preview.GamesEnumeration
 		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameModeConfiguration.PercentGpuTimeAllocatedToGame.get
 		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameModeConfiguration.PercentGpuTimeAllocatedToGame.set
 		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameModeConfiguration.RelatedProcessNames.get
-		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameModeConfiguration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

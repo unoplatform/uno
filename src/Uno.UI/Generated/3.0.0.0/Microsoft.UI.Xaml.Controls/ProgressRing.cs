@@ -35,8 +35,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.MaximumProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.MinimumProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.ValueProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.IsActive.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.IsActive.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.IsIndeterminate.get
@@ -48,6 +46,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.TemplateSettings.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.Value.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.Value.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

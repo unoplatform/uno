@@ -16,10 +16,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property VerticalOffset
 		// Skipping already declared method Microsoft.UI.Xaml.BringIntoViewOptions.BringIntoViewOptions()
 		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.BringIntoViewOptions()
-		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.AnimationDesired.get
 		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.AnimationDesired.set
 		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.HorizontalAlignmentRatio.get
@@ -32,6 +28,5 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.VerticalAlignmentRatio.set
 		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.VerticalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.VerticalOffset.set
-		// Forced skipping of method Microsoft.UI.Xaml.BringIntoViewOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

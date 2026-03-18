@@ -13,10 +13,7 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared method Microsoft.UI.Xaml.Media.PolyBezierSegment.PolyBezierSegment()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyBezierSegment.PolyBezierSegment()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyBezierSegment.PointsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyBezierSegment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyBezierSegment.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyBezierSegment.Points.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyBezierSegment.Points.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyBezierSegment.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

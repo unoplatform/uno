@@ -13,10 +13,7 @@ namespace Microsoft.UI.Xaml.Input
 		// Forced skipping of method Microsoft.UI.Xaml.Input.InputScopeName.InputScopeName()
 		// Skipping already declared method Microsoft.UI.Xaml.Input.InputScopeName.InputScopeName(Microsoft.UI.Xaml.Input.InputScopeNameValue)
 		// Forced skipping of method Microsoft.UI.Xaml.Input.InputScopeName.InputScopeName(Microsoft.UI.Xaml.Input.InputScopeNameValue)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.InputScopeName.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.InputScopeName.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.InputScopeName.NameValue.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.InputScopeName.NameValue.set
-		// Forced skipping of method Microsoft.UI.Xaml.Input.InputScopeName.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -47,10 +47,6 @@ namespace Windows.Media.Audio
 			throw new global::System.NotImplementedException("The member AudioPlaybackConnection AudioPlaybackConnection.TryCreateFromId(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioPlaybackConnection%20AudioPlaybackConnection.TryCreateFromId%28string%20id%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnection.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -90,7 +86,6 @@ namespace Windows.Media.Audio
 #endif
 		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnection.DeviceId.get
 		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnection.State.get
-		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Audio.AudioPlaybackConnection, object> StateChanged

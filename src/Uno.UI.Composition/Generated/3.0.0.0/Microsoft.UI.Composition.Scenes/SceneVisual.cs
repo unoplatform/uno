@@ -34,10 +34,7 @@ namespace Microsoft.UI.Composition.Scenes
 			throw new global::System.NotImplementedException("The member SceneVisual SceneVisual.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneVisual%20SceneVisual.Create%28Compositor%20compositor%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneVisual.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneVisual.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneVisual.Root.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneVisual.Root.set
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneVisual.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

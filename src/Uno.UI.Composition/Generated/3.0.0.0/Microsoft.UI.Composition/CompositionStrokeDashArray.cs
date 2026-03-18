@@ -11,8 +11,6 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property Count
 		// Skipping already declared property IsReadOnly
 		// Skipping already declared property this[]
-		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.Count.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.this[int].get
@@ -27,7 +25,6 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared method Microsoft.UI.Composition.CompositionStrokeDashArray.Remove(float)
 		// Skipping already declared method Microsoft.UI.Composition.CompositionStrokeDashArray.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.System.Collections.Generic.IList<float>.get_Item(int)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.System.Collections.Generic.IList<float>.set_Item(int, float)
 		// Processing: System.Collections.Generic.IList<float>

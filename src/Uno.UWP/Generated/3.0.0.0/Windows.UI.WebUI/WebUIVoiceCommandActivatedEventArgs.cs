@@ -73,17 +73,12 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.ActivatedOperation.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.Result.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.SplashScreen.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.User.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIVoiceCommandActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IVoiceCommandActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 		// Processing: Windows.UI.WebUI.IActivatedEventArgsDeferral

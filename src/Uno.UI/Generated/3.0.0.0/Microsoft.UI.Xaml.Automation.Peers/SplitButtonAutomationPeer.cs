@@ -11,13 +11,10 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property ExpandCollapseState
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.SplitButtonAutomationPeer.SplitButtonAutomationPeer(Microsoft.UI.Xaml.Controls.SplitButton)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SplitButtonAutomationPeer.SplitButtonAutomationPeer(Microsoft.UI.Xaml.Controls.SplitButton)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SplitButtonAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SplitButtonAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.SplitButtonAutomationPeer.Collapse()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.SplitButtonAutomationPeer.Expand()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.SplitButtonAutomationPeer.Invoke()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SplitButtonAutomationPeer.ExpandCollapseState.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SplitButtonAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IInvokeProvider
 	}

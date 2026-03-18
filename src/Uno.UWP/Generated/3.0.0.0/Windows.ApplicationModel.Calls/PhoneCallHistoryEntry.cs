@@ -176,10 +176,6 @@ namespace Windows.ApplicationModel.Calls
 		// Skipping already declared property StartTime
 		// Skipping already declared method Windows.ApplicationModel.Calls.PhoneCallHistoryEntry.PhoneCallHistoryEntry()
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntry.PhoneCallHistoryEntry()
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntry.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntry.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntry.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntry.Address.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntry.Address.set
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntry.Duration.get
@@ -214,6 +210,5 @@ namespace Windows.ApplicationModel.Calls
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntry.SourceIdKind.set
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntry.StartTime.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntry.StartTime.set
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

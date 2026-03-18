@@ -112,10 +112,5 @@ namespace Windows.Devices.Usb
 		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.PersonalHealthcare.get
 		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.Physical.get
 		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.VendorSpecific.get
-		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Windows.Devices.Usb.UsbDeviceClasses.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

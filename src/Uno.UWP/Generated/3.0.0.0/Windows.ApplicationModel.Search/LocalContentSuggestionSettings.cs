@@ -64,16 +64,11 @@ namespace Windows.ApplicationModel.Search
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.LocalContentSuggestionSettings()
-		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.AqsFilter.get
 		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.AqsFilter.set
 		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.Enabled.get
 		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.Enabled.set
 		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.Locations.get
 		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.PropertiesToMatch.get
-		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

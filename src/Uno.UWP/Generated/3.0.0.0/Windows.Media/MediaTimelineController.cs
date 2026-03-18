@@ -82,10 +82,6 @@ namespace Windows.Media
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaTimelineController.MediaTimelineController()
-		// Forced skipping of method Windows.Media.MediaTimelineController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.MediaTimelineController.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.MediaTimelineController.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.MediaTimelineController.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -124,7 +120,6 @@ namespace Windows.Media
 		// Forced skipping of method Windows.Media.MediaTimelineController.Position.get
 		// Forced skipping of method Windows.Media.MediaTimelineController.Position.set
 		// Forced skipping of method Windows.Media.MediaTimelineController.State.get
-		// Forced skipping of method Windows.Media.MediaTimelineController.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.MediaTimelineController, object> PositionChanged

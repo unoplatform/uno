@@ -13,8 +13,5 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		{
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PickerFlyoutPresenterAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PickerFlyoutPresenterAutomationPeer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PickerFlyoutPresenterAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

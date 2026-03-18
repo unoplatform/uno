@@ -16,10 +16,6 @@ namespace Windows.Data.Xml.Xsl
 		}
 #endif
 		// Forced skipping of method Windows.Data.Xml.Xsl.XsltProcessor.XsltProcessor(Windows.Data.Xml.Dom.XmlDocument)
-		// Forced skipping of method Windows.Data.Xml.Xsl.XsltProcessor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Data.Xml.Xsl.XsltProcessor.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Data.Xml.Xsl.XsltProcessor.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Data.Xml.Xsl.XsltProcessor.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string TransformToString(global::Windows.Data.Xml.Dom.IXmlNode inputNode)
@@ -34,6 +30,5 @@ namespace Windows.Data.Xml.Xsl
 			throw new global::System.NotImplementedException("The member XmlDocument XsltProcessor.TransformToDocument(IXmlNode inputNode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=XmlDocument%20XsltProcessor.TransformToDocument%28IXmlNode%20inputNode%29");
 		}
 #endif
-		// Forced skipping of method Windows.Data.Xml.Xsl.XsltProcessor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

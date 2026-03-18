@@ -83,10 +83,6 @@ namespace Windows.UI.Core.AnimationMetrics
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.OpacityAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.OpacityAnimation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.OpacityAnimation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.OpacityAnimation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Core.AnimationMetrics.OpacityAnimation.Control1.get
 		// Forced skipping of method Windows.UI.Core.AnimationMetrics.OpacityAnimation.Control2.get
 		// Forced skipping of method Windows.UI.Core.AnimationMetrics.OpacityAnimation.Delay.get
@@ -94,7 +90,6 @@ namespace Windows.UI.Core.AnimationMetrics
 		// Forced skipping of method Windows.UI.Core.AnimationMetrics.OpacityAnimation.FinalOpacity.get
 		// Forced skipping of method Windows.UI.Core.AnimationMetrics.OpacityAnimation.InitialOpacity.get
 		// Forced skipping of method Windows.UI.Core.AnimationMetrics.OpacityAnimation.Type.get
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.OpacityAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.UI.Core.AnimationMetrics.IPropertyAnimation
 	}
 }

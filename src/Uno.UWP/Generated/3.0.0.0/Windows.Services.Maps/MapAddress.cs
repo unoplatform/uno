@@ -24,10 +24,6 @@ namespace Windows.Services.Maps
 		// Skipping already declared property Street
 		// Skipping already declared property StreetNumber
 		// Skipping already declared property Town
-		// Forced skipping of method Windows.Services.Maps.MapAddress.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.Maps.MapAddress.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.Maps.MapAddress.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.Maps.MapAddress.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Maps.MapAddress.BuildingFloor.get
 		// Forced skipping of method Windows.Services.Maps.MapAddress.BuildingName.get
 		// Forced skipping of method Windows.Services.Maps.MapAddress.BuildingRoom.get
@@ -44,6 +40,5 @@ namespace Windows.Services.Maps
 		// Forced skipping of method Windows.Services.Maps.MapAddress.Street.get
 		// Forced skipping of method Windows.Services.Maps.MapAddress.StreetNumber.get
 		// Forced skipping of method Windows.Services.Maps.MapAddress.Town.get
-		// Forced skipping of method Windows.Services.Maps.MapAddress.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

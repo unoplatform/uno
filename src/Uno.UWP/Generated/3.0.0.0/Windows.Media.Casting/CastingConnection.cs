@@ -47,10 +47,6 @@ namespace Windows.Media.Casting
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Casting.CastingConnection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Casting.CastingConnection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Casting.CastingConnection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Casting.CastingConnection.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Casting.CastingConnectionErrorStatus> RequestStartCastingAsync(global::Windows.Media.Casting.CastingSource value)
@@ -80,7 +76,6 @@ namespace Windows.Media.Casting
 		// Forced skipping of method Windows.Media.Casting.CastingConnection.Source.get
 		// Forced skipping of method Windows.Media.Casting.CastingConnection.Source.set
 		// Forced skipping of method Windows.Media.Casting.CastingConnection.State.get
-		// Forced skipping of method Windows.Media.Casting.CastingConnection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Casting.CastingConnection, global::Windows.Media.Casting.CastingConnectionErrorOccurredEventArgs> ErrorOccurred

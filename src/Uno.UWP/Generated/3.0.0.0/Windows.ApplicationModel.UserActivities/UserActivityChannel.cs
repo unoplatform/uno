@@ -41,10 +41,6 @@ namespace Windows.ApplicationModel.UserActivities
 			throw new global::System.NotImplementedException("The member UserActivityChannel UserActivityChannel.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserActivityChannel%20UserActivityChannel.GetForUser%28User%20user%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityChannel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityChannel.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityChannel.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityChannel.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserActivities.UserActivity> GetOrCreateUserActivityAsync(string activityId)
@@ -80,6 +76,5 @@ namespace Windows.ApplicationModel.UserActivities
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IList<UserActivitySessionHistoryItem>> UserActivityChannel.GetSessionHistoryItemsForUserActivityAsync(string activityId, DateTimeOffset startTime) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIList%3CUserActivitySessionHistoryItem%3E%3E%20UserActivityChannel.GetSessionHistoryItemsForUserActivityAsync%28string%20activityId%2C%20DateTimeOffset%20startTime%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityChannel.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -61,10 +61,6 @@ namespace Windows.Devices.WiFiDirect
 			throw new global::System.NotImplementedException("The member IAsyncOperation<WiFiDirectDevice> WiFiDirectDevice.FromIdAsync(string deviceId, WiFiDirectConnectionParameters connectionParameters) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWiFiDirectDevice%3E%20WiFiDirectDevice.FromIdAsync%28string%20deviceId%2C%20WiFiDirectConnectionParameters%20connectionParameters%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectDevice.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectDevice.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectDevice.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.EndpointPair> GetConnectionEndpointPairs()
@@ -83,7 +79,6 @@ namespace Windows.Devices.WiFiDirect
 #endif
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectDevice.ConnectionStatus.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectDevice.DeviceId.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectDevice.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.WiFiDirect.WiFiDirectDevice, object> ConnectionStatusChanged

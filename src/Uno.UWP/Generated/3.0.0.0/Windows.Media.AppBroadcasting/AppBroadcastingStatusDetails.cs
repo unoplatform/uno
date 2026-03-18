@@ -93,10 +93,6 @@ namespace Windows.Media.AppBroadcasting
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingStatusDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingStatusDetails.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingStatusDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingStatusDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingStatusDetails.IsAnyAppBroadcasting.get
 		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingStatusDetails.IsAppInactive.get
 		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingStatusDetails.IsBlockedForApp.get
@@ -105,6 +101,5 @@ namespace Windows.Media.AppBroadcasting
 		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingStatusDetails.IsDisabledByUser.get
 		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingStatusDetails.IsGameStreamInProgress.get
 		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingStatusDetails.IsGpuConstrained.get
-		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingStatusDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

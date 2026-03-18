@@ -22,12 +22,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItemTemplateSettings.DragItemsCountProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItemTemplateSettings.ExpandedGlyphVisibilityProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItemTemplateSettings.IndentationProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItemTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItemTemplateSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItemTemplateSettings.CollapsedGlyphVisibility.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItemTemplateSettings.DragItemsCount.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItemTemplateSettings.ExpandedGlyphVisibility.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItemTemplateSettings.Indentation.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewItemTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

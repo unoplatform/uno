@@ -23,10 +23,6 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.PointerEntered.add
 		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.PointerEntered.remove
 		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.PointerExited.add
@@ -42,7 +38,6 @@ namespace Windows.UI.Input.Inking
 		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.PointerReleased.add
 		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.PointerReleased.remove
 		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.InkPresenter.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkUnprocessedInput.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.InkUnprocessedInput, global::Windows.UI.Core.PointerEventArgs> PointerEntered

@@ -43,10 +43,6 @@ namespace Windows.System
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.UserAuthenticationStatusChangingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.UserAuthenticationStatusChangingEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.UserAuthenticationStatusChangingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.UserAuthenticationStatusChangingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.UserAuthenticationStatusChangeDeferral GetDeferral()
@@ -57,6 +53,5 @@ namespace Windows.System
 		// Forced skipping of method Windows.System.UserAuthenticationStatusChangingEventArgs.CurrentStatus.get
 		// Forced skipping of method Windows.System.UserAuthenticationStatusChangingEventArgs.NewStatus.get
 		// Forced skipping of method Windows.System.UserAuthenticationStatusChangingEventArgs.User.get
-		// Forced skipping of method Windows.System.UserAuthenticationStatusChangingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

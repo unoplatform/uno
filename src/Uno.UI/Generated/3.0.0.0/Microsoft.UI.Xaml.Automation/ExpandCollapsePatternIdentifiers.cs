@@ -10,10 +10,5 @@ namespace Microsoft.UI.Xaml.Automation
 	{
 		// Skipping already declared property ExpandCollapseStateProperty
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.ExpandCollapsePatternIdentifiers.ExpandCollapseStateProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.ExpandCollapsePatternIdentifiers.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.ExpandCollapsePatternIdentifiers.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.ExpandCollapsePatternIdentifiers.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.ExpandCollapsePatternIdentifiers.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.ExpandCollapsePatternIdentifiers.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

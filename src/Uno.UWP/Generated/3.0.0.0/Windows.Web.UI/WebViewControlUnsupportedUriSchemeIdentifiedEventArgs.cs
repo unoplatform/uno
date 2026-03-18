@@ -37,13 +37,8 @@ namespace Windows.Web.UI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.UI.WebViewControlUnsupportedUriSchemeIdentifiedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Web.UI.WebViewControlUnsupportedUriSchemeIdentifiedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Web.UI.WebViewControlUnsupportedUriSchemeIdentifiedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Web.UI.WebViewControlUnsupportedUriSchemeIdentifiedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Web.UI.WebViewControlUnsupportedUriSchemeIdentifiedEventArgs.Handled.get
 		// Forced skipping of method Windows.Web.UI.WebViewControlUnsupportedUriSchemeIdentifiedEventArgs.Handled.set
 		// Forced skipping of method Windows.Web.UI.WebViewControlUnsupportedUriSchemeIdentifiedEventArgs.Uri.get
-		// Forced skipping of method Windows.Web.UI.WebViewControlUnsupportedUriSchemeIdentifiedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

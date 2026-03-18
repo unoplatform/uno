@@ -10,12 +10,9 @@ namespace Microsoft.UI.Composition
 	{
 		// Skipping already declared property EndPoint
 		// Skipping already declared property StartPoint
-		// Forced skipping of method Microsoft.UI.Composition.CompositionLinearGradientBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionLinearGradientBrush.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionLinearGradientBrush.EndPoint.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionLinearGradientBrush.EndPoint.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionLinearGradientBrush.StartPoint.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionLinearGradientBrush.StartPoint.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionLinearGradientBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

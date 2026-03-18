@@ -19,8 +19,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitButton.CommandParameterProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitButton.CommandProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitButton.FlyoutProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitButton.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitButton.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitButton.Click.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitButton.Click.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitButton.Command.get
@@ -29,7 +27,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitButton.CommandParameter.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitButton.Flyout.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitButton.Flyout.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitButton.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.SplitButton.Click
 	}
 }

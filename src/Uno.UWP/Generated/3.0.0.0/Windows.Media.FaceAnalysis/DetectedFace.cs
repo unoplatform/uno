@@ -23,11 +23,6 @@ namespace Windows.Media.FaceAnalysis
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.FaceAnalysis.DetectedFace.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.FaceAnalysis.DetectedFace.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.FaceAnalysis.DetectedFace.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.FaceAnalysis.DetectedFace.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.FaceAnalysis.DetectedFace.FaceBox.get
-		// Forced skipping of method Windows.Media.FaceAnalysis.DetectedFace.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

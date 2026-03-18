@@ -8,8 +8,5 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class TriggerAction : global::Microsoft.UI.Xaml.DependencyObject
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerAction.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerAction.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.TriggerAction.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

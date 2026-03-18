@@ -86,8 +86,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.PlaybackRateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.SourceProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.StretchProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.Pause()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.PlayAsync(double, double, bool)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.Resume()
@@ -110,6 +108,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.Source.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.Stretch.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.Stretch.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

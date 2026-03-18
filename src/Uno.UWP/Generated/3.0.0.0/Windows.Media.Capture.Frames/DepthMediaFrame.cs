@@ -63,10 +63,6 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrame.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrame.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrame.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper TryCreateCoordinateMapper(global::Windows.Media.Devices.Core.CameraIntrinsics cameraIntrinsics, global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
@@ -79,6 +75,5 @@ namespace Windows.Media.Capture.Frames
 		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrame.MaxReliableDepth.get
 		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrame.MinReliableDepth.get
 		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrame.VideoMediaFrame.get
-		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

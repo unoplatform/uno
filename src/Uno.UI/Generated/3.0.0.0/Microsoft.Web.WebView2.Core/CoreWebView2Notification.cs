@@ -143,10 +143,6 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ReportShown()
@@ -183,7 +179,6 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.Timestamp.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.Title.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.VibrationPattern.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Notification.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2Notification, object> CloseRequested

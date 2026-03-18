@@ -37,8 +37,6 @@ namespace Microsoft.UI.Input
 			throw new global::System.NotImplementedException("The member InputFocusNavigationHost InputFocusNavigationHost.GetForSiteLink(IContentSiteLink contentSiteLink) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputFocusNavigationHost%20InputFocusNavigationHost.GetForSiteLink%28IContentSiteLink%20contentSiteLink%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.InputFocusNavigationHost.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.InputFocusNavigationHost.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Input.FocusNavigationResult NavigateFocus(global::Microsoft.UI.Input.FocusNavigationRequest request)
@@ -49,7 +47,6 @@ namespace Microsoft.UI.Input
 		// Forced skipping of method Microsoft.UI.Input.InputFocusNavigationHost.DepartFocusRequested.add
 		// Forced skipping of method Microsoft.UI.Input.InputFocusNavigationHost.DepartFocusRequested.remove
 		// Forced skipping of method Microsoft.UI.Input.InputFocusNavigationHost.ContainsFocus.get
-		// Forced skipping of method Microsoft.UI.Input.InputFocusNavigationHost.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Input.InputFocusNavigationHost, global::Microsoft.UI.Input.FocusNavigationRequestEventArgs> DepartFocusRequested

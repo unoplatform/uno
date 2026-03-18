@@ -33,12 +33,7 @@ namespace Windows.Gaming.XboxLive.Storage
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveProviderGetResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveProviderGetResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveProviderGetResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveProviderGetResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveProviderGetResult.Status.get
 		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveProviderGetResult.Value.get
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveProviderGetResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

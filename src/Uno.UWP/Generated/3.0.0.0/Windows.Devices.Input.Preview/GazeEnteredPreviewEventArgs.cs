@@ -37,13 +37,8 @@ namespace Windows.Devices.Input.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs.CurrentPoint.get
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs.Handled.get
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs.Handled.set
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

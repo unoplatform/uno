@@ -8,10 +8,5 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 #endif
 	public partial class SvgImageSourceOpenedEventArgs
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSourceOpenedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSourceOpenedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSourceOpenedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSourceOpenedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSourceOpenedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

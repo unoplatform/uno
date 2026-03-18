@@ -93,10 +93,6 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.WebUIContactMessageActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIContactMessageActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIContactMessageActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIContactMessageActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIContactMessageActivatedEventArgs.ActivatedOperation.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIContactMessageActivatedEventArgs.Contact.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIContactMessageActivatedEventArgs.Kind.get
@@ -105,7 +101,6 @@ namespace Windows.UI.WebUI
 		// Forced skipping of method Windows.UI.WebUI.WebUIContactMessageActivatedEventArgs.ServiceUserId.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIContactMessageActivatedEventArgs.SplashScreen.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIContactMessageActivatedEventArgs.Verb.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIContactMessageActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IContactMessageActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IContactActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs

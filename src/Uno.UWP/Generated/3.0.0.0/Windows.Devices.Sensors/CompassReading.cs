@@ -41,16 +41,11 @@ namespace Windows.Devices.Sensors
 		}
 #endif
 		// Skipping already declared property Timestamp
-		// Forced skipping of method Windows.Devices.Sensors.CompassReading.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.CompassReading.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.CompassReading.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Sensors.CompassReading.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.CompassReading.HeadingAccuracy.get
 		// Forced skipping of method Windows.Devices.Sensors.CompassReading.HeadingMagneticNorth.get
 		// Forced skipping of method Windows.Devices.Sensors.CompassReading.HeadingTrueNorth.get
 		// Forced skipping of method Windows.Devices.Sensors.CompassReading.PerformanceCount.get
 		// Forced skipping of method Windows.Devices.Sensors.CompassReading.Properties.get
 		// Forced skipping of method Windows.Devices.Sensors.CompassReading.Timestamp.get
-		// Forced skipping of method Windows.Devices.Sensors.CompassReading.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

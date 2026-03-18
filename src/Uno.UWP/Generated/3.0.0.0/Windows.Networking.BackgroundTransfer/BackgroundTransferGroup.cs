@@ -44,13 +44,8 @@ namespace Windows.Networking.BackgroundTransfer
 			throw new global::System.NotImplementedException("The member BackgroundTransferGroup BackgroundTransferGroup.CreateGroup(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BackgroundTransferGroup%20BackgroundTransferGroup.CreateGroup%28string%20name%29");
 		}
 #endif
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferGroup.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferGroup.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferGroup.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferGroup.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferGroup.Name.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferGroup.TransferBehavior.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferGroup.TransferBehavior.set
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferGroup.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

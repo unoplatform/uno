@@ -43,13 +43,8 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.CreateMediaSourceAudioInputNodeResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Audio.CreateMediaSourceAudioInputNodeResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Audio.CreateMediaSourceAudioInputNodeResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Audio.CreateMediaSourceAudioInputNodeResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Audio.CreateMediaSourceAudioInputNodeResult.ExtendedError.get
 		// Forced skipping of method Windows.Media.Audio.CreateMediaSourceAudioInputNodeResult.Node.get
 		// Forced skipping of method Windows.Media.Audio.CreateMediaSourceAudioInputNodeResult.Status.get
-		// Forced skipping of method Windows.Media.Audio.CreateMediaSourceAudioInputNodeResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

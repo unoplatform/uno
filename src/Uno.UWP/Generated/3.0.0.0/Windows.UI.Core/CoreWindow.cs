@@ -74,10 +74,6 @@ namespace Windows.UI.Core
 #endif
 		// Skipping already declared property Visible
 		// Skipping already declared method Windows.UI.Core.CoreWindow.GetForCurrentThread()
-		// Forced skipping of method Windows.UI.Core.CoreWindow.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Core.CoreWindow.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Core.CoreWindow.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Core.CoreWindow.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Activate()
@@ -165,7 +161,6 @@ namespace Windows.UI.Core
 		// Forced skipping of method Windows.UI.Core.CoreWindow.PointerPosition.set
 		// Forced skipping of method Windows.UI.Core.CoreWindow.UIContext.get
 		// Forced skipping of method Windows.UI.Core.CoreWindow.Visible.get
-		// Forced skipping of method Windows.UI.Core.CoreWindow.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Windows.UI.Core.CoreWindow.Activated
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

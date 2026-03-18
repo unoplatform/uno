@@ -23,11 +23,6 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimRemovedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimRemovedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimRemovedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimRemovedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimRemovedEventArgs.ESim.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimRemovedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

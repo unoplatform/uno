@@ -43,13 +43,8 @@ namespace Windows.ApplicationModel.Calls.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneCallBlockedTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneCallBlockedTriggerDetails.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneCallBlockedTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneCallBlockedTriggerDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneCallBlockedTriggerDetails.CallBlockedReason.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneCallBlockedTriggerDetails.LineId.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneCallBlockedTriggerDetails.PhoneNumber.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneCallBlockedTriggerDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

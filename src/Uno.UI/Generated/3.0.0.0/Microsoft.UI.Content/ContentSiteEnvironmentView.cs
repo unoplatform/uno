@@ -38,13 +38,8 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironmentView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironmentView.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironmentView.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironmentView.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironmentView.AppWindowId.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironmentView.DisplayId.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironmentView.DisplayScale.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironmentView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

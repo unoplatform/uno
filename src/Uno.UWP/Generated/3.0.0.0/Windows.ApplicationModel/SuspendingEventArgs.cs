@@ -9,12 +9,7 @@ namespace Windows.ApplicationModel
 	public partial class SuspendingEventArgs : global::Windows.ApplicationModel.ISuspendingEventArgs
 	{
 		// Skipping already declared property SuspendingOperation
-		// Forced skipping of method Windows.ApplicationModel.SuspendingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.SuspendingEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.SuspendingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.SuspendingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.SuspendingEventArgs.SuspendingOperation.get
-		// Forced skipping of method Windows.ApplicationModel.SuspendingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.ISuspendingEventArgs
 	}
 }

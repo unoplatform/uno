@@ -14,11 +14,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.DoubleAnimationUsingKeyFrames()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.DoubleAnimationUsingKeyFrames()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.EnableDependentAnimationProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.EnableDependentAnimation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.EnableDependentAnimation.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.KeyFrames.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimationUsingKeyFrames.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

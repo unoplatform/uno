@@ -14,16 +14,11 @@ namespace Windows.UI.Input
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property Position
 		// Skipping already declared property Velocities
-		// Forced skipping of method Windows.UI.Input.ManipulationInertiaStartingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.ManipulationInertiaStartingEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Input.ManipulationInertiaStartingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Input.ManipulationInertiaStartingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.ManipulationInertiaStartingEventArgs.ContactCount.get
 		// Forced skipping of method Windows.UI.Input.ManipulationInertiaStartingEventArgs.Cumulative.get
 		// Forced skipping of method Windows.UI.Input.ManipulationInertiaStartingEventArgs.Delta.get
 		// Forced skipping of method Windows.UI.Input.ManipulationInertiaStartingEventArgs.PointerDeviceType.get
 		// Forced skipping of method Windows.UI.Input.ManipulationInertiaStartingEventArgs.Position.get
 		// Forced skipping of method Windows.UI.Input.ManipulationInertiaStartingEventArgs.Velocities.get
-		// Forced skipping of method Windows.UI.Input.ManipulationInertiaStartingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

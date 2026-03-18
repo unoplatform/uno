@@ -48,10 +48,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			throw new global::System.NotImplementedException("The member ConnectedAnimationService ConnectedAnimationService.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ConnectedAnimationService%20ConnectedAnimationService.GetForCurrentView%28%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation PrepareToAnimate(string key, global::Microsoft.UI.Xaml.UIElement source)
@@ -70,6 +66,5 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService.DefaultDuration.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService.DefaultEasingFunction.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService.DefaultEasingFunction.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationService.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

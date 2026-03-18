@@ -32,8 +32,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSwitch.OffContentTemplateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSwitch.OnContentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSwitch.OnContentTemplateProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSwitch.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSwitch.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSwitch.Toggled.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSwitch.Toggled.remove
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ToggleSwitch.OnToggled()
@@ -55,7 +53,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSwitch.OnContentTemplate.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSwitch.OnContentTemplate.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSwitch.TemplateSettings.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSwitch.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ToggleSwitch.Toggled
 	}
 }

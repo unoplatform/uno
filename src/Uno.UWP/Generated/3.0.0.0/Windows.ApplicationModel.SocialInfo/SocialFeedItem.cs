@@ -168,10 +168,6 @@ namespace Windows.ApplicationModel.SocialInfo
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedItem.SocialFeedItem()
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedItem.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedItem.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedItem.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedItem.Author.get
 		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedItem.BadgeCountValue.get
 		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedItem.BadgeCountValue.set
@@ -192,6 +188,5 @@ namespace Windows.ApplicationModel.SocialInfo
 		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedItem.Thumbnails.get
 		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedItem.Timestamp.get
 		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedItem.Timestamp.set
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

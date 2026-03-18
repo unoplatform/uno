@@ -12,10 +12,5 @@ namespace Microsoft.UI.Xaml.Automation
 		// Skipping already declared property RowHeaderItemsProperty
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.TableItemPatternIdentifiers.ColumnHeaderItemsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.TableItemPatternIdentifiers.RowHeaderItemsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.TableItemPatternIdentifiers.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.TableItemPatternIdentifiers.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.TableItemPatternIdentifiers.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.TableItemPatternIdentifiers.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.TableItemPatternIdentifiers.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

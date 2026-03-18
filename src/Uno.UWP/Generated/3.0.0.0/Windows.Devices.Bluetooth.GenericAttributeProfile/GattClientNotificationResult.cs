@@ -53,14 +53,9 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.BytesSent.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.ProtocolError.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.Status.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.SubscribedClient.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

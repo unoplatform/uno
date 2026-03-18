@@ -8,8 +8,5 @@ namespace Microsoft.UI.Input
 #endif
 	public partial class InputCustomCursor : global::Microsoft.UI.Input.InputCursor
 	{
-		// Forced skipping of method Microsoft.UI.Input.InputCustomCursor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.InputCustomCursor.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.InputCustomCursor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -63,10 +63,6 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Holographic.HolographicCameraRenderingParameters GetRenderingParameters(global::Windows.Graphics.Holographic.HolographicCameraPose cameraPose)
@@ -114,6 +110,5 @@ namespace Windows.Graphics.Holographic
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.Duration.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.Id.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.RemovedCameras.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

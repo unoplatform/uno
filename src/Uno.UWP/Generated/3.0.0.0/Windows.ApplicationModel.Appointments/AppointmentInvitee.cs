@@ -72,10 +72,6 @@ namespace Windows.ApplicationModel.Appointments
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentInvitee.AppointmentInvitee()
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentInvitee.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentInvitee.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentInvitee.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentInvitee.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentInvitee.Address.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentInvitee.Address.set
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentInvitee.DisplayName.get
@@ -84,7 +80,6 @@ namespace Windows.ApplicationModel.Appointments
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentInvitee.Response.set
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentInvitee.Role.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentInvitee.Role.set
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentInvitee.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Appointments.IAppointmentParticipant
 	}
 }

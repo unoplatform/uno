@@ -35,10 +35,5 @@ namespace Microsoft.UI.Xaml.Automation
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridPatternIdentifiers.ColumnCountProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridPatternIdentifiers.RowCountProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridPatternIdentifiers.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridPatternIdentifiers.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridPatternIdentifiers.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridPatternIdentifiers.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridPatternIdentifiers.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

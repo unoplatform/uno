@@ -43,13 +43,8 @@ namespace Windows.System.Profile.SystemManufacturers
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Profile.SystemManufacturers.OemSupportInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.Profile.SystemManufacturers.OemSupportInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.Profile.SystemManufacturers.OemSupportInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.Profile.SystemManufacturers.OemSupportInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.Profile.SystemManufacturers.OemSupportInfo.SupportAppLink.get
 		// Forced skipping of method Windows.System.Profile.SystemManufacturers.OemSupportInfo.SupportLink.get
 		// Forced skipping of method Windows.System.Profile.SystemManufacturers.OemSupportInfo.SupportProvider.get
-		// Forced skipping of method Windows.System.Profile.SystemManufacturers.OemSupportInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

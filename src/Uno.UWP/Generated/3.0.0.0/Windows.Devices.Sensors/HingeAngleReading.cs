@@ -43,13 +43,8 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.HingeAngleReading.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.HingeAngleReading.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.HingeAngleReading.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Sensors.HingeAngleReading.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.HingeAngleReading.AngleInDegrees.get
 		// Forced skipping of method Windows.Devices.Sensors.HingeAngleReading.Properties.get
 		// Forced skipping of method Windows.Devices.Sensors.HingeAngleReading.Timestamp.get
-		// Forced skipping of method Windows.Devices.Sensors.HingeAngleReading.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

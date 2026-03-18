@@ -66,16 +66,11 @@ namespace Windows.ApplicationModel.UserActivities
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.UserActivityAttribution(System.Uri)
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.AddImageQuery.get
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.AddImageQuery.set
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.AlternateText.get
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.AlternateText.set
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.IconUri.get
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.IconUri.set
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

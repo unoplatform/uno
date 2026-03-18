@@ -44,8 +44,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.SelectedPageIndexProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.SelectedPipStyleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.WrapModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.SelectedIndexChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.SelectedIndexChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.MaxVisiblePips.get
@@ -71,7 +69,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.TemplateSettings.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.WrapMode.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.WrapMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.PipsPager.SelectedIndexChanged
 	}
 }

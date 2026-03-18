@@ -47,15 +47,10 @@ namespace Windows.UI.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.Handled.set
 		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.KeyCode.get
 		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.KeyStatus.get
-		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.UI.Core.ICoreWindowEventArgs
 	}
 }

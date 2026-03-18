@@ -11,13 +11,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property ForegroundProperty
 		// Skipping already declared property Foreground
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.ForegroundProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.IconSource.CreateIconElement()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.IconSource.CreateIconElementCore()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.IconSource.GetIconElementPropertyCore(Microsoft.UI.Xaml.DependencyProperty)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.Foreground.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.Foreground.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.IconSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -33,10 +33,6 @@ namespace Windows.Storage.AccessCache
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList.ItemRemoved.add
 		// Forced skipping of method Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList.ItemRemoved.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -153,7 +149,6 @@ namespace Windows.Storage.AccessCache
 #endif
 		// Forced skipping of method Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList.Entries.get
 		// Forced skipping of method Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList.MaximumItemsAllowed.get
-		// Forced skipping of method Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList, global::Windows.Storage.AccessCache.ItemRemovedEventArgs> ItemRemoved

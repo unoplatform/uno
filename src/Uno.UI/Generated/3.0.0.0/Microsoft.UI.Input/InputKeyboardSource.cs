@@ -16,8 +16,6 @@ namespace Microsoft.UI.Input
 			throw new global::System.NotImplementedException("The member InputKeyboardSource InputKeyboardSource.GetForIsland(ContentIsland island) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputKeyboardSource%20InputKeyboardSource.GetForIsland%28ContentIsland%20island%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Input.VirtualKeyStates GetCurrentKeyState(global::Windows.System.VirtualKey virtualKey)
@@ -44,7 +42,6 @@ namespace Microsoft.UI.Input
 		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.SystemKeyDown.remove
 		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.SystemKeyUp.add
 		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.SystemKeyUp.remove
-		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Input.InputKeyboardSource, global::Microsoft.UI.Input.CharacterReceivedEventArgs> CharacterReceived

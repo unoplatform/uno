@@ -23,11 +23,6 @@ namespace Windows.Devices.Printers.Extensions
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedEventArgs.Request.get
-		// Forced skipping of method Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -47,10 +47,6 @@ namespace Windows.Devices.Gpio
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Gpio.GpioPin.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Gpio.GpioPin.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Gpio.GpioPin.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Gpio.GpioPin.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsDriveModeSupported(global::Windows.Devices.Gpio.GpioPinDriveMode driveMode)
@@ -99,7 +95,6 @@ namespace Windows.Devices.Gpio
 		// Forced skipping of method Windows.Devices.Gpio.GpioPin.DebounceTimeout.set
 		// Forced skipping of method Windows.Devices.Gpio.GpioPin.PinNumber.get
 		// Forced skipping of method Windows.Devices.Gpio.GpioPin.SharingMode.get
-		// Forced skipping of method Windows.Devices.Gpio.GpioPin.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Gpio.GpioPin, global::Windows.Devices.Gpio.GpioPinValueChangedEventArgs> ValueChanged

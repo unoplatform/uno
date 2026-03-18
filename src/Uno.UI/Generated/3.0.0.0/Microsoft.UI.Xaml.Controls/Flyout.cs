@@ -16,12 +16,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.Flyout()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.ContentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.FlyoutPresenterStyleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.Content.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.Content.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.FlyoutPresenterStyle.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.FlyoutPresenterStyle.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Flyout.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

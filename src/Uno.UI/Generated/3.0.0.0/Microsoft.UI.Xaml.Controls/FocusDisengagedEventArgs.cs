@@ -8,8 +8,5 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class FocusDisengagedEventArgs : global::Microsoft.UI.Xaml.RoutedEventArgs
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FocusDisengagedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FocusDisengagedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FocusDisengagedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

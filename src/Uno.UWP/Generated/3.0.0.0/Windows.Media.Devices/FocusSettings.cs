@@ -100,10 +100,6 @@ namespace Windows.Media.Devices
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.FocusSettings.FocusSettings()
-		// Forced skipping of method Windows.Media.Devices.FocusSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Devices.FocusSettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Devices.FocusSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Devices.FocusSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Devices.FocusSettings.AutoFocusRange.get
 		// Forced skipping of method Windows.Media.Devices.FocusSettings.AutoFocusRange.set
 		// Forced skipping of method Windows.Media.Devices.FocusSettings.DisableDriverFallback.get
@@ -116,6 +112,5 @@ namespace Windows.Media.Devices
 		// Forced skipping of method Windows.Media.Devices.FocusSettings.Value.set
 		// Forced skipping of method Windows.Media.Devices.FocusSettings.WaitForFocus.get
 		// Forced skipping of method Windows.Media.Devices.FocusSettings.WaitForFocus.set
-		// Forced skipping of method Windows.Media.Devices.FocusSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

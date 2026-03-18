@@ -8,8 +8,5 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class TextChangedEventArgs : global::Microsoft.UI.Xaml.RoutedEventArgs
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,12 +10,7 @@ namespace Microsoft.UI.Xaml
 	{
 		// Skipping already declared property Arguments
 		// Skipping already declared property UWPLaunchActivatedEventArgs
-		// Forced skipping of method Microsoft.UI.Xaml.LaunchActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.LaunchActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.LaunchActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.LaunchActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.LaunchActivatedEventArgs.Arguments.get
 		// Forced skipping of method Microsoft.UI.Xaml.LaunchActivatedEventArgs.UWPLaunchActivatedEventArgs.get
-		// Forced skipping of method Microsoft.UI.Xaml.LaunchActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

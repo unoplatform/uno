@@ -73,17 +73,12 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs.ContinuationData.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs.Folder.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs.SplashScreen.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs.User.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.FolderPickerContinuationEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IFolderPickerContinuationEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IContinuationActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs

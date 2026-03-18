@@ -33,10 +33,6 @@ namespace Windows.Gaming.XboxLive.Storage
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveContainer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveContainer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveContainer.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveContainer.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Gaming.XboxLive.Storage.GameSaveOperationResult> SubmitUpdatesAsync(global::System.Collections.Generic.IReadOnlyDictionary<string, global::Windows.Storage.Streams.IBuffer> blobsToWrite, global::System.Collections.Generic.IEnumerable<string> blobsToDelete, string displayName)
@@ -74,6 +70,5 @@ namespace Windows.Gaming.XboxLive.Storage
 #endif
 		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveContainer.Name.get
 		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveContainer.Provider.get
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveContainer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

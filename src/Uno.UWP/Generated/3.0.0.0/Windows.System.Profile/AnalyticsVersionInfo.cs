@@ -10,12 +10,7 @@ namespace Windows.System.Profile
 	{
 		// Skipping already declared property DeviceFamily
 		// Skipping already declared property DeviceFamilyVersion
-		// Forced skipping of method Windows.System.Profile.AnalyticsVersionInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.Profile.AnalyticsVersionInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.Profile.AnalyticsVersionInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.Profile.AnalyticsVersionInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.Profile.AnalyticsVersionInfo.DeviceFamily.get
 		// Forced skipping of method Windows.System.Profile.AnalyticsVersionInfo.DeviceFamilyVersion.get
-		// Forced skipping of method Windows.System.Profile.AnalyticsVersionInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

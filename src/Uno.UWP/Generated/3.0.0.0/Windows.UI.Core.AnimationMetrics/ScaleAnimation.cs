@@ -113,10 +113,6 @@ namespace Windows.UI.Core.AnimationMetrics
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.ScaleAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.ScaleAnimation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.ScaleAnimation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.ScaleAnimation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Core.AnimationMetrics.ScaleAnimation.Control1.get
 		// Forced skipping of method Windows.UI.Core.AnimationMetrics.ScaleAnimation.Control2.get
 		// Forced skipping of method Windows.UI.Core.AnimationMetrics.ScaleAnimation.Delay.get
@@ -127,7 +123,6 @@ namespace Windows.UI.Core.AnimationMetrics
 		// Forced skipping of method Windows.UI.Core.AnimationMetrics.ScaleAnimation.InitialScaleY.get
 		// Forced skipping of method Windows.UI.Core.AnimationMetrics.ScaleAnimation.NormalizedOrigin.get
 		// Forced skipping of method Windows.UI.Core.AnimationMetrics.ScaleAnimation.Type.get
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.ScaleAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.UI.Core.AnimationMetrics.IPropertyAnimation
 	}
 }

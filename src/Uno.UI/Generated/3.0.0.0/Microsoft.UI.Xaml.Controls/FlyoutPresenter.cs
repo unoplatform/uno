@@ -33,10 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.FlyoutPresenter.FlyoutPresenter()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlyoutPresenter.FlyoutPresenter()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlyoutPresenter.IsDefaultShadowEnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlyoutPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlyoutPresenter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlyoutPresenter.IsDefaultShadowEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlyoutPresenter.IsDefaultShadowEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlyoutPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

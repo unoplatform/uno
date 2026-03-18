@@ -43,13 +43,8 @@ namespace Windows.Security.Authentication.Web.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.Accounts.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.ProviderError.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.Status.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

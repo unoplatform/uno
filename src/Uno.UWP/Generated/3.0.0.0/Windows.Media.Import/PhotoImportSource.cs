@@ -187,10 +187,6 @@ namespace Windows.Media.Import
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PhotoImportSource> PhotoImportSource.FromFolderAsync(IStorageFolder sourceRootFolder) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPhotoImportSource%3E%20PhotoImportSource.FromFolderAsync%28IStorageFolder%20sourceRootFolder%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Import.PhotoImportSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportSource.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportSource.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportSource.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Import.PhotoImportSession CreateImportSession()
@@ -214,6 +210,5 @@ namespace Windows.Media.Import
 		// Forced skipping of method Windows.Media.Import.PhotoImportSource.StorageMedia.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportSource.Thumbnail.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportSource.Type.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -11,13 +11,8 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		// Skipping already declared property ProtocolError
 		// Skipping already declared property Status
 		// Skipping already declared property Value
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadResult.ProtocolError.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadResult.Status.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadResult.Value.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

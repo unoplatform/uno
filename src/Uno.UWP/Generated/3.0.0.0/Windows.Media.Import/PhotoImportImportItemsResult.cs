@@ -143,10 +143,6 @@ namespace Windows.Media.Import
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult, double> DeleteImportedItemsFromSourceAsync()
@@ -167,6 +163,5 @@ namespace Windows.Media.Import
 		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.TotalSizeInBytes.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.VideosCount.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.VideosSizeInBytes.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportImportItemsResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

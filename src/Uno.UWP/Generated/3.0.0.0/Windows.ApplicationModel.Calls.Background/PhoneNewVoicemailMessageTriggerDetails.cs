@@ -43,13 +43,8 @@ namespace Windows.ApplicationModel.Calls.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneNewVoicemailMessageTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneNewVoicemailMessageTriggerDetails.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneNewVoicemailMessageTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneNewVoicemailMessageTriggerDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneNewVoicemailMessageTriggerDetails.LineId.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneNewVoicemailMessageTriggerDetails.OperatorMessage.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneNewVoicemailMessageTriggerDetails.VoicemailCount.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneNewVoicemailMessageTriggerDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

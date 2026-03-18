@@ -16,12 +16,9 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.BitmapSource()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.PixelHeightProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.PixelWidthProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.SetSource(Windows.Storage.Streams.IRandomAccessStream)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.SetSourceAsync(Windows.Storage.Streams.IRandomAccessStream)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.PixelHeight.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.PixelWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.BitmapSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

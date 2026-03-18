@@ -12,8 +12,6 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property LeftInset
 		// Skipping already declared property RightInset
 		// Skipping already declared property TopInset
-		// Forced skipping of method Microsoft.UI.Composition.InsetClip.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.InsetClip.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.InsetClip.BottomInset.get
 		// Forced skipping of method Microsoft.UI.Composition.InsetClip.BottomInset.set
 		// Forced skipping of method Microsoft.UI.Composition.InsetClip.LeftInset.get
@@ -22,6 +20,5 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.InsetClip.RightInset.set
 		// Forced skipping of method Microsoft.UI.Composition.InsetClip.TopInset.get
 		// Forced skipping of method Microsoft.UI.Composition.InsetClip.TopInset.set
-		// Forced skipping of method Microsoft.UI.Composition.InsetClip.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -12,14 +12,11 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property SelectionContainer
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.SelectorItemAutomationPeer.SelectorItemAutomationPeer(object, Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorItemAutomationPeer.SelectorItemAutomationPeer(object, Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorItemAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorItemAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.SelectorItemAutomationPeer.AddToSelection()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.SelectorItemAutomationPeer.RemoveFromSelection()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.SelectorItemAutomationPeer.Select()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorItemAutomationPeer.IsSelected.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorItemAutomationPeer.SelectionContainer.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SelectorItemAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.ISelectionItemProvider
 	}
 }

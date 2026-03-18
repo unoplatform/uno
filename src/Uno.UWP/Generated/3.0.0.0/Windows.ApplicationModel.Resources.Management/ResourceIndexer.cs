@@ -24,10 +24,6 @@ namespace Windows.ApplicationModel.Resources.Management
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Resources.Management.ResourceIndexer.ResourceIndexer(System.Uri, System.Uri)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Management.ResourceIndexer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Management.ResourceIndexer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Management.ResourceIndexer.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Management.ResourceIndexer.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Resources.Management.IndexedResourceCandidate IndexFilePath(global::System.Uri filePath)
@@ -42,6 +38,5 @@ namespace Windows.ApplicationModel.Resources.Management
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<IndexedResourceCandidate>> ResourceIndexer.IndexFileContentsAsync(Uri file) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CIndexedResourceCandidate%3E%3E%20ResourceIndexer.IndexFileContentsAsync%28Uri%20file%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Resources.Management.ResourceIndexer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

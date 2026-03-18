@@ -26,11 +26,6 @@ namespace Windows.Devices.Perception.Provider
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup.PerceptionFaceAuthenticationGroup(System.Collections.Generic.IEnumerable<string>, Windows.Devices.Perception.Provider.PerceptionStartFaceAuthenticationHandler, Windows.Devices.Perception.Provider.PerceptionStopFaceAuthenticationHandler)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup.FrameProviderIds.get
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

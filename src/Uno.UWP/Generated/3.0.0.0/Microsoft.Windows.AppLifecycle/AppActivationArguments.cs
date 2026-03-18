@@ -33,12 +33,7 @@ namespace Microsoft.Windows.AppLifecycle
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppActivationArguments.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppActivationArguments.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppActivationArguments.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppActivationArguments.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppActivationArguments.Data.get
 		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppActivationArguments.Kind.get
-		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppActivationArguments.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

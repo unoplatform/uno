@@ -23,11 +23,6 @@ namespace Windows.ApplicationModel.ExtendedExecution
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionRevokedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionRevokedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionRevokedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionRevokedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionRevokedEventArgs.Reason.get
-		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionRevokedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

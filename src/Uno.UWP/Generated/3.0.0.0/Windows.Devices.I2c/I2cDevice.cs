@@ -54,10 +54,6 @@ namespace Windows.Devices.I2c
 			throw new global::System.NotImplementedException("The member IAsyncOperation<I2cDevice> I2cDevice.FromIdAsync(string deviceId, I2cConnectionSettings settings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CI2cDevice%3E%20I2cDevice.FromIdAsync%28string%20deviceId%2C%20I2cConnectionSettings%20settings%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.I2c.I2cDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.I2c.I2cDevice.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.I2c.I2cDevice.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.I2c.I2cDevice.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Write(byte[] buffer)
@@ -109,7 +105,6 @@ namespace Windows.Devices.I2c
 #endif
 		// Forced skipping of method Windows.Devices.I2c.I2cDevice.ConnectionSettings.get
 		// Forced skipping of method Windows.Devices.I2c.I2cDevice.DeviceId.get
-		// Forced skipping of method Windows.Devices.I2c.I2cDevice.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

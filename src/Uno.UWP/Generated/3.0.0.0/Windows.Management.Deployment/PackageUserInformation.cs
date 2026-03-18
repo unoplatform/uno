@@ -33,12 +33,7 @@ namespace Windows.Management.Deployment
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Management.Deployment.PackageUserInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Management.Deployment.PackageUserInformation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Management.Deployment.PackageUserInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Management.Deployment.PackageUserInformation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Management.Deployment.PackageUserInformation.InstallState.get
 		// Forced skipping of method Windows.Management.Deployment.PackageUserInformation.UserSecurityId.get
-		// Forced skipping of method Windows.Management.Deployment.PackageUserInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

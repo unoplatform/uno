@@ -12,10 +12,5 @@ namespace Microsoft.UI.Xaml.Automation
 		// Skipping already declared property DropTargetEffectsProperty
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.DropTargetPatternIdentifiers.DropTargetEffectProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.DropTargetPatternIdentifiers.DropTargetEffectsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.DropTargetPatternIdentifiers.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.DropTargetPatternIdentifiers.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.DropTargetPatternIdentifiers.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.DropTargetPatternIdentifiers.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.DropTargetPatternIdentifiers.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

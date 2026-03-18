@@ -8,11 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class ContentDialogButtonClickDeferral
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral.Complete()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickDeferral.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

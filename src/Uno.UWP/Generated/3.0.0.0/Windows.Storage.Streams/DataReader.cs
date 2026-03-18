@@ -34,10 +34,6 @@ namespace Windows.Storage.Streams
 #endif
 		// Forced skipping of method Windows.Storage.Streams.DataReader.DataReader(Windows.Storage.Streams.IInputStream)
 		// Skipping already declared method Windows.Storage.Streams.DataReader.FromBuffer(Windows.Storage.Streams.IBuffer)
-		// Forced skipping of method Windows.Storage.Streams.DataReader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.Streams.DataReader.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.Streams.DataReader.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.Streams.DataReader.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.Storage.Streams.DataReader.ReadByte()
 		// Skipping already declared method Windows.Storage.Streams.DataReader.ReadBytes(byte[])
 		// Skipping already declared method Windows.Storage.Streams.DataReader.ReadBuffer(uint)
@@ -77,7 +73,6 @@ namespace Windows.Storage.Streams
 		// Forced skipping of method Windows.Storage.Streams.DataReader.UnconsumedBufferLength.get
 		// Forced skipping of method Windows.Storage.Streams.DataReader.UnicodeEncoding.get
 		// Forced skipping of method Windows.Storage.Streams.DataReader.UnicodeEncoding.set
-		// Forced skipping of method Windows.Storage.Streams.DataReader.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Storage.Streams.IDataReader
 		// Processing: System.IDisposable
 	}

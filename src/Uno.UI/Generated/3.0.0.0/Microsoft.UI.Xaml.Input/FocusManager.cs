@@ -29,11 +29,6 @@ namespace Microsoft.UI.Xaml.Input
 		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.LosingFocus.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.LostFocus.add
 		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.LostFocus.remove
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Input.FocusManager.GettingFocus
 		// Skipping already declared event Microsoft.UI.Xaml.Input.FocusManager.GotFocus
 		// Skipping already declared event Microsoft.UI.Xaml.Input.FocusManager.LosingFocus

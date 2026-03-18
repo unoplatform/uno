@@ -54,14 +54,9 @@ namespace Windows.Perception.Spatial.Surfaces
 		}
 #endif
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer.~SpatialSurfaceMeshBuffer()
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer.Data.get
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer.ElementCount.get
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer.Format.get
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer.Stride.get
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

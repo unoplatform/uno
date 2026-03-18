@@ -10,12 +10,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property NewState
 		// Skipping already declared property OldState
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshStateChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshStateChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshStateChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshStateChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshStateChangedEventArgs.NewState.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshStateChangedEventArgs.OldState.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshStateChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

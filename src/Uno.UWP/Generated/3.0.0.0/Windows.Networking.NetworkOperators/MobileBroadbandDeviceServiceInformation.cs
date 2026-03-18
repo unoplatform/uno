@@ -43,13 +43,8 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation.DeviceServiceId.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation.IsDataReadSupported.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation.IsDataWriteSupported.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

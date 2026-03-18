@@ -63,15 +63,10 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastStreamAudioHeader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastStreamAudioHeader.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastStreamAudioHeader.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastStreamAudioHeader.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastStreamAudioHeader.AbsoluteTimestamp.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastStreamAudioHeader.Duration.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastStreamAudioHeader.FrameId.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastStreamAudioHeader.HasDiscontinuity.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastStreamAudioHeader.RelativeTimestamp.get
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastStreamAudioHeader.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

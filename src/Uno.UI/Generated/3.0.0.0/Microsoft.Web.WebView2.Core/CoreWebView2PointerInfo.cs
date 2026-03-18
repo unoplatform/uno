@@ -405,10 +405,6 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo.ButtonChangeKind.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo.ButtonChangeKind.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo.DisplayRect.get
@@ -465,6 +461,5 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo.TouchOrientation.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo.TouchPressure.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo.TouchPressure.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

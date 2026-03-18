@@ -33,12 +33,7 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.VideoTrackSupportInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Core.VideoTrackSupportInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Core.VideoTrackSupportInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Core.VideoTrackSupportInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Core.VideoTrackSupportInfo.DecoderStatus.get
 		// Forced skipping of method Windows.Media.Core.VideoTrackSupportInfo.MediaSourceStatus.get
-		// Forced skipping of method Windows.Media.Core.VideoTrackSupportInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

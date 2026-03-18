@@ -27,10 +27,7 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionColorBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.CompositionColorBrush.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionColorBrush.Color.get
 		// Forced skipping of method Windows.UI.Composition.CompositionColorBrush.Color.set
-		// Forced skipping of method Windows.UI.Composition.CompositionColorBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

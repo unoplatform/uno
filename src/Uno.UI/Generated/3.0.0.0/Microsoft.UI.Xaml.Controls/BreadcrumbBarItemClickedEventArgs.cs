@@ -10,12 +10,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property Index
 		// Skipping already declared property Item
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBarItemClickedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBarItemClickedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBarItemClickedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBarItemClickedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBarItemClickedEventArgs.Index.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBarItemClickedEventArgs.Item.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.BreadcrumbBarItemClickedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

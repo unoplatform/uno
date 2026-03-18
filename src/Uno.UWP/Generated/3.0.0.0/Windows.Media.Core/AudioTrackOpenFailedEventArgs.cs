@@ -23,11 +23,6 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.AudioTrackOpenFailedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Core.AudioTrackOpenFailedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Core.AudioTrackOpenFailedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Core.AudioTrackOpenFailedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Core.AudioTrackOpenFailedEventArgs.ExtendedError.get
-		// Forced skipping of method Windows.Media.Core.AudioTrackOpenFailedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

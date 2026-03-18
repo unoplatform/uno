@@ -8,8 +8,5 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class LinearEasingFunction : global::Microsoft.UI.Composition.CompositionEasingFunction
 	{
-		// Forced skipping of method Microsoft.UI.Composition.LinearEasingFunction.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.LinearEasingFunction.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.LinearEasingFunction.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -11,16 +11,11 @@ namespace Windows.UI.Core
 		// Skipping already declared property CurrentPoint
 		// Skipping already declared property Handled
 		// Skipping already declared property KeyModifiers
-		// Forced skipping of method Windows.UI.Core.PointerEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Core.PointerEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Core.PointerEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Core.PointerEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.UI.Core.PointerEventArgs.GetIntermediatePoints()
 		// Forced skipping of method Windows.UI.Core.PointerEventArgs.CurrentPoint.get
 		// Forced skipping of method Windows.UI.Core.PointerEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Core.PointerEventArgs.Handled.set
 		// Forced skipping of method Windows.UI.Core.PointerEventArgs.KeyModifiers.get
-		// Forced skipping of method Windows.UI.Core.PointerEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.UI.Core.ICoreWindowEventArgs
 	}
 }

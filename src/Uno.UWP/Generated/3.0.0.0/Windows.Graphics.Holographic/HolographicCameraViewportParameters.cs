@@ -33,12 +33,7 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraViewportParameters.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraViewportParameters.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraViewportParameters.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraViewportParameters.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraViewportParameters.HiddenAreaMesh.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraViewportParameters.VisibleAreaMesh.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraViewportParameters.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

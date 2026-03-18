@@ -100,10 +100,6 @@ namespace Windows.Devices.Display.Core
 			throw new global::System.NotImplementedException("The member DisplayAdapter DisplayAdapter.FromId(DisplayAdapterId id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayAdapter%20DisplayAdapter.FromId%28DisplayAdapterId%20id%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.DeviceInterfacePath.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.Id.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.PciDeviceId.get
@@ -112,6 +108,5 @@ namespace Windows.Devices.Display.Core
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.PciVendorId.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.Properties.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.SourceCount.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

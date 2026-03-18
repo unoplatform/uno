@@ -12,11 +12,8 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property DropEffects
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer.ListViewBaseAutomationPeer(Microsoft.UI.Xaml.Controls.ListViewBase)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer.ListViewBaseAutomationPeer(Microsoft.UI.Xaml.Controls.ListViewBase)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer.DropEffect.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer.DropEffects.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewBaseAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IDropTargetProvider
 	}
 }

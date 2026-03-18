@@ -10,11 +10,8 @@ namespace Microsoft.UI.Composition
 	{
 		// Skipping already declared property ExtendedError
 		// Skipping already declared property LoadStatus
-		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectFactory.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectFactory.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Composition.CompositionEffectFactory.CreateBrush()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectFactory.ExtendedError.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectFactory.LoadStatus.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectFactory.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

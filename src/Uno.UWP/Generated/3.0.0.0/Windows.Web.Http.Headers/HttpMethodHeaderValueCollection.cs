@@ -47,10 +47,6 @@ namespace Windows.Web.Http.Headers
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ParseAdd(string input)
@@ -140,7 +136,6 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotImplementedException("The member string HttpMethodHeaderValueCollection.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpMethodHeaderValueCollection.ToString%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.System.Collections.Generic.IList<Windows.Web.Http.HttpMethod>.get_Item(int)
 		// Forced skipping of method Windows.Web.Http.Headers.HttpMethodHeaderValueCollection.System.Collections.Generic.IList<Windows.Web.Http.HttpMethod>.set_Item(int, Windows.Web.Http.HttpMethod)
 		// Processing: System.Collections.Generic.IList<Windows.Web.Http.HttpMethod>

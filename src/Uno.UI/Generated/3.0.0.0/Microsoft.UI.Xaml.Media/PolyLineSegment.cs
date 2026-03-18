@@ -13,10 +13,7 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared method Microsoft.UI.Xaml.Media.PolyLineSegment.PolyLineSegment()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyLineSegment.PolyLineSegment()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyLineSegment.PointsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyLineSegment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyLineSegment.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyLineSegment.Points.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyLineSegment.Points.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PolyLineSegment.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

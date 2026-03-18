@@ -29,10 +29,6 @@ namespace Microsoft.UI.Input
 		// Skipping already declared property Twist
 		// Skipping already declared property XTilt
 		// Skipping already declared property YTilt
-		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.ContactRect.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.IsBarrelButtonPressed.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.IsCanceled.get
@@ -54,6 +50,5 @@ namespace Microsoft.UI.Input
 		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.Twist.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.XTilt.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.YTilt.get
-		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

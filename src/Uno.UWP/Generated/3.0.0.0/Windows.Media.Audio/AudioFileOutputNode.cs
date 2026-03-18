@@ -81,10 +81,6 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioFileOutputNode.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Audio.AudioFileOutputNode.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Audio.AudioFileOutputNode.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Audio.AudioFileOutputNode.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Transcoding.TranscodeFailureReason> FinalizeAsync()
@@ -142,7 +138,6 @@ namespace Windows.Media.Audio
 		// Forced skipping of method Windows.Media.Audio.AudioFileOutputNode.FileEncodingProfile.get
 		// Forced skipping of method Windows.Media.Audio.AudioFileOutputNode.OutgoingGain.get
 		// Forced skipping of method Windows.Media.Audio.AudioFileOutputNode.OutgoingGain.set
-		// Forced skipping of method Windows.Media.Audio.AudioFileOutputNode.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Audio.IAudioNode
 		// Processing: System.IDisposable
 	}

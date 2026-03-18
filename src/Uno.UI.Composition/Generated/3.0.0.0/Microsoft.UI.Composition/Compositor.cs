@@ -70,10 +70,6 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.Compositor.Compositor()
 		// Forced skipping of method Microsoft.UI.Composition.Compositor.MaxGlobalPlaybackRate.get
 		// Forced skipping of method Microsoft.UI.Composition.Compositor.MinGlobalPlaybackRate.get
-		// Forced skipping of method Microsoft.UI.Composition.Compositor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.Compositor.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.Compositor.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Composition.Compositor.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.ColorKeyFrameAnimation CreateColorKeyFrameAnimation()
@@ -315,7 +311,6 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.Compositor.DispatcherQueue.get
 		// Forced skipping of method Microsoft.UI.Composition.Compositor.GlobalPlaybackRate.get
 		// Forced skipping of method Microsoft.UI.Composition.Compositor.GlobalPlaybackRate.set
-		// Forced skipping of method Microsoft.UI.Composition.Compositor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

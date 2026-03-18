@@ -9,9 +9,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 	public partial class GridViewItemTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property DragItemsCount
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings.DragItemsCount.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

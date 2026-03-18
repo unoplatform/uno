@@ -90,15 +90,10 @@ namespace Windows.ApplicationModel.Payments
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.PaymentRequest(Windows.ApplicationModel.Payments.PaymentDetails, System.Collections.Generic.IEnumerable<Windows.ApplicationModel.Payments.PaymentMethodData>, Windows.ApplicationModel.Payments.PaymentMerchantInfo, Windows.ApplicationModel.Payments.PaymentOptions, string)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.Details.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.Id.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.MerchantInfo.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.MethodData.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.Options.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

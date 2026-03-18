@@ -58,10 +58,6 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotImplementedException("The member bool HttpLanguageRangeWithQualityHeaderValue.TryParse(string input, out HttpLanguageRangeWithQualityHeaderValue languageRangeWithQualityHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpLanguageRangeWithQualityHeaderValue.TryParse%28string%20input%2C%20out%20HttpLanguageRangeWithQualityHeaderValue%20languageRangeWithQualityHeaderValue%29");
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
@@ -71,6 +67,5 @@ namespace Windows.Web.Http.Headers
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue.LanguageRange.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue.Quality.get
-		// Forced skipping of method Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

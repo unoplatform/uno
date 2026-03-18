@@ -44,14 +44,9 @@ namespace Windows.AI.MachineLearning
 		}
 #endif
 		// Forced skipping of method Windows.AI.MachineLearning.LearningModelSessionOptions.LearningModelSessionOptions()
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelSessionOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelSessionOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelSessionOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelSessionOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.AI.MachineLearning.LearningModelSessionOptions.BatchSizeOverride.get
 		// Forced skipping of method Windows.AI.MachineLearning.LearningModelSessionOptions.BatchSizeOverride.set
 		// Forced skipping of method Windows.AI.MachineLearning.LearningModelSessionOptions.CloseModelOnSessionCreation.get
 		// Forced skipping of method Windows.AI.MachineLearning.LearningModelSessionOptions.CloseModelOnSessionCreation.set
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelSessionOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

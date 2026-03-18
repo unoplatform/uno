@@ -156,10 +156,6 @@ namespace Windows.Security.Credentials.UI
 		}
 #endif
 		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerOptions.CredentialPickerOptions()
-		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerOptions.AlwaysDisplayDialog.get
 		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerOptions.AlwaysDisplayDialog.set
 		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerOptions.AuthenticationProtocol.get
@@ -180,6 +176,5 @@ namespace Windows.Security.Credentials.UI
 		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerOptions.PreviousCredential.set
 		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerOptions.TargetName.get
 		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerOptions.TargetName.set
-		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

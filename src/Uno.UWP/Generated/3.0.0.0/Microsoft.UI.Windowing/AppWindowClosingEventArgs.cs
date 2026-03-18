@@ -9,12 +9,7 @@ namespace Microsoft.UI.Windowing
 	public partial class AppWindowClosingEventArgs
 	{
 		// Skipping already declared property Cancel
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowClosingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowClosingEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowClosingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowClosingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowClosingEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowClosingEventArgs.Cancel.set
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowClosingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

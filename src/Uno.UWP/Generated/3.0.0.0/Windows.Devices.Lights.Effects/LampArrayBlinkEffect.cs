@@ -142,10 +142,6 @@ namespace Windows.Devices.Lights.Effects
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.LampArrayBlinkEffect(Windows.Devices.Lights.LampArray, int[])
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.AttackDuration.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.AttackDuration.set
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.Color.get
@@ -164,7 +160,6 @@ namespace Windows.Devices.Lights.Effects
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.SustainDuration.set
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.ZIndex.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.ZIndex.set
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBlinkEffect.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Lights.Effects.ILampArrayEffect
 	}
 }

@@ -12,14 +12,9 @@ namespace Windows.Services.Maps
 		// Skipping already declared property Description
 		// Skipping already declared property DisplayName
 		// Skipping already declared property Point
-		// Forced skipping of method Windows.Services.Maps.MapLocation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.Maps.MapLocation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.Maps.MapLocation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.Maps.MapLocation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Maps.MapLocation.Address.get
 		// Forced skipping of method Windows.Services.Maps.MapLocation.Description.get
 		// Forced skipping of method Windows.Services.Maps.MapLocation.DisplayName.get
 		// Forced skipping of method Windows.Services.Maps.MapLocation.Point.get
-		// Forced skipping of method Windows.Services.Maps.MapLocation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

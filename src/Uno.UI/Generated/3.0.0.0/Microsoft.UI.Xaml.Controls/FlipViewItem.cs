@@ -10,8 +10,5 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.FlipViewItem.FlipViewItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipViewItem.FlipViewItem()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipViewItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipViewItem.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipViewItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

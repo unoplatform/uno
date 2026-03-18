@@ -16,8 +16,6 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.Style.Style()
 		// Skipping already declared method Microsoft.UI.Xaml.Style.Style(System.Type)
 		// Forced skipping of method Microsoft.UI.Xaml.Style.Style(System.Type)
-		// Forced skipping of method Microsoft.UI.Xaml.Style.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Style.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Style.Seal()
 		// Forced skipping of method Microsoft.UI.Xaml.Style.BasedOn.get
 		// Forced skipping of method Microsoft.UI.Xaml.Style.BasedOn.set
@@ -25,6 +23,5 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.Style.Setters.get
 		// Forced skipping of method Microsoft.UI.Xaml.Style.TargetType.get
 		// Forced skipping of method Microsoft.UI.Xaml.Style.TargetType.set
-		// Forced skipping of method Microsoft.UI.Xaml.Style.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

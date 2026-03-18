@@ -298,8 +298,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextReadingOrderProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextWrappingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TextBox.Select(int, int)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TextBox.SelectAll()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -422,7 +420,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextReadingOrder.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextWrapping.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextWrapping.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TextBox.BeforeTextChanging
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

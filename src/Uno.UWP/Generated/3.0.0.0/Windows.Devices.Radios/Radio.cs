@@ -71,10 +71,6 @@ namespace Windows.Devices.Radios
 			throw new global::System.NotImplementedException("The member IAsyncOperation<RadioAccessStatus> Radio.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CRadioAccessStatus%3E%20Radio.RequestAccessAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Radios.Radio.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Radios.Radio.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Radios.Radio.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Radios.Radio.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Radios.RadioAccessStatus> SetStateAsync(global::Windows.Devices.Radios.RadioState value)
@@ -87,7 +83,6 @@ namespace Windows.Devices.Radios
 		// Forced skipping of method Windows.Devices.Radios.Radio.Kind.get
 		// Forced skipping of method Windows.Devices.Radios.Radio.Name.get
 		// Forced skipping of method Windows.Devices.Radios.Radio.State.get
-		// Forced skipping of method Windows.Devices.Radios.Radio.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Radios.Radio, object> StateChanged

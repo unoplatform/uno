@@ -27,10 +27,6 @@ namespace Windows.ApplicationModel
 			throw new global::System.NotImplementedException("The member PackageCatalog PackageCatalog.OpenForCurrentUser() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PackageCatalog%20PackageCatalog.OpenForCurrentUser%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.PackageInstalling.add
 		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.PackageInstalling.remove
 		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.PackageStaging.add
@@ -71,7 +67,6 @@ namespace Windows.ApplicationModel
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PackageCatalogRemoveResourcePackagesResult> PackageCatalog.RemoveResourcePackagesAsync(IEnumerable<Package> resourcePackages) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPackageCatalogRemoveResourcePackagesResult%3E%20PackageCatalog.RemoveResourcePackagesAsync%28IEnumerable%3CPackage%3E%20resourcePackages%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalog.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.PackageCatalog, global::Windows.ApplicationModel.PackageInstallingEventArgs> PackageInstalling

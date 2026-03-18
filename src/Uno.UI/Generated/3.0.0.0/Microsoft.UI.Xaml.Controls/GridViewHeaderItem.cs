@@ -10,8 +10,5 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.GridViewHeaderItem.GridViewHeaderItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridViewHeaderItem.GridViewHeaderItem()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridViewHeaderItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridViewHeaderItem.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridViewHeaderItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

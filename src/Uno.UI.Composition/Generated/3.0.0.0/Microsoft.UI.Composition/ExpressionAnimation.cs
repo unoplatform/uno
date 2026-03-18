@@ -9,10 +9,7 @@ namespace Microsoft.UI.Composition
 	public partial class ExpressionAnimation : global::Microsoft.UI.Composition.CompositionAnimation
 	{
 		// Skipping already declared property Expression
-		// Forced skipping of method Microsoft.UI.Composition.ExpressionAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.ExpressionAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.ExpressionAnimation.Expression.get
 		// Forced skipping of method Microsoft.UI.Composition.ExpressionAnimation.Expression.set
-		// Forced skipping of method Microsoft.UI.Composition.ExpressionAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

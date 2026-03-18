@@ -42,10 +42,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property IsHostVisible
 		// Skipping already declared property RasterizationScale
 		// Skipping already declared property Size
-		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.Changed.add
 		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.Changed.remove
 		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.Content.get
@@ -55,7 +51,6 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.IsHostVisible.get
 		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.RasterizationScale.get
 		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.Size.get
-		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.XamlRoot.Changed
 	}
 }

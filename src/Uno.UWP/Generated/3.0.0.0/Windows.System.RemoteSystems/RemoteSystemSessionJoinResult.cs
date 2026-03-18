@@ -33,12 +33,7 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinResult.Session.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinResult.Status.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

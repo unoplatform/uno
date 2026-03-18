@@ -40,8 +40,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.PanePriorityProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.TallModeConfigurationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.WideModeConfigurationProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.ModeChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.ModeChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.MinTallModeHeight.get
@@ -63,7 +61,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.TallModeConfiguration.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.WideModeConfiguration.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.WideModeConfiguration.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TwoPaneView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TwoPaneView.ModeChanged
 	}
 }

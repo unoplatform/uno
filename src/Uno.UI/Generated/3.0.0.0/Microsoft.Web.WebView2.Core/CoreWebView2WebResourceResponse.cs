@@ -12,10 +12,6 @@ namespace Microsoft.Web.WebView2.Core
 		// Skipping already declared property Headers
 		// Skipping already declared property ReasonPhrase
 		// Skipping already declared property StatusCode
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.Content.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.Content.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.Headers.get
@@ -23,6 +19,5 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.ReasonPhrase.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.StatusCode.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.StatusCode.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -34,11 +34,8 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Geometry.Empty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Geometry.StandardFlatteningTolerance.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Geometry.TransformProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Geometry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Geometry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Geometry.Bounds.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Geometry.Transform.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Geometry.Transform.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Geometry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

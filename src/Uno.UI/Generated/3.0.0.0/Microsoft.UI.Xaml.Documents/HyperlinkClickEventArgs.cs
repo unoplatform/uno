@@ -8,8 +8,5 @@ namespace Microsoft.UI.Xaml.Documents
 #endif
 	public partial class HyperlinkClickEventArgs : global::Microsoft.UI.Xaml.RoutedEventArgs
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

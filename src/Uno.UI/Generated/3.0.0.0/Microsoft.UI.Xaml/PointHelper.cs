@@ -20,10 +20,5 @@ namespace Microsoft.UI.Xaml
 			throw new global::System.NotImplementedException("The member Point PointHelper.FromCoordinates(float x, float y) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20PointHelper.FromCoordinates%28float%20x%2C%20float%20y%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.PointHelper.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.PointHelper.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.PointHelper.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.PointHelper.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.PointHelper.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

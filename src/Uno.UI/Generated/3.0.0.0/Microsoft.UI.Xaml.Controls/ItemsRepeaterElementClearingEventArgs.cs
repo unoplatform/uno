@@ -9,11 +9,6 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class ItemsRepeaterElementClearingEventArgs
 	{
 		// Skipping already declared property Element
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementClearingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementClearingEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementClearingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementClearingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementClearingEventArgs.Element.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementClearingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

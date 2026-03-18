@@ -57,10 +57,6 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageLibrary> StorageLibrary.GetLibraryForUserAsync(User user, KnownLibraryId libraryId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageLibrary%3E%20StorageLibrary.GetLibraryForUserAsync%28User%20user%2C%20KnownLibraryId%20libraryId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Storage.StorageLibrary.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.StorageLibrary.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.StorageLibrary.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.StorageLibrary.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> RequestAddFolderAsync()
@@ -87,7 +83,6 @@ namespace Windows.Storage
 		// Forced skipping of method Windows.Storage.StorageLibrary.ChangeTracker.get
 		// Forced skipping of method Windows.Storage.StorageLibrary.Folders.get
 		// Forced skipping of method Windows.Storage.StorageLibrary.SaveFolder.get
-		// Forced skipping of method Windows.Storage.StorageLibrary.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Storage.StorageLibrary, object> DefinitionChanged

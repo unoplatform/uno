@@ -9,11 +9,6 @@ namespace Microsoft.UI.Xaml.Input
 	public partial class FocusMovementResult
 	{
 		// Skipping already declared property Succeeded
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusMovementResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusMovementResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusMovementResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusMovementResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusMovementResult.Succeeded.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusMovementResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

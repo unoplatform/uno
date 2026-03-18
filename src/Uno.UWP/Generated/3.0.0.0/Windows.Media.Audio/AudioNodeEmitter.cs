@@ -152,10 +152,6 @@ namespace Windows.Media.Audio
 		}
 #endif
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.AudioNodeEmitter(Windows.Media.Audio.AudioNodeEmitterShape, Windows.Media.Audio.AudioNodeEmitterDecayModel, Windows.Media.Audio.AudioNodeEmitterSettings)
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.DecayModel.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.Direction.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.Direction.set
@@ -173,6 +169,5 @@ namespace Windows.Media.Audio
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.Shape.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.SpatialAudioModel.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.SpatialAudioModel.set
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

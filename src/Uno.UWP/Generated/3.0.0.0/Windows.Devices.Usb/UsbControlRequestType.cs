@@ -72,10 +72,6 @@ namespace Windows.Devices.Usb
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.UsbControlRequestType()
-		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.AsByte.get
 		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.AsByte.set
 		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.ControlTransferType.get
@@ -84,6 +80,5 @@ namespace Windows.Devices.Usb
 		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.Direction.set
 		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.Recipient.get
 		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.Recipient.set
-		// Forced skipping of method Windows.Devices.Usb.UsbControlRequestType.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

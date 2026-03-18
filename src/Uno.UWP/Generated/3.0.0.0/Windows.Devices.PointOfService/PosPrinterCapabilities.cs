@@ -113,10 +113,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCapabilities.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCapabilities.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCapabilities.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCapabilities.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCapabilities.CanMapCharacterSet.get
 		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCapabilities.DefaultCharacterSet.get
 		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCapabilities.HasCoverSensor.get
@@ -127,6 +123,5 @@ namespace Windows.Devices.PointOfService
 		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCapabilities.PowerReportingType.get
 		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCapabilities.Receipt.get
 		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCapabilities.Slip.get
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCapabilities.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

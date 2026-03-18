@@ -93,10 +93,6 @@ namespace Windows.Perception.Spatial
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.AbsoluteAngularAcceleration.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.AbsoluteAngularAccelerationAxisAngle.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.AbsoluteAngularVelocity.get
@@ -105,6 +101,5 @@ namespace Windows.Perception.Spatial
 		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.AbsoluteLinearVelocity.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.Orientation.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.Position.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

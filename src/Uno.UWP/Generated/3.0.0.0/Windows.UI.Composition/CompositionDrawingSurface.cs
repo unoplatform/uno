@@ -48,8 +48,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionDrawingSurface.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.CompositionDrawingSurface.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Resize(global::Windows.Graphics.SizeInt32 sizePixels)
@@ -89,7 +87,6 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.CompositionDrawingSurface.PixelFormat.get
 		// Forced skipping of method Windows.UI.Composition.CompositionDrawingSurface.Size.get
 		// Forced skipping of method Windows.UI.Composition.CompositionDrawingSurface.SizeInt32.get
-		// Forced skipping of method Windows.UI.Composition.CompositionDrawingSurface.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.UI.Composition.ICompositionSurface
 	}
 }

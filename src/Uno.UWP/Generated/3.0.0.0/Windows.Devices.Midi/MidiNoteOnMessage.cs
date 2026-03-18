@@ -16,17 +16,12 @@ namespace Windows.Devices.Midi
 		// Skipping already declared property Velocity
 		// Skipping already declared method Windows.Devices.Midi.MidiNoteOnMessage.MidiNoteOnMessage(byte, byte, byte)
 		// Forced skipping of method Windows.Devices.Midi.MidiNoteOnMessage.MidiNoteOnMessage(byte, byte, byte)
-		// Forced skipping of method Windows.Devices.Midi.MidiNoteOnMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Midi.MidiNoteOnMessage.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Midi.MidiNoteOnMessage.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Midi.MidiNoteOnMessage.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Midi.MidiNoteOnMessage.Channel.get
 		// Forced skipping of method Windows.Devices.Midi.MidiNoteOnMessage.Note.get
 		// Forced skipping of method Windows.Devices.Midi.MidiNoteOnMessage.RawData.get
 		// Forced skipping of method Windows.Devices.Midi.MidiNoteOnMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Midi.MidiNoteOnMessage.Type.get
 		// Forced skipping of method Windows.Devices.Midi.MidiNoteOnMessage.Velocity.get
-		// Forced skipping of method Windows.Devices.Midi.MidiNoteOnMessage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Midi.IMidiMessage
 	}
 }

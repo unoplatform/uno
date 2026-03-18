@@ -63,15 +63,10 @@ namespace Windows.Gaming.UI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.UI.GameChatMessageReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Gaming.UI.GameChatMessageReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Gaming.UI.GameChatMessageReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Gaming.UI.GameChatMessageReceivedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Gaming.UI.GameChatMessageReceivedEventArgs.AppDisplayName.get
 		// Forced skipping of method Windows.Gaming.UI.GameChatMessageReceivedEventArgs.AppId.get
 		// Forced skipping of method Windows.Gaming.UI.GameChatMessageReceivedEventArgs.Message.get
 		// Forced skipping of method Windows.Gaming.UI.GameChatMessageReceivedEventArgs.Origin.get
 		// Forced skipping of method Windows.Gaming.UI.GameChatMessageReceivedEventArgs.SenderName.get
-		// Forced skipping of method Windows.Gaming.UI.GameChatMessageReceivedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

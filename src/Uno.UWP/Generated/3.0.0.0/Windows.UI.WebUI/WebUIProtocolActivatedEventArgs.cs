@@ -103,10 +103,6 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.ActivatedOperation.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.CallerPackageFamilyName.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.CurrentlyShownApplicationViewId.get
@@ -116,7 +112,6 @@ namespace Windows.UI.WebUI
 		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.SplashScreen.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.Uri.get
 		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.User.get
-		// Forced skipping of method Windows.UI.WebUI.WebUIProtocolActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IProtocolActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IProtocolActivatedEventArgsWithCallerPackageFamilyNameAndData

@@ -44,14 +44,9 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomLocation.SemanticZoomLocation()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomLocation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomLocation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomLocation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomLocation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomLocation.Bounds.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomLocation.Bounds.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomLocation.Item.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomLocation.Item.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomLocation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

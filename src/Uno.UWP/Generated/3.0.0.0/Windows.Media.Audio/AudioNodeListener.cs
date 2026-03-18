@@ -72,10 +72,6 @@ namespace Windows.Media.Audio
 		}
 #endif
 		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.AudioNodeListener()
-		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.DopplerVelocity.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.DopplerVelocity.set
 		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.Orientation.get
@@ -84,6 +80,5 @@ namespace Windows.Media.Audio
 		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.Position.set
 		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.SpeedOfSound.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.SpeedOfSound.set
-		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

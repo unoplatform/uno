@@ -64,17 +64,12 @@ namespace Windows.Media.Audio
 		}
 #endif
 		// Forced skipping of method Windows.Media.Audio.LimiterEffectDefinition.LimiterEffectDefinition(Windows.Media.Audio.AudioGraph)
-		// Forced skipping of method Windows.Media.Audio.LimiterEffectDefinition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Audio.LimiterEffectDefinition.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Audio.LimiterEffectDefinition.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Audio.LimiterEffectDefinition.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Audio.LimiterEffectDefinition.ActivatableClassId.get
 		// Forced skipping of method Windows.Media.Audio.LimiterEffectDefinition.Loudness.get
 		// Forced skipping of method Windows.Media.Audio.LimiterEffectDefinition.Loudness.set
 		// Forced skipping of method Windows.Media.Audio.LimiterEffectDefinition.Properties.get
 		// Forced skipping of method Windows.Media.Audio.LimiterEffectDefinition.Release.get
 		// Forced skipping of method Windows.Media.Audio.LimiterEffectDefinition.Release.set
-		// Forced skipping of method Windows.Media.Audio.LimiterEffectDefinition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Effects.IAudioEffectDefinition
 	}
 }

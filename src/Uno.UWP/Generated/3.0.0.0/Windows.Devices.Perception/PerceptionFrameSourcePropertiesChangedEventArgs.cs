@@ -33,12 +33,7 @@ namespace Windows.Devices.Perception
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs.CollectionChange.get
 		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs.Key.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

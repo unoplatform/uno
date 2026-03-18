@@ -33,12 +33,7 @@ namespace Windows.ApplicationModel.Resources.Management
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Resources.Management.IndexedResourceQualifier.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Management.IndexedResourceQualifier.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Management.IndexedResourceQualifier.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Management.IndexedResourceQualifier.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Management.IndexedResourceQualifier.QualifierName.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Management.IndexedResourceQualifier.QualifierValue.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Management.IndexedResourceQualifier.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

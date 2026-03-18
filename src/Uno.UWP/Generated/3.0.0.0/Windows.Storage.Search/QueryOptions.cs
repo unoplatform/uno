@@ -152,10 +152,6 @@ namespace Windows.Storage.Search
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Search.QueryOptions.QueryOptions(Windows.Storage.Search.CommonFolderQuery)
-		// Forced skipping of method Windows.Storage.Search.QueryOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.Search.QueryOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.Search.QueryOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.Search.QueryOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string SaveToString()
@@ -199,6 +195,5 @@ namespace Windows.Storage.Search
 		// Forced skipping of method Windows.Storage.Search.QueryOptions.StorageProviderIdFilter.get
 		// Forced skipping of method Windows.Storage.Search.QueryOptions.UserSearchFilter.get
 		// Forced skipping of method Windows.Storage.Search.QueryOptions.UserSearchFilter.set
-		// Forced skipping of method Windows.Storage.Search.QueryOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

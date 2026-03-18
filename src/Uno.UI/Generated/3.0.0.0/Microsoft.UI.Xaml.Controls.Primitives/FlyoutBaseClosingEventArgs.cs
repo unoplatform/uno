@@ -9,12 +9,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 	public partial class FlyoutBaseClosingEventArgs
 	{
 		// Skipping already declared property Cancel
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs.Cancel.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

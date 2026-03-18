@@ -15,10 +15,6 @@ namespace Windows.Foundation.Collections
 		// Skipping already declared property this[]
 		// Skipping already declared method Windows.Foundation.Collections.PropertySet.PropertySet()
 		// Forced skipping of method Windows.Foundation.Collections.PropertySet.PropertySet()
-		// Forced skipping of method Windows.Foundation.Collections.PropertySet.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Foundation.Collections.PropertySet.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Foundation.Collections.PropertySet.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Foundation.Collections.PropertySet.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Foundation.Collections.PropertySet.MapChanged.add
 		// Forced skipping of method Windows.Foundation.Collections.PropertySet.MapChanged.remove
 		// Forced skipping of method Windows.Foundation.Collections.PropertySet.Keys.get
@@ -38,7 +34,6 @@ namespace Windows.Foundation.Collections
 		// Forced skipping of method Windows.Foundation.Collections.PropertySet.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>.Remove(System.Collections.Generic.KeyValuePair<string, object>)
 		// Skipping already declared method Windows.Foundation.Collections.PropertySet.GetEnumerator()
 		// Forced skipping of method Windows.Foundation.Collections.PropertySet.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Windows.Foundation.Collections.PropertySet.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Windows.Foundation.Collections.PropertySet.MapChanged
 		// Processing: Windows.Foundation.Collections.IPropertySet
 		// Processing: Windows.Foundation.Collections.IObservableMap<string, object>

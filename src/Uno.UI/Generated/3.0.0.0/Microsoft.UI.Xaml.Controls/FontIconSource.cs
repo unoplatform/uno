@@ -31,8 +31,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FontIconSource.GlyphProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FontIconSource.IsTextScaleFactorEnabledProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FontIconSource.MirroredWhenRightToLeftProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FontIconSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FontIconSource.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FontIconSource.FontFamily.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FontIconSource.FontFamily.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FontIconSource.FontSize.get
@@ -47,6 +45,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FontIconSource.IsTextScaleFactorEnabled.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FontIconSource.MirroredWhenRightToLeft.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FontIconSource.MirroredWhenRightToLeft.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FontIconSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

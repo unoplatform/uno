@@ -42,12 +42,9 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionLight.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.CompositionLight.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionLight.ExclusionsFromTargets.get
 		// Forced skipping of method Windows.UI.Composition.CompositionLight.IsEnabled.get
 		// Forced skipping of method Windows.UI.Composition.CompositionLight.IsEnabled.set
 		// Forced skipping of method Windows.UI.Composition.CompositionLight.Targets.get
-		// Forced skipping of method Windows.UI.Composition.CompositionLight.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

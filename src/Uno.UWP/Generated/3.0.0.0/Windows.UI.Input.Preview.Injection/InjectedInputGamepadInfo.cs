@@ -122,10 +122,6 @@ namespace Windows.UI.Input.Preview.Injection
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.InjectedInputGamepadInfo(Windows.Gaming.Input.GamepadReading)
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.Buttons.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.Buttons.set
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.LeftThumbstickX.get
@@ -140,6 +136,5 @@ namespace Windows.UI.Input.Preview.Injection
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.RightThumbstickY.set
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.RightTrigger.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.RightTrigger.set
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

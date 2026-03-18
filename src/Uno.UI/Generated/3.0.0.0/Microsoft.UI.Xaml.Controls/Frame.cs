@@ -37,8 +37,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.ForwardStackProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.IsNavigationStackEnabledProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.SourcePageTypeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Frame.GoBack()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Frame.GoBack(Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Frame.GoForward()
@@ -69,7 +67,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.IsNavigationStackEnabled.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.SourcePageType.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.SourcePageType.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Frame.Navigated
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Frame.Navigating
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Frame.NavigationFailed

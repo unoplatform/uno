@@ -8,10 +8,5 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class ConnectedAnimationConfiguration
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationConfiguration.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationConfiguration.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ConnectedAnimationConfiguration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

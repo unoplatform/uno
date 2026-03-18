@@ -14,10 +14,5 @@ namespace Microsoft.UI.Xaml.Automation
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.SelectionPatternIdentifiers.CanSelectMultipleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.SelectionPatternIdentifiers.IsSelectionRequiredProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.SelectionPatternIdentifiers.SelectionProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.SelectionPatternIdentifiers.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.SelectionPatternIdentifiers.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.SelectionPatternIdentifiers.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.SelectionPatternIdentifiers.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.SelectionPatternIdentifiers.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

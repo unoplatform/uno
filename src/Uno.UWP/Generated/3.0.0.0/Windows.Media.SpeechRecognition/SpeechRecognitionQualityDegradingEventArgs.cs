@@ -23,11 +23,6 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionQualityDegradingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionQualityDegradingEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionQualityDegradingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionQualityDegradingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionQualityDegradingEventArgs.Problem.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionQualityDegradingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

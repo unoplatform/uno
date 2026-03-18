@@ -41,10 +41,6 @@ namespace Windows.Perception.Spatial
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AdjustHeading(double headingOffsetInRadians)
@@ -70,6 +66,5 @@ namespace Windows.Perception.Spatial
 		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.RelativeOrientation.set
 		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.RelativePosition.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.RelativePosition.set
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

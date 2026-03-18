@@ -23,11 +23,6 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandRadioStateChangeTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandRadioStateChangeTriggerDetails.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandRadioStateChangeTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandRadioStateChangeTriggerDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandRadioStateChangeTriggerDetails.RadioStateChanges.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandRadioStateChangeTriggerDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

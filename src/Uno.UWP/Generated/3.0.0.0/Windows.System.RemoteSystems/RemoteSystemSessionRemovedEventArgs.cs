@@ -23,11 +23,6 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionRemovedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionRemovedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionRemovedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionRemovedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionRemovedEventArgs.SessionInfo.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionRemovedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

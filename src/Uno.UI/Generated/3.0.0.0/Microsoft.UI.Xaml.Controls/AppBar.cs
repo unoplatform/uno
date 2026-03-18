@@ -23,8 +23,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.IsOpenProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.IsStickyProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.LightDismissOverlayModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.Closed.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.Closed.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.Closing.add
@@ -46,7 +44,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.LightDismissOverlayMode.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.LightDismissOverlayMode.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.TemplateSettings.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBar.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.AppBar.Closed
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.AppBar.Closing
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.AppBar.Opened

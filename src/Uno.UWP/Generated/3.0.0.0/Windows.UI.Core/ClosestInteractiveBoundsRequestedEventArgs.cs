@@ -47,14 +47,9 @@ namespace Windows.UI.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Core.ClosestInteractiveBoundsRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Core.ClosestInteractiveBoundsRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Core.ClosestInteractiveBoundsRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Core.ClosestInteractiveBoundsRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Core.ClosestInteractiveBoundsRequestedEventArgs.ClosestInteractiveBounds.get
 		// Forced skipping of method Windows.UI.Core.ClosestInteractiveBoundsRequestedEventArgs.ClosestInteractiveBounds.set
 		// Forced skipping of method Windows.UI.Core.ClosestInteractiveBoundsRequestedEventArgs.PointerPosition.get
 		// Forced skipping of method Windows.UI.Core.ClosestInteractiveBoundsRequestedEventArgs.SearchBounds.get
-		// Forced skipping of method Windows.UI.Core.ClosestInteractiveBoundsRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

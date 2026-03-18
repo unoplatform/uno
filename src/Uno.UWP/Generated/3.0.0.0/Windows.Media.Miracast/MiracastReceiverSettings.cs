@@ -83,10 +83,6 @@ namespace Windows.Media.Miracast
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSettings.AuthorizationMethod.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSettings.AuthorizationMethod.set
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSettings.FriendlyName.get
@@ -97,6 +93,5 @@ namespace Windows.Media.Miracast
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSettings.ModelNumber.set
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSettings.RequireAuthorizationFromKnownTransmitters.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSettings.RequireAuthorizationFromKnownTransmitters.set
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

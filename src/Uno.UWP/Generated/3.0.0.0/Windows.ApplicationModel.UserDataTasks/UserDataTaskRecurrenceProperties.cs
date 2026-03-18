@@ -128,10 +128,6 @@ namespace Windows.ApplicationModel.UserDataTasks
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties.UserDataTaskRecurrenceProperties()
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties.Day.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties.Day.set
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties.DaysOfWeek.get
@@ -148,6 +144,5 @@ namespace Windows.ApplicationModel.UserDataTasks
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties.Until.set
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties.WeekOfMonth.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties.WeekOfMonth.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -50,10 +50,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.PointKeyFrameCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.Count.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.this[int].get
@@ -122,7 +118,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.PointKeyFrame>.get_Item(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrameCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.PointKeyFrame>.set_Item(int, Microsoft.UI.Xaml.Media.Animation.PointKeyFrame)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.PointKeyFrame>

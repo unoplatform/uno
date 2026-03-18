@@ -65,10 +65,6 @@ namespace Windows.Devices.AllJoyn
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynCredentials.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynCredentials.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynCredentials.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynCredentials.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynCredentials.AuthenticationMechanism.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynCredentials.Certificate.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynCredentials.Certificate.set
@@ -76,6 +72,5 @@ namespace Windows.Devices.AllJoyn
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynCredentials.PasswordCredential.set
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynCredentials.Timeout.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynCredentials.Timeout.set
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynCredentials.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

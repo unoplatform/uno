@@ -23,9 +23,6 @@ namespace Windows.UI.Composition.Desktop
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.Desktop.DesktopWindowTarget.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.Desktop.DesktopWindowTarget.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.Desktop.DesktopWindowTarget.IsTopmost.get
-		// Forced skipping of method Windows.UI.Composition.Desktop.DesktopWindowTarget.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -64,16 +64,11 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.ChoosingItemContainerEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.IsContainerPrepared.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.IsContainerPrepared.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.Item.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.ItemContainer.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.ItemContainer.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.ItemIndex.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

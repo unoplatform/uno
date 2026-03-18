@@ -43,13 +43,8 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterFontProperty.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterFontProperty.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterFontProperty.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterFontProperty.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterFontProperty.CharacterSizes.get
 		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterFontProperty.IsScalableToAnySize.get
 		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterFontProperty.TypeFace.get
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterFontProperty.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

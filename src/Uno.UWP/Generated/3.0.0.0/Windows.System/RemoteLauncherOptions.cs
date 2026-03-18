@@ -40,13 +40,8 @@ namespace Windows.System
 		}
 #endif
 		// Forced skipping of method Windows.System.RemoteLauncherOptions.RemoteLauncherOptions()
-		// Forced skipping of method Windows.System.RemoteLauncherOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.RemoteLauncherOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.RemoteLauncherOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.RemoteLauncherOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.RemoteLauncherOptions.FallbackUri.get
 		// Forced skipping of method Windows.System.RemoteLauncherOptions.FallbackUri.set
 		// Forced skipping of method Windows.System.RemoteLauncherOptions.PreferredAppIds.get
-		// Forced skipping of method Windows.System.RemoteLauncherOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -11,17 +11,12 @@ namespace Windows.Data.Xml.Dom
 		// Skipping already declared property Count
 		// Skipping already declared property this[]
 		// Skipping already declared property Length
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlNodeList.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlNodeList.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlNodeList.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlNodeList.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlNodeList.Item(uint)
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlNodeList.Count.get
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlNodeList.this[int].get
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlNodeList.GetEnumerator()
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlNodeList.System.Collections.IEnumerable.GetEnumerator()
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlNodeList.Length.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlNodeList.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlNodeList.System.Collections.Generic.IReadOnlyList<Windows.Data.Xml.Dom.IXmlNode>.get_Item(int)
 		// Processing: System.Collections.Generic.IReadOnlyList<Windows.Data.Xml.Dom.IXmlNode>
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Data.Xml.Dom.IXmlNode>

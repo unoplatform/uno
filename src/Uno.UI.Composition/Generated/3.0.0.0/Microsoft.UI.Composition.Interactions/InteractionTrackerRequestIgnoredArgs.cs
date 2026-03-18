@@ -9,11 +9,6 @@ namespace Microsoft.UI.Composition.Interactions
 	public partial class InteractionTrackerRequestIgnoredArgs
 	{
 		// Skipping already declared property RequestId
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs.RequestId.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

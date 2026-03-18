@@ -52,14 +52,9 @@ namespace Microsoft.UI.Xaml.Input
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.ManipulationPivot(Windows.Foundation.Point, double)
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.Center.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.Center.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.Radius.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.Radius.set
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

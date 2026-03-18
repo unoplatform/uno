@@ -23,11 +23,6 @@ namespace Windows.Media.Import
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Import.PhotoImportItemImportedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportItemImportedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportItemImportedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportItemImportedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportItemImportedEventArgs.ImportedItem.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportItemImportedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

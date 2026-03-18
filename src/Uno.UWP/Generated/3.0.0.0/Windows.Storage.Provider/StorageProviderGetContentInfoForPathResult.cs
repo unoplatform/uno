@@ -58,16 +58,11 @@ namespace Windows.Storage.Provider
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetContentInfoForPathResult.StorageProviderGetContentInfoForPathResult()
-		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetContentInfoForPathResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetContentInfoForPathResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetContentInfoForPathResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetContentInfoForPathResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetContentInfoForPathResult.ContentId.get
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetContentInfoForPathResult.ContentId.set
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetContentInfoForPathResult.ContentUri.get
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetContentInfoForPathResult.ContentUri.set
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetContentInfoForPathResult.Status.get
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetContentInfoForPathResult.Status.set
-		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetContentInfoForPathResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

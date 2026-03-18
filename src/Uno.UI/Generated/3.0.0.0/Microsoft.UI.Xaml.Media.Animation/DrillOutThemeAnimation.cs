@@ -108,8 +108,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.EntranceTargetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.ExitTargetNameProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.ExitTargetProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.EntranceTarget.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.EntranceTarget.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.EntranceTargetName.get
@@ -118,6 +116,5 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.ExitTarget.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.ExitTargetName.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.ExitTargetName.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DrillOutThemeAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

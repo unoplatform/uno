@@ -44,14 +44,9 @@ namespace Windows.UI.Notifications
 		}
 #endif
 		// Forced skipping of method Windows.UI.Notifications.Notification.Notification()
-		// Forced skipping of method Windows.UI.Notifications.Notification.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Notifications.Notification.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Notifications.Notification.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Notifications.Notification.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Notifications.Notification.ExpirationTime.get
 		// Forced skipping of method Windows.UI.Notifications.Notification.ExpirationTime.set
 		// Forced skipping of method Windows.UI.Notifications.Notification.Visual.get
 		// Forced skipping of method Windows.UI.Notifications.Notification.Visual.set
-		// Forced skipping of method Windows.UI.Notifications.Notification.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -36,8 +36,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.OrientationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.RowSpanProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.VerticalChildrenAlignmentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.HorizontalChildrenAlignment.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.HorizontalChildrenAlignment.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.ItemHeight.get
@@ -50,6 +48,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.Orientation.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.VerticalChildrenAlignment.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.VerticalChildrenAlignment.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VariableSizedWrapGrid.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -69,8 +69,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.DistantLight.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.DistantLight.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.DistantLight.Color.get
 		// Forced skipping of method Windows.UI.Composition.DistantLight.Color.set
 		// Forced skipping of method Windows.UI.Composition.DistantLight.CoordinateSpace.get
@@ -79,6 +77,5 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.DistantLight.Direction.set
 		// Forced skipping of method Windows.UI.Composition.DistantLight.Intensity.get
 		// Forced skipping of method Windows.UI.Composition.DistantLight.Intensity.set
-		// Forced skipping of method Windows.UI.Composition.DistantLight.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

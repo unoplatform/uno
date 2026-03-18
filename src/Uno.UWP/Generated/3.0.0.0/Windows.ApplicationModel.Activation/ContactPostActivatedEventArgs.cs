@@ -83,10 +83,6 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.ContactPostActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.ContactPostActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.ContactPostActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.ContactPostActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.ContactPostActivatedEventArgs.Contact.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.ContactPostActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.ContactPostActivatedEventArgs.PreviousExecutionState.get
@@ -94,7 +90,6 @@ namespace Windows.ApplicationModel.Activation
 		// Forced skipping of method Windows.ApplicationModel.Activation.ContactPostActivatedEventArgs.ServiceUserId.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.ContactPostActivatedEventArgs.SplashScreen.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.ContactPostActivatedEventArgs.Verb.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.ContactPostActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IContactPostActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IContactActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs

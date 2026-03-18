@@ -9,13 +9,8 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class ContentDialogButtonClickEventArgs
 	{
 		// Skipping already declared property Cancel
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs.GetDeferral()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs.Cancel.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogButtonClickEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

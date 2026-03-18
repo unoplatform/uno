@@ -79,15 +79,10 @@ namespace Windows.Security.Cryptography.Core
 			throw new global::System.NotImplementedException("The member KeyDerivationParameters KeyDerivationParameters.BuildForCapi1Kdf(Capi1KdfTargetAlgorithm capi1KdfTargetAlgorithm) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=KeyDerivationParameters%20KeyDerivationParameters.BuildForCapi1Kdf%28Capi1KdfTargetAlgorithm%20capi1KdfTargetAlgorithm%29");
 		}
 #endif
-		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.Capi1KdfTargetAlgorithm.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.Capi1KdfTargetAlgorithm.set
 		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.IterationCount.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.KdfGenericBinary.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.KdfGenericBinary.set
-		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationParameters.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

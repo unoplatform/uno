@@ -63,16 +63,11 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.CameraSettingsActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.CameraSettingsActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.CameraSettingsActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.CameraSettingsActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.CameraSettingsActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.CameraSettingsActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.CameraSettingsActivatedEventArgs.SplashScreen.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.CameraSettingsActivatedEventArgs.VideoDeviceController.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.CameraSettingsActivatedEventArgs.VideoDeviceExtension.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.CameraSettingsActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.ICameraSettingsActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 	}

@@ -20,8 +20,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.Storyboard.SetTarget(Microsoft.UI.Xaml.Media.Animation.Timeline, Microsoft.UI.Xaml.DependencyObject)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Storyboard.TargetNameProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Storyboard.TargetPropertyProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Storyboard.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Storyboard.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.Storyboard.Seek(System.TimeSpan)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.Storyboard.Stop()
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.Storyboard.Begin()
@@ -32,6 +30,5 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.Storyboard.SeekAlignedToLastTick(System.TimeSpan)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.Storyboard.SkipToFill()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Storyboard.Children.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.Storyboard.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -62,10 +62,6 @@ namespace Windows.AI.MachineLearning
 		}
 #endif
 		// Forced skipping of method Windows.AI.MachineLearning.LearningModelSession.LearningModelSession(Windows.AI.MachineLearning.LearningModel, Windows.AI.MachineLearning.LearningModelDevice, Windows.AI.MachineLearning.LearningModelSessionOptions)
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelSession.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelSession.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelSession.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelSession.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.AI.MachineLearning.LearningModelEvaluationResult> EvaluateAsync(global::Windows.AI.MachineLearning.LearningModelBinding bindings, string correlationId)
@@ -104,7 +100,6 @@ namespace Windows.AI.MachineLearning
 		// Forced skipping of method Windows.AI.MachineLearning.LearningModelSession.Device.get
 		// Forced skipping of method Windows.AI.MachineLearning.LearningModelSession.EvaluationProperties.get
 		// Forced skipping of method Windows.AI.MachineLearning.LearningModelSession.Model.get
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelSession.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

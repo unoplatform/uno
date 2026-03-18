@@ -23,10 +23,6 @@ namespace Windows.Networking.NetworkOperators
 			throw new global::System.NotImplementedException("The member ProvisioningAgent ProvisioningAgent.CreateFromNetworkAccountId(string networkAccountId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProvisioningAgent%20ProvisioningAgent.CreateFromNetworkAccountId%28string%20networkAccountId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.ProvisioningAgent.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ProvisioningAgent.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ProvisioningAgent.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ProvisioningAgent.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.ProvisionFromXmlDocumentResults> ProvisionFromXmlDocumentAsync(string provisioningXmlDocument)
@@ -41,6 +37,5 @@ namespace Windows.Networking.NetworkOperators
 			throw new global::System.NotImplementedException("The member ProvisionedProfile ProvisioningAgent.GetProvisionedProfile(ProfileMediaType mediaType, string profileName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProvisionedProfile%20ProvisioningAgent.GetProvisionedProfile%28ProfileMediaType%20mediaType%2C%20string%20profileName%29");
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.ProvisioningAgent.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

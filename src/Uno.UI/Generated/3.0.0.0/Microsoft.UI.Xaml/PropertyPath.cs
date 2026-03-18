@@ -11,9 +11,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property Path
 		// Skipping already declared method Microsoft.UI.Xaml.PropertyPath.PropertyPath(string)
 		// Forced skipping of method Microsoft.UI.Xaml.PropertyPath.PropertyPath(string)
-		// Forced skipping of method Microsoft.UI.Xaml.PropertyPath.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.PropertyPath.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.PropertyPath.Path.get
-		// Forced skipping of method Microsoft.UI.Xaml.PropertyPath.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

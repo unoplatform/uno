@@ -69,8 +69,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.InsetClip.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.InsetClip.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.InsetClip.BottomInset.get
 		// Forced skipping of method Windows.UI.Composition.InsetClip.BottomInset.set
 		// Forced skipping of method Windows.UI.Composition.InsetClip.LeftInset.get
@@ -79,6 +77,5 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.InsetClip.RightInset.set
 		// Forced skipping of method Windows.UI.Composition.InsetClip.TopInset.get
 		// Forced skipping of method Windows.UI.Composition.InsetClip.TopInset.set
-		// Forced skipping of method Windows.UI.Composition.InsetClip.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

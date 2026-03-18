@@ -88,10 +88,6 @@ namespace Windows.Devices.Pwm
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PwmController> PwmController.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPwmController%3E%20PwmController.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Pwm.PwmController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Pwm.PwmController.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Pwm.PwmController.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Pwm.PwmController.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public double SetDesiredFrequency(double desiredFrequency)
@@ -110,6 +106,5 @@ namespace Windows.Devices.Pwm
 		// Forced skipping of method Windows.Devices.Pwm.PwmController.MaxFrequency.get
 		// Forced skipping of method Windows.Devices.Pwm.PwmController.MinFrequency.get
 		// Forced skipping of method Windows.Devices.Pwm.PwmController.PinCount.get
-		// Forced skipping of method Windows.Devices.Pwm.PwmController.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -44,14 +44,9 @@ namespace Windows.ApplicationModel.UserDataTasks
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.UserDataTaskQueryOptions()
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.Kind.set
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.SortProperty.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.SortProperty.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

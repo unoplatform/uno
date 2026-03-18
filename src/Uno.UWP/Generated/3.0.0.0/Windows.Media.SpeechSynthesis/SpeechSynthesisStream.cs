@@ -87,10 +87,6 @@ namespace Windows.Media.SpeechSynthesis
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IInputStream GetInputStreamAt(ulong position)
@@ -155,7 +151,6 @@ namespace Windows.Media.SpeechSynthesis
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.Size.get
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.Size.set
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.TimedMetadataTracks.get
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesisStream.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Storage.Streams.IRandomAccessStreamWithContentType
 		// Processing: Windows.Storage.Streams.IRandomAccessStream
 		// Processing: System.IDisposable

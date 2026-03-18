@@ -86,10 +86,6 @@ namespace Windows.Devices.Lights.Effects
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArraySolidEffect.LampArraySolidEffect(Windows.Devices.Lights.LampArray, int[])
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArraySolidEffect.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArraySolidEffect.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArraySolidEffect.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArraySolidEffect.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArraySolidEffect.Color.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArraySolidEffect.Color.set
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArraySolidEffect.CompletionBehavior.get
@@ -100,7 +96,6 @@ namespace Windows.Devices.Lights.Effects
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArraySolidEffect.StartDelay.set
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArraySolidEffect.ZIndex.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArraySolidEffect.ZIndex.set
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArraySolidEffect.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Lights.Effects.ILampArrayEffect
 	}
 }

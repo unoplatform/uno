@@ -51,15 +51,10 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.PhotoConfirmationControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Devices.PhotoConfirmationControl.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Devices.PhotoConfirmationControl.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Devices.PhotoConfirmationControl.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Devices.PhotoConfirmationControl.Enabled.get
 		// Forced skipping of method Windows.Media.Devices.PhotoConfirmationControl.Enabled.set
 		// Forced skipping of method Windows.Media.Devices.PhotoConfirmationControl.PixelFormat.get
 		// Forced skipping of method Windows.Media.Devices.PhotoConfirmationControl.PixelFormat.set
 		// Forced skipping of method Windows.Media.Devices.PhotoConfirmationControl.Supported.get
-		// Forced skipping of method Windows.Media.Devices.PhotoConfirmationControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

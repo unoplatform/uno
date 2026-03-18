@@ -13,10 +13,7 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared method Microsoft.UI.Xaml.Media.LineSegment.LineSegment()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineSegment.LineSegment()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineSegment.PointProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LineSegment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LineSegment.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineSegment.Point.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineSegment.Point.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LineSegment.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -85,14 +85,11 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.CenterProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.RadiusXProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.RadiusYProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.Center.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.Center.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.RadiusX.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.RadiusX.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.RadiusY.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.RadiusY.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.EllipseGeometry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

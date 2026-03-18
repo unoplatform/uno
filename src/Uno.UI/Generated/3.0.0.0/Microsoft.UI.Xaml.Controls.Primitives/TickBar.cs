@@ -13,10 +13,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.TickBar.TickBar()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.TickBar.TickBar()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.TickBar.FillProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.TickBar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.TickBar.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.TickBar.Fill.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.TickBar.Fill.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.TickBar.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

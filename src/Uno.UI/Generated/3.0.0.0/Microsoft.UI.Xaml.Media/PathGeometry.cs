@@ -16,12 +16,9 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.PathGeometry()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.FiguresProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.FillRuleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.Figures.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.Figures.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.FillRule.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.FillRule.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathGeometry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

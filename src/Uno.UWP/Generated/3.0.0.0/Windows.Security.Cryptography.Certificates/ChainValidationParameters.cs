@@ -44,14 +44,9 @@ namespace Windows.Security.Cryptography.Certificates
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.ChainValidationParameters()
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.CertificateChainPolicy.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.CertificateChainPolicy.set
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.ServerDnsName.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.ServerDnsName.set
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

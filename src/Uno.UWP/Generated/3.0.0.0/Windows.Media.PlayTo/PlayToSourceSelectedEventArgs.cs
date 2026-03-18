@@ -63,15 +63,10 @@ namespace Windows.Media.PlayTo
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.FriendlyName.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.Icon.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.SupportsAudio.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.SupportsImage.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.SupportsVideo.get
-		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

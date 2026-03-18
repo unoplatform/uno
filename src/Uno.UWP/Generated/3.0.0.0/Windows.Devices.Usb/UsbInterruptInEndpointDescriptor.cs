@@ -53,14 +53,9 @@ namespace Windows.Devices.Usb
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Usb.UsbInterruptInEndpointDescriptor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Usb.UsbInterruptInEndpointDescriptor.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Usb.UsbInterruptInEndpointDescriptor.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Usb.UsbInterruptInEndpointDescriptor.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Usb.UsbInterruptInEndpointDescriptor.EndpointNumber.get
 		// Forced skipping of method Windows.Devices.Usb.UsbInterruptInEndpointDescriptor.Interval.get
 		// Forced skipping of method Windows.Devices.Usb.UsbInterruptInEndpointDescriptor.MaxPacketSize.get
 		// Forced skipping of method Windows.Devices.Usb.UsbInterruptInEndpointDescriptor.Pipe.get
-		// Forced skipping of method Windows.Devices.Usb.UsbInterruptInEndpointDescriptor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

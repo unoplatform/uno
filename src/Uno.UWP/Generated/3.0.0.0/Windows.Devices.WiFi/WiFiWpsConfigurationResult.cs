@@ -33,12 +33,7 @@ namespace Windows.Devices.WiFi
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.WiFi.WiFiWpsConfigurationResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.WiFi.WiFiWpsConfigurationResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.WiFi.WiFiWpsConfigurationResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.WiFi.WiFiWpsConfigurationResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.WiFi.WiFiWpsConfigurationResult.Status.get
 		// Forced skipping of method Windows.Devices.WiFi.WiFiWpsConfigurationResult.SupportedWpsKinds.get
-		// Forced skipping of method Windows.Devices.WiFi.WiFiWpsConfigurationResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -49,10 +49,6 @@ namespace Microsoft.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionObject", "void CompositionObject.StartAnimationGroupWithIAnimationObject(IAnimationObject target, ICompositionAnimationBase animation)");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Microsoft.UI.Composition.CompositionObject.StartAnimation(string, Microsoft.UI.Composition.CompositionAnimation)
 		// Skipping already declared method Microsoft.UI.Composition.CompositionObject.StopAnimation(string)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -86,7 +82,6 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.ImplicitAnimations.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.ImplicitAnimations.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.Properties.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionObject.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 		// Processing: Microsoft.UI.Composition.IAnimationObject
 	}

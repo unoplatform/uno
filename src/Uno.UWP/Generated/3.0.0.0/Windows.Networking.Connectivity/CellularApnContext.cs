@@ -114,10 +114,6 @@ namespace Windows.Networking.Connectivity
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.CellularApnContext()
-		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.AccessPointName.get
 		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.AccessPointName.set
 		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.AuthenticationType.get
@@ -132,6 +128,5 @@ namespace Windows.Networking.Connectivity
 		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.ProviderId.set
 		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.UserName.get
 		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.UserName.set
-		// Forced skipping of method Windows.Networking.Connectivity.CellularApnContext.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

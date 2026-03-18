@@ -23,11 +23,6 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlMoveFocusRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlMoveFocusRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlMoveFocusRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlMoveFocusRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlMoveFocusRequestedEventArgs.Reason.get
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlMoveFocusRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

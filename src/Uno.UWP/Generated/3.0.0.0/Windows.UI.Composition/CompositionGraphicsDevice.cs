@@ -13,8 +13,6 @@ namespace Windows.UI.Composition
 		{
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionGraphicsDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.CompositionGraphicsDevice.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Composition.CompositionDrawingSurface CreateDrawingSurface(global::Windows.Foundation.Size sizePixels, global::Windows.Graphics.DirectX.DirectXPixelFormat pixelFormat, global::Windows.Graphics.DirectX.DirectXAlphaMode alphaMode)
@@ -52,7 +50,6 @@ namespace Windows.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionGraphicsDevice", "void CompositionGraphicsDevice.Trim()");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionGraphicsDevice.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Composition.CompositionGraphicsDevice, global::Windows.UI.Composition.RenderingDeviceReplacedEventArgs> RenderingDeviceReplaced

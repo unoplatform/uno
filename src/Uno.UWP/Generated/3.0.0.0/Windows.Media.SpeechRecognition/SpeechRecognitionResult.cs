@@ -103,10 +103,6 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.WinRT.IWinRTObject.AdditionalTypeData.get
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.SpeechRecognition.SpeechRecognitionResult> GetAlternates(uint maxAlternates)
@@ -123,6 +119,5 @@ namespace Windows.Media.SpeechRecognition
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.SemanticInterpretation.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.Status.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.Text.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

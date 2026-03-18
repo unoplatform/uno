@@ -13,10 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.PivotItem.PivotItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItem.PivotItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItem.HeaderProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItem.Header.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItem.Header.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PivotItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

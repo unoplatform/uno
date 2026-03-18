@@ -64,13 +64,8 @@ namespace Windows.Media.Capture.Frames
 			throw new global::System.NotImplementedException("The member string MediaFrameSourceGroup.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaFrameSourceGroup.GetDeviceSelector%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceGroup.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceGroup.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceGroup.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceGroup.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceGroup.DisplayName.get
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceGroup.Id.get
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceGroup.SourceInfos.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceGroup.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

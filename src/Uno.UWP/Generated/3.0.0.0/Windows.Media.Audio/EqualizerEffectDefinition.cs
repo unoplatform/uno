@@ -46,14 +46,9 @@ namespace Windows.Media.Audio
 		}
 #endif
 		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.EqualizerEffectDefinition(Windows.Media.Audio.AudioGraph)
-		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.ActivatableClassId.get
 		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.Bands.get
 		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.Properties.get
-		// Forced skipping of method Windows.Media.Audio.EqualizerEffectDefinition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Effects.IAudioEffectDefinition
 	}
 }

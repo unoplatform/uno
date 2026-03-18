@@ -72,10 +72,6 @@ namespace Windows.Networking.Vpn
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.VpnCustomTextBox()
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.Bordered.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.Bordered.set
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.Compulsory.get
@@ -84,7 +80,6 @@ namespace Windows.Networking.Vpn
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.DisplayText.set
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.Label.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.Label.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomTextBox.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Networking.Vpn.IVpnCustomPrompt
 	}
 }

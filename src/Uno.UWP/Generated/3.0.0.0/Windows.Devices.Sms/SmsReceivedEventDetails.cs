@@ -53,14 +53,9 @@ namespace Windows.Devices.Sms
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sms.SmsReceivedEventDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Sms.SmsReceivedEventDetails.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Sms.SmsReceivedEventDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Sms.SmsReceivedEventDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sms.SmsReceivedEventDetails.BinaryMessage.get
 		// Forced skipping of method Windows.Devices.Sms.SmsReceivedEventDetails.DeviceId.get
 		// Forced skipping of method Windows.Devices.Sms.SmsReceivedEventDetails.MessageClass.get
 		// Forced skipping of method Windows.Devices.Sms.SmsReceivedEventDetails.MessageIndex.get
-		// Forced skipping of method Windows.Devices.Sms.SmsReceivedEventDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -8,8 +8,5 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 #endif
 	public partial class TimePickerFlyoutPresenterAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TimePickerFlyoutPresenterAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TimePickerFlyoutPresenterAutomationPeer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TimePickerFlyoutPresenterAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

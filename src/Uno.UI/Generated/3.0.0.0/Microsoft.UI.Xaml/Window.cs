@@ -49,10 +49,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared method Microsoft.UI.Xaml.Window.Window()
 		// Forced skipping of method Microsoft.UI.Xaml.Window.Window()
 		// Forced skipping of method Microsoft.UI.Xaml.Window.Current.get
-		// Forced skipping of method Microsoft.UI.Xaml.Window.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Window.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Window.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Window.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Microsoft.UI.Xaml.Window.Activate()
 		// Skipping already declared method Microsoft.UI.Xaml.Window.Close()
 		// Skipping already declared method Microsoft.UI.Xaml.Window.SetTitleBar(Microsoft.UI.Xaml.UIElement)
@@ -79,7 +75,6 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.Window.Title.get
 		// Forced skipping of method Microsoft.UI.Xaml.Window.Title.set
 		// Forced skipping of method Microsoft.UI.Xaml.Window.Visible.get
-		// Forced skipping of method Microsoft.UI.Xaml.Window.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Window.Activated
 		// Skipping already declared event Microsoft.UI.Xaml.Window.Closed
 		// Skipping already declared event Microsoft.UI.Xaml.Window.SizeChanged

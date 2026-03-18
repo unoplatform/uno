@@ -36,13 +36,8 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffectDefinition.VideoStabilizationEffectDefinition()
-		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffectDefinition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffectDefinition.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffectDefinition.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffectDefinition.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffectDefinition.ActivatableClassId.get
 		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffectDefinition.Properties.get
-		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffectDefinition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Effects.IVideoEffectDefinition
 	}
 }

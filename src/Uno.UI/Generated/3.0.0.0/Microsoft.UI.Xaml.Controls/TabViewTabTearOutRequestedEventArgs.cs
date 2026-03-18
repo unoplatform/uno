@@ -11,13 +11,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Items
 		// Skipping already declared property NewWindowId
 		// Skipping already declared property Tabs
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutRequestedEventArgs.Items.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutRequestedEventArgs.NewWindowId.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutRequestedEventArgs.Tabs.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabTearOutRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

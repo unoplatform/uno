@@ -23,11 +23,6 @@ namespace Windows.Media.DialProtocol
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.DialProtocol.DialDisconnectButtonClickedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.DialProtocol.DialDisconnectButtonClickedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.DialProtocol.DialDisconnectButtonClickedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.DialProtocol.DialDisconnectButtonClickedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.DialProtocol.DialDisconnectButtonClickedEventArgs.Device.get
-		// Forced skipping of method Windows.Media.DialProtocol.DialDisconnectButtonClickedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

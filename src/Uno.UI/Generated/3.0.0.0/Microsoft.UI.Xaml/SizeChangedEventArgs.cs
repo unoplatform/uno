@@ -10,10 +10,7 @@ namespace Microsoft.UI.Xaml
 	{
 		// Skipping already declared property NewSize
 		// Skipping already declared property PreviousSize
-		// Forced skipping of method Microsoft.UI.Xaml.SizeChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.SizeChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.SizeChangedEventArgs.NewSize.get
 		// Forced skipping of method Microsoft.UI.Xaml.SizeChangedEventArgs.PreviousSize.get
-		// Forced skipping of method Microsoft.UI.Xaml.SizeChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

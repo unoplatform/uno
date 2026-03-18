@@ -43,13 +43,8 @@ namespace Windows.Media.AppRecording
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.AppRecording.AppRecordingSaveScreenshotResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.AppRecording.AppRecordingSaveScreenshotResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.AppRecording.AppRecordingSaveScreenshotResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.AppRecording.AppRecordingSaveScreenshotResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.AppRecording.AppRecordingSaveScreenshotResult.ExtendedError.get
 		// Forced skipping of method Windows.Media.AppRecording.AppRecordingSaveScreenshotResult.SavedScreenshotInfos.get
 		// Forced skipping of method Windows.Media.AppRecording.AppRecordingSaveScreenshotResult.Succeeded.get
-		// Forced skipping of method Windows.Media.AppRecording.AppRecordingSaveScreenshotResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

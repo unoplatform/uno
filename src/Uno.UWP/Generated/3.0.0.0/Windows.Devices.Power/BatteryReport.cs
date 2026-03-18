@@ -63,15 +63,10 @@ namespace Windows.Devices.Power
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Power.BatteryReport.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Power.BatteryReport.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Power.BatteryReport.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Power.BatteryReport.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Power.BatteryReport.ChargeRateInMilliwatts.get
 		// Forced skipping of method Windows.Devices.Power.BatteryReport.DesignCapacityInMilliwattHours.get
 		// Forced skipping of method Windows.Devices.Power.BatteryReport.FullChargeCapacityInMilliwattHours.get
 		// Forced skipping of method Windows.Devices.Power.BatteryReport.RemainingCapacityInMilliwattHours.get
 		// Forced skipping of method Windows.Devices.Power.BatteryReport.Status.get
-		// Forced skipping of method Windows.Devices.Power.BatteryReport.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

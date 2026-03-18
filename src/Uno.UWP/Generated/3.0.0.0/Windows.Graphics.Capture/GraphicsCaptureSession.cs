@@ -34,10 +34,6 @@ namespace Windows.Graphics.Capture
 			throw new global::System.NotImplementedException("The member bool GraphicsCaptureSession.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GraphicsCaptureSession.IsSupported%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void StartCapture()
@@ -54,7 +50,6 @@ namespace Windows.Graphics.Capture
 #endif
 		// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.IsCursorCaptureEnabled.get
 		// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.IsCursorCaptureEnabled.set
-		// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

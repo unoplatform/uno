@@ -69,10 +69,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.CursorType.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.CursorType.set
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.IsAutoAdvanceEnabled.get
@@ -81,6 +77,5 @@ namespace Windows.Devices.PointOfService
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.IsBlinkEnabled.set
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.Position.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.Position.set
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursorAttributes.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

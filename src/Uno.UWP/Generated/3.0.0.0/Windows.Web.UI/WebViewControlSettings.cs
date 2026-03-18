@@ -55,16 +55,11 @@ namespace Windows.Web.UI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.UI.WebViewControlSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Web.UI.WebViewControlSettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Web.UI.WebViewControlSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Web.UI.WebViewControlSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Web.UI.WebViewControlSettings.IsIndexedDBEnabled.get
 		// Forced skipping of method Windows.Web.UI.WebViewControlSettings.IsIndexedDBEnabled.set
 		// Forced skipping of method Windows.Web.UI.WebViewControlSettings.IsJavaScriptEnabled.get
 		// Forced skipping of method Windows.Web.UI.WebViewControlSettings.IsJavaScriptEnabled.set
 		// Forced skipping of method Windows.Web.UI.WebViewControlSettings.IsScriptNotifyAllowed.get
 		// Forced skipping of method Windows.Web.UI.WebViewControlSettings.IsScriptNotifyAllowed.set
-		// Forced skipping of method Windows.Web.UI.WebViewControlSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

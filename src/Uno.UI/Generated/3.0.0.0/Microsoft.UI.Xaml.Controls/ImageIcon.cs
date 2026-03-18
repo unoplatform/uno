@@ -13,10 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ImageIcon.ImageIcon()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ImageIcon.ImageIcon()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ImageIcon.SourceProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ImageIcon.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ImageIcon.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ImageIcon.Source.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ImageIcon.Source.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ImageIcon.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

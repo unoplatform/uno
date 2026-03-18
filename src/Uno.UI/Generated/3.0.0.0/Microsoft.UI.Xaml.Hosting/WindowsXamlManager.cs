@@ -27,10 +27,6 @@ namespace Microsoft.UI.Xaml.Hosting
 			throw new global::System.NotImplementedException("The member WindowsXamlManager WindowsXamlManager.GetForCurrentThread() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WindowsXamlManager%20WindowsXamlManager.GetForCurrentThread%28%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.WindowsXamlManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.WindowsXamlManager.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.WindowsXamlManager.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.WindowsXamlManager.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.WindowsXamlManager.XamlShutdownCompletedOnThread.add
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.WindowsXamlManager.XamlShutdownCompletedOnThread.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -40,7 +36,6 @@ namespace Microsoft.UI.Xaml.Hosting
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Hosting.WindowsXamlManager", "void WindowsXamlManager.Dispose()");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.WindowsXamlManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Hosting.WindowsXamlManager, global::Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs> XamlShutdownCompletedOnThread

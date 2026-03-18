@@ -60,10 +60,6 @@ namespace Windows.Data.Xml.Dom
 			throw new global::System.NotImplementedException("The member IAsyncOperation<XmlDocument> XmlDocument.LoadFromFileAsync(IStorageFile file, XmlLoadSettings loadSettings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CXmlDocument%3E%20XmlDocument.LoadFromFileAsync%28IStorageFile%20file%2C%20XmlLoadSettings%20loadSettings%29");
 		}
 #endif
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.CreateElement(string)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.CreateDocumentFragment()
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.CreateTextNode(string)
@@ -146,7 +142,6 @@ namespace Windows.Data.Xml.Dom
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.Prefix.get
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.Prefix.set
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.PreviousSibling.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Data.Xml.Dom.IXmlNode
 		// Processing: Windows.Data.Xml.Dom.IXmlNodeSelector
 		// Processing: Windows.Data.Xml.Dom.IXmlNodeSerializer

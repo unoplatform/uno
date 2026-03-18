@@ -93,10 +93,6 @@ namespace Windows.Gaming.Preview.GamesEnumeration
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameListEntry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameListEntry.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameListEntry.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameListEntry.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> LaunchAsync()
@@ -140,7 +136,6 @@ namespace Windows.Gaming.Preview.GamesEnumeration
 		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameListEntry.LauncherExecutable.get
 		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameListEntry.Properties.get
 		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameListEntry.TitleId.get
-		// Forced skipping of method Windows.Gaming.Preview.GamesEnumeration.GameListEntry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Gaming.Preview.GamesEnumeration.IGameListEntry
 	}
 }

@@ -97,10 +97,6 @@ namespace Windows.Networking.XboxLive
 			throw new global::System.NotImplementedException("The member XboxLiveEndpointPair XboxLiveEndpointPair.FindEndpointPairByHostNamesAndPorts(HostName localHostName, string localPort, HostName remoteHostName, string remotePort) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=XboxLiveEndpointPair%20XboxLiveEndpointPair.FindEndpointPairByHostNamesAndPorts%28HostName%20localHostName%2C%20string%20localPort%2C%20HostName%20remoteHostName%2C%20string%20remotePort%29");
 		}
 #endif
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPair.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPair.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPair.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPair.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction DeleteAsync()
@@ -131,7 +127,6 @@ namespace Windows.Networking.XboxLive
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPair.RemotePort.get
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPair.State.get
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPair.Template.get
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPair.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.XboxLive.XboxLiveEndpointPair, global::Windows.Networking.XboxLive.XboxLiveEndpointPairStateChangedEventArgs> StateChanged

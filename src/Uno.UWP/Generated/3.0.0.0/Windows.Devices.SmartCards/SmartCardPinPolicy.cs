@@ -100,10 +100,6 @@ namespace Windows.Devices.SmartCards
 		}
 #endif
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinPolicy.SmartCardPinPolicy()
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinPolicy.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinPolicy.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinPolicy.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinPolicy.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinPolicy.Digits.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinPolicy.Digits.set
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinPolicy.LowercaseLetters.get
@@ -116,6 +112,5 @@ namespace Windows.Devices.SmartCards
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinPolicy.SpecialCharacters.set
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinPolicy.UppercaseLetters.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinPolicy.UppercaseLetters.set
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinPolicy.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

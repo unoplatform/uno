@@ -82,10 +82,6 @@ namespace Windows.Devices.Lights.Effects
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.LampArrayBitmapEffect(Windows.Devices.Lights.LampArray, int[])
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.BitmapRequested.add
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.BitmapRequested.remove
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.Duration.get
@@ -97,7 +93,6 @@ namespace Windows.Devices.Lights.Effects
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.UpdateInterval.set
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.ZIndex.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.ZIndex.set
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Lights.Effects.LampArrayBitmapEffect, global::Windows.Devices.Lights.Effects.LampArrayBitmapRequestedEventArgs> BitmapRequested

@@ -13,8 +13,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.Thumb.Thumb()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Thumb.Thumb()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Thumb.IsDraggingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Thumb.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Thumb.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.Thumb.CancelDrag()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Thumb.DragCompleted.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Thumb.DragCompleted.remove
@@ -23,7 +21,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Thumb.DragStarted.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Thumb.DragStarted.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Thumb.IsDragging.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Thumb.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.Thumb.DragCompleted
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.Thumb.DragDelta
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.Thumb.DragStarted

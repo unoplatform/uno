@@ -13,10 +13,6 @@ namespace Windows.Graphics.Printing3D
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTaskSourceRequestedArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTaskSourceRequestedArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTaskSourceRequestedArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTaskSourceRequestedArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetSource(global::Windows.Graphics.Printing3D.Printing3D3MFPackage source)
@@ -24,6 +20,5 @@ namespace Windows.Graphics.Printing3D
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing3D.Print3DTaskSourceRequestedArgs", "void Print3DTaskSourceRequestedArgs.SetSource(Printing3D3MFPackage source)");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTaskSourceRequestedArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

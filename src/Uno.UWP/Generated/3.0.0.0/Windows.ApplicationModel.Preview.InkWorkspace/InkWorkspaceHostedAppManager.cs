@@ -20,10 +20,6 @@ namespace Windows.ApplicationModel.Preview.InkWorkspace
 			throw new global::System.NotImplementedException("The member InkWorkspaceHostedAppManager InkWorkspaceHostedAppManager.GetForCurrentApp() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InkWorkspaceHostedAppManager%20InkWorkspaceHostedAppManager.GetForCurrentApp%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Preview.InkWorkspace.InkWorkspaceHostedAppManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Preview.InkWorkspace.InkWorkspaceHostedAppManager.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Preview.InkWorkspace.InkWorkspaceHostedAppManager.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Preview.InkWorkspace.InkWorkspaceHostedAppManager.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetThumbnailAsync(global::Windows.Graphics.Imaging.SoftwareBitmap bitmap)
@@ -31,6 +27,5 @@ namespace Windows.ApplicationModel.Preview.InkWorkspace
 			throw new global::System.NotImplementedException("The member IAsyncAction InkWorkspaceHostedAppManager.SetThumbnailAsync(SoftwareBitmap bitmap) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20InkWorkspaceHostedAppManager.SetThumbnailAsync%28SoftwareBitmap%20bitmap%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Preview.InkWorkspace.InkWorkspaceHostedAppManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

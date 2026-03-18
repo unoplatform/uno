@@ -22,14 +22,11 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared property Key
 		// Skipping already declared property KeyStatus
 		// Skipping already declared property OriginalKey
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.DeviceId.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.Handled.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.Key.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.KeyStatus.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.OriginalKey.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyRoutedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

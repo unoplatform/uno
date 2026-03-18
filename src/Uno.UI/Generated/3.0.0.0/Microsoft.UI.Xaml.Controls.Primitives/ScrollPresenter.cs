@@ -81,8 +81,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.VerticalScrollRailModeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ZoomChainModeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ZoomModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ScrollTo(double, double)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ScrollTo(double, double, Microsoft.UI.Xaml.Controls.ScrollingScrollOptions)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ScrollBy(double, double)
@@ -166,7 +164,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ZoomMode.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ZoomMode.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ZoomSnapPoints.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.AnchorRequested
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.BringingIntoView
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter.ExtentChanged

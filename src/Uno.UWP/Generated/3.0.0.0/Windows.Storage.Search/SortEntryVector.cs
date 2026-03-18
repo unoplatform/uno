@@ -47,10 +47,6 @@ namespace Windows.Storage.Search
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Search.SortEntryVector.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.Search.SortEntryVector.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.Search.SortEntryVector.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.Search.SortEntryVector.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.Search.SortEntryVector.Count.get
 		// Forced skipping of method Windows.Storage.Search.SortEntryVector.IsReadOnly.get
 		// Forced skipping of method Windows.Storage.Search.SortEntryVector.this[int].get
@@ -119,7 +115,6 @@ namespace Windows.Storage.Search
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Search.SortEntryVector.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Windows.Storage.Search.SortEntryVector.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Windows.Storage.Search.SortEntryVector.System.Collections.Generic.IList<Windows.Storage.Search.SortEntry>.get_Item(int)
 		// Forced skipping of method Windows.Storage.Search.SortEntryVector.System.Collections.Generic.IList<Windows.Storage.Search.SortEntry>.set_Item(int, Windows.Storage.Search.SortEntry)
 		// Processing: System.Collections.Generic.IList<Windows.Storage.Search.SortEntry>

@@ -43,13 +43,8 @@ namespace Windows.ApplicationModel.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails.CanRequestUserInput.get
 		// Forced skipping of method Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails.UpdateRequest.get
 		// Forced skipping of method Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails.UpdateTarget.get
-		// Forced skipping of method Windows.ApplicationModel.Background.CachedFileUpdaterTriggerDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

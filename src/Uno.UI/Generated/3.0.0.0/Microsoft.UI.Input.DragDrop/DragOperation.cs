@@ -54,10 +54,6 @@ namespace Microsoft.UI.Input.DragDrop
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.DragOperation()
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetDragUIContentFromSoftwareBitmap(global::Windows.Graphics.Imaging.SoftwareBitmap bitmap)
@@ -91,7 +87,6 @@ namespace Microsoft.UI.Input.DragDrop
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.Data.get
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.DragUIContentMode.get
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.DragUIContentMode.set
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

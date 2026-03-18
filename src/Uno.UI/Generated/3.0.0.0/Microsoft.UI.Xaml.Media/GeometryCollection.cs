@@ -13,10 +13,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.GeometryCollection.GeometryCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.GeometryCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.Count.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.this[int].get
@@ -31,7 +27,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared method Microsoft.UI.Xaml.Media.GeometryCollection.Remove(Microsoft.UI.Xaml.Media.Geometry)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.GeometryCollection.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Geometry>.get_Item(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Geometry>.set_Item(int, Microsoft.UI.Xaml.Media.Geometry)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Geometry>

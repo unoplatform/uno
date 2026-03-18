@@ -32,10 +32,6 @@ namespace Windows.System.Threading.Core
 		}
 #endif
 		// Forced skipping of method Windows.System.Threading.Core.PreallocatedWorkItem.PreallocatedWorkItem(Windows.System.Threading.WorkItemHandler, Windows.System.Threading.WorkItemPriority, Windows.System.Threading.WorkItemOptions)
-		// Forced skipping of method Windows.System.Threading.Core.PreallocatedWorkItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.Threading.Core.PreallocatedWorkItem.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.Threading.Core.PreallocatedWorkItem.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.Threading.Core.PreallocatedWorkItem.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction RunAsync()
@@ -43,6 +39,5 @@ namespace Windows.System.Threading.Core
 			throw new global::System.NotImplementedException("The member IAsyncAction PreallocatedWorkItem.RunAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20PreallocatedWorkItem.RunAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.System.Threading.Core.PreallocatedWorkItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

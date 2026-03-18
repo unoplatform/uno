@@ -9,9 +9,6 @@ namespace Microsoft.UI.Xaml
 	public partial class SetterBase : global::Microsoft.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property IsSealed
-		// Forced skipping of method Microsoft.UI.Xaml.SetterBase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.SetterBase.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.SetterBase.IsSealed.get
-		// Forced skipping of method Microsoft.UI.Xaml.SetterBase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

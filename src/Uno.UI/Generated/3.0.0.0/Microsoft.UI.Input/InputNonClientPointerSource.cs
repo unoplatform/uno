@@ -10,10 +10,6 @@ namespace Microsoft.UI.Input
 	{
 		// Skipping already declared property DispatcherQueue
 		// Skipping already declared method Microsoft.UI.Input.InputNonClientPointerSource.GetForWindowId(Microsoft.UI.WindowId)
-		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Microsoft.UI.Input.InputNonClientPointerSource.ClearAllRegionRects()
 		// Skipping already declared method Microsoft.UI.Input.InputNonClientPointerSource.ClearRegionRects(Microsoft.UI.Input.NonClientRegionKind)
 		// Skipping already declared method Microsoft.UI.Input.InputNonClientPointerSource.GetRegionRects(Microsoft.UI.Input.NonClientRegionKind)
@@ -43,7 +39,6 @@ namespace Microsoft.UI.Input
 		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.WindowRectChanging.add
 		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.WindowRectChanging.remove
 		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.DispatcherQueue.get
-		// Forced skipping of method Microsoft.UI.Input.InputNonClientPointerSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Input.InputNonClientPointerSource.CaptionTapped
 		// Skipping already declared event Microsoft.UI.Input.InputNonClientPointerSource.PointerEntered
 		// Skipping already declared event Microsoft.UI.Input.InputNonClientPointerSource.PointerExited

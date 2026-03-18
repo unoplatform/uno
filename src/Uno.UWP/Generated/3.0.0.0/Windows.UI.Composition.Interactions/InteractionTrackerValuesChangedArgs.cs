@@ -43,13 +43,8 @@ namespace Windows.UI.Composition.Interactions
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.Position.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.RequestId.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.Scale.get
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

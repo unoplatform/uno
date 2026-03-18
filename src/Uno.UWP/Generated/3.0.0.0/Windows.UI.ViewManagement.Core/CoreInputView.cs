@@ -27,10 +27,6 @@ namespace Windows.UI.ViewManagement.Core
 			throw new global::System.NotImplementedException("The member CoreInputView CoreInputView.GetForUIContext(UIContext context) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreInputView%20CoreInputView.GetForUIContext%28UIContext%20context%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.ViewManagement.Core.CoreInputViewOcclusion> GetCoreInputViewOcclusions()
@@ -90,7 +86,6 @@ namespace Windows.UI.ViewManagement.Core
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.PrimaryViewHiding.remove
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.PrimaryViewShowing.add
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.PrimaryViewShowing.remove
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.Core.CoreInputView, global::Windows.UI.ViewManagement.Core.CoreInputViewOcclusionsChangedEventArgs> OcclusionsChanged

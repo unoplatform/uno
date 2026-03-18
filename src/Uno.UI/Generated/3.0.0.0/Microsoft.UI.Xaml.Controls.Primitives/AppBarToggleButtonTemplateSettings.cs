@@ -9,9 +9,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 	public partial class AppBarToggleButtonTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property KeyboardAcceleratorTextMinWidth
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings.KeyboardAcceleratorTextMinWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

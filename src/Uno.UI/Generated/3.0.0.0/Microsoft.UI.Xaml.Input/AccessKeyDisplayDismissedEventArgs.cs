@@ -10,10 +10,5 @@ namespace Microsoft.UI.Xaml.Input
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Input.AccessKeyDisplayDismissedEventArgs.AccessKeyDisplayDismissedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyDisplayDismissedEventArgs.AccessKeyDisplayDismissedEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyDisplayDismissedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyDisplayDismissedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyDisplayDismissedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyDisplayDismissedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyDisplayDismissedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

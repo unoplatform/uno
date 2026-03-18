@@ -11,11 +11,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property OriginalSource
 		// Skipping already declared method Microsoft.UI.Xaml.RoutedEventArgs.RoutedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.RoutedEventArgs.RoutedEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.RoutedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.RoutedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.RoutedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.RoutedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.RoutedEventArgs.OriginalSource.get
-		// Forced skipping of method Microsoft.UI.Xaml.RoutedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

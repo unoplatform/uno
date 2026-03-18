@@ -44,14 +44,9 @@ namespace Windows.Services.Maps
 		}
 #endif
 		// Forced skipping of method Windows.Services.Maps.PlaceInfoCreateOptions.PlaceInfoCreateOptions()
-		// Forced skipping of method Windows.Services.Maps.PlaceInfoCreateOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.Maps.PlaceInfoCreateOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.Maps.PlaceInfoCreateOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.Maps.PlaceInfoCreateOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Maps.PlaceInfoCreateOptions.DisplayAddress.get
 		// Forced skipping of method Windows.Services.Maps.PlaceInfoCreateOptions.DisplayAddress.set
 		// Forced skipping of method Windows.Services.Maps.PlaceInfoCreateOptions.DisplayName.get
 		// Forced skipping of method Windows.Services.Maps.PlaceInfoCreateOptions.DisplayName.set
-		// Forced skipping of method Windows.Services.Maps.PlaceInfoCreateOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

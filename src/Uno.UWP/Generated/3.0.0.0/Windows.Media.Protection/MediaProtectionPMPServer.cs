@@ -26,11 +26,6 @@ namespace Windows.Media.Protection
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.MediaProtectionPMPServer.MediaProtectionPMPServer(Windows.Foundation.Collections.IPropertySet)
-		// Forced skipping of method Windows.Media.Protection.MediaProtectionPMPServer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Protection.MediaProtectionPMPServer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Protection.MediaProtectionPMPServer.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Protection.MediaProtectionPMPServer.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Protection.MediaProtectionPMPServer.Properties.get
-		// Forced skipping of method Windows.Media.Protection.MediaProtectionPMPServer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

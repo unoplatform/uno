@@ -83,10 +83,6 @@ namespace Windows.Devices.HumanInterfaceDevice
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription.Id.get
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription.IsAbsolute.get
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription.ParentCollections.get
@@ -94,6 +90,5 @@ namespace Windows.Devices.HumanInterfaceDevice
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription.ReportType.get
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription.UsageId.get
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription.UsagePage.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

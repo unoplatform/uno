@@ -85,10 +85,6 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.AllowRectChange.get
 		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.AllowRectChange.set
 		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.MoveSizeOperation.get
@@ -98,6 +94,5 @@ namespace Microsoft.UI.Input
 		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.PointerScreenPoint.get
 		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.ShowWindow.get
 		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.ShowWindow.set
-		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

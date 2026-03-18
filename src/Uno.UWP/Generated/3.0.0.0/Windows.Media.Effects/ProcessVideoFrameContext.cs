@@ -34,12 +34,7 @@ namespace Windows.Media.Effects
 		}
 #endif
 		// Forced skipping of method Windows.Media.Effects.ProcessVideoFrameContext.~ProcessVideoFrameContext()
-		// Forced skipping of method Windows.Media.Effects.ProcessVideoFrameContext.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Effects.ProcessVideoFrameContext.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Effects.ProcessVideoFrameContext.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Effects.ProcessVideoFrameContext.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Effects.ProcessVideoFrameContext.InputFrame.get
 		// Forced skipping of method Windows.Media.Effects.ProcessVideoFrameContext.OutputFrame.get
-		// Forced skipping of method Windows.Media.Effects.ProcessVideoFrameContext.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

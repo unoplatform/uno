@@ -14,10 +14,6 @@ namespace Microsoft.UI.Xaml.Navigation
 		// Skipping already declared property Parameter
 		// Skipping already declared property SourcePageType
 		// Skipping already declared property Uri
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationEventArgs.Content.get
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationEventArgs.NavigationMode.get
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationEventArgs.NavigationTransitionInfo.get
@@ -25,6 +21,5 @@ namespace Microsoft.UI.Xaml.Navigation
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationEventArgs.SourcePageType.get
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationEventArgs.Uri.get
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationEventArgs.Uri.set
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.NavigationEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

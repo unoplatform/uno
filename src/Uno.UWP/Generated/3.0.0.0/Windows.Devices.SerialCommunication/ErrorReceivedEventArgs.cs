@@ -23,11 +23,6 @@ namespace Windows.Devices.SerialCommunication
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.SerialCommunication.ErrorReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.SerialCommunication.ErrorReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.SerialCommunication.ErrorReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.SerialCommunication.ErrorReceivedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.SerialCommunication.ErrorReceivedEventArgs.Error.get
-		// Forced skipping of method Windows.Devices.SerialCommunication.ErrorReceivedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

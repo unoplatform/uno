@@ -33,12 +33,7 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialNavigationUpdatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialNavigationUpdatedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialNavigationUpdatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialNavigationUpdatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialNavigationUpdatedEventArgs.InteractionSourceKind.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialNavigationUpdatedEventArgs.NormalizedOffset.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialNavigationUpdatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

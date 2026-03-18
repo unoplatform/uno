@@ -30,10 +30,6 @@ namespace Windows.UI.Text.Core
 			throw new global::System.NotImplementedException("The member CoreTextServicesManager CoreTextServicesManager.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreTextServicesManager%20CoreTextServicesManager.GetForCurrentView%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextServicesManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextServicesManager.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextServicesManager.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextServicesManager.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Text.Core.CoreTextEditContext CreateEditContext()
@@ -44,7 +40,6 @@ namespace Windows.UI.Text.Core
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextServicesManager.InputLanguageChanged.add
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextServicesManager.InputLanguageChanged.remove
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextServicesManager.InputLanguage.get
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextServicesManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextServicesManager, object> InputLanguageChanged

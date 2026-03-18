@@ -10,12 +10,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property Item
 		// Skipping already declared property Tab
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDroppedOutsideEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDroppedOutsideEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDroppedOutsideEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDroppedOutsideEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDroppedOutsideEventArgs.Item.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDroppedOutsideEventArgs.Tab.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDroppedOutsideEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

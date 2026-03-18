@@ -112,10 +112,6 @@ namespace Windows.ApplicationModel.Contacts
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.ContactAnnotation()
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.AnnotationListId.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.ContactId.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.ContactId.set
@@ -128,6 +124,5 @@ namespace Windows.ApplicationModel.Contacts
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.RemoteId.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.SupportedOperations.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.SupportedOperations.set
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAnnotation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

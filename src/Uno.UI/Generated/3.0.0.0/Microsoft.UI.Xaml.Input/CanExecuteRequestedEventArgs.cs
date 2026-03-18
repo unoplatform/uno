@@ -10,13 +10,8 @@ namespace Microsoft.UI.Xaml.Input
 	{
 		// Skipping already declared property CanExecute
 		// Skipping already declared property Parameter
-		// Forced skipping of method Microsoft.UI.Xaml.Input.CanExecuteRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.CanExecuteRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.CanExecuteRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.CanExecuteRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.CanExecuteRequestedEventArgs.CanExecute.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.CanExecuteRequestedEventArgs.CanExecute.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.CanExecuteRequestedEventArgs.Parameter.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.CanExecuteRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

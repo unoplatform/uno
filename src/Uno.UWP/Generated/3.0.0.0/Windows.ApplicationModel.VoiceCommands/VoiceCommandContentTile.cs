@@ -128,10 +128,6 @@ namespace Windows.ApplicationModel.VoiceCommands
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.VoiceCommandContentTile()
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.AppContext.get
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.AppContext.set
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.AppLaunchArgument.get
@@ -148,6 +144,5 @@ namespace Windows.ApplicationModel.VoiceCommands
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.TextLine3.set
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.Title.get
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.Title.set
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

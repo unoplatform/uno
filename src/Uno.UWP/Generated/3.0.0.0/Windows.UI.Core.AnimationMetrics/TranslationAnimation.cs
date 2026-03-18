@@ -63,16 +63,11 @@ namespace Windows.UI.Core.AnimationMetrics
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.TranslationAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.TranslationAnimation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.TranslationAnimation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.TranslationAnimation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Core.AnimationMetrics.TranslationAnimation.Control1.get
 		// Forced skipping of method Windows.UI.Core.AnimationMetrics.TranslationAnimation.Control2.get
 		// Forced skipping of method Windows.UI.Core.AnimationMetrics.TranslationAnimation.Delay.get
 		// Forced skipping of method Windows.UI.Core.AnimationMetrics.TranslationAnimation.Duration.get
 		// Forced skipping of method Windows.UI.Core.AnimationMetrics.TranslationAnimation.Type.get
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.TranslationAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.UI.Core.AnimationMetrics.IPropertyAnimation
 	}
 }

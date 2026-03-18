@@ -13,10 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.RadioButton.RadioButton()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButton.RadioButton()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButton.GroupNameProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButton.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButton.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButton.GroupName.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButton.GroupName.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButton.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -33,12 +33,7 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimServiceInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimServiceInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimServiceInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimServiceInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimServiceInfo.AuthenticationPreference.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimServiceInfo.IsESimUiEnabled.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimServiceInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

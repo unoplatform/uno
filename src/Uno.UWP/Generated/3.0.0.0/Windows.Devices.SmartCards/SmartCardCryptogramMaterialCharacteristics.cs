@@ -96,10 +96,6 @@ namespace Windows.Devices.SmartCards
 		}
 #endif
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics.SmartCardCryptogramMaterialCharacteristics()
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics.AllowedAlgorithms.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics.AllowedProofOfPossessionAlgorithms.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics.AllowedValidations.get
@@ -108,6 +104,5 @@ namespace Windows.Devices.SmartCards
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics.MaterialType.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics.ProtectionMethod.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics.ProtectionVersion.get
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

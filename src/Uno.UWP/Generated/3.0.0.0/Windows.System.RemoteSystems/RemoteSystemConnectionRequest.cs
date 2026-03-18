@@ -67,13 +67,8 @@ namespace Windows.System.RemoteSystems
 			throw new global::System.NotImplementedException("The member RemoteSystemConnectionRequest RemoteSystemConnectionRequest.CreateFromConnectionTokenForUser(User user, string connectionToken) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemConnectionRequest%20RemoteSystemConnectionRequest.CreateFromConnectionTokenForUser%28User%20user%2C%20string%20connectionToken%29");
 		}
 #endif
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionRequest.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionRequest.ConnectionToken.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionRequest.RemoteSystem.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionRequest.RemoteSystemApp.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

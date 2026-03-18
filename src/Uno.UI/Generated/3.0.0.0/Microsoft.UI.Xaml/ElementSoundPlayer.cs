@@ -18,10 +18,5 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.State.set
 		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.Volume.get
 		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.Volume.set
-		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.ElementSoundPlayer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

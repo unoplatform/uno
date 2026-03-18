@@ -10,8 +10,5 @@ namespace Microsoft.UI.Xaml.Documents
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Documents.Bold.Bold()
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Bold.Bold()
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Bold.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Bold.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Bold.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

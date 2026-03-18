@@ -54,15 +54,10 @@ namespace Windows.ApplicationModel.Background
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceConnectionChangeTrigger> DeviceConnectionChangeTrigger.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDeviceConnectionChangeTrigger%3E%20DeviceConnectionChangeTrigger.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger.CanMaintainConnection.get
 		// Forced skipping of method Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger.DeviceId.get
 		// Forced skipping of method Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger.MaintainConnection.get
 		// Forced skipping of method Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger.MaintainConnection.set
-		// Forced skipping of method Windows.ApplicationModel.Background.DeviceConnectionChangeTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger
 	}
 }

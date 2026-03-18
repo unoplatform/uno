@@ -9,11 +9,6 @@ namespace Windows.Devices.Sensors
 	public partial class GyrometerReadingChangedEventArgs
 	{
 		// Skipping already declared property Reading
-		// Forced skipping of method Windows.Devices.Sensors.GyrometerReadingChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.GyrometerReadingChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.GyrometerReadingChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Sensors.GyrometerReadingChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.GyrometerReadingChangedEventArgs.Reading.get
-		// Forced skipping of method Windows.Devices.Sensors.GyrometerReadingChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

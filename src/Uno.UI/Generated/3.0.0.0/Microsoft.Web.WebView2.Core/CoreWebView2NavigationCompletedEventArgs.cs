@@ -12,14 +12,9 @@ namespace Microsoft.Web.WebView2.Core
 		// Skipping already declared property IsSuccess
 		// Skipping already declared property NavigationId
 		// Skipping already declared property WebErrorStatus
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.HttpStatusCode.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.IsSuccess.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.NavigationId.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.WebErrorStatus.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

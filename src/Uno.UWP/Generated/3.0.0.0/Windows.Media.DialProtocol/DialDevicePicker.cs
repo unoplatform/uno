@@ -36,10 +36,6 @@ namespace Windows.Media.DialProtocol
 		}
 #endif
 		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.DialDevicePicker()
-		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Show(global::Windows.Foundation.Rect selection)
@@ -90,7 +86,6 @@ namespace Windows.Media.DialProtocol
 		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.DisconnectButtonClicked.remove
 		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.Appearance.get
 		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.Filter.get
-		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.DialProtocol.DialDevicePicker, object> DialDevicePickerDismissed

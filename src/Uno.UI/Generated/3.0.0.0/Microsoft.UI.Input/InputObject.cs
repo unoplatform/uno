@@ -9,11 +9,6 @@ namespace Microsoft.UI.Input
 	public partial class InputObject
 	{
 		// Skipping already declared property DispatcherQueue
-		// Forced skipping of method Microsoft.UI.Input.InputObject.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.InputObject.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.InputObject.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Input.InputObject.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Input.InputObject.DispatcherQueue.get
-		// Forced skipping of method Microsoft.UI.Input.InputObject.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

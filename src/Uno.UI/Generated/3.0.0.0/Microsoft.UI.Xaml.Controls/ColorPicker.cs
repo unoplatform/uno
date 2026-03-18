@@ -70,8 +70,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.MinValueProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.OrientationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.PreviousColorProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.ColorChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.ColorChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.Color.get
@@ -114,7 +112,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.Orientation.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.PreviousColor.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.PreviousColor.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColorPicker.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ColorPicker.ColorChanged
 	}
 }

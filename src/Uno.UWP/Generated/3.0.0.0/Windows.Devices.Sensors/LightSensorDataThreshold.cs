@@ -41,14 +41,9 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.AbsoluteLux.get
 		// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.AbsoluteLux.set
 		// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.LuxPercentage.get
 		// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.LuxPercentage.set
-		// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

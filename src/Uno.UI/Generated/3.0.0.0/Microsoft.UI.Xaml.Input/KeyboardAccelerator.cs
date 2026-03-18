@@ -22,8 +22,6 @@ namespace Microsoft.UI.Xaml.Input
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.KeyProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.ModifiersProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.ScopeOwnerProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.Invoked.add
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.Invoked.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.IsEnabled.get
@@ -34,7 +32,6 @@ namespace Microsoft.UI.Xaml.Input
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.Modifiers.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.ScopeOwner.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.ScopeOwner.set
-		// Forced skipping of method Microsoft.UI.Xaml.Input.KeyboardAccelerator.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Input.KeyboardAccelerator.Invoked
 	}
 }

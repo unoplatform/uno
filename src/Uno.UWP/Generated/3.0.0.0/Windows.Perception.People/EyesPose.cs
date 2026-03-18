@@ -57,13 +57,8 @@ namespace Windows.Perception.People
 			throw new global::System.NotImplementedException("The member IAsyncOperation<GazeInputAccessStatus> EyesPose.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGazeInputAccessStatus%3E%20EyesPose.RequestAccessAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Perception.People.EyesPose.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Perception.People.EyesPose.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Perception.People.EyesPose.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Perception.People.EyesPose.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Perception.People.EyesPose.Gaze.get
 		// Forced skipping of method Windows.Perception.People.EyesPose.IsCalibrationValid.get
 		// Forced skipping of method Windows.Perception.People.EyesPose.UpdateTimestamp.get
-		// Forced skipping of method Windows.Perception.People.EyesPose.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

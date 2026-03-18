@@ -58,16 +58,11 @@ namespace Windows.ApplicationModel.Contacts
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.ContactWebsite()
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.Description.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.Description.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.RawValue.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.RawValue.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.Uri.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.Uri.set
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactWebsite.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

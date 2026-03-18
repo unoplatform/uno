@@ -61,16 +61,11 @@ namespace Windows.UI.ViewManagement.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.Direction.get
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.KeepPrimaryViewVisible.get
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.KeepPrimaryViewVisible.set
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.Origin.get
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.TransferHandled.get
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.TransferHandled.set
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

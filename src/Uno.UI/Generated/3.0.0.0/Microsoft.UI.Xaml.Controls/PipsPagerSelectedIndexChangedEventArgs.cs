@@ -8,10 +8,5 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class PipsPagerSelectedIndexChangedEventArgs
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPagerSelectedIndexChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPagerSelectedIndexChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPagerSelectedIndexChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPagerSelectedIndexChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPagerSelectedIndexChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

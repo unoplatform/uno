@@ -48,10 +48,6 @@ namespace Windows.Globalization.NumberFormatting
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.PermilleFormatter(System.Collections.Generic.IEnumerable<string>, string)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Format(long value)
@@ -117,7 +113,6 @@ namespace Windows.Globalization.NumberFormatting
 		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.ResolvedLanguage.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.SignificantDigits.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.SignificantDigits.set
-		// Forced skipping of method Windows.Globalization.NumberFormatting.PermilleFormatter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Globalization.NumberFormatting.INumberFormatterOptions
 		// Processing: Windows.Globalization.NumberFormatting.INumberFormatter
 		// Processing: Windows.Globalization.NumberFormatting.INumberFormatter2

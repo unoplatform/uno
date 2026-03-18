@@ -20,10 +20,6 @@ namespace Windows.System.Preview
 			throw new global::System.NotImplementedException("The member IAsyncOperation<TwoPanelHingedDevicePosturePreview> TwoPanelHingedDevicePosturePreview.GetDefaultAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CTwoPanelHingedDevicePosturePreview%3E%20TwoPanelHingedDevicePosturePreview.GetDefaultAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreview.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreview.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreview.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreview.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading> GetCurrentPostureAsync()
@@ -33,7 +29,6 @@ namespace Windows.System.Preview
 #endif
 		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreview.PostureChanged.add
 		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreview.PostureChanged.remove
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreview.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.System.Preview.TwoPanelHingedDevicePosturePreview, global::Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs> PostureChanged

@@ -97,10 +97,6 @@ namespace Windows.ApplicationModel.ConversationalAgent
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.IsSignalVerificationRequired.get
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.IsSignalVerificationRequired.set
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.SignalContext.get
@@ -113,6 +109,5 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.SignalName.set
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.SignalStart.get
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.SignalStart.set
-		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

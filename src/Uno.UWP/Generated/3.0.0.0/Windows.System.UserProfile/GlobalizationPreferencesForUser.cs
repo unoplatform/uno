@@ -83,10 +83,6 @@ namespace Windows.System.UserProfile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.Calendars.get
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.Clocks.get
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.Currencies.get
@@ -94,6 +90,5 @@ namespace Windows.System.UserProfile
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.Languages.get
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.User.get
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.WeekStartsOn.get
-		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

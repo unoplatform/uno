@@ -98,10 +98,6 @@ namespace Windows.Networking.Sockets
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.ControlChannelTrigger.ControlChannelTrigger(string, uint, Windows.Networking.Sockets.ControlChannelTriggerResourceType)
-		// Forced skipping of method Windows.Networking.Sockets.ControlChannelTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Sockets.ControlChannelTrigger.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Sockets.ControlChannelTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Sockets.ControlChannelTrigger.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void UsingTransport(object transport)
@@ -145,7 +141,6 @@ namespace Windows.Networking.Sockets
 		// Forced skipping of method Windows.Networking.Sockets.ControlChannelTrigger.ServerKeepAliveIntervalInMinutes.get
 		// Forced skipping of method Windows.Networking.Sockets.ControlChannelTrigger.ServerKeepAliveIntervalInMinutes.set
 		// Forced skipping of method Windows.Networking.Sockets.ControlChannelTrigger.TransportObject.get
-		// Forced skipping of method Windows.Networking.Sockets.ControlChannelTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

@@ -22,10 +22,7 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionTarget.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.CompositionTarget.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionTarget.Root.get
 		// Forced skipping of method Windows.UI.Composition.CompositionTarget.Root.set
-		// Forced skipping of method Windows.UI.Composition.CompositionTarget.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

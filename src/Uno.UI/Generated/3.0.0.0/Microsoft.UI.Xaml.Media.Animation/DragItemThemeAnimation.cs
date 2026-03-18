@@ -39,10 +39,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.DragItemThemeAnimation()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.TargetNameProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.TargetName.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.TargetName.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragItemThemeAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

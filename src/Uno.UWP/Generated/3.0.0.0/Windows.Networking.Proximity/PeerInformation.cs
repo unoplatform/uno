@@ -63,15 +63,10 @@ namespace Windows.Networking.Proximity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.DiscoveryData.get
 		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.DisplayName.get
 		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.HostName.get
 		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.Id.get
 		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.ServiceName.get
-		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

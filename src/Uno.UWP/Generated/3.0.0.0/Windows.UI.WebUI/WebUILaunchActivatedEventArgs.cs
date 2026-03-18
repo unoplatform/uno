@@ -113,10 +113,6 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WebUI.WebUILaunchActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.WebUI.WebUILaunchActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.WebUI.WebUILaunchActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.WebUI.WebUILaunchActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.WebUI.WebUILaunchActivatedEventArgs.ActivatedOperation.get
 		// Forced skipping of method Windows.UI.WebUI.WebUILaunchActivatedEventArgs.Arguments.get
 		// Forced skipping of method Windows.UI.WebUI.WebUILaunchActivatedEventArgs.CurrentlyShownApplicationViewId.get
@@ -127,7 +123,6 @@ namespace Windows.UI.WebUI
 		// Forced skipping of method Windows.UI.WebUI.WebUILaunchActivatedEventArgs.TileActivatedInfo.get
 		// Forced skipping of method Windows.UI.WebUI.WebUILaunchActivatedEventArgs.TileId.get
 		// Forced skipping of method Windows.UI.WebUI.WebUILaunchActivatedEventArgs.User.get
-		// Forced skipping of method Windows.UI.WebUI.WebUILaunchActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.ILaunchActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IPrelaunchActivatedEventArgs

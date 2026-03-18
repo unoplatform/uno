@@ -16,12 +16,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.ItemContainer()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.ChildProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.IsSelectedProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.Child.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.Child.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.IsSelected.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.IsSelected.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemContainer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

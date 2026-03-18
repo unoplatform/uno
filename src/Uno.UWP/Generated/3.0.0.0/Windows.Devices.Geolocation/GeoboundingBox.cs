@@ -133,10 +133,6 @@ namespace Windows.Devices.Geolocation
 			throw new global::System.NotImplementedException("The member GeoboundingBox GeoboundingBox.TryCompute(IEnumerable<BasicGeoposition> positions, AltitudeReferenceSystem altitudeRefSystem, uint spatialReferenceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GeoboundingBox%20GeoboundingBox.TryCompute%28IEnumerable%3CBasicGeoposition%3E%20positions%2C%20AltitudeReferenceSystem%20altitudeRefSystem%2C%20uint%20spatialReferenceId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.AltitudeReferenceSystem.get
 		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.Center.get
 		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.GeoshapeType.get
@@ -145,7 +141,6 @@ namespace Windows.Devices.Geolocation
 		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.NorthwestCorner.get
 		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.SoutheastCorner.get
 		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.SpatialReferenceId.get
-		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Geolocation.IGeoshape
 	}
 }

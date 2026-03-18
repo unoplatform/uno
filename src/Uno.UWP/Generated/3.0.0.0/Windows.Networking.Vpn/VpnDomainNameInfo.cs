@@ -74,10 +74,6 @@ namespace Windows.Networking.Vpn
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.VpnDomainNameInfo(string, Windows.Networking.Vpn.VpnDomainNameType, System.Collections.Generic.IEnumerable<Windows.Networking.HostName>, System.Collections.Generic.IEnumerable<Windows.Networking.HostName>)
-		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.DnsServers.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.DomainName.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.DomainName.set
@@ -85,6 +81,5 @@ namespace Windows.Networking.Vpn
 		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.DomainNameType.set
 		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.WebProxyServers.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.WebProxyUris.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

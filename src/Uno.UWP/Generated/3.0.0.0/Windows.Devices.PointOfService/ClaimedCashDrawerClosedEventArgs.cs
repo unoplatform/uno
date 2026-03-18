@@ -13,10 +13,5 @@ namespace Windows.Devices.PointOfService
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedCashDrawerClosedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedCashDrawerClosedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedCashDrawerClosedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedCashDrawerClosedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedCashDrawerClosedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

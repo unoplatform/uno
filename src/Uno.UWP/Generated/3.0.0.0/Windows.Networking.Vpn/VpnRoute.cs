@@ -44,14 +44,9 @@ namespace Windows.Networking.Vpn
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnRoute.VpnRoute(Windows.Networking.HostName, byte)
-		// Forced skipping of method Windows.Networking.Vpn.VpnRoute.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnRoute.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnRoute.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnRoute.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnRoute.Address.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnRoute.Address.set
 		// Forced skipping of method Windows.Networking.Vpn.VpnRoute.PrefixSize.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnRoute.PrefixSize.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnRoute.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

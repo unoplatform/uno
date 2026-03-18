@@ -53,14 +53,9 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.GameBarServicesTargetInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Capture.GameBarServicesTargetInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Capture.GameBarServicesTargetInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Capture.GameBarServicesTargetInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Capture.GameBarServicesTargetInfo.AppId.get
 		// Forced skipping of method Windows.Media.Capture.GameBarServicesTargetInfo.DisplayMode.get
 		// Forced skipping of method Windows.Media.Capture.GameBarServicesTargetInfo.DisplayName.get
 		// Forced skipping of method Windows.Media.Capture.GameBarServicesTargetInfo.TitleId.get
-		// Forced skipping of method Windows.Media.Capture.GameBarServicesTargetInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

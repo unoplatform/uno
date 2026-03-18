@@ -118,8 +118,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.PlacementRectProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.PlacementTargetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.VerticalOffsetProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.Closed.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.Closed.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.Opened.add
@@ -137,7 +135,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.TemplateSettings.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.VerticalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.VerticalOffset.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTip.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ToolTip.Closed
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ToolTip.Opened
 	}

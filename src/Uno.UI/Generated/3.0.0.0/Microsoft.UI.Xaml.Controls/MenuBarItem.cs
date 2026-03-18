@@ -16,11 +16,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBarItem.MenuBarItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBarItem.ItemsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBarItem.TitleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBarItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBarItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBarItem.Items.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBarItem.Title.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBarItem.Title.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuBarItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

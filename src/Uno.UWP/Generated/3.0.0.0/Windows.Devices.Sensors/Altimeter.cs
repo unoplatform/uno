@@ -78,10 +78,6 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member Altimeter Altimeter.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Altimeter%20Altimeter.GetDefault%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.Altimeter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.Altimeter.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.Altimeter.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Sensors.Altimeter.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Sensors.AltimeterReading GetCurrentReading()
@@ -98,7 +94,6 @@ namespace Windows.Devices.Sensors
 		// Forced skipping of method Windows.Devices.Sensors.Altimeter.ReportInterval.set
 		// Forced skipping of method Windows.Devices.Sensors.Altimeter.ReportLatency.get
 		// Forced skipping of method Windows.Devices.Sensors.Altimeter.ReportLatency.set
-		// Forced skipping of method Windows.Devices.Sensors.Altimeter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Sensors.Altimeter, global::Windows.Devices.Sensors.AltimeterReadingChangedEventArgs> ReadingChanged

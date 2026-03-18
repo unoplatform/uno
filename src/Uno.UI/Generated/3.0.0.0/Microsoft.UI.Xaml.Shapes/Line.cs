@@ -22,8 +22,6 @@ namespace Microsoft.UI.Xaml.Shapes
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.X2Property.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.Y1Property.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.Y2Property.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.X1.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.X1.set
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.X2.get
@@ -32,6 +30,5 @@ namespace Microsoft.UI.Xaml.Shapes
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.Y1.set
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.Y2.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.Y2.set
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Line.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

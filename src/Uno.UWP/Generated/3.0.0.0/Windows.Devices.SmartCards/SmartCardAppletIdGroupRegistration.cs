@@ -53,10 +53,6 @@ namespace Windows.Devices.SmartCards
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAppletIdGroupRegistration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAppletIdGroupRegistration.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAppletIdGroupRegistration.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAppletIdGroupRegistration.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardActivationPolicyChangeResult> RequestActivationPolicyChangeAsync(global::Windows.Devices.SmartCards.SmartCardAppletIdGroupActivationPolicy policy)
@@ -82,6 +78,5 @@ namespace Windows.Devices.SmartCards
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAppletIdGroupRegistration.AppletIdGroup.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAppletIdGroupRegistration.Id.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAppletIdGroupRegistration.SmartCardReaderId.get
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAppletIdGroupRegistration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

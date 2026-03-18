@@ -320,10 +320,6 @@ namespace Windows.Web.Syndication
 		}
 #endif
 		// Forced skipping of method Windows.Web.Syndication.SyndicationItem.SyndicationItem(string, Windows.Web.Syndication.SyndicationContent, System.Uri)
-		// Forced skipping of method Windows.Web.Syndication.SyndicationItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Web.Syndication.SyndicationItem.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Web.Syndication.SyndicationItem.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Web.Syndication.SyndicationItem.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Load(string item)
@@ -383,7 +379,6 @@ namespace Windows.Web.Syndication
 		// Forced skipping of method Windows.Web.Syndication.SyndicationItem.Summary.set
 		// Forced skipping of method Windows.Web.Syndication.SyndicationItem.Title.get
 		// Forced skipping of method Windows.Web.Syndication.SyndicationItem.Title.set
-		// Forced skipping of method Windows.Web.Syndication.SyndicationItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Web.Syndication.ISyndicationNode
 	}
 }

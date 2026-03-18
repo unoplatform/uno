@@ -47,10 +47,7 @@ namespace Microsoft.UI.Input
 			throw new global::System.NotImplementedException("The member InputDesktopNamedResourceCursor InputDesktopNamedResourceCursor.CreateFromModule(string moduleName, string resourceName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputDesktopNamedResourceCursor%20InputDesktopNamedResourceCursor.CreateFromModule%28string%20moduleName%2C%20string%20resourceName%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.InputDesktopNamedResourceCursor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.InputDesktopNamedResourceCursor.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.InputDesktopNamedResourceCursor.ModuleName.get
 		// Forced skipping of method Microsoft.UI.Input.InputDesktopNamedResourceCursor.ResourceName.get
-		// Forced skipping of method Microsoft.UI.Input.InputDesktopNamedResourceCursor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -228,10 +228,6 @@ namespace Microsoft.UI.Input
 #endif
 		// Skipping already declared method Microsoft.UI.Input.GestureRecognizer.GestureRecognizer()
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.GestureRecognizer()
-		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Microsoft.UI.Input.GestureRecognizer.CanBeDoubleTap(Microsoft.UI.Input.PointerPoint)
 		// Skipping already declared method Microsoft.UI.Input.GestureRecognizer.CompleteGesture()
 		// Skipping already declared method Microsoft.UI.Input.GestureRecognizer.ProcessDownEvent(Microsoft.UI.Input.PointerPoint)
@@ -302,7 +298,6 @@ namespace Microsoft.UI.Input
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.PivotRadius.set
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.ShowGestureFeedback.get
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.ShowGestureFeedback.set
-		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Input.GestureRecognizer, global::Microsoft.UI.Input.CrossSlidingEventArgs> CrossSliding

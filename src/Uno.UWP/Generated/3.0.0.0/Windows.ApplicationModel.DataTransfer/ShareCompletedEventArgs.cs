@@ -9,11 +9,6 @@ namespace Windows.ApplicationModel.DataTransfer
 	public partial class ShareCompletedEventArgs
 	{
 		// Skipping already declared property ShareTarget
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareCompletedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareCompletedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareCompletedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareCompletedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareCompletedEventArgs.ShareTarget.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareCompletedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

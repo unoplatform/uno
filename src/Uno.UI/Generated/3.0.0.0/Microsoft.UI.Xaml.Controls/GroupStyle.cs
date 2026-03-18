@@ -56,10 +56,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.GroupStyle.GroupStyle()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.GroupStyle()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.PropertyChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.PropertyChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.ContainerStyle.get
@@ -76,7 +72,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.HidesIfEmpty.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.Panel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.Panel.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged

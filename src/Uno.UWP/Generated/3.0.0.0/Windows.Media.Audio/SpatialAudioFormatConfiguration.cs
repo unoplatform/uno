@@ -34,10 +34,6 @@ namespace Windows.Media.Audio
 			throw new global::System.NotImplementedException("The member SpatialAudioFormatConfiguration SpatialAudioFormatConfiguration.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialAudioFormatConfiguration%20SpatialAudioFormatConfiguration.GetDefault%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatConfiguration.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatConfiguration.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportLicenseChangedAsync(string subtype)
@@ -54,6 +50,5 @@ namespace Windows.Media.Audio
 #endif
 		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatConfiguration.MixedRealityExclusiveModePolicy.get
 		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatConfiguration.MixedRealityExclusiveModePolicy.set
-		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatConfiguration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -72,10 +72,6 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotImplementedException("The member bool HttpExpectationHeaderValue.TryParse(string input, out HttpExpectationHeaderValue expectationHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpExpectationHeaderValue.TryParse%28string%20input%2C%20out%20HttpExpectationHeaderValue%20expectationHeaderValue%29");
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Headers.HttpExpectationHeaderValue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Web.Http.Headers.HttpExpectationHeaderValue.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Web.Http.Headers.HttpExpectationHeaderValue.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Web.Http.Headers.HttpExpectationHeaderValue.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
@@ -87,6 +83,5 @@ namespace Windows.Web.Http.Headers
 		// Forced skipping of method Windows.Web.Http.Headers.HttpExpectationHeaderValue.Parameters.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpExpectationHeaderValue.Value.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpExpectationHeaderValue.Value.set
-		// Forced skipping of method Windows.Web.Http.Headers.HttpExpectationHeaderValue.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

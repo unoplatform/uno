@@ -49,10 +49,6 @@ namespace Windows.Storage.Pickers
 			throw new global::System.NotImplementedException("The member FileOpenPicker FileOpenPicker.CreateForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileOpenPicker%20FileOpenPicker.CreateForUser%28User%20user%29");
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void PickSingleFileAndContinue()
@@ -99,6 +95,5 @@ namespace Windows.Storage.Pickers
 		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.User.get
 		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.ViewMode.get
 		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.ViewMode.set
-		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

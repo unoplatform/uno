@@ -88,10 +88,6 @@ namespace Windows.Devices.Gpio
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Gpio.GpioChangeReader.GpioChangeReader(Windows.Devices.Gpio.GpioPin, int)
-		// Forced skipping of method Windows.Devices.Gpio.GpioChangeReader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Gpio.GpioChangeReader.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Gpio.GpioChangeReader.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Gpio.GpioChangeReader.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -155,7 +151,6 @@ namespace Windows.Devices.Gpio
 		// Forced skipping of method Windows.Devices.Gpio.GpioChangeReader.Length.get
 		// Forced skipping of method Windows.Devices.Gpio.GpioChangeReader.Polarity.get
 		// Forced skipping of method Windows.Devices.Gpio.GpioChangeReader.Polarity.set
-		// Forced skipping of method Windows.Devices.Gpio.GpioChangeReader.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

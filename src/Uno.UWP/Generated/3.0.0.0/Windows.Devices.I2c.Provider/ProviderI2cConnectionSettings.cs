@@ -55,16 +55,11 @@ namespace Windows.Devices.I2c.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.I2c.Provider.ProviderI2cConnectionSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.I2c.Provider.ProviderI2cConnectionSettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.I2c.Provider.ProviderI2cConnectionSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.I2c.Provider.ProviderI2cConnectionSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.I2c.Provider.ProviderI2cConnectionSettings.BusSpeed.get
 		// Forced skipping of method Windows.Devices.I2c.Provider.ProviderI2cConnectionSettings.BusSpeed.set
 		// Forced skipping of method Windows.Devices.I2c.Provider.ProviderI2cConnectionSettings.SharingMode.get
 		// Forced skipping of method Windows.Devices.I2c.Provider.ProviderI2cConnectionSettings.SharingMode.set
 		// Forced skipping of method Windows.Devices.I2c.Provider.ProviderI2cConnectionSettings.SlaveAddress.get
 		// Forced skipping of method Windows.Devices.I2c.Provider.ProviderI2cConnectionSettings.SlaveAddress.set
-		// Forced skipping of method Windows.Devices.I2c.Provider.ProviderI2cConnectionSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

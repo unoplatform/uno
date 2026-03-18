@@ -11,13 +11,8 @@ namespace Microsoft.UI.Composition.Interactions
 		// Skipping already declared property Position
 		// Skipping already declared property RequestId
 		// Skipping already declared property Scale
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.Position.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.RequestId.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.Scale.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

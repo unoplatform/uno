@@ -13,10 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem.ToggleMenuFlyoutItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem.ToggleMenuFlyoutItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem.IsCheckedProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem.IsChecked.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem.IsChecked.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleMenuFlyoutItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

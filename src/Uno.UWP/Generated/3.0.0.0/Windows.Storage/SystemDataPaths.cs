@@ -180,10 +180,6 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member SystemDataPaths SystemDataPaths.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemDataPaths%20SystemDataPaths.GetDefault%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Storage.SystemDataPaths.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.SystemDataPaths.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.SystemDataPaths.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.SystemDataPaths.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.SystemDataPaths.Fonts.get
 		// Forced skipping of method Windows.Storage.SystemDataPaths.ProgramData.get
 		// Forced skipping of method Windows.Storage.SystemDataPaths.Public.get
@@ -200,6 +196,5 @@ namespace Windows.Storage
 		// Forced skipping of method Windows.Storage.SystemDataPaths.SystemX86.get
 		// Forced skipping of method Windows.Storage.SystemDataPaths.UserProfiles.get
 		// Forced skipping of method Windows.Storage.SystemDataPaths.Windows.get
-		// Forced skipping of method Windows.Storage.SystemDataPaths.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -405,10 +405,6 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListSyncConstraints.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListSyncConstraints.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListSyncConstraints.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListSyncConstraints.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListSyncConstraints.CanSyncDescriptions.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListSyncConstraints.CanSyncDescriptions.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListSyncConstraints.MaxAnniversaryDates.get
@@ -465,6 +461,5 @@ namespace Windows.ApplicationModel.Contacts
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListSyncConstraints.MaxWorkEmailAddresses.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListSyncConstraints.MaxWorkPhoneNumbers.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListSyncConstraints.MaxWorkPhoneNumbers.set
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactListSyncConstraints.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

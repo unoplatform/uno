@@ -43,13 +43,8 @@ namespace Windows.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContactContinuedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContactContinuedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContactContinuedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContactContinuedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContactContinuedEventArgs.Contact.get
 		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContactContinuedEventArgs.IsButtonPressed.get
 		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContactContinuedEventArgs.SimpleHapticsController.get
-		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContactContinuedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

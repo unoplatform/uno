@@ -8,8 +8,5 @@ namespace Windows.UI.Composition.Scenes
 #endif
 	public partial class SceneMaterial : global::Windows.UI.Composition.Scenes.SceneObject
 	{
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMaterial.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMaterial.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMaterial.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -74,15 +74,10 @@ namespace Windows.UI.Input.Inking
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.InkPoint.InkPoint(Windows.Foundation.Point, float, float, float, ulong)
-		// Forced skipping of method Windows.UI.Input.Inking.InkPoint.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkPoint.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkPoint.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkPoint.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkPoint.Position.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkPoint.Pressure.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkPoint.TiltX.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkPoint.TiltY.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkPoint.Timestamp.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkPoint.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

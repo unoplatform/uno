@@ -13,8 +13,6 @@ namespace Microsoft.UI.Composition
 		{
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGraphicsDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGraphicsDevice.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.CompositionDrawingSurface CreateDrawingSurface(global::Windows.Foundation.Size sizePixels, global::Microsoft.Graphics.DirectX.DirectXPixelFormat pixelFormat, global::Microsoft.Graphics.DirectX.DirectXAlphaMode alphaMode)
@@ -59,7 +57,6 @@ namespace Microsoft.UI.Composition
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ICompositionSurface> CompositionGraphicsDevice.CaptureAsync(Visual captureVisual, SizeInt32 size, DirectXPixelFormat pixelFormat, DirectXAlphaMode alphaMode, float sdrBoost) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CICompositionSurface%3E%20CompositionGraphicsDevice.CaptureAsync%28Visual%20captureVisual%2C%20SizeInt32%20size%2C%20DirectXPixelFormat%20pixelFormat%2C%20DirectXAlphaMode%20alphaMode%2C%20float%20sdrBoost%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGraphicsDevice.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Composition.CompositionGraphicsDevice, global::Microsoft.UI.Composition.RenderingDeviceReplacedEventArgs> RenderingDeviceReplaced

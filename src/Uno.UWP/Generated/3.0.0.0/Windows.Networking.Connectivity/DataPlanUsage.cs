@@ -33,12 +33,7 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.DataPlanUsage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Connectivity.DataPlanUsage.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Connectivity.DataPlanUsage.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Connectivity.DataPlanUsage.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Connectivity.DataPlanUsage.LastSyncTime.get
 		// Forced skipping of method Windows.Networking.Connectivity.DataPlanUsage.MegabytesUsed.get
-		// Forced skipping of method Windows.Networking.Connectivity.DataPlanUsage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

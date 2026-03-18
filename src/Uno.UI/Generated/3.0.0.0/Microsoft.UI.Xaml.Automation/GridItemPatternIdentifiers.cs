@@ -18,10 +18,5 @@ namespace Microsoft.UI.Xaml.Automation
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers.ContainingGridProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers.RowProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers.RowSpanProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.GridItemPatternIdentifiers.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

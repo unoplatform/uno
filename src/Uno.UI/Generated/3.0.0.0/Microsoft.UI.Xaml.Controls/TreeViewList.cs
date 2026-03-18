@@ -10,8 +10,5 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TreeViewList.TreeViewList()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewList.TreeViewList()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewList.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewList.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewList.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

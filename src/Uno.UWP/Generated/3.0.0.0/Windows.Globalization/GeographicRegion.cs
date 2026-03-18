@@ -101,10 +101,6 @@ namespace Windows.Globalization
 			throw new global::System.NotImplementedException("The member bool GeographicRegion.IsSupported(string geographicRegionCode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GeographicRegion.IsSupported%28string%20geographicRegionCode%29");
 		}
 #endif
-		// Forced skipping of method Windows.Globalization.GeographicRegion.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Globalization.GeographicRegion.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Globalization.GeographicRegion.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Globalization.GeographicRegion.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Globalization.GeographicRegion.Code.get
 		// Forced skipping of method Windows.Globalization.GeographicRegion.CodeThreeDigit.get
 		// Forced skipping of method Windows.Globalization.GeographicRegion.CodeThreeLetter.get
@@ -112,6 +108,5 @@ namespace Windows.Globalization
 		// Forced skipping of method Windows.Globalization.GeographicRegion.CurrenciesInUse.get
 		// Forced skipping of method Windows.Globalization.GeographicRegion.DisplayName.get
 		// Forced skipping of method Windows.Globalization.GeographicRegion.NativeName.get
-		// Forced skipping of method Windows.Globalization.GeographicRegion.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

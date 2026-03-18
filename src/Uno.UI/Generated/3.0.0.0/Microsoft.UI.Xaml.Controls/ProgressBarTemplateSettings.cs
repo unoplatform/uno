@@ -19,8 +19,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property EllipseDiameter
 		// Skipping already declared property EllipseOffset
 		// Skipping already declared property IndicatorLengthDelta
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.ClipRect.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.Container2AnimationEndPosition.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.Container2AnimationStartPosition.get
@@ -32,6 +30,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.EllipseDiameter.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.EllipseOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.IndicatorLengthDelta.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

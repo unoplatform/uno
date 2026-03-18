@@ -13,13 +13,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ToggleSplitButton.ToggleSplitButton()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButton.ToggleSplitButton()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButton.IsCheckedProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButton.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButton.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButton.IsCheckedChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButton.IsCheckedChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButton.IsChecked.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButton.IsChecked.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButton.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ToggleSplitButton.IsCheckedChanged
 	}
 }

@@ -53,14 +53,9 @@ namespace Windows.AI.MachineLearning
 			}
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelEvaluationResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelEvaluationResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelEvaluationResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelEvaluationResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.AI.MachineLearning.LearningModelEvaluationResult.CorrelationId.get
 		// Forced skipping of method Windows.AI.MachineLearning.LearningModelEvaluationResult.ErrorStatus.get
 		// Forced skipping of method Windows.AI.MachineLearning.LearningModelEvaluationResult.Outputs.get
 		// Forced skipping of method Windows.AI.MachineLearning.LearningModelEvaluationResult.Succeeded.get
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelEvaluationResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -105,10 +105,6 @@ namespace Windows.Perception.Spatial.Surfaces
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.SupportedTriangleIndexFormats.get
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.SupportedVertexNormalFormats.get
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.SupportedVertexPositionFormats.get
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.IncludeVertexNormals.get
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.IncludeVertexNormals.set
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.TriangleIndexFormat.get
@@ -117,6 +113,5 @@ namespace Windows.Perception.Spatial.Surfaces
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.VertexNormalFormat.set
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.VertexPositionFormat.get
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.VertexPositionFormat.set
-		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

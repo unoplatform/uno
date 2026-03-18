@@ -26,8 +26,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.VirtualizingLayoutContext()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.VirtualizingLayoutContext()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.GetItemAt(int)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.GetOrCreateElementAt(int)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.GetOrCreateElementAt(int, Microsoft.UI.Xaml.Controls.ElementRealizationOptions)
@@ -53,6 +51,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.RecommendedAnchorIndex.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.RecommendedAnchorIndexCore.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.VisibleRect.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

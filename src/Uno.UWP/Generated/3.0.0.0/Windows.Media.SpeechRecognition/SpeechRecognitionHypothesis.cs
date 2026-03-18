@@ -9,11 +9,6 @@ namespace Windows.Media.SpeechRecognition
 	public partial class SpeechRecognitionHypothesis
 	{
 		// Skipping already declared property Text
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionHypothesis.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionHypothesis.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionHypothesis.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionHypothesis.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionHypothesis.Text.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionHypothesis.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

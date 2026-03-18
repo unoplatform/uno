@@ -8,8 +8,5 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 	public partial class ZoomSnapPointBase : global::Microsoft.UI.Xaml.Controls.Primitives.SnapPointBase
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPointBase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPointBase.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPointBase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

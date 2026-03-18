@@ -26,14 +26,9 @@ namespace Windows.Storage.Streams
 			throw new global::System.NotImplementedException("The member MemoryBuffer Buffer.CreateMemoryBufferOverIBuffer(IBuffer input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MemoryBuffer%20Buffer.CreateMemoryBufferOverIBuffer%28IBuffer%20input%29");
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Streams.Buffer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.Streams.Buffer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.Streams.Buffer.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.Streams.Buffer.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.Streams.Buffer.Capacity.get
 		// Forced skipping of method Windows.Storage.Streams.Buffer.Length.get
 		// Forced skipping of method Windows.Storage.Streams.Buffer.Length.set
-		// Forced skipping of method Windows.Storage.Streams.Buffer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Storage.Streams.IBuffer
 	}
 }

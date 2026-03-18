@@ -15,10 +15,6 @@ namespace Windows.Storage
 		// Skipping already declared property this[]
 		// Skipping already declared method Windows.Storage.ApplicationDataCompositeValue.ApplicationDataCompositeValue()
 		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.ApplicationDataCompositeValue()
-		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.MapChanged.add
 		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.MapChanged.remove
 		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.Keys.get
@@ -38,7 +34,6 @@ namespace Windows.Storage
 		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>.Remove(System.Collections.Generic.KeyValuePair<string, object>)
 		// Skipping already declared method Windows.Storage.ApplicationDataCompositeValue.GetEnumerator()
 		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Windows.Storage.ApplicationDataCompositeValue.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Windows.Storage.ApplicationDataCompositeValue.MapChanged
 		// Processing: Windows.Foundation.Collections.IPropertySet
 		// Processing: Windows.Foundation.Collections.IObservableMap<string, object>

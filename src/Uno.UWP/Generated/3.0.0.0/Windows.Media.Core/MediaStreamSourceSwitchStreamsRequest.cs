@@ -33,10 +33,6 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSwitchStreamsRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSwitchStreamsRequest.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSwitchStreamsRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSwitchStreamsRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Core.MediaStreamSourceSwitchStreamsRequestDeferral GetDeferral()
@@ -46,6 +42,5 @@ namespace Windows.Media.Core
 #endif
 		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSwitchStreamsRequest.NewStreamDescriptor.get
 		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSwitchStreamsRequest.OldStreamDescriptor.get
-		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSwitchStreamsRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -237,8 +237,6 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.SpotLight.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.SpotLight.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.SpotLight.ConstantAttenuation.get
 		// Forced skipping of method Microsoft.UI.Composition.SpotLight.ConstantAttenuation.set
 		// Forced skipping of method Microsoft.UI.Composition.SpotLight.CoordinateSpace.get
@@ -271,6 +269,5 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.SpotLight.OuterConeIntensity.set
 		// Forced skipping of method Microsoft.UI.Composition.SpotLight.QuadraticAttenuation.get
 		// Forced skipping of method Microsoft.UI.Composition.SpotLight.QuadraticAttenuation.set
-		// Forced skipping of method Microsoft.UI.Composition.SpotLight.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

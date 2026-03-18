@@ -10,8 +10,5 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsPanelTemplate.ItemsPanelTemplate()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPanelTemplate.ItemsPanelTemplate()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPanelTemplate.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPanelTemplate.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPanelTemplate.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -114,10 +114,6 @@ namespace Windows.Media.Devices
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.RegionOfInterest()
-		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.AutoExposureEnabled.get
 		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.AutoExposureEnabled.set
 		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.AutoFocusEnabled.get
@@ -132,6 +128,5 @@ namespace Windows.Media.Devices
 		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.Type.set
 		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.Weight.get
 		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.Weight.set
-		// Forced skipping of method Windows.Media.Devices.RegionOfInterest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

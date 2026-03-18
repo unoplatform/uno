@@ -15,10 +15,6 @@ namespace Windows.UI.Input.Inking.Preview
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview.CreateForVisual(Windows.UI.Composition.Visual, Windows.Foundation.Rect)
 		// Forced skipping of method Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview.CreateForVisual(Windows.UI.Composition.Visual, Windows.Foundation.Rect, Windows.UI.Composition.Visual, Windows.Foundation.Rect)
-		// Forced skipping of method Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -26,7 +22,6 @@ namespace Windows.UI.Input.Inking.Preview
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview", "void PalmRejectionDelayZonePreview.Dispose()");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

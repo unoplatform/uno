@@ -27,10 +27,6 @@ namespace Windows.Networking.NetworkOperators
 			throw new global::System.NotImplementedException("The member UssdSession UssdSession.CreateFromNetworkInterfaceId(string networkInterfaceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UssdSession%20UssdSession.CreateFromNetworkInterfaceId%28string%20networkInterfaceId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.UssdSession.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.UssdSession.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.UssdSession.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.UssdSession.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.UssdReply> SendMessageAndGetReplyAsync(global::Windows.Networking.NetworkOperators.UssdMessage message)
@@ -45,6 +41,5 @@ namespace Windows.Networking.NetworkOperators
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.UssdSession", "void UssdSession.Close()");
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.UssdSession.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

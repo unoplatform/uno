@@ -44,14 +44,9 @@ namespace Windows.Storage.Search
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.ValueAndLanguage()
-		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.Language.get
 		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.Language.set
 		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.Value.get
 		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.Value.set
-		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

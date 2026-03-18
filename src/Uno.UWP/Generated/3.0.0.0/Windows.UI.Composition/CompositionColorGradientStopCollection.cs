@@ -47,10 +47,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.UI.Composition.CompositionColorGradientStop> GetEnumerator()
@@ -119,7 +115,6 @@ namespace Windows.UI.Composition
 			throw new global::System.NotImplementedException("The member bool CompositionColorGradientStopCollection.Remove(CompositionColorGradientStop item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CompositionColorGradientStopCollection.Remove%28CompositionColorGradientStop%20item%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.System.Collections.Generic.IList<Windows.UI.Composition.CompositionColorGradientStop>.get_Item(int)
 		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.System.Collections.Generic.IList<Windows.UI.Composition.CompositionColorGradientStop>.set_Item(int, Windows.UI.Composition.CompositionColorGradientStop)
 		// Processing: System.Collections.Generic.IEnumerable<Windows.UI.Composition.CompositionColorGradientStop>

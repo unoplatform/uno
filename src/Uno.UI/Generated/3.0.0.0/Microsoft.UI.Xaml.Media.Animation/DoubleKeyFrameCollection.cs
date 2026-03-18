@@ -26,10 +26,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.DoubleKeyFrameCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.DoubleKeyFrameCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.Count.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.this[int].get
@@ -80,7 +76,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>.get_Item(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrameCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>.set_Item(int, Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.DoubleKeyFrame>

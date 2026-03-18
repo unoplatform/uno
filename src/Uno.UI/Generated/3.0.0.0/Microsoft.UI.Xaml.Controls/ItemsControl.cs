@@ -95,8 +95,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.ItemTemplateSelectorProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.ItemsPanelProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.ItemsSourceProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.DependencyObject GroupHeaderContainerFromItemContainer(global::Microsoft.UI.Xaml.DependencyObject itemContainer)
@@ -147,7 +145,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.ItemsPanelRoot.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.ItemsSource.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.ItemsSource.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Controls.IItemContainerMapping
 	}
 }

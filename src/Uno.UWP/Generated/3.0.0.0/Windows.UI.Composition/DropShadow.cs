@@ -97,8 +97,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.DropShadow.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.DropShadow.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.DropShadow.BlurRadius.get
 		// Forced skipping of method Windows.UI.Composition.DropShadow.BlurRadius.set
 		// Forced skipping of method Windows.UI.Composition.DropShadow.Color.get
@@ -111,6 +109,5 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.DropShadow.Opacity.set
 		// Forced skipping of method Windows.UI.Composition.DropShadow.SourcePolicy.get
 		// Forced skipping of method Windows.UI.Composition.DropShadow.SourcePolicy.set
-		// Forced skipping of method Windows.UI.Composition.DropShadow.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

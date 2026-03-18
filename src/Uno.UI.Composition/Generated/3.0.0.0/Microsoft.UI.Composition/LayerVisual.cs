@@ -36,12 +36,9 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.LayerVisual.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.LayerVisual.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.LayerVisual.Effect.get
 		// Forced skipping of method Microsoft.UI.Composition.LayerVisual.Effect.set
 		// Forced skipping of method Microsoft.UI.Composition.LayerVisual.Shadow.get
 		// Forced skipping of method Microsoft.UI.Composition.LayerVisual.Shadow.set
-		// Forced skipping of method Microsoft.UI.Composition.LayerVisual.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

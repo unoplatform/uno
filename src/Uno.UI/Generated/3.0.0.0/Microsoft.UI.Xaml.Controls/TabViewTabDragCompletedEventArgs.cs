@@ -11,13 +11,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property DropResult
 		// Skipping already declared property Item
 		// Skipping already declared property Tab
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDragCompletedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDragCompletedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDragCompletedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDragCompletedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDragCompletedEventArgs.DropResult.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDragCompletedEventArgs.Item.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDragCompletedEventArgs.Tab.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewTabDragCompletedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

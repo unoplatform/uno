@@ -75,10 +75,6 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo.SignInStateChanged.add
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo.SignInStateChanged.remove
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo.UserNameChanged.add
@@ -91,7 +87,6 @@ namespace Windows.Media.Capture
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo.SignInState.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo.UserName.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo.UserName.set
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo, global::Windows.Media.Capture.AppBroadcastSignInStateChangedEventArgs> SignInStateChanged

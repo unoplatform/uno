@@ -147,10 +147,6 @@ namespace Microsoft.UI.Content
 			throw new global::System.NotImplementedException("The member ChildSiteLink ChildSiteLink.CreateForSystemVisual(ContentIsland parent, ContainerVisual placementVisual) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChildSiteLink%20ChildSiteLink.CreateForSystemVisual%28ContentIsland%20parent%2C%20ContainerVisual%20placementVisual%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Connect(global::Microsoft.UI.Content.ContentIsland content)
@@ -192,7 +188,6 @@ namespace Microsoft.UI.Content
 		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.ProcessesPointerInput.get
 		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.ProcessesPointerInput.set
 		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.SiteView.get
-		// Forced skipping of method Microsoft.UI.Content.ChildSiteLink.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Microsoft.UI.ClosableNotifierHandler Closed

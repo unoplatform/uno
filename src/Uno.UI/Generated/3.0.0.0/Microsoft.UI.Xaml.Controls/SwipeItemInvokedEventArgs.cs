@@ -9,11 +9,6 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class SwipeItemInvokedEventArgs
 	{
 		// Skipping already declared property SwipeControl
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs.SwipeControl.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -9,11 +9,8 @@ namespace Microsoft.UI.Input
 	public partial class InputLightDismissAction : global::Microsoft.UI.Input.InputObject
 	{
 		// Skipping already declared method Microsoft.UI.Input.InputLightDismissAction.GetForWindowId(Microsoft.UI.WindowId)
-		// Forced skipping of method Microsoft.UI.Input.InputLightDismissAction.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.InputLightDismissAction.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.InputLightDismissAction.Dismissed.add
 		// Forced skipping of method Microsoft.UI.Input.InputLightDismissAction.Dismissed.remove
-		// Forced skipping of method Microsoft.UI.Input.InputLightDismissAction.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Input.InputLightDismissAction.Dismissed
 	}
 }

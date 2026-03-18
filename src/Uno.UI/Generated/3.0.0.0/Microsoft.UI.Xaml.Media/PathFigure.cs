@@ -22,8 +22,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.IsFilledProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.SegmentsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.StartPointProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.IsClosed.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.IsClosed.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.IsFilled.get
@@ -32,6 +30,5 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.Segments.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.StartPoint.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.StartPoint.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigure.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

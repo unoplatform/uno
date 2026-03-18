@@ -52,8 +52,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeater.ItemsSourceProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeater.LayoutProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeater.VerticalCacheLengthProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeater.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeater.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsRepeater.GetElementIndex(Microsoft.UI.Xaml.UIElement)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsRepeater.TryGetElement(int)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsRepeater.GetOrCreateElement(int)
@@ -78,7 +76,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeater.Layout.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeater.VerticalCacheLength.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeater.VerticalCacheLength.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeater.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ItemsRepeater.ElementClearing
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ItemsRepeater.ElementIndexChanged
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ItemsRepeater.ElementPrepared

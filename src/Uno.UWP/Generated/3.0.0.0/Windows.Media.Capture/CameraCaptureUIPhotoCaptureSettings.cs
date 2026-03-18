@@ -13,10 +13,6 @@ namespace Windows.Media.Capture
 		// Skipping already declared property CroppedSizeInPixels
 		// Skipping already declared property Format
 		// Skipping already declared property MaxResolution
-		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIPhotoCaptureSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIPhotoCaptureSettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIPhotoCaptureSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIPhotoCaptureSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIPhotoCaptureSettings.AllowCropping.get
 		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIPhotoCaptureSettings.AllowCropping.set
 		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIPhotoCaptureSettings.CroppedAspectRatio.get
@@ -27,6 +23,5 @@ namespace Windows.Media.Capture
 		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIPhotoCaptureSettings.Format.set
 		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIPhotoCaptureSettings.MaxResolution.get
 		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIPhotoCaptureSettings.MaxResolution.set
-		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIPhotoCaptureSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

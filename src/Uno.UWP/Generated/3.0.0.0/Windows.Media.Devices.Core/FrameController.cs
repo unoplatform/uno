@@ -80,10 +80,6 @@ namespace Windows.Media.Devices.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.Core.FrameController.FrameController()
-		// Forced skipping of method Windows.Media.Devices.Core.FrameController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Devices.Core.FrameController.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Devices.Core.FrameController.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Devices.Core.FrameController.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameController.ExposureCompensationControl.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameController.ExposureControl.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameController.FlashControl.get
@@ -91,6 +87,5 @@ namespace Windows.Media.Devices.Core
 		// Forced skipping of method Windows.Media.Devices.Core.FrameController.IsoSpeedControl.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameController.PhotoConfirmationEnabled.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameController.PhotoConfirmationEnabled.set
-		// Forced skipping of method Windows.Media.Devices.Core.FrameController.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

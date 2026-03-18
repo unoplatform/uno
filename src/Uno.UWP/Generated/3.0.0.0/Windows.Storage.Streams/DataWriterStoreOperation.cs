@@ -12,10 +12,6 @@ namespace Windows.Storage.Streams
 		// Skipping already declared property ErrorCode
 		// Skipping already declared property Id
 		// Skipping already declared property Status
-		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.Storage.Streams.DataWriterStoreOperation.GetResults()
 		// Skipping already declared method Windows.Storage.Streams.DataWriterStoreOperation.Cancel()
 		// Skipping already declared method Windows.Storage.Streams.DataWriterStoreOperation.Close()
@@ -24,7 +20,6 @@ namespace Windows.Storage.Streams
 		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.ErrorCode.get
 		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.Id.get
 		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.Status.get
-		// Forced skipping of method Windows.Storage.Streams.DataWriterStoreOperation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Foundation.IAsyncOperation<uint>
 		// Processing: Windows.Foundation.IAsyncInfo
 	}

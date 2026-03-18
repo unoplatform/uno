@@ -73,10 +73,6 @@ namespace Windows.ApplicationModel.Contacts
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.ContactQueryOptions(string)
 		// Skipping already declared method Windows.ApplicationModel.Contacts.ContactQueryOptions.ContactQueryOptions(string, Windows.ApplicationModel.Contacts.ContactQuerySearchFields)
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.ContactQueryOptions(string, Windows.ApplicationModel.Contacts.ContactQuerySearchFields)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.AnnotationListIds.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.ContactListIds.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.DesiredFields.get
@@ -86,6 +82,5 @@ namespace Windows.ApplicationModel.Contacts
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.IncludeContactsFromHiddenLists.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.IncludeContactsFromHiddenLists.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.TextSearch.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -15,14 +15,11 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.Setter.Setter()
 		// Skipping already declared method Microsoft.UI.Xaml.Setter.Setter(Microsoft.UI.Xaml.DependencyProperty, object)
 		// Forced skipping of method Microsoft.UI.Xaml.Setter.Setter(Microsoft.UI.Xaml.DependencyProperty, object)
-		// Forced skipping of method Microsoft.UI.Xaml.Setter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Setter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Setter.Property.get
 		// Forced skipping of method Microsoft.UI.Xaml.Setter.Property.set
 		// Forced skipping of method Microsoft.UI.Xaml.Setter.Target.get
 		// Forced skipping of method Microsoft.UI.Xaml.Setter.Target.set
 		// Forced skipping of method Microsoft.UI.Xaml.Setter.Value.get
 		// Forced skipping of method Microsoft.UI.Xaml.Setter.Value.set
-		// Forced skipping of method Microsoft.UI.Xaml.Setter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -8,8 +8,5 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionTransform : global::Microsoft.UI.Composition.CompositionObject
 	{
-		// Forced skipping of method Microsoft.UI.Composition.CompositionTransform.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionTransform.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionTransform.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

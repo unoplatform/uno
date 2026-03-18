@@ -22,10 +22,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.TransitionCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.TransitionCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.Count.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.this[int].get
@@ -40,7 +36,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.Remove(Microsoft.UI.Xaml.Media.Animation.Transition)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.Transition>.get_Item(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.Transition>.set_Item(int, Microsoft.UI.Xaml.Media.Animation.Transition)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.Transition>

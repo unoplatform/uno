@@ -71,10 +71,6 @@ namespace Microsoft.Windows.AppLifecycle
 			throw new global::System.NotImplementedException("The member AppRestartFailureReason AppInstance.Restart(string arguments) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppRestartFailureReason%20AppInstance.Restart%28string%20arguments%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppInstance.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppInstance.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppInstance.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppInstance.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void UnregisterKey()
@@ -101,7 +97,6 @@ namespace Microsoft.Windows.AppLifecycle
 		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppInstance.IsCurrent.get
 		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppInstance.Key.get
 		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppInstance.ProcessId.get
-		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppInstance.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::System.EventHandler<global::Microsoft.Windows.AppLifecycle.AppActivationArguments> Activated

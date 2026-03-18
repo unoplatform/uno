@@ -146,10 +146,6 @@ namespace Windows.Devices.Sms
 			throw new global::System.NotImplementedException("The member SmsTextMessage SmsTextMessage.FromBinaryData(SmsDataFormat format, byte[] value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsTextMessage%20SmsTextMessage.FromBinaryData%28SmsDataFormat%20format%2C%20byte%5B%5D%20value%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Sms.ISmsBinaryMessage> ToBinaryMessages(global::Windows.Devices.Sms.SmsDataFormat format)
@@ -171,7 +167,6 @@ namespace Windows.Devices.Sms
 		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage.To.get
 		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage.To.set
-		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Sms.ISmsTextMessage
 		// Processing: Windows.Devices.Sms.ISmsMessage
 	}

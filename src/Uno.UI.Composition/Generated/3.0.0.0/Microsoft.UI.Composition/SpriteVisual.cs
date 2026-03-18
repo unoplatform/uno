@@ -23,12 +23,9 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.SpriteVisual.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.SpriteVisual.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.SpriteVisual.Brush.get
 		// Forced skipping of method Microsoft.UI.Composition.SpriteVisual.Brush.set
 		// Forced skipping of method Microsoft.UI.Composition.SpriteVisual.Shadow.get
 		// Forced skipping of method Microsoft.UI.Composition.SpriteVisual.Shadow.set
-		// Forced skipping of method Microsoft.UI.Composition.SpriteVisual.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

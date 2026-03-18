@@ -16,10 +16,6 @@ namespace Windows.Media.Protection.PlayReady
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDClient.NDClient(Windows.Media.Protection.PlayReady.INDDownloadEngine, Windows.Media.Protection.PlayReady.INDStreamParser, Windows.Media.Protection.PlayReady.INDMessenger)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDClient.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDClient.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDClient.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDClient.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Protection.PlayReady.INDStartResult> StartAsync(global::System.Uri contentUrl, uint startAsyncOptions, global::Windows.Media.Protection.PlayReady.INDCustomData registrationCustomData, global::Windows.Media.Protection.PlayReady.INDLicenseFetchDescriptor licenseFetchDescriptor)
@@ -58,7 +54,6 @@ namespace Windows.Media.Protection.PlayReady
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDClient.ReRegistrationNeeded.remove
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDClient.RegistrationCompleted.add
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDClient.RegistrationCompleted.remove
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDClient.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Protection.PlayReady.NDClient, global::Windows.Media.Protection.PlayReady.INDClosedCaptionDataReceivedEventArgs> ClosedCaptionDataReceived

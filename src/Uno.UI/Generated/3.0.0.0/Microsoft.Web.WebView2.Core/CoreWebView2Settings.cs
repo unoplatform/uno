@@ -261,10 +261,6 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.AreBrowserAcceleratorKeysEnabled.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.AreBrowserAcceleratorKeysEnabled.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.AreDefaultContextMenusEnabled.get
@@ -303,6 +299,5 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.IsZoomControlEnabled.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.UserAgent.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.UserAgent.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

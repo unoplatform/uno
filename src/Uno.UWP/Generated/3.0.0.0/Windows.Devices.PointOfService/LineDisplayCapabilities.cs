@@ -193,10 +193,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanBlink.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanChangeBlinkRate.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanChangeScreenSize.get
@@ -215,6 +211,5 @@ namespace Windows.Devices.PointOfService
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.PowerReportingType.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.SupportedDescriptors.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.SupportedWindows.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -13,10 +13,6 @@ namespace Windows.System.Diagnostics
 		{
 		}
 #endif
-		// Forced skipping of method Windows.System.Diagnostics.SystemMemoryUsage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.Diagnostics.SystemMemoryUsage.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.Diagnostics.SystemMemoryUsage.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.Diagnostics.SystemMemoryUsage.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.Diagnostics.SystemMemoryUsageReport GetReport()
@@ -24,6 +20,5 @@ namespace Windows.System.Diagnostics
 			throw new global::System.NotImplementedException("The member SystemMemoryUsageReport SystemMemoryUsage.GetReport() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemMemoryUsageReport%20SystemMemoryUsage.GetReport%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.System.Diagnostics.SystemMemoryUsage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

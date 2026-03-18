@@ -20,8 +20,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.MaxWidthProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.MinWidthProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.WidthProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.ActualWidth.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.MaxWidth.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.MaxWidth.set
@@ -29,6 +27,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.MinWidth.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.Width.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.Width.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ColumnDefinition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

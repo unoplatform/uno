@@ -33,10 +33,6 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Display.Core.DisplaySource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplaySource.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplaySource.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplaySource.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IBuffer GetMetadata(global::System.Guid Key)
@@ -46,6 +42,5 @@ namespace Windows.Devices.Display.Core
 #endif
 		// Forced skipping of method Windows.Devices.Display.Core.DisplaySource.AdapterId.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplaySource.SourceId.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplaySource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

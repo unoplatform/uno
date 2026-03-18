@@ -55,16 +55,11 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.InkModelerAttributes.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkModelerAttributes.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkModelerAttributes.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkModelerAttributes.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkModelerAttributes.PredictionTime.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkModelerAttributes.PredictionTime.set
 		// Forced skipping of method Windows.UI.Input.Inking.InkModelerAttributes.ScalingFactor.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkModelerAttributes.ScalingFactor.set
 		// Forced skipping of method Windows.UI.Input.Inking.InkModelerAttributes.UseVelocityBasedPressure.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkModelerAttributes.UseVelocityBasedPressure.set
-		// Forced skipping of method Windows.UI.Input.Inking.InkModelerAttributes.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

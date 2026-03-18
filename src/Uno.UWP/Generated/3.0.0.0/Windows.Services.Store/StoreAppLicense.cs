@@ -113,10 +113,6 @@ namespace Windows.Services.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StoreAppLicense.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.Store.StoreAppLicense.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.Store.StoreAppLicense.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.Store.StoreAppLicense.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Store.StoreAppLicense.AddOnLicenses.get
 		// Forced skipping of method Windows.Services.Store.StoreAppLicense.ExpirationDate.get
 		// Forced skipping of method Windows.Services.Store.StoreAppLicense.ExtendedJsonData.get
@@ -127,6 +123,5 @@ namespace Windows.Services.Store
 		// Forced skipping of method Windows.Services.Store.StoreAppLicense.SkuStoreId.get
 		// Forced skipping of method Windows.Services.Store.StoreAppLicense.TrialTimeRemaining.get
 		// Forced skipping of method Windows.Services.Store.StoreAppLicense.TrialUniqueId.get
-		// Forced skipping of method Windows.Services.Store.StoreAppLicense.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -311,8 +311,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationXProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationYProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationZProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.CenterOfRotationX.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.CenterOfRotationX.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.CenterOfRotationY.get
@@ -338,6 +336,5 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationY.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationZ.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.RotationZ.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

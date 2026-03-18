@@ -23,8 +23,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.ContentTemplateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.ContentTemplateSelectorProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.ContentTransitionsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ContentControl.OnContentChanged(object, object)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ContentControl.OnContentTemplateChanged(Microsoft.UI.Xaml.DataTemplate, Microsoft.UI.Xaml.DataTemplate)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ContentControl.OnContentTemplateSelectorChanged(Microsoft.UI.Xaml.Controls.DataTemplateSelector, Microsoft.UI.Xaml.Controls.DataTemplateSelector)
@@ -37,6 +35,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.ContentTemplateSelector.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.ContentTransitions.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.ContentTransitions.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

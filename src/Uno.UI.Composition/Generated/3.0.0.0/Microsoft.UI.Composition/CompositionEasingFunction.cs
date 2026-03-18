@@ -19,8 +19,5 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared method Microsoft.UI.Composition.CompositionEasingFunction.CreateExponentialEasingFunction(Microsoft.UI.Composition.Compositor, Microsoft.UI.Composition.CompositionEasingFunctionMode, float)
 		// Skipping already declared method Microsoft.UI.Composition.CompositionEasingFunction.CreatePowerEasingFunction(Microsoft.UI.Composition.Compositor, Microsoft.UI.Composition.CompositionEasingFunctionMode, float)
 		// Skipping already declared method Microsoft.UI.Composition.CompositionEasingFunction.CreateSineEasingFunction(Microsoft.UI.Composition.Compositor, Microsoft.UI.Composition.CompositionEasingFunctionMode)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionEasingFunction.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionEasingFunction.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionEasingFunction.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

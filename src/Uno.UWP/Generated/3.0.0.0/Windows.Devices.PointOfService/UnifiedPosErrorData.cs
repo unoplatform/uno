@@ -56,14 +56,9 @@ namespace Windows.Devices.PointOfService
 		}
 #endif
 		// Forced skipping of method Windows.Devices.PointOfService.UnifiedPosErrorData.UnifiedPosErrorData(string, Windows.Devices.PointOfService.UnifiedPosErrorSeverity, Windows.Devices.PointOfService.UnifiedPosErrorReason, uint)
-		// Forced skipping of method Windows.Devices.PointOfService.UnifiedPosErrorData.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.PointOfService.UnifiedPosErrorData.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.PointOfService.UnifiedPosErrorData.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.PointOfService.UnifiedPosErrorData.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.PointOfService.UnifiedPosErrorData.ExtendedReason.get
 		// Forced skipping of method Windows.Devices.PointOfService.UnifiedPosErrorData.Message.get
 		// Forced skipping of method Windows.Devices.PointOfService.UnifiedPosErrorData.Reason.get
 		// Forced skipping of method Windows.Devices.PointOfService.UnifiedPosErrorData.Severity.get
-		// Forced skipping of method Windows.Devices.PointOfService.UnifiedPosErrorData.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

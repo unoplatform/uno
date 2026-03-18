@@ -54,13 +54,8 @@ namespace Windows.Perception.Spatial
 		}
 #endif
 		// Forced skipping of method Windows.Perception.Spatial.SpatialEntity.SpatialEntity(Windows.Perception.Spatial.SpatialAnchor, Windows.Foundation.Collections.ValueSet)
-		// Forced skipping of method Windows.Perception.Spatial.SpatialEntity.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialEntity.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialEntity.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialEntity.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialEntity.Anchor.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialEntity.Id.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialEntity.Properties.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialEntity.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

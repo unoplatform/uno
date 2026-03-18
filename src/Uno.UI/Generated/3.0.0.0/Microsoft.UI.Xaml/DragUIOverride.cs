@@ -12,10 +12,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property IsCaptionVisible
 		// Skipping already declared property IsContentVisible
 		// Skipping already declared property IsGlyphVisible
-		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Microsoft.UI.Xaml.DragUIOverride.Clear()
 		// Skipping already declared method Microsoft.UI.Xaml.DragUIOverride.SetContentFromBitmapImage(Microsoft.UI.Xaml.Media.Imaging.BitmapImage)
 		// Skipping already declared method Microsoft.UI.Xaml.DragUIOverride.SetContentFromBitmapImage(Microsoft.UI.Xaml.Media.Imaging.BitmapImage, Windows.Foundation.Point)
@@ -41,6 +37,5 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.IsContentVisible.set
 		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.IsGlyphVisible.get
 		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.IsGlyphVisible.set
-		// Forced skipping of method Microsoft.UI.Xaml.DragUIOverride.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

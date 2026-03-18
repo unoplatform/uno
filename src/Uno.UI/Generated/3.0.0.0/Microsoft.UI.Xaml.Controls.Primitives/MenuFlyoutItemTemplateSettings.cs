@@ -9,9 +9,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 	public partial class MenuFlyoutItemTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property KeyboardAcceleratorTextMinWidth
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutItemTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutItemTemplateSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutItemTemplateSettings.KeyboardAcceleratorTextMinWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutItemTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

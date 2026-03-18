@@ -10,8 +10,5 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.CheckBoxAutomationPeer.CheckBoxAutomationPeer(Microsoft.UI.Xaml.Controls.CheckBox)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CheckBoxAutomationPeer.CheckBoxAutomationPeer(Microsoft.UI.Xaml.Controls.CheckBox)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CheckBoxAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CheckBoxAutomationPeer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.CheckBoxAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

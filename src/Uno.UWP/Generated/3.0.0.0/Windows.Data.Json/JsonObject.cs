@@ -94,10 +94,6 @@ namespace Windows.Data.Json
 			throw new global::System.NotImplementedException("The member bool JsonObject.TryParse(string input, out JsonObject result) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20JsonObject.TryParse%28string%20input%2C%20out%20JsonObject%20result%29");
 		}
 #endif
-		// Forced skipping of method Windows.Data.Json.JsonObject.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Data.Json.JsonObject.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Data.Json.JsonObject.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Data.Json.JsonObject.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Json.JsonValue GetNamedValue(string name)
@@ -310,7 +306,6 @@ namespace Windows.Data.Json
 		}
 #endif
 		// Forced skipping of method Windows.Data.Json.JsonObject.ValueType.get
-		// Forced skipping of method Windows.Data.Json.JsonObject.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Data.Json.IJsonValue
 		// Processing: System.Collections.Generic.IDictionary<string, Windows.Data.Json.IJsonValue>
 		// Processing: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.Data.Json.IJsonValue>>

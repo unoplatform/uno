@@ -30,10 +30,6 @@ namespace Windows.Perception.Spatial
 			throw new global::System.NotImplementedException("The member SpatialLocator SpatialLocator.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialLocator%20SpatialLocator.GetDefault%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Perception.Spatial.SpatialLocation TryLocateAtTimestamp(global::Windows.Perception.PerceptionTimestamp timestamp, global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
@@ -102,7 +98,6 @@ namespace Windows.Perception.Spatial
 		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.PositionalTrackingDeactivating.add
 		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.PositionalTrackingDeactivating.remove
 		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.Locatability.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialLocator.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Perception.Spatial.SpatialLocator, object> LocatabilityChanged

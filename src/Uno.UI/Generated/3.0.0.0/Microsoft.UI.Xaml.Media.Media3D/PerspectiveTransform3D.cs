@@ -85,14 +85,11 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.DepthProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.OffsetXProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.OffsetYProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.Depth.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.Depth.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.OffsetX.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.OffsetX.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.OffsetY.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.OffsetY.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

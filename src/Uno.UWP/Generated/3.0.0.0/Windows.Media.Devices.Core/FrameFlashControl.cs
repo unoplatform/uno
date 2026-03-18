@@ -69,10 +69,6 @@ namespace Windows.Media.Devices.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.Auto.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.Auto.set
 		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.Mode.get
@@ -81,6 +77,5 @@ namespace Windows.Media.Devices.Core
 		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.PowerPercent.set
 		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.RedEyeReduction.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.RedEyeReduction.set
-		// Forced skipping of method Windows.Media.Devices.Core.FrameFlashControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

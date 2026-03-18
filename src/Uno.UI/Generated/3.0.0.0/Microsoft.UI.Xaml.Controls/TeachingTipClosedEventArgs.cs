@@ -9,11 +9,6 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class TeachingTipClosedEventArgs
 	{
 		// Skipping already declared property Reason
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipClosedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipClosedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipClosedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipClosedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipClosedEventArgs.Reason.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipClosedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -17,10 +17,6 @@ namespace Windows.UI.Input.Preview.Injection
 		// Skipping already declared property TiltY
 		// Skipping already declared method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.InjectedInputPenInfo()
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.InjectedInputPenInfo()
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.PenButtons.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.PenButtons.set
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.PenParameters.get
@@ -35,6 +31,5 @@ namespace Windows.UI.Input.Preview.Injection
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.TiltX.set
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.TiltY.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.TiltY.set
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPenInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

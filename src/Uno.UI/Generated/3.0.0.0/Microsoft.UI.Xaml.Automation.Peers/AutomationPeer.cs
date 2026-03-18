@@ -19,8 +19,6 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			throw new global::System.NotImplementedException("The member RawElementProviderRuntimeId AutomationPeer.GenerateRawElementProviderRuntimeId() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RawElementProviderRuntimeId%20AutomationPeer.GenerateRawElementProviderRuntimeId%28%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.GetPattern(Microsoft.UI.Xaml.Automation.Peers.PatternInterface)
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.RaiseAutomationEvent(Microsoft.UI.Xaml.Automation.Peers.AutomationEvents)
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.RaisePropertyChangedEvent(Microsoft.UI.Xaml.Automation.AutomationProperty, object, object)
@@ -142,6 +140,5 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.IsDialogCore()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.EventsSource.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.EventsSource.set
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

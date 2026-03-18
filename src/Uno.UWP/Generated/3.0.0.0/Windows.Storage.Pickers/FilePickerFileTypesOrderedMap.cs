@@ -13,10 +13,6 @@ namespace Windows.Storage.Pickers
 		// Skipping already declared property Count
 		// Skipping already declared property IsReadOnly
 		// Skipping already declared property this[]
-		// Forced skipping of method Windows.Storage.Pickers.FilePickerFileTypesOrderedMap.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.Pickers.FilePickerFileTypesOrderedMap.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.Pickers.FilePickerFileTypesOrderedMap.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.Pickers.FilePickerFileTypesOrderedMap.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.Pickers.FilePickerFileTypesOrderedMap.Keys.get
 		// Forced skipping of method Windows.Storage.Pickers.FilePickerFileTypesOrderedMap.Values.get
 		// Forced skipping of method Windows.Storage.Pickers.FilePickerFileTypesOrderedMap.Count.get
@@ -34,7 +30,6 @@ namespace Windows.Storage.Pickers
 		// Forced skipping of method Windows.Storage.Pickers.FilePickerFileTypesOrderedMap.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, System.Collections.Generic.IList<string>>>.Remove(System.Collections.Generic.KeyValuePair<string, System.Collections.Generic.IList<string>>)
 		// Skipping already declared method Windows.Storage.Pickers.FilePickerFileTypesOrderedMap.GetEnumerator()
 		// Forced skipping of method Windows.Storage.Pickers.FilePickerFileTypesOrderedMap.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Windows.Storage.Pickers.FilePickerFileTypesOrderedMap.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.Collections.Generic.IDictionary<string, System.Collections.Generic.IList<string>>
 		// Processing: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, System.Collections.Generic.IList<string>>>
 		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, System.Collections.Generic.IList<string>>>

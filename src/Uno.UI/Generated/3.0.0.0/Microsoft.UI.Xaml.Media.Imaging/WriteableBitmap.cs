@@ -11,10 +11,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		// Skipping already declared property PixelBuffer
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap.WriteableBitmap(int, int)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap.WriteableBitmap(int, int)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap.Invalidate()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap.PixelBuffer.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

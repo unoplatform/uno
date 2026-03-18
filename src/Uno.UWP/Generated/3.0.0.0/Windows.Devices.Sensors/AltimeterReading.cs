@@ -53,14 +53,9 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.AltitudeChangeInMeters.get
 		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.PerformanceCount.get
 		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.Properties.get
 		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.Timestamp.get
-		// Forced skipping of method Windows.Devices.Sensors.AltimeterReading.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

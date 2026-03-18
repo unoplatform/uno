@@ -16,11 +16,6 @@ namespace Windows.UI.Composition
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.CompositionPath.CompositionPath(Windows.Graphics.IGeometrySource2D)
-		// Forced skipping of method Windows.UI.Composition.CompositionPath.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.CompositionPath.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Composition.CompositionPath.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Composition.CompositionPath.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Windows.UI.Composition.CompositionPath.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Graphics.IGeometrySource2D
 	}
 }

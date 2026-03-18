@@ -13,10 +13,5 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelTargetPackage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelTargetPackage.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelTargetPackage.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelTargetPackage.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelTargetPackage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

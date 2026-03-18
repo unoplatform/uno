@@ -86,10 +86,6 @@ namespace Windows.Graphics.Printing
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing.PrintPageInfo.PrintPageInfo()
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintPageInfo.DpiX.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintPageInfo.DpiX.set
 		// Forced skipping of method Windows.Graphics.Printing.PrintPageInfo.DpiY.get
@@ -100,6 +96,5 @@ namespace Windows.Graphics.Printing
 		// Forced skipping of method Windows.Graphics.Printing.PrintPageInfo.Orientation.set
 		// Forced skipping of method Windows.Graphics.Printing.PrintPageInfo.PageSize.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintPageInfo.PageSize.set
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

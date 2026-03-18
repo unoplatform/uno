@@ -90,8 +90,6 @@ namespace Microsoft.UI.Composition.Scenes
 			throw new global::System.NotImplementedException("The member SceneMetallicRoughnessMaterial SceneMetallicRoughnessMaterial.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneMetallicRoughnessMaterial%20SceneMetallicRoughnessMaterial.Create%28Compositor%20compositor%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.BaseColorFactor.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.BaseColorFactor.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.BaseColorInput.get
@@ -102,6 +100,5 @@ namespace Microsoft.UI.Composition.Scenes
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.MetallicRoughnessInput.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.RoughnessFactor.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.RoughnessFactor.set
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

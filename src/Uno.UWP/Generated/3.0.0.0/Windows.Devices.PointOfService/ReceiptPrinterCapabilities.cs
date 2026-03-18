@@ -323,10 +323,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.CanCutPaper.get
 		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.CartridgeSensors.get
 		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.ColorCartridgeCapabilities.get
@@ -358,7 +354,6 @@ namespace Windows.Devices.PointOfService
 		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.SupportedBarcodeRotations.get
 		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.SupportedBitmapRotations.get
 		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.SupportedCharactersPerLine.get
-		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.PointOfService.ICommonReceiptSlipCapabilities
 		// Processing: Windows.Devices.PointOfService.ICommonPosPrintStationCapabilities
 	}

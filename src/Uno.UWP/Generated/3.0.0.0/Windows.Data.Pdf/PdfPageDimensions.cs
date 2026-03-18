@@ -63,15 +63,10 @@ namespace Windows.Data.Pdf
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.ArtBox.get
 		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.BleedBox.get
 		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.CropBox.get
 		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.MediaBox.get
 		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.TrimBox.get
-		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

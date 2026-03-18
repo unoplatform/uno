@@ -132,10 +132,6 @@ namespace Windows.ApplicationModel.Contacts
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.ContactLocationField(string, Windows.ApplicationModel.Contacts.ContactFieldCategory, string, string, string, string, string)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.Category.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.City.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.Country.get
@@ -146,7 +142,6 @@ namespace Windows.ApplicationModel.Contacts
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.Type.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.UnstructuredAddress.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.Value.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Contacts.IContactField
 	}
 }

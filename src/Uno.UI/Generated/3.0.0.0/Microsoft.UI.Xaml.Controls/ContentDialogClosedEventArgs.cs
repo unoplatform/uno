@@ -9,11 +9,6 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class ContentDialogClosedEventArgs
 	{
 		// Skipping already declared property Result
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs.Result.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

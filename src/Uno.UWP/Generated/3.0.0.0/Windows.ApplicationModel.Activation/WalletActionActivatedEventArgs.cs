@@ -73,17 +73,12 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.WalletActionActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.WalletActionActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.WalletActionActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.WalletActionActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.WalletActionActivatedEventArgs.ActionId.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.WalletActionActivatedEventArgs.ActionKind.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.WalletActionActivatedEventArgs.ItemId.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.WalletActionActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.WalletActionActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.WalletActionActivatedEventArgs.SplashScreen.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.WalletActionActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IWalletActionActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 	}

@@ -41,12 +41,7 @@ namespace Windows.UI.ViewManagement
 #endif
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTransferContext.ApplicationViewTransferContext()
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTransferContext.DataPackageFormatId.get
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTransferContext.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTransferContext.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTransferContext.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTransferContext.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTransferContext.ViewId.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTransferContext.ViewId.set
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTransferContext.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

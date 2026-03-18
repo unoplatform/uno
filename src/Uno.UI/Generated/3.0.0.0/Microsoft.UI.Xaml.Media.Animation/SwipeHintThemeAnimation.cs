@@ -85,14 +85,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.TargetNameProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.ToHorizontalOffsetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.ToVerticalOffsetProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.TargetName.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.TargetName.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.ToHorizontalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.ToHorizontalOffset.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.ToVerticalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.ToVerticalOffset.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SwipeHintThemeAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

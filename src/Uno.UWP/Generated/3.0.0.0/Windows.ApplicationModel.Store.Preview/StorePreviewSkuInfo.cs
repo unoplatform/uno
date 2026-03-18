@@ -103,10 +103,6 @@ namespace Windows.ApplicationModel.Store.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo.CurrencyCode.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo.CustomDeveloperData.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo.Description.get
@@ -116,6 +112,5 @@ namespace Windows.ApplicationModel.Store.Preview
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo.SkuId.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo.SkuType.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo.Title.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewSkuInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

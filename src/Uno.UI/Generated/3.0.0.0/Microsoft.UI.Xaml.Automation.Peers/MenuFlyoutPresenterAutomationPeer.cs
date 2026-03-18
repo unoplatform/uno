@@ -16,8 +16,5 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuFlyoutPresenterAutomationPeer.MenuFlyoutPresenterAutomationPeer(Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuFlyoutPresenterAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuFlyoutPresenterAutomationPeer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuFlyoutPresenterAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -33,12 +33,7 @@ namespace Windows.Security.Isolation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationResult.ExtendedError.get
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationResult.Status.get
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

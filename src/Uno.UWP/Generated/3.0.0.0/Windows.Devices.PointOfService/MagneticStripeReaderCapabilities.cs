@@ -123,10 +123,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderCapabilities.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderCapabilities.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderCapabilities.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderCapabilities.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderCapabilities.AuthenticationLevel.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderCapabilities.CardAuthentication.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderCapabilities.IsIsoSupported.get
@@ -138,6 +134,5 @@ namespace Windows.Devices.PointOfService
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderCapabilities.IsTransmitSentinelsSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderCapabilities.PowerReportingType.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderCapabilities.SupportedEncryptionAlgorithms.get
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderCapabilities.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

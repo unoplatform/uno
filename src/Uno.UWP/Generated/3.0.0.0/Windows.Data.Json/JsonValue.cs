@@ -65,10 +65,6 @@ namespace Windows.Data.Json
 			throw new global::System.NotImplementedException("The member JsonValue JsonValue.CreateNullValue() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=JsonValue%20JsonValue.CreateNullValue%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Data.Json.JsonValue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Data.Json.JsonValue.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Data.Json.JsonValue.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Data.Json.JsonValue.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Stringify()
@@ -119,7 +115,6 @@ namespace Windows.Data.Json
 		}
 #endif
 		// Forced skipping of method Windows.Data.Json.JsonValue.ValueType.get
-		// Forced skipping of method Windows.Data.Json.JsonValue.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Data.Json.IJsonValue
 	}
 }

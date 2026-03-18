@@ -41,8 +41,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsView.SelectedItemProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsView.SelectionModeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsView.VerticalScrollControllerProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsView.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsView.TryGetItemIndex(double, double, out int)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsView.StartBringItemIntoView(int, Microsoft.UI.Xaml.BringIntoViewOptions)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsView.Select(int)
@@ -73,7 +71,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsView.SelectionMode.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsView.VerticalScrollController.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsView.VerticalScrollController.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ItemsView.ItemInvoked
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ItemsView.SelectionChanged
 	}

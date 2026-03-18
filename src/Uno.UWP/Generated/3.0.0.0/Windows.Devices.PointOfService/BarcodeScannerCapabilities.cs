@@ -73,16 +73,11 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.IsImagePreviewSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.IsSoftwareTriggerSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.IsStatisticsReportingSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.IsStatisticsUpdatingSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.IsVideoPreviewSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.PowerReportingType.get
-		// Forced skipping of method Windows.Devices.PointOfService.BarcodeScannerCapabilities.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

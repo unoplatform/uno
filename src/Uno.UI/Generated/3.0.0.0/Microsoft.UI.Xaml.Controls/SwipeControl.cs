@@ -22,8 +22,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.LeftItemsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.RightItemsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.TopItemsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.SwipeControl.Close()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.BottomItems.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.BottomItems.set
@@ -33,6 +31,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.RightItems.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.TopItems.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.TopItems.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

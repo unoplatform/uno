@@ -43,13 +43,8 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.PhotoCapturedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Capture.PhotoCapturedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Capture.PhotoCapturedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Capture.PhotoCapturedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Capture.PhotoCapturedEventArgs.CaptureTimeOffset.get
 		// Forced skipping of method Windows.Media.Capture.PhotoCapturedEventArgs.Frame.get
 		// Forced skipping of method Windows.Media.Capture.PhotoCapturedEventArgs.Thumbnail.get
-		// Forced skipping of method Windows.Media.Capture.PhotoCapturedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

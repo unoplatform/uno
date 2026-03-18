@@ -153,10 +153,6 @@ namespace Windows.Networking.Sockets
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.BandwidthStatistics.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.LocalAddress.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.LocalPort.get
@@ -171,6 +167,5 @@ namespace Windows.Networking.Sockets
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.ServerCertificateErrors.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.ServerIntermediateCertificates.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.SessionKey.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

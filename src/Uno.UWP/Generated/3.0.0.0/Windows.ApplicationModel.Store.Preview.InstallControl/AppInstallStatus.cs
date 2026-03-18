@@ -93,10 +93,6 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.BytesDownloaded.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.DownloadSizeInBytes.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.ErrorCode.get
@@ -105,6 +101,5 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.PercentComplete.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.ReadyForLaunch.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.User.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

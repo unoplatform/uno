@@ -54,12 +54,7 @@ namespace Windows.Graphics.Display
 			throw new global::System.NotImplementedException("The member BrightnessOverrideSettings BrightnessOverrideSettings.CreateFromDisplayBrightnessOverrideScenario(DisplayBrightnessOverrideScenario overrideScenario) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BrightnessOverrideSettings%20BrightnessOverrideSettings.CreateFromDisplayBrightnessOverrideScenario%28DisplayBrightnessOverrideScenario%20overrideScenario%29");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Display.BrightnessOverrideSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Graphics.Display.BrightnessOverrideSettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Graphics.Display.BrightnessOverrideSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Graphics.Display.BrightnessOverrideSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Display.BrightnessOverrideSettings.DesiredLevel.get
 		// Forced skipping of method Windows.Graphics.Display.BrightnessOverrideSettings.DesiredNits.get
-		// Forced skipping of method Windows.Graphics.Display.BrightnessOverrideSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

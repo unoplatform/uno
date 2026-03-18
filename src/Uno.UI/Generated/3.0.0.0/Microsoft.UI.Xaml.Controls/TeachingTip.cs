@@ -73,8 +73,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTip.TargetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTip.TemplateSettingsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTip.TitleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTip.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTip.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTip.ActionButtonClick.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTip.ActionButtonClick.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTip.CloseButtonClick.add
@@ -124,7 +122,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTip.TemplateSettings.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTip.Title.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTip.Title.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTip.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TeachingTip.ActionButtonClick
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TeachingTip.CloseButtonClick
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TeachingTip.Closed

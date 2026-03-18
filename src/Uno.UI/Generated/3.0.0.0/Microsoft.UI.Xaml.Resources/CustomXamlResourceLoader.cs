@@ -13,11 +13,6 @@ namespace Microsoft.UI.Xaml.Resources
 		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.CustomXamlResourceLoader()
 		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.Current.get
 		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.Current.set
-		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.GetResource(string, string, string, string)
-		// Forced skipping of method Microsoft.UI.Xaml.Resources.CustomXamlResourceLoader.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

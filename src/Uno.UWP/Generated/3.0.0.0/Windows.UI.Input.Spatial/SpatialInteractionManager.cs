@@ -27,10 +27,6 @@ namespace Windows.UI.Input.Spatial
 			throw new global::System.NotImplementedException("The member bool SpatialInteractionManager.IsSourceKindSupported(SpatialInteractionSourceKind kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpatialInteractionManager.IsSourceKindSupported%28SpatialInteractionSourceKind%20kind%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Input.Spatial.SpatialInteractionSourceState> GetDetectedSourcesAtTimestamp(global::Windows.Perception.PerceptionTimestamp timeStamp)
@@ -50,7 +46,6 @@ namespace Windows.UI.Input.Spatial
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.SourceReleased.remove
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.SourceUpdated.add
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.SourceUpdated.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialInteractionManager, global::Windows.UI.Input.Spatial.SpatialInteractionDetectedEventArgs> InteractionDetected

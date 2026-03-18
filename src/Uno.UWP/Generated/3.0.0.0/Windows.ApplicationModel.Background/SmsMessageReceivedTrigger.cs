@@ -16,11 +16,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.SmsMessageReceivedTrigger.SmsMessageReceivedTrigger(Windows.Devices.Sms.SmsFilterRules)
-		// Forced skipping of method Windows.ApplicationModel.Background.SmsMessageReceivedTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Background.SmsMessageReceivedTrigger.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Background.SmsMessageReceivedTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Background.SmsMessageReceivedTrigger.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Windows.ApplicationModel.Background.SmsMessageReceivedTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger
 	}
 }

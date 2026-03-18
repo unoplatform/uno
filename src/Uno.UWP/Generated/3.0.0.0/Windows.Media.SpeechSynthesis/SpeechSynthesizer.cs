@@ -69,10 +69,6 @@ namespace Windows.Media.SpeechSynthesis
 #endif
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.AllVoices.get
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.DefaultVoice.get
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.SpeechSynthesis.SpeechSynthesisStream> SynthesizeTextToStreamAsync(string text)
@@ -97,7 +93,6 @@ namespace Windows.Media.SpeechSynthesis
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.Options.get
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.Voice.get
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.Voice.set
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

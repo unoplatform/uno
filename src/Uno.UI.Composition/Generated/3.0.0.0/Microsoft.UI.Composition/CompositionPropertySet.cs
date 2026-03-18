@@ -8,8 +8,6 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionPropertySet : global::Microsoft.UI.Composition.CompositionObject
 	{
-		// Forced skipping of method Microsoft.UI.Composition.CompositionPropertySet.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionPropertySet.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Composition.CompositionPropertySet.InsertColor(string, Windows.UI.Color)
 		// Skipping already declared method Microsoft.UI.Composition.CompositionPropertySet.InsertMatrix3x2(string, System.Numerics.Matrix3x2)
 		// Skipping already declared method Microsoft.UI.Composition.CompositionPropertySet.InsertMatrix4x4(string, System.Numerics.Matrix4x4)
@@ -28,6 +26,5 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared method Microsoft.UI.Composition.CompositionPropertySet.TryGetVector4(string, out System.Numerics.Vector4)
 		// Skipping already declared method Microsoft.UI.Composition.CompositionPropertySet.InsertBoolean(string, bool)
 		// Skipping already declared method Microsoft.UI.Composition.CompositionPropertySet.TryGetBoolean(string, out bool)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionPropertySet.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

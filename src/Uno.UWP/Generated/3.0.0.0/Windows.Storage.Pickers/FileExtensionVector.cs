@@ -11,10 +11,6 @@ namespace Windows.Storage.Pickers
 		// Skipping already declared property Count
 		// Skipping already declared property IsReadOnly
 		// Skipping already declared property this[]
-		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.Count.get
 		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.IsReadOnly.get
 		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.this[int].get
@@ -29,7 +25,6 @@ namespace Windows.Storage.Pickers
 		// Skipping already declared method Windows.Storage.Pickers.FileExtensionVector.Remove(string)
 		// Skipping already declared method Windows.Storage.Pickers.FileExtensionVector.GetEnumerator()
 		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.System.Collections.Generic.IList<string>.get_Item(int)
 		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.System.Collections.Generic.IList<string>.set_Item(int, string)
 		// Processing: System.Collections.Generic.IList<string>

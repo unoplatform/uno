@@ -23,11 +23,6 @@ namespace Windows.Storage.Pickers.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Pickers.Provider.FileRemovedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.Pickers.Provider.FileRemovedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.Pickers.Provider.FileRemovedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.Pickers.Provider.FileRemovedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.Pickers.Provider.FileRemovedEventArgs.Id.get
-		// Forced skipping of method Windows.Storage.Pickers.Provider.FileRemovedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

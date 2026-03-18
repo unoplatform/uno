@@ -40,14 +40,9 @@ namespace Windows.System
 		}
 #endif
 		// Forced skipping of method Windows.System.FolderLauncherOptions.FolderLauncherOptions()
-		// Forced skipping of method Windows.System.FolderLauncherOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.FolderLauncherOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.FolderLauncherOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.FolderLauncherOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.FolderLauncherOptions.DesiredRemainingView.get
 		// Forced skipping of method Windows.System.FolderLauncherOptions.DesiredRemainingView.set
 		// Forced skipping of method Windows.System.FolderLauncherOptions.ItemsToSelect.get
-		// Forced skipping of method Windows.System.FolderLauncherOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.System.ILauncherViewOptions
 	}
 }

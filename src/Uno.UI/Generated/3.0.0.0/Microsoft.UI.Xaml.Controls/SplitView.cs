@@ -60,8 +60,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PanePlacementProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PaneProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.TemplateSettingsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PaneClosed.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PaneClosed.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PaneClosing.add
@@ -89,7 +87,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PanePlacement.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.PanePlacement.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.TemplateSettings.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SplitView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.SplitView.PaneClosed
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.SplitView.PaneClosing
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.SplitView.PaneOpened

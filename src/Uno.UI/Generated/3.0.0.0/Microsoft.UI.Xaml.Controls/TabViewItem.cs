@@ -25,8 +25,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.IconSourceProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.IsClosableProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.TabViewTemplateSettingsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.CloseRequested.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.CloseRequested.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.Header.get
@@ -38,7 +36,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.IsClosable.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.IsClosable.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.TabViewTemplateSettings.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TabViewItem.CloseRequested
 	}
 }

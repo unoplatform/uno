@@ -12,13 +12,8 @@ namespace Windows.ApplicationModel.Background
 		// Skipping already declared property OneShot
 		// Skipping already declared method Windows.ApplicationModel.Background.TimeTrigger.TimeTrigger(uint, bool)
 		// Forced skipping of method Windows.ApplicationModel.Background.TimeTrigger.TimeTrigger(uint, bool)
-		// Forced skipping of method Windows.ApplicationModel.Background.TimeTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Background.TimeTrigger.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Background.TimeTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Background.TimeTrigger.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Background.TimeTrigger.FreshnessTime.get
 		// Forced skipping of method Windows.ApplicationModel.Background.TimeTrigger.OneShot.get
-		// Forced skipping of method Windows.ApplicationModel.Background.TimeTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger
 	}
 }

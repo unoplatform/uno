@@ -43,13 +43,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs.FinalView.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs.IsInertial.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs.NextView.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

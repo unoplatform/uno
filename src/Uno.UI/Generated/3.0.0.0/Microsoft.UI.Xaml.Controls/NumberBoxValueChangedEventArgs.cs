@@ -10,12 +10,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property NewValue
 		// Skipping already declared property OldValue
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBoxValueChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBoxValueChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBoxValueChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBoxValueChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBoxValueChangedEventArgs.NewValue.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBoxValueChangedEventArgs.OldValue.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NumberBoxValueChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

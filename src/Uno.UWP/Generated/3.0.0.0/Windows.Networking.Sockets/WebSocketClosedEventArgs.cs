@@ -33,12 +33,7 @@ namespace Windows.Networking.Sockets
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Sockets.WebSocketClosedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Sockets.WebSocketClosedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Sockets.WebSocketClosedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Sockets.WebSocketClosedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Sockets.WebSocketClosedEventArgs.Code.get
 		// Forced skipping of method Windows.Networking.Sockets.WebSocketClosedEventArgs.Reason.get
-		// Forced skipping of method Windows.Networking.Sockets.WebSocketClosedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

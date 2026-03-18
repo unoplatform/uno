@@ -53,15 +53,10 @@ namespace Windows.ApplicationModel.Search
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestedEventArgs.Language.get
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestedEventArgs.LinguisticDetails.get
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestedEventArgs.QueryText.get
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestedEventArgs.Request.get
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPaneSuggestionsRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Search.ISearchPaneQueryChangedEventArgs
 	}
 }

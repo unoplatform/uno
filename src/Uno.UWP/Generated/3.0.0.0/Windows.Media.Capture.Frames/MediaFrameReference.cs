@@ -103,10 +103,6 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -123,7 +119,6 @@ namespace Windows.Media.Capture.Frames
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.SourceKind.get
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.SystemRelativeTime.get
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.VideoMediaFrame.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

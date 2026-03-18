@@ -73,17 +73,12 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.ContactMapActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.ContactMapActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.ContactMapActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.ContactMapActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.ContactMapActivatedEventArgs.Address.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.ContactMapActivatedEventArgs.Contact.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.ContactMapActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.ContactMapActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.ContactMapActivatedEventArgs.SplashScreen.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.ContactMapActivatedEventArgs.Verb.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.ContactMapActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IContactMapActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IContactActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs

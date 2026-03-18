@@ -13,10 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.SymbolIconSource.SymbolIconSource()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SymbolIconSource.SymbolIconSource()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SymbolIconSource.SymbolProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SymbolIconSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SymbolIconSource.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SymbolIconSource.Symbol.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SymbolIconSource.Symbol.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SymbolIconSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

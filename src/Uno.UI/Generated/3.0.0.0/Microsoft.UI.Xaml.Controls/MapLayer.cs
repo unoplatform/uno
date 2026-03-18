@@ -8,8 +8,5 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class MapLayer : global::Microsoft.UI.Xaml.DependencyObject
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapLayer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapLayer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapLayer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

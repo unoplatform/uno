@@ -68,10 +68,6 @@ namespace Windows.Devices.Midi
 			throw new global::System.NotImplementedException("The member bool MidiSynthesizer.IsSynthesizer(DeviceInformation midiDevice) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MidiSynthesizer.IsSynthesizer%28DeviceInformation%20midiDevice%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SendMessage(global::Windows.Devices.Midi.IMidiMessage midiMessage)
@@ -97,7 +93,6 @@ namespace Windows.Devices.Midi
 		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.DeviceId.get
 		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.Volume.get
 		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.Volume.set
-		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Midi.IMidiOutPort
 		// Processing: System.IDisposable
 	}

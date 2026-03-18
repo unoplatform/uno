@@ -11,11 +11,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared property EasingModeProperty
 		// Skipping already declared property EasingMode
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase.EasingModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase.Ease(double)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase.EasingMode.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase.EasingMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

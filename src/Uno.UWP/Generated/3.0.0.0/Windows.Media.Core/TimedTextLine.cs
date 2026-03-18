@@ -40,13 +40,8 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.TimedTextLine.TimedTextLine()
-		// Forced skipping of method Windows.Media.Core.TimedTextLine.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Core.TimedTextLine.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Core.TimedTextLine.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Core.TimedTextLine.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Core.TimedTextLine.Subformats.get
 		// Forced skipping of method Windows.Media.Core.TimedTextLine.Text.get
 		// Forced skipping of method Windows.Media.Core.TimedTextLine.Text.set
-		// Forced skipping of method Windows.Media.Core.TimedTextLine.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

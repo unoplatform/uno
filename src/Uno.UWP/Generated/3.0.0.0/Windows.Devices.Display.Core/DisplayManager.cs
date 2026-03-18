@@ -20,10 +20,6 @@ namespace Windows.Devices.Display.Core
 			throw new global::System.NotImplementedException("The member DisplayManager DisplayManager.Create(DisplayManagerOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayManager%20DisplayManager.Create%28DisplayManagerOptions%20options%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Display.Core.DisplayTarget> GetCurrentTargets()
@@ -116,7 +112,6 @@ namespace Windows.Devices.Display.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayManager", "void DisplayManager.Dispose()");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Display.Core.DisplayManager, global::Windows.Devices.Display.Core.DisplayManagerChangedEventArgs> Changed

@@ -51,13 +51,8 @@ namespace Windows.Services.Cortana
 			throw new global::System.NotImplementedException("The member CortanaSettings CortanaSettings.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CortanaSettings%20CortanaSettings.GetDefault%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Services.Cortana.CortanaSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.Cortana.CortanaSettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.Cortana.CortanaSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.Cortana.CortanaSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Cortana.CortanaSettings.HasUserConsentToVoiceActivation.get
 		// Forced skipping of method Windows.Services.Cortana.CortanaSettings.IsVoiceActivationEnabled.get
 		// Forced skipping of method Windows.Services.Cortana.CortanaSettings.IsVoiceActivationEnabled.set
-		// Forced skipping of method Windows.Services.Cortana.CortanaSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

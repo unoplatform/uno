@@ -33,10 +33,6 @@ namespace Windows.Graphics.Printing.Workflow
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedOperation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedOperation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedOperation.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Complete(global::Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedStatus status)
@@ -46,6 +42,5 @@ namespace Windows.Graphics.Printing.Workflow
 #endif
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedOperation.Configuration.get
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedOperation.XpsContent.get
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedOperation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

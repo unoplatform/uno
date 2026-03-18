@@ -111,10 +111,6 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastProviderSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastProviderSettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastProviderSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastProviderSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastProviderSettings.AudioEncodingBitrate.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastProviderSettings.AudioEncodingBitrate.set
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastProviderSettings.CustomVideoEncodingBitrate.get
@@ -129,6 +125,5 @@ namespace Windows.Media.Capture
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastProviderSettings.VideoEncodingBitrateMode.set
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastProviderSettings.VideoEncodingResolutionMode.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastProviderSettings.VideoEncodingResolutionMode.set
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastProviderSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -13,12 +13,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property SecondaryCommands
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.CommandBarFlyout.CommandBarFlyout()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarFlyout.CommandBarFlyout()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarFlyout.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarFlyout.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarFlyout.AlwaysExpanded.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarFlyout.AlwaysExpanded.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarFlyout.PrimaryCommands.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarFlyout.SecondaryCommands.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBarFlyout.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

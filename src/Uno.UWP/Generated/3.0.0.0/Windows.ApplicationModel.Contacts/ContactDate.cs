@@ -86,10 +86,6 @@ namespace Windows.ApplicationModel.Contacts
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.ContactDate()
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.Day.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.Day.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.Description.get
@@ -100,6 +96,5 @@ namespace Windows.ApplicationModel.Contacts
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.Month.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.Year.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.Year.set
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

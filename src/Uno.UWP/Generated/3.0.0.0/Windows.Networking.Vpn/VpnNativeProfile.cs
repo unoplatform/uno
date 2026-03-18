@@ -202,10 +202,6 @@ namespace Windows.Networking.Vpn
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.VpnNativeProfile()
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.AlwaysOn.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.AlwaysOn.set
 		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.AppTriggers.get
@@ -230,7 +226,6 @@ namespace Windows.Networking.Vpn
 		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.TunnelAuthenticationMethod.set
 		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.UserAuthenticationMethod.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.UserAuthenticationMethod.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnNativeProfile.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Networking.Vpn.IVpnProfile
 	}
 }

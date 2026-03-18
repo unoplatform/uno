@@ -146,10 +146,6 @@ namespace Windows.Security.Cryptography.Certificates
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.SubjectAlternativeNameInfo()
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.DistinguishedName.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.DistinguishedNames.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.DnsName.get
@@ -163,6 +159,5 @@ namespace Windows.Security.Cryptography.Certificates
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.PrincipalNames.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.Url.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.Urls.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

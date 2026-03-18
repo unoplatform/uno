@@ -20,12 +20,9 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.AutomationPeerAnnotation(Microsoft.UI.Xaml.Automation.AnnotationType, Microsoft.UI.Xaml.Automation.Peers.AutomationPeer)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.PeerProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.TypeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.Peer.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.Peer.set
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.Type.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.Type.set
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

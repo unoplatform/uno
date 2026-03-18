@@ -20,10 +20,6 @@ namespace Windows.Devices.Geolocation
 		// Skipping already declared property SatelliteData
 		// Skipping already declared property Speed
 		// Skipping already declared property Timestamp
-		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.Accuracy.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.Altitude.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.AltitudeAccuracy.get
@@ -36,6 +32,5 @@ namespace Windows.Devices.Geolocation
 		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.SatelliteData.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.Speed.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.Timestamp.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

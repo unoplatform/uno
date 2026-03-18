@@ -143,10 +143,6 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.FrameUri.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.HasLinkText.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.HasLinkUri.get
@@ -160,6 +156,5 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.PageUri.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.SelectionText.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.SourceUri.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuTarget.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

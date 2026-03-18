@@ -199,8 +199,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.TabNavigationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.TemplateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.VerticalContentAlignmentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.RemoveFocusEngagement()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.ApplyTemplate()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.FocusDisengaged.add
@@ -306,7 +304,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.Template.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.VerticalContentAlignment.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.VerticalContentAlignment.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Control.FocusDisengaged
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Control.FocusEngaged
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Control.IsEnabledChanged

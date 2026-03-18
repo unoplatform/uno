@@ -9,11 +9,6 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class RefreshInteractionRatioChangedEventArgs
 	{
 		// Skipping already declared property InteractionRatio
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshInteractionRatioChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshInteractionRatioChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshInteractionRatioChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshInteractionRatioChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshInteractionRatioChangedEventArgs.InteractionRatio.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshInteractionRatioChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

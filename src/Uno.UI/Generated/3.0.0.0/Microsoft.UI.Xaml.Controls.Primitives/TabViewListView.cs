@@ -10,8 +10,5 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.TabViewListView.TabViewListView()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.TabViewListView.TabViewListView()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.TabViewListView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.TabViewListView.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.TabViewListView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -47,10 +47,6 @@ namespace Windows.Devices.Custom
 			throw new global::System.NotImplementedException("The member IAsyncOperation<CustomDevice> CustomDevice.FromIdAsync(string deviceId, DeviceAccessMode desiredAccess, DeviceSharingMode sharingMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCustomDevice%3E%20CustomDevice.FromIdAsync%28string%20deviceId%2C%20DeviceAccessMode%20desiredAccess%2C%20DeviceSharingMode%20sharingMode%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Custom.CustomDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Custom.CustomDevice.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Custom.CustomDevice.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Custom.CustomDevice.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<uint> SendIOControlAsync(global::Windows.Devices.Custom.IIOControlCode ioControlCode, global::Windows.Storage.Streams.IBuffer inputBuffer, global::Windows.Storage.Streams.IBuffer outputBuffer)
@@ -67,6 +63,5 @@ namespace Windows.Devices.Custom
 #endif
 		// Forced skipping of method Windows.Devices.Custom.CustomDevice.InputStream.get
 		// Forced skipping of method Windows.Devices.Custom.CustomDevice.OutputStream.get
-		// Forced skipping of method Windows.Devices.Custom.CustomDevice.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

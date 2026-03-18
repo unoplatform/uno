@@ -73,16 +73,11 @@ namespace Windows.Media.Devices.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.Core.FrameControlCapabilities.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Devices.Core.FrameControlCapabilities.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Devices.Core.FrameControlCapabilities.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Devices.Core.FrameControlCapabilities.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameControlCapabilities.Exposure.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameControlCapabilities.ExposureCompensation.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameControlCapabilities.Flash.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameControlCapabilities.Focus.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameControlCapabilities.IsoSpeed.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameControlCapabilities.PhotoConfirmationSupported.get
-		// Forced skipping of method Windows.Media.Devices.Core.FrameControlCapabilities.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

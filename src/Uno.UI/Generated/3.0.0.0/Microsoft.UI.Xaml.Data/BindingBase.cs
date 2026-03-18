@@ -10,8 +10,5 @@ namespace Microsoft.UI.Xaml.Data
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Data.BindingBase.BindingBase()
 		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingBase.BindingBase()
-		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingBase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingBase.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingBase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

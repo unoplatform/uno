@@ -33,12 +33,7 @@ namespace Windows.Management.Deployment.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Management.Deployment.Preview.InstalledClassicAppInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Management.Deployment.Preview.InstalledClassicAppInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Management.Deployment.Preview.InstalledClassicAppInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Management.Deployment.Preview.InstalledClassicAppInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Management.Deployment.Preview.InstalledClassicAppInfo.DisplayName.get
 		// Forced skipping of method Windows.Management.Deployment.Preview.InstalledClassicAppInfo.DisplayVersion.get
-		// Forced skipping of method Windows.Management.Deployment.Preview.InstalledClassicAppInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

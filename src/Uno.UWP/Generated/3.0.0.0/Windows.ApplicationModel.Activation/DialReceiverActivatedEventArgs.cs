@@ -103,10 +103,6 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.DialReceiverActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.DialReceiverActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.DialReceiverActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.DialReceiverActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.DialReceiverActivatedEventArgs.AppName.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.DialReceiverActivatedEventArgs.Arguments.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.DialReceiverActivatedEventArgs.CurrentlyShownApplicationViewId.get
@@ -116,7 +112,6 @@ namespace Windows.ApplicationModel.Activation
 		// Forced skipping of method Windows.ApplicationModel.Activation.DialReceiverActivatedEventArgs.TileId.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.DialReceiverActivatedEventArgs.User.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.DialReceiverActivatedEventArgs.ViewSwitcher.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.DialReceiverActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IDialReceiverActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.ILaunchActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs

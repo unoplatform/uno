@@ -10,8 +10,5 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ProgressBarAutomationPeer.ProgressBarAutomationPeer(Microsoft.UI.Xaml.Controls.ProgressBar)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressBarAutomationPeer.ProgressBarAutomationPeer(Microsoft.UI.Xaml.Controls.ProgressBar)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressBarAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressBarAutomationPeer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressBarAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

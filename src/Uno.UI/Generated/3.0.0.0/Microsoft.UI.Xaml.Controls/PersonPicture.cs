@@ -41,8 +41,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PersonPicture.IsGroupProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PersonPicture.PreferSmallImageProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PersonPicture.ProfilePictureProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PersonPicture.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PersonPicture.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PersonPicture.BadgeGlyph.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PersonPicture.BadgeGlyph.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PersonPicture.BadgeImageSource.get
@@ -64,6 +62,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PersonPicture.ProfilePicture.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PersonPicture.ProfilePicture.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PersonPicture.TemplateSettings.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PersonPicture.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

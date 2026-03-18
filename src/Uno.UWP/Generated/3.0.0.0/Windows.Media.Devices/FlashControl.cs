@@ -123,10 +123,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.FlashControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Devices.FlashControl.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Devices.FlashControl.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Devices.FlashControl.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Devices.FlashControl.AssistantLightEnabled.get
 		// Forced skipping of method Windows.Media.Devices.FlashControl.AssistantLightEnabled.set
 		// Forced skipping of method Windows.Media.Devices.FlashControl.AssistantLightSupported.get
@@ -141,6 +137,5 @@ namespace Windows.Media.Devices
 		// Forced skipping of method Windows.Media.Devices.FlashControl.RedEyeReduction.set
 		// Forced skipping of method Windows.Media.Devices.FlashControl.RedEyeReductionSupported.get
 		// Forced skipping of method Windows.Media.Devices.FlashControl.Supported.get
-		// Forced skipping of method Windows.Media.Devices.FlashControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

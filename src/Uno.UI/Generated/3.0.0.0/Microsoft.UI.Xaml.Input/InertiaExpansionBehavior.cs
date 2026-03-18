@@ -10,14 +10,9 @@ namespace Microsoft.UI.Xaml.Input
 	{
 		// Skipping already declared property DesiredDeceleration
 		// Skipping already declared property DesiredExpansion
-		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaExpansionBehavior.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaExpansionBehavior.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaExpansionBehavior.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaExpansionBehavior.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaExpansionBehavior.DesiredDeceleration.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaExpansionBehavior.DesiredDeceleration.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaExpansionBehavior.DesiredExpansion.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaExpansionBehavior.DesiredExpansion.set
-		// Forced skipping of method Microsoft.UI.Xaml.Input.InertiaExpansionBehavior.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

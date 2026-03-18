@@ -27,10 +27,7 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowReceiver.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowReceiver.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowReceiver.ReceivingVisual.get
 		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowReceiver.ReceivingVisual.set
-		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowReceiver.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

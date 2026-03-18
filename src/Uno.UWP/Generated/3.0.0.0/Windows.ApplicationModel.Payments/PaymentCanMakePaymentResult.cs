@@ -26,11 +26,6 @@ namespace Windows.ApplicationModel.Payments
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentCanMakePaymentResult.PaymentCanMakePaymentResult(Windows.ApplicationModel.Payments.PaymentCanMakePaymentResultStatus)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentCanMakePaymentResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentCanMakePaymentResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentCanMakePaymentResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentCanMakePaymentResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentCanMakePaymentResult.Status.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentCanMakePaymentResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

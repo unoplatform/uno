@@ -177,8 +177,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionSpriteShape.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.CompositionSpriteShape.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionSpriteShape.FillBrush.get
 		// Forced skipping of method Windows.UI.Composition.CompositionSpriteShape.FillBrush.set
 		// Forced skipping of method Windows.UI.Composition.CompositionSpriteShape.Geometry.get
@@ -202,6 +200,5 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.CompositionSpriteShape.StrokeStartCap.set
 		// Forced skipping of method Windows.UI.Composition.CompositionSpriteShape.StrokeThickness.get
 		// Forced skipping of method Windows.UI.Composition.CompositionSpriteShape.StrokeThickness.set
-		// Forced skipping of method Windows.UI.Composition.CompositionSpriteShape.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

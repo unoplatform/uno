@@ -33,12 +33,7 @@ namespace Windows.Data.Text
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Data.Text.TextPhoneme.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Data.Text.TextPhoneme.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Data.Text.TextPhoneme.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Data.Text.TextPhoneme.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Data.Text.TextPhoneme.DisplayText.get
 		// Forced skipping of method Windows.Data.Text.TextPhoneme.ReadingText.get
-		// Forced skipping of method Windows.Data.Text.TextPhoneme.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -55,8 +55,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePicker.SelectedDateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePicker.YearFormatProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePicker.YearVisibleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePicker.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePicker.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePicker.DateChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePicker.DateChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePicker.SelectedDateChanged.add
@@ -91,7 +89,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePicker.YearFormat.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePicker.YearVisible.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePicker.YearVisible.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePicker.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.DatePicker.DateChanged
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.DatePicker.SelectedDateChanged
 	}

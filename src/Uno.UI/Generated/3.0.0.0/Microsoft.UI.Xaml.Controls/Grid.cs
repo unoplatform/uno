@@ -49,8 +49,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.RowProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.RowSpacingProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.RowSpanProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.BackgroundSizing.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.BackgroundSizing.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.BorderBrush.get
@@ -67,6 +65,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.RowDefinitions.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.RowSpacing.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.RowSpacing.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Grid.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

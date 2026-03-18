@@ -62,8 +62,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemForegroundConverter.JumpListItemForegroundConverter()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemForegroundConverter.DisabledProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemForegroundConverter.EnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemForegroundConverter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemForegroundConverter.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public object Convert(object value, global::System.Type targetType, object parameter, string language)
@@ -82,7 +80,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemForegroundConverter.Disabled.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemForegroundConverter.Enabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemForegroundConverter.Enabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemForegroundConverter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Data.IValueConverter
 	}
 }

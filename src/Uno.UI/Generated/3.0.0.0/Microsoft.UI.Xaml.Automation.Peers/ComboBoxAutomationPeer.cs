@@ -19,8 +19,6 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property VisualState
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer.ComboBoxAutomationPeer(Microsoft.UI.Xaml.Controls.ComboBox)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer.ComboBoxAutomationPeer(Microsoft.UI.Xaml.Controls.ComboBox)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer.SetValue(string)
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer.Collapse()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer.Expand()
@@ -36,7 +34,6 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer.Minimizable.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer.Value.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer.VisualState.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IValueProvider
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IWindowProvider

@@ -107,10 +107,6 @@ namespace Windows.Storage.FileProperties
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.FileProperties.StorageItemThumbnail.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.FileProperties.StorageItemThumbnail.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.FileProperties.StorageItemThumbnail.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.FileProperties.StorageItemThumbnail.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IInputStream GetInputStreamAt(ulong position)
@@ -177,7 +173,6 @@ namespace Windows.Storage.FileProperties
 		// Forced skipping of method Windows.Storage.FileProperties.StorageItemThumbnail.Size.get
 		// Forced skipping of method Windows.Storage.FileProperties.StorageItemThumbnail.Size.set
 		// Forced skipping of method Windows.Storage.FileProperties.StorageItemThumbnail.Type.get
-		// Forced skipping of method Windows.Storage.FileProperties.StorageItemThumbnail.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Storage.Streams.IRandomAccessStreamWithContentType
 		// Processing: Windows.Storage.Streams.IRandomAccessStream
 		// Processing: System.IDisposable

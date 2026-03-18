@@ -113,10 +113,6 @@ namespace Windows.Services.Maps.Guidance
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoadSegment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoadSegment.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoadSegment.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoadSegment.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoadSegment.Id.get
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoadSegment.IsHighway.get
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoadSegment.IsScenic.get
@@ -127,6 +123,5 @@ namespace Windows.Services.Maps.Guidance
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoadSegment.ShortRoadName.get
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoadSegment.SpeedLimit.get
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoadSegment.TravelTime.get
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoadSegment.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

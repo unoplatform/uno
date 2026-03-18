@@ -10,8 +10,5 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.RatingControlAutomationPeer.RatingControlAutomationPeer(Microsoft.UI.Xaml.Controls.RatingControl)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RatingControlAutomationPeer.RatingControlAutomationPeer(Microsoft.UI.Xaml.Controls.RatingControl)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RatingControlAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RatingControlAutomationPeer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RatingControlAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

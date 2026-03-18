@@ -73,16 +73,11 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastStreamVideoHeader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastStreamVideoHeader.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastStreamVideoHeader.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastStreamVideoHeader.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastStreamVideoHeader.AbsoluteTimestamp.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastStreamVideoHeader.Duration.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastStreamVideoHeader.FrameId.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastStreamVideoHeader.HasDiscontinuity.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastStreamVideoHeader.IsKeyFrame.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastStreamVideoHeader.RelativeTimestamp.get
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastStreamVideoHeader.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

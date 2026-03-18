@@ -33,10 +33,6 @@ namespace Windows.Services.TargetedContent
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentImage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentImage.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentImage.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentImage.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStreamWithContentType> OpenReadAsync()
@@ -46,7 +42,6 @@ namespace Windows.Services.TargetedContent
 #endif
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentImage.Height.get
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentImage.Width.get
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentImage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Storage.Streams.IRandomAccessStreamReference
 	}
 }

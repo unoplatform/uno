@@ -10,10 +10,6 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.DataTemplateSelector.DataTemplateSelector()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DataTemplateSelector.DataTemplateSelector()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DataTemplateSelector.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DataTemplateSelector.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DataTemplateSelector.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DataTemplateSelector.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.DataTemplateSelector.SelectTemplate(object, Microsoft.UI.Xaml.DependencyObject)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.DataTemplateSelector.SelectTemplate(object)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.DataTemplateSelector.SelectTemplateCore(object, Microsoft.UI.Xaml.DependencyObject)
@@ -32,7 +28,6 @@ namespace Microsoft.UI.Xaml.Controls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.DataTemplateSelector", "void DataTemplateSelector.RecycleElement(ElementFactoryRecycleArgs args)");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DataTemplateSelector.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.IElementFactory
 	}
 }

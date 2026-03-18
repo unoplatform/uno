@@ -23,11 +23,6 @@ namespace Windows.System.Diagnostics.Telemetry
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationResult.Status.get
-		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

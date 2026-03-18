@@ -12,15 +12,10 @@ namespace Windows.ApplicationModel.Appointments
 		// Skipping already declared property DisplayName
 		// Skipping already declared method Windows.ApplicationModel.Appointments.AppointmentOrganizer.AppointmentOrganizer()
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentOrganizer.AppointmentOrganizer()
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentOrganizer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentOrganizer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentOrganizer.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentOrganizer.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentOrganizer.Address.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentOrganizer.Address.set
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentOrganizer.DisplayName.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentOrganizer.DisplayName.set
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentOrganizer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Appointments.IAppointmentParticipant
 	}
 }

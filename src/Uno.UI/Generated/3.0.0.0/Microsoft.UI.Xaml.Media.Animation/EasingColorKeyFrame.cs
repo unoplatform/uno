@@ -13,10 +13,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.EasingColorKeyFrame()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.EasingColorKeyFrame()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.EasingFunctionProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.EasingFunction.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.EasingFunction.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EasingColorKeyFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

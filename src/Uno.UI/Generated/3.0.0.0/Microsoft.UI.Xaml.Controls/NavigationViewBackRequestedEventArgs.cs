@@ -8,10 +8,5 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class NavigationViewBackRequestedEventArgs
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewBackRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewBackRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewBackRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewBackRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewBackRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

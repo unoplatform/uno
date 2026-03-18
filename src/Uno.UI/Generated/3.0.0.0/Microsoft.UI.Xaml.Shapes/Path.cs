@@ -13,10 +13,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		// Skipping already declared method Microsoft.UI.Xaml.Shapes.Path.Path()
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Path.Path()
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Path.DataProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Path.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Path.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Path.Data.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Path.Data.set
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Path.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -23,11 +23,6 @@ namespace Windows.ApplicationModel.Contacts.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactRemovedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactRemovedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactRemovedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactRemovedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactRemovedEventArgs.Id.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactRemovedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

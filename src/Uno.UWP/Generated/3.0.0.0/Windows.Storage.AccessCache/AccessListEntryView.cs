@@ -33,10 +33,6 @@ namespace Windows.Storage.AccessCache
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.Count.get
 		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.this[int].get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -47,7 +43,6 @@ namespace Windows.Storage.AccessCache
 		}
 #endif
 		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.System.Collections.Generic.IReadOnlyList<Windows.Storage.AccessCache.AccessListEntry>.get_Item(int)
 		// Processing: System.Collections.Generic.IReadOnlyList<Windows.Storage.AccessCache.AccessListEntry>
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Storage.AccessCache.AccessListEntry>

@@ -25,8 +25,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.EnableDependentAnimationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.FromProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.ToProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.By.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.By.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.EasingFunction.get
@@ -37,6 +35,5 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.From.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.To.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.To.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DoubleAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

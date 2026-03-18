@@ -47,10 +47,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.Count.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.this[int].get
@@ -119,7 +115,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Controls.HubSection>.get_Item(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSectionCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Controls.HubSection>.set_Item(int, Microsoft.UI.Xaml.Controls.HubSection)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Controls.HubSection>

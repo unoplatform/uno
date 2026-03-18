@@ -23,16 +23,11 @@ namespace Windows.ApplicationModel.Appointments
 		// Skipping already declared property MaxCount
 		// Skipping already declared method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.FindAppointmentsOptions()
 		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.FindAppointmentsOptions()
-		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.CalendarIds.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.FetchProperties.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.IncludeHidden.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.IncludeHidden.set
 		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.MaxCount.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.MaxCount.set
-		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

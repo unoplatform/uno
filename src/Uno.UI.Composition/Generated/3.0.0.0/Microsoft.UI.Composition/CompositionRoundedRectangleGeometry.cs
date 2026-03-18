@@ -11,14 +11,11 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property CornerRadius
 		// Skipping already declared property Offset
 		// Skipping already declared property Size
-		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.CornerRadius.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.CornerRadius.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.Offset.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.Offset.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.Size.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.Size.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionRoundedRectangleGeometry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

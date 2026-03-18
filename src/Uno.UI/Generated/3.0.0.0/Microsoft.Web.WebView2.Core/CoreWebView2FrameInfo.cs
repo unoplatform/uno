@@ -63,15 +63,10 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2FrameInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2FrameInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2FrameInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2FrameInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2FrameInfo.FrameId.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2FrameInfo.FrameKind.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2FrameInfo.Name.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2FrameInfo.ParentFrameInfo.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2FrameInfo.Source.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2FrameInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

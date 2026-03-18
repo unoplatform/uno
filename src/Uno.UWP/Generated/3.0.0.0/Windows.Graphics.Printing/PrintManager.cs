@@ -34,13 +34,8 @@ namespace Windows.Graphics.Printing
 			throw new global::System.NotImplementedException("The member bool PrintManager.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrintManager.IsSupported%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.PrintManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintManager.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintManager.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintManager.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintManager.PrintTaskRequested.add
 		// Forced skipping of method Windows.Graphics.Printing.PrintManager.PrintTaskRequested.remove
-		// Forced skipping of method Windows.Graphics.Printing.PrintManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Printing.PrintManager, global::Windows.Graphics.Printing.PrintTaskRequestedEventArgs> PrintTaskRequested

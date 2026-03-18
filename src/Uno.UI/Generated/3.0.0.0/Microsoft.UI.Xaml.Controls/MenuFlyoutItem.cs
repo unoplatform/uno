@@ -26,8 +26,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutItem.IconProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutItem.KeyboardAcceleratorTextOverrideProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutItem.TextProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutItem.Click.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutItem.Click.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutItem.Command.get
@@ -41,7 +39,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutItem.TemplateSettings.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutItem.Text.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutItem.Text.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.MenuFlyoutItem.Click
 	}
 }

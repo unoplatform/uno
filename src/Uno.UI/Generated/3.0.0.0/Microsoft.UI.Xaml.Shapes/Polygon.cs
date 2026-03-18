@@ -36,12 +36,9 @@ namespace Microsoft.UI.Xaml.Shapes
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polygon.Polygon()
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polygon.FillRuleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polygon.PointsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polygon.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polygon.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polygon.FillRule.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polygon.FillRule.set
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polygon.Points.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polygon.Points.set
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polygon.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

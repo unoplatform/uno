@@ -119,10 +119,5 @@ namespace Microsoft.UI.Xaml.Automation
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.NameProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.PositionInSetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.SizeOfSetProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

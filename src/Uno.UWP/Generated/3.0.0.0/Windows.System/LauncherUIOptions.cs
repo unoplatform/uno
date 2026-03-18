@@ -55,16 +55,11 @@ namespace Windows.System
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.LauncherUIOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.LauncherUIOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.LauncherUIOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.LauncherUIOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.LauncherUIOptions.InvocationPoint.get
 		// Forced skipping of method Windows.System.LauncherUIOptions.InvocationPoint.set
 		// Forced skipping of method Windows.System.LauncherUIOptions.PreferredPlacement.get
 		// Forced skipping of method Windows.System.LauncherUIOptions.PreferredPlacement.set
 		// Forced skipping of method Windows.System.LauncherUIOptions.SelectionRect.get
 		// Forced skipping of method Windows.System.LauncherUIOptions.SelectionRect.set
-		// Forced skipping of method Windows.System.LauncherUIOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

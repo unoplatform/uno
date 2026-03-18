@@ -93,10 +93,6 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenCallActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenCallActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenCallActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenCallActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenCallActivatedEventArgs.Arguments.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenCallActivatedEventArgs.CallUI.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenCallActivatedEventArgs.CurrentlyShownApplicationViewId.get
@@ -105,7 +101,6 @@ namespace Windows.ApplicationModel.Activation
 		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenCallActivatedEventArgs.SplashScreen.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenCallActivatedEventArgs.TileId.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenCallActivatedEventArgs.ViewSwitcher.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.LockScreenCallActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.ILockScreenCallActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.ILaunchActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs

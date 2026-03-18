@@ -72,10 +72,6 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.ChapterCue.ChapterCue()
-		// Forced skipping of method Windows.Media.Core.ChapterCue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Core.ChapterCue.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Core.ChapterCue.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Core.ChapterCue.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Core.ChapterCue.Duration.get
 		// Forced skipping of method Windows.Media.Core.ChapterCue.Duration.set
 		// Forced skipping of method Windows.Media.Core.ChapterCue.Id.get
@@ -84,7 +80,6 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.ChapterCue.StartTime.set
 		// Forced skipping of method Windows.Media.Core.ChapterCue.Title.get
 		// Forced skipping of method Windows.Media.Core.ChapterCue.Title.set
-		// Forced skipping of method Windows.Media.Core.ChapterCue.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Core.IMediaCue
 	}
 }

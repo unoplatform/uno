@@ -12,10 +12,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property VerticalChange
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.DragDeltaEventArgs.DragDeltaEventArgs(double, double)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragDeltaEventArgs.DragDeltaEventArgs(double, double)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragDeltaEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragDeltaEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragDeltaEventArgs.HorizontalChange.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragDeltaEventArgs.VerticalChange.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragDeltaEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

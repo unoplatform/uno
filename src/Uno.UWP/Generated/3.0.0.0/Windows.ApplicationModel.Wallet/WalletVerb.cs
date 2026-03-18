@@ -30,12 +30,7 @@ namespace Windows.ApplicationModel.Wallet
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletVerb.WalletVerb(string)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletVerb.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletVerb.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletVerb.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletVerb.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletVerb.Name.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletVerb.Name.set
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletVerb.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

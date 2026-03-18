@@ -37,13 +37,8 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.PanelBasedOptimizationControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Devices.PanelBasedOptimizationControl.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Devices.PanelBasedOptimizationControl.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Devices.PanelBasedOptimizationControl.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Devices.PanelBasedOptimizationControl.IsSupported.get
 		// Forced skipping of method Windows.Media.Devices.PanelBasedOptimizationControl.Panel.get
 		// Forced skipping of method Windows.Media.Devices.PanelBasedOptimizationControl.Panel.set
-		// Forced skipping of method Windows.Media.Devices.PanelBasedOptimizationControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

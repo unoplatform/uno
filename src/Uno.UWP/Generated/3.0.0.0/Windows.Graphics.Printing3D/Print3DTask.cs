@@ -23,10 +23,6 @@ namespace Windows.Graphics.Printing3D
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTask.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTask.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTask.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTask.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTask.Completed.add
 		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTask.Completed.remove
 		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTask.SourceChanged.add
@@ -34,7 +30,6 @@ namespace Windows.Graphics.Printing3D
 		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTask.Submitting.add
 		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTask.Submitting.remove
 		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTask.Source.get
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTask.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Printing3D.Print3DTask, global::Windows.Graphics.Printing3D.Print3DTaskCompletedEventArgs> Completed

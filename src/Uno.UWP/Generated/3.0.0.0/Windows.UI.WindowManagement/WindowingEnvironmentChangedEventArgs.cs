@@ -13,10 +13,5 @@ namespace Windows.UI.WindowManagement
 		{
 		}
 #endif
-		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironmentChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironmentChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironmentChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironmentChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironmentChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

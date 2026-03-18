@@ -157,10 +157,6 @@ namespace Windows.ApplicationModel.UserDataAccounts
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SaveAsync()
@@ -242,6 +238,5 @@ namespace Windows.ApplicationModel.UserDataAccounts
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.ProviderProperties.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.UserDisplayName.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.UserDisplayName.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccount.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

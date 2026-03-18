@@ -53,13 +53,8 @@ namespace Windows.Devices.AllJoyn
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AllJoynServiceInfo> AllJoynServiceInfo.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAllJoynServiceInfo%3E%20AllJoynServiceInfo.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynServiceInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynServiceInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynServiceInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynServiceInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynServiceInfo.ObjectPath.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynServiceInfo.SessionPort.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynServiceInfo.UniqueName.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynServiceInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

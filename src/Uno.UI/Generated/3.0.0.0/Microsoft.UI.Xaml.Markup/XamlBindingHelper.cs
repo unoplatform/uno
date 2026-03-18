@@ -51,10 +51,5 @@ namespace Microsoft.UI.Xaml.Markup
 		// Skipping already declared method Microsoft.UI.Xaml.Markup.XamlBindingHelper.SetPropertyFromUri(object, Microsoft.UI.Xaml.DependencyProperty, System.Uri)
 		// Skipping already declared method Microsoft.UI.Xaml.Markup.XamlBindingHelper.SetPropertyFromObject(object, Microsoft.UI.Xaml.DependencyProperty, object)
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBindingHelper.DataTemplateComponentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBindingHelper.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBindingHelper.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBindingHelper.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBindingHelper.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBindingHelper.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

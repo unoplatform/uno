@@ -142,10 +142,6 @@ namespace Windows.Devices.SmartCards
 		}
 #endif
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep.SmartCardCryptogramPlacementStep()
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep.Algorithm.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep.Algorithm.set
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep.ChainedOutputStep.get
@@ -164,6 +160,5 @@ namespace Windows.Devices.SmartCards
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep.SourceData.set
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep.TemplateOffset.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep.TemplateOffset.set
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramPlacementStep.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

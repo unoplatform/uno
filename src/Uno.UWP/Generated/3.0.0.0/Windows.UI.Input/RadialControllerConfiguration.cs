@@ -80,10 +80,6 @@ namespace Windows.UI.Input
 		// Forced skipping of method Windows.UI.Input.RadialControllerConfiguration.AppController.set
 		// Forced skipping of method Windows.UI.Input.RadialControllerConfiguration.IsAppControllerEnabled.get
 		// Forced skipping of method Windows.UI.Input.RadialControllerConfiguration.IsAppControllerEnabled.set
-		// Forced skipping of method Windows.UI.Input.RadialControllerConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.RadialControllerConfiguration.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Input.RadialControllerConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Input.RadialControllerConfiguration.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetDefaultMenuItems(global::System.Collections.Generic.IEnumerable<global::Windows.UI.Input.RadialControllerSystemMenuItemKind> buttons)
@@ -109,6 +105,5 @@ namespace Windows.UI.Input
 		// Forced skipping of method Windows.UI.Input.RadialControllerConfiguration.ActiveControllerWhenMenuIsSuppressed.set
 		// Forced skipping of method Windows.UI.Input.RadialControllerConfiguration.IsMenuSuppressed.get
 		// Forced skipping of method Windows.UI.Input.RadialControllerConfiguration.IsMenuSuppressed.set
-		// Forced skipping of method Windows.UI.Input.RadialControllerConfiguration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

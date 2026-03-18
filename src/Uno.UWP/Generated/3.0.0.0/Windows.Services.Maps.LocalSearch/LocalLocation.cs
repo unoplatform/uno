@@ -113,10 +113,6 @@ namespace Windows.Services.Maps.LocalSearch
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocation.Address.get
 		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocation.Category.get
 		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocation.DataAttribution.get
@@ -127,6 +123,5 @@ namespace Windows.Services.Maps.LocalSearch
 		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocation.PhoneNumber.get
 		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocation.Point.get
 		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocation.RatingInfo.get
-		// Forced skipping of method Windows.Services.Maps.LocalSearch.LocalLocation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

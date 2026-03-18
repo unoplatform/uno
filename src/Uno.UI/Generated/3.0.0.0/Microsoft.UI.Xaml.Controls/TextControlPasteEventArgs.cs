@@ -9,12 +9,7 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class TextControlPasteEventArgs
 	{
 		// Skipping already declared property Handled
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlPasteEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlPasteEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlPasteEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlPasteEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlPasteEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlPasteEventArgs.Handled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlPasteEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -44,14 +44,9 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.Vector3Transition()
-		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.Components.get
 		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.Components.set
 		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.Duration.get
 		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.Duration.set
-		// Forced skipping of method Microsoft.UI.Xaml.Vector3Transition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -47,14 +47,9 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.CharacterReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.CharacterReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.CharacterReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Input.CharacterReceivedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Input.CharacterReceivedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Input.CharacterReceivedEventArgs.Handled.set
 		// Forced skipping of method Microsoft.UI.Input.CharacterReceivedEventArgs.KeyCode.get
 		// Forced skipping of method Microsoft.UI.Input.CharacterReceivedEventArgs.KeyStatus.get
-		// Forced skipping of method Microsoft.UI.Input.CharacterReceivedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

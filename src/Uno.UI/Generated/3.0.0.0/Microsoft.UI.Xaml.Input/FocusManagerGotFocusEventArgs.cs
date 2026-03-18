@@ -10,12 +10,7 @@ namespace Microsoft.UI.Xaml.Input
 	{
 		// Skipping already declared property CorrelationId
 		// Skipping already declared property NewFocusedElement
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManagerGotFocusEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManagerGotFocusEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManagerGotFocusEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManagerGotFocusEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManagerGotFocusEventArgs.CorrelationId.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManagerGotFocusEventArgs.NewFocusedElement.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManagerGotFocusEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -21,10 +21,6 @@ namespace Windows.Storage
 		// Skipping already declared property Locality
 		// Skipping already declared property Name
 		// Skipping already declared property Values
-		// Forced skipping of method Windows.Storage.ApplicationDataContainer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.ApplicationDataContainer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.ApplicationDataContainer.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.ApplicationDataContainer.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.ApplicationDataContainer CreateContainer(string name, global::Windows.Storage.ApplicationDataCreateDisposition disposition)
@@ -43,6 +39,5 @@ namespace Windows.Storage
 		// Forced skipping of method Windows.Storage.ApplicationDataContainer.Locality.get
 		// Forced skipping of method Windows.Storage.ApplicationDataContainer.Name.get
 		// Forced skipping of method Windows.Storage.ApplicationDataContainer.Values.get
-		// Forced skipping of method Windows.Storage.ApplicationDataContainer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

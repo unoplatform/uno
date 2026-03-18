@@ -123,10 +123,6 @@ namespace Windows.Devices.WiFi
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.WiFi.WiFiAvailableNetwork.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.WiFi.WiFiAvailableNetwork.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.WiFi.WiFiAvailableNetwork.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.WiFi.WiFiAvailableNetwork.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.WiFi.WiFiAvailableNetwork.BeaconInterval.get
 		// Forced skipping of method Windows.Devices.WiFi.WiFiAvailableNetwork.Bssid.get
 		// Forced skipping of method Windows.Devices.WiFi.WiFiAvailableNetwork.ChannelCenterFrequencyInKilohertz.get
@@ -138,6 +134,5 @@ namespace Windows.Devices.WiFi
 		// Forced skipping of method Windows.Devices.WiFi.WiFiAvailableNetwork.SignalBars.get
 		// Forced skipping of method Windows.Devices.WiFi.WiFiAvailableNetwork.Ssid.get
 		// Forced skipping of method Windows.Devices.WiFi.WiFiAvailableNetwork.Uptime.get
-		// Forced skipping of method Windows.Devices.WiFi.WiFiAvailableNetwork.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

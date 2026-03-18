@@ -284,8 +284,6 @@ namespace Microsoft.UI.Xaml.Documents
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.KeyTipVerticalOffsetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.LanguageProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.TextDecorationsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public object FindName(string name)
@@ -349,7 +347,6 @@ namespace Microsoft.UI.Xaml.Documents
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.TextDecorations.set
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.XamlRoot.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.XamlRoot.set
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Documents.TextElement, global::Microsoft.UI.Xaml.Input.AccessKeyDisplayDismissedEventArgs> AccessKeyDisplayDismissed

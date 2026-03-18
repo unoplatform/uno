@@ -79,14 +79,9 @@ namespace Windows.Media.Audio
 			throw new global::System.NotImplementedException("The member AudioStateMonitor AudioStateMonitor.CreateForCaptureMonitoringWithCategoryAndDeviceId(MediaCategory category, string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioStateMonitor%20AudioStateMonitor.CreateForCaptureMonitoringWithCategoryAndDeviceId%28MediaCategory%20category%2C%20string%20deviceId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioStateMonitor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Audio.AudioStateMonitor.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Audio.AudioStateMonitor.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Audio.AudioStateMonitor.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Audio.AudioStateMonitor.SoundLevelChanged.add
 		// Forced skipping of method Windows.Media.Audio.AudioStateMonitor.SoundLevelChanged.remove
 		// Forced skipping of method Windows.Media.Audio.AudioStateMonitor.SoundLevel.get
-		// Forced skipping of method Windows.Media.Audio.AudioStateMonitor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Audio.AudioStateMonitor, object> SoundLevelChanged

@@ -10,12 +10,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property Element
 		// Skipping already declared property Index
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementPreparedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementPreparedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementPreparedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementPreparedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementPreparedEventArgs.Element.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementPreparedEventArgs.Index.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementPreparedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -73,10 +73,6 @@ namespace Windows.Management.Policies
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool GetBoolean()
@@ -120,7 +116,6 @@ namespace Windows.Management.Policies
 		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.Kind.get
 		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.Name.get
 		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.User.get
-		// Forced skipping of method Windows.Management.Policies.NamedPolicyData.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Management.Policies.NamedPolicyData, object> Changed

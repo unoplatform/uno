@@ -111,10 +111,6 @@ namespace Windows.Media.SpeechSynthesis
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.AppendedSilence.get
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.AppendedSilence.set
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.AudioPitch.get
@@ -129,6 +125,5 @@ namespace Windows.Media.SpeechSynthesis
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.PunctuationSilence.set
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.SpeakingRate.get
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.SpeakingRate.set
-		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

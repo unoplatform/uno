@@ -43,13 +43,8 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.HorizontalDilutionOfPrecision.get
 		// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.PositionDilutionOfPrecision.get
 		// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.VerticalDilutionOfPrecision.get
-		// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

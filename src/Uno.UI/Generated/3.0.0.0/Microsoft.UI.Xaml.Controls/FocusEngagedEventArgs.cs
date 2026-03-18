@@ -9,10 +9,7 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class FocusEngagedEventArgs : global::Microsoft.UI.Xaml.RoutedEventArgs
 	{
 		// Skipping already declared property Handled
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FocusEngagedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FocusEngagedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FocusEngagedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FocusEngagedEventArgs.Handled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FocusEngagedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

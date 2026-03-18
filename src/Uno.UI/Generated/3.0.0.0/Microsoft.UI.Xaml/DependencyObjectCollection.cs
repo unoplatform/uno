@@ -13,8 +13,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.DependencyObjectCollection.DependencyObjectCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.DependencyObjectCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.VectorChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.VectorChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.Count.get
@@ -31,7 +29,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared method Microsoft.UI.Xaml.DependencyObjectCollection.Remove(Microsoft.UI.Xaml.DependencyObject)
 		// Skipping already declared method Microsoft.UI.Xaml.DependencyObjectCollection.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.DependencyObject>.get_Item(int)
 		// Forced skipping of method Microsoft.UI.Xaml.DependencyObjectCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.DependencyObject>.set_Item(int, Microsoft.UI.Xaml.DependencyObject)
 		// Skipping already declared event Microsoft.UI.Xaml.DependencyObjectCollection.VectorChanged

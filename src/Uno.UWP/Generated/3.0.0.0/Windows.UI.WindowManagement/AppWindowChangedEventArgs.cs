@@ -93,10 +93,6 @@ namespace Windows.UI.WindowManagement
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.DidAvailableWindowPresentationsChange.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.DidDisplayRegionsChange.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.DidFrameChange.get
@@ -105,6 +101,5 @@ namespace Windows.UI.WindowManagement
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.DidVisibilityChange.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.DidWindowPresentationChange.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.DidWindowingEnvironmentChange.get
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

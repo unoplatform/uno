@@ -65,10 +65,6 @@ namespace Windows.ApplicationModel.AppService
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StatelessAppServiceResponse> AppServiceConnection.SendStatelessMessageAsync(AppServiceConnection connection, RemoteSystemConnectionRequest connectionRequest, ValueSet message) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStatelessAppServiceResponse%3E%20AppServiceConnection.SendStatelessMessageAsync%28AppServiceConnection%20connection%2C%20RemoteSystemConnectionRequest%20connectionRequest%2C%20ValueSet%20message%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceConnection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceConnection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceConnection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceConnection.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.AppService.AppServiceConnectionStatus> OpenAsync()
@@ -107,7 +103,6 @@ namespace Windows.ApplicationModel.AppService
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceConnection.PackageFamilyName.set
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceConnection.User.get
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceConnection.User.set
-		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceConnection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.AppService.AppServiceConnection, global::Windows.ApplicationModel.AppService.AppServiceRequestReceivedEventArgs> RequestReceived

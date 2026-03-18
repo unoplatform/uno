@@ -13,10 +13,6 @@ namespace Windows.ApplicationModel.DataTransfer
 		// Skipping already declared property ResourceMap
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DataPackage.DataPackage()
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.DataPackage()
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DataPackage.GetView()
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DataPackage.SetData(string, object)
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DataPackage.SetDataProvider(string, Windows.ApplicationModel.DataTransfer.DataProviderHandler)
@@ -41,7 +37,6 @@ namespace Windows.ApplicationModel.DataTransfer
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.RequestedOperation.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.RequestedOperation.set
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.ResourceMap.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Windows.ApplicationModel.DataTransfer.DataPackage.Destroyed
 		// Skipping already declared event Windows.ApplicationModel.DataTransfer.DataPackage.OperationCompleted
 		// Skipping already declared event Windows.ApplicationModel.DataTransfer.DataPackage.ShareCompleted

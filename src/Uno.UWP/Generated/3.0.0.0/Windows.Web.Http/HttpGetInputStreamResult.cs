@@ -63,10 +63,6 @@ namespace Windows.Web.Http
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.HttpGetInputStreamResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Web.Http.HttpGetInputStreamResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Web.Http.HttpGetInputStreamResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Web.Http.HttpGetInputStreamResult.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -86,7 +82,6 @@ namespace Windows.Web.Http
 		// Forced skipping of method Windows.Web.Http.HttpGetInputStreamResult.ResponseMessage.get
 		// Forced skipping of method Windows.Web.Http.HttpGetInputStreamResult.Succeeded.get
 		// Forced skipping of method Windows.Web.Http.HttpGetInputStreamResult.Value.get
-		// Forced skipping of method Windows.Web.Http.HttpGetInputStreamResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

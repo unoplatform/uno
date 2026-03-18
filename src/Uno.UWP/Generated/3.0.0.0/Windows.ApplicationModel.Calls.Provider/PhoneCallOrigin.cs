@@ -86,10 +86,6 @@ namespace Windows.ApplicationModel.Calls.Provider
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.PhoneCallOrigin()
-		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.Category.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.Category.set
 		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.CategoryDescription.get
@@ -100,6 +96,5 @@ namespace Windows.ApplicationModel.Calls.Provider
 		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.DisplayPicture.set
 		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.Location.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.Location.set
-		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

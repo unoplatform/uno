@@ -54,10 +54,6 @@ namespace Windows.Globalization
 		// Forced skipping of method Windows.Globalization.Calendar.Calendar(System.Collections.Generic.IEnumerable<string>, string, string)
 		// Skipping already declared method Windows.Globalization.Calendar.Calendar(System.Collections.Generic.IEnumerable<string>, string, string, string)
 		// Forced skipping of method Windows.Globalization.Calendar.Calendar(System.Collections.Generic.IEnumerable<string>, string, string, string)
-		// Forced skipping of method Windows.Globalization.Calendar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Globalization.Calendar.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Globalization.Calendar.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Globalization.Calendar.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.Globalization.Calendar.Clone()
 		// Skipping already declared method Windows.Globalization.Calendar.SetToMin()
 		// Skipping already declared method Windows.Globalization.Calendar.SetToMax()
@@ -160,6 +156,5 @@ namespace Windows.Globalization
 		// Forced skipping of method Windows.Globalization.Calendar.Second.set
 		// Forced skipping of method Windows.Globalization.Calendar.Year.get
 		// Forced skipping of method Windows.Globalization.Calendar.Year.set
-		// Forced skipping of method Windows.Globalization.Calendar.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

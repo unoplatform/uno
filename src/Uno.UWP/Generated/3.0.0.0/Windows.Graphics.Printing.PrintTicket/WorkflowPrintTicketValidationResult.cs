@@ -33,12 +33,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult.ExtendedError.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult.Validated.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicketValidationResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

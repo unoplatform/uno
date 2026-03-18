@@ -29,10 +29,5 @@ namespace Windows.Devices
 #endif
 		// Forced skipping of method Windows.Devices.LowLevelDevicesController.DefaultProvider.get
 		// Forced skipping of method Windows.Devices.LowLevelDevicesController.DefaultProvider.set
-		// Forced skipping of method Windows.Devices.LowLevelDevicesController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.LowLevelDevicesController.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.LowLevelDevicesController.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.LowLevelDevicesController.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Windows.Devices.LowLevelDevicesController.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

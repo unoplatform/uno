@@ -64,17 +64,12 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectDefinition.FaceDetectionEffectDefinition()
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectDefinition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectDefinition.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectDefinition.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectDefinition.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectDefinition.ActivatableClassId.get
 		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectDefinition.DetectionMode.get
 		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectDefinition.DetectionMode.set
 		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectDefinition.Properties.get
 		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectDefinition.SynchronousDetectionEnabled.get
 		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectDefinition.SynchronousDetectionEnabled.set
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffectDefinition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Effects.IVideoEffectDefinition
 	}
 }

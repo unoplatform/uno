@@ -70,10 +70,6 @@ namespace Windows.Graphics.Imaging
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.BitmapPropertySet()
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.Keys.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.Values.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.Count.get
@@ -145,7 +141,6 @@ namespace Windows.Graphics.Imaging
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapPropertySet.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.Collections.Generic.IDictionary<string, Windows.Graphics.Imaging.BitmapTypedValue>
 		// Processing: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.Graphics.Imaging.BitmapTypedValue>>
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

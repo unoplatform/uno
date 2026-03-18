@@ -16,11 +16,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryChangeTrackerTrigger.StorageLibraryChangeTrackerTrigger(Windows.Storage.StorageLibraryChangeTracker)
-		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryChangeTrackerTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryChangeTrackerTrigger.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryChangeTrackerTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryChangeTrackerTrigger.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryChangeTrackerTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger
 	}
 }

@@ -16,8 +16,5 @@ namespace Windows.UI.WindowManagement
 		}
 #endif
 		// Forced skipping of method Windows.UI.WindowManagement.DefaultPresentationConfiguration.DefaultPresentationConfiguration()
-		// Forced skipping of method Windows.UI.WindowManagement.DefaultPresentationConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.WindowManagement.DefaultPresentationConfiguration.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.WindowManagement.DefaultPresentationConfiguration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

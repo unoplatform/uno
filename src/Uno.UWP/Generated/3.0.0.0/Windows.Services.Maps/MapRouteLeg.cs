@@ -83,10 +83,6 @@ namespace Windows.Services.Maps
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.BoundingBox.get
 		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.DurationWithoutTraffic.get
 		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.EstimatedDuration.get
@@ -94,6 +90,5 @@ namespace Windows.Services.Maps
 		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.Maneuvers.get
 		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.Path.get
 		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.TrafficCongestion.get
-		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

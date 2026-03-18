@@ -33,12 +33,7 @@ namespace Windows.ApplicationModel.Payments
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestSubmitResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestSubmitResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestSubmitResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestSubmitResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestSubmitResult.Response.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestSubmitResult.Status.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestSubmitResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -19,13 +19,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.IconSourceProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.TemplateSettingsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.ValueProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.IconSource.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.IconSource.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.TemplateSettings.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.Value.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.Value.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBadge.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

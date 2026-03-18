@@ -39,10 +39,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PaneThemeTransition.PaneThemeTransition()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PaneThemeTransition.EdgeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PaneThemeTransition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PaneThemeTransition.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PaneThemeTransition.Edge.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PaneThemeTransition.Edge.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PaneThemeTransition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

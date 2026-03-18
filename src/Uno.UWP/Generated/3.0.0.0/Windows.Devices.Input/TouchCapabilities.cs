@@ -36,12 +36,7 @@ namespace Windows.Devices.Input
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Input.TouchCapabilities.TouchCapabilities()
-		// Forced skipping of method Windows.Devices.Input.TouchCapabilities.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Input.TouchCapabilities.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Input.TouchCapabilities.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Input.TouchCapabilities.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Input.TouchCapabilities.Contacts.get
 		// Forced skipping of method Windows.Devices.Input.TouchCapabilities.TouchPresent.get
-		// Forced skipping of method Windows.Devices.Input.TouchCapabilities.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

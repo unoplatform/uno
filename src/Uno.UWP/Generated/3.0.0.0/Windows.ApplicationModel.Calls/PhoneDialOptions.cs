@@ -100,10 +100,6 @@ namespace Windows.ApplicationModel.Calls
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneDialOptions.PhoneDialOptions()
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneDialOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneDialOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneDialOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneDialOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneDialOptions.AudioEndpoint.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneDialOptions.AudioEndpoint.set
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneDialOptions.Contact.get
@@ -116,6 +112,5 @@ namespace Windows.ApplicationModel.Calls
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneDialOptions.Media.set
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneDialOptions.Number.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneDialOptions.Number.set
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneDialOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -69,17 +69,12 @@ namespace Windows.UI.ApplicationSettings
 #endif
 		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.SettingsCommand(object, string, Windows.UI.Popups.UICommandInvokedHandler)
 		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.AccountsCommand.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.Id.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.Id.set
 		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.Invoked.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.Invoked.set
 		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.Label.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.Label.set
-		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.UI.Popups.IUICommand
 	}
 }

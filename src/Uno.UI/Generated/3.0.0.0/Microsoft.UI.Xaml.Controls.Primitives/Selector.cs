@@ -30,8 +30,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Selector.SelectedItemProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Selector.SelectedValuePathProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Selector.SelectedValueProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Selector.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Selector.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Selector.SelectionChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Selector.SelectionChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Selector.IsSynchronizedWithCurrentItem.get
@@ -44,7 +42,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Selector.SelectedValue.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Selector.SelectedValuePath.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Selector.SelectedValuePath.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Selector.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.Selector.SelectionChanged
 	}
 }

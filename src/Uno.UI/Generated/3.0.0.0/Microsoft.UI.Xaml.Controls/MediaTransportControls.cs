@@ -85,8 +85,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.IsZoomButtonVisibleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.IsZoomEnabledProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.ShowAndHideAutomaticallyProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.MediaTransportControls.Show()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.MediaTransportControls.Hide()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.ThumbnailRequested.add
@@ -141,7 +139,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.IsZoomEnabled.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.ShowAndHideAutomatically.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.ShowAndHideAutomatically.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControls.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.MediaTransportControls, global::Microsoft.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs> ThumbnailRequested

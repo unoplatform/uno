@@ -16,14 +16,11 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.SelectorBar()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.ItemsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.SelectedItemProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.SelectionChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.SelectionChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.Items.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.SelectedItem.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.SelectedItem.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBar.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.SelectorBar.SelectionChanged
 	}
 }

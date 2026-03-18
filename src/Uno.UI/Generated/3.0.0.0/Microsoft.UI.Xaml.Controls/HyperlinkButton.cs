@@ -13,10 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.HyperlinkButton.HyperlinkButton()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HyperlinkButton.HyperlinkButton()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HyperlinkButton.NavigateUriProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HyperlinkButton.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HyperlinkButton.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HyperlinkButton.NavigateUri.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HyperlinkButton.NavigateUri.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HyperlinkButton.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

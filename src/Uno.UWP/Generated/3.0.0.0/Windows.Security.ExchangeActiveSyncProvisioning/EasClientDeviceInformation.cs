@@ -18,10 +18,6 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		// Skipping already declared property SystemSku
 		// Skipping already declared method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.EasClientDeviceInformation()
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.EasClientDeviceInformation()
-		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.FriendlyName.get
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.Id.get
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.OperatingSystem.get
@@ -30,6 +26,5 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.SystemManufacturer.get
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.SystemProductName.get
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.SystemSku.get
-		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

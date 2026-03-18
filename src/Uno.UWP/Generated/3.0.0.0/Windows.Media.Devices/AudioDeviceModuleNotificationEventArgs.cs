@@ -33,12 +33,7 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.AudioDeviceModuleNotificationEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Devices.AudioDeviceModuleNotificationEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Devices.AudioDeviceModuleNotificationEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Devices.AudioDeviceModuleNotificationEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Devices.AudioDeviceModuleNotificationEventArgs.Module.get
 		// Forced skipping of method Windows.Media.Devices.AudioDeviceModuleNotificationEventArgs.NotificationData.get
-		// Forced skipping of method Windows.Media.Devices.AudioDeviceModuleNotificationEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

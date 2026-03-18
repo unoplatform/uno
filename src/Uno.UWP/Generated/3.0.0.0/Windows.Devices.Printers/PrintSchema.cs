@@ -13,10 +13,6 @@ namespace Windows.Devices.Printers
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Printers.PrintSchema.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Printers.PrintSchema.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Printers.PrintSchema.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Printers.PrintSchema.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStreamWithContentType> GetDefaultPrintTicketAsync()
@@ -38,6 +34,5 @@ namespace Windows.Devices.Printers
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStreamWithContentType> PrintSchema.MergeAndValidateWithDefaultPrintTicketAsync(IRandomAccessStreamWithContentType deltaTicket) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIRandomAccessStreamWithContentType%3E%20PrintSchema.MergeAndValidateWithDefaultPrintTicketAsync%28IRandomAccessStreamWithContentType%20deltaTicket%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Printers.PrintSchema.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

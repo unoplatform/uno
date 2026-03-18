@@ -191,10 +191,6 @@ namespace Windows.UI.StartScreen
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.BackgroundColor.get
 		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.BackgroundColor.set
 		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.ForegroundText.get
@@ -220,6 +216,5 @@ namespace Windows.UI.StartScreen
 		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Square71x71Logo.set
 		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Wide310x150Logo.get
 		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.Wide310x150Logo.set
-		// Forced skipping of method Windows.UI.StartScreen.SecondaryTileVisualElements.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

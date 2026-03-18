@@ -13,10 +13,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.PathFigureCollection.PathFigureCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.PathFigureCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.Count.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.this[int].get
@@ -31,7 +27,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared method Microsoft.UI.Xaml.Media.PathFigureCollection.Remove(Microsoft.UI.Xaml.Media.PathFigure)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.PathFigureCollection.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.PathFigure>.get_Item(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathFigureCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.PathFigure>.set_Item(int, Microsoft.UI.Xaml.Media.PathFigure)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.PathFigure>

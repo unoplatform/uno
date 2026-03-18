@@ -122,8 +122,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.SlideInAnimationGroupProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.TitleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.TitleTemplateProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.PivotItemLoaded.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.PivotItemLoaded.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.PivotItemLoading.add
@@ -158,7 +156,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.Title.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.TitleTemplate.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.TitleTemplate.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Pivot.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Pivot.PivotItemLoaded
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Pivot.PivotItemLoading
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Pivot.PivotItemUnloaded

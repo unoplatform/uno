@@ -41,10 +41,6 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.FaceDetected.add
 		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.FaceDetected.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -58,7 +54,6 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.DesiredDetectionInterval.set
 		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.Enabled.get
 		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.Enabled.set
-		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.FaceDetectionEffect, global::Windows.Media.Core.FaceDetectedEventArgs> FaceDetected

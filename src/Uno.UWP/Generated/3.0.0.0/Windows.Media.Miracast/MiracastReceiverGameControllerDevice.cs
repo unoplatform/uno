@@ -61,10 +61,6 @@ namespace Windows.Media.Miracast
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.Changed.add
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.Changed.remove
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.IsRequestedByTransmitter.get
@@ -73,7 +69,6 @@ namespace Windows.Media.Miracast
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.Mode.set
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.TransmitInput.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.TransmitInput.set
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverGameControllerDevice.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Miracast.MiracastReceiverGameControllerDevice, object> Changed

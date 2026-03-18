@@ -20,10 +20,6 @@ namespace Windows.Web.Http.Diagnostics
 			throw new global::System.NotImplementedException("The member HttpDiagnosticProvider HttpDiagnosticProvider.CreateFromProcessDiagnosticInfo(ProcessDiagnosticInfo processDiagnosticInfo) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpDiagnosticProvider%20HttpDiagnosticProvider.CreateFromProcessDiagnosticInfo%28ProcessDiagnosticInfo%20processDiagnosticInfo%29");
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProvider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProvider.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProvider.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProvider.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -44,7 +40,6 @@ namespace Windows.Web.Http.Diagnostics
 		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProvider.RequestSent.remove
 		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProvider.ResponseReceived.add
 		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProvider.ResponseReceived.remove
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProvider.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.Http.Diagnostics.HttpDiagnosticProvider, global::Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestResponseCompletedEventArgs> RequestResponseCompleted

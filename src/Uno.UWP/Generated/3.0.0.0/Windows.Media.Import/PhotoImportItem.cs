@@ -147,10 +147,6 @@ namespace Windows.Media.Import
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Import.PhotoImportItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportItem.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportItem.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportItem.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportItem.ContentType.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportItem.Date.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportItem.DeletedFileNames.get
@@ -165,6 +161,5 @@ namespace Windows.Media.Import
 		// Forced skipping of method Windows.Media.Import.PhotoImportItem.SizeInBytes.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportItem.Thumbnail.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportItem.VideoSegments.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

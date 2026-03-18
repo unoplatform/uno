@@ -10,12 +10,9 @@ namespace Microsoft.UI.Composition
 	{
 		// Skipping already declared property Color
 		// Skipping already declared property Offset
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.Color.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.Color.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.Offset.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.Offset.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorGradientStop.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -13,10 +13,7 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared method Microsoft.UI.Xaml.Media.RectangleGeometry.RectangleGeometry()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RectangleGeometry.RectangleGeometry()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RectangleGeometry.RectProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.RectangleGeometry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.RectangleGeometry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RectangleGeometry.Rect.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RectangleGeometry.Rect.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.RectangleGeometry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

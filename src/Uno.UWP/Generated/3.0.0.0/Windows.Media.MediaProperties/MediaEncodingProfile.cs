@@ -142,10 +142,6 @@ namespace Windows.Media.MediaProperties
 			throw new global::System.NotImplementedException("The member MediaEncodingProfile MediaEncodingProfile.CreateHevc(VideoEncodingQuality quality) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaEncodingProfile%20MediaEncodingProfile.CreateHevc%28VideoEncodingQuality%20quality%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingProfile.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingProfile.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingProfile.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingProfile.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetAudioTracks(global::System.Collections.Generic.IEnumerable<global::Windows.Media.Core.AudioStreamDescriptor> value)
@@ -194,6 +190,5 @@ namespace Windows.Media.MediaProperties
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingProfile.Container.set
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingProfile.Video.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingProfile.Video.set
-		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingProfile.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

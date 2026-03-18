@@ -97,8 +97,6 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.Orientation.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.Orientation.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.RotationAngle.get
@@ -111,6 +109,5 @@ namespace Microsoft.UI.Composition.Scenes
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.Scale.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.Translation.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.Translation.set
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

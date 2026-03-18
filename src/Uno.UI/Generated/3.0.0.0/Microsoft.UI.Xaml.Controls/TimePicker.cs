@@ -31,8 +31,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.MinuteIncrementProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.SelectedTimeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.TimeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.SelectedTimeChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.SelectedTimeChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.TimeChanged.add
@@ -51,7 +49,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.SelectedTime.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.Time.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.Time.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TimePicker.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TimePicker.SelectedTimeChanged
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TimePicker.TimeChanged
 	}

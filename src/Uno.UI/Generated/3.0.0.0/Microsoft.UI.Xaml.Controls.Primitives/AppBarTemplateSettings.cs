@@ -18,8 +18,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property NegativeCompactVerticalDelta
 		// Skipping already declared property NegativeHiddenVerticalDelta
 		// Skipping already declared property NegativeMinimalVerticalDelta
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.ClipRect.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.CompactRootMargin.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.CompactVerticalDelta.get
@@ -30,6 +28,5 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.NegativeCompactVerticalDelta.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.NegativeHiddenVerticalDelta.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.NegativeMinimalVerticalDelta.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -53,14 +53,9 @@ namespace Windows.Networking.PushNotifications
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.PushNotifications.RawNotification.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.PushNotifications.RawNotification.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.PushNotifications.RawNotification.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.PushNotifications.RawNotification.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.PushNotifications.RawNotification.ChannelId.get
 		// Forced skipping of method Windows.Networking.PushNotifications.RawNotification.Content.get
 		// Forced skipping of method Windows.Networking.PushNotifications.RawNotification.ContentBytes.get
 		// Forced skipping of method Windows.Networking.PushNotifications.RawNotification.Headers.get
-		// Forced skipping of method Windows.Networking.PushNotifications.RawNotification.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

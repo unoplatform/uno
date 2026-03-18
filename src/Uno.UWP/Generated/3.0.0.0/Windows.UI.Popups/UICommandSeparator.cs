@@ -13,17 +13,12 @@ namespace Windows.UI.Popups
 		// Skipping already declared property Label
 		// Skipping already declared method Windows.UI.Popups.UICommandSeparator.UICommandSeparator()
 		// Forced skipping of method Windows.UI.Popups.UICommandSeparator.UICommandSeparator()
-		// Forced skipping of method Windows.UI.Popups.UICommandSeparator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Popups.UICommandSeparator.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Popups.UICommandSeparator.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Popups.UICommandSeparator.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Popups.UICommandSeparator.Id.get
 		// Forced skipping of method Windows.UI.Popups.UICommandSeparator.Id.set
 		// Forced skipping of method Windows.UI.Popups.UICommandSeparator.Invoked.get
 		// Forced skipping of method Windows.UI.Popups.UICommandSeparator.Invoked.set
 		// Forced skipping of method Windows.UI.Popups.UICommandSeparator.Label.get
 		// Forced skipping of method Windows.UI.Popups.UICommandSeparator.Label.set
-		// Forced skipping of method Windows.UI.Popups.UICommandSeparator.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.UI.Popups.IUICommand
 	}
 }

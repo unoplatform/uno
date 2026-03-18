@@ -82,10 +82,6 @@ namespace Windows.Networking.Vpn
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.VpnCustomCheckBox()
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.Bordered.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.Bordered.set
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.Checked.get
@@ -95,7 +91,6 @@ namespace Windows.Networking.Vpn
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.InitialCheckState.set
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.Label.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.Label.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Networking.Vpn.IVpnCustomPrompt
 	}
 }

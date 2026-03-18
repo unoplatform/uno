@@ -9,11 +9,6 @@ namespace Windows.Media.SpeechRecognition
 	public partial class SpeechRecognizerStateChangedEventArgs
 	{
 		// Skipping already declared property State
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerStateChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerStateChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerStateChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerStateChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerStateChangedEventArgs.State.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerStateChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

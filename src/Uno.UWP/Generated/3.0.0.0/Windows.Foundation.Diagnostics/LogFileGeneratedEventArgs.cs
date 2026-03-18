@@ -23,11 +23,6 @@ namespace Windows.Foundation.Diagnostics
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Foundation.Diagnostics.LogFileGeneratedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Foundation.Diagnostics.LogFileGeneratedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Foundation.Diagnostics.LogFileGeneratedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Foundation.Diagnostics.LogFileGeneratedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Foundation.Diagnostics.LogFileGeneratedEventArgs.File.get
-		// Forced skipping of method Windows.Foundation.Diagnostics.LogFileGeneratedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

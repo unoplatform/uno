@@ -132,8 +132,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.IsZoomedInViewActiveProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ZoomedInViewProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ZoomedOutViewProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ToggleActiveView()
@@ -155,7 +153,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ZoomedInView.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ZoomedOutView.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.ZoomedOutView.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoom.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Microsoft.UI.Xaml.Controls.SemanticZoomViewChangedEventHandler ViewChangeCompleted

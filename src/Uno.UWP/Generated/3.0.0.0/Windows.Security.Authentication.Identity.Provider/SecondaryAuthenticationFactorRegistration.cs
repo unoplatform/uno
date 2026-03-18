@@ -69,10 +69,6 @@ namespace Windows.Security.Authentication.Identity.Provider
 			throw new global::System.NotImplementedException("The member IAsyncAction SecondaryAuthenticationFactorRegistration.UpdateDeviceConfigurationDataAsync(string deviceId, IBuffer deviceConfigurationData) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20SecondaryAuthenticationFactorRegistration.UpdateDeviceConfigurationDataAsync%28string%20deviceId%2C%20IBuffer%20deviceConfigurationData%29");
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistration.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistration.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistration.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction FinishRegisteringDeviceAsync(global::Windows.Storage.Streams.IBuffer deviceConfigurationData)
@@ -87,6 +83,5 @@ namespace Windows.Security.Authentication.Identity.Provider
 			throw new global::System.NotImplementedException("The member IAsyncAction SecondaryAuthenticationFactorRegistration.AbortRegisteringDeviceAsync(string errorLogMessage) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20SecondaryAuthenticationFactorRegistration.AbortRegisteringDeviceAsync%28string%20errorLogMessage%29");
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

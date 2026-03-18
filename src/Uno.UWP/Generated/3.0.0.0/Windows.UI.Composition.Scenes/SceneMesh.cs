@@ -44,8 +44,6 @@ namespace Windows.UI.Composition.Scenes
 			throw new global::System.NotImplementedException("The member SceneMesh SceneMesh.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneMesh%20SceneMesh.Create%28Compositor%20compositor%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMesh.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMesh.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void FillMeshAttribute(global::Windows.UI.Composition.Scenes.SceneAttributeSemantic semantic, global::Windows.Graphics.DirectX.DirectXPixelFormat format, global::Windows.Foundation.MemoryBuffer memory)
@@ -56,6 +54,5 @@ namespace Windows.UI.Composition.Scenes
 		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMesh.Bounds.get
 		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMesh.PrimitiveTopology.get
 		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMesh.PrimitiveTopology.set
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMesh.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

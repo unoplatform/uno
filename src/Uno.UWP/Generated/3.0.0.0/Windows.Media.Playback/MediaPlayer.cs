@@ -294,10 +294,6 @@ namespace Windows.Media.Playback
 		// Skipping already declared property Volume
 		// Skipping already declared method Windows.Media.Playback.MediaPlayer.MediaPlayer()
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.MediaPlayer()
-		// Forced skipping of method Windows.Media.Playback.MediaPlayer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlayer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlayer.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlayer.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.Media.Playback.MediaPlayer.Play()
 		// Skipping already declared method Windows.Media.Playback.MediaPlayer.Pause()
 #if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false || false
@@ -488,7 +484,6 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.TimelineControllerPositionOffset.set
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.Volume.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.Volume.set
-		// Forced skipping of method Windows.Media.Playback.MediaPlayer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlayer, object> BufferingEnded

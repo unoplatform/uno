@@ -85,10 +85,6 @@ namespace Windows.Devices.Lights
 		}
 #endif
 		// Skipping already declared method Windows.Devices.Lights.Lamp.GetDefaultAsync()
-		// Forced skipping of method Windows.Devices.Lights.Lamp.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Lights.Lamp.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Lights.Lamp.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Lights.Lamp.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Lights.Lamp.AvailabilityChanged.add
 		// Forced skipping of method Windows.Devices.Lights.Lamp.AvailabilityChanged.remove
 #if false || false || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -106,7 +102,6 @@ namespace Windows.Devices.Lights
 		// Forced skipping of method Windows.Devices.Lights.Lamp.IsColorSettable.get
 		// Forced skipping of method Windows.Devices.Lights.Lamp.IsEnabled.get
 		// Forced skipping of method Windows.Devices.Lights.Lamp.IsEnabled.set
-		// Forced skipping of method Windows.Devices.Lights.Lamp.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Lights.Lamp, global::Windows.Devices.Lights.LampAvailabilityChangedEventArgs> AvailabilityChanged

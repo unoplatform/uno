@@ -44,14 +44,9 @@ namespace Windows.System.Diagnostics.Telemetry
 		}
 #endif
 		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.PlatformTelemetryRegistrationSettings()
-		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.StorageSize.get
 		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.StorageSize.set
 		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.UploadQuotaSize.get
 		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.UploadQuotaSize.set
-		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -67,8 +67,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabView.TabStripHeaderProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabView.TabStripHeaderTemplateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabView.TabWidthModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabView.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TabView.ContainerFromItem(object)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TabView.ContainerFromIndex(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabView.AddTabButtonClick.add
@@ -134,7 +132,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabView.TabStripHeaderTemplate.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabView.TabWidthMode.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabView.TabWidthMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TabView.AddTabButtonClick
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TabView.SelectionChanged
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TabView.TabCloseRequested

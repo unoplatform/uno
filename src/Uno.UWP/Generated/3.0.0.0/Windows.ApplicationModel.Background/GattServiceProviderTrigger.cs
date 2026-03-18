@@ -54,15 +54,10 @@ namespace Windows.ApplicationModel.Background
 			throw new global::System.NotImplementedException("The member IAsyncOperation<GattServiceProviderTriggerResult> GattServiceProviderTrigger.CreateAsync(string triggerId, Guid serviceUuid) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGattServiceProviderTriggerResult%3E%20GattServiceProviderTrigger.CreateAsync%28string%20triggerId%2C%20Guid%20serviceUuid%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTrigger.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTrigger.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTrigger.AdvertisingParameters.get
 		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTrigger.AdvertisingParameters.set
 		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTrigger.Service.get
 		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTrigger.TriggerId.get
-		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger
 	}
 }

@@ -43,13 +43,8 @@ namespace Windows.Services.Maps
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Maps.MapRouteFinderResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.Maps.MapRouteFinderResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.Maps.MapRouteFinderResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.Maps.MapRouteFinderResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Maps.MapRouteFinderResult.AlternateRoutes.get
 		// Forced skipping of method Windows.Services.Maps.MapRouteFinderResult.Route.get
 		// Forced skipping of method Windows.Services.Maps.MapRouteFinderResult.Status.get
-		// Forced skipping of method Windows.Services.Maps.MapRouteFinderResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -93,10 +93,6 @@ namespace Windows.AI.MachineLearning.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelDescriptionPreview.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelDescriptionPreview.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelDescriptionPreview.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelDescriptionPreview.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelDescriptionPreview.Author.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelDescriptionPreview.Description.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelDescriptionPreview.Domain.get
@@ -105,6 +101,5 @@ namespace Windows.AI.MachineLearning.Preview
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelDescriptionPreview.Name.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelDescriptionPreview.OutputFeatures.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelDescriptionPreview.Version.get
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelDescriptionPreview.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

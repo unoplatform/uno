@@ -13,10 +13,6 @@ namespace Windows.System.Diagnostics
 		{
 		}
 #endif
-		// Forced skipping of method Windows.System.Diagnostics.ProcessCpuUsage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.Diagnostics.ProcessCpuUsage.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.Diagnostics.ProcessCpuUsage.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.Diagnostics.ProcessCpuUsage.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.Diagnostics.ProcessCpuUsageReport GetReport()
@@ -24,6 +20,5 @@ namespace Windows.System.Diagnostics
 			throw new global::System.NotImplementedException("The member ProcessCpuUsageReport ProcessCpuUsage.GetReport() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProcessCpuUsageReport%20ProcessCpuUsage.GetReport%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.System.Diagnostics.ProcessCpuUsage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

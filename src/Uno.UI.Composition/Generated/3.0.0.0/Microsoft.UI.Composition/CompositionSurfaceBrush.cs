@@ -21,8 +21,6 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property Surface
 		// Skipping already declared property TransformMatrix
 		// Skipping already declared property VerticalAlignmentRatio
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.AnchorPoint.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.AnchorPoint.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.BitmapInterpolationMode.get
@@ -49,6 +47,5 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.TransformMatrix.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.VerticalAlignmentRatio.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.VerticalAlignmentRatio.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSurfaceBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

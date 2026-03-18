@@ -85,10 +85,6 @@ namespace Windows.AI.MachineLearning
 			throw new global::System.NotImplementedException("The member TensorBoolean TensorBoolean.CreateFromBuffer(long[] shape, IBuffer buffer) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TensorBoolean%20TensorBoolean.CreateFromBuffer%28long%5B%5D%20shape%2C%20IBuffer%20buffer%29");
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.TensorBoolean.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.TensorBoolean.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.TensorBoolean.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.AI.MachineLearning.TensorBoolean.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<bool> GetAsVectorView()
@@ -113,7 +109,6 @@ namespace Windows.AI.MachineLearning
 		// Forced skipping of method Windows.AI.MachineLearning.TensorBoolean.Kind.get
 		// Forced skipping of method Windows.AI.MachineLearning.TensorBoolean.Shape.get
 		// Forced skipping of method Windows.AI.MachineLearning.TensorBoolean.TensorKind.get
-		// Forced skipping of method Windows.AI.MachineLearning.TensorBoolean.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.AI.MachineLearning.ITensor
 		// Processing: Windows.AI.MachineLearning.ILearningModelFeatureValue
 		// Processing: Windows.Foundation.IMemoryBuffer

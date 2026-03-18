@@ -147,8 +147,6 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property Scale
 		// Skipping already declared property Size
 		// Skipping already declared property TransformMatrix
-		// Forced skipping of method Microsoft.UI.Composition.Visual.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.Visual.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.Visual.AnchorPoint.get
 		// Forced skipping of method Microsoft.UI.Composition.Visual.AnchorPoint.set
 		// Forced skipping of method Microsoft.UI.Composition.Visual.BackfaceVisibility.get
@@ -192,6 +190,5 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.Visual.Size.set
 		// Forced skipping of method Microsoft.UI.Composition.Visual.TransformMatrix.get
 		// Forced skipping of method Microsoft.UI.Composition.Visual.TransformMatrix.set
-		// Forced skipping of method Microsoft.UI.Composition.Visual.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

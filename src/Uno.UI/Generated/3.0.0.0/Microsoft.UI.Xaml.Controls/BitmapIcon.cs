@@ -16,12 +16,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIcon.BitmapIcon()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIcon.ShowAsMonochromeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIcon.UriSourceProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIcon.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIcon.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIcon.ShowAsMonochrome.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIcon.ShowAsMonochrome.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIcon.UriSource.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIcon.UriSource.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.BitmapIcon.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

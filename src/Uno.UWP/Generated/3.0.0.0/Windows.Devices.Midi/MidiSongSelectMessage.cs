@@ -14,15 +14,10 @@ namespace Windows.Devices.Midi
 		// Skipping already declared property Type
 		// Skipping already declared method Windows.Devices.Midi.MidiSongSelectMessage.MidiSongSelectMessage(byte)
 		// Forced skipping of method Windows.Devices.Midi.MidiSongSelectMessage.MidiSongSelectMessage(byte)
-		// Forced skipping of method Windows.Devices.Midi.MidiSongSelectMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Midi.MidiSongSelectMessage.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Midi.MidiSongSelectMessage.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Midi.MidiSongSelectMessage.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Midi.MidiSongSelectMessage.RawData.get
 		// Forced skipping of method Windows.Devices.Midi.MidiSongSelectMessage.Song.get
 		// Forced skipping of method Windows.Devices.Midi.MidiSongSelectMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Midi.MidiSongSelectMessage.Type.get
-		// Forced skipping of method Windows.Devices.Midi.MidiSongSelectMessage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Midi.IMidiMessage
 	}
 }

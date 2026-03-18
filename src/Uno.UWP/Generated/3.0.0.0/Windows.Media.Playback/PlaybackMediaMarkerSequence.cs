@@ -23,10 +23,6 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerSequence.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerSequence.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerSequence.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerSequence.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Insert(global::Windows.Media.Playback.PlaybackMediaMarker value)
@@ -50,7 +46,6 @@ namespace Windows.Media.Playback
 #endif
 		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerSequence.System.Collections.IEnumerable.GetEnumerator()
 		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerSequence.Size.get
-		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerSequence.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Media.Playback.PlaybackMediaMarker>
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

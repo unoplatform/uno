@@ -12,10 +12,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property ChildrenCore
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext.NonVirtualizingLayoutContext()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext.NonVirtualizingLayoutContext()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext.Children.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext.ChildrenCore.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

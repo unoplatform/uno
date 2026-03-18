@@ -55,16 +55,11 @@ namespace Windows.Devices.Bluetooth.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation.LocalServiceId.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation.LocalServiceId.set
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation.SdpRecord.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation.SdpRecord.set
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation.ServiceCapabilities.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation.ServiceCapabilities.set
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

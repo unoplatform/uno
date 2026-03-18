@@ -50,10 +50,6 @@ namespace Microsoft.UI.Xaml.Media
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.BrushCollection.BrushCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.BrushCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.BrushCollection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.BrushCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.BrushCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.BrushCollection.Count.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.BrushCollection.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.BrushCollection.this[int].get
@@ -122,7 +118,6 @@ namespace Microsoft.UI.Xaml.Media
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.BrushCollection.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.BrushCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.BrushCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Brush>.get_Item(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.BrushCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Brush>.set_Item(int, Microsoft.UI.Xaml.Media.Brush)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Brush>

@@ -37,13 +37,8 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.Enabled.get
 		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.Enabled.set
 		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.Supported.get
-		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

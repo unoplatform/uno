@@ -33,12 +33,7 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringClient.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringClient.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringClient.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringClient.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringClient.HostNames.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringClient.MacAddress.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringClient.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

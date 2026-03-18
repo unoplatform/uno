@@ -240,10 +240,6 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.TimedTextStyle.TimedTextStyle()
-		// Forced skipping of method Windows.Media.Core.TimedTextStyle.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Core.TimedTextStyle.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Core.TimedTextStyle.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Core.TimedTextStyle.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Core.TimedTextStyle.Background.get
 		// Forced skipping of method Windows.Media.Core.TimedTextStyle.Background.set
 		// Forced skipping of method Windows.Media.Core.TimedTextStyle.FlowDirection.get
@@ -276,6 +272,5 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.TimedTextStyle.OutlineRadius.set
 		// Forced skipping of method Windows.Media.Core.TimedTextStyle.OutlineThickness.get
 		// Forced skipping of method Windows.Media.Core.TimedTextStyle.OutlineThickness.set
-		// Forced skipping of method Windows.Media.Core.TimedTextStyle.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

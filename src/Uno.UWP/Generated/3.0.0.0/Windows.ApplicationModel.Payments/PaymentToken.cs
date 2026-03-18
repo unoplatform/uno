@@ -44,12 +44,7 @@ namespace Windows.ApplicationModel.Payments
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.PaymentToken(string, string)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.JsonDetails.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.PaymentMethodId.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

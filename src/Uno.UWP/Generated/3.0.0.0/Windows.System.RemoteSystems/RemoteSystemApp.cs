@@ -83,10 +83,6 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.Attributes.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.ConnectionToken.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.DisplayName.get
@@ -94,6 +90,5 @@ namespace Windows.System.RemoteSystems
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.IsAvailableByProximity.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.IsAvailableBySpatialProximity.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.User.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

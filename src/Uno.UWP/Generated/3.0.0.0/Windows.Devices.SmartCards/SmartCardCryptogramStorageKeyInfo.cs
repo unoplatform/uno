@@ -93,10 +93,6 @@ namespace Windows.Devices.SmartCards
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo.Attestation.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo.AttestationCertificateChain.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo.AttestationStatus.get
@@ -105,6 +101,5 @@ namespace Windows.Devices.SmartCards
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo.OperationalRequirements.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo.PublicKey.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo.PublicKeyBlobType.get
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

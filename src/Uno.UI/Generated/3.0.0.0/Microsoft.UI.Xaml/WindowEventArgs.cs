@@ -9,12 +9,7 @@ namespace Microsoft.UI.Xaml
 	public partial class WindowEventArgs
 	{
 		// Skipping already declared property Handled
-		// Forced skipping of method Microsoft.UI.Xaml.WindowEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.WindowEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.WindowEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.WindowEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.WindowEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.WindowEventArgs.Handled.set
-		// Forced skipping of method Microsoft.UI.Xaml.WindowEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -40,8 +40,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyout.MonthVisibleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyout.YearFormatProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyout.YearVisibleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyout.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyout.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.DatePickerFlyout.ShowAtAsync(Microsoft.UI.Xaml.FrameworkElement)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyout.DatePicked.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyout.DatePicked.remove
@@ -65,7 +63,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyout.YearFormat.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyout.YearVisible.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyout.YearVisible.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyout.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.DatePickerFlyout.DatePicked
 	}
 }

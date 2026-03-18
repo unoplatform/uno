@@ -23,11 +23,6 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceUnpairingResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceUnpairingResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceUnpairingResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceUnpairingResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceUnpairingResult.Status.get
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceUnpairingResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

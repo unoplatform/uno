@@ -55,16 +55,11 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.EqualizerBand.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Audio.EqualizerBand.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Audio.EqualizerBand.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Audio.EqualizerBand.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Audio.EqualizerBand.Bandwidth.get
 		// Forced skipping of method Windows.Media.Audio.EqualizerBand.Bandwidth.set
 		// Forced skipping of method Windows.Media.Audio.EqualizerBand.FrequencyCenter.get
 		// Forced skipping of method Windows.Media.Audio.EqualizerBand.FrequencyCenter.set
 		// Forced skipping of method Windows.Media.Audio.EqualizerBand.Gain.get
 		// Forced skipping of method Windows.Media.Audio.EqualizerBand.Gain.set
-		// Forced skipping of method Windows.Media.Audio.EqualizerBand.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

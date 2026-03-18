@@ -8,10 +8,7 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class Vector2KeyFrameAnimation : global::Microsoft.UI.Composition.KeyFrameAnimation
 	{
-		// Forced skipping of method Microsoft.UI.Composition.Vector2KeyFrameAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.Vector2KeyFrameAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Composition.Vector2KeyFrameAnimation.InsertKeyFrame(float, System.Numerics.Vector2)
 		// Skipping already declared method Microsoft.UI.Composition.Vector2KeyFrameAnimation.InsertKeyFrame(float, System.Numerics.Vector2, Microsoft.UI.Composition.CompositionEasingFunction)
-		// Forced skipping of method Microsoft.UI.Composition.Vector2KeyFrameAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

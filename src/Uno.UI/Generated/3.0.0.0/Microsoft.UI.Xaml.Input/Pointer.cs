@@ -12,14 +12,9 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared property IsInRange
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property PointerId
-		// Forced skipping of method Microsoft.UI.Xaml.Input.Pointer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.Pointer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.Pointer.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.Pointer.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.Pointer.IsInContact.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.Pointer.IsInRange.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.Pointer.PointerDeviceType.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.Pointer.PointerId.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.Pointer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,12 +10,7 @@ namespace Microsoft.UI.Xaml.Markup
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Markup.MarkupExtension.MarkupExtension()
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.MarkupExtension.MarkupExtension()
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.MarkupExtension.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.MarkupExtension.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.MarkupExtension.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.MarkupExtension.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Microsoft.UI.Xaml.Markup.MarkupExtension.ProvideValue()
 		// Skipping already declared method Microsoft.UI.Xaml.Markup.MarkupExtension.ProvideValue(Microsoft.UI.Xaml.IXamlServiceProvider)
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.MarkupExtension.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -63,16 +63,11 @@ namespace Windows.Graphics.Printing.Workflow
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowUIActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowUIActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowUIActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowUIActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowUIActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowUIActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowUIActivatedEventArgs.PrintWorkflowSession.get
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowUIActivatedEventArgs.SplashScreen.get
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowUIActivatedEventArgs.User.get
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowUIActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgsWithUser
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 	}

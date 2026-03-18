@@ -33,12 +33,7 @@ namespace Windows.Data.Text
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Data.Text.SelectableWordSegment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Data.Text.SelectableWordSegment.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Data.Text.SelectableWordSegment.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Data.Text.SelectableWordSegment.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Data.Text.SelectableWordSegment.SourceTextSegment.get
 		// Forced skipping of method Windows.Data.Text.SelectableWordSegment.Text.get
-		// Forced skipping of method Windows.Data.Text.SelectableWordSegment.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

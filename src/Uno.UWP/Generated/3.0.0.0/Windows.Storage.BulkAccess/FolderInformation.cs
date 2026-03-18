@@ -163,10 +163,6 @@ namespace Windows.Storage.BulkAccess
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.PropertiesUpdated.add
 		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.PropertiesUpdated.remove
 		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.ThumbnailUpdated.add
@@ -459,7 +455,6 @@ namespace Windows.Storage.BulkAccess
 		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.Provider.get
 		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.Thumbnail.get
 		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.VideoProperties.get
-		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Storage.BulkAccess.IStorageItemInformation, object> PropertiesUpdated

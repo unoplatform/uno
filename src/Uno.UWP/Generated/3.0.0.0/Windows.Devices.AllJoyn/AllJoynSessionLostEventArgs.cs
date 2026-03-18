@@ -26,11 +26,6 @@ namespace Windows.Devices.AllJoyn
 		}
 #endif
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs.AllJoynSessionLostEventArgs(Windows.Devices.AllJoyn.AllJoynSessionLostReason)
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs.Reason.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

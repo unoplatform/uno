@@ -34,8 +34,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.MaxRatingProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.PlaceholderValueProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.ValueProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.ValueChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.ValueChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.Caption.get
@@ -54,7 +52,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.PlaceholderValue.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.Value.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.Value.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.RatingControl.ValueChanged
 	}
 }

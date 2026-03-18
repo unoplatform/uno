@@ -47,14 +47,9 @@ namespace Windows.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.Handled.set
 		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.IsIndicatorOn.get
 		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.Timestamp.get
-		// Forced skipping of method Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

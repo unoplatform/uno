@@ -56,14 +56,9 @@ namespace Windows.Security.Isolation
 		}
 #endif
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationData.IsolatedWindowsEnvironmentOwnerRegistrationData()
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationData.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationData.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationData.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationData.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationData.ActivationFileExtensions.get
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationData.ProcessesRunnableAsSystem.get
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationData.ProcessesRunnableAsUser.get
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationData.ShareableFolders.get
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOwnerRegistrationData.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

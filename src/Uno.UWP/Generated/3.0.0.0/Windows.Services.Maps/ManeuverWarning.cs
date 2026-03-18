@@ -33,12 +33,7 @@ namespace Windows.Services.Maps
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Maps.ManeuverWarning.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.Maps.ManeuverWarning.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.Maps.ManeuverWarning.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.Maps.ManeuverWarning.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Maps.ManeuverWarning.Kind.get
 		// Forced skipping of method Windows.Services.Maps.ManeuverWarning.Severity.get
-		// Forced skipping of method Windows.Services.Maps.ManeuverWarning.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

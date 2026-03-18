@@ -10,10 +10,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutoSuggestBoxAutomationPeer.AutoSuggestBoxAutomationPeer(Microsoft.UI.Xaml.Controls.AutoSuggestBox)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutoSuggestBoxAutomationPeer.AutoSuggestBoxAutomationPeer(Microsoft.UI.Xaml.Controls.AutoSuggestBox)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutoSuggestBoxAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutoSuggestBoxAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutoSuggestBoxAutomationPeer.Invoke()
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutoSuggestBoxAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IInvokeProvider
 	}
 }

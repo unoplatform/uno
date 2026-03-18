@@ -26,8 +26,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Expander.HeaderTemplateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Expander.HeaderTemplateSelectorProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Expander.IsExpandedProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Expander.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Expander.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Expander.Collapsed.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Expander.Collapsed.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Expander.Expanding.add
@@ -43,7 +41,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Expander.IsExpanded.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Expander.IsExpanded.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Expander.TemplateSettings.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Expander.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Expander.Collapsed
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Expander.Expanding
 	}

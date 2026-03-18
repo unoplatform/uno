@@ -33,12 +33,7 @@ namespace Windows.Services.TargetedContent
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentItemState.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentItemState.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentItemState.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentItemState.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentItemState.AppInstallationState.get
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentItemState.ShouldDisplay.get
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentItemState.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

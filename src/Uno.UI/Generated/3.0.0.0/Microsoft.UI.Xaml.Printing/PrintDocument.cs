@@ -35,8 +35,6 @@ namespace Microsoft.UI.Xaml.Printing
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Printing.PrintDocument.PrintDocument()
 		// Forced skipping of method Microsoft.UI.Xaml.Printing.PrintDocument.DocumentSourceProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Printing.PrintDocument.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Printing.PrintDocument.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddPage(global::Microsoft.UI.Xaml.UIElement pageVisual)
@@ -79,7 +77,6 @@ namespace Microsoft.UI.Xaml.Printing
 		// Forced skipping of method Microsoft.UI.Xaml.Printing.PrintDocument.Paginate.add
 		// Forced skipping of method Microsoft.UI.Xaml.Printing.PrintDocument.Paginate.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Printing.PrintDocument.DocumentSource.get
-		// Forced skipping of method Microsoft.UI.Xaml.Printing.PrintDocument.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Microsoft.UI.Xaml.Printing.AddPagesEventHandler AddPages

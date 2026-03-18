@@ -13,10 +13,6 @@ namespace Windows.ApplicationModel.Core
 		// Skipping already declared property IsVisible
 		// Skipping already declared property SystemOverlayLeftInset
 		// Skipping already declared property SystemOverlayRightInset
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.IsVisibleChanged.add
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.IsVisibleChanged.remove
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.LayoutMetricsChanged.add
@@ -27,7 +23,6 @@ namespace Windows.ApplicationModel.Core
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.IsVisible.get
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.SystemOverlayLeftInset.get
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.SystemOverlayRightInset.get
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.IsVisibleChanged
 		// Skipping already declared event Windows.ApplicationModel.Core.CoreApplicationViewTitleBar.LayoutMetricsChanged
 	}

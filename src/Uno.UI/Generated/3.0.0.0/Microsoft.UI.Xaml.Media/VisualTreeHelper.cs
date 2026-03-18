@@ -18,10 +18,5 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared method Microsoft.UI.Xaml.Media.VisualTreeHelper.DisconnectChildrenRecursive(Microsoft.UI.Xaml.UIElement)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.VisualTreeHelper.GetOpenPopups(Microsoft.UI.Xaml.Window)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.VisualTreeHelper.GetOpenPopupsForXamlRoot(Microsoft.UI.Xaml.XamlRoot)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.VisualTreeHelper.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.VisualTreeHelper.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.VisualTreeHelper.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.VisualTreeHelper.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.VisualTreeHelper.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

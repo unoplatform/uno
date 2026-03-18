@@ -43,13 +43,8 @@ namespace Windows.Services.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StoreSendRequestResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.Store.StoreSendRequestResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.Store.StoreSendRequestResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.Store.StoreSendRequestResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Store.StoreSendRequestResult.ExtendedError.get
 		// Forced skipping of method Windows.Services.Store.StoreSendRequestResult.HttpStatusCode.get
 		// Forced skipping of method Windows.Services.Store.StoreSendRequestResult.Response.get
-		// Forced skipping of method Windows.Services.Store.StoreSendRequestResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

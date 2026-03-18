@@ -66,15 +66,10 @@ namespace Windows.UI.Core.AnimationMetrics
 		}
 #endif
 		// Forced skipping of method Windows.UI.Core.AnimationMetrics.AnimationDescription.AnimationDescription(Windows.UI.Core.AnimationMetrics.AnimationEffect, Windows.UI.Core.AnimationMetrics.AnimationEffectTarget)
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.AnimationDescription.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.AnimationDescription.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.AnimationDescription.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.AnimationDescription.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Core.AnimationMetrics.AnimationDescription.Animations.get
 		// Forced skipping of method Windows.UI.Core.AnimationMetrics.AnimationDescription.DelayLimit.get
 		// Forced skipping of method Windows.UI.Core.AnimationMetrics.AnimationDescription.StaggerDelay.get
 		// Forced skipping of method Windows.UI.Core.AnimationMetrics.AnimationDescription.StaggerDelayFactor.get
 		// Forced skipping of method Windows.UI.Core.AnimationMetrics.AnimationDescription.ZOrder.get
-		// Forced skipping of method Windows.UI.Core.AnimationMetrics.AnimationDescription.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

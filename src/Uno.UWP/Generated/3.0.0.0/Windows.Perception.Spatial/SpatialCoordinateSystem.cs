@@ -13,10 +13,6 @@ namespace Windows.Perception.Spatial
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.SpatialCoordinateSystem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialCoordinateSystem.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialCoordinateSystem.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialCoordinateSystem.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Numerics.Matrix4x4? TryGetTransformTo(global::Windows.Perception.Spatial.SpatialCoordinateSystem target)
@@ -24,6 +20,5 @@ namespace Windows.Perception.Spatial
 			throw new global::System.NotImplementedException("The member Matrix4x4? SpatialCoordinateSystem.TryGetTransformTo(SpatialCoordinateSystem target) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix4x4%3F%20SpatialCoordinateSystem.TryGetTransformTo%28SpatialCoordinateSystem%20target%29");
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.SpatialCoordinateSystem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

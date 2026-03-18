@@ -150,10 +150,6 @@ namespace Windows.Devices.Sms
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.SmsFilterRule(Windows.Devices.Sms.SmsMessageType)
-		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.BroadcastChannels.get
 		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.BroadcastTypes.get
 		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.CellularClass.get
@@ -168,6 +164,5 @@ namespace Windows.Devices.Sms
 		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.TextMessagePrefixes.get
 		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.WapApplicationIds.get
 		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.WapContentTypes.get
-		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -9,11 +9,6 @@ namespace Microsoft.UI.Xaml.Hosting
 	public partial class DesktopWindowXamlSourceGotFocusEventArgs
 	{
 		// Skipping already declared property Request
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSourceGotFocusEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSourceGotFocusEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSourceGotFocusEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSourceGotFocusEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSourceGotFocusEventArgs.Request.get
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSourceGotFocusEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

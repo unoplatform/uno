@@ -36,12 +36,7 @@ namespace Windows.UI.ApplicationSettings
 		}
 #endif
 		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountProviderCommand.WebAccountProviderCommand(Windows.Security.Credentials.WebAccountProvider, Windows.UI.ApplicationSettings.WebAccountProviderCommandInvokedHandler)
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountProviderCommand.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountProviderCommand.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountProviderCommand.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountProviderCommand.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountProviderCommand.Invoked.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountProviderCommand.WebAccountProvider.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountProviderCommand.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

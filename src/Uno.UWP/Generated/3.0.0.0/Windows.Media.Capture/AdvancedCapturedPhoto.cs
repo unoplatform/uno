@@ -54,14 +54,9 @@ namespace Windows.Media.Capture
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.AdvancedCapturedPhoto.~AdvancedCapturedPhoto()
-		// Forced skipping of method Windows.Media.Capture.AdvancedCapturedPhoto.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Capture.AdvancedCapturedPhoto.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Capture.AdvancedCapturedPhoto.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Capture.AdvancedCapturedPhoto.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Capture.AdvancedCapturedPhoto.Context.get
 		// Forced skipping of method Windows.Media.Capture.AdvancedCapturedPhoto.Frame.get
 		// Forced skipping of method Windows.Media.Capture.AdvancedCapturedPhoto.FrameBoundsRelativeToReferencePhoto.get
 		// Forced skipping of method Windows.Media.Capture.AdvancedCapturedPhoto.Mode.get
-		// Forced skipping of method Windows.Media.Capture.AdvancedCapturedPhoto.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

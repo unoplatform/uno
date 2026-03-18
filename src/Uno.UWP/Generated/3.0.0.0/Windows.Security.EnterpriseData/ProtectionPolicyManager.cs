@@ -281,15 +281,10 @@ namespace Windows.Security.EnterpriseData
 #endif
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectionPolicyManager.IsProtectionEnabled.get
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectionPolicyManager.PrimaryManagedIdentity.get
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectionPolicyManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectionPolicyManager.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectionPolicyManager.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectionPolicyManager.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectionPolicyManager.Identity.get
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectionPolicyManager.Identity.set
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectionPolicyManager.ShowEnterpriseIndicator.get
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectionPolicyManager.ShowEnterpriseIndicator.set
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectionPolicyManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static event global::System.EventHandler<global::Windows.Security.EnterpriseData.ProtectedAccessResumedEventArgs> ProtectedAccessResumed

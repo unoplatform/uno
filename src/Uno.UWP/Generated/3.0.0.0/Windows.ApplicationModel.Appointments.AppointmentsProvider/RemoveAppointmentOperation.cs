@@ -43,10 +43,6 @@ namespace Windows.ApplicationModel.Appointments.AppointmentsProvider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentsProvider.RemoveAppointmentOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentsProvider.RemoveAppointmentOperation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentsProvider.RemoveAppointmentOperation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentsProvider.RemoveAppointmentOperation.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ReportCompleted()
@@ -78,6 +74,5 @@ namespace Windows.ApplicationModel.Appointments.AppointmentsProvider
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentsProvider.RemoveAppointmentOperation.AppointmentId.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentsProvider.RemoveAppointmentOperation.InstanceStartDate.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentsProvider.RemoveAppointmentOperation.SourcePackageFamilyName.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentsProvider.RemoveAppointmentOperation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

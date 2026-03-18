@@ -23,11 +23,6 @@ namespace Windows.System.Diagnostics.DevicePortal
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionClosedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionClosedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionClosedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionClosedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionClosedEventArgs.Reason.get
-		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionClosedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

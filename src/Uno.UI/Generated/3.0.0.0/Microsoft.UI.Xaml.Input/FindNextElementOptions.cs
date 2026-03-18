@@ -14,10 +14,6 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared property XYFocusNavigationStrategyOverride
 		// Skipping already declared method Microsoft.UI.Xaml.Input.FindNextElementOptions.FindNextElementOptions()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.FindNextElementOptions()
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.ExclusionRect.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.ExclusionRect.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.HintRect.get
@@ -26,6 +22,5 @@ namespace Microsoft.UI.Xaml.Input
 		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.SearchRoot.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.XYFocusNavigationStrategyOverride.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.XYFocusNavigationStrategyOverride.set
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FindNextElementOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

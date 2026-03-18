@@ -73,16 +73,11 @@ namespace Windows.System.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.HingeState.get
 		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.Panel1Id.get
 		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.Panel1Orientation.get
 		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.Panel2Id.get
 		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.Panel2Orientation.get
 		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.Timestamp.get
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

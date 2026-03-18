@@ -26,10 +26,6 @@ namespace Windows.UI.Input.Spatial
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.SpatialGestureRecognizer(Windows.UI.Input.Spatial.SpatialGestureSettings)
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void CaptureInteraction(global::Windows.UI.Input.Spatial.SpatialInteraction interaction)
@@ -80,7 +76,6 @@ namespace Windows.UI.Input.Spatial
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.Tapped.add
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.Tapped.remove
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.GestureSettings.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialHoldCanceledEventArgs> HoldCanceled

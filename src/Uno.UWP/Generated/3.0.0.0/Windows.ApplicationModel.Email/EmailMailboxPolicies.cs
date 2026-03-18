@@ -97,10 +97,6 @@ namespace Windows.ApplicationModel.Email
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.AllowSmimeSoftCertificates.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.AllowSmimeSoftCertificates.set
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.AllowedSmimeEncryptionAlgorithmNegotiation.get
@@ -113,6 +109,5 @@ namespace Windows.ApplicationModel.Email
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.RequiredSmimeEncryptionAlgorithm.set
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.RequiredSmimeSigningAlgorithm.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.RequiredSmimeSigningAlgorithm.set
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxPolicies.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

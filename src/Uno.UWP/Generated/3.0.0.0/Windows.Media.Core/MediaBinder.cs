@@ -40,16 +40,11 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.MediaBinder.MediaBinder()
-		// Forced skipping of method Windows.Media.Core.MediaBinder.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Core.MediaBinder.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Core.MediaBinder.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Core.MediaBinder.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Core.MediaBinder.Binding.add
 		// Forced skipping of method Windows.Media.Core.MediaBinder.Binding.remove
 		// Forced skipping of method Windows.Media.Core.MediaBinder.Source.get
 		// Forced skipping of method Windows.Media.Core.MediaBinder.Token.get
 		// Forced skipping of method Windows.Media.Core.MediaBinder.Token.set
-		// Forced skipping of method Windows.Media.Core.MediaBinder.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.MediaBinder, global::Windows.Media.Core.MediaBindingEventArgs> Binding

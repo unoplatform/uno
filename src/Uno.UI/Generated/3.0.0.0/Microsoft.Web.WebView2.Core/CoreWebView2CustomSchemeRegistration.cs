@@ -64,16 +64,11 @@ namespace Microsoft.Web.WebView2.Core
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.CoreWebView2CustomSchemeRegistration(string)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.AllowedOrigins.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.HasAuthorityComponent.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.HasAuthorityComponent.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.SchemeName.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.TreatAsSecure.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.TreatAsSecure.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

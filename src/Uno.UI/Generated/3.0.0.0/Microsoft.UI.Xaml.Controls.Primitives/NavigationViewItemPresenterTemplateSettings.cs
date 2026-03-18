@@ -16,10 +16,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenterTemplateSettings.NavigationViewItemPresenterTemplateSettings()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenterTemplateSettings.IconWidthProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenterTemplateSettings.SmallerIconWidthProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenterTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenterTemplateSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenterTemplateSettings.IconWidth.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenterTemplateSettings.SmallerIconWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenterTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -113,10 +113,6 @@ namespace Windows.UI.StartScreen
 			throw new global::System.NotImplementedException("The member JumpListItem JumpListItem.CreateSeparator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=JumpListItem%20JumpListItem.CreateSeparator%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.Arguments.get
 		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.Description.get
 		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.Description.set
@@ -128,6 +124,5 @@ namespace Windows.UI.StartScreen
 		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.Logo.get
 		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.Logo.set
 		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.RemovedByUser.get
-		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

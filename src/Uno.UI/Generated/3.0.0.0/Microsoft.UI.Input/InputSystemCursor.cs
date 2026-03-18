@@ -10,9 +10,6 @@ namespace Microsoft.UI.Input
 	{
 		// Skipping already declared property CursorShape
 		// Skipping already declared method Microsoft.UI.Input.InputSystemCursor.Create(Microsoft.UI.Input.InputSystemCursorShape)
-		// Forced skipping of method Microsoft.UI.Input.InputSystemCursor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.InputSystemCursor.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.InputSystemCursor.CursorShape.get
-		// Forced skipping of method Microsoft.UI.Input.InputSystemCursor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,10 +10,7 @@ namespace Microsoft.UI.Composition
 	{
 		// Skipping already declared property Exponent
 		// Skipping already declared property Mode
-		// Forced skipping of method Microsoft.UI.Composition.ExponentialEasingFunction.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.ExponentialEasingFunction.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.ExponentialEasingFunction.Exponent.get
 		// Forced skipping of method Microsoft.UI.Composition.ExponentialEasingFunction.Mode.get
-		// Forced skipping of method Microsoft.UI.Composition.ExponentialEasingFunction.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

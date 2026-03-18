@@ -53,14 +53,9 @@ namespace Windows.ApplicationModel.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductLicense.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductLicense.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductLicense.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductLicense.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Store.ProductLicense.ExpirationDate.get
 		// Forced skipping of method Windows.ApplicationModel.Store.ProductLicense.IsActive.get
 		// Forced skipping of method Windows.ApplicationModel.Store.ProductLicense.IsConsumable.get
 		// Forced skipping of method Windows.ApplicationModel.Store.ProductLicense.ProductId.get
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductLicense.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

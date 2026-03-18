@@ -13,10 +13,6 @@ namespace Windows.Devices.Display.Core
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayDevice.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayDevice.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayDevice.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Display.Core.DisplaySource CreateScanoutSource(global::Windows.Devices.Display.Core.DisplayTarget target)
@@ -66,6 +62,5 @@ namespace Windows.Devices.Display.Core
 			throw new global::System.NotImplementedException("The member bool DisplayDevice.IsCapabilitySupported(DisplayDeviceCapability capability) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DisplayDevice.IsCapabilitySupported%28DisplayDeviceCapability%20capability%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayDevice.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

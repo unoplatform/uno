@@ -12,10 +12,5 @@ namespace Microsoft.UI.Xaml.Automation
 		// Skipping already declared property SupportedViewsProperty
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.MultipleViewPatternIdentifiers.CurrentViewProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.MultipleViewPatternIdentifiers.SupportedViewsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.MultipleViewPatternIdentifiers.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.MultipleViewPatternIdentifiers.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.MultipleViewPatternIdentifiers.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.MultipleViewPatternIdentifiers.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.MultipleViewPatternIdentifiers.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

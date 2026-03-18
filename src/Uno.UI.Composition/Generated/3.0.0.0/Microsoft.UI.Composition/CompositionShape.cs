@@ -14,8 +14,6 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property RotationAngleInDegrees
 		// Skipping already declared property Scale
 		// Skipping already declared property TransformMatrix
-		// Forced skipping of method Microsoft.UI.Composition.CompositionShape.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionShape.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionShape.CenterPoint.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionShape.CenterPoint.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionShape.Offset.get
@@ -28,6 +26,5 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.CompositionShape.Scale.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionShape.TransformMatrix.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionShape.TransformMatrix.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionShape.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

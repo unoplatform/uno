@@ -104,8 +104,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.ItemWidthProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.MaximumRowsOrColumnsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.OrientationProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.AreStickyGroupHeadersEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.AreStickyGroupHeadersEnabled.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.CacheLength.get
@@ -127,6 +125,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.Orientation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.Orientation.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.ScrollingDirection.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

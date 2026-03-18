@@ -83,10 +83,6 @@ namespace Windows.AI.MachineLearning.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.InferencingOptionsPreview.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.InferencingOptionsPreview.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.InferencingOptionsPreview.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.InferencingOptionsPreview.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.InferencingOptionsPreview.IsTracingEnabled.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.InferencingOptionsPreview.IsTracingEnabled.set
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.InferencingOptionsPreview.MaxBatchSize.get
@@ -97,6 +93,5 @@ namespace Windows.AI.MachineLearning.Preview
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.InferencingOptionsPreview.PreferredDeviceKind.set
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.InferencingOptionsPreview.ReclaimMemoryAfterEvaluation.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.InferencingOptionsPreview.ReclaimMemoryAfterEvaluation.set
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.InferencingOptionsPreview.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

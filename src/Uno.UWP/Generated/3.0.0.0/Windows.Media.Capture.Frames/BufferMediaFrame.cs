@@ -33,12 +33,7 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.Frames.BufferMediaFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Capture.Frames.BufferMediaFrame.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Capture.Frames.BufferMediaFrame.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Capture.Frames.BufferMediaFrame.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Capture.Frames.BufferMediaFrame.Buffer.get
 		// Forced skipping of method Windows.Media.Capture.Frames.BufferMediaFrame.FrameReference.get
-		// Forced skipping of method Windows.Media.Capture.Frames.BufferMediaFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

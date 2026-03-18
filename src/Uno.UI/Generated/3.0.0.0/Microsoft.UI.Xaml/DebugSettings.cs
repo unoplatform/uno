@@ -54,10 +54,6 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Skipping already declared property LayoutCycleTracingLevel
-		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.BindingFailed.add
 		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.BindingFailed.remove
 		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.XamlResourceReferenceFailed.add
@@ -76,7 +72,6 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.LayoutCycleDebugBreakLevel.set
 		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.LayoutCycleTracingLevel.get
 		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.LayoutCycleTracingLevel.set
-		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.DebugSettings.BindingFailed
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

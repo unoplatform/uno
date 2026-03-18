@@ -55,14 +55,11 @@ namespace Windows.UI.Composition.Interactions
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionSourceConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionSourceConfiguration.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionSourceConfiguration.PositionXSourceMode.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionSourceConfiguration.PositionXSourceMode.set
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionSourceConfiguration.PositionYSourceMode.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionSourceConfiguration.PositionYSourceMode.set
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionSourceConfiguration.ScaleSourceMode.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionSourceConfiguration.ScaleSourceMode.set
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionSourceConfiguration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

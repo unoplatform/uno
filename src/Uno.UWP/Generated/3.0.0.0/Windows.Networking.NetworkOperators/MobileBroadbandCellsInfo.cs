@@ -113,10 +113,6 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.NeighboringCellsCdma.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.NeighboringCellsGsm.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.NeighboringCellsLte.get
@@ -127,6 +123,5 @@ namespace Windows.Networking.NetworkOperators
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.ServingCellsLte.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.ServingCellsTdscdma.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.ServingCellsUmts.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

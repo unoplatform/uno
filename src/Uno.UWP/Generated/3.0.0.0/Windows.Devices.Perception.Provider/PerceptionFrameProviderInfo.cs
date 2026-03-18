@@ -86,10 +86,6 @@ namespace Windows.Devices.Perception.Provider
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.PerceptionFrameProviderInfo()
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.DeviceKind.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.DeviceKind.set
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.DisplayName.get
@@ -100,6 +96,5 @@ namespace Windows.Devices.Perception.Provider
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.Hidden.set
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.Id.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.Id.set
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

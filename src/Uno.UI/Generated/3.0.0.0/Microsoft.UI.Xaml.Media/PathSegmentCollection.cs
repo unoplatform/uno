@@ -13,10 +13,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.PathSegmentCollection.PathSegmentCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.PathSegmentCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.Count.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.this[int].get
@@ -31,7 +27,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared method Microsoft.UI.Xaml.Media.PathSegmentCollection.Remove(Microsoft.UI.Xaml.Media.PathSegment)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.PathSegmentCollection.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.PathSegment>.get_Item(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PathSegmentCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.PathSegment>.set_Item(int, Microsoft.UI.Xaml.Media.PathSegment)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.PathSegment>

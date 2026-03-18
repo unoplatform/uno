@@ -60,10 +60,6 @@ namespace Windows.UI.Input.Spatial
 			throw new global::System.NotImplementedException("The member SpatialPointerPose SpatialPointerPose.TryGetAtTimestamp(SpatialCoordinateSystem coordinateSystem, PerceptionTimestamp timestamp) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialPointerPose%20SpatialPointerPose.TryGetAtTimestamp%28SpatialCoordinateSystem%20coordinateSystem%2C%20PerceptionTimestamp%20timestamp%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerPose.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerPose.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerPose.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerPose.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose TryGetInteractionSourcePose(global::Windows.UI.Input.Spatial.SpatialInteractionSource source)
@@ -75,6 +71,5 @@ namespace Windows.UI.Input.Spatial
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerPose.Head.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerPose.IsHeadCapturedBySystem.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerPose.Timestamp.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerPose.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

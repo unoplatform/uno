@@ -10,8 +10,5 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.DiscreteColorKeyFrame.DiscreteColorKeyFrame()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscreteColorKeyFrame.DiscreteColorKeyFrame()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscreteColorKeyFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscreteColorKeyFrame.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DiscreteColorKeyFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

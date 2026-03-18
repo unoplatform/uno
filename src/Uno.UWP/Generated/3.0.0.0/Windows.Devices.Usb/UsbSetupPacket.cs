@@ -94,10 +94,6 @@ namespace Windows.Devices.Usb
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Usb.UsbSetupPacket.UsbSetupPacket(Windows.Storage.Streams.IBuffer)
-		// Forced skipping of method Windows.Devices.Usb.UsbSetupPacket.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Usb.UsbSetupPacket.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Usb.UsbSetupPacket.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Usb.UsbSetupPacket.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Usb.UsbSetupPacket.Index.get
 		// Forced skipping of method Windows.Devices.Usb.UsbSetupPacket.Index.set
 		// Forced skipping of method Windows.Devices.Usb.UsbSetupPacket.Length.get
@@ -108,6 +104,5 @@ namespace Windows.Devices.Usb
 		// Forced skipping of method Windows.Devices.Usb.UsbSetupPacket.RequestType.set
 		// Forced skipping of method Windows.Devices.Usb.UsbSetupPacket.Value.get
 		// Forced skipping of method Windows.Devices.Usb.UsbSetupPacket.Value.set
-		// Forced skipping of method Windows.Devices.Usb.UsbSetupPacket.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

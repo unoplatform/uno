@@ -72,16 +72,11 @@ namespace Windows.Devices.WiFiDirect
 			throw new global::System.NotImplementedException("The member IList<WiFiDirectInformationElement> WiFiDirectInformationElement.CreateFromDeviceInformation(DeviceInformation deviceInformation) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CWiFiDirectInformationElement%3E%20WiFiDirectInformationElement.CreateFromDeviceInformation%28DeviceInformation%20deviceInformation%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.Oui.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.Oui.set
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.OuiType.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.OuiType.set
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.Value.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.Value.set
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

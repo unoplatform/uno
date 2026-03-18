@@ -40,10 +40,6 @@ namespace Windows.UI.StartScreen
 		}
 #endif
 		// Skipping already declared method Windows.UI.StartScreen.JumpList.IsSupported()
-		// Forced skipping of method Windows.UI.StartScreen.JumpList.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.StartScreen.JumpList.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.StartScreen.JumpList.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.StartScreen.JumpList.WinRT.IWinRTObject.AdditionalTypeData.get
 #if false || false || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SaveAsync()
@@ -54,6 +50,5 @@ namespace Windows.UI.StartScreen
 		// Forced skipping of method Windows.UI.StartScreen.JumpList.Items.get
 		// Forced skipping of method Windows.UI.StartScreen.JumpList.SystemGroupKind.get
 		// Forced skipping of method Windows.UI.StartScreen.JumpList.SystemGroupKind.set
-		// Forced skipping of method Windows.UI.StartScreen.JumpList.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

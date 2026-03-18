@@ -113,10 +113,6 @@ namespace Windows.ApplicationModel.Search
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Search.SearchPane", "void SearchPane.HideThisApplication()");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPane.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPane.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPane.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPane.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetLocalContentSuggestionSettings(global::Windows.ApplicationModel.Search.LocalContentSuggestionSettings settings)
@@ -166,7 +162,6 @@ namespace Windows.ApplicationModel.Search
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchPane.ShowOnKeyboardInput.get
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchPane.ShowOnKeyboardInput.set
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchPane.Visible.get
-		// Forced skipping of method Windows.ApplicationModel.Search.SearchPane.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Search.SearchPane, global::Windows.ApplicationModel.Search.SearchPaneQueryChangedEventArgs> QueryChanged

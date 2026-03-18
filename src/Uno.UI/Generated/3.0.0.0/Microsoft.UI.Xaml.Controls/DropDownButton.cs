@@ -10,8 +10,5 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.DropDownButton.DropDownButton()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DropDownButton.DropDownButton()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DropDownButton.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DropDownButton.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DropDownButton.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

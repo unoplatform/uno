@@ -46,10 +46,6 @@ namespace Windows.Globalization.DateTimeFormatting
 		// Forced skipping of method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.LongTime.get
 		// Forced skipping of method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.ShortDate.get
 		// Forced skipping of method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.ShortTime.get
-		// Forced skipping of method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.Format(System.DateTimeOffset)
 		// Skipping already declared method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.Format(System.DateTimeOffset, string)
 		// Forced skipping of method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.Calendar.get
@@ -69,6 +65,5 @@ namespace Windows.Globalization.DateTimeFormatting
 		// Forced skipping of method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.ResolvedGeographicRegion.get
 		// Forced skipping of method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.ResolvedLanguage.get
 		// Forced skipping of method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.Template.get
-		// Forced skipping of method Windows.Globalization.DateTimeFormatting.DateTimeFormatter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

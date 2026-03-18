@@ -13,10 +13,6 @@ namespace Windows.Media.Core
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.MediaStreamSampleProtectionProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Core.MediaStreamSampleProtectionProperties.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Core.MediaStreamSampleProtectionProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Core.MediaStreamSampleProtectionProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetKeyIdentifier(byte[] value)
@@ -59,6 +55,5 @@ namespace Windows.Media.Core
 			throw new global::System.NotImplementedException("The member void MediaStreamSampleProtectionProperties.GetSubSampleMapping(out byte[] value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=void%20MediaStreamSampleProtectionProperties.GetSubSampleMapping%28out%20byte%5B%5D%20value%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.MediaStreamSampleProtectionProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

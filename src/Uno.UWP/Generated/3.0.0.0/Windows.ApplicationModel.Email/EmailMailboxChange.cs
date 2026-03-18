@@ -53,14 +53,9 @@ namespace Windows.ApplicationModel.Email
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChange.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChange.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChange.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChange.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChange.ChangeType.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChange.Folder.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChange.MailboxActions.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChange.Message.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChange.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

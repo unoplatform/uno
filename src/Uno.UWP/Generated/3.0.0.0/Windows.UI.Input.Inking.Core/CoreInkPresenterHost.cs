@@ -26,13 +26,8 @@ namespace Windows.UI.Input.Inking.Core
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkPresenterHost.CoreInkPresenterHost()
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkPresenterHost.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkPresenterHost.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkPresenterHost.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkPresenterHost.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkPresenterHost.InkPresenter.get
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkPresenterHost.RootVisual.get
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkPresenterHost.RootVisual.set
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkPresenterHost.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

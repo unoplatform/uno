@@ -57,13 +57,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.MenuFlyoutPresenter()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.IsDefaultShadowEnabledProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.SystemBackdropProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.IsDefaultShadowEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.IsDefaultShadowEnabled.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.SystemBackdrop.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.SystemBackdrop.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.TemplateSettings.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -11,14 +11,9 @@ namespace Microsoft.UI.Input
 		// Skipping already declared property MoveSizeOperation
 		// Skipping already declared property MoveSizeWindowId
 		// Skipping already declared property PointerScreenPoint
-		// Forced skipping of method Microsoft.UI.Input.EnteringMoveSizeEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.EnteringMoveSizeEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.EnteringMoveSizeEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Input.EnteringMoveSizeEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Input.EnteringMoveSizeEventArgs.MoveSizeOperation.get
 		// Forced skipping of method Microsoft.UI.Input.EnteringMoveSizeEventArgs.MoveSizeWindowId.get
 		// Forced skipping of method Microsoft.UI.Input.EnteringMoveSizeEventArgs.MoveSizeWindowId.set
 		// Forced skipping of method Microsoft.UI.Input.EnteringMoveSizeEventArgs.PointerScreenPoint.get
-		// Forced skipping of method Microsoft.UI.Input.EnteringMoveSizeEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

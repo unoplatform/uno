@@ -64,16 +64,11 @@ namespace Windows.ApplicationModel.DataTransfer
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.ClipboardContentOptions()
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.HistoryFormats.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.IsAllowedInHistory.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.IsAllowedInHistory.set
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.IsRoamable.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.IsRoamable.set
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.RoamingFormats.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardContentOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

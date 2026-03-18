@@ -8,8 +8,5 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class Transform : global::Microsoft.UI.Xaml.Media.GeneralTransform
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Transform.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Transform.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Transform.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -108,10 +108,6 @@ namespace Windows.ApplicationModel.Chat
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.ChatRecipientDeliveryInfo()
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.DeliveryTime.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.DeliveryTime.set
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.IsErrorPermanent.get
@@ -123,6 +119,5 @@ namespace Windows.ApplicationModel.Chat
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.TransportErrorCode.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.TransportErrorCodeCategory.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.TransportInterpretedErrorCode.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

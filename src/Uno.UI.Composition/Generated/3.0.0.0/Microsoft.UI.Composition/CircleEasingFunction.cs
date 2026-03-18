@@ -9,9 +9,6 @@ namespace Microsoft.UI.Composition
 	public partial class CircleEasingFunction : global::Microsoft.UI.Composition.CompositionEasingFunction
 	{
 		// Skipping already declared property Mode
-		// Forced skipping of method Microsoft.UI.Composition.CircleEasingFunction.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.CircleEasingFunction.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CircleEasingFunction.Mode.get
-		// Forced skipping of method Microsoft.UI.Composition.CircleEasingFunction.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

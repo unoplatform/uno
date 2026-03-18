@@ -204,8 +204,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedValuePathProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedValueProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectionModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<object>> ShowAtAsync(global::Microsoft.UI.Xaml.FrameworkElement target)
@@ -232,7 +230,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectedValuePath.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectionMode.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.SelectionMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListPickerFlyout.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.ListPickerFlyout, global::Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs> ItemsPicked

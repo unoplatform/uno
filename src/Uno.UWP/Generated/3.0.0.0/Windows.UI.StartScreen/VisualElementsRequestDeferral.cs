@@ -13,10 +13,6 @@ namespace Windows.UI.StartScreen
 		{
 		}
 #endif
-		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequestDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequestDeferral.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequestDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequestDeferral.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Complete()
@@ -24,6 +20,5 @@ namespace Windows.UI.StartScreen
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.VisualElementsRequestDeferral", "void VisualElementsRequestDeferral.Complete()");
 		}
 #endif
-		// Forced skipping of method Windows.UI.StartScreen.VisualElementsRequestDeferral.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

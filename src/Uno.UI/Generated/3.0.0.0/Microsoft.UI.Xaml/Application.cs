@@ -53,10 +53,6 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Application.Current.get
-		// Forced skipping of method Microsoft.UI.Xaml.Application.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Application.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Application.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Application.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Microsoft.UI.Xaml.Application.Exit()
 		// Forced skipping of method Microsoft.UI.Xaml.Application.UnhandledException.add
 		// Forced skipping of method Microsoft.UI.Xaml.Application.UnhandledException.remove
@@ -74,7 +70,6 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.Application.RequestedTheme.set
 		// Forced skipping of method Microsoft.UI.Xaml.Application.Resources.get
 		// Forced skipping of method Microsoft.UI.Xaml.Application.Resources.set
-		// Forced skipping of method Microsoft.UI.Xaml.Application.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Application.UnhandledException
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

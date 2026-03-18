@@ -13,16 +13,11 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property OldState
 		// Skipping already declared method Microsoft.UI.Xaml.VisualStateChangedEventArgs.VisualStateChangedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.VisualStateChangedEventArgs.VisualStateChangedEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.VisualStateChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.VisualStateChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.VisualStateChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.VisualStateChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.VisualStateChangedEventArgs.Control.get
 		// Forced skipping of method Microsoft.UI.Xaml.VisualStateChangedEventArgs.Control.set
 		// Forced skipping of method Microsoft.UI.Xaml.VisualStateChangedEventArgs.NewState.get
 		// Forced skipping of method Microsoft.UI.Xaml.VisualStateChangedEventArgs.NewState.set
 		// Forced skipping of method Microsoft.UI.Xaml.VisualStateChangedEventArgs.OldState.get
 		// Forced skipping of method Microsoft.UI.Xaml.VisualStateChangedEventArgs.OldState.set
-		// Forced skipping of method Microsoft.UI.Xaml.VisualStateChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

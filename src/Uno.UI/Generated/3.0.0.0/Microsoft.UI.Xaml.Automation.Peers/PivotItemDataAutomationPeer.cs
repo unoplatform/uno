@@ -36,8 +36,6 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PivotItemDataAutomationPeer.PivotItemDataAutomationPeer(object, Microsoft.UI.Xaml.Automation.Peers.PivotAutomationPeer)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PivotItemDataAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PivotItemDataAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ScrollIntoView()
@@ -75,7 +73,6 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PivotItemDataAutomationPeer.IsSelected.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PivotItemDataAutomationPeer.SelectionContainer.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PivotItemDataAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IScrollItemProvider
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.ISelectionItemProvider
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IVirtualizedItemProvider

@@ -44,14 +44,9 @@ namespace Windows.ApplicationModel.Wallet
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletRelevantLocation.WalletRelevantLocation()
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletRelevantLocation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletRelevantLocation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletRelevantLocation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletRelevantLocation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletRelevantLocation.DisplayMessage.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletRelevantLocation.DisplayMessage.set
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletRelevantLocation.Position.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletRelevantLocation.Position.set
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletRelevantLocation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

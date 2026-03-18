@@ -47,14 +47,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarScrollingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarScrollingEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarScrollingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarScrollingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarScrollingEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarScrollingEventArgs.Cancel.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarScrollingEventArgs.ScrollOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarScrollingEventArgs.ScrollingEventKind.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarScrollingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

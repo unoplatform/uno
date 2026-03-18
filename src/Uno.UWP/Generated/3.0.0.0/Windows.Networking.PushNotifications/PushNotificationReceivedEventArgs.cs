@@ -77,10 +77,6 @@ namespace Windows.Networking.PushNotifications
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.BadgeNotification.get
 		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.Cancel.get
 		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.Cancel.set
@@ -88,6 +84,5 @@ namespace Windows.Networking.PushNotifications
 		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.RawNotification.get
 		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.TileNotification.get
 		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.ToastNotification.get
-		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

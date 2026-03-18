@@ -63,15 +63,10 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.AttributionId.get
 		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.AttributionName.get
 		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.AttributionThumbnail.get
 		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.BytesReceived.get
 		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.BytesSent.get
-		// Forced skipping of method Windows.Networking.Connectivity.AttributedNetworkUsage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

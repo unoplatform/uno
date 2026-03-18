@@ -42,12 +42,7 @@ namespace Windows.Devices.Haptics
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<VibrationDevice>> VibrationDevice.FindAllAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CVibrationDevice%3E%3E%20VibrationDevice.FindAllAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Haptics.VibrationDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Haptics.VibrationDevice.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Haptics.VibrationDevice.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Haptics.VibrationDevice.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Haptics.VibrationDevice.Id.get
 		// Forced skipping of method Windows.Devices.Haptics.VibrationDevice.SimpleHapticsController.get
-		// Forced skipping of method Windows.Devices.Haptics.VibrationDevice.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -25,10 +25,6 @@ namespace Windows.Data.Xml.Dom
 		// Skipping already declared property ParentNode
 		// Skipping already declared property Prefix
 		// Skipping already declared property PreviousSibling
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlComment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlComment.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlComment.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlComment.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlComment.SubstringData(uint, uint)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlComment.AppendData(string)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlComment.InsertData(uint, string)
@@ -79,7 +75,6 @@ namespace Windows.Data.Xml.Dom
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlComment.Prefix.get
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlComment.Prefix.set
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlComment.PreviousSibling.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlComment.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Data.Xml.Dom.IXmlCharacterData
 		// Processing: Windows.Data.Xml.Dom.IXmlNode
 		// Processing: Windows.Data.Xml.Dom.IXmlNodeSelector

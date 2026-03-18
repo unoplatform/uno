@@ -55,16 +55,11 @@ namespace Windows.UI.StartScreen
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.ActivationBehavior.get
 		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.ActivationBehavior.set
 		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.BoundingBox.get
 		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.BoundingBox.set
 		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.Uri.get
 		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.Uri.set
-		// Forced skipping of method Windows.UI.StartScreen.TileMixedRealityModel.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

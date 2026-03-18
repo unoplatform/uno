@@ -53,14 +53,9 @@ namespace Windows.Networking.Sockets
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketInformation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketInformation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketInformation.LocalAddress.get
 		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketInformation.LocalPort.get
 		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketInformation.RemoteAddress.get
 		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketInformation.RemotePort.get
-		// Forced skipping of method Windows.Networking.Sockets.DatagramSocketInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

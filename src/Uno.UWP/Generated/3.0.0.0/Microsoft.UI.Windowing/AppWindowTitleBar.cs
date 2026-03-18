@@ -228,10 +228,6 @@ namespace Microsoft.UI.Windowing
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Windowing.AppWindowTitleBar.IsCustomizationSupported()
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Microsoft.UI.Windowing.AppWindowTitleBar.ResetToDefault()
 		// Skipping already declared method Microsoft.UI.Windowing.AppWindowTitleBar.SetDragRectangles(Windows.Graphics.RectInt32[])
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.BackgroundColor.get
@@ -269,6 +265,5 @@ namespace Microsoft.UI.Windowing
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.PreferredTheme.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.PreferredTheme.set
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.RightInset.get
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

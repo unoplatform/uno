@@ -48,12 +48,9 @@ namespace Windows.UI.Composition.Interactions
 			throw new global::System.NotImplementedException("The member CompositionConditionalValue CompositionConditionalValue.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionConditionalValue%20CompositionConditionalValue.Create%28Compositor%20compositor%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.Interactions.CompositionConditionalValue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.Interactions.CompositionConditionalValue.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.CompositionConditionalValue.Condition.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.CompositionConditionalValue.Condition.set
 		// Forced skipping of method Windows.UI.Composition.Interactions.CompositionConditionalValue.Value.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.CompositionConditionalValue.Value.set
-		// Forced skipping of method Windows.UI.Composition.Interactions.CompositionConditionalValue.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

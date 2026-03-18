@@ -8,8 +8,5 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 	public partial class LoopingSelectorItem : global::Microsoft.UI.Xaml.Controls.ContentControl
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

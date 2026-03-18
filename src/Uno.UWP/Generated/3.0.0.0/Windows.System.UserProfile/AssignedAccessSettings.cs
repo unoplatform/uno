@@ -57,13 +57,8 @@ namespace Windows.System.UserProfile
 			throw new global::System.NotImplementedException("The member AssignedAccessSettings AssignedAccessSettings.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AssignedAccessSettings%20AssignedAccessSettings.GetForUser%28User%20user%29");
 		}
 #endif
-		// Forced skipping of method Windows.System.UserProfile.AssignedAccessSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.UserProfile.AssignedAccessSettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.UserProfile.AssignedAccessSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.UserProfile.AssignedAccessSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.UserProfile.AssignedAccessSettings.IsEnabled.get
 		// Forced skipping of method Windows.System.UserProfile.AssignedAccessSettings.IsSingleAppKioskMode.get
 		// Forced skipping of method Windows.System.UserProfile.AssignedAccessSettings.User.get
-		// Forced skipping of method Windows.System.UserProfile.AssignedAccessSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

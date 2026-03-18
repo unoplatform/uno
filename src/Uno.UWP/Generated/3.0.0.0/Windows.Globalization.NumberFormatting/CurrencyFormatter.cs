@@ -63,10 +63,6 @@ namespace Windows.Globalization.NumberFormatting
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.CurrencyFormatter(string, System.Collections.Generic.IEnumerable<string>, string)
-		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public long? ParseInt(string text)
@@ -137,7 +133,6 @@ namespace Windows.Globalization.NumberFormatting
 		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.ResolvedLanguage.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.SignificantDigits.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.SignificantDigits.set
-		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Globalization.NumberFormatting.INumberParser
 		// Processing: Windows.Globalization.NumberFormatting.INumberFormatter2
 		// Processing: Windows.Globalization.NumberFormatting.INumberFormatter

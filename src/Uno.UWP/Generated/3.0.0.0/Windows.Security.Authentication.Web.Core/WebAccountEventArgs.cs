@@ -23,11 +23,6 @@ namespace Windows.Security.Authentication.Web.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountEventArgs.Account.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -12,10 +12,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property OldDate
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.DatePickedEventArgs.DatePickedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickedEventArgs.DatePickedEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickedEventArgs.NewDate.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickedEventArgs.OldDate.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

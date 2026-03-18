@@ -43,13 +43,8 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem.Content.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem.Id.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem.Timestamp.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -17,10 +17,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.CommonNavigationTransitionInfo.SetIsStaggerElement(Microsoft.UI.Xaml.UIElement, bool)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.CommonNavigationTransitionInfo.IsStaggerElementProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.CommonNavigationTransitionInfo.IsStaggeringEnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.CommonNavigationTransitionInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.CommonNavigationTransitionInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.CommonNavigationTransitionInfo.IsStaggeringEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.CommonNavigationTransitionInfo.IsStaggeringEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.CommonNavigationTransitionInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -26,10 +26,6 @@ namespace Windows.Management.Deployment
 		}
 #endif
 		// Forced skipping of method Windows.Management.Deployment.PackageManager.PackageManager()
-		// Forced skipping of method Windows.Management.Deployment.PackageManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Management.Deployment.PackageManager.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Management.Deployment.PackageManager.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Management.Deployment.PackageManager.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Management.Deployment.DeploymentResult, global::Windows.Management.Deployment.DeploymentProgress> AddPackageAsync(global::System.Uri packageUri, global::System.Collections.Generic.IEnumerable<global::System.Uri> dependencyPackageUris, global::Windows.Management.Deployment.DeploymentOptions deploymentOptions)
@@ -451,6 +447,5 @@ namespace Windows.Management.Deployment
 		}
 #endif
 		// Forced skipping of method Windows.Management.Deployment.PackageManager.DebugSettings.get
-		// Forced skipping of method Windows.Management.Deployment.PackageManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

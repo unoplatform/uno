@@ -75,10 +75,6 @@ namespace Windows.Devices.WiFiDirect
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.InformationElements.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.InformationElements.set
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.IsAutonomousGroupOwnerEnabled.get
@@ -87,6 +83,5 @@ namespace Windows.Devices.WiFiDirect
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.ListenStateDiscoverability.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.ListenStateDiscoverability.set
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.SupportedConfigurationMethods.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisement.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

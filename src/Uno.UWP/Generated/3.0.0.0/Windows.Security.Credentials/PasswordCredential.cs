@@ -25,10 +25,6 @@ namespace Windows.Security.Credentials
 		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.PasswordCredential()
 		// Skipping already declared method Windows.Security.Credentials.PasswordCredential.PasswordCredential(string, string, string)
 		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.PasswordCredential(string, string, string)
-		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.Security.Credentials.PasswordCredential.RetrievePassword()
 		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.Password.get
 		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.Password.set
@@ -37,6 +33,5 @@ namespace Windows.Security.Credentials
 		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.Resource.set
 		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.UserName.get
 		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.UserName.set
-		// Forced skipping of method Windows.Security.Credentials.PasswordCredential.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

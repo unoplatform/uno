@@ -36,8 +36,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackPanel.OrientationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackPanel.PaddingProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackPanel.SpacingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackPanel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackPanel.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.StackPanel.GetIrregularSnapPoints(Microsoft.UI.Xaml.Controls.Orientation, Microsoft.UI.Xaml.Controls.Primitives.SnapPointsAlignment)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.StackPanel.GetRegularSnapPoints(Microsoft.UI.Xaml.Controls.Orientation, Microsoft.UI.Xaml.Controls.Primitives.SnapPointsAlignment, out float)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackPanel.HorizontalSnapPointsChanged.add
@@ -63,7 +61,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackPanel.Padding.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackPanel.Spacing.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackPanel.Spacing.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackPanel.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.StackPanel.HorizontalSnapPointsChanged
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.StackPanel.VerticalSnapPointsChanged
 		// Processing: Microsoft.UI.Xaml.Controls.Primitives.IScrollSnapPointsInfo

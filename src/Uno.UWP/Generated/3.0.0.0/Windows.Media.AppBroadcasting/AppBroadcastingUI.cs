@@ -27,10 +27,6 @@ namespace Windows.Media.AppBroadcasting
 			throw new global::System.NotImplementedException("The member AppBroadcastingUI AppBroadcastingUI.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastingUI%20AppBroadcastingUI.GetForUser%28User%20user%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingUI.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingUI.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingUI.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingUI.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.AppBroadcasting.AppBroadcastingStatus GetStatus()
@@ -45,6 +41,5 @@ namespace Windows.Media.AppBroadcasting
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.AppBroadcasting.AppBroadcastingUI", "void AppBroadcastingUI.ShowBroadcastUI()");
 		}
 #endif
-		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingUI.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

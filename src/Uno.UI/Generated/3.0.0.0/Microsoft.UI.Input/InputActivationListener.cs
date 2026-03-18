@@ -37,12 +37,9 @@ namespace Microsoft.UI.Input
 			throw new global::System.NotImplementedException("The member InputActivationListener InputActivationListener.GetForIsland(ContentIsland island) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputActivationListener%20InputActivationListener.GetForIsland%28ContentIsland%20island%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.InputActivationListener.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.InputActivationListener.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.InputActivationListener.InputActivationChanged.add
 		// Forced skipping of method Microsoft.UI.Input.InputActivationListener.InputActivationChanged.remove
 		// Forced skipping of method Microsoft.UI.Input.InputActivationListener.State.get
-		// Forced skipping of method Microsoft.UI.Input.InputActivationListener.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Input.InputActivationListener, global::Microsoft.UI.Input.InputActivationListenerActivationChangedEventArgs> InputActivationChanged

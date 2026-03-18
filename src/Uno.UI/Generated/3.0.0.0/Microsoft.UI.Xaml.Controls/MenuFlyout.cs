@@ -14,12 +14,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.MenuFlyout.MenuFlyout()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyout.MenuFlyout()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyout.MenuFlyoutPresenterStyleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyout.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyout.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.MenuFlyout.ShowAt(Microsoft.UI.Xaml.UIElement, Windows.Foundation.Point)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyout.Items.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyout.MenuFlyoutPresenterStyle.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyout.MenuFlyoutPresenterStyle.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyout.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -12,10 +12,6 @@ namespace Windows.Media.SpeechRecognition
 		// Skipping already declared property ExampleText
 		// Skipping already declared property IsReadBackEnabled
 		// Skipping already declared property ShowConfirmation
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions.AudiblePrompt.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions.AudiblePrompt.set
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions.ExampleText.get
@@ -24,6 +20,5 @@ namespace Windows.Media.SpeechRecognition
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions.IsReadBackEnabled.set
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions.ShowConfirmation.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions.ShowConfirmation.set
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

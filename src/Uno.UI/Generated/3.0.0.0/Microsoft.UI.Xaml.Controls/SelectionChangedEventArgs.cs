@@ -12,10 +12,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property RemovedItems
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs.SelectionChangedEventArgs(System.Collections.Generic.IList<object>, System.Collections.Generic.IList<object>)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs.SelectionChangedEventArgs(System.Collections.Generic.IList<object>, System.Collections.Generic.IList<object>)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs.AddedItems.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs.RemovedItems.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

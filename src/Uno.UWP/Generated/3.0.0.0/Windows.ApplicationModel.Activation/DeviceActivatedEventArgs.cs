@@ -93,10 +93,6 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.DeviceActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.DeviceActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.DeviceActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.DeviceActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.DeviceActivatedEventArgs.CurrentlyShownApplicationViewId.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.DeviceActivatedEventArgs.DeviceInformationId.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.DeviceActivatedEventArgs.Kind.get
@@ -105,7 +101,6 @@ namespace Windows.ApplicationModel.Activation
 		// Forced skipping of method Windows.ApplicationModel.Activation.DeviceActivatedEventArgs.User.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.DeviceActivatedEventArgs.Verb.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.DeviceActivatedEventArgs.ViewSwitcher.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.DeviceActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IDeviceActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IApplicationViewActivatedEventArgs

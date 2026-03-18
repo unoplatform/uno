@@ -9,10 +9,5 @@ namespace Microsoft.UI.Xaml.Data
 	public partial class BindingOperations
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(Microsoft.UI.Xaml.DependencyObject, Microsoft.UI.Xaml.DependencyProperty, Microsoft.UI.Xaml.Data.BindingBase)
-		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingOperations.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingOperations.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingOperations.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingOperations.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingOperations.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

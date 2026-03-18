@@ -11,10 +11,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property IsSelectedProperty
 		// Skipping already declared property IsSelected
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemBase.IsSelectedProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemBase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemBase.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemBase.IsSelected.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemBase.IsSelected.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemBase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

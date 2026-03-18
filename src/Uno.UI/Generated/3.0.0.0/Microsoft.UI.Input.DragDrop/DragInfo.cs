@@ -53,14 +53,9 @@ namespace Microsoft.UI.Input.DragDrop
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.AllowedOperations.get
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.Data.get
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.Modifiers.get
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.Position.get
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

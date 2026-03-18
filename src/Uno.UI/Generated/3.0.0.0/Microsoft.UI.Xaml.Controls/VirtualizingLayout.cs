@@ -10,13 +10,10 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayout.VirtualizingLayout()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayout.VirtualizingLayout()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayout.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayout.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayout.InitializeForContextCore(Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayout.UninitializeForContextCore(Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayout.MeasureOverride(Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext, Windows.Foundation.Size)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayout.ArrangeOverride(Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext, Windows.Foundation.Size)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayout.OnItemsChangedCore(Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext, object, System.Collections.Specialized.NotifyCollectionChangedEventArgs)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayout.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

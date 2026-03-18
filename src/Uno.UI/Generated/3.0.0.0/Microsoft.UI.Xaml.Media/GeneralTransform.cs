@@ -12,8 +12,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared property InverseCore
 		// Skipping already declared method Microsoft.UI.Xaml.Media.GeneralTransform.GeneralTransform()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GeneralTransform.GeneralTransform()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeneralTransform.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeneralTransform.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Media.GeneralTransform.TransformPoint(Windows.Foundation.Point)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.GeneralTransform.TryTransform(Windows.Foundation.Point, out Windows.Foundation.Point)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.GeneralTransform.TransformBounds(Windows.Foundation.Rect)
@@ -21,6 +19,5 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared method Microsoft.UI.Xaml.Media.GeneralTransform.TransformBoundsCore(Windows.Foundation.Rect)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GeneralTransform.Inverse.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GeneralTransform.InverseCore.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeneralTransform.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

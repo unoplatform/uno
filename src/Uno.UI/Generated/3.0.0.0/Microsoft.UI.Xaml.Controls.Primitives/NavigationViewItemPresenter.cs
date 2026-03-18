@@ -19,13 +19,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.IconProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.InfoBadgeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.TemplateSettingsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.Icon.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.Icon.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.InfoBadge.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.InfoBadge.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.TemplateSettings.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

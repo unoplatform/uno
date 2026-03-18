@@ -109,8 +109,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.GroupHeaderPlacementProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.GroupPaddingProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.OrientationProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.AreStickyGroupHeadersEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.AreStickyGroupHeadersEnabled.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.CacheLength.get
@@ -128,6 +126,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.Orientation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.Orientation.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.ScrollingDirection.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

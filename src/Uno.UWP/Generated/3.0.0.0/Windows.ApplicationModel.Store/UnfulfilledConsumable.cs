@@ -43,13 +43,8 @@ namespace Windows.ApplicationModel.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Store.UnfulfilledConsumable.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Store.UnfulfilledConsumable.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Store.UnfulfilledConsumable.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Store.UnfulfilledConsumable.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Store.UnfulfilledConsumable.OfferId.get
 		// Forced skipping of method Windows.ApplicationModel.Store.UnfulfilledConsumable.ProductId.get
 		// Forced skipping of method Windows.ApplicationModel.Store.UnfulfilledConsumable.TransactionId.get
-		// Forced skipping of method Windows.ApplicationModel.Store.UnfulfilledConsumable.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

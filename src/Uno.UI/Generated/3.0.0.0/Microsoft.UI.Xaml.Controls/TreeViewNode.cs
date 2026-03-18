@@ -25,8 +25,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewNode.DepthProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewNode.HasChildrenProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewNode.IsExpandedProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewNode.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewNode.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewNode.Children.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewNode.Content.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewNode.Content.set
@@ -37,6 +35,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewNode.IsExpanded.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewNode.IsExpanded.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewNode.Parent.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewNode.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -516,8 +516,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemPresenter.SelectedPointerOverBackgroundProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemPresenter.SelectedPointerOverBorderBrushProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemPresenter.SelectionCheckMarkVisualEnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemPresenter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemPresenter.CheckBrush.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemPresenter.CheckBrush.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemPresenter.CheckHintBrush.get
@@ -562,6 +560,5 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemPresenter.SelectedPointerOverBorderBrush.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemPresenter.SelectionCheckMarkVisualEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemPresenter.SelectionCheckMarkVisualEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.GridViewItemPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

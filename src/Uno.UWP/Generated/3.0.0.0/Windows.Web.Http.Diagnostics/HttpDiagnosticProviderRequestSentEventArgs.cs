@@ -83,10 +83,6 @@ namespace Windows.Web.Http.Diagnostics
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestSentEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestSentEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestSentEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestSentEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestSentEventArgs.ActivityId.get
 		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestSentEventArgs.Initiator.get
 		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestSentEventArgs.Message.get
@@ -94,6 +90,5 @@ namespace Windows.Web.Http.Diagnostics
 		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestSentEventArgs.SourceLocations.get
 		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestSentEventArgs.ThreadId.get
 		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestSentEventArgs.Timestamp.get
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestSentEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

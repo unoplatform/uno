@@ -33,10 +33,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.RepositionThemeTransition()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.RepositionThemeTransition()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.IsStaggeringEnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.IsStaggeringEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.IsStaggeringEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

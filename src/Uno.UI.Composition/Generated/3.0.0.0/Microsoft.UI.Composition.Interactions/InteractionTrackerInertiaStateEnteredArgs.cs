@@ -17,10 +17,6 @@ namespace Microsoft.UI.Composition.Interactions
 		// Skipping already declared property PositionVelocityInPixelsPerSecond
 		// Skipping already declared property RequestId
 		// Skipping already declared property ScaleVelocityInPercentPerSecond
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.IsFromBinding.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.IsInertiaFromImpulse.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.ModifiedRestingPosition.get
@@ -30,6 +26,5 @@ namespace Microsoft.UI.Composition.Interactions
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.PositionVelocityInPixelsPerSecond.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.RequestId.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.ScaleVelocityInPercentPerSecond.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

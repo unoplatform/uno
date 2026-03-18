@@ -14,14 +14,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollOptions.ScrollingScrollOptions(Microsoft.UI.Xaml.Controls.ScrollingAnimationMode)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollingScrollOptions.ScrollingScrollOptions(Microsoft.UI.Xaml.Controls.ScrollingAnimationMode, Microsoft.UI.Xaml.Controls.ScrollingSnapPointsMode)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollOptions.ScrollingScrollOptions(Microsoft.UI.Xaml.Controls.ScrollingAnimationMode, Microsoft.UI.Xaml.Controls.ScrollingSnapPointsMode)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollOptions.AnimationMode.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollOptions.AnimationMode.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollOptions.SnapPointsMode.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollOptions.SnapPointsMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

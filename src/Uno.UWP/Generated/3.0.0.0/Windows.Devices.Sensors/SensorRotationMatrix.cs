@@ -103,10 +103,6 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.SensorRotationMatrix.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.SensorRotationMatrix.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.SensorRotationMatrix.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Sensors.SensorRotationMatrix.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.SensorRotationMatrix.M11.get
 		// Forced skipping of method Windows.Devices.Sensors.SensorRotationMatrix.M12.get
 		// Forced skipping of method Windows.Devices.Sensors.SensorRotationMatrix.M13.get
@@ -116,6 +112,5 @@ namespace Windows.Devices.Sensors
 		// Forced skipping of method Windows.Devices.Sensors.SensorRotationMatrix.M31.get
 		// Forced skipping of method Windows.Devices.Sensors.SensorRotationMatrix.M32.get
 		// Forced skipping of method Windows.Devices.Sensors.SensorRotationMatrix.M33.get
-		// Forced skipping of method Windows.Devices.Sensors.SensorRotationMatrix.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

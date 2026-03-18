@@ -208,8 +208,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.IsZoomedInViewProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.OrientationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.SemanticZoomOwnerProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ScrollToSection(global::Microsoft.UI.Xaml.Controls.HubSection section)
@@ -287,7 +285,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.SectionsInView.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.SemanticZoomOwner.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.SemanticZoomOwner.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Hub.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Microsoft.UI.Xaml.Controls.HubSectionHeaderClickEventHandler SectionHeaderClick

@@ -114,8 +114,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.ShouldConstrainToRootBoundsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.SystemBackdropProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.VerticalOffsetProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.Closed.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.Closed.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.Opened.add
@@ -146,7 +144,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.SystemBackdrop.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.VerticalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.VerticalOffset.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.Popup.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.Popup.Closed
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.Popup.Opened
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.Popup.ActualPlacementChanged

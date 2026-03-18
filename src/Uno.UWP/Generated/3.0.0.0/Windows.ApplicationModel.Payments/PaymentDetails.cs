@@ -88,10 +88,6 @@ namespace Windows.ApplicationModel.Payments
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentDetails.PaymentDetails(Windows.ApplicationModel.Payments.PaymentItem, System.Collections.Generic.IEnumerable<Windows.ApplicationModel.Payments.PaymentItem>)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentDetails.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentDetails.DisplayItems.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentDetails.DisplayItems.set
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentDetails.Modifiers.get
@@ -100,6 +96,5 @@ namespace Windows.ApplicationModel.Payments
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentDetails.ShippingOptions.set
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentDetails.Total.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentDetails.Total.set
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

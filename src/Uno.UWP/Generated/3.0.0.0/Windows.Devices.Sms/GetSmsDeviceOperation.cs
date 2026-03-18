@@ -57,10 +57,6 @@ namespace Windows.Devices.Sms
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sms.GetSmsDeviceOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Sms.GetSmsDeviceOperation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Sms.GetSmsDeviceOperation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Sms.GetSmsDeviceOperation.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Sms.SmsDevice GetResults()
@@ -87,7 +83,6 @@ namespace Windows.Devices.Sms
 		// Forced skipping of method Windows.Devices.Sms.GetSmsDeviceOperation.ErrorCode.get
 		// Forced skipping of method Windows.Devices.Sms.GetSmsDeviceOperation.Id.get
 		// Forced skipping of method Windows.Devices.Sms.GetSmsDeviceOperation.Status.get
-		// Forced skipping of method Windows.Devices.Sms.GetSmsDeviceOperation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Foundation.IAsyncOperation<Windows.Devices.Sms.SmsDevice>
 		// Processing: Windows.Foundation.IAsyncInfo
 	}

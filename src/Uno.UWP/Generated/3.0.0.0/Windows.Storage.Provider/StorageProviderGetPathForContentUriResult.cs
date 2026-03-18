@@ -44,14 +44,9 @@ namespace Windows.Storage.Provider
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetPathForContentUriResult.StorageProviderGetPathForContentUriResult()
-		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetPathForContentUriResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetPathForContentUriResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetPathForContentUriResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetPathForContentUriResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetPathForContentUriResult.Path.get
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetPathForContentUriResult.Path.set
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetPathForContentUriResult.Status.get
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetPathForContentUriResult.Status.set
-		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetPathForContentUriResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

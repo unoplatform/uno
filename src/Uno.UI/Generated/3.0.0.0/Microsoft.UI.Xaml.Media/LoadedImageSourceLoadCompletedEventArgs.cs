@@ -9,11 +9,6 @@ namespace Microsoft.UI.Xaml.Media
 	public partial class LoadedImageSourceLoadCompletedEventArgs
 	{
 		// Skipping already declared property Status
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LoadedImageSourceLoadCompletedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LoadedImageSourceLoadCompletedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LoadedImageSourceLoadCompletedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LoadedImageSourceLoadCompletedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LoadedImageSourceLoadCompletedEventArgs.Status.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LoadedImageSourceLoadCompletedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

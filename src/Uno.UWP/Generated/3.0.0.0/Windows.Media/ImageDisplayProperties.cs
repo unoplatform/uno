@@ -41,14 +41,9 @@ namespace Windows.Media
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.ImageDisplayProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.ImageDisplayProperties.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.ImageDisplayProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.ImageDisplayProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.ImageDisplayProperties.Subtitle.get
 		// Forced skipping of method Windows.Media.ImageDisplayProperties.Subtitle.set
 		// Forced skipping of method Windows.Media.ImageDisplayProperties.Title.get
 		// Forced skipping of method Windows.Media.ImageDisplayProperties.Title.set
-		// Forced skipping of method Windows.Media.ImageDisplayProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,12 +10,9 @@ namespace Microsoft.UI.Composition
 	{
 		// Skipping already declared property End
 		// Skipping already declared property Start
-		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.End.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.End.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.Start.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.Start.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

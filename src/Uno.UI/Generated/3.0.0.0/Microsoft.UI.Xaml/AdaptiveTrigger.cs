@@ -16,12 +16,9 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.AdaptiveTrigger()
 		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.MinWindowHeightProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.MinWindowWidthProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.MinWindowHeight.get
 		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.MinWindowHeight.set
 		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.MinWindowWidth.get
 		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.MinWindowWidth.set
-		// Forced skipping of method Microsoft.UI.Xaml.AdaptiveTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

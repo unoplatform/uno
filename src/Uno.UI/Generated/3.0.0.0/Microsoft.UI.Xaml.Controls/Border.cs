@@ -33,8 +33,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.ChildTransitionsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.CornerRadiusProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.PaddingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.Background.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.Background.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.BackgroundSizing.get
@@ -53,6 +51,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.CornerRadius.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.Padding.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.Padding.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Border.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

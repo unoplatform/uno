@@ -10,15 +10,10 @@ namespace Windows.Devices.Enumeration
 	{
 		// Skipping already declared property Count
 		// Skipping already declared property this[]
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.Count.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.this[int].get
 		// Skipping already declared method Windows.Devices.Enumeration.DeviceInformationCollection.GetEnumerator()
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.System.Collections.Generic.IReadOnlyList<Windows.Devices.Enumeration.DeviceInformation>.get_Item(int)
 		// Processing: System.Collections.Generic.IReadOnlyList<Windows.Devices.Enumeration.DeviceInformation>
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Devices.Enumeration.DeviceInformation>

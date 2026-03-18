@@ -234,10 +234,6 @@ namespace Windows.Devices.Display
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DisplayMonitor> DisplayMonitor.FromInterfaceIdAsync(string deviceInterfaceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDisplayMonitor%3E%20DisplayMonitor.FromInterfaceIdAsync%28string%20deviceInterfaceId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public byte[] GetDescriptor(global::Windows.Devices.Display.DisplayMonitorDescriptorKind descriptorKind)
@@ -265,6 +261,5 @@ namespace Windows.Devices.Display
 		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.RedPrimary.get
 		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.UsageKind.get
 		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.WhitePoint.get
-		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -27,11 +27,6 @@ namespace Windows.ApplicationModel.Background
 			throw new global::System.NotImplementedException("The member StorageLibraryContentChangedTrigger StorageLibraryContentChangedTrigger.CreateFromLibraries(IEnumerable<StorageLibrary> storageLibraries) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageLibraryContentChangedTrigger%20StorageLibraryContentChangedTrigger.CreateFromLibraries%28IEnumerable%3CStorageLibrary%3E%20storageLibraries%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryContentChangedTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryContentChangedTrigger.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryContentChangedTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryContentChangedTrigger.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Windows.ApplicationModel.Background.StorageLibraryContentChangedTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger
 	}
 }

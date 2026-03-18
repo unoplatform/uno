@@ -21,8 +21,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.InfoProviderProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.OrientationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.StateProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.RefreshVisualizer.RequestRefresh()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.RefreshRequested.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.RefreshRequested.remove
@@ -33,7 +31,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.Orientation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.Orientation.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.State.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshVisualizer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.RefreshVisualizer.RefreshRequested
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.RefreshVisualizer.RefreshStateChanged
 	}

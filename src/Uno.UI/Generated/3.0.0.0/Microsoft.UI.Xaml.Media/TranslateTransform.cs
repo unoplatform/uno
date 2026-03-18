@@ -16,12 +16,9 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.TranslateTransform()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.XProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.YProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.X.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.X.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.Y.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.Y.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TranslateTransform.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -13,10 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.InfoBarTemplateSettings()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.InfoBarTemplateSettings()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.IconElementProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.IconElement.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.IconElement.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,10 +10,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.HyperlinkButtonAutomationPeer.HyperlinkButtonAutomationPeer(Microsoft.UI.Xaml.Controls.HyperlinkButton)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HyperlinkButtonAutomationPeer.HyperlinkButtonAutomationPeer(Microsoft.UI.Xaml.Controls.HyperlinkButton)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HyperlinkButtonAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HyperlinkButtonAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.HyperlinkButtonAutomationPeer.Invoke()
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.HyperlinkButtonAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IInvokeProvider
 	}
 }

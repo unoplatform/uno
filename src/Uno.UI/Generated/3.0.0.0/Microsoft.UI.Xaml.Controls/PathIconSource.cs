@@ -13,10 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.PathIconSource.PathIconSource()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIconSource.PathIconSource()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIconSource.DataProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIconSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIconSource.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIconSource.Data.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIconSource.Data.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PathIconSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

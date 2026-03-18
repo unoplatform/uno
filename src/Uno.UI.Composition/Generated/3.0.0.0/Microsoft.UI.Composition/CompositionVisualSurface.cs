@@ -11,15 +11,12 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property SourceOffset
 		// Skipping already declared property SourceSize
 		// Skipping already declared property SourceVisual
-		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.SourceOffset.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.SourceOffset.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.SourceSize.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.SourceSize.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.SourceVisual.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.SourceVisual.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Composition.ICompositionSurface
 	}
 }

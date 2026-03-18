@@ -12,10 +12,7 @@ namespace Microsoft.UI.Input
 		// Skipping already declared property ResourceId
 		// Skipping already declared method Microsoft.UI.Input.InputDesktopResourceCursor.Create(uint)
 		// Skipping already declared method Microsoft.UI.Input.InputDesktopResourceCursor.CreateFromModule(string, uint)
-		// Forced skipping of method Microsoft.UI.Input.InputDesktopResourceCursor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.InputDesktopResourceCursor.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.InputDesktopResourceCursor.ModuleName.get
 		// Forced skipping of method Microsoft.UI.Input.InputDesktopResourceCursor.ResourceId.get
-		// Forced skipping of method Microsoft.UI.Input.InputDesktopResourceCursor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

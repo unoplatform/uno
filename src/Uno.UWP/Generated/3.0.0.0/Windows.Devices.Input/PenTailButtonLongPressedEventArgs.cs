@@ -13,10 +13,5 @@ namespace Windows.Devices.Input
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Input.PenTailButtonLongPressedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Input.PenTailButtonLongPressedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Input.PenTailButtonLongPressedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Input.PenTailButtonLongPressedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Windows.Devices.Input.PenTailButtonLongPressedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -25,10 +25,6 @@ namespace Windows.Data.Xml.Dom
 		// Skipping already declared property PreviousSibling
 		// Skipping already declared property PublicId
 		// Skipping already declared property SystemId
-		// Forced skipping of method Windows.Data.Xml.Dom.DtdNotation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Data.Xml.Dom.DtdNotation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Data.Xml.Dom.DtdNotation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Data.Xml.Dom.DtdNotation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.Data.Xml.Dom.DtdNotation.HasChildNodes()
 		// Skipping already declared method Windows.Data.Xml.Dom.DtdNotation.InsertBefore(Windows.Data.Xml.Dom.IXmlNode, Windows.Data.Xml.Dom.IXmlNode)
 		// Skipping already declared method Windows.Data.Xml.Dom.DtdNotation.ReplaceChild(Windows.Data.Xml.Dom.IXmlNode, Windows.Data.Xml.Dom.IXmlNode)
@@ -73,7 +69,6 @@ namespace Windows.Data.Xml.Dom
 		// Forced skipping of method Windows.Data.Xml.Dom.DtdNotation.PreviousSibling.get
 		// Forced skipping of method Windows.Data.Xml.Dom.DtdNotation.PublicId.get
 		// Forced skipping of method Windows.Data.Xml.Dom.DtdNotation.SystemId.get
-		// Forced skipping of method Windows.Data.Xml.Dom.DtdNotation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Data.Xml.Dom.IXmlNode
 		// Processing: Windows.Data.Xml.Dom.IXmlNodeSelector
 		// Processing: Windows.Data.Xml.Dom.IXmlNodeSerializer

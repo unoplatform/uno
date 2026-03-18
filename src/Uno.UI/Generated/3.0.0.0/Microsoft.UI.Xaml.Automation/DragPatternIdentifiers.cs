@@ -16,10 +16,5 @@ namespace Microsoft.UI.Xaml.Automation
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.DragPatternIdentifiers.DropEffectsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.DragPatternIdentifiers.GrabbedItemsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.DragPatternIdentifiers.IsGrabbedProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.DragPatternIdentifiers.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.DragPatternIdentifiers.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.DragPatternIdentifiers.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.DragPatternIdentifiers.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.DragPatternIdentifiers.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

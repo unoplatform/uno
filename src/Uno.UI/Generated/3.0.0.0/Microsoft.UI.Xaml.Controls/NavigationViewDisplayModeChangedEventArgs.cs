@@ -9,11 +9,6 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class NavigationViewDisplayModeChangedEventArgs
 	{
 		// Skipping already declared property DisplayMode
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewDisplayModeChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewDisplayModeChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewDisplayModeChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewDisplayModeChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewDisplayModeChangedEventArgs.DisplayMode.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewDisplayModeChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

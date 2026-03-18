@@ -20,10 +20,6 @@ namespace Windows.Storage.FileProperties
 		}
 #endif
 		// Skipping already declared property Size
-		// Forced skipping of method Windows.Storage.FileProperties.BasicProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.FileProperties.BasicProperties.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.FileProperties.BasicProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.FileProperties.BasicProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IDictionary<string, object>> RetrievePropertiesAsync(global::System.Collections.Generic.IEnumerable<string> propertiesToRetrieve)
@@ -48,7 +44,6 @@ namespace Windows.Storage.FileProperties
 		// Forced skipping of method Windows.Storage.FileProperties.BasicProperties.DateModified.get
 		// Forced skipping of method Windows.Storage.FileProperties.BasicProperties.ItemDate.get
 		// Forced skipping of method Windows.Storage.FileProperties.BasicProperties.Size.get
-		// Forced skipping of method Windows.Storage.FileProperties.BasicProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Storage.FileProperties.IStorageItemExtraProperties
 	}
 }

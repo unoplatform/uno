@@ -11,11 +11,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Action
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.DynamicOverflowItemsChangingEventArgs.DynamicOverflowItemsChangingEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DynamicOverflowItemsChangingEventArgs.DynamicOverflowItemsChangingEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DynamicOverflowItemsChangingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DynamicOverflowItemsChangingEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DynamicOverflowItemsChangingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DynamicOverflowItemsChangingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DynamicOverflowItemsChangingEventArgs.Action.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DynamicOverflowItemsChangingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -217,10 +217,6 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member UserDataPaths UserDataPaths.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataPaths%20UserDataPaths.GetDefault%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Storage.UserDataPaths.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.UserDataPaths.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.UserDataPaths.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.UserDataPaths.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.UserDataPaths.CameraRoll.get
 		// Forced skipping of method Windows.Storage.UserDataPaths.Cookies.get
 		// Forced skipping of method Windows.Storage.UserDataPaths.Desktop.get
@@ -240,6 +236,5 @@ namespace Windows.Storage
 		// Forced skipping of method Windows.Storage.UserDataPaths.Screenshots.get
 		// Forced skipping of method Windows.Storage.UserDataPaths.Templates.get
 		// Forced skipping of method Windows.Storage.UserDataPaths.Videos.get
-		// Forced skipping of method Windows.Storage.UserDataPaths.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

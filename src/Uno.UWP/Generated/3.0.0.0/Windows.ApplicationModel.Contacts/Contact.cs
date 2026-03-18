@@ -250,10 +250,6 @@ namespace Windows.ApplicationModel.Contacts
 		// Skipping already declared property YomiGivenName
 		// Skipping already declared method Windows.ApplicationModel.Contacts.Contact.Contact()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Contact.Contact()
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Contact.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Contact.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Contact.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Contact.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Contact.Addresses.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Contact.AggregateId.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Contact.ConnectedServiceAccounts.get
@@ -312,6 +308,5 @@ namespace Windows.ApplicationModel.Contacts
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Contact.YomiFamilyName.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Contact.YomiGivenName.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Contact.YomiGivenName.set
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Contact.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

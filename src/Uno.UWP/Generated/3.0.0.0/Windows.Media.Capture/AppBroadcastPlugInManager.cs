@@ -61,14 +61,9 @@ namespace Windows.Media.Capture
 			throw new global::System.NotImplementedException("The member AppBroadcastPlugInManager AppBroadcastPlugInManager.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastPlugInManager%20AppBroadcastPlugInManager.GetForUser%28User%20user%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugInManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugInManager.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugInManager.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugInManager.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugInManager.DefaultPlugIn.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugInManager.DefaultPlugIn.set
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugInManager.IsBroadcastProviderAvailable.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugInManager.PlugInList.get
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastPlugInManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

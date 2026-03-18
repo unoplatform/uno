@@ -20,8 +20,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Page.BottomAppBarProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Page.FrameProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Page.TopAppBarProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Page.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Page.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Page.OnNavigatedFrom(Microsoft.UI.Xaml.Navigation.NavigationEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Page.OnNavigatedTo(Microsoft.UI.Xaml.Navigation.NavigationEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Page.OnNavigatingFrom(Microsoft.UI.Xaml.Navigation.NavigatingCancelEventArgs)
@@ -32,6 +30,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Page.NavigationCacheMode.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Page.TopAppBar.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Page.TopAppBar.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Page.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

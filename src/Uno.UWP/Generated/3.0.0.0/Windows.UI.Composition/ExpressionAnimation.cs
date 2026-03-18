@@ -27,10 +27,7 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.ExpressionAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.ExpressionAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.ExpressionAnimation.Expression.get
 		// Forced skipping of method Windows.UI.Composition.ExpressionAnimation.Expression.set
-		// Forced skipping of method Windows.UI.Composition.ExpressionAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

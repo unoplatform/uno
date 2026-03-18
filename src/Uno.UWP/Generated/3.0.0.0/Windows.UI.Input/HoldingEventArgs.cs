@@ -13,15 +13,10 @@ namespace Windows.UI.Input
 		// Skipping already declared property HoldingState
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property Position
-		// Forced skipping of method Windows.UI.Input.HoldingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.HoldingEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Input.HoldingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Input.HoldingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.HoldingEventArgs.ContactCount.get
 		// Forced skipping of method Windows.UI.Input.HoldingEventArgs.CurrentContactCount.get
 		// Forced skipping of method Windows.UI.Input.HoldingEventArgs.HoldingState.get
 		// Forced skipping of method Windows.UI.Input.HoldingEventArgs.PointerDeviceType.get
 		// Forced skipping of method Windows.UI.Input.HoldingEventArgs.Position.get
-		// Forced skipping of method Windows.UI.Input.HoldingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

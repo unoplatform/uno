@@ -10,10 +10,7 @@ namespace Microsoft.UI.Composition
 	{
 		// Skipping already declared property Amplitude
 		// Skipping already declared property Mode
-		// Forced skipping of method Microsoft.UI.Composition.BackEasingFunction.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.BackEasingFunction.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.BackEasingFunction.Amplitude.get
 		// Forced skipping of method Microsoft.UI.Composition.BackEasingFunction.Mode.get
-		// Forced skipping of method Microsoft.UI.Composition.BackEasingFunction.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -61,16 +61,11 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.TorchControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Devices.TorchControl.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Devices.TorchControl.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Devices.TorchControl.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Devices.TorchControl.Enabled.get
 		// Forced skipping of method Windows.Media.Devices.TorchControl.Enabled.set
 		// Forced skipping of method Windows.Media.Devices.TorchControl.PowerPercent.get
 		// Forced skipping of method Windows.Media.Devices.TorchControl.PowerPercent.set
 		// Forced skipping of method Windows.Media.Devices.TorchControl.PowerSupported.get
 		// Forced skipping of method Windows.Media.Devices.TorchControl.Supported.get
-		// Forced skipping of method Windows.Media.Devices.TorchControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -64,8 +64,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.MaxDateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.MinDateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.PlaceholderTextProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.CalendarDatePicker.SetDisplayDate(System.DateTimeOffset)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.CalendarDatePicker.SetYearDecadeDisplayDimensions(int, int)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.CalendarViewDayItemChanging.add
@@ -112,7 +110,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.MinDate.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.PlaceholderText.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.PlaceholderText.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarDatePicker.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventHandler CalendarViewDayItemChanging

@@ -11,9 +11,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property Value
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPoint.ZoomSnapPoint(double)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPoint.ZoomSnapPoint(double)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPoint.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPoint.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPoint.Value.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPoint.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

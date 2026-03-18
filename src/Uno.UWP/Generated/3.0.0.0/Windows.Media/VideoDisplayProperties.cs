@@ -51,15 +51,10 @@ namespace Windows.Media
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.VideoDisplayProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.VideoDisplayProperties.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.VideoDisplayProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.VideoDisplayProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.VideoDisplayProperties.Genres.get
 		// Forced skipping of method Windows.Media.VideoDisplayProperties.Subtitle.get
 		// Forced skipping of method Windows.Media.VideoDisplayProperties.Subtitle.set
 		// Forced skipping of method Windows.Media.VideoDisplayProperties.Title.get
 		// Forced skipping of method Windows.Media.VideoDisplayProperties.Title.set
-		// Forced skipping of method Windows.Media.VideoDisplayProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

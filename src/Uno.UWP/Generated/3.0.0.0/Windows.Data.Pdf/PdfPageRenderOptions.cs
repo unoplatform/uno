@@ -100,10 +100,6 @@ namespace Windows.Data.Pdf
 		}
 #endif
 		// Forced skipping of method Windows.Data.Pdf.PdfPageRenderOptions.PdfPageRenderOptions()
-		// Forced skipping of method Windows.Data.Pdf.PdfPageRenderOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Data.Pdf.PdfPageRenderOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Data.Pdf.PdfPageRenderOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Data.Pdf.PdfPageRenderOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Data.Pdf.PdfPageRenderOptions.BackgroundColor.get
 		// Forced skipping of method Windows.Data.Pdf.PdfPageRenderOptions.BackgroundColor.set
 		// Forced skipping of method Windows.Data.Pdf.PdfPageRenderOptions.BitmapEncoderId.get
@@ -116,6 +112,5 @@ namespace Windows.Data.Pdf
 		// Forced skipping of method Windows.Data.Pdf.PdfPageRenderOptions.IsIgnoringHighContrast.set
 		// Forced skipping of method Windows.Data.Pdf.PdfPageRenderOptions.SourceRect.get
 		// Forced skipping of method Windows.Data.Pdf.PdfPageRenderOptions.SourceRect.set
-		// Forced skipping of method Windows.Data.Pdf.PdfPageRenderOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

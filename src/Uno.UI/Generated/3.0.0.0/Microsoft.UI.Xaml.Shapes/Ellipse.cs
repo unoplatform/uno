@@ -10,8 +10,5 @@ namespace Microsoft.UI.Xaml.Shapes
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Shapes.Ellipse.Ellipse()
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Ellipse.Ellipse()
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Ellipse.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Ellipse.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Ellipse.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

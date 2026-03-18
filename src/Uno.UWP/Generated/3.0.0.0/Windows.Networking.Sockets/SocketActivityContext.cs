@@ -26,11 +26,6 @@ namespace Windows.Networking.Sockets
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.SocketActivityContext.SocketActivityContext(Windows.Storage.Streams.IBuffer)
-		// Forced skipping of method Windows.Networking.Sockets.SocketActivityContext.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Sockets.SocketActivityContext.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Sockets.SocketActivityContext.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Sockets.SocketActivityContext.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Sockets.SocketActivityContext.Data.get
-		// Forced skipping of method Windows.Networking.Sockets.SocketActivityContext.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

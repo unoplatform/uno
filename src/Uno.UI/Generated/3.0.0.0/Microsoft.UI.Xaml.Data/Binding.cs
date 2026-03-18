@@ -21,8 +21,6 @@ namespace Microsoft.UI.Xaml.Data
 		// Skipping already declared property UpdateSourceTrigger
 		// Skipping already declared method Microsoft.UI.Xaml.Data.Binding.Binding()
 		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.Binding()
-		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.Converter.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.Converter.set
 		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.ConverterLanguage.get
@@ -45,6 +43,5 @@ namespace Microsoft.UI.Xaml.Data
 		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.TargetNullValue.set
 		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.UpdateSourceTrigger.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.UpdateSourceTrigger.set
-		// Forced skipping of method Microsoft.UI.Xaml.Data.Binding.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

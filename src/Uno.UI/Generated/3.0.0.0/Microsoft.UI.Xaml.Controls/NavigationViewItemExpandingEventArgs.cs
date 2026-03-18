@@ -10,12 +10,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property ExpandingItem
 		// Skipping already declared property ExpandingItemContainer
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemExpandingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemExpandingEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemExpandingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemExpandingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemExpandingEventArgs.ExpandingItem.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemExpandingEventArgs.ExpandingItemContainer.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemExpandingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

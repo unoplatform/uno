@@ -9,11 +9,6 @@ namespace Microsoft.UI.Windowing
 	public partial class AppWindowPresenter
 	{
 		// Skipping already declared property Kind
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowPresenter.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowPresenter.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowPresenter.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowPresenter.Kind.get
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,11 +10,8 @@ namespace Microsoft.UI.Composition
 	{
 		// Skipping already declared property Shapes
 		// Skipping already declared property ViewBox
-		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.Shapes.get
 		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.ViewBox.get
 		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.ViewBox.set
-		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -23,11 +23,6 @@ namespace Windows.Graphics.Display
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilitiesChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilitiesChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilitiesChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilitiesChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilitiesChangedEventArgs.Capabilities.get
-		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilitiesChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

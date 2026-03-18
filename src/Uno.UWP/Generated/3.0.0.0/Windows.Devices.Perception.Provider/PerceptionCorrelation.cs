@@ -46,13 +46,8 @@ namespace Windows.Devices.Perception.Provider
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelation.PerceptionCorrelation(string, System.Numerics.Vector3, System.Numerics.Quaternion)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelation.Orientation.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelation.Position.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelation.TargetId.get
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

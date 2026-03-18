@@ -37,10 +37,6 @@ namespace Windows.Services.Cortana
 			throw new global::System.NotImplementedException("The member CortanaActionableInsights CortanaActionableInsights.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CortanaActionableInsights%20CortanaActionableInsights.GetForUser%28User%20user%29");
 		}
 #endif
-		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsights.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsights.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsights.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsights.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> IsAvailableAsync()
@@ -91,6 +87,5 @@ namespace Windows.Services.Cortana
 		}
 #endif
 		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsights.User.get
-		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsights.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

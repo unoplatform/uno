@@ -22,8 +22,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.AngleYProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.CenterXProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.CenterYProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.AngleX.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.AngleX.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.AngleY.get
@@ -32,6 +30,5 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.CenterX.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.CenterY.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.CenterY.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.SkewTransform.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

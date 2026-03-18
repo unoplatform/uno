@@ -184,10 +184,6 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.TimedTextRegion.TimedTextRegion()
-		// Forced skipping of method Windows.Media.Core.TimedTextRegion.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Core.TimedTextRegion.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Core.TimedTextRegion.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Core.TimedTextRegion.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Core.TimedTextRegion.Background.get
 		// Forced skipping of method Windows.Media.Core.TimedTextRegion.Background.set
 		// Forced skipping of method Windows.Media.Core.TimedTextRegion.DisplayAlignment.get
@@ -212,6 +208,5 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.TimedTextRegion.WritingMode.set
 		// Forced skipping of method Windows.Media.Core.TimedTextRegion.ZIndex.get
 		// Forced skipping of method Windows.Media.Core.TimedTextRegion.ZIndex.set
-		// Forced skipping of method Windows.Media.Core.TimedTextRegion.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

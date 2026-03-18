@@ -231,8 +231,6 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.TagProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.VerticalAlignmentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.WidthProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.FindName(string)
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.SetBinding(Microsoft.UI.Xaml.DependencyProperty, Microsoft.UI.Xaml.Data.BindingBase)
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.GetBindingExpression(Microsoft.UI.Xaml.DependencyProperty)
@@ -312,7 +310,6 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.VerticalAlignment.set
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Width.get
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.Width.set
-		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.ActualThemeChanged
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.EffectiveViewportChanged
 		// Skipping already declared event Microsoft.UI.Xaml.FrameworkElement.LayoutUpdated

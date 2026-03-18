@@ -22,8 +22,6 @@ namespace Microsoft.UI.Xaml.Data
 		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.ItemsPathProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.SourceProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.ViewProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.IsSourceGrouped.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.IsSourceGrouped.set
 		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.ItemsPath.get
@@ -31,6 +29,5 @@ namespace Microsoft.UI.Xaml.Data
 		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.Source.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.Source.set
 		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.View.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.CollectionViewSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

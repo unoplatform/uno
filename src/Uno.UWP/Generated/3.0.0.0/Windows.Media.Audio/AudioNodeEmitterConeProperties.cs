@@ -43,13 +43,8 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterConeProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterConeProperties.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterConeProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterConeProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterConeProperties.InnerAngle.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterConeProperties.OuterAngle.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterConeProperties.OuterAngleGain.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterConeProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

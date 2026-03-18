@@ -68,10 +68,6 @@ namespace Windows.Storage.Search
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Search.IndexableContent.IndexableContent()
-		// Forced skipping of method Windows.Storage.Search.IndexableContent.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.Search.IndexableContent.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.Search.IndexableContent.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.Search.IndexableContent.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.Search.IndexableContent.Id.get
 		// Forced skipping of method Windows.Storage.Search.IndexableContent.Id.set
 		// Forced skipping of method Windows.Storage.Search.IndexableContent.Properties.get
@@ -79,7 +75,6 @@ namespace Windows.Storage.Search
 		// Forced skipping of method Windows.Storage.Search.IndexableContent.Stream.set
 		// Forced skipping of method Windows.Storage.Search.IndexableContent.StreamContentType.get
 		// Forced skipping of method Windows.Storage.Search.IndexableContent.StreamContentType.set
-		// Forced skipping of method Windows.Storage.Search.IndexableContent.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Storage.Search.IIndexableContent
 	}
 }

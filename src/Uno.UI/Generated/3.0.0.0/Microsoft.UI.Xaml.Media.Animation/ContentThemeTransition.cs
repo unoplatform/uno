@@ -56,12 +56,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContentThemeTransition.ContentThemeTransition()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContentThemeTransition.HorizontalOffsetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContentThemeTransition.VerticalOffsetProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContentThemeTransition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContentThemeTransition.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContentThemeTransition.HorizontalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContentThemeTransition.HorizontalOffset.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContentThemeTransition.VerticalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContentThemeTransition.VerticalOffset.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContentThemeTransition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -139,10 +139,6 @@ namespace Windows.Graphics.Imaging
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.JpegXREncoderId.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.PngEncoderId.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.TiffEncoderId.get
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.WinRT.IWinRTObject.AdditionalTypeData.get
 #if false || false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public void SetPixelData(global::Windows.Graphics.Imaging.BitmapPixelFormat pixelFormat, global::Windows.Graphics.Imaging.BitmapAlphaMode alphaMode, uint width, uint height, double dpiX, double dpiY, byte[] pixels)
@@ -188,6 +184,5 @@ namespace Windows.Graphics.Imaging
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.GeneratedThumbnailWidth.set
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.IsThumbnailGenerated.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.IsThumbnailGenerated.set
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -36,10 +36,6 @@ namespace Windows.Data.Text
 		}
 #endif
 		// Forced skipping of method Windows.Data.Text.TextConversionGenerator.TextConversionGenerator(string)
-		// Forced skipping of method Windows.Data.Text.TextConversionGenerator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Data.Text.TextConversionGenerator.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Data.Text.TextConversionGenerator.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Data.Text.TextConversionGenerator.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<string>> GetCandidatesAsync(string input)
@@ -56,6 +52,5 @@ namespace Windows.Data.Text
 #endif
 		// Forced skipping of method Windows.Data.Text.TextConversionGenerator.LanguageAvailableButNotInstalled.get
 		// Forced skipping of method Windows.Data.Text.TextConversionGenerator.ResolvedLanguage.get
-		// Forced skipping of method Windows.Data.Text.TextConversionGenerator.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

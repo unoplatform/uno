@@ -106,14 +106,9 @@ namespace Microsoft.UI.Windowing
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.Primary.get
-		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.DisplayId.get
 		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.IsPrimary.get
 		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.OuterBounds.get
 		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.WorkArea.get
-		// Forced skipping of method Microsoft.UI.Windowing.DisplayArea.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

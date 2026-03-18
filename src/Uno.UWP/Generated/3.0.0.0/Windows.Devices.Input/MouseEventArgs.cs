@@ -23,11 +23,6 @@ namespace Windows.Devices.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Input.MouseEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Input.MouseEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Input.MouseEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Input.MouseEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Input.MouseEventArgs.MouseDelta.get
-		// Forced skipping of method Windows.Devices.Input.MouseEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -63,15 +63,10 @@ namespace Windows.System
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.AppMemoryReport.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.AppMemoryReport.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.AppMemoryReport.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.AppMemoryReport.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.AppMemoryReport.ExpectedTotalCommitLimit.get
 		// Forced skipping of method Windows.System.AppMemoryReport.PeakPrivateCommitUsage.get
 		// Forced skipping of method Windows.System.AppMemoryReport.PrivateCommitUsage.get
 		// Forced skipping of method Windows.System.AppMemoryReport.TotalCommitLimit.get
 		// Forced skipping of method Windows.System.AppMemoryReport.TotalCommitUsage.get
-		// Forced skipping of method Windows.System.AppMemoryReport.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

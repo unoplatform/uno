@@ -63,16 +63,11 @@ namespace Windows.AI.MachineLearning
 			}
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.SequenceFeatureDescriptor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.SequenceFeatureDescriptor.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.SequenceFeatureDescriptor.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.AI.MachineLearning.SequenceFeatureDescriptor.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.AI.MachineLearning.SequenceFeatureDescriptor.Description.get
 		// Forced skipping of method Windows.AI.MachineLearning.SequenceFeatureDescriptor.ElementDescriptor.get
 		// Forced skipping of method Windows.AI.MachineLearning.SequenceFeatureDescriptor.IsRequired.get
 		// Forced skipping of method Windows.AI.MachineLearning.SequenceFeatureDescriptor.Kind.get
 		// Forced skipping of method Windows.AI.MachineLearning.SequenceFeatureDescriptor.Name.get
-		// Forced skipping of method Windows.AI.MachineLearning.SequenceFeatureDescriptor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.AI.MachineLearning.ILearningModelFeatureDescriptor
 	}
 }

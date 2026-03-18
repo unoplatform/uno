@@ -27,10 +27,5 @@ namespace Microsoft.UI.Xaml.Controls
 			throw new global::System.NotImplementedException("The member IAsyncAction ListViewPersistenceHelper.SetRelativeScrollPositionAsync(ListViewBase listViewBase, string relativeScrollPosition, ListViewKeyToItemHandler keyToItemHandler) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ListViewPersistenceHelper.SetRelativeScrollPositionAsync%28ListViewBase%20listViewBase%2C%20string%20relativeScrollPosition%2C%20ListViewKeyToItemHandler%20keyToItemHandler%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

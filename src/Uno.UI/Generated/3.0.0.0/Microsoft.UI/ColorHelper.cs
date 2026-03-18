@@ -10,10 +10,5 @@ namespace Microsoft.UI
 	{
 		// Skipping already declared method Microsoft.UI.ColorHelper.FromArgb(byte, byte, byte, byte)
 		// Skipping already declared method Microsoft.UI.ColorHelper.ToDisplayName(Windows.UI.Color)
-		// Forced skipping of method Microsoft.UI.ColorHelper.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.ColorHelper.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.ColorHelper.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.ColorHelper.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.ColorHelper.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

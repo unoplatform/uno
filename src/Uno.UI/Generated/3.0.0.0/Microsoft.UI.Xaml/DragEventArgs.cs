@@ -15,8 +15,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property DragUIOverride
 		// Skipping already declared property Handled
 		// Skipping already declared property Modifiers
-		// Forced skipping of method Microsoft.UI.Xaml.DragEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.DragEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.DragEventArgs.GetDeferral()
 		// Skipping already declared method Microsoft.UI.Xaml.DragEventArgs.GetPosition(Microsoft.UI.Xaml.UIElement)
 		// Forced skipping of method Microsoft.UI.Xaml.DragEventArgs.AcceptedOperation.get
@@ -29,6 +27,5 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.DragEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.DragEventArgs.Handled.set
 		// Forced skipping of method Microsoft.UI.Xaml.DragEventArgs.Modifiers.get
-		// Forced skipping of method Microsoft.UI.Xaml.DragEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

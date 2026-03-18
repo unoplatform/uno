@@ -20,10 +20,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTipService.PlacementProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTipService.PlacementTargetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTipService.ToolTipProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTipService.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTipService.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTipService.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTipService.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToolTipService.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

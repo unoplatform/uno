@@ -114,10 +114,6 @@ namespace Windows.Media.Audio
 		}
 #endif
 		// Forced skipping of method Windows.Media.Audio.AudioGraphSettings.AudioGraphSettings(Windows.Media.Render.AudioRenderCategory)
-		// Forced skipping of method Windows.Media.Audio.AudioGraphSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Audio.AudioGraphSettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Audio.AudioGraphSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Audio.AudioGraphSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Audio.AudioGraphSettings.AudioRenderCategory.get
 		// Forced skipping of method Windows.Media.Audio.AudioGraphSettings.AudioRenderCategory.set
 		// Forced skipping of method Windows.Media.Audio.AudioGraphSettings.DesiredRenderDeviceAudioProcessing.get
@@ -132,6 +128,5 @@ namespace Windows.Media.Audio
 		// Forced skipping of method Windows.Media.Audio.AudioGraphSettings.PrimaryRenderDevice.set
 		// Forced skipping of method Windows.Media.Audio.AudioGraphSettings.QuantumSizeSelectionMode.get
 		// Forced skipping of method Windows.Media.Audio.AudioGraphSettings.QuantumSizeSelectionMode.set
-		// Forced skipping of method Windows.Media.Audio.AudioGraphSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -180,10 +180,6 @@ namespace Windows.Media.Core
 			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromDownloadOperation(DownloadOperation downloadOperation) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSource%20MediaSource.CreateFromDownloadOperation%28DownloadOperation%20downloadOperation%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.MediaSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Core.MediaSource.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Core.MediaSource.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Core.MediaSource.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Core.MediaSource.OpenOperationCompleted.add
 		// Forced skipping of method Windows.Media.Core.MediaSource.OpenOperationCompleted.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -220,7 +216,6 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.MediaSource.MseStreamSource.get
 		// Forced skipping of method Windows.Media.Core.MediaSource.State.get
 		// Forced skipping of method Windows.Media.Core.MediaSource.Uri.get
-		// Forced skipping of method Windows.Media.Core.MediaSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.MediaSource, global::Windows.Media.Core.MediaSourceOpenOperationCompletedEventArgs> OpenOperationCompleted

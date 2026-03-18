@@ -33,10 +33,6 @@ namespace Windows.ApplicationModel.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> LaunchAsync()
@@ -53,6 +49,5 @@ namespace Windows.ApplicationModel.Core
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.AppUserModelId.get
 		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.DisplayInfo.get
-		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

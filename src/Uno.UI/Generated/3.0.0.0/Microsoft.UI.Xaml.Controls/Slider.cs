@@ -43,8 +43,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.ThumbToolTipValueConverterProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.TickFrequencyProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.TickPlacementProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.Header.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.Header.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.HeaderTemplate.get
@@ -67,6 +65,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.TickFrequency.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.TickPlacement.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.TickPlacement.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Slider.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

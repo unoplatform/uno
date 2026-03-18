@@ -36,10 +36,6 @@ namespace Windows.Media.Casting
 		}
 #endif
 		// Forced skipping of method Windows.Media.Casting.CastingDevicePicker.CastingDevicePicker()
-		// Forced skipping of method Windows.Media.Casting.CastingDevicePicker.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Casting.CastingDevicePicker.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Casting.CastingDevicePicker.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Casting.CastingDevicePicker.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Show(global::Windows.Foundation.Rect selection)
@@ -67,7 +63,6 @@ namespace Windows.Media.Casting
 		// Forced skipping of method Windows.Media.Casting.CastingDevicePicker.CastingDeviceSelected.remove
 		// Forced skipping of method Windows.Media.Casting.CastingDevicePicker.Appearance.get
 		// Forced skipping of method Windows.Media.Casting.CastingDevicePicker.Filter.get
-		// Forced skipping of method Windows.Media.Casting.CastingDevicePicker.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Casting.CastingDevicePicker, object> CastingDevicePickerDismissed

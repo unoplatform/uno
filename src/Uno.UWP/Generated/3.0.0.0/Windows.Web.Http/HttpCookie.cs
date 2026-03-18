@@ -17,10 +17,6 @@ namespace Windows.Web.Http
 		// Skipping already declared property Value
 		// Skipping already declared method Windows.Web.Http.HttpCookie.HttpCookie(string, string, string)
 		// Forced skipping of method Windows.Web.Http.HttpCookie.HttpCookie(string, string, string)
-		// Forced skipping of method Windows.Web.Http.HttpCookie.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Web.Http.HttpCookie.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Web.Http.HttpCookie.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Web.Http.HttpCookie.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.Web.Http.HttpCookie.ToString()
 		// Forced skipping of method Windows.Web.Http.HttpCookie.Domain.get
 		// Forced skipping of method Windows.Web.Http.HttpCookie.Expires.get
@@ -33,6 +29,5 @@ namespace Windows.Web.Http
 		// Forced skipping of method Windows.Web.Http.HttpCookie.Secure.set
 		// Forced skipping of method Windows.Web.Http.HttpCookie.Value.get
 		// Forced skipping of method Windows.Web.Http.HttpCookie.Value.set
-		// Forced skipping of method Windows.Web.Http.HttpCookie.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

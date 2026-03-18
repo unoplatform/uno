@@ -63,15 +63,10 @@ namespace Windows.ApplicationModel.Store.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewProductInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewProductInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewProductInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewProductInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewProductInfo.Description.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewProductInfo.ProductId.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewProductInfo.ProductType.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewProductInfo.SkuInfoList.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewProductInfo.Title.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.StorePreviewProductInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -41,14 +41,9 @@ namespace Windows.Media.MediaProperties
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.MediaProperties.MediaRatio.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.MediaProperties.MediaRatio.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.MediaProperties.MediaRatio.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.MediaProperties.MediaRatio.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaRatio.Denominator.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaRatio.Denominator.set
 		// Forced skipping of method Windows.Media.MediaProperties.MediaRatio.Numerator.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaRatio.Numerator.set
-		// Forced skipping of method Windows.Media.MediaProperties.MediaRatio.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

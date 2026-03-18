@@ -182,10 +182,6 @@ namespace Windows.Management.Deployment
 		}
 #endif
 		// Forced skipping of method Windows.Management.Deployment.StagePackageOptions.StagePackageOptions()
-		// Forced skipping of method Windows.Management.Deployment.StagePackageOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Management.Deployment.StagePackageOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Management.Deployment.StagePackageOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Management.Deployment.StagePackageOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Management.Deployment.StagePackageOptions.AllowUnsigned.get
 		// Forced skipping of method Windows.Management.Deployment.StagePackageOptions.AllowUnsigned.set
 		// Forced skipping of method Windows.Management.Deployment.StagePackageOptions.DependencyPackageUris.get
@@ -208,6 +204,5 @@ namespace Windows.Management.Deployment
 		// Forced skipping of method Windows.Management.Deployment.StagePackageOptions.StubPackageOption.set
 		// Forced skipping of method Windows.Management.Deployment.StagePackageOptions.TargetVolume.get
 		// Forced skipping of method Windows.Management.Deployment.StagePackageOptions.TargetVolume.set
-		// Forced skipping of method Windows.Management.Deployment.StagePackageOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

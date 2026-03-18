@@ -10,10 +10,5 @@ namespace Microsoft.UI.Xaml.Automation
 	{
 		// Skipping already declared property FormulaProperty
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.SpreadsheetItemPatternIdentifiers.FormulaProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.SpreadsheetItemPatternIdentifiers.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.SpreadsheetItemPatternIdentifiers.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.SpreadsheetItemPatternIdentifiers.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.SpreadsheetItemPatternIdentifiers.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.SpreadsheetItemPatternIdentifiers.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

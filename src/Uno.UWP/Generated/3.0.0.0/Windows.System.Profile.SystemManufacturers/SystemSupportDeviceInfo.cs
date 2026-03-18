@@ -83,10 +83,6 @@ namespace Windows.System.Profile.SystemManufacturers
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo.FriendlyName.get
 		// Forced skipping of method Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo.OperatingSystem.get
 		// Forced skipping of method Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo.SystemFirmwareVersion.get
@@ -94,6 +90,5 @@ namespace Windows.System.Profile.SystemManufacturers
 		// Forced skipping of method Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo.SystemManufacturer.get
 		// Forced skipping of method Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo.SystemProductName.get
 		// Forced skipping of method Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo.SystemSku.get
-		// Forced skipping of method Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

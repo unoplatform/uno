@@ -31,10 +31,7 @@ namespace Microsoft.UI.Xaml.Documents
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.InlineUIContainer.InlineUIContainer()
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.InlineUIContainer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.InlineUIContainer.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.InlineUIContainer.Child.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.InlineUIContainer.Child.set
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.InlineUIContainer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

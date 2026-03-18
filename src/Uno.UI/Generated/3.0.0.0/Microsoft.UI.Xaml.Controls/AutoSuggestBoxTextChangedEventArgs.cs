@@ -13,11 +13,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs.AutoSuggestBoxTextChangedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs.AutoSuggestBoxTextChangedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs.ReasonProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs.CheckCurrent()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs.Reason.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs.Reason.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

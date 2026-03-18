@@ -10,10 +10,6 @@ namespace Windows.UI.Core
 	{
 		// Skipping already declared property CurrentPriority
 		// Skipping already declared property HasThreadAccess
-		// Forced skipping of method Windows.UI.Core.CoreDispatcher.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Core.CoreDispatcher.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Core.CoreDispatcher.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Core.CoreDispatcher.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ProcessEvents(global::Windows.UI.Core.CoreProcessEventsOption options)
@@ -63,7 +59,6 @@ namespace Windows.UI.Core
 		// Forced skipping of method Windows.UI.Core.CoreDispatcher.CurrentPriority.get
 		// Forced skipping of method Windows.UI.Core.CoreDispatcher.CurrentPriority.set
 		// Forced skipping of method Windows.UI.Core.CoreDispatcher.HasThreadAccess.get
-		// Forced skipping of method Windows.UI.Core.CoreDispatcher.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Core.CoreDispatcher, global::Windows.UI.Core.AcceleratorKeyEventArgs> AcceleratorKeyActivated

@@ -10,11 +10,6 @@ namespace Microsoft.UI.Composition
 	{
 		// Skipping already declared method Microsoft.UI.Composition.CompositionPath.CompositionPath(Windows.Graphics.IGeometrySource2D)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionPath.CompositionPath(Windows.Graphics.IGeometrySource2D)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionPath.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionPath.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionPath.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionPath.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionPath.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Graphics.IGeometrySource2D
 	}
 }

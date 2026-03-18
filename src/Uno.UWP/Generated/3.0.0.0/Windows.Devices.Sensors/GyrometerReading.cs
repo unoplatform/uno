@@ -32,16 +32,11 @@ namespace Windows.Devices.Sensors
 		}
 #endif
 		// Skipping already declared property Timestamp
-		// Forced skipping of method Windows.Devices.Sensors.GyrometerReading.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.GyrometerReading.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.GyrometerReading.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Sensors.GyrometerReading.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.GyrometerReading.AngularVelocityX.get
 		// Forced skipping of method Windows.Devices.Sensors.GyrometerReading.AngularVelocityY.get
 		// Forced skipping of method Windows.Devices.Sensors.GyrometerReading.AngularVelocityZ.get
 		// Forced skipping of method Windows.Devices.Sensors.GyrometerReading.PerformanceCount.get
 		// Forced skipping of method Windows.Devices.Sensors.GyrometerReading.Properties.get
 		// Forced skipping of method Windows.Devices.Sensors.GyrometerReading.Timestamp.get
-		// Forced skipping of method Windows.Devices.Sensors.GyrometerReading.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

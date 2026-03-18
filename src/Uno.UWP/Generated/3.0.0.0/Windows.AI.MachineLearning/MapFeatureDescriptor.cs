@@ -73,17 +73,12 @@ namespace Windows.AI.MachineLearning
 			}
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.MapFeatureDescriptor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.MapFeatureDescriptor.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.MapFeatureDescriptor.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.AI.MachineLearning.MapFeatureDescriptor.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.AI.MachineLearning.MapFeatureDescriptor.Description.get
 		// Forced skipping of method Windows.AI.MachineLearning.MapFeatureDescriptor.IsRequired.get
 		// Forced skipping of method Windows.AI.MachineLearning.MapFeatureDescriptor.KeyKind.get
 		// Forced skipping of method Windows.AI.MachineLearning.MapFeatureDescriptor.Kind.get
 		// Forced skipping of method Windows.AI.MachineLearning.MapFeatureDescriptor.Name.get
 		// Forced skipping of method Windows.AI.MachineLearning.MapFeatureDescriptor.ValueDescriptor.get
-		// Forced skipping of method Windows.AI.MachineLearning.MapFeatureDescriptor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.AI.MachineLearning.ILearningModelFeatureDescriptor
 	}
 }

@@ -73,16 +73,11 @@ namespace Windows.ApplicationModel.Calls.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneIncomingCallDismissedTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneIncomingCallDismissedTriggerDetails.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneIncomingCallDismissedTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneIncomingCallDismissedTriggerDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneIncomingCallDismissedTriggerDetails.DismissalTime.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneIncomingCallDismissedTriggerDetails.DisplayName.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneIncomingCallDismissedTriggerDetails.LineId.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneIncomingCallDismissedTriggerDetails.PhoneNumber.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneIncomingCallDismissedTriggerDetails.Reason.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneIncomingCallDismissedTriggerDetails.TextReplyMessage.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.Background.PhoneIncomingCallDismissedTriggerDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

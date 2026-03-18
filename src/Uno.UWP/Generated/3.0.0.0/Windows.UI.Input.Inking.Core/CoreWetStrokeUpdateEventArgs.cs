@@ -47,14 +47,9 @@ namespace Windows.UI.Input.Inking.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs.Disposition.get
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs.Disposition.set
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs.NewInkPoints.get
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs.PointerId.get
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

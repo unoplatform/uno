@@ -73,17 +73,12 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.ContinuationData.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.Files.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.SplashScreen.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.User.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.FileOpenPickerContinuationEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Activation.IFileOpenPickerContinuationEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IContinuationActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs

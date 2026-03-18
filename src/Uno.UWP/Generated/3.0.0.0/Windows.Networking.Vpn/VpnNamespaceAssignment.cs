@@ -44,14 +44,9 @@ namespace Windows.Networking.Vpn
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceAssignment.VpnNamespaceAssignment()
-		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceAssignment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceAssignment.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceAssignment.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceAssignment.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceAssignment.NamespaceList.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceAssignment.NamespaceList.set
 		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceAssignment.ProxyAutoConfigUri.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceAssignment.ProxyAutoConfigUri.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceAssignment.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -638,10 +638,6 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.DeviceAccountConfiguration()
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.AccountIconId.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.AccountIconId.set
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.AccountName.get
@@ -730,6 +726,5 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.WasModifiedByUser.set
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.WasOutgoingServerCertificateHashConfirmed.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.WasOutgoingServerCertificateHashConfirmed.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

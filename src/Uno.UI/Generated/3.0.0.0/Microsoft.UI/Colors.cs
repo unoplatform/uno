@@ -290,10 +290,5 @@ namespace Microsoft.UI
 		// Forced skipping of method Microsoft.UI.Colors.WhiteSmoke.get
 		// Forced skipping of method Microsoft.UI.Colors.Yellow.get
 		// Forced skipping of method Microsoft.UI.Colors.YellowGreen.get
-		// Forced skipping of method Microsoft.UI.Colors.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Colors.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Colors.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Colors.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Colors.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

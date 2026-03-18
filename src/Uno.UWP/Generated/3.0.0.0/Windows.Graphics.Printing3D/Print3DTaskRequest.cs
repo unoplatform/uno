@@ -13,10 +13,6 @@ namespace Windows.Graphics.Printing3D
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTaskRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTaskRequest.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTaskRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTaskRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Printing3D.Print3DTask CreateTask(string title, string printerId, global::Windows.Graphics.Printing3D.Print3DTaskSourceRequestedHandler handler)
@@ -24,6 +20,5 @@ namespace Windows.Graphics.Printing3D
 			throw new global::System.NotImplementedException("The member Print3DTask Print3DTaskRequest.CreateTask(string title, string printerId, Print3DTaskSourceRequestedHandler handler) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Print3DTask%20Print3DTaskRequest.CreateTask%28string%20title%2C%20string%20printerId%2C%20Print3DTaskSourceRequestedHandler%20handler%29");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DTaskRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

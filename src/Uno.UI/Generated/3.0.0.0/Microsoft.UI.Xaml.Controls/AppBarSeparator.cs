@@ -19,14 +19,11 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.DynamicOverflowOrderProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.IsCompactProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.IsInOverflowProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.DynamicOverflowOrder.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.DynamicOverflowOrder.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.IsCompact.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.IsCompact.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.IsInOverflow.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarSeparator.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Controls.ICommandBarElement
 	}
 }

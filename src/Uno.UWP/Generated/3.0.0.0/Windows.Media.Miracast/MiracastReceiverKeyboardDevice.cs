@@ -47,17 +47,12 @@ namespace Windows.Media.Miracast
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.Changed.add
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.Changed.remove
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.IsRequestedByTransmitter.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.IsTransmittingInput.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.TransmitInput.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.TransmitInput.set
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverKeyboardDevice.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Miracast.MiracastReceiverKeyboardDevice, object> Changed

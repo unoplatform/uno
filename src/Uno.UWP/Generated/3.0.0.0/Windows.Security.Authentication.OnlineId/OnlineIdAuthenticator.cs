@@ -50,10 +50,6 @@ namespace Windows.Security.Authentication.OnlineId
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator.OnlineIdAuthenticator()
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Authentication.OnlineId.UserAuthenticationOperation AuthenticateUserAsync(global::Windows.Security.Authentication.OnlineId.OnlineIdServiceTicketRequest request)
@@ -79,6 +75,5 @@ namespace Windows.Security.Authentication.OnlineId
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator.ApplicationId.set
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator.AuthenticatedSafeCustomerId.get
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator.CanSignOut.get
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdAuthenticator.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

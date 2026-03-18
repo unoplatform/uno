@@ -51,10 +51,6 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.AllowTrimming.get
 		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.AllowTrimming.set
 		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.Format.get
@@ -63,6 +59,5 @@ namespace Windows.Media.Capture
 		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.MaxDurationInSeconds.set
 		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.MaxResolution.get
 		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.MaxResolution.set
-		// Forced skipping of method Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

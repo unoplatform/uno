@@ -16,8 +16,6 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property VerticalScrollPercent
 		// Skipping already declared property VerticalViewSize
 		// Skipping already declared property VerticallyScrollable
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer.GetSelection()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -36,7 +34,6 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer.VerticalScrollPercent.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer.VerticalViewSize.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer.VerticallyScrollable.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.ISelectionProvider
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IItemContainerProvider
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IScrollProvider

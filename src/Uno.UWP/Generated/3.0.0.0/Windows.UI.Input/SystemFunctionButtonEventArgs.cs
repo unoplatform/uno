@@ -37,13 +37,8 @@ namespace Windows.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.SystemFunctionButtonEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.SystemFunctionButtonEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Input.SystemFunctionButtonEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Input.SystemFunctionButtonEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.SystemFunctionButtonEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Input.SystemFunctionButtonEventArgs.Handled.set
 		// Forced skipping of method Windows.UI.Input.SystemFunctionButtonEventArgs.Timestamp.get
-		// Forced skipping of method Windows.UI.Input.SystemFunctionButtonEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -54,15 +54,10 @@ namespace Windows.ApplicationModel.Contacts
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardOptions.ContactCardOptions()
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardOptions.HeaderKind.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardOptions.HeaderKind.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardOptions.InitialTabKind.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardOptions.InitialTabKind.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardOptions.ServerSearchContactListIds.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

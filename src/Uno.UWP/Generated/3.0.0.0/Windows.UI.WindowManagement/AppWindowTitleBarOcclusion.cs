@@ -23,11 +23,6 @@ namespace Windows.UI.WindowManagement
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowTitleBarOcclusion.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowTitleBarOcclusion.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowTitleBarOcclusion.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowTitleBarOcclusion.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowTitleBarOcclusion.OccludingRect.get
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowTitleBarOcclusion.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

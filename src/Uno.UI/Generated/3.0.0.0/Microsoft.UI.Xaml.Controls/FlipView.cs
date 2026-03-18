@@ -13,10 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.FlipView.FlipView()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipView.FlipView()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipView.UseTouchAnimationsForAllNavigationProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipView.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipView.UseTouchAnimationsForAllNavigation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipView.UseTouchAnimationsForAllNavigation.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

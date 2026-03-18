@@ -33,12 +33,7 @@ namespace Windows.Services.Maps.OfflineMaps
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult.Packages.get
 		// Forced skipping of method Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult.Status.get
-		// Forced skipping of method Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

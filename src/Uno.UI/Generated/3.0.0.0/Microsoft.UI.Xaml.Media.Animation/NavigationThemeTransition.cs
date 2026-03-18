@@ -33,10 +33,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition.NavigationThemeTransition()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition.NavigationThemeTransition()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition.DefaultNavigationTransitionInfoProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition.DefaultNavigationTransitionInfo.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition.DefaultNavigationTransitionInfo.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.NavigationThemeTransition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

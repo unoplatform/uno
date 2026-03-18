@@ -39,15 +39,10 @@ namespace Windows.UI.Notifications
 #endif
 		// Skipping already declared method Windows.UI.Notifications.TileNotification.TileNotification(Windows.Data.Xml.Dom.XmlDocument)
 		// Forced skipping of method Windows.UI.Notifications.TileNotification.TileNotification(Windows.Data.Xml.Dom.XmlDocument)
-		// Forced skipping of method Windows.UI.Notifications.TileNotification.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Notifications.TileNotification.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Notifications.TileNotification.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Notifications.TileNotification.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Notifications.TileNotification.Content.get
 		// Forced skipping of method Windows.UI.Notifications.TileNotification.ExpirationTime.get
 		// Forced skipping of method Windows.UI.Notifications.TileNotification.ExpirationTime.set
 		// Forced skipping of method Windows.UI.Notifications.TileNotification.Tag.get
 		// Forced skipping of method Windows.UI.Notifications.TileNotification.Tag.set
-		// Forced skipping of method Windows.UI.Notifications.TileNotification.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

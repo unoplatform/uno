@@ -13,10 +13,7 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared method Microsoft.UI.Xaml.StateTrigger.StateTrigger()
 		// Forced skipping of method Microsoft.UI.Xaml.StateTrigger.StateTrigger()
 		// Forced skipping of method Microsoft.UI.Xaml.StateTrigger.IsActiveProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.StateTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.StateTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.StateTrigger.IsActive.get
 		// Forced skipping of method Microsoft.UI.Xaml.StateTrigger.IsActive.set
-		// Forced skipping of method Microsoft.UI.Xaml.StateTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

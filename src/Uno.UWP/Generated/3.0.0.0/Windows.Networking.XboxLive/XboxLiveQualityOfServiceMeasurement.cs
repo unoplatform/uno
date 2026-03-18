@@ -197,10 +197,6 @@ namespace Windows.Networking.XboxLive
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement.MaxSimultaneousProbeConnections.set
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement.PublishedPrivatePayload.get
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement.PublishedPrivatePayload.set
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction MeasureAsync()
@@ -247,6 +243,5 @@ namespace Windows.Networking.XboxLive
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement.ShouldRequestPrivatePayloads.set
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement.TimeoutInMilliseconds.get
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement.TimeoutInMilliseconds.set
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveQualityOfServiceMeasurement.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

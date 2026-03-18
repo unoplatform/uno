@@ -15,10 +15,7 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared method Microsoft.UI.Xaml.Input.StandardUICommand.StandardUICommand(Microsoft.UI.Xaml.Input.StandardUICommandKind)
 		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.StandardUICommand(Microsoft.UI.Xaml.Input.StandardUICommandKind)
 		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.KindProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.Kind.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.Kind.set
-		// Forced skipping of method Microsoft.UI.Xaml.Input.StandardUICommand.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -62,12 +62,9 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.LineGeometry()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.EndPointProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.StartPointProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.EndPoint.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.EndPoint.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.StartPoint.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.StartPoint.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.LineGeometry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

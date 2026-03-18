@@ -14,10 +14,6 @@ namespace Windows.Storage.Streams
 		// Skipping already declared property Size
 		// Skipping already declared method Windows.Storage.Streams.InMemoryRandomAccessStream.InMemoryRandomAccessStream()
 		// Forced skipping of method Windows.Storage.Streams.InMemoryRandomAccessStream.InMemoryRandomAccessStream()
-		// Forced skipping of method Windows.Storage.Streams.InMemoryRandomAccessStream.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.Streams.InMemoryRandomAccessStream.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.Streams.InMemoryRandomAccessStream.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.Streams.InMemoryRandomAccessStream.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.Storage.Streams.InMemoryRandomAccessStream.GetInputStreamAt(ulong)
 		// Skipping already declared method Windows.Storage.Streams.InMemoryRandomAccessStream.GetOutputStreamAt(ulong)
 		// Skipping already declared method Windows.Storage.Streams.InMemoryRandomAccessStream.Seek(ulong)
@@ -31,7 +27,6 @@ namespace Windows.Storage.Streams
 		// Forced skipping of method Windows.Storage.Streams.InMemoryRandomAccessStream.Position.get
 		// Forced skipping of method Windows.Storage.Streams.InMemoryRandomAccessStream.Size.get
 		// Forced skipping of method Windows.Storage.Streams.InMemoryRandomAccessStream.Size.set
-		// Forced skipping of method Windows.Storage.Streams.InMemoryRandomAccessStream.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Storage.Streams.IRandomAccessStream
 		// Processing: System.IDisposable
 		// Processing: Windows.Storage.Streams.IInputStream

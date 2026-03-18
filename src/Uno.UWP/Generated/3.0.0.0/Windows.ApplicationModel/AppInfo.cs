@@ -88,15 +88,10 @@ namespace Windows.ApplicationModel
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.AppInfo.Current.get
-		// Forced skipping of method Windows.ApplicationModel.AppInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.AppInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.AppInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.AppInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.AppInfo.AppUserModelId.get
 		// Forced skipping of method Windows.ApplicationModel.AppInfo.DisplayInfo.get
 		// Forced skipping of method Windows.ApplicationModel.AppInfo.Id.get
 		// Forced skipping of method Windows.ApplicationModel.AppInfo.Package.get
 		// Forced skipping of method Windows.ApplicationModel.AppInfo.PackageFamilyName.get
-		// Forced skipping of method Windows.ApplicationModel.AppInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

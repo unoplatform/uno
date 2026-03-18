@@ -36,13 +36,8 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectDefinition.SceneAnalysisEffectDefinition()
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectDefinition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectDefinition.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectDefinition.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectDefinition.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectDefinition.ActivatableClassId.get
 		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectDefinition.Properties.get
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffectDefinition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Effects.IVideoEffectDefinition
 	}
 }

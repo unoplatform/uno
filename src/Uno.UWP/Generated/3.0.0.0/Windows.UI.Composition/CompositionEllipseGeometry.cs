@@ -41,12 +41,9 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionEllipseGeometry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.CompositionEllipseGeometry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionEllipseGeometry.Center.get
 		// Forced skipping of method Windows.UI.Composition.CompositionEllipseGeometry.Center.set
 		// Forced skipping of method Windows.UI.Composition.CompositionEllipseGeometry.Radius.get
 		// Forced skipping of method Windows.UI.Composition.CompositionEllipseGeometry.Radius.set
-		// Forced skipping of method Windows.UI.Composition.CompositionEllipseGeometry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

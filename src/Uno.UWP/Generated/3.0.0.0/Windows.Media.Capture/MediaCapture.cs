@@ -104,10 +104,6 @@ namespace Windows.Media.Capture
 			throw new global::System.NotImplementedException("The member IReadOnlyList<MediaCaptureVideoProfile> MediaCapture.FindKnownVideoProfiles(string videoDeviceId, KnownVideoProfile name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMediaCaptureVideoProfile%3E%20MediaCapture.FindKnownVideoProfiles%28string%20videoDeviceId%2C%20KnownVideoProfile%20name%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.MediaCapture.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Capture.MediaCapture.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Capture.MediaCapture.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Capture.MediaCapture.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction InitializeAsync()
@@ -457,7 +453,6 @@ namespace Windows.Media.Capture
 		// Forced skipping of method Windows.Media.Capture.MediaCapture.MediaCaptureSettings.get
 		// Forced skipping of method Windows.Media.Capture.MediaCapture.ThermalStatus.get
 		// Forced skipping of method Windows.Media.Capture.MediaCapture.VideoDeviceController.get
-		// Forced skipping of method Windows.Media.Capture.MediaCapture.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Media.Capture.MediaCaptureFailedEventHandler Failed

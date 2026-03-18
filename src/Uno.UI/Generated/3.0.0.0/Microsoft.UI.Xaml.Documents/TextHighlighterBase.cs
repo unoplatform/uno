@@ -8,8 +8,5 @@ namespace Microsoft.UI.Xaml.Documents
 #endif
 	public partial class TextHighlighterBase : global::Microsoft.UI.Xaml.DependencyObject
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighterBase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighterBase.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextHighlighterBase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

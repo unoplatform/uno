@@ -14,13 +14,8 @@ namespace Microsoft.UI.Input
 		// Skipping already declared method Microsoft.UI.Input.FocusNavigationRequest.Create(Microsoft.UI.Input.FocusNavigationReason)
 		// Skipping already declared method Microsoft.UI.Input.FocusNavigationRequest.Create(Microsoft.UI.Input.FocusNavigationReason, Windows.Foundation.Rect)
 		// Skipping already declared method Microsoft.UI.Input.FocusNavigationRequest.Create(Microsoft.UI.Input.FocusNavigationReason, Windows.Foundation.Rect, System.Guid)
-		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.CorrelationId.get
 		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.HintRect.get
 		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.Reason.get
-		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

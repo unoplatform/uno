@@ -10,8 +10,5 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.GridViewAutomationPeer.GridViewAutomationPeer(Microsoft.UI.Xaml.Controls.GridView)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.GridViewAutomationPeer.GridViewAutomationPeer(Microsoft.UI.Xaml.Controls.GridView)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.GridViewAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.GridViewAutomationPeer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.GridViewAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

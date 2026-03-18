@@ -148,8 +148,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.MaximumRowsOrColumnsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.OrientationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.VerticalChildrenAlignmentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.HorizontalChildrenAlignment.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.HorizontalChildrenAlignment.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.ItemHeight.get
@@ -162,6 +160,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.Orientation.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.VerticalChildrenAlignment.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.VerticalChildrenAlignment.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.WrapGrid.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

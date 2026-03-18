@@ -214,10 +214,6 @@ namespace Windows.UI.ViewManagement
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.TerminateAppOnFinalViewClose.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.TerminateAppOnFinalViewClose.set
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.Value.get
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.Consolidated.add
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.Consolidated.remove
 		// Skipping already declared method Windows.UI.ViewManagement.ApplicationView.SetDesiredBoundsMode(Windows.UI.ViewManagement.ApplicationViewBoundsMode)
@@ -286,7 +282,6 @@ namespace Windows.UI.ViewManagement
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.ViewMode.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.VisibleBounds.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.WindowingEnvironment.get
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Windows.UI.ViewManagement.ApplicationView.Consolidated
 		// Skipping already declared event Windows.UI.ViewManagement.ApplicationView.VisibleBoundsChanged
 	}

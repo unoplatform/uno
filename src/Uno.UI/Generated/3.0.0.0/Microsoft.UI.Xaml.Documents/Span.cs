@@ -11,10 +11,7 @@ namespace Microsoft.UI.Xaml.Documents
 		// Skipping already declared property Inlines
 		// Skipping already declared method Microsoft.UI.Xaml.Documents.Span.Span()
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Span.Span()
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Span.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Span.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Span.Inlines.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Span.Inlines.set
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Span.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

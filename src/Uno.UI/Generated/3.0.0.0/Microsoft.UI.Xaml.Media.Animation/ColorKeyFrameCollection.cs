@@ -13,10 +13,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.ColorKeyFrameCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.ColorKeyFrameCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.Count.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.this[int].get
@@ -31,7 +27,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.Remove(Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame>.get_Item(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame>.set_Item(int, Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame>

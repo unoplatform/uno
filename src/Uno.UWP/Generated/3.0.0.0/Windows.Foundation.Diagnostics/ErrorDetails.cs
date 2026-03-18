@@ -50,13 +50,8 @@ namespace Windows.Foundation.Diagnostics
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ErrorDetails> ErrorDetails.CreateFromHResultAsync(int errorCode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CErrorDetails%3E%20ErrorDetails.CreateFromHResultAsync%28int%20errorCode%29");
 		}
 #endif
-		// Forced skipping of method Windows.Foundation.Diagnostics.ErrorDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Foundation.Diagnostics.ErrorDetails.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Foundation.Diagnostics.ErrorDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Foundation.Diagnostics.ErrorDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Foundation.Diagnostics.ErrorDetails.Description.get
 		// Forced skipping of method Windows.Foundation.Diagnostics.ErrorDetails.HelpUri.get
 		// Forced skipping of method Windows.Foundation.Diagnostics.ErrorDetails.LongDescription.get
-		// Forced skipping of method Windows.Foundation.Diagnostics.ErrorDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

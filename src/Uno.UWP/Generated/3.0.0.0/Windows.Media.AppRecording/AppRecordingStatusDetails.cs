@@ -103,10 +103,6 @@ namespace Windows.Media.AppRecording
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.AppRecording.AppRecordingStatusDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.AppRecording.AppRecordingStatusDetails.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.AppRecording.AppRecordingStatusDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.AppRecording.AppRecordingStatusDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.AppRecording.AppRecordingStatusDetails.IsAnyAppBroadcasting.get
 		// Forced skipping of method Windows.Media.AppRecording.AppRecordingStatusDetails.IsAppInactive.get
 		// Forced skipping of method Windows.Media.AppRecording.AppRecordingStatusDetails.IsBlockedForApp.get
@@ -116,6 +112,5 @@ namespace Windows.Media.AppRecording
 		// Forced skipping of method Windows.Media.AppRecording.AppRecordingStatusDetails.IsGameStreamInProgress.get
 		// Forced skipping of method Windows.Media.AppRecording.AppRecordingStatusDetails.IsGpuConstrained.get
 		// Forced skipping of method Windows.Media.AppRecording.AppRecordingStatusDetails.IsTimeSpanRecordingDisabled.get
-		// Forced skipping of method Windows.Media.AppRecording.AppRecordingStatusDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

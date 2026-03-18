@@ -10,8 +10,5 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.QuadraticEase.QuadraticEase()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.QuadraticEase.QuadraticEase()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.QuadraticEase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.QuadraticEase.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.QuadraticEase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

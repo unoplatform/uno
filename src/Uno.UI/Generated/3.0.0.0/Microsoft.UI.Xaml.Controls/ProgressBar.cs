@@ -20,8 +20,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.IsIndeterminateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.ShowErrorProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.ShowPausedProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.IsIndeterminate.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.IsIndeterminate.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.ShowError.get
@@ -29,6 +27,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.ShowPaused.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.ShowPaused.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.TemplateSettings.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressBar.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

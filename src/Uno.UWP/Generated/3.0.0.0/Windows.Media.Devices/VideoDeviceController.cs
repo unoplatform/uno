@@ -371,10 +371,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.VideoDeviceController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Devices.VideoDeviceController.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Devices.VideoDeviceController.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Devices.VideoDeviceController.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TrySetPowerlineFrequency(global::Windows.Media.Capture.PowerlineFrequency value)
@@ -489,7 +485,6 @@ namespace Windows.Media.Devices
 		// Forced skipping of method Windows.Media.Devices.VideoDeviceController.WhiteBalanceControl.get
 		// Forced skipping of method Windows.Media.Devices.VideoDeviceController.Zoom.get
 		// Forced skipping of method Windows.Media.Devices.VideoDeviceController.ZoomControl.get
-		// Forced skipping of method Windows.Media.Devices.VideoDeviceController.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Devices.IMediaDeviceController
 	}
 }

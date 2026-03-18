@@ -16,12 +16,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.SelectorBarItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.IconProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.TextProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.Icon.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.Icon.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.Text.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.Text.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -33,10 +33,6 @@ namespace Windows.Devices.Enumeration.Pnp
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.Count.get
 		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.this[int].get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -47,7 +43,6 @@ namespace Windows.Devices.Enumeration.Pnp
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectCollection.System.Collections.Generic.IReadOnlyList<Windows.Devices.Enumeration.Pnp.PnpObject>.get_Item(int)
 		// Processing: System.Collections.Generic.IReadOnlyList<Windows.Devices.Enumeration.Pnp.PnpObject>
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Devices.Enumeration.Pnp.PnpObject>

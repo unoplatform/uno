@@ -54,10 +54,6 @@ namespace Windows.Web.UI.Interop
 		}
 #endif
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcess.WebViewControlProcess(Windows.Web.UI.Interop.WebViewControlProcessOptions)
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcess.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcess.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcess.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcess.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Web.UI.Interop.WebViewControl> CreateWebViewControlAsync(long hostWindowHandle, global::Windows.Foundation.Rect bounds)
@@ -84,7 +80,6 @@ namespace Windows.Web.UI.Interop
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcess.EnterpriseId.get
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcess.IsPrivateNetworkClientServerCapabilityEnabled.get
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcess.ProcessId.get
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcess.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.UI.Interop.WebViewControlProcess, object> ProcessExited

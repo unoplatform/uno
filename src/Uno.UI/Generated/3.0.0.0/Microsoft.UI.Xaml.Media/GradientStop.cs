@@ -16,12 +16,9 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.GradientStop()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.ColorProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.OffsetProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.Color.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.Color.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.Offset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.Offset.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GradientStop.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

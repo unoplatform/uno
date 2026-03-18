@@ -10,8 +10,5 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemAutomationPeer.ComboBoxItemAutomationPeer(Microsoft.UI.Xaml.Controls.ComboBoxItem)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemAutomationPeer.ComboBoxItemAutomationPeer(Microsoft.UI.Xaml.Controls.ComboBoxItem)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemAutomationPeer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

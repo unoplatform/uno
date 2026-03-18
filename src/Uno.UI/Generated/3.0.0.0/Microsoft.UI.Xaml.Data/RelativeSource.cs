@@ -11,10 +11,7 @@ namespace Microsoft.UI.Xaml.Data
 		// Skipping already declared property Mode
 		// Skipping already declared method Microsoft.UI.Xaml.Data.RelativeSource.RelativeSource()
 		// Forced skipping of method Microsoft.UI.Xaml.Data.RelativeSource.RelativeSource()
-		// Forced skipping of method Microsoft.UI.Xaml.Data.RelativeSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.RelativeSource.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.RelativeSource.Mode.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.RelativeSource.Mode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Data.RelativeSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

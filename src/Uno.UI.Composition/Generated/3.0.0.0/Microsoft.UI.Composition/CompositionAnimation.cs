@@ -19,8 +19,6 @@ namespace Microsoft.UI.Composition
 		}
 #endif
 		// Skipping already declared property Target
-		// Forced skipping of method Microsoft.UI.Composition.CompositionAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionAnimation.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ClearAllParameters()
@@ -91,7 +89,6 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.CompositionAnimation.InitialValueExpressions.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionAnimation.Target.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionAnimation.Target.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Composition.ICompositionAnimationBase
 	}
 }

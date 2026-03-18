@@ -24,12 +24,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel.HorizontalOrientationPaddingProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel.VerticalOrientationMarginProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel.VerticalOrientationPaddingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel.HorizontalOrientationPadding.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel.HorizontalOrientationPadding.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel.VerticalOrientationPadding.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel.VerticalOrientationPadding.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

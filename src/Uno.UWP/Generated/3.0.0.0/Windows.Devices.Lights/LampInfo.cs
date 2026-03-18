@@ -103,10 +103,6 @@ namespace Windows.Devices.Lights
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Lights.LampInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Lights.LampInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Lights.LampInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Lights.LampInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Color GetNearestSupportedColor(global::Windows.UI.Color desiredColor)
@@ -123,6 +119,5 @@ namespace Windows.Devices.Lights
 		// Forced skipping of method Windows.Devices.Lights.LampInfo.Purposes.get
 		// Forced skipping of method Windows.Devices.Lights.LampInfo.RedLevelCount.get
 		// Forced skipping of method Windows.Devices.Lights.LampInfo.UpdateLatency.get
-		// Forced skipping of method Windows.Devices.Lights.LampInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

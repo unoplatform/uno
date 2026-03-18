@@ -16,12 +16,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame.ColorKeyFrame()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame.KeyTimeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame.ValueProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame.KeyTime.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame.KeyTime.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame.Value.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame.Value.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,12 +10,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property Item
 		// Skipping already declared property Node
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.Item.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.Node.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewCollapsedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

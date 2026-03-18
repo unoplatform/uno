@@ -53,14 +53,9 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult.AuthenticationReplyXml.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult.HasNetworkErrorOccurred.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult.LogoffUrl.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult.ResponseCode.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

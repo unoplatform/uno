@@ -13,15 +13,10 @@ namespace Microsoft.UI.Input
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property Position
 		// Skipping already declared property Velocities
-		// Forced skipping of method Microsoft.UI.Input.ManipulationUpdatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.ManipulationUpdatedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.ManipulationUpdatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Input.ManipulationUpdatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Input.ManipulationUpdatedEventArgs.Cumulative.get
 		// Forced skipping of method Microsoft.UI.Input.ManipulationUpdatedEventArgs.Delta.get
 		// Forced skipping of method Microsoft.UI.Input.ManipulationUpdatedEventArgs.PointerDeviceType.get
 		// Forced skipping of method Microsoft.UI.Input.ManipulationUpdatedEventArgs.Position.get
 		// Forced skipping of method Microsoft.UI.Input.ManipulationUpdatedEventArgs.Velocities.get
-		// Forced skipping of method Microsoft.UI.Input.ManipulationUpdatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

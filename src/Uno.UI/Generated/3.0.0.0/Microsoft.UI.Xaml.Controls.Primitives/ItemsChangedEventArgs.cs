@@ -63,15 +63,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.Action.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.ItemCount.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.ItemUICount.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.OldPosition.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.Position.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

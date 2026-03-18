@@ -111,10 +111,6 @@ namespace Windows.Networking.BackgroundTransfer
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.UploadOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.UploadOperation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.UploadOperation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.UploadOperation.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Networking.BackgroundTransfer.UploadOperation, global::Windows.Networking.BackgroundTransfer.UploadOperation> StartAsync()
@@ -175,7 +171,6 @@ namespace Windows.Networking.BackgroundTransfer
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.UploadOperation.RequestedUri.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.UploadOperation.SourceFile.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.UploadOperation.TransferGroup.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.UploadOperation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Networking.BackgroundTransfer.IBackgroundTransferOperation
 		// Processing: Windows.Networking.BackgroundTransfer.IBackgroundTransferOperationPriority
 	}

@@ -16,11 +16,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.NetworkOperatorDataUsageTrigger.NetworkOperatorDataUsageTrigger()
-		// Forced skipping of method Windows.ApplicationModel.Background.NetworkOperatorDataUsageTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Background.NetworkOperatorDataUsageTrigger.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Background.NetworkOperatorDataUsageTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Background.NetworkOperatorDataUsageTrigger.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Windows.ApplicationModel.Background.NetworkOperatorDataUsageTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger
 	}
 }

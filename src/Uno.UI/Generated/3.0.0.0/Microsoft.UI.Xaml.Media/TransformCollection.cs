@@ -22,10 +22,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.TransformCollection.TransformCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.TransformCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.Count.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.this[int].get
@@ -46,7 +42,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared method Microsoft.UI.Xaml.Media.TransformCollection.Remove(Microsoft.UI.Xaml.Media.Transform)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.TransformCollection.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Transform>.get_Item(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Transform>.set_Item(int, Microsoft.UI.Xaml.Media.Transform)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Transform>

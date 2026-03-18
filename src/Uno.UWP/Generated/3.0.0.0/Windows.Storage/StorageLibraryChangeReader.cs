@@ -13,10 +13,6 @@ namespace Windows.Storage
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Storage.StorageLibraryChangeReader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.StorageLibraryChangeReader.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.StorageLibraryChangeReader.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.StorageLibraryChangeReader.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.StorageLibraryChange>> ReadBatchAsync()
@@ -31,6 +27,5 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member IAsyncAction StorageLibraryChangeReader.AcceptChangesAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20StorageLibraryChangeReader.AcceptChangesAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Storage.StorageLibraryChangeReader.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

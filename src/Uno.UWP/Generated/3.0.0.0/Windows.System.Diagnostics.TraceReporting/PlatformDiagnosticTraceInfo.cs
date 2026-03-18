@@ -73,16 +73,11 @@ namespace Windows.System.Diagnostics.TraceReporting
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo.IsAutoLogger.get
 		// Forced skipping of method Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo.IsExclusive.get
 		// Forced skipping of method Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo.MaxTraceDurationFileTime.get
 		// Forced skipping of method Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo.Priority.get
 		// Forced skipping of method Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo.ProfileHash.get
 		// Forced skipping of method Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo.ScenarioId.get
-		// Forced skipping of method Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

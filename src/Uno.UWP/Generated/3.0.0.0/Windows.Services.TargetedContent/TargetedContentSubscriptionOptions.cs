@@ -57,10 +57,6 @@ namespace Windows.Services.TargetedContent
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentSubscriptionOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentSubscriptionOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentSubscriptionOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentSubscriptionOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Update()
@@ -73,6 +69,5 @@ namespace Windows.Services.TargetedContent
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentSubscriptionOptions.CloudQueryParameters.get
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentSubscriptionOptions.LocalFilters.get
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentSubscriptionOptions.SubscriptionId.get
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentSubscriptionOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

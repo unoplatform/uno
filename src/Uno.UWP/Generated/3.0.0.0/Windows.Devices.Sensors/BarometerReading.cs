@@ -12,14 +12,9 @@ namespace Windows.Devices.Sensors
 		// Skipping already declared property Properties
 		// Skipping already declared property StationPressureInHectopascals
 		// Skipping already declared property Timestamp
-		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.PerformanceCount.get
 		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.Properties.get
 		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.StationPressureInHectopascals.get
 		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.Timestamp.get
-		// Forced skipping of method Windows.Devices.Sensors.BarometerReading.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

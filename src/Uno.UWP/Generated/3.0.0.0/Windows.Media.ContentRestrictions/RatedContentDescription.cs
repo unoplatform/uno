@@ -86,10 +86,6 @@ namespace Windows.Media.ContentRestrictions
 		}
 #endif
 		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentDescription.RatedContentDescription(string, string, Windows.Media.ContentRestrictions.RatedContentCategory)
-		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentDescription.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentDescription.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentDescription.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentDescription.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentDescription.Category.get
 		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentDescription.Category.set
 		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentDescription.Id.get
@@ -100,6 +96,5 @@ namespace Windows.Media.ContentRestrictions
 		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentDescription.Ratings.set
 		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentDescription.Title.get
 		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentDescription.Title.set
-		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentDescription.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

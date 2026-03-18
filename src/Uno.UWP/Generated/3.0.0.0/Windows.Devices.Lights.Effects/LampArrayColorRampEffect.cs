@@ -86,10 +86,6 @@ namespace Windows.Devices.Lights.Effects
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.LampArrayColorRampEffect(Windows.Devices.Lights.LampArray, int[])
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.Color.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.Color.set
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.CompletionBehavior.get
@@ -100,7 +96,6 @@ namespace Windows.Devices.Lights.Effects
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.StartDelay.set
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.ZIndex.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.ZIndex.set
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayColorRampEffect.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Lights.Effects.ILampArrayEffect
 	}
 }

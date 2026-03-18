@@ -91,10 +91,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.CurrentMode.get
 		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.CurrentMode.set
 		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.IsSupported.get
@@ -104,6 +100,5 @@ namespace Windows.Media.Devices
 		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.Power.set
 		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.PowerStep.get
 		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.SupportedModes.get
-		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -11,10 +11,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Count
 		// Skipping already declared property IsReadOnly
 		// Skipping already declared property this[]
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.Count.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.this[int].get
@@ -29,7 +25,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.Remove(Microsoft.UI.Xaml.Controls.RowDefinition)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Controls.RowDefinition>.get_Item(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinitionCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Controls.RowDefinition>.set_Item(int, Microsoft.UI.Xaml.Controls.RowDefinition)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Controls.RowDefinition>

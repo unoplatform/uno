@@ -94,10 +94,6 @@ namespace Windows.Web.AtomPub
 		}
 #endif
 		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.AtomPubClient(Windows.Security.Credentials.PasswordCredential)
-		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.AtomPub.ServiceDocument, global::Windows.Web.Syndication.RetrievalProgress> RetrieveServiceDocumentAsync(global::System.Uri uri)
@@ -199,7 +195,6 @@ namespace Windows.Web.AtomPub
 		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.ServerCredential.set
 		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.Timeout.get
 		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.Timeout.set
-		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Web.Syndication.ISyndicationClient
 	}
 }

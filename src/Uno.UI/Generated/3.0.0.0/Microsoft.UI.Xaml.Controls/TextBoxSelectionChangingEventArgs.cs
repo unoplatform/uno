@@ -11,14 +11,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Cancel
 		// Skipping already declared property SelectionLength
 		// Skipping already declared property SelectionStart
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxSelectionChangingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxSelectionChangingEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxSelectionChangingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxSelectionChangingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxSelectionChangingEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxSelectionChangingEventArgs.Cancel.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxSelectionChangingEventArgs.SelectionLength.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxSelectionChangingEventArgs.SelectionStart.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBoxSelectionChangingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

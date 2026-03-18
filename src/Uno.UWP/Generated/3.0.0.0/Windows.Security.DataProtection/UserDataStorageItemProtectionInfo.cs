@@ -23,11 +23,6 @@ namespace Windows.Security.DataProtection
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.DataProtection.UserDataStorageItemProtectionInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.DataProtection.UserDataStorageItemProtectionInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.DataProtection.UserDataStorageItemProtectionInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.DataProtection.UserDataStorageItemProtectionInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.DataProtection.UserDataStorageItemProtectionInfo.Availability.get
-		// Forced skipping of method Windows.Security.DataProtection.UserDataStorageItemProtectionInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -89,8 +89,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadow.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadow.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadow.BlurRadiusMultiplier.get
 		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadow.BlurRadiusMultiplier.set
 		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadow.Casters.get
@@ -101,6 +99,5 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadow.MinBlurRadius.get
 		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadow.MinBlurRadius.set
 		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadow.Receivers.get
-		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadow.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

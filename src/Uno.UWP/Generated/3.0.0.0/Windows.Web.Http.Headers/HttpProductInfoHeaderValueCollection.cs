@@ -47,10 +47,6 @@ namespace Windows.Web.Http.Headers
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ParseAdd(string input)
@@ -140,7 +136,6 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotImplementedException("The member string HttpProductInfoHeaderValueCollection.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpProductInfoHeaderValueCollection.ToString%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection.System.Collections.Generic.IList<Windows.Web.Http.Headers.HttpProductInfoHeaderValue>.get_Item(int)
 		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection.System.Collections.Generic.IList<Windows.Web.Http.Headers.HttpProductInfoHeaderValue>.set_Item(int, Windows.Web.Http.Headers.HttpProductInfoHeaderValue)
 		// Processing: System.Collections.Generic.IList<Windows.Web.Http.Headers.HttpProductInfoHeaderValue>

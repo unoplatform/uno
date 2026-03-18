@@ -10,8 +10,5 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ReorderThemeTransition.ReorderThemeTransition()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ReorderThemeTransition.ReorderThemeTransition()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ReorderThemeTransition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ReorderThemeTransition.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ReorderThemeTransition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

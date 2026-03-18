@@ -16,8 +16,5 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaPlayerElementAutomationPeer.MediaPlayerElementAutomationPeer(Microsoft.UI.Xaml.Controls.MediaPlayerElement)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaPlayerElementAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaPlayerElementAutomationPeer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MediaPlayerElementAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

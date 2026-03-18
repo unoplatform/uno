@@ -10,12 +10,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.StyleSelector.StyleSelector()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.StyleSelector.StyleSelector()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.StyleSelector.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.StyleSelector.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.StyleSelector.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.StyleSelector.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.StyleSelector.SelectStyle(object, Microsoft.UI.Xaml.DependencyObject)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.StyleSelector.SelectStyleCore(object, Microsoft.UI.Xaml.DependencyObject)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.StyleSelector.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

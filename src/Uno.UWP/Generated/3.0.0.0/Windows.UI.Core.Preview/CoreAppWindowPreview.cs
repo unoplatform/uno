@@ -20,10 +20,5 @@ namespace Windows.UI.Core.Preview
 			throw new global::System.NotImplementedException("The member int CoreAppWindowPreview.GetIdFromWindow(AppWindow window) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreAppWindowPreview.GetIdFromWindow%28AppWindow%20window%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Core.Preview.CoreAppWindowPreview.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Core.Preview.CoreAppWindowPreview.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Core.Preview.CoreAppWindowPreview.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Core.Preview.CoreAppWindowPreview.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Windows.UI.Core.Preview.CoreAppWindowPreview.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

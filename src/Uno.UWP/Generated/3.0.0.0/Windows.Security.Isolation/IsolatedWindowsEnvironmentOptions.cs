@@ -134,10 +134,6 @@ namespace Windows.Security.Isolation
 		}
 #endif
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOptions.IsolatedWindowsEnvironmentOptions()
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ShareHostFolderForUntrustedItems(string SharedHostFolderPath, string ShareFolderNameInEnvironment)
@@ -161,6 +157,5 @@ namespace Windows.Security.Isolation
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOptions.PersistUserProfile.set
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOptions.SharedFolderNameInEnvironment.get
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOptions.SharedHostFolderPath.get
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

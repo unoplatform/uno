@@ -10,14 +10,9 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property Cancel
 		// Skipping already declared property Result
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosingEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ContentDialogClosingEventArgs.GetDeferral()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosingEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosingEventArgs.Cancel.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosingEventArgs.Result.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentDialogClosingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

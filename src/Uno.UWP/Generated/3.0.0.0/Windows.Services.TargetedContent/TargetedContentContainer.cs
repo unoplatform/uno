@@ -60,10 +60,6 @@ namespace Windows.Services.TargetedContent
 			throw new global::System.NotImplementedException("The member IAsyncOperation<TargetedContentContainer> TargetedContentContainer.GetAsync(string contentId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CTargetedContentContainer%3E%20TargetedContentContainer.GetAsync%28string%20contentId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentContainer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentContainer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentContainer.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentContainer.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Services.TargetedContent.TargetedContentObject SelectSingleObject(string path)
@@ -75,6 +71,5 @@ namespace Windows.Services.TargetedContent
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentContainer.Content.get
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentContainer.Id.get
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentContainer.Timestamp.get
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentContainer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

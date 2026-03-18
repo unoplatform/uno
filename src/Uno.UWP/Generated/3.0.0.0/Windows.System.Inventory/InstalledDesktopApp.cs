@@ -60,10 +60,6 @@ namespace Windows.System.Inventory
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<InstalledDesktopApp>> InstalledDesktopApp.GetInventoryAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CInstalledDesktopApp%3E%3E%20InstalledDesktopApp.GetInventoryAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.System.Inventory.InstalledDesktopApp.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.Inventory.InstalledDesktopApp.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.Inventory.InstalledDesktopApp.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.Inventory.InstalledDesktopApp.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
@@ -75,6 +71,5 @@ namespace Windows.System.Inventory
 		// Forced skipping of method Windows.System.Inventory.InstalledDesktopApp.DisplayVersion.get
 		// Forced skipping of method Windows.System.Inventory.InstalledDesktopApp.Id.get
 		// Forced skipping of method Windows.System.Inventory.InstalledDesktopApp.Publisher.get
-		// Forced skipping of method Windows.System.Inventory.InstalledDesktopApp.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

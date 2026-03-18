@@ -47,10 +47,6 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackVideoTrackList.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackVideoTrackList.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackVideoTrackList.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackVideoTrackList.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackVideoTrackList.Count.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackVideoTrackList.this[int].get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -65,7 +61,6 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackVideoTrackList.SelectedIndexChanged.remove
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackVideoTrackList.SelectedIndex.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackVideoTrackList.SelectedIndex.set
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackVideoTrackList.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackVideoTrackList.System.Collections.Generic.IReadOnlyList<Windows.Media.Core.VideoTrack>.get_Item(int)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

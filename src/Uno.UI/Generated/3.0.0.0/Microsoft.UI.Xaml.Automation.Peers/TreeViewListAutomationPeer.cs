@@ -10,8 +10,5 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.TreeViewListAutomationPeer.TreeViewListAutomationPeer(Microsoft.UI.Xaml.Controls.TreeViewList)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TreeViewListAutomationPeer.TreeViewListAutomationPeer(Microsoft.UI.Xaml.Controls.TreeViewList)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TreeViewListAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TreeViewListAutomationPeer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.TreeViewListAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

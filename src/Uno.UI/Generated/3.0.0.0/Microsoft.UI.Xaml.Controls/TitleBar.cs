@@ -243,8 +243,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.SubtitleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.TemplateSettingsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.TitleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.BackRequested.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.BackRequested.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.PaneToggleRequested.add
@@ -268,7 +266,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.TemplateSettings.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.Title.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.Title.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.TitleBar, object> BackRequested

@@ -15,10 +15,6 @@ namespace Windows.UI.Input.Preview.Injection
 		// Skipping already declared property TouchParameters
 		// Skipping already declared method Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo.InjectedInputTouchInfo()
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo.InjectedInputTouchInfo()
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo.Contact.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo.Contact.set
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo.Orientation.get
@@ -29,6 +25,5 @@ namespace Windows.UI.Input.Preview.Injection
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo.Pressure.set
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo.TouchParameters.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo.TouchParameters.set
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputTouchInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

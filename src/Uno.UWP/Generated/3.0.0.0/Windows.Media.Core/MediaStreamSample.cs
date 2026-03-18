@@ -140,10 +140,6 @@ namespace Windows.Media.Core
 			throw new global::System.NotImplementedException("The member MediaStreamSample MediaStreamSample.CreateFromDirect3D11Surface(IDirect3DSurface surface, TimeSpan timestamp) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaStreamSample%20MediaStreamSample.CreateFromDirect3D11Surface%28IDirect3DSurface%20surface%2C%20TimeSpan%20timestamp%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.MediaStreamSample.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Core.MediaStreamSample.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Core.MediaStreamSample.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Core.MediaStreamSample.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Processed.add
 		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Processed.remove
 		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Buffer.get
@@ -159,7 +155,6 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.MediaStreamSample.KeyFrame.set
 		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Protection.get
 		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Timestamp.get
-		// Forced skipping of method Windows.Media.Core.MediaStreamSample.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.MediaStreamSample, object> Processed

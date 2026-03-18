@@ -86,10 +86,6 @@ namespace Windows.Security.Credentials
 		}
 #endif
 		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.WebAccountProvider(string, string, System.Uri)
-		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.Authority.get
 		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.DisplayName.get
 		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.DisplayPurpose.get
@@ -97,6 +93,5 @@ namespace Windows.Security.Credentials
 		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.Id.get
 		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.IsSystemProvider.get
 		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.User.get
-		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

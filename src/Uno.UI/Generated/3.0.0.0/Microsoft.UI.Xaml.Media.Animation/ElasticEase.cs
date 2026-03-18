@@ -16,12 +16,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ElasticEase.ElasticEase()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ElasticEase.OscillationsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ElasticEase.SpringinessProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ElasticEase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ElasticEase.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ElasticEase.Oscillations.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ElasticEase.Oscillations.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ElasticEase.Springiness.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ElasticEase.Springiness.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ElasticEase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

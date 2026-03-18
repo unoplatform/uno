@@ -63,15 +63,10 @@ namespace Windows.Devices.Input.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Input.Preview.GazePointPreview.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Input.Preview.GazePointPreview.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Input.Preview.GazePointPreview.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Input.Preview.GazePointPreview.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Input.Preview.GazePointPreview.EyeGazePosition.get
 		// Forced skipping of method Windows.Devices.Input.Preview.GazePointPreview.HeadGazePosition.get
 		// Forced skipping of method Windows.Devices.Input.Preview.GazePointPreview.HidInputReport.get
 		// Forced skipping of method Windows.Devices.Input.Preview.GazePointPreview.SourceDevice.get
 		// Forced skipping of method Windows.Devices.Input.Preview.GazePointPreview.Timestamp.get
-		// Forced skipping of method Windows.Devices.Input.Preview.GazePointPreview.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

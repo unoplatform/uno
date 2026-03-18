@@ -30,10 +30,5 @@ namespace Microsoft.UI.Text
 		// Forced skipping of method Microsoft.UI.Text.FontWeights.SemiBold.get
 		// Forced skipping of method Microsoft.UI.Text.FontWeights.SemiLight.get
 		// Forced skipping of method Microsoft.UI.Text.FontWeights.Thin.get
-		// Forced skipping of method Microsoft.UI.Text.FontWeights.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Text.FontWeights.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Text.FontWeights.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Text.FontWeights.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Text.FontWeights.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

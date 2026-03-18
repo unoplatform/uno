@@ -93,10 +93,6 @@ namespace Windows.AI.MachineLearning.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.MapVariableDescriptorPreview.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.MapVariableDescriptorPreview.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.MapVariableDescriptorPreview.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.MapVariableDescriptorPreview.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.MapVariableDescriptorPreview.Description.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.MapVariableDescriptorPreview.Fields.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.MapVariableDescriptorPreview.IsRequired.get
@@ -105,7 +101,6 @@ namespace Windows.AI.MachineLearning.Preview
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.MapVariableDescriptorPreview.Name.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.MapVariableDescriptorPreview.ValidIntegerKeys.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.MapVariableDescriptorPreview.ValidStringKeys.get
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.MapVariableDescriptorPreview.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.AI.MachineLearning.Preview.ILearningModelVariableDescriptorPreview
 	}
 }

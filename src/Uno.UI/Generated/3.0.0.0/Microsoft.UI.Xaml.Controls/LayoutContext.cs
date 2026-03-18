@@ -10,12 +10,9 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property LayoutState
 		// Skipping already declared property LayoutStateCore
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.LayoutContext.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.LayoutContext.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LayoutContext.LayoutState.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LayoutContext.LayoutState.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LayoutContext.LayoutStateCore.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LayoutContext.LayoutStateCore.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.LayoutContext.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

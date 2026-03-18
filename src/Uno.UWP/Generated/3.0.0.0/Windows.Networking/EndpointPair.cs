@@ -72,10 +72,6 @@ namespace Windows.Networking
 		}
 #endif
 		// Forced skipping of method Windows.Networking.EndpointPair.EndpointPair(Windows.Networking.HostName, string, Windows.Networking.HostName, string)
-		// Forced skipping of method Windows.Networking.EndpointPair.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.EndpointPair.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.EndpointPair.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.EndpointPair.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.EndpointPair.LocalHostName.get
 		// Forced skipping of method Windows.Networking.EndpointPair.LocalHostName.set
 		// Forced skipping of method Windows.Networking.EndpointPair.LocalServiceName.get
@@ -84,6 +80,5 @@ namespace Windows.Networking
 		// Forced skipping of method Windows.Networking.EndpointPair.RemoteHostName.set
 		// Forced skipping of method Windows.Networking.EndpointPair.RemoteServiceName.get
 		// Forced skipping of method Windows.Networking.EndpointPair.RemoteServiceName.set
-		// Forced skipping of method Windows.Networking.EndpointPair.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

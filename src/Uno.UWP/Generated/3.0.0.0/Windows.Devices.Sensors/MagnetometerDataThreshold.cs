@@ -55,16 +55,11 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.MagnetometerDataThreshold.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.MagnetometerDataThreshold.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.MagnetometerDataThreshold.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Sensors.MagnetometerDataThreshold.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.MagnetometerDataThreshold.XAxisMicroteslas.get
 		// Forced skipping of method Windows.Devices.Sensors.MagnetometerDataThreshold.XAxisMicroteslas.set
 		// Forced skipping of method Windows.Devices.Sensors.MagnetometerDataThreshold.YAxisMicroteslas.get
 		// Forced skipping of method Windows.Devices.Sensors.MagnetometerDataThreshold.YAxisMicroteslas.set
 		// Forced skipping of method Windows.Devices.Sensors.MagnetometerDataThreshold.ZAxisMicroteslas.get
 		// Forced skipping of method Windows.Devices.Sensors.MagnetometerDataThreshold.ZAxisMicroteslas.set
-		// Forced skipping of method Windows.Devices.Sensors.MagnetometerDataThreshold.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

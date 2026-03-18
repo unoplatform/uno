@@ -63,10 +63,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.ExposureCompensationControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Devices.ExposureCompensationControl.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Devices.ExposureCompensationControl.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Devices.ExposureCompensationControl.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetValueAsync(float value)
@@ -79,6 +75,5 @@ namespace Windows.Media.Devices
 		// Forced skipping of method Windows.Media.Devices.ExposureCompensationControl.Step.get
 		// Forced skipping of method Windows.Media.Devices.ExposureCompensationControl.Supported.get
 		// Forced skipping of method Windows.Media.Devices.ExposureCompensationControl.Value.get
-		// Forced skipping of method Windows.Media.Devices.ExposureCompensationControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

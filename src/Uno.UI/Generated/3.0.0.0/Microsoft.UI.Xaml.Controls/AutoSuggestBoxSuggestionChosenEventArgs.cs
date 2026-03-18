@@ -11,9 +11,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property SelectedItem
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.AutoSuggestBoxSuggestionChosenEventArgs.AutoSuggestBoxSuggestionChosenEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxSuggestionChosenEventArgs.AutoSuggestBoxSuggestionChosenEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxSuggestionChosenEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxSuggestionChosenEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxSuggestionChosenEventArgs.SelectedItem.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxSuggestionChosenEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

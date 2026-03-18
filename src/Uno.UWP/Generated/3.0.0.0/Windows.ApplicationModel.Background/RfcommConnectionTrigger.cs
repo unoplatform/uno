@@ -78,10 +78,6 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.RfcommConnectionTrigger.RfcommConnectionTrigger()
-		// Forced skipping of method Windows.ApplicationModel.Background.RfcommConnectionTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Background.RfcommConnectionTrigger.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Background.RfcommConnectionTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Background.RfcommConnectionTrigger.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Background.RfcommConnectionTrigger.AllowMultipleConnections.get
 		// Forced skipping of method Windows.ApplicationModel.Background.RfcommConnectionTrigger.AllowMultipleConnections.set
 		// Forced skipping of method Windows.ApplicationModel.Background.RfcommConnectionTrigger.InboundConnection.get
@@ -90,7 +86,6 @@ namespace Windows.ApplicationModel.Background
 		// Forced skipping of method Windows.ApplicationModel.Background.RfcommConnectionTrigger.ProtectionLevel.set
 		// Forced skipping of method Windows.ApplicationModel.Background.RfcommConnectionTrigger.RemoteHostName.get
 		// Forced skipping of method Windows.ApplicationModel.Background.RfcommConnectionTrigger.RemoteHostName.set
-		// Forced skipping of method Windows.ApplicationModel.Background.RfcommConnectionTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger
 	}
 }

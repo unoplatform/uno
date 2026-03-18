@@ -37,11 +37,6 @@ namespace Windows.Devices.Printers
 			throw new global::System.NotImplementedException("The member string Print3DDevice.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Print3DDevice.GetDeviceSelector%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Printers.Print3DDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Printers.Print3DDevice.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Printers.Print3DDevice.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Printers.Print3DDevice.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Printers.Print3DDevice.PrintSchema.get
-		// Forced skipping of method Windows.Devices.Printers.Print3DDevice.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

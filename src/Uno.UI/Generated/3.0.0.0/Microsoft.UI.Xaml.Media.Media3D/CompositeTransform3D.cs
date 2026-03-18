@@ -292,8 +292,6 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.TranslateXProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.TranslateYProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.TranslateZProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.CenterX.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.CenterX.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.CenterY.get
@@ -318,6 +316,5 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.TranslateY.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.TranslateZ.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.TranslateZ.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

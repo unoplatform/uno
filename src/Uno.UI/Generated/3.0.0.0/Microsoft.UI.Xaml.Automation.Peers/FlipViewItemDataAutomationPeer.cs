@@ -10,10 +10,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.FlipViewItemDataAutomationPeer.FlipViewItemDataAutomationPeer(object, Microsoft.UI.Xaml.Automation.Peers.FlipViewAutomationPeer)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlipViewItemDataAutomationPeer.FlipViewItemDataAutomationPeer(object, Microsoft.UI.Xaml.Automation.Peers.FlipViewAutomationPeer)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlipViewItemDataAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlipViewItemDataAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.FlipViewItemDataAutomationPeer.ScrollIntoView()
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.FlipViewItemDataAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IScrollItemProvider
 	}
 }

@@ -16,8 +16,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.SwipeItems.SwipeItems()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.SwipeItems()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.ModeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.Count.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.this[int].get
@@ -34,7 +32,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.System.Collections.IEnumerable.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.Mode.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.Mode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.System.Collections.Generic.IList<Microsoft.UI.Xaml.Controls.SwipeItem>.get_Item(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItems.System.Collections.Generic.IList<Microsoft.UI.Xaml.Controls.SwipeItem>.set_Item(int, Microsoft.UI.Xaml.Controls.SwipeItem)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Controls.SwipeItem>

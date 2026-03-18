@@ -33,12 +33,7 @@ namespace Windows.ApplicationModel.Email
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxCreateFolderResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxCreateFolderResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxCreateFolderResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxCreateFolderResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxCreateFolderResult.Folder.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxCreateFolderResult.Status.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxCreateFolderResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

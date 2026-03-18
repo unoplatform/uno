@@ -40,15 +40,10 @@ namespace Microsoft.UI.System
 			throw new global::System.NotImplementedException("The member ThemeSettings ThemeSettings.CreateForWindowId(WindowId windowId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ThemeSettings%20ThemeSettings.CreateForWindowId%28WindowId%20windowId%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.System.ThemeSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.System.ThemeSettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.System.ThemeSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.System.ThemeSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.System.ThemeSettings.Changed.add
 		// Forced skipping of method Microsoft.UI.System.ThemeSettings.Changed.remove
 		// Forced skipping of method Microsoft.UI.System.ThemeSettings.HighContrast.get
 		// Forced skipping of method Microsoft.UI.System.ThemeSettings.HighContrastScheme.get
-		// Forced skipping of method Microsoft.UI.System.ThemeSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.System.ThemeSettings, object> Changed

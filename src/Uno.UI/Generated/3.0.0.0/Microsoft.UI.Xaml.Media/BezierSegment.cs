@@ -19,14 +19,11 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.BezierSegment.Point1Property.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.BezierSegment.Point2Property.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.BezierSegment.Point3Property.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.BezierSegment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.BezierSegment.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.BezierSegment.Point1.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.BezierSegment.Point1.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.BezierSegment.Point2.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.BezierSegment.Point2.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.BezierSegment.Point3.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.BezierSegment.Point3.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.BezierSegment.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

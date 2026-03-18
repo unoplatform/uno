@@ -11,12 +11,7 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property Name
 		// Skipping already declared method Microsoft.UI.Composition.CompositionEffectSourceParameter.CompositionEffectSourceParameter(string)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectSourceParameter.CompositionEffectSourceParameter(string)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectSourceParameter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectSourceParameter.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectSourceParameter.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectSourceParameter.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectSourceParameter.Name.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectSourceParameter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Graphics.Effects.IGraphicsEffectSource
 	}
 }

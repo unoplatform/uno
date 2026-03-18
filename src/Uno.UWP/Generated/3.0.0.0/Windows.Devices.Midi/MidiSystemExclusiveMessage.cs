@@ -13,14 +13,9 @@ namespace Windows.Devices.Midi
 		// Skipping already declared property Type
 		// Skipping already declared method Windows.Devices.Midi.MidiSystemExclusiveMessage.MidiSystemExclusiveMessage(Windows.Storage.Streams.IBuffer)
 		// Forced skipping of method Windows.Devices.Midi.MidiSystemExclusiveMessage.MidiSystemExclusiveMessage(Windows.Storage.Streams.IBuffer)
-		// Forced skipping of method Windows.Devices.Midi.MidiSystemExclusiveMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Midi.MidiSystemExclusiveMessage.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Midi.MidiSystemExclusiveMessage.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Midi.MidiSystemExclusiveMessage.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Midi.MidiSystemExclusiveMessage.RawData.get
 		// Forced skipping of method Windows.Devices.Midi.MidiSystemExclusiveMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Midi.MidiSystemExclusiveMessage.Type.get
-		// Forced skipping of method Windows.Devices.Midi.MidiSystemExclusiveMessage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Midi.IMidiMessage
 	}
 }

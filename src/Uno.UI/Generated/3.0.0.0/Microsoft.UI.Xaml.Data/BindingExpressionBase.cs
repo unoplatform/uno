@@ -8,10 +8,5 @@ namespace Microsoft.UI.Xaml.Data
 #endif
 	public partial class BindingExpressionBase
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingExpressionBase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingExpressionBase.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingExpressionBase.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingExpressionBase.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingExpressionBase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

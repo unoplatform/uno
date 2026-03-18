@@ -63,15 +63,10 @@ namespace Windows.Media.Miracast
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverStatus.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverStatus.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverStatus.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverStatus.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverStatus.IsConnectionTakeoverSupported.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverStatus.KnownTransmitters.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverStatus.ListeningStatus.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverStatus.MaxSimultaneousConnections.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverStatus.WiFiStatus.get
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverStatus.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

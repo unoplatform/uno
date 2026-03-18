@@ -55,15 +55,12 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.SourceOffset.get
 		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.SourceOffset.set
 		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.SourceSize.get
 		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.SourceSize.set
 		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.SourceVisual.get
 		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.SourceVisual.set
-		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.UI.Composition.ICompositionSurface
 	}
 }

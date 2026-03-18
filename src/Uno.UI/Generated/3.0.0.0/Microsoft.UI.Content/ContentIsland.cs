@@ -346,10 +346,6 @@ namespace Microsoft.UI.Content
 			throw new global::System.NotImplementedException("The member ContentIsland ContentIsland.GetBySystemVisual(Visual child) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentIsland%20ContentIsland.GetBySystemVisual%28Visual%20child%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.ContentIsland.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Content.ContentIsland.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Content.ContentIsland.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Content.ContentIsland.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public object GetAutomationHostProvider()
@@ -419,7 +415,6 @@ namespace Microsoft.UI.Content
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.RasterizationScale.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.SystemBackdrop.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.SystemBackdrop.set
-		// Forced skipping of method Microsoft.UI.Content.ContentIsland.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Content.ContentIsland.AutomationProviderRequested
 		// Skipping already declared event Microsoft.UI.Content.ContentIsland.StateChanged
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

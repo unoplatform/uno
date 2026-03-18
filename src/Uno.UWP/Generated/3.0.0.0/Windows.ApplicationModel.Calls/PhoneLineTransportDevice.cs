@@ -54,10 +54,6 @@ namespace Windows.ApplicationModel.Calls
 			throw new global::System.NotImplementedException("The member string PhoneLineTransportDevice.GetDeviceSelector(PhoneLineTransport transport) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhoneLineTransportDevice.GetDeviceSelector%28PhoneLineTransport%20transport%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineTransportDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineTransportDevice.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineTransportDevice.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineTransportDevice.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceAccessStatus> RequestAccessAsync()
@@ -116,6 +112,5 @@ namespace Windows.ApplicationModel.Calls
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineTransportDevice.DeviceId.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineTransportDevice.Transport.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineTransportDevice.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

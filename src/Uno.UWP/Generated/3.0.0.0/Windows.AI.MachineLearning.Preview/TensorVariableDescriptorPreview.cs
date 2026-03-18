@@ -73,17 +73,12 @@ namespace Windows.AI.MachineLearning.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.TensorVariableDescriptorPreview.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.TensorVariableDescriptorPreview.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.TensorVariableDescriptorPreview.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.TensorVariableDescriptorPreview.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.TensorVariableDescriptorPreview.DataType.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.TensorVariableDescriptorPreview.Description.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.TensorVariableDescriptorPreview.IsRequired.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.TensorVariableDescriptorPreview.ModelFeatureKind.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.TensorVariableDescriptorPreview.Name.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.TensorVariableDescriptorPreview.Shape.get
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.TensorVariableDescriptorPreview.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.AI.MachineLearning.Preview.ILearningModelVariableDescriptorPreview
 	}
 }

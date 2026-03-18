@@ -20,8 +20,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.HeightProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.MaxHeightProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.MinHeightProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.ActualHeight.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.Height.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.Height.set
@@ -29,6 +27,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.MaxHeight.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.MinHeight.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.MinHeight.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RowDefinition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

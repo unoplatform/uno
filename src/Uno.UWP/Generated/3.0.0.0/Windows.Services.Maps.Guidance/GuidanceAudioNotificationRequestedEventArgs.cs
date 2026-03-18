@@ -43,13 +43,8 @@ namespace Windows.Services.Maps.Guidance
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceAudioNotificationRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceAudioNotificationRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceAudioNotificationRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceAudioNotificationRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceAudioNotificationRequestedEventArgs.AudioFilePaths.get
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceAudioNotificationRequestedEventArgs.AudioNotification.get
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceAudioNotificationRequestedEventArgs.AudioText.get
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceAudioNotificationRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -13,10 +13,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.SplineDoubleKeyFrame.SplineDoubleKeyFrame()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineDoubleKeyFrame.SplineDoubleKeyFrame()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineDoubleKeyFrame.KeySplineProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineDoubleKeyFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineDoubleKeyFrame.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineDoubleKeyFrame.KeySpline.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineDoubleKeyFrame.KeySpline.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineDoubleKeyFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

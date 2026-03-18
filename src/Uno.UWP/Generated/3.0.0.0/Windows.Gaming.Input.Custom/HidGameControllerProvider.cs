@@ -83,10 +83,6 @@ namespace Windows.Gaming.Input.Custom
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.Input.Custom.HidGameControllerProvider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Gaming.Input.Custom.HidGameControllerProvider.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Gaming.Input.Custom.HidGameControllerProvider.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Gaming.Input.Custom.HidGameControllerProvider.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void GetFeatureReport(byte reportId, byte[] reportBuffer)
@@ -115,7 +111,6 @@ namespace Windows.Gaming.Input.Custom
 		// Forced skipping of method Windows.Gaming.Input.Custom.HidGameControllerProvider.IsConnected.get
 		// Forced skipping of method Windows.Gaming.Input.Custom.HidGameControllerProvider.UsageId.get
 		// Forced skipping of method Windows.Gaming.Input.Custom.HidGameControllerProvider.UsagePage.get
-		// Forced skipping of method Windows.Gaming.Input.Custom.HidGameControllerProvider.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Gaming.Input.Custom.IGameControllerProvider
 	}
 }

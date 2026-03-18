@@ -159,10 +159,6 @@ namespace Windows.Media
 		}
 #endif
 		// Forced skipping of method Windows.Media.VideoFrame.~VideoFrame()
-		// Forced skipping of method Windows.Media.VideoFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.VideoFrame.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.VideoFrame.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.VideoFrame.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction CopyToAsync(global::Windows.Media.VideoFrame frame)
@@ -197,7 +193,6 @@ namespace Windows.Media
 		// Forced skipping of method Windows.Media.VideoFrame.SystemRelativeTime.get
 		// Forced skipping of method Windows.Media.VideoFrame.SystemRelativeTime.set
 		// Forced skipping of method Windows.Media.VideoFrame.Type.get
-		// Forced skipping of method Windows.Media.VideoFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.IMediaFrame
 		// Processing: System.IDisposable
 	}

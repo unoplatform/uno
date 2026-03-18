@@ -8,10 +8,5 @@ namespace Microsoft.UI.Xaml.Automation
 #endif
 	public partial class AutomationProperty
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperty.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperty.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperty.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperty.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationProperty.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

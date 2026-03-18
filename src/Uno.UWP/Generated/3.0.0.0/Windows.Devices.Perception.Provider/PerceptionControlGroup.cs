@@ -26,11 +26,6 @@ namespace Windows.Devices.Perception.Provider
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionControlGroup.PerceptionControlGroup(System.Collections.Generic.IEnumerable<string>)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionControlGroup.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionControlGroup.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionControlGroup.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionControlGroup.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionControlGroup.FrameProviderIds.get
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionControlGroup.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

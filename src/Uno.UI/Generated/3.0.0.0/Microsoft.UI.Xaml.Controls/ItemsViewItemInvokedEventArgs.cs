@@ -9,11 +9,6 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class ItemsViewItemInvokedEventArgs
 	{
 		// Skipping already declared property InvokedItem
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsViewItemInvokedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsViewItemInvokedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsViewItemInvokedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsViewItemInvokedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsViewItemInvokedEventArgs.InvokedItem.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsViewItemInvokedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

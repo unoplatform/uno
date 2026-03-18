@@ -120,10 +120,6 @@ namespace Windows.Graphics.Printing3D
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DMesh.Printing3DMesh()
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DMesh.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DMesh.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DMesh.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DMesh.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IBuffer GetVertexPositions()
@@ -201,6 +197,5 @@ namespace Windows.Graphics.Printing3D
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DMesh.VertexNormalsDescription.set
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DMesh.VertexPositionsDescription.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DMesh.VertexPositionsDescription.set
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DMesh.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

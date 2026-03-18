@@ -88,10 +88,6 @@ namespace Windows.ApplicationModel.Payments
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.PaymentShippingOption(string, Windows.ApplicationModel.Payments.PaymentCurrencyAmount, bool, string)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.Amount.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.Amount.set
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.IsSelected.get
@@ -100,6 +96,5 @@ namespace Windows.ApplicationModel.Payments
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.Label.set
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.Tag.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.Tag.set
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

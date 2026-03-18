@@ -123,10 +123,6 @@ namespace Windows.Graphics.Display.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsEqual(global::Windows.Graphics.Display.Core.HdmiDisplayMode mode)
@@ -145,6 +141,5 @@ namespace Windows.Graphics.Display.Core
 		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.ResolutionHeightInRawPixels.get
 		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.ResolutionWidthInRawPixels.get
 		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.StereoEnabled.get
-		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

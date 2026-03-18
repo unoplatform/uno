@@ -11,12 +11,9 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared property Character
 		// Skipping already declared property Handled
 		// Skipping already declared property KeyStatus
-		// Forced skipping of method Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.Character.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.Handled.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.KeyStatus.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

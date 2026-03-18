@@ -10,10 +10,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property ContentHeight
 		// Skipping already declared property NegativeContentHeight
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ExpanderTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ExpanderTemplateSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ExpanderTemplateSettings.ContentHeight.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ExpanderTemplateSettings.NegativeContentHeight.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ExpanderTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

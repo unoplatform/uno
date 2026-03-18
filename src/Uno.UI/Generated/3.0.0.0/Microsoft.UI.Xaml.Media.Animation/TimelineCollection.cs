@@ -13,10 +13,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.TimelineCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.TimelineCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.Count.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.this[int].get
@@ -31,7 +27,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.Remove(Microsoft.UI.Xaml.Media.Animation.Timeline)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.Timeline>.get_Item(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TimelineCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.Timeline>.set_Item(int, Microsoft.UI.Xaml.Media.Animation.Timeline)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.Timeline>

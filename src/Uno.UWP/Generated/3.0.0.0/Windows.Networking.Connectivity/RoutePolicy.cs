@@ -46,13 +46,8 @@ namespace Windows.Networking.Connectivity
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Connectivity.RoutePolicy.RoutePolicy(Windows.Networking.Connectivity.ConnectionProfile, Windows.Networking.HostName, Windows.Networking.DomainNameType)
-		// Forced skipping of method Windows.Networking.Connectivity.RoutePolicy.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Connectivity.RoutePolicy.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Connectivity.RoutePolicy.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Connectivity.RoutePolicy.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Connectivity.RoutePolicy.ConnectionProfile.get
 		// Forced skipping of method Windows.Networking.Connectivity.RoutePolicy.HostName.get
 		// Forced skipping of method Windows.Networking.Connectivity.RoutePolicy.HostNameType.get
-		// Forced skipping of method Windows.Networking.Connectivity.RoutePolicy.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

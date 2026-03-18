@@ -37,10 +37,6 @@ namespace Windows.Devices.HumanInterfaceDevice
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidOutputReport.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidOutputReport.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidOutputReport.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidOutputReport.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.HumanInterfaceDevice.HidBooleanControl GetBooleanControl(ushort usagePage, ushort usageId)
@@ -72,6 +68,5 @@ namespace Windows.Devices.HumanInterfaceDevice
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidOutputReport.Data.get
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidOutputReport.Data.set
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidOutputReport.Id.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidOutputReport.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

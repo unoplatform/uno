@@ -130,10 +130,6 @@ namespace Windows.Media.Effects
 		}
 #endif
 		// Forced skipping of method Windows.Media.Effects.VideoTransformEffectDefinition.VideoTransformEffectDefinition()
-		// Forced skipping of method Windows.Media.Effects.VideoTransformEffectDefinition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Effects.VideoTransformEffectDefinition.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Effects.VideoTransformEffectDefinition.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Effects.VideoTransformEffectDefinition.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Effects.VideoTransformEffectDefinition.ActivatableClassId.get
 		// Forced skipping of method Windows.Media.Effects.VideoTransformEffectDefinition.CropRectangle.get
 		// Forced skipping of method Windows.Media.Effects.VideoTransformEffectDefinition.CropRectangle.set
@@ -149,7 +145,6 @@ namespace Windows.Media.Effects
 		// Forced skipping of method Windows.Media.Effects.VideoTransformEffectDefinition.Rotation.get
 		// Forced skipping of method Windows.Media.Effects.VideoTransformEffectDefinition.Rotation.set
 		// Forced skipping of method Windows.Media.Effects.VideoTransformEffectDefinition.SphericalProjection.get
-		// Forced skipping of method Windows.Media.Effects.VideoTransformEffectDefinition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Effects.IVideoEffectDefinition
 	}
 }

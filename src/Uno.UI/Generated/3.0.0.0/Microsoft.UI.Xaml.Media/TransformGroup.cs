@@ -14,11 +14,8 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared method Microsoft.UI.Xaml.Media.TransformGroup.TransformGroup()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformGroup.TransformGroup()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformGroup.ChildrenProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformGroup.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformGroup.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformGroup.Children.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformGroup.Children.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformGroup.Value.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TransformGroup.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

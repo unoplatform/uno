@@ -163,10 +163,6 @@ namespace Windows.Media.Control
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsChannelDownEnabled.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsChannelUpEnabled.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsFastForwardEnabled.get
@@ -182,6 +178,5 @@ namespace Windows.Media.Control
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsRewindEnabled.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsShuffleEnabled.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.IsStopEnabled.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

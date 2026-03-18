@@ -43,13 +43,8 @@ namespace Windows.Perception.People
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Perception.People.HeadPose.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Perception.People.HeadPose.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Perception.People.HeadPose.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Perception.People.HeadPose.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Perception.People.HeadPose.ForwardDirection.get
 		// Forced skipping of method Windows.Perception.People.HeadPose.Position.get
 		// Forced skipping of method Windows.Perception.People.HeadPose.UpDirection.get
-		// Forced skipping of method Windows.Perception.People.HeadPose.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -45,8 +45,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.EnableDependentAnimationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.FromProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.ToProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.By.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.By.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.EasingFunction.get
@@ -57,6 +55,5 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.From.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.To.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.To.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

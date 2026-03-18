@@ -23,9 +23,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.RenderingDeviceReplacedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.RenderingDeviceReplacedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.RenderingDeviceReplacedEventArgs.GraphicsDevice.get
-		// Forced skipping of method Windows.UI.Composition.RenderingDeviceReplacedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

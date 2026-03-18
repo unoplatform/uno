@@ -106,10 +106,6 @@ namespace Windows.Security.Cryptography.Certificates
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.ChainBuildingParameters()
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.AuthorityInformationAccessEnabled.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.AuthorityInformationAccessEnabled.set
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.CurrentTimeValidationEnabled.get
@@ -122,6 +118,5 @@ namespace Windows.Security.Cryptography.Certificates
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.RevocationCheckEnabled.set
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.ValidationTimestamp.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.ValidationTimestamp.set
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainBuildingParameters.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

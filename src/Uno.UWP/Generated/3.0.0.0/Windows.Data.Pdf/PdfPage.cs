@@ -63,10 +63,6 @@ namespace Windows.Data.Pdf
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Data.Pdf.PdfPage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Data.Pdf.PdfPage.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Data.Pdf.PdfPage.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Data.Pdf.PdfPage.WinRT.IWinRTObject.AdditionalTypeData.get
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction RenderToStreamAsync(global::Windows.Storage.Streams.IRandomAccessStream outputStream)
@@ -100,7 +96,6 @@ namespace Windows.Data.Pdf
 		// Forced skipping of method Windows.Data.Pdf.PdfPage.PreferredZoom.get
 		// Forced skipping of method Windows.Data.Pdf.PdfPage.Rotation.get
 		// Forced skipping of method Windows.Data.Pdf.PdfPage.Size.get
-		// Forced skipping of method Windows.Data.Pdf.PdfPage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

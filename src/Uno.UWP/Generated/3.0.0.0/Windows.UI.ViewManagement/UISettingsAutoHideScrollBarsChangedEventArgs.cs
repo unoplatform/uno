@@ -13,10 +13,5 @@ namespace Windows.UI.ViewManagement
 		{
 		}
 #endif
-		// Forced skipping of method Windows.UI.ViewManagement.UISettingsAutoHideScrollBarsChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.ViewManagement.UISettingsAutoHideScrollBarsChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.ViewManagement.UISettingsAutoHideScrollBarsChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.ViewManagement.UISettingsAutoHideScrollBarsChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Windows.UI.ViewManagement.UISettingsAutoHideScrollBarsChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

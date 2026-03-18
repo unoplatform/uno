@@ -43,11 +43,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings.EllipseDiameter.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings.EllipseOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings.MaxSideLength.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

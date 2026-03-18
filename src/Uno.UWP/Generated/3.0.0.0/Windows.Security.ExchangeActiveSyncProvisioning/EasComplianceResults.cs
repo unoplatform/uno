@@ -113,10 +113,6 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults.Compliant.get
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults.DisallowConvenienceLogonResult.get
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults.EncryptionProviderType.get
@@ -127,6 +123,5 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults.PasswordExpirationResult.get
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults.PasswordHistoryResult.get
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults.RequireEncryptionResult.get
-		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

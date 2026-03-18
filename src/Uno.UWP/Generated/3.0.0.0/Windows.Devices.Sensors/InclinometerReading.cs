@@ -83,10 +83,6 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.InclinometerReading.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.InclinometerReading.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.InclinometerReading.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Sensors.InclinometerReading.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.InclinometerReading.PerformanceCount.get
 		// Forced skipping of method Windows.Devices.Sensors.InclinometerReading.PitchDegrees.get
 		// Forced skipping of method Windows.Devices.Sensors.InclinometerReading.Properties.get
@@ -94,6 +90,5 @@ namespace Windows.Devices.Sensors
 		// Forced skipping of method Windows.Devices.Sensors.InclinometerReading.Timestamp.get
 		// Forced skipping of method Windows.Devices.Sensors.InclinometerReading.YawAccuracy.get
 		// Forced skipping of method Windows.Devices.Sensors.InclinometerReading.YawDegrees.get
-		// Forced skipping of method Windows.Devices.Sensors.InclinometerReading.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -82,10 +82,6 @@ namespace Windows.ApplicationModel.Chat
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.ChatConversationThreadingInfo()
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.ContactId.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.ContactId.set
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.ConversationId.get
@@ -95,6 +91,5 @@ namespace Windows.ApplicationModel.Chat
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.Kind.set
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.Participants.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatConversationThreadingInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

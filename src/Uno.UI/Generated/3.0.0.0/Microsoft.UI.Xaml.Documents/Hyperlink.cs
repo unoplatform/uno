@@ -72,8 +72,6 @@ namespace Microsoft.UI.Xaml.Documents
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.XYFocusRightProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.XYFocusUpNavigationStrategyProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.XYFocusUpProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Documents.Hyperlink.Focus(Microsoft.UI.Xaml.FocusState)
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.Click.add
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.Click.remove
@@ -108,7 +106,6 @@ namespace Microsoft.UI.Xaml.Documents
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.XYFocusUp.set
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.XYFocusUpNavigationStrategy.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.XYFocusUpNavigationStrategy.set
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Hyperlink.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Documents.Hyperlink.Click
 		// Skipping already declared event Microsoft.UI.Xaml.Documents.Hyperlink.GotFocus
 		// Skipping already declared event Microsoft.UI.Xaml.Documents.Hyperlink.LostFocus

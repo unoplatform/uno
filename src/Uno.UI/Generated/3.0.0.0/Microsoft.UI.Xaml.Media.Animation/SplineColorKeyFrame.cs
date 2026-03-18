@@ -33,10 +33,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.SplineColorKeyFrame()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.SplineColorKeyFrame()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.KeySplineProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.KeySpline.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.KeySpline.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SplineColorKeyFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

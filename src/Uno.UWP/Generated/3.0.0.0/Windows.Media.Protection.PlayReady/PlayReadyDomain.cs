@@ -63,16 +63,11 @@ namespace Windows.Media.Protection.PlayReady
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomain.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomain.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomain.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomain.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomain.AccountId.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomain.DomainJoinUrl.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomain.FriendlyName.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomain.Revision.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomain.ServiceId.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomain.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Protection.PlayReady.IPlayReadyDomain
 	}
 }

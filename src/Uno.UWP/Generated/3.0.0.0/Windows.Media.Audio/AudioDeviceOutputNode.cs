@@ -85,10 +85,6 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioDeviceOutputNode.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Audio.AudioDeviceOutputNode.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Audio.AudioDeviceOutputNode.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Audio.AudioDeviceOutputNode.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -140,7 +136,6 @@ namespace Windows.Media.Audio
 		// Forced skipping of method Windows.Media.Audio.AudioDeviceOutputNode.Listener.set
 		// Forced skipping of method Windows.Media.Audio.AudioDeviceOutputNode.OutgoingGain.get
 		// Forced skipping of method Windows.Media.Audio.AudioDeviceOutputNode.OutgoingGain.set
-		// Forced skipping of method Windows.Media.Audio.AudioDeviceOutputNode.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Audio.IAudioNode
 		// Processing: System.IDisposable
 		// Processing: Windows.Media.Audio.IAudioNodeWithListener

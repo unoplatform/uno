@@ -34,8 +34,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.MaxColumnsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.SelectedIndexProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.SelectedItemProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.RadioButtons.ContainerFromIndex(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.SelectionChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.SelectionChanged.remove
@@ -54,7 +52,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.SelectedIndex.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.SelectedItem.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.SelectedItem.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButtons.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.RadioButtons.SelectionChanged
 	}
 }

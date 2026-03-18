@@ -82,10 +82,6 @@ namespace Windows.Networking.Vpn
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.VpnCustomComboBox()
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.Bordered.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.Bordered.set
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.Compulsory.get
@@ -95,7 +91,6 @@ namespace Windows.Networking.Vpn
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.OptionsText.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.OptionsText.set
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.Selected.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomComboBox.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Networking.Vpn.IVpnCustomPrompt
 	}
 }

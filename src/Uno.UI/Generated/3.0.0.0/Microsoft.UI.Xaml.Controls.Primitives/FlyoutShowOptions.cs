@@ -27,10 +27,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property ShowMode
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions.FlyoutShowOptions()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions.FlyoutShowOptions()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions.ExclusionRect.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions.ExclusionRect.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions.Placement.get
@@ -39,6 +35,5 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions.Position.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions.ShowMode.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions.ShowMode.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

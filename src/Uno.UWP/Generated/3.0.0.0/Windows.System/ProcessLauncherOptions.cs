@@ -72,10 +72,6 @@ namespace Windows.System
 		}
 #endif
 		// Forced skipping of method Windows.System.ProcessLauncherOptions.ProcessLauncherOptions()
-		// Forced skipping of method Windows.System.ProcessLauncherOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.ProcessLauncherOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.ProcessLauncherOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.ProcessLauncherOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.ProcessLauncherOptions.StandardError.get
 		// Forced skipping of method Windows.System.ProcessLauncherOptions.StandardError.set
 		// Forced skipping of method Windows.System.ProcessLauncherOptions.StandardInput.get
@@ -84,6 +80,5 @@ namespace Windows.System
 		// Forced skipping of method Windows.System.ProcessLauncherOptions.StandardOutput.set
 		// Forced skipping of method Windows.System.ProcessLauncherOptions.WorkingDirectory.get
 		// Forced skipping of method Windows.System.ProcessLauncherOptions.WorkingDirectory.set
-		// Forced skipping of method Windows.System.ProcessLauncherOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

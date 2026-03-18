@@ -25,8 +25,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RangeBase.MinimumProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RangeBase.SmallChangeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RangeBase.ValueProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RangeBase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RangeBase.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RangeBase.ValueChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RangeBase.ValueChanged.remove
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.RangeBase.OnMinimumChanged(double, double)
@@ -42,7 +40,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RangeBase.SmallChange.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RangeBase.Value.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RangeBase.Value.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RangeBase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.RangeBase.ValueChanged
 	}
 }

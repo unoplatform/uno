@@ -53,14 +53,9 @@ namespace Windows.ApplicationModel.Search.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionsRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionsRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionsRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionsRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionsRequestedEventArgs.Language.get
 		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionsRequestedEventArgs.LinguisticDetails.get
 		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionsRequestedEventArgs.QueryText.get
 		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionsRequestedEventArgs.Request.get
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionsRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

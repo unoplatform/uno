@@ -86,10 +86,6 @@ namespace Windows.Networking.Vpn
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.VpnRouteAssignment()
-		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.ExcludeLocalSubnets.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.ExcludeLocalSubnets.set
 		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.Ipv4ExclusionRoutes.get
@@ -100,6 +96,5 @@ namespace Windows.Networking.Vpn
 		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.Ipv6ExclusionRoutes.set
 		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.Ipv6InclusionRoutes.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.Ipv6InclusionRoutes.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnRouteAssignment.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

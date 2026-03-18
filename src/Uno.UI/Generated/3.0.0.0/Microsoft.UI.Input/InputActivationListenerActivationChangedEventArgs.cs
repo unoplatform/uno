@@ -13,10 +13,5 @@ namespace Microsoft.UI.Input
 		{
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.InputActivationListenerActivationChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.InputActivationListenerActivationChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.InputActivationListenerActivationChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Input.InputActivationListenerActivationChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Input.InputActivationListenerActivationChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

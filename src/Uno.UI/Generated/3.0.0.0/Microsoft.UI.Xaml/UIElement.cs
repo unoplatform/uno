@@ -784,8 +784,6 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.XYFocusRightProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.XYFocusUpNavigationStrategyProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.XYFocusUpProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.UIElement.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.UIElement.WinRT.IWinRTObject.NativeObject.get
 #if false || false || false || false || false || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public void Measure(global::Windows.Foundation.Size availableSize)
@@ -1087,7 +1085,6 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.XYFocusUpNavigationStrategy.set
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.XamlRoot.get
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.XamlRoot.set
-		// Forced skipping of method Microsoft.UI.Xaml.UIElement.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.UIElement, global::Microsoft.UI.Xaml.Input.AccessKeyDisplayDismissedEventArgs> AccessKeyDisplayDismissed

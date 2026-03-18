@@ -85,10 +85,6 @@ namespace Windows.Devices.Sensors.Custom
 			throw new global::System.NotImplementedException("The member IAsyncOperation<CustomSensor> CustomSensor.FromIdAsync(string sensorId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCustomSensor%3E%20CustomSensor.FromIdAsync%28string%20sensorId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensor.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensor.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensor.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Sensors.Custom.CustomSensorReading GetCurrentReading()
@@ -105,7 +101,6 @@ namespace Windows.Devices.Sensors.Custom
 		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensor.ReportInterval.set
 		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensor.ReportLatency.get
 		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensor.ReportLatency.set
-		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Sensors.Custom.CustomSensor, global::Windows.Devices.Sensors.Custom.CustomSensorReadingChangedEventArgs> ReadingChanged

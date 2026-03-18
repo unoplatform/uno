@@ -23,11 +23,6 @@ namespace Windows.Devices.Input.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherAddedPreviewEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherAddedPreviewEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherAddedPreviewEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherAddedPreviewEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherAddedPreviewEventArgs.Device.get
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherAddedPreviewEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

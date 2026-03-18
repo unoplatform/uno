@@ -100,10 +100,6 @@ namespace Windows.ApplicationModel.Wallet
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletTransaction.WalletTransaction()
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletTransaction.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletTransaction.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletTransaction.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletTransaction.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletTransaction.Description.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletTransaction.Description.set
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletTransaction.DisplayAmount.get
@@ -116,6 +112,5 @@ namespace Windows.ApplicationModel.Wallet
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletTransaction.IsLaunchable.set
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletTransaction.TransactionDate.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletTransaction.TransactionDate.set
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletTransaction.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

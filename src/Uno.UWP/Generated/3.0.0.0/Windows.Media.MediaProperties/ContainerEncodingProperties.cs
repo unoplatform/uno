@@ -50,10 +50,6 @@ namespace Windows.Media.MediaProperties
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaProperties.ContainerEncodingProperties.ContainerEncodingProperties()
-		// Forced skipping of method Windows.Media.MediaProperties.ContainerEncodingProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.MediaProperties.ContainerEncodingProperties.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.MediaProperties.ContainerEncodingProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.MediaProperties.ContainerEncodingProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.ContainerEncodingProperties Copy()
@@ -65,7 +61,6 @@ namespace Windows.Media.MediaProperties
 		// Forced skipping of method Windows.Media.MediaProperties.ContainerEncodingProperties.Subtype.get
 		// Forced skipping of method Windows.Media.MediaProperties.ContainerEncodingProperties.Subtype.set
 		// Forced skipping of method Windows.Media.MediaProperties.ContainerEncodingProperties.Type.get
-		// Forced skipping of method Windows.Media.MediaProperties.ContainerEncodingProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.MediaProperties.IMediaEncodingProperties
 	}
 }

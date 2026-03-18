@@ -66,10 +66,6 @@ namespace Windows.Media.Ocr
 #endif
 		// Forced skipping of method Windows.Media.Ocr.OcrEngine.AvailableRecognizerLanguages.get
 		// Forced skipping of method Windows.Media.Ocr.OcrEngine.MaxImageDimension.get
-		// Forced skipping of method Windows.Media.Ocr.OcrEngine.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Ocr.OcrEngine.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Ocr.OcrEngine.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Ocr.OcrEngine.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Ocr.OcrResult> RecognizeAsync(global::Windows.Graphics.Imaging.SoftwareBitmap bitmap)
@@ -78,6 +74,5 @@ namespace Windows.Media.Ocr
 		}
 #endif
 		// Forced skipping of method Windows.Media.Ocr.OcrEngine.RecognizerLanguage.get
-		// Forced skipping of method Windows.Media.Ocr.OcrEngine.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

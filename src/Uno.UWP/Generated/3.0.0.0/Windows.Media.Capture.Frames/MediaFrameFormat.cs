@@ -73,16 +73,11 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.AudioEncodingProperties.get
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.FrameRate.get
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.MajorType.get
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.Properties.get
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.Subtype.get
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.VideoFormat.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

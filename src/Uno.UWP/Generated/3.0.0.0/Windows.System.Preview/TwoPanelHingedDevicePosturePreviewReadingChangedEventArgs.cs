@@ -23,11 +23,6 @@ namespace Windows.System.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs.Reading.get
-		// Forced skipping of method Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

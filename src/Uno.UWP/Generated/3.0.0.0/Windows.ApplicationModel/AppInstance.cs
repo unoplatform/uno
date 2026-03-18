@@ -72,10 +72,6 @@ namespace Windows.ApplicationModel
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.AppInstance.RecommendedInstance.get
-		// Forced skipping of method Windows.ApplicationModel.AppInstance.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.AppInstance.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.AppInstance.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.AppInstance.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RedirectActivationTo()
@@ -85,6 +81,5 @@ namespace Windows.ApplicationModel
 #endif
 		// Forced skipping of method Windows.ApplicationModel.AppInstance.IsCurrentInstance.get
 		// Forced skipping of method Windows.ApplicationModel.AppInstance.Key.get
-		// Forced skipping of method Windows.ApplicationModel.AppInstance.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

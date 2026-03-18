@@ -34,8 +34,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MinItemWidthProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MinRowSpacingProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.OrientationProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.ItemsJustification.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.ItemsJustification.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.ItemsStretch.get
@@ -52,6 +50,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.MinRowSpacing.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.Orientation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.Orientation.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.UniformGridLayout.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

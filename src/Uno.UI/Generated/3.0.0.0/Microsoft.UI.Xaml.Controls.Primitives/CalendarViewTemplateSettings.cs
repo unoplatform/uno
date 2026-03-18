@@ -23,8 +23,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property WeekDay5
 		// Skipping already declared property WeekDay6
 		// Skipping already declared property WeekDay7
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.CenterX.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.CenterY.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.ClipRect.get
@@ -40,6 +38,5 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.WeekDay5.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.WeekDay6.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.WeekDay7.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

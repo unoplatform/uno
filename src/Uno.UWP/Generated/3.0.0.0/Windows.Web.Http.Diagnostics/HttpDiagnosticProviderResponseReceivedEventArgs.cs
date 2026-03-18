@@ -43,13 +43,8 @@ namespace Windows.Web.Http.Diagnostics
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderResponseReceivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderResponseReceivedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderResponseReceivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderResponseReceivedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderResponseReceivedEventArgs.ActivityId.get
 		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderResponseReceivedEventArgs.Message.get
 		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderResponseReceivedEventArgs.Timestamp.get
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderResponseReceivedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

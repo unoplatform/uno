@@ -93,10 +93,6 @@ namespace Windows.System.Update
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Update.SystemUpdateItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.Update.SystemUpdateItem.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.Update.SystemUpdateItem.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.Update.SystemUpdateItem.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.Update.SystemUpdateItem.Description.get
 		// Forced skipping of method Windows.System.Update.SystemUpdateItem.DownloadProgress.get
 		// Forced skipping of method Windows.System.Update.SystemUpdateItem.ExtendedError.get
@@ -105,6 +101,5 @@ namespace Windows.System.Update
 		// Forced skipping of method Windows.System.Update.SystemUpdateItem.Revision.get
 		// Forced skipping of method Windows.System.Update.SystemUpdateItem.State.get
 		// Forced skipping of method Windows.System.Update.SystemUpdateItem.Title.get
-		// Forced skipping of method Windows.System.Update.SystemUpdateItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

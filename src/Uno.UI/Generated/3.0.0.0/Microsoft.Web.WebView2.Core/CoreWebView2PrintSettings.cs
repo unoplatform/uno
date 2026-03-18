@@ -307,10 +307,6 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings.Collation.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings.Collation.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings.ColorMode.get
@@ -353,6 +349,5 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings.ShouldPrintHeaderAndFooter.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings.ShouldPrintSelectionOnly.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings.ShouldPrintSelectionOnly.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

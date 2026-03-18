@@ -180,10 +180,6 @@ namespace Windows.ApplicationModel.Payments
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentAddress.PaymentAddress()
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentAddress.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentAddress.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentAddress.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentAddress.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentAddress.AddressLines.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentAddress.AddressLines.set
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentAddress.City.get
@@ -207,6 +203,5 @@ namespace Windows.ApplicationModel.Payments
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentAddress.Region.set
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentAddress.SortingCode.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentAddress.SortingCode.set
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentAddress.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

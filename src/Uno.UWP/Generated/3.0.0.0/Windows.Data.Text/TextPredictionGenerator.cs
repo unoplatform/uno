@@ -50,10 +50,6 @@ namespace Windows.Data.Text
 		}
 #endif
 		// Forced skipping of method Windows.Data.Text.TextPredictionGenerator.TextPredictionGenerator(string)
-		// Forced skipping of method Windows.Data.Text.TextPredictionGenerator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Data.Text.TextPredictionGenerator.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Data.Text.TextPredictionGenerator.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Data.Text.TextPredictionGenerator.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<string>> GetCandidatesAsync(string input)
@@ -86,6 +82,5 @@ namespace Windows.Data.Text
 		// Forced skipping of method Windows.Data.Text.TextPredictionGenerator.InputScope.set
 		// Forced skipping of method Windows.Data.Text.TextPredictionGenerator.LanguageAvailableButNotInstalled.get
 		// Forced skipping of method Windows.Data.Text.TextPredictionGenerator.ResolvedLanguage.get
-		// Forced skipping of method Windows.Data.Text.TextPredictionGenerator.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

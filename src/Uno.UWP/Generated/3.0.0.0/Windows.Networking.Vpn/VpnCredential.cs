@@ -53,15 +53,10 @@ namespace Windows.Networking.Vpn
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Vpn.VpnCredential.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnCredential.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnCredential.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnCredential.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCredential.AdditionalPin.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCredential.CertificateCredential.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCredential.OldPasswordCredential.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCredential.PasskeyCredential.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnCredential.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Networking.Vpn.IVpnCredential
 	}
 }

@@ -23,11 +23,6 @@ namespace Windows.Management.Update
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Management.Update.PreviewBuildsState.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Management.Update.PreviewBuildsState.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Management.Update.PreviewBuildsState.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Management.Update.PreviewBuildsState.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Management.Update.PreviewBuildsState.Properties.get
-		// Forced skipping of method Windows.Management.Update.PreviewBuildsState.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

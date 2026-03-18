@@ -113,10 +113,6 @@ namespace Windows.Web.AtomPub
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.AtomPub.ServiceDocument.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Web.AtomPub.ServiceDocument.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Web.AtomPub.ServiceDocument.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Web.AtomPub.ServiceDocument.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.XmlDocument GetXmlDocument(global::Windows.Web.Syndication.SyndicationFormat format)
@@ -137,7 +133,6 @@ namespace Windows.Web.AtomPub
 		// Forced skipping of method Windows.Web.AtomPub.ServiceDocument.NodeValue.get
 		// Forced skipping of method Windows.Web.AtomPub.ServiceDocument.NodeValue.set
 		// Forced skipping of method Windows.Web.AtomPub.ServiceDocument.Workspaces.get
-		// Forced skipping of method Windows.Web.AtomPub.ServiceDocument.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Web.Syndication.ISyndicationNode
 	}
 }

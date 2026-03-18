@@ -53,14 +53,9 @@ namespace Windows.Graphics.Imaging
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapCodecInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapCodecInformation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapCodecInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapCodecInformation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapCodecInformation.CodecId.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapCodecInformation.FileExtensions.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapCodecInformation.FriendlyName.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapCodecInformation.MimeTypes.get
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapCodecInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

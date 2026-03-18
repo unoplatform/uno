@@ -10,14 +10,9 @@ namespace Windows.UI.Core
 	{
 		// Skipping already declared property Handled
 		// Skipping already declared property WindowActivationState
-		// Forced skipping of method Windows.UI.Core.WindowActivatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Core.WindowActivatedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Core.WindowActivatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Core.WindowActivatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Core.WindowActivatedEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Core.WindowActivatedEventArgs.Handled.set
 		// Forced skipping of method Windows.UI.Core.WindowActivatedEventArgs.WindowActivationState.get
-		// Forced skipping of method Windows.UI.Core.WindowActivatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.UI.Core.ICoreWindowEventArgs
 	}
 }

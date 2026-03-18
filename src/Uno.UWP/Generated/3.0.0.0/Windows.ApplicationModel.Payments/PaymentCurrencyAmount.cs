@@ -66,16 +66,11 @@ namespace Windows.ApplicationModel.Payments
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentCurrencyAmount.PaymentCurrencyAmount(string, string, string)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentCurrencyAmount.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentCurrencyAmount.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentCurrencyAmount.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentCurrencyAmount.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentCurrencyAmount.Currency.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentCurrencyAmount.Currency.set
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentCurrencyAmount.CurrencySystem.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentCurrencyAmount.CurrencySystem.set
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentCurrencyAmount.Value.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentCurrencyAmount.Value.set
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentCurrencyAmount.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

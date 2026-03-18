@@ -70,10 +70,6 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFolder> StorageFolder.GetFolderFromPathForUserAsync(User user, string path) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageFolder%3E%20StorageFolder.GetFolderFromPathForUserAsync%28User%20user%2C%20string%20path%29");
 		}
 #endif
-		// Forced skipping of method Windows.Storage.StorageFolder.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.StorageFolder.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.StorageFolder.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.StorageFolder.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.Storage.StorageFolder.CreateFileAsync(string)
 		// Skipping already declared method Windows.Storage.StorageFolder.CreateFileAsync(string, Windows.Storage.CreationCollisionOption)
 		// Skipping already declared method Windows.Storage.StorageFolder.CreateFolderAsync(string)
@@ -282,7 +278,6 @@ namespace Windows.Storage
 		// Forced skipping of method Windows.Storage.StorageFolder.Path.get
 		// Forced skipping of method Windows.Storage.StorageFolder.Properties.get
 		// Forced skipping of method Windows.Storage.StorageFolder.Provider.get
-		// Forced skipping of method Windows.Storage.StorageFolder.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Storage.IStorageFolder
 		// Processing: Windows.Storage.IStorageItem
 		// Processing: Windows.Storage.Search.IStorageFolderQueryOperations

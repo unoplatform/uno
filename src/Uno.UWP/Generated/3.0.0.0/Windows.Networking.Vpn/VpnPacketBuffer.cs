@@ -78,10 +78,6 @@ namespace Windows.Networking.Vpn
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.VpnPacketBuffer(Windows.Networking.Vpn.VpnPacketBuffer, uint, uint)
-		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.AppId.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.Buffer.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.Status.get
@@ -90,6 +86,5 @@ namespace Windows.Networking.Vpn
 		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.TransportAffinity.set
 		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.TransportContext.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.TransportContext.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

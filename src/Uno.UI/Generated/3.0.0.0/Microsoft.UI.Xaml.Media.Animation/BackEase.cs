@@ -13,10 +13,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.BackEase.BackEase()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BackEase.BackEase()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BackEase.AmplitudeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BackEase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BackEase.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BackEase.Amplitude.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BackEase.Amplitude.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BackEase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

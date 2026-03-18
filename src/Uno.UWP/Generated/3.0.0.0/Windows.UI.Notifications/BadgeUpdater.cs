@@ -13,10 +13,6 @@ namespace Windows.UI.Notifications
 		{
 		}
 #endif
-		// Forced skipping of method Windows.UI.Notifications.BadgeUpdater.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Notifications.BadgeUpdater.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Notifications.BadgeUpdater.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Notifications.BadgeUpdater.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || false || false || false || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__")]
 		public void Update(global::Windows.UI.Notifications.BadgeNotification notification)
@@ -52,6 +48,5 @@ namespace Windows.UI.Notifications
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.BadgeUpdater", "void BadgeUpdater.StopPeriodicUpdate()");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Notifications.BadgeUpdater.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

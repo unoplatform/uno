@@ -66,16 +66,11 @@ namespace Windows.ApplicationModel.Email
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.EmailIrmTemplate(string, string, string)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.Description.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.Description.set
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.Id.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.Id.set
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.Name.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.Name.set
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

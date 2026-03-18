@@ -10,12 +10,7 @@ namespace Microsoft.UI.Input
 	{
 		// Skipping already declared property Point
 		// Skipping already declared property PointerDeviceType
-		// Forced skipping of method Microsoft.UI.Input.NonClientCaptionTappedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.NonClientCaptionTappedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.NonClientCaptionTappedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Input.NonClientCaptionTappedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Input.NonClientCaptionTappedEventArgs.Point.get
 		// Forced skipping of method Microsoft.UI.Input.NonClientCaptionTappedEventArgs.PointerDeviceType.get
-		// Forced skipping of method Microsoft.UI.Input.NonClientCaptionTappedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

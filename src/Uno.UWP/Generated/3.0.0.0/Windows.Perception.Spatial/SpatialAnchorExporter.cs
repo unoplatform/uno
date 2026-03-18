@@ -27,10 +27,6 @@ namespace Windows.Perception.Spatial
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SpatialPerceptionAccessStatus> SpatialAnchorExporter.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSpatialPerceptionAccessStatus%3E%20SpatialAnchorExporter.RequestAccessAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExporter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExporter.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExporter.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExporter.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Perception.Spatial.SpatialAnchorExportSufficiency> GetAnchorExportSufficiencyAsync(global::Windows.Perception.Spatial.SpatialAnchor anchor, global::Windows.Perception.Spatial.SpatialAnchorExportPurpose purpose)
@@ -45,6 +41,5 @@ namespace Windows.Perception.Spatial
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> SpatialAnchorExporter.TryExportAnchorAsync(SpatialAnchor anchor, SpatialAnchorExportPurpose purpose, IOutputStream stream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20SpatialAnchorExporter.TryExportAnchorAsync%28SpatialAnchor%20anchor%2C%20SpatialAnchorExportPurpose%20purpose%2C%20IOutputStream%20stream%29");
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.SpatialAnchorExporter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -108,10 +108,6 @@ namespace Windows.Foundation.Diagnostics
 		}
 #endif
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.LoggingOptions(long)
-		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.ActivityId.get
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.ActivityId.set
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.Keywords.get
@@ -124,6 +120,5 @@ namespace Windows.Foundation.Diagnostics
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.Tags.set
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.Task.get
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.Task.set
-		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

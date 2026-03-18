@@ -73,16 +73,11 @@ namespace Windows.ApplicationModel.Search.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestion.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestion.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestion.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestion.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestion.DetailText.get
 		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestion.Image.get
 		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestion.ImageAlternateText.get
 		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestion.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestion.Tag.get
 		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestion.Text.get
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestion.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

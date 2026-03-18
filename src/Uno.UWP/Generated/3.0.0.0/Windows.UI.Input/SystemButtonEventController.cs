@@ -20,8 +20,6 @@ namespace Windows.UI.Input
 			throw new global::System.NotImplementedException("The member SystemButtonEventController SystemButtonEventController.CreateForDispatcherQueue(DispatcherQueue queue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemButtonEventController%20SystemButtonEventController.CreateForDispatcherQueue%28DispatcherQueue%20queue%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.SystemButtonEventController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.SystemButtonEventController.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.SystemButtonEventController.SystemFunctionButtonPressed.add
 		// Forced skipping of method Windows.UI.Input.SystemButtonEventController.SystemFunctionButtonPressed.remove
 		// Forced skipping of method Windows.UI.Input.SystemButtonEventController.SystemFunctionButtonReleased.add
@@ -30,7 +28,6 @@ namespace Windows.UI.Input
 		// Forced skipping of method Windows.UI.Input.SystemButtonEventController.SystemFunctionLockChanged.remove
 		// Forced skipping of method Windows.UI.Input.SystemButtonEventController.SystemFunctionLockIndicatorChanged.add
 		// Forced skipping of method Windows.UI.Input.SystemButtonEventController.SystemFunctionLockIndicatorChanged.remove
-		// Forced skipping of method Windows.UI.Input.SystemButtonEventController.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.SystemButtonEventController, global::Windows.UI.Input.SystemFunctionButtonEventArgs> SystemFunctionButtonPressed

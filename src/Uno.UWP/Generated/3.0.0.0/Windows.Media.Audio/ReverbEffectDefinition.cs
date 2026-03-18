@@ -358,10 +358,6 @@ namespace Windows.Media.Audio
 		}
 #endif
 		// Forced skipping of method Windows.Media.Audio.ReverbEffectDefinition.ReverbEffectDefinition(Windows.Media.Audio.AudioGraph)
-		// Forced skipping of method Windows.Media.Audio.ReverbEffectDefinition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Audio.ReverbEffectDefinition.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Audio.ReverbEffectDefinition.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Audio.ReverbEffectDefinition.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Audio.ReverbEffectDefinition.ActivatableClassId.get
 		// Forced skipping of method Windows.Media.Audio.ReverbEffectDefinition.DecayTime.get
 		// Forced skipping of method Windows.Media.Audio.ReverbEffectDefinition.DecayTime.set
@@ -410,7 +406,6 @@ namespace Windows.Media.Audio
 		// Forced skipping of method Windows.Media.Audio.ReverbEffectDefinition.RoomSize.set
 		// Forced skipping of method Windows.Media.Audio.ReverbEffectDefinition.WetDryMix.get
 		// Forced skipping of method Windows.Media.Audio.ReverbEffectDefinition.WetDryMix.set
-		// Forced skipping of method Windows.Media.Audio.ReverbEffectDefinition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Effects.IAudioEffectDefinition
 	}
 }

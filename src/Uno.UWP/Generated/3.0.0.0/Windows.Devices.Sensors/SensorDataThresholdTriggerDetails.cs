@@ -33,12 +33,7 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.SensorDataThresholdTriggerDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.SensorDataThresholdTriggerDetails.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.SensorDataThresholdTriggerDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Sensors.SensorDataThresholdTriggerDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.SensorDataThresholdTriggerDetails.DeviceId.get
 		// Forced skipping of method Windows.Devices.Sensors.SensorDataThresholdTriggerDetails.SensorType.get
-		// Forced skipping of method Windows.Devices.Sensors.SensorDataThresholdTriggerDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

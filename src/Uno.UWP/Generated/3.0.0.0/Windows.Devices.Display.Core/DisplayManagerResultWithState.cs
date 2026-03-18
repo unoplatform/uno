@@ -43,13 +43,8 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerResultWithState.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerResultWithState.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerResultWithState.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerResultWithState.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerResultWithState.ErrorCode.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerResultWithState.ExtendedErrorCode.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerResultWithState.State.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerResultWithState.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

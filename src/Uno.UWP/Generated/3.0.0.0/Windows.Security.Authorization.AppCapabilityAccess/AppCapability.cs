@@ -61,10 +61,6 @@ namespace Windows.Security.Authorization.AppCapabilityAccess
 			throw new global::System.NotImplementedException("The member AppCapability AppCapability.CreateWithProcessIdForUser(User user, string capabilityName, uint pid) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppCapability%20AppCapability.CreateWithProcessIdForUser%28User%20user%2C%20string%20capabilityName%2C%20uint%20pid%29");
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessStatus> RequestAccessAsync()
@@ -83,7 +79,6 @@ namespace Windows.Security.Authorization.AppCapabilityAccess
 		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.AccessChanged.remove
 		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.CapabilityName.get
 		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.User.get
-		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Security.Authorization.AppCapabilityAccess.AppCapability, global::Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessChangedEventArgs> AccessChanged

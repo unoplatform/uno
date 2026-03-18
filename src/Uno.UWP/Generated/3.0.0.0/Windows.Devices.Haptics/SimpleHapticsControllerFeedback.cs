@@ -10,12 +10,7 @@ namespace Windows.Devices.Haptics
 	{
 		// Skipping already declared property Duration
 		// Skipping already declared property Waveform
-		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsControllerFeedback.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsControllerFeedback.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsControllerFeedback.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsControllerFeedback.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsControllerFeedback.Duration.get
 		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsControllerFeedback.Waveform.get
-		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsControllerFeedback.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

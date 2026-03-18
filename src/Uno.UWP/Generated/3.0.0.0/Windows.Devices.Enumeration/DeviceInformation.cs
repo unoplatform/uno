@@ -129,10 +129,6 @@ namespace Windows.Devices.Enumeration
 			throw new global::System.NotImplementedException("The member DeviceWatcher DeviceInformation.CreateWatcher(string aqsFilter, IEnumerable<string> additionalProperties, DeviceInformationKind kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceWatcher%20DeviceInformation.CreateWatcher%28string%20aqsFilter%2C%20IEnumerable%3Cstring%3E%20additionalProperties%2C%20DeviceInformationKind%20kind%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Update(global::Windows.Devices.Enumeration.DeviceInformationUpdate updateInfo)
@@ -162,6 +158,5 @@ namespace Windows.Devices.Enumeration
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.Name.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.Pairing.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.Properties.get
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

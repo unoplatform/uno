@@ -51,10 +51,6 @@ namespace Windows.System
 			throw new global::System.NotImplementedException("The member bool UserPicker.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20UserPicker.IsSupported%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.System.UserPicker.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.UserPicker.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.UserPicker.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.UserPicker.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.System.User> PickSingleUserAsync()
@@ -66,6 +62,5 @@ namespace Windows.System
 		// Forced skipping of method Windows.System.UserPicker.AllowGuestAccounts.set
 		// Forced skipping of method Windows.System.UserPicker.SuggestedSelectedUser.get
 		// Forced skipping of method Windows.System.UserPicker.SuggestedSelectedUser.set
-		// Forced skipping of method Windows.System.UserPicker.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

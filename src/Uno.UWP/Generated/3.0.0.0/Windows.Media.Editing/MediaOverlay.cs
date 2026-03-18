@@ -91,10 +91,6 @@ namespace Windows.Media.Editing
 #endif
 		// Forced skipping of method Windows.Media.Editing.MediaOverlay.MediaOverlay(Windows.Media.Editing.MediaClip, Windows.Foundation.Rect, double)
 		// Forced skipping of method Windows.Media.Editing.MediaOverlay.~MediaOverlay()
-		// Forced skipping of method Windows.Media.Editing.MediaOverlay.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Editing.MediaOverlay.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Editing.MediaOverlay.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Editing.MediaOverlay.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Editing.MediaOverlay Clone()
@@ -111,6 +107,5 @@ namespace Windows.Media.Editing
 		// Forced skipping of method Windows.Media.Editing.MediaOverlay.Opacity.set
 		// Forced skipping of method Windows.Media.Editing.MediaOverlay.Position.get
 		// Forced skipping of method Windows.Media.Editing.MediaOverlay.Position.set
-		// Forced skipping of method Windows.Media.Editing.MediaOverlay.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -30,12 +30,7 @@ namespace Windows.Media.Devices
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoCaptureSettings.AdvancedPhotoCaptureSettings()
-		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoCaptureSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoCaptureSettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoCaptureSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoCaptureSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoCaptureSettings.Mode.get
 		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoCaptureSettings.Mode.set
-		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoCaptureSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,10 +10,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.RepeatButtonAutomationPeer.RepeatButtonAutomationPeer(Microsoft.UI.Xaml.Controls.Primitives.RepeatButton)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RepeatButtonAutomationPeer.RepeatButtonAutomationPeer(Microsoft.UI.Xaml.Controls.Primitives.RepeatButton)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RepeatButtonAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RepeatButtonAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.RepeatButtonAutomationPeer.Invoke()
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RepeatButtonAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IInvokeProvider
 	}
 }

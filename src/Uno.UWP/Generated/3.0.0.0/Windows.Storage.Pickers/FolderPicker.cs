@@ -42,10 +42,6 @@ namespace Windows.Storage.Pickers
 			throw new global::System.NotImplementedException("The member FolderPicker FolderPicker.CreateForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FolderPicker%20FolderPicker.CreateForUser%28User%20user%29");
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void PickFolderAndContinue()
@@ -71,6 +67,5 @@ namespace Windows.Storage.Pickers
 		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.User.get
 		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.ViewMode.get
 		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.ViewMode.set
-		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

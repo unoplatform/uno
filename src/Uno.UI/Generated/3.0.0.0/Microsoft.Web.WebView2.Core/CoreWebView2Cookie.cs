@@ -123,10 +123,6 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Cookie.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Cookie.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Cookie.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Cookie.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Cookie.Domain.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Cookie.Expires.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Cookie.Expires.set
@@ -141,6 +137,5 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Cookie.SameSite.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Cookie.Value.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Cookie.Value.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Cookie.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

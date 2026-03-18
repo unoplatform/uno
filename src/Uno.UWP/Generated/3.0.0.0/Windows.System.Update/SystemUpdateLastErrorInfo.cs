@@ -43,13 +43,8 @@ namespace Windows.System.Update
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Update.SystemUpdateLastErrorInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.Update.SystemUpdateLastErrorInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.Update.SystemUpdateLastErrorInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.Update.SystemUpdateLastErrorInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.Update.SystemUpdateLastErrorInfo.ExtendedError.get
 		// Forced skipping of method Windows.System.Update.SystemUpdateLastErrorInfo.IsInteractive.get
 		// Forced skipping of method Windows.System.Update.SystemUpdateLastErrorInfo.State.get
-		// Forced skipping of method Windows.System.Update.SystemUpdateLastErrorInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

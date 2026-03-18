@@ -24,8 +24,5 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SurfaceImageSource.SurfaceImageSource(int, int, bool)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SurfaceImageSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SurfaceImageSource.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SurfaceImageSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -260,10 +260,6 @@ namespace Windows.Storage.Provider
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderSyncRootInfo.StorageProviderSyncRootInfo()
-		// Forced skipping of method Windows.Storage.Provider.StorageProviderSyncRootInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.Provider.StorageProviderSyncRootInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.Provider.StorageProviderSyncRootInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.Provider.StorageProviderSyncRootInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderSyncRootInfo.AllowPinning.get
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderSyncRootInfo.AllowPinning.set
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderSyncRootInfo.Context.get
@@ -298,6 +294,5 @@ namespace Windows.Storage.Provider
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderSyncRootInfo.StorageProviderItemPropertyDefinitions.get
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderSyncRootInfo.Version.get
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderSyncRootInfo.Version.set
-		// Forced skipping of method Windows.Storage.Provider.StorageProviderSyncRootInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

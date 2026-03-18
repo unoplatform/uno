@@ -41,14 +41,9 @@ namespace Windows.Media.Miracast
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverVideoStreamSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverVideoStreamSettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverVideoStreamSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverVideoStreamSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverVideoStreamSettings.Bitrate.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverVideoStreamSettings.Bitrate.set
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverVideoStreamSettings.Size.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverVideoStreamSettings.Size.set
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverVideoStreamSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

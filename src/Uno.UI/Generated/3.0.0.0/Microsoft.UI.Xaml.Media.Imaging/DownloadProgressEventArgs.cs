@@ -9,12 +9,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 	public partial class DownloadProgressEventArgs
 	{
 		// Skipping already declared property Progress
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.DownloadProgressEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.DownloadProgressEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.DownloadProgressEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.DownloadProgressEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.DownloadProgressEventArgs.Progress.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.DownloadProgressEventArgs.Progress.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.DownloadProgressEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

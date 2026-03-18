@@ -9,11 +9,6 @@ namespace Microsoft.UI.Xaml.Media
 	public partial class RenderingEventArgs
 	{
 		// Skipping already declared property RenderingTime
-		// Forced skipping of method Microsoft.UI.Xaml.Media.RenderingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.RenderingEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.RenderingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.RenderingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RenderingEventArgs.RenderingTime.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.RenderingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

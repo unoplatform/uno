@@ -12,10 +12,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property HasKeyIndexMapping
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsSourceView.ItemsSourceView(object)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsSourceView.ItemsSourceView(object)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsSourceView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsSourceView.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsSourceView.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsSourceView.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsSourceView.GetAt(int)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsSourceView.KeyFromIndex(int)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsSourceView.IndexFromKey(string)
@@ -24,7 +20,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsSourceView.CollectionChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsSourceView.Count.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsSourceView.HasKeyIndexMapping.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsSourceView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ItemsSourceView.CollectionChanged
 		// Processing: System.Collections.Specialized.INotifyCollectionChanged
 	}

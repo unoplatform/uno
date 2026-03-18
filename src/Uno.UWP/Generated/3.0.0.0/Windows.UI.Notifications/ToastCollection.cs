@@ -68,10 +68,6 @@ namespace Windows.UI.Notifications
 		}
 #endif
 		// Forced skipping of method Windows.UI.Notifications.ToastCollection.ToastCollection(string, string, string, System.Uri)
-		// Forced skipping of method Windows.UI.Notifications.ToastCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Notifications.ToastCollection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Notifications.ToastCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Notifications.ToastCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Notifications.ToastCollection.DisplayName.get
 		// Forced skipping of method Windows.UI.Notifications.ToastCollection.DisplayName.set
 		// Forced skipping of method Windows.UI.Notifications.ToastCollection.Icon.get
@@ -79,6 +75,5 @@ namespace Windows.UI.Notifications
 		// Forced skipping of method Windows.UI.Notifications.ToastCollection.Id.get
 		// Forced skipping of method Windows.UI.Notifications.ToastCollection.LaunchArgs.get
 		// Forced skipping of method Windows.UI.Notifications.ToastCollection.LaunchArgs.set
-		// Forced skipping of method Windows.UI.Notifications.ToastCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

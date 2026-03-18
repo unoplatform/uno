@@ -64,10 +64,6 @@ namespace Windows.Networking.Proximity
 			throw new global::System.NotImplementedException("The member ProximityDevice ProximityDevice.FromId(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProximityDevice%20ProximityDevice.FromId%28string%20deviceId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Proximity.ProximityDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Proximity.ProximityDevice.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Proximity.ProximityDevice.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Proximity.ProximityDevice.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public long SubscribeForMessage(string messageType, global::Windows.Networking.Proximity.MessageReceivedHandler messageReceivedHandler)
@@ -138,7 +134,6 @@ namespace Windows.Networking.Proximity
 		// Forced skipping of method Windows.Networking.Proximity.ProximityDevice.BitsPerSecond.get
 		// Forced skipping of method Windows.Networking.Proximity.ProximityDevice.DeviceId.get
 		// Forced skipping of method Windows.Networking.Proximity.ProximityDevice.MaxMessageBytes.get
-		// Forced skipping of method Windows.Networking.Proximity.ProximityDevice.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Networking.Proximity.DeviceArrivedEventHandler DeviceArrived

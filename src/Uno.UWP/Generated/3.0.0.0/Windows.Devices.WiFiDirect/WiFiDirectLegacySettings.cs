@@ -55,16 +55,11 @@ namespace Windows.Devices.WiFiDirect
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectLegacySettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectLegacySettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectLegacySettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectLegacySettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectLegacySettings.IsEnabled.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectLegacySettings.IsEnabled.set
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectLegacySettings.Passphrase.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectLegacySettings.Passphrase.set
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectLegacySettings.Ssid.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectLegacySettings.Ssid.set
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectLegacySettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

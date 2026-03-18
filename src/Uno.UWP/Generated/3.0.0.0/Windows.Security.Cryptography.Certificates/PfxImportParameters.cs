@@ -114,10 +114,6 @@ namespace Windows.Security.Cryptography.Certificates
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.PfxImportParameters()
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.ContainerNamePrefix.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.ContainerNamePrefix.set
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.Exportable.get
@@ -132,6 +128,5 @@ namespace Windows.Security.Cryptography.Certificates
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.KeyStorageProviderName.set
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.ReaderName.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.ReaderName.set
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.PfxImportParameters.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

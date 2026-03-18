@@ -139,8 +139,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.PointLight.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.PointLight.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.PointLight.Color.get
 		// Forced skipping of method Windows.UI.Composition.PointLight.Color.set
 		// Forced skipping of method Windows.UI.Composition.PointLight.ConstantAttenuation.get
@@ -159,6 +157,5 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.PointLight.Offset.set
 		// Forced skipping of method Windows.UI.Composition.PointLight.QuadraticAttenuation.get
 		// Forced skipping of method Windows.UI.Composition.PointLight.QuadraticAttenuation.set
-		// Forced skipping of method Windows.UI.Composition.PointLight.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

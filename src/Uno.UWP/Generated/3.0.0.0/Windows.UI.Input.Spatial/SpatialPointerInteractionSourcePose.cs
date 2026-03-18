@@ -63,15 +63,10 @@ namespace Windows.UI.Input.Spatial
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose.ForwardDirection.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose.Orientation.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose.Position.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose.PositionAccuracy.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose.UpDirection.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -40,10 +40,6 @@ namespace Windows.Gaming.Input.ForceFeedback
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConstantForceEffect.ConstantForceEffect()
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConstantForceEffect.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConstantForceEffect.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConstantForceEffect.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConstantForceEffect.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
@@ -75,7 +71,6 @@ namespace Windows.Gaming.Input.ForceFeedback
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConstantForceEffect.Gain.get
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConstantForceEffect.Gain.set
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConstantForceEffect.State.get
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConstantForceEffect.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Gaming.Input.ForceFeedback.IForceFeedbackEffect
 	}
 }

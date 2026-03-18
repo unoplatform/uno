@@ -97,10 +97,6 @@ namespace Windows.Devices.Usb
 			throw new global::System.NotImplementedException("The member UsbEndpointDescriptor UsbEndpointDescriptor.Parse(UsbDescriptor descriptor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UsbEndpointDescriptor%20UsbEndpointDescriptor.Parse%28UsbDescriptor%20descriptor%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Usb.UsbEndpointDescriptor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Usb.UsbEndpointDescriptor.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Usb.UsbEndpointDescriptor.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Usb.UsbEndpointDescriptor.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Usb.UsbEndpointDescriptor.AsBulkInEndpointDescriptor.get
 		// Forced skipping of method Windows.Devices.Usb.UsbEndpointDescriptor.AsBulkOutEndpointDescriptor.get
 		// Forced skipping of method Windows.Devices.Usb.UsbEndpointDescriptor.AsInterruptInEndpointDescriptor.get
@@ -108,6 +104,5 @@ namespace Windows.Devices.Usb
 		// Forced skipping of method Windows.Devices.Usb.UsbEndpointDescriptor.Direction.get
 		// Forced skipping of method Windows.Devices.Usb.UsbEndpointDescriptor.EndpointNumber.get
 		// Forced skipping of method Windows.Devices.Usb.UsbEndpointDescriptor.EndpointType.get
-		// Forced skipping of method Windows.Devices.Usb.UsbEndpointDescriptor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

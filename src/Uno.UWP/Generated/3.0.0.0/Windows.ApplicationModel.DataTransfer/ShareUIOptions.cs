@@ -12,14 +12,9 @@ namespace Windows.ApplicationModel.DataTransfer
 		// Skipping already declared property Theme
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.ShareUIOptions.ShareUIOptions()
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareUIOptions.ShareUIOptions()
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareUIOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareUIOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareUIOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareUIOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareUIOptions.SelectionRect.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareUIOptions.SelectionRect.set
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareUIOptions.Theme.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareUIOptions.Theme.set
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareUIOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -20,10 +20,5 @@ namespace Windows.UI.WindowManagement.Preview
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WindowManagement.Preview.WindowManagementPreview", "void WindowManagementPreview.SetPreferredMinSize(AppWindow window, Size preferredFrameMinSize)");
 		}
 #endif
-		// Forced skipping of method Windows.UI.WindowManagement.Preview.WindowManagementPreview.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.WindowManagement.Preview.WindowManagementPreview.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.WindowManagement.Preview.WindowManagementPreview.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.WindowManagement.Preview.WindowManagementPreview.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Windows.UI.WindowManagement.Preview.WindowManagementPreview.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

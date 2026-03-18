@@ -16,10 +16,6 @@ namespace Windows.UI.Shell
 		}
 #endif
 		// Forced skipping of method Windows.UI.Shell.SecurityAppManager.SecurityAppManager()
-		// Forced skipping of method Windows.UI.Shell.SecurityAppManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Shell.SecurityAppManager.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Shell.SecurityAppManager.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Shell.SecurityAppManager.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Guid Register(global::Windows.UI.Shell.SecurityAppKind kind, string displayName, global::System.Uri detailsUri, bool registerPerUser)
@@ -41,6 +37,5 @@ namespace Windows.UI.Shell
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Shell.SecurityAppManager", "void SecurityAppManager.UpdateState(SecurityAppKind kind, Guid guidRegistration, SecurityAppState state, SecurityAppSubstatus substatus, Uri detailsUri)");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Shell.SecurityAppManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -43,10 +43,6 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoControl.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoControl.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoControl.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Configure(global::Windows.Media.Devices.AdvancedPhotoCaptureSettings settings)
@@ -57,6 +53,5 @@ namespace Windows.Media.Devices
 		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoControl.Mode.get
 		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoControl.Supported.get
 		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoControl.SupportedModes.get
-		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

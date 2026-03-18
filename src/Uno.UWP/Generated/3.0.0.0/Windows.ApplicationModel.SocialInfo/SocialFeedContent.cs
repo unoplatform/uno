@@ -55,16 +55,11 @@ namespace Windows.ApplicationModel.SocialInfo
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedContent.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedContent.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedContent.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedContent.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedContent.Message.get
 		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedContent.Message.set
 		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedContent.TargetUri.get
 		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedContent.TargetUri.set
 		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedContent.Title.get
 		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedContent.Title.set
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialFeedContent.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -128,10 +128,6 @@ namespace Windows.Security.Cryptography.Certificates
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateKeyUsages.CertificateKeyUsages()
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateKeyUsages.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateKeyUsages.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateKeyUsages.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateKeyUsages.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateKeyUsages.CrlSign.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateKeyUsages.CrlSign.set
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateKeyUsages.DataEncipherment.get
@@ -148,6 +144,5 @@ namespace Windows.Security.Cryptography.Certificates
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateKeyUsages.KeyEncipherment.set
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateKeyUsages.NonRepudiation.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateKeyUsages.NonRepudiation.set
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateKeyUsages.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -13,16 +13,11 @@ namespace Windows.ApplicationModel.Contacts
 		// Skipping already declared property Kind
 		// Skipping already declared method Windows.ApplicationModel.Contacts.ContactEmail.ContactEmail()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.ContactEmail()
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.Address.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.Address.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.Description.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.Description.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.Kind.set
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactEmail.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

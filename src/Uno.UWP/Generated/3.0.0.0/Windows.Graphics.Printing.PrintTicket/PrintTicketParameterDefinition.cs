@@ -83,10 +83,6 @@ namespace Windows.Graphics.Printing.PrintTicket
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition.DataType.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition.Name.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition.RangeMax.get
@@ -94,6 +90,5 @@ namespace Windows.Graphics.Printing.PrintTicket
 		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition.UnitType.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition.XmlNamespace.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition.XmlNode.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

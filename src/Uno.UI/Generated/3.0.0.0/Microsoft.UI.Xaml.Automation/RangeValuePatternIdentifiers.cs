@@ -20,10 +20,5 @@ namespace Microsoft.UI.Xaml.Automation
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.RangeValuePatternIdentifiers.MinimumProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.RangeValuePatternIdentifiers.SmallChangeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.RangeValuePatternIdentifiers.ValueProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.RangeValuePatternIdentifiers.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.RangeValuePatternIdentifiers.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.RangeValuePatternIdentifiers.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.RangeValuePatternIdentifiers.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.RangeValuePatternIdentifiers.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

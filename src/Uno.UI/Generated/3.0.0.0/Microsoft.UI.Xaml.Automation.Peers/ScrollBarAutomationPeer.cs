@@ -10,8 +10,5 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ScrollBarAutomationPeer.ScrollBarAutomationPeer(Microsoft.UI.Xaml.Controls.Primitives.ScrollBar)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollBarAutomationPeer.ScrollBarAutomationPeer(Microsoft.UI.Xaml.Controls.Primitives.ScrollBar)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollBarAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollBarAutomationPeer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollBarAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

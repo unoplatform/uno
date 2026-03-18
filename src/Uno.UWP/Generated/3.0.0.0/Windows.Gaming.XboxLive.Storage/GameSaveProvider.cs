@@ -47,10 +47,6 @@ namespace Windows.Gaming.XboxLive.Storage
 			throw new global::System.NotImplementedException("The member IAsyncOperation<GameSaveProviderGetResult> GameSaveProvider.GetSyncOnDemandForUserAsync(User user, string serviceConfigId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGameSaveProviderGetResult%3E%20GameSaveProvider.GetSyncOnDemandForUserAsync%28User%20user%2C%20string%20serviceConfigId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveProvider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveProvider.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveProvider.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveProvider.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Gaming.XboxLive.Storage.GameSaveContainer CreateContainer(string name)
@@ -88,6 +84,5 @@ namespace Windows.Gaming.XboxLive.Storage
 #endif
 		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveProvider.ContainersChangedSinceLastSync.get
 		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveProvider.User.get
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveProvider.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

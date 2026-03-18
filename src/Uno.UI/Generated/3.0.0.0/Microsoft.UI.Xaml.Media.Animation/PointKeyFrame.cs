@@ -62,12 +62,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.PointKeyFrame()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.KeyTimeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.ValueProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.KeyTime.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.KeyTime.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.Value.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.Value.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointKeyFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

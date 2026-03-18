@@ -41,14 +41,9 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.IsSyncEnabled.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.IsSyncEnabled.set
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.RestoreHistorySpan.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.RestoreHistorySpan.set
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatSyncConfiguration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

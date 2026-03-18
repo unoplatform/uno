@@ -86,10 +86,6 @@ namespace Windows.Devices.Spi
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Spi.SpiConnectionSettings.SpiConnectionSettings(int)
-		// Forced skipping of method Windows.Devices.Spi.SpiConnectionSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Spi.SpiConnectionSettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Spi.SpiConnectionSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Spi.SpiConnectionSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Spi.SpiConnectionSettings.ChipSelectLine.get
 		// Forced skipping of method Windows.Devices.Spi.SpiConnectionSettings.ChipSelectLine.set
 		// Forced skipping of method Windows.Devices.Spi.SpiConnectionSettings.ClockFrequency.get
@@ -100,6 +96,5 @@ namespace Windows.Devices.Spi
 		// Forced skipping of method Windows.Devices.Spi.SpiConnectionSettings.Mode.set
 		// Forced skipping of method Windows.Devices.Spi.SpiConnectionSettings.SharingMode.get
 		// Forced skipping of method Windows.Devices.Spi.SpiConnectionSettings.SharingMode.set
-		// Forced skipping of method Windows.Devices.Spi.SpiConnectionSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

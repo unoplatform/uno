@@ -33,12 +33,7 @@ namespace Windows.System.Profile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Profile.SystemIdentificationInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.Profile.SystemIdentificationInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.Profile.SystemIdentificationInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.Profile.SystemIdentificationInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.Profile.SystemIdentificationInfo.Id.get
 		// Forced skipping of method Windows.System.Profile.SystemIdentificationInfo.Source.get
-		// Forced skipping of method Windows.System.Profile.SystemIdentificationInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

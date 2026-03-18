@@ -53,14 +53,9 @@ namespace Windows.Devices.HumanInterfaceDevice
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidCollection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidCollection.Id.get
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidCollection.Type.get
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidCollection.UsageId.get
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidCollection.UsagePage.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

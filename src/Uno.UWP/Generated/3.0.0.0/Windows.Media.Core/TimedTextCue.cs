@@ -96,10 +96,6 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.TimedTextCue.TimedTextCue()
-		// Forced skipping of method Windows.Media.Core.TimedTextCue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Core.TimedTextCue.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Core.TimedTextCue.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Core.TimedTextCue.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Core.TimedTextCue.CueRegion.get
 		// Forced skipping of method Windows.Media.Core.TimedTextCue.CueRegion.set
 		// Forced skipping of method Windows.Media.Core.TimedTextCue.CueStyle.get
@@ -111,7 +107,6 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.TimedTextCue.Lines.get
 		// Forced skipping of method Windows.Media.Core.TimedTextCue.StartTime.get
 		// Forced skipping of method Windows.Media.Core.TimedTextCue.StartTime.set
-		// Forced skipping of method Windows.Media.Core.TimedTextCue.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Core.IMediaCue
 	}
 }

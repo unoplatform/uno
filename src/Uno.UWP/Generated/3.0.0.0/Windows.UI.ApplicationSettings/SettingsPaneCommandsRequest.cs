@@ -23,11 +23,6 @@ namespace Windows.UI.ApplicationSettings
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsPaneCommandsRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsPaneCommandsRequest.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsPaneCommandsRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsPaneCommandsRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsPaneCommandsRequest.ApplicationCommands.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsPaneCommandsRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

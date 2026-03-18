@@ -101,10 +101,6 @@ namespace Windows.Networking.XboxLive
 		}
 #endif
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairTemplate.Templates.get
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairTemplate.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairTemplate.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairTemplate.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairTemplate.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.XboxLive.XboxLiveEndpointPairCreationResult> CreateEndpointPairAsync(global::Windows.Networking.XboxLive.XboxLiveDeviceAddress deviceAddress)
@@ -142,7 +138,6 @@ namespace Windows.Networking.XboxLive
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairTemplate.InitiatorBoundPortRangeUpper.get
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairTemplate.Name.get
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairTemplate.SocketKind.get
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairTemplate.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.XboxLive.XboxLiveEndpointPairTemplate, global::Windows.Networking.XboxLive.XboxLiveInboundEndpointPairCreatedEventArgs> InboundEndpointPairCreated

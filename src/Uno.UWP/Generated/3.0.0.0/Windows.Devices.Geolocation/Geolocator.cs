@@ -130,10 +130,6 @@ namespace Windows.Devices.Geolocation
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.DefaultGeoposition.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.DefaultGeoposition.set
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.IsDefaultGeopositionRecommended.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.WinRT.IWinRTObject.AdditionalTypeData.get
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.Geoposition> GetGeopositionAsync()
@@ -168,7 +164,6 @@ namespace Windows.Devices.Geolocation
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.MovementThreshold.set
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.ReportInterval.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.ReportInterval.set
-		// Forced skipping of method Windows.Devices.Geolocation.Geolocator.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Geolocation.Geolocator, global::Windows.Devices.Geolocation.PositionChangedEventArgs> PositionChanged

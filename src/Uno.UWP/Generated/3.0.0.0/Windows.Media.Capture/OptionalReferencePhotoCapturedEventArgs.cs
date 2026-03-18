@@ -34,12 +34,7 @@ namespace Windows.Media.Capture
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.OptionalReferencePhotoCapturedEventArgs.~OptionalReferencePhotoCapturedEventArgs()
-		// Forced skipping of method Windows.Media.Capture.OptionalReferencePhotoCapturedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Capture.OptionalReferencePhotoCapturedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Capture.OptionalReferencePhotoCapturedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Capture.OptionalReferencePhotoCapturedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Capture.OptionalReferencePhotoCapturedEventArgs.Context.get
 		// Forced skipping of method Windows.Media.Capture.OptionalReferencePhotoCapturedEventArgs.Frame.get
-		// Forced skipping of method Windows.Media.Capture.OptionalReferencePhotoCapturedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

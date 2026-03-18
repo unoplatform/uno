@@ -11,14 +11,9 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property Exception
 		// Skipping already declared property Handled
 		// Skipping already declared property Message
-		// Forced skipping of method Microsoft.UI.Xaml.UnhandledExceptionEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.UnhandledExceptionEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.UnhandledExceptionEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.UnhandledExceptionEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.UnhandledExceptionEventArgs.Exception.get
 		// Forced skipping of method Microsoft.UI.Xaml.UnhandledExceptionEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.UnhandledExceptionEventArgs.Handled.set
 		// Forced skipping of method Microsoft.UI.Xaml.UnhandledExceptionEventArgs.Message.get
-		// Forced skipping of method Microsoft.UI.Xaml.UnhandledExceptionEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

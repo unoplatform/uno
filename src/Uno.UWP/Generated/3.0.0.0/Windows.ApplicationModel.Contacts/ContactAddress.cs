@@ -17,10 +17,6 @@ namespace Windows.ApplicationModel.Contacts
 		// Skipping already declared property StreetAddress
 		// Skipping already declared method Windows.ApplicationModel.Contacts.ContactAddress.ContactAddress()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.ContactAddress()
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.Country.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.Country.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.Description.get
@@ -35,6 +31,5 @@ namespace Windows.ApplicationModel.Contacts
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.Region.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.StreetAddress.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.StreetAddress.set
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactAddress.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

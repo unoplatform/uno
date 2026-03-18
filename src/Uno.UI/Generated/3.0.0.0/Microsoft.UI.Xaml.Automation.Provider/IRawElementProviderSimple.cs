@@ -8,8 +8,5 @@ namespace Microsoft.UI.Xaml.Automation.Provider
 #endif
 	public partial class IRawElementProviderSimple : global::Microsoft.UI.Xaml.DependencyObject
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

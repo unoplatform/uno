@@ -20,10 +20,6 @@ namespace Windows.ApplicationModel.UserActivities
 			throw new global::System.NotImplementedException("The member UserActivityContentInfo UserActivityContentInfo.FromJson(string value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserActivityContentInfo%20UserActivityContentInfo.FromJson%28string%20value%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityContentInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityContentInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityContentInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityContentInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string ToJson()
@@ -31,7 +27,6 @@ namespace Windows.ApplicationModel.UserActivities
 			throw new global::System.NotImplementedException("The member string UserActivityContentInfo.ToJson() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserActivityContentInfo.ToJson%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityContentInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.UserActivities.IUserActivityContentInfo
 	}
 }

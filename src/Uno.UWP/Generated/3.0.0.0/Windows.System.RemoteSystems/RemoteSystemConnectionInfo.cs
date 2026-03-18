@@ -30,11 +30,6 @@ namespace Windows.System.RemoteSystems
 			throw new global::System.NotImplementedException("The member RemoteSystemConnectionInfo RemoteSystemConnectionInfo.TryCreateFromAppServiceConnection(AppServiceConnection connection) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemConnectionInfo%20RemoteSystemConnectionInfo.TryCreateFromAppServiceConnection%28AppServiceConnection%20connection%29");
 		}
 #endif
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionInfo.IsProximal.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

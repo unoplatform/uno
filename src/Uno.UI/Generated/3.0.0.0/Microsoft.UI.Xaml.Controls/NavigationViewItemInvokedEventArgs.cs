@@ -14,14 +14,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property RecommendedNavigationTransitionInfo
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.NavigationViewItemInvokedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.NavigationViewItemInvokedEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.InvokedItem.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.InvokedItemContainer.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.IsSettingsInvoked.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.RecommendedNavigationTransitionInfo.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

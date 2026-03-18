@@ -44,13 +44,8 @@ namespace Windows.Media.Effects
 		}
 #endif
 		// Forced skipping of method Windows.Media.Effects.VideoEffectDefinition.VideoEffectDefinition(string, Windows.Foundation.Collections.IPropertySet)
-		// Forced skipping of method Windows.Media.Effects.VideoEffectDefinition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Effects.VideoEffectDefinition.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Effects.VideoEffectDefinition.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Effects.VideoEffectDefinition.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Effects.VideoEffectDefinition.ActivatableClassId.get
 		// Forced skipping of method Windows.Media.Effects.VideoEffectDefinition.Properties.get
-		// Forced skipping of method Windows.Media.Effects.VideoEffectDefinition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Effects.IVideoEffectDefinition
 	}
 }

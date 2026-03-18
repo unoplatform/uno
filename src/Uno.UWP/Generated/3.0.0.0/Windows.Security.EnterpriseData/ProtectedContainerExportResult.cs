@@ -33,12 +33,7 @@ namespace Windows.Security.EnterpriseData
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedContainerExportResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedContainerExportResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedContainerExportResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedContainerExportResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedContainerExportResult.File.get
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedContainerExportResult.Status.get
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedContainerExportResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

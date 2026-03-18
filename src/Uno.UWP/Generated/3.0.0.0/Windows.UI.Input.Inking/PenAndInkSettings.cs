@@ -80,16 +80,11 @@ namespace Windows.UI.Input.Inking
 			throw new global::System.NotImplementedException("The member PenAndInkSettings PenAndInkSettings.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PenAndInkSettings%20PenAndInkSettings.GetDefault%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.PenAndInkSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.Inking.PenAndInkSettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Input.Inking.PenAndInkSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Input.Inking.PenAndInkSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.Inking.PenAndInkSettings.FontFamilyName.get
 		// Forced skipping of method Windows.UI.Input.Inking.PenAndInkSettings.HandwritingLineHeight.get
 		// Forced skipping of method Windows.UI.Input.Inking.PenAndInkSettings.IsHandwritingDirectlyIntoTextFieldEnabled.get
 		// Forced skipping of method Windows.UI.Input.Inking.PenAndInkSettings.IsTouchHandwritingEnabled.get
 		// Forced skipping of method Windows.UI.Input.Inking.PenAndInkSettings.PenHandedness.get
 		// Forced skipping of method Windows.UI.Input.Inking.PenAndInkSettings.UserConsentsToHandwritingTelemetryCollection.get
-		// Forced skipping of method Windows.UI.Input.Inking.PenAndInkSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

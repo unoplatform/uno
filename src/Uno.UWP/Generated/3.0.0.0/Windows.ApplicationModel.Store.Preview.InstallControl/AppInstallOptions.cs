@@ -226,10 +226,6 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.AppInstallOptions()
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.AllowForcedAppRestart.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.AllowForcedAppRestart.set
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.CampaignId.get
@@ -260,6 +256,5 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.StageButDoNotInstall.set
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.TargetVolume.get
 		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.TargetVolume.set
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

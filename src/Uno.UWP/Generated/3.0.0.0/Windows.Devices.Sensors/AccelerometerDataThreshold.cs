@@ -55,16 +55,11 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.XAxisInGForce.get
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.XAxisInGForce.set
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.YAxisInGForce.get
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.YAxisInGForce.set
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.ZAxisInGForce.get
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.ZAxisInGForce.set
-		// Forced skipping of method Windows.Devices.Sensors.AccelerometerDataThreshold.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -33,12 +33,7 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs.IsAppInitiated.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs.IsUserInitiated.get
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

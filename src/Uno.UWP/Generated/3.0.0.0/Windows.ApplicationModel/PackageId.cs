@@ -18,10 +18,6 @@ namespace Windows.ApplicationModel
 		// Skipping already declared property PublisherId
 		// Skipping already declared property ResourceId
 		// Skipping already declared property Version
-		// Forced skipping of method Windows.ApplicationModel.PackageId.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.PackageId.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.PackageId.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.PackageId.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.PackageId.Architecture.get
 		// Forced skipping of method Windows.ApplicationModel.PackageId.Author.get
 		// Forced skipping of method Windows.ApplicationModel.PackageId.FamilyName.get
@@ -32,6 +28,5 @@ namespace Windows.ApplicationModel
 		// Forced skipping of method Windows.ApplicationModel.PackageId.PublisherId.get
 		// Forced skipping of method Windows.ApplicationModel.PackageId.ResourceId.get
 		// Forced skipping of method Windows.ApplicationModel.PackageId.Version.get
-		// Forced skipping of method Windows.ApplicationModel.PackageId.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

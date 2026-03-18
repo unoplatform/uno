@@ -73,10 +73,6 @@ namespace Windows.Networking
 			throw new global::System.NotImplementedException("The member int HostName.Compare(string value1, string value2) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20HostName.Compare%28string%20value1%2C%20string%20value2%29");
 		}
 #endif
-		// Forced skipping of method Windows.Networking.HostName.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.HostName.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.HostName.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.HostName.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsEqual(global::Windows.Networking.HostName hostName)
@@ -96,6 +92,5 @@ namespace Windows.Networking
 		// Forced skipping of method Windows.Networking.HostName.IPInformation.get
 		// Forced skipping of method Windows.Networking.HostName.RawName.get
 		// Forced skipping of method Windows.Networking.HostName.Type.get
-		// Forced skipping of method Windows.Networking.HostName.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

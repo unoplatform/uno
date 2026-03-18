@@ -85,14 +85,11 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.AlignmentXProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.AlignmentYProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.StretchProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.AlignmentX.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.AlignmentX.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.AlignmentY.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.AlignmentY.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.Stretch.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.Stretch.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.TileBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

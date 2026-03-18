@@ -32,8 +32,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RadialGradientBrush.RadiusXProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RadialGradientBrush.RadiusYProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RadialGradientBrush.SpreadMethodProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.RadialGradientBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.RadialGradientBrush.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RadialGradientBrush.Center.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RadialGradientBrush.Center.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RadialGradientBrush.GradientOrigin.get
@@ -49,6 +47,5 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RadialGradientBrush.RadiusY.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RadialGradientBrush.SpreadMethod.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RadialGradientBrush.SpreadMethod.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.RadialGradientBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

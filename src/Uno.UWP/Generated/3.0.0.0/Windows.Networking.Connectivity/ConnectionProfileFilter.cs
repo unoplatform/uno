@@ -152,10 +152,6 @@ namespace Windows.Networking.Connectivity
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.ConnectionProfileFilter()
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.IsBackgroundDataUsageRestricted.get
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.IsBackgroundDataUsageRestricted.set
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.IsConnected.get
@@ -175,6 +171,5 @@ namespace Windows.Networking.Connectivity
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.RawData.get
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.ServiceProviderGuid.get
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.ServiceProviderGuid.set
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfileFilter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

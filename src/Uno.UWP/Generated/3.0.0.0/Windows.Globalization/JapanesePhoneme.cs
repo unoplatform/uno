@@ -43,13 +43,8 @@ namespace Windows.Globalization
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Globalization.JapanesePhoneme.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Globalization.JapanesePhoneme.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Globalization.JapanesePhoneme.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Globalization.JapanesePhoneme.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Globalization.JapanesePhoneme.DisplayText.get
 		// Forced skipping of method Windows.Globalization.JapanesePhoneme.IsPhraseStart.get
 		// Forced skipping of method Windows.Globalization.JapanesePhoneme.YomiText.get
-		// Forced skipping of method Windows.Globalization.JapanesePhoneme.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

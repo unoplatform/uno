@@ -190,10 +190,6 @@ namespace Windows.Devices.Sms
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage2.SmsTextMessage2()
-		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage2.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage2.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage2.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage2.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage2.Body.get
 		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage2.Body.set
 		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage2.CallbackNumber.get
@@ -215,7 +211,6 @@ namespace Windows.Devices.Sms
 		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage2.Timestamp.get
 		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage2.To.get
 		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage2.To.set
-		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage2.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Sms.ISmsMessageBase
 	}
 }

@@ -22,8 +22,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.ScaleTransform.CenterYProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.ScaleTransform.ScaleXProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.ScaleTransform.ScaleYProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.ScaleTransform.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.ScaleTransform.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.ScaleTransform.CenterX.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.ScaleTransform.CenterX.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.ScaleTransform.CenterY.get
@@ -32,6 +30,5 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.ScaleTransform.ScaleX.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.ScaleTransform.ScaleY.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.ScaleTransform.ScaleY.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.ScaleTransform.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

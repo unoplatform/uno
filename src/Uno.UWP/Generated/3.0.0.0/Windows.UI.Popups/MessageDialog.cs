@@ -18,10 +18,6 @@ namespace Windows.UI.Popups
 		// Forced skipping of method Windows.UI.Popups.MessageDialog.MessageDialog(string)
 		// Skipping already declared method Windows.UI.Popups.MessageDialog.MessageDialog(string, string)
 		// Forced skipping of method Windows.UI.Popups.MessageDialog.MessageDialog(string, string)
-		// Forced skipping of method Windows.UI.Popups.MessageDialog.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Popups.MessageDialog.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Popups.MessageDialog.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Popups.MessageDialog.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.UI.Popups.MessageDialog.ShowAsync()
 		// Forced skipping of method Windows.UI.Popups.MessageDialog.CancelCommandIndex.get
 		// Forced skipping of method Windows.UI.Popups.MessageDialog.CancelCommandIndex.set
@@ -34,6 +30,5 @@ namespace Windows.UI.Popups
 		// Forced skipping of method Windows.UI.Popups.MessageDialog.Options.set
 		// Forced skipping of method Windows.UI.Popups.MessageDialog.Title.get
 		// Forced skipping of method Windows.UI.Popups.MessageDialog.Title.set
-		// Forced skipping of method Windows.UI.Popups.MessageDialog.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

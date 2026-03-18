@@ -86,10 +86,6 @@ namespace Windows.Media
 		}
 #endif
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.SystemMediaTransportControlsTimelineProperties()
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.EndTime.get
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.EndTime.set
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.MaxSeekTime.get
@@ -100,6 +96,5 @@ namespace Windows.Media
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.Position.set
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.StartTime.get
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.StartTime.set
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsTimelineProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

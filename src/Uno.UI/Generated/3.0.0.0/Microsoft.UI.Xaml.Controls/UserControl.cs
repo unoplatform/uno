@@ -14,10 +14,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.UserControl.UserControl()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.UserControl()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.ContentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.Content.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.Content.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.UserControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

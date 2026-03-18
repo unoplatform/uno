@@ -11,10 +11,6 @@ namespace Microsoft.UI.Dispatching
 		// Skipping already declared property Interval
 		// Skipping already declared property IsRepeating
 		// Skipping already declared property IsRunning
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Microsoft.UI.Dispatching.DispatcherQueueTimer.Start()
 		// Skipping already declared method Microsoft.UI.Dispatching.DispatcherQueueTimer.Stop()
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.Tick.add
@@ -24,7 +20,6 @@ namespace Microsoft.UI.Dispatching
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.IsRepeating.get
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.IsRepeating.set
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.IsRunning.get
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Dispatching.DispatcherQueueTimer.Tick
 	}
 }

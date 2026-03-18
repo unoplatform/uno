@@ -8,8 +8,5 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionBackdropBrush : global::Microsoft.UI.Composition.CompositionBrush
 	{
-		// Forced skipping of method Microsoft.UI.Composition.CompositionBackdropBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionBackdropBrush.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionBackdropBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

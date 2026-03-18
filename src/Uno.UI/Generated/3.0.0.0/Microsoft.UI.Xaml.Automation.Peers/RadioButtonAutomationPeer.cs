@@ -12,14 +12,11 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property SelectionContainer
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.RadioButtonAutomationPeer.RadioButtonAutomationPeer(Microsoft.UI.Xaml.Controls.RadioButton)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RadioButtonAutomationPeer.RadioButtonAutomationPeer(Microsoft.UI.Xaml.Controls.RadioButton)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RadioButtonAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RadioButtonAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.RadioButtonAutomationPeer.AddToSelection()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.RadioButtonAutomationPeer.RemoveFromSelection()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.RadioButtonAutomationPeer.Select()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RadioButtonAutomationPeer.IsSelected.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RadioButtonAutomationPeer.SelectionContainer.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RadioButtonAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.ISelectionItemProvider
 	}
 }

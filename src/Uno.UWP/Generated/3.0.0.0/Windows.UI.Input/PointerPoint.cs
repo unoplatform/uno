@@ -44,10 +44,6 @@ namespace Windows.UI.Input
 			throw new global::System.NotImplementedException("The member IList<PointerPoint> PointerPoint.GetIntermediatePoints(uint pointerId, IPointerPointTransform transform) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CPointerPoint%3E%20PointerPoint.GetIntermediatePoints%28uint%20pointerId%2C%20IPointerPointTransform%20transform%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.PointerPoint.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.PointerPoint.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Input.PointerPoint.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Input.PointerPoint.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.PointerPoint.FrameId.get
 		// Forced skipping of method Windows.UI.Input.PointerPoint.IsInContact.get
 		// Forced skipping of method Windows.UI.Input.PointerPoint.PointerDevice.get
@@ -56,6 +52,5 @@ namespace Windows.UI.Input
 		// Forced skipping of method Windows.UI.Input.PointerPoint.Properties.get
 		// Forced skipping of method Windows.UI.Input.PointerPoint.RawPosition.get
 		// Forced skipping of method Windows.UI.Input.PointerPoint.Timestamp.get
-		// Forced skipping of method Windows.UI.Input.PointerPoint.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

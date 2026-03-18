@@ -15,16 +15,11 @@ namespace Windows.Devices.Midi
 		// Skipping already declared property Type
 		// Skipping already declared method Windows.Devices.Midi.MidiPitchBendChangeMessage.MidiPitchBendChangeMessage(byte, ushort)
 		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.MidiPitchBendChangeMessage(byte, ushort)
-		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.Bend.get
 		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.Channel.get
 		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.RawData.get
 		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.Type.get
-		// Forced skipping of method Windows.Devices.Midi.MidiPitchBendChangeMessage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Midi.IMidiMessage
 	}
 }

@@ -83,10 +83,6 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.FrameFormat.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.FrameFormat.set
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.HorizontalFieldOfViewInDegrees.get
@@ -97,6 +93,5 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.ProjectionMode.set
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.ViewOrientation.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.ViewOrientation.set
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

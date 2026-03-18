@@ -20,10 +20,5 @@ namespace Microsoft.UI.Xaml.Markup
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Markup.XamlMarkupHelper", "void XamlMarkupHelper.UnloadObject(DependencyObject element)");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlMarkupHelper.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlMarkupHelper.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlMarkupHelper.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlMarkupHelper.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlMarkupHelper.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -44,14 +44,9 @@ namespace Windows.Services.Cortana
 		}
 #endif
 		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsightsOptions.CortanaActionableInsightsOptions()
-		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsightsOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsightsOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsightsOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsightsOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsightsOptions.ContentSourceWebLink.get
 		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsightsOptions.ContentSourceWebLink.set
 		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsightsOptions.SurroundingText.get
 		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsightsOptions.SurroundingText.set
-		// Forced skipping of method Windows.Services.Cortana.CortanaActionableInsightsOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -16,12 +16,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.StackLayout()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.OrientationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.SpacingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.Orientation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.Orientation.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.Spacing.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.Spacing.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.StackLayout.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

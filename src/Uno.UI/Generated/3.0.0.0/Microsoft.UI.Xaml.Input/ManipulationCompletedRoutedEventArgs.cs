@@ -17,8 +17,6 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared property Velocities
 		// Skipping already declared method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.ManipulationCompletedRoutedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.ManipulationCompletedRoutedEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.Container.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.Cumulative.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.Handled.get
@@ -27,6 +25,5 @@ namespace Microsoft.UI.Xaml.Input
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.PointerDeviceType.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.Position.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.Velocities.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

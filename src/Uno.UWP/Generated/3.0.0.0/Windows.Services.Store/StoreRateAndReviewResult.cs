@@ -30,14 +30,9 @@ namespace Windows.Services.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StoreRateAndReviewResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.Store.StoreRateAndReviewResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.Store.StoreRateAndReviewResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.Store.StoreRateAndReviewResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Store.StoreRateAndReviewResult.ExtendedError.get
 		// Forced skipping of method Windows.Services.Store.StoreRateAndReviewResult.ExtendedJsonData.get
 		// Forced skipping of method Windows.Services.Store.StoreRateAndReviewResult.Status.get
 		// Forced skipping of method Windows.Services.Store.StoreRateAndReviewResult.WasUpdated.get
-		// Forced skipping of method Windows.Services.Store.StoreRateAndReviewResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

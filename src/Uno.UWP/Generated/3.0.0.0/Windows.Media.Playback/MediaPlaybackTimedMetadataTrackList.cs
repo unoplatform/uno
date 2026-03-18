@@ -33,10 +33,6 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.Count.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.this[int].get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -63,7 +59,6 @@ namespace Windows.Media.Playback
 #endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.PresentationModeChanged.add
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.PresentationModeChanged.remove
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.System.Collections.Generic.IReadOnlyList<Windows.Media.Core.TimedMetadataTrack>.get_Item(int)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

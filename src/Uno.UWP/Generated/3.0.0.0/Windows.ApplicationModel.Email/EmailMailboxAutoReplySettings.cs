@@ -102,10 +102,6 @@ namespace Windows.ApplicationModel.Email
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings.EmailMailboxAutoReplySettings()
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings.EndTime.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings.EndTime.set
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings.InternalReply.get
@@ -117,6 +113,5 @@ namespace Windows.ApplicationModel.Email
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings.StartTime.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings.StartTime.set
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings.UnknownExternalReply.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

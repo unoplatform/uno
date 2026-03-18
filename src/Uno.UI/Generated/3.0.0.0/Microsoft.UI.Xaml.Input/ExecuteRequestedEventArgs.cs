@@ -9,11 +9,6 @@ namespace Microsoft.UI.Xaml.Input
 	public partial class ExecuteRequestedEventArgs
 	{
 		// Skipping already declared property Parameter
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ExecuteRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ExecuteRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ExecuteRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ExecuteRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ExecuteRequestedEventArgs.Parameter.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ExecuteRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -83,10 +83,6 @@ namespace Windows.Devices.Input
 			throw new global::System.NotImplementedException("The member IReadOnlyList<PointerDevice> PointerDevice.GetPointerDevices() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPointerDevice%3E%20PointerDevice.GetPointerDevices%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Input.PointerDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Input.PointerDevice.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Input.PointerDevice.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Input.PointerDevice.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Input.PointerDevice.IsIntegrated.get
 		// Forced skipping of method Windows.Devices.Input.PointerDevice.MaxContacts.get
 		// Forced skipping of method Windows.Devices.Input.PointerDevice.MaxPointersWithZDistance.get
@@ -94,6 +90,5 @@ namespace Windows.Devices.Input
 		// Forced skipping of method Windows.Devices.Input.PointerDevice.PointerDeviceType.get
 		// Forced skipping of method Windows.Devices.Input.PointerDevice.ScreenRect.get
 		// Forced skipping of method Windows.Devices.Input.PointerDevice.SupportedUsages.get
-		// Forced skipping of method Windows.Devices.Input.PointerDevice.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

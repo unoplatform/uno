@@ -62,10 +62,6 @@ namespace Windows.Services.Maps.Guidance
 			throw new global::System.NotImplementedException("The member GuidanceTelemetryCollector GuidanceTelemetryCollector.GetCurrent() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GuidanceTelemetryCollector%20GuidanceTelemetryCollector.GetCurrent%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceTelemetryCollector.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceTelemetryCollector.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceTelemetryCollector.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceTelemetryCollector.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ClearLocalData()
@@ -79,6 +75,5 @@ namespace Windows.Services.Maps.Guidance
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceTelemetryCollector.SpeedTrigger.set
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceTelemetryCollector.UploadFrequency.get
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceTelemetryCollector.UploadFrequency.set
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceTelemetryCollector.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

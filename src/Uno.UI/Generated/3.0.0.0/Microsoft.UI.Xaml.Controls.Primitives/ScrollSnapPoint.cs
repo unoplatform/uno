@@ -11,9 +11,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property Value
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ScrollSnapPoint.ScrollSnapPoint(double, Microsoft.UI.Xaml.Controls.Primitives.ScrollSnapPointsAlignment)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollSnapPoint.ScrollSnapPoint(double, Microsoft.UI.Xaml.Controls.Primitives.ScrollSnapPointsAlignment)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollSnapPoint.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollSnapPoint.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollSnapPoint.Value.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollSnapPoint.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

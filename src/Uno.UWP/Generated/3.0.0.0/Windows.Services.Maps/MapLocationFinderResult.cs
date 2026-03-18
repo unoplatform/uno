@@ -10,12 +10,7 @@ namespace Windows.Services.Maps
 	{
 		// Skipping already declared property Locations
 		// Skipping already declared property Status
-		// Forced skipping of method Windows.Services.Maps.MapLocationFinderResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.Maps.MapLocationFinderResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.Maps.MapLocationFinderResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.Maps.MapLocationFinderResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Maps.MapLocationFinderResult.Locations.get
 		// Forced skipping of method Windows.Services.Maps.MapLocationFinderResult.Status.get
-		// Forced skipping of method Windows.Services.Maps.MapLocationFinderResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

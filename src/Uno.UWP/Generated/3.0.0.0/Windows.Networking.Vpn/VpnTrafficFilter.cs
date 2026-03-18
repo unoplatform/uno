@@ -108,10 +108,6 @@ namespace Windows.Networking.Vpn
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.VpnTrafficFilter(Windows.Networking.Vpn.VpnAppId)
-		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.AppClaims.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.AppId.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.AppId.set
@@ -123,6 +119,5 @@ namespace Windows.Networking.Vpn
 		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.RemotePortRanges.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.RoutingPolicyType.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.RoutingPolicyType.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

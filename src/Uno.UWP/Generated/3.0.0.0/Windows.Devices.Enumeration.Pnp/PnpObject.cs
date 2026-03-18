@@ -78,10 +78,6 @@ namespace Windows.Devices.Enumeration.Pnp
 			throw new global::System.NotImplementedException("The member PnpObjectWatcher PnpObject.CreateWatcher(PnpObjectType type, IEnumerable<string> requestedProperties, string aqsFilter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PnpObjectWatcher%20PnpObject.CreateWatcher%28PnpObjectType%20type%2C%20IEnumerable%3Cstring%3E%20requestedProperties%2C%20string%20aqsFilter%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObject.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObject.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObject.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObject.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Update(global::Windows.Devices.Enumeration.Pnp.PnpObjectUpdate updateInfo)
@@ -92,6 +88,5 @@ namespace Windows.Devices.Enumeration.Pnp
 		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObject.Id.get
 		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObject.Properties.get
 		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObject.Type.get
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObject.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

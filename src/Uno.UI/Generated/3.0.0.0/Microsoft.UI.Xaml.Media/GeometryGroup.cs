@@ -16,12 +16,9 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.GeometryGroup()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.ChildrenProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.FillRuleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.Children.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.Children.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.FillRule.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.FillRule.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.GeometryGroup.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

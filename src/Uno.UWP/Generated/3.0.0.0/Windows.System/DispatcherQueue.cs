@@ -10,10 +10,6 @@ namespace Windows.System
 	{
 		// Skipping already declared property HasThreadAccess
 		// Skipping already declared method Windows.System.DispatcherQueue.GetForCurrentThread()
-		// Forced skipping of method Windows.System.DispatcherQueue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.DispatcherQueue.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.DispatcherQueue.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.DispatcherQueue.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.System.DispatcherQueue.CreateTimer()
 		// Skipping already declared method Windows.System.DispatcherQueue.TryEnqueue(Windows.System.DispatcherQueueHandler)
 		// Skipping already declared method Windows.System.DispatcherQueue.TryEnqueue(Windows.System.DispatcherQueuePriority, Windows.System.DispatcherQueueHandler)
@@ -22,7 +18,6 @@ namespace Windows.System
 		// Forced skipping of method Windows.System.DispatcherQueue.ShutdownStarting.add
 		// Forced skipping of method Windows.System.DispatcherQueue.ShutdownStarting.remove
 		// Forced skipping of method Windows.System.DispatcherQueue.HasThreadAccess.get
-		// Forced skipping of method Windows.System.DispatcherQueue.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.System.DispatcherQueue, object> ShutdownCompleted

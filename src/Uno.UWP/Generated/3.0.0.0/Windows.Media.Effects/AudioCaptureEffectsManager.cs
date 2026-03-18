@@ -13,10 +13,6 @@ namespace Windows.Media.Effects
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Media.Effects.AudioCaptureEffectsManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Effects.AudioCaptureEffectsManager.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Effects.AudioCaptureEffectsManager.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Effects.AudioCaptureEffectsManager.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Effects.AudioEffect> GetAudioCaptureEffects()
@@ -26,7 +22,6 @@ namespace Windows.Media.Effects
 #endif
 		// Forced skipping of method Windows.Media.Effects.AudioCaptureEffectsManager.AudioCaptureEffectsChanged.add
 		// Forced skipping of method Windows.Media.Effects.AudioCaptureEffectsManager.AudioCaptureEffectsChanged.remove
-		// Forced skipping of method Windows.Media.Effects.AudioCaptureEffectsManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Effects.AudioCaptureEffectsManager, object> AudioCaptureEffectsChanged

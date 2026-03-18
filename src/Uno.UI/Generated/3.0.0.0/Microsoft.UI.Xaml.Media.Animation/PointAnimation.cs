@@ -131,8 +131,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.EnableDependentAnimationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.FromProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.ToProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.By.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.By.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.EasingFunction.get
@@ -143,6 +141,5 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.From.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.To.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.To.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PointAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -12,10 +12,6 @@ namespace Windows.Storage.Streams
 		// Skipping already declared property CanWrite
 		// Skipping already declared property Position
 		// Skipping already declared property Size
-		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamOverStream.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamOverStream.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamOverStream.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamOverStream.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.Storage.Streams.RandomAccessStreamOverStream.GetInputStreamAt(ulong)
 		// Skipping already declared method Windows.Storage.Streams.RandomAccessStreamOverStream.GetOutputStreamAt(ulong)
 		// Skipping already declared method Windows.Storage.Streams.RandomAccessStreamOverStream.Seek(ulong)
@@ -29,7 +25,6 @@ namespace Windows.Storage.Streams
 		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamOverStream.Position.get
 		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamOverStream.Size.get
 		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamOverStream.Size.set
-		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamOverStream.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Storage.Streams.IRandomAccessStream
 		// Processing: System.IDisposable
 		// Processing: Windows.Storage.Streams.IInputStream

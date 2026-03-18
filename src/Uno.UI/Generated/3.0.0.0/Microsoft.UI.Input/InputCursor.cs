@@ -9,12 +9,7 @@ namespace Microsoft.UI.Input
 	public partial class InputCursor : global::System.IDisposable
 	{
 		// Skipping already declared method Microsoft.UI.Input.InputCursor.CreateFromCoreCursor(Windows.UI.Core.CoreCursor)
-		// Forced skipping of method Microsoft.UI.Input.InputCursor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.InputCursor.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.InputCursor.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Input.InputCursor.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Microsoft.UI.Input.InputCursor.Dispose()
-		// Forced skipping of method Microsoft.UI.Input.InputCursor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

@@ -173,10 +173,6 @@ namespace Windows.UI.Text
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Text.RichEditTextRange.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Text.RichEditTextRange.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Text.RichEditTextRange.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Text.RichEditTextRange.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool CanPaste(int format)
@@ -423,7 +419,6 @@ namespace Windows.UI.Text
 		// Forced skipping of method Windows.UI.Text.RichEditTextRange.StoryLength.get
 		// Forced skipping of method Windows.UI.Text.RichEditTextRange.Text.get
 		// Forced skipping of method Windows.UI.Text.RichEditTextRange.Text.set
-		// Forced skipping of method Windows.UI.Text.RichEditTextRange.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.UI.Text.ITextRange
 	}
 }

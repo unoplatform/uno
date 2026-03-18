@@ -41,14 +41,9 @@ namespace Windows.Web.Http.Filters
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.ReadBehavior.get
 		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.ReadBehavior.set
 		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.WriteBehavior.get
 		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.WriteBehavior.set
-		// Forced skipping of method Windows.Web.Http.Filters.HttpCacheControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

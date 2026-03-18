@@ -36,10 +36,6 @@ namespace Windows.Services.Store
 			throw new global::System.NotImplementedException("The member StoreContext StoreContext.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StoreContext%20StoreContext.GetForUser%28User%20user%29");
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StoreContext.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.Store.StoreContext.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.Store.StoreContext.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.Store.StoreContext.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<string> GetCustomerPurchaseIdAsync(string serviceTicket, string publisherUserId)
@@ -282,7 +278,6 @@ namespace Windows.Services.Store
 #endif
 		// Forced skipping of method Windows.Services.Store.StoreContext.CanSilentlyDownloadStorePackageUpdates.get
 		// Forced skipping of method Windows.Services.Store.StoreContext.User.get
-		// Forced skipping of method Windows.Services.Store.StoreContext.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Services.Store.StoreContext, object> OfflineLicensesChanged

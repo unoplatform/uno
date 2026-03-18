@@ -51,11 +51,8 @@ namespace Microsoft.UI.Content
 			throw new global::System.NotImplementedException("The member DesktopChildSiteBridge DesktopChildSiteBridge.CreateWithDispatcherQueue(DispatcherQueue queue, WindowId parentWindowId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DesktopChildSiteBridge%20DesktopChildSiteBridge.CreateWithDispatcherQueue%28DispatcherQueue%20queue%2C%20WindowId%20parentWindowId%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.ResizePolicy.get
 		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.ResizePolicy.set
 		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.SiteView.get
-		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

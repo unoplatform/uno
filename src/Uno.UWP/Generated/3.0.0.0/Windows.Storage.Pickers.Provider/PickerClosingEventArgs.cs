@@ -33,12 +33,7 @@ namespace Windows.Storage.Pickers.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingEventArgs.ClosingOperation.get
 		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingEventArgs.IsCanceled.get
-		// Forced skipping of method Windows.Storage.Pickers.Provider.PickerClosingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

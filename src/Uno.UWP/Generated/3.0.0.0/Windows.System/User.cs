@@ -78,10 +78,6 @@ namespace Windows.System
 			throw new global::System.NotImplementedException("The member User User.GetFromId(string nonRoamableId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20User.GetFromId%28string%20nonRoamableId%29");
 		}
 #endif
-		// Forced skipping of method Windows.System.User.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.User.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.User.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.User.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<object> GetPropertyAsync(string value)
@@ -106,6 +102,5 @@ namespace Windows.System
 		// Forced skipping of method Windows.System.User.AuthenticationStatus.get
 		// Forced skipping of method Windows.System.User.NonRoamableId.get
 		// Forced skipping of method Windows.System.User.Type.get
-		// Forced skipping of method Windows.System.User.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

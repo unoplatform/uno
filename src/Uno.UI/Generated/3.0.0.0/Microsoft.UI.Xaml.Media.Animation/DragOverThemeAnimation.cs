@@ -85,14 +85,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.DirectionProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.TargetNameProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.ToOffsetProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.Direction.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.Direction.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.TargetName.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.TargetName.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.ToOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.ToOffset.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

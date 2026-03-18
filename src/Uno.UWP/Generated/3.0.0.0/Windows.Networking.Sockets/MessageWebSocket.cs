@@ -46,10 +46,6 @@ namespace Windows.Networking.Sockets
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocket.MessageWebSocket()
-		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocket.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocket.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocket.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocket.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocket.MessageReceived.add
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocket.MessageReceived.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -101,7 +97,6 @@ namespace Windows.Networking.Sockets
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocket.Control.get
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocket.Information.get
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocket.OutputStream.get
-		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocket.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.Sockets.MessageWebSocket, global::Windows.Networking.Sockets.MessageWebSocketMessageReceivedEventArgs> MessageReceived

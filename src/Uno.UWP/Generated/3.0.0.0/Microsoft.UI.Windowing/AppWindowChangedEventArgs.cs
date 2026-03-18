@@ -16,10 +16,6 @@ namespace Microsoft.UI.Windowing
 		// Skipping already declared property IsZOrderAtBottom
 		// Skipping already declared property IsZOrderAtTop
 		// Skipping already declared property ZOrderBelowWindowId
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowChangedEventArgs.DidPositionChange.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowChangedEventArgs.DidPresenterChange.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowChangedEventArgs.DidSizeChange.get
@@ -28,6 +24,5 @@ namespace Microsoft.UI.Windowing
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowChangedEventArgs.IsZOrderAtBottom.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowChangedEventArgs.IsZOrderAtTop.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowChangedEventArgs.ZOrderBelowWindowId.get
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

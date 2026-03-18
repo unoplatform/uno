@@ -53,8 +53,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.SelectionChangedTriggerProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.TextBoxStyleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.TextProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.DropDownClosed.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.DropDownClosed.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.DropDownOpened.add
@@ -93,7 +91,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.Text.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.TextBoxStyle.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.TextBoxStyle.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ComboBox.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ComboBox.DropDownClosed
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ComboBox.DropDownOpened
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ComboBox.TextSubmitted

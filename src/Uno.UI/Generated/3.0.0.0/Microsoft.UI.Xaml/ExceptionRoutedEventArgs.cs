@@ -9,9 +9,6 @@ namespace Microsoft.UI.Xaml
 	public partial class ExceptionRoutedEventArgs : global::Microsoft.UI.Xaml.RoutedEventArgs
 	{
 		// Skipping already declared property ErrorMessage
-		// Forced skipping of method Microsoft.UI.Xaml.ExceptionRoutedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.ExceptionRoutedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.ExceptionRoutedEventArgs.ErrorMessage.get
-		// Forced skipping of method Microsoft.UI.Xaml.ExceptionRoutedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

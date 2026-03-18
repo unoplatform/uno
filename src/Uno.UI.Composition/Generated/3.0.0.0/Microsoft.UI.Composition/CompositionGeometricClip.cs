@@ -10,12 +10,9 @@ namespace Microsoft.UI.Composition
 	{
 		// Skipping already declared property Geometry
 		// Skipping already declared property ViewBox
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometricClip.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometricClip.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometricClip.Geometry.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometricClip.Geometry.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometricClip.ViewBox.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometricClip.ViewBox.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometricClip.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

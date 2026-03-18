@@ -48,15 +48,10 @@ namespace Windows.Devices.Geolocation
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.Geopoint(Windows.Devices.Geolocation.BasicGeoposition, Windows.Devices.Geolocation.AltitudeReferenceSystem, uint)
-		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.AltitudeReferenceSystem.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.GeoshapeType.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.Position.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.SpatialReferenceId.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Geolocation.IGeoshape
 	}
 }

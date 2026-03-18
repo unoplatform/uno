@@ -24,10 +24,6 @@ namespace Windows.Storage.Compression
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Compression.Compressor.Compressor(Windows.Storage.Streams.IOutputStream, Windows.Storage.Compression.CompressAlgorithm, uint)
-		// Forced skipping of method Windows.Storage.Compression.Compressor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.Compression.Compressor.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.Compression.Compressor.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.Compression.Compressor.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> FinishAsync()
@@ -63,7 +59,6 @@ namespace Windows.Storage.Compression
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Compression.Compressor", "void Compressor.Dispose()");
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Compression.Compressor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Storage.Streams.IOutputStream
 		// Processing: System.IDisposable
 	}

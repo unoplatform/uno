@@ -10,8 +10,5 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ThumbAutomationPeer.ThumbAutomationPeer(Microsoft.UI.Xaml.Controls.Primitives.Thumb)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ThumbAutomationPeer.ThumbAutomationPeer(Microsoft.UI.Xaml.Controls.Primitives.Thumb)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ThumbAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ThumbAutomationPeer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ThumbAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

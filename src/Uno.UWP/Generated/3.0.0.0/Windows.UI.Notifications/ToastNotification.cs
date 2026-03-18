@@ -124,10 +124,6 @@ namespace Windows.UI.Notifications
 		// Skipping already declared property Tag
 		// Skipping already declared method Windows.UI.Notifications.ToastNotification.ToastNotification(Windows.Data.Xml.Dom.XmlDocument)
 		// Forced skipping of method Windows.UI.Notifications.ToastNotification.ToastNotification(Windows.Data.Xml.Dom.XmlDocument)
-		// Forced skipping of method Windows.UI.Notifications.ToastNotification.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Notifications.ToastNotification.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Notifications.ToastNotification.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Notifications.ToastNotification.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Activated.add
 		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Activated.remove
 		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Dismissed.add
@@ -153,7 +149,6 @@ namespace Windows.UI.Notifications
 		// Forced skipping of method Windows.UI.Notifications.ToastNotification.SuppressPopup.set
 		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Tag.get
 		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Tag.set
-		// Forced skipping of method Windows.UI.Notifications.ToastNotification.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Notifications.ToastNotification, object> Activated

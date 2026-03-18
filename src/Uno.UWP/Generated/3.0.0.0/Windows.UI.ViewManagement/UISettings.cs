@@ -25,10 +25,6 @@ namespace Windows.UI.ViewManagement
 		// Skipping already declared property TextScaleFactor
 		// Skipping already declared method Windows.UI.ViewManagement.UISettings.UISettings()
 		// Forced skipping of method Windows.UI.ViewManagement.UISettings.UISettings()
-		// Forced skipping of method Windows.UI.ViewManagement.UISettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.ViewManagement.UISettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.ViewManagement.UISettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.ViewManagement.UISettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.UI.ViewManagement.UISettings.UIElementColor(Windows.UI.ViewManagement.UIElementType)
 		// Forced skipping of method Windows.UI.ViewManagement.UISettings.TextScaleFactorChanged.add
 		// Forced skipping of method Windows.UI.ViewManagement.UISettings.TextScaleFactorChanged.remove
@@ -58,7 +54,6 @@ namespace Windows.UI.ViewManagement
 		// Forced skipping of method Windows.UI.ViewManagement.UISettings.ScrollBarSize.get
 		// Forced skipping of method Windows.UI.ViewManagement.UISettings.ScrollBarThumbBoxSize.get
 		// Forced skipping of method Windows.UI.ViewManagement.UISettings.TextScaleFactor.get
-		// Forced skipping of method Windows.UI.ViewManagement.UISettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Windows.UI.ViewManagement.UISettings.TextScaleFactorChanged
 		// Skipping already declared event Windows.UI.ViewManagement.UISettings.ColorValuesChanged
 		// Skipping already declared event Windows.UI.ViewManagement.UISettings.AdvancedEffectsEnabledChanged

@@ -33,12 +33,7 @@ namespace Windows.Media.AppBroadcasting
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingStatus.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingStatus.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingStatus.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingStatus.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingStatus.CanStartBroadcast.get
 		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingStatus.Details.get
-		// Forced skipping of method Windows.Media.AppBroadcasting.AppBroadcastingStatus.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

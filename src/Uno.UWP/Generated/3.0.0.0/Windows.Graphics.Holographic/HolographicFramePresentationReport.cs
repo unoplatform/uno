@@ -63,15 +63,10 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.AppGpuDuration.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.AppGpuOverrun.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.CompositorGpuDuration.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.MissedPresentationOpportunityCount.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.PresentationCount.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

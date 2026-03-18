@@ -44,10 +44,6 @@ namespace Windows.Media.Effects
 		}
 #endif
 		// Forced skipping of method Windows.Media.Effects.CompositeVideoFrameContext.~CompositeVideoFrameContext()
-		// Forced skipping of method Windows.Media.Effects.CompositeVideoFrameContext.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Effects.CompositeVideoFrameContext.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Effects.CompositeVideoFrameContext.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Effects.CompositeVideoFrameContext.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Editing.MediaOverlay GetOverlayForSurface(global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface surfaceToOverlay)
@@ -58,6 +54,5 @@ namespace Windows.Media.Effects
 		// Forced skipping of method Windows.Media.Effects.CompositeVideoFrameContext.BackgroundFrame.get
 		// Forced skipping of method Windows.Media.Effects.CompositeVideoFrameContext.OutputFrame.get
 		// Forced skipping of method Windows.Media.Effects.CompositeVideoFrameContext.SurfacesToOverlay.get
-		// Forced skipping of method Windows.Media.Effects.CompositeVideoFrameContext.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

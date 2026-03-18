@@ -284,10 +284,6 @@ namespace Windows.Security.Cryptography.Certificates
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.CertificateRequestProperties()
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.AttestationCredentialCertificate.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.AttestationCredentialCertificate.set
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.ContainerName.get
@@ -325,6 +321,5 @@ namespace Windows.Security.Cryptography.Certificates
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.SuppressedDefaults.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.UseExistingKey.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.UseExistingKey.set
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateRequestProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

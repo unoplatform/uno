@@ -73,10 +73,6 @@ namespace Windows.Perception.People
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Perception.People.HandMeshObserver.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Perception.People.HandMeshObserver.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Perception.People.HandMeshObserver.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Perception.People.HandMeshObserver.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void GetTriangleIndices(ushort[] indices)
@@ -97,6 +93,5 @@ namespace Windows.Perception.People
 		// Forced skipping of method Windows.Perception.People.HandMeshObserver.Source.get
 		// Forced skipping of method Windows.Perception.People.HandMeshObserver.TriangleIndexCount.get
 		// Forced skipping of method Windows.Perception.People.HandMeshObserver.VertexCount.get
-		// Forced skipping of method Windows.Perception.People.HandMeshObserver.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -32,8 +32,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarToggleButton.KeyboardAcceleratorTextOverrideProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarToggleButton.LabelPositionProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarToggleButton.LabelProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarToggleButton.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarToggleButton.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarToggleButton.DynamicOverflowOrder.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarToggleButton.DynamicOverflowOrder.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarToggleButton.Icon.get
@@ -48,7 +46,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarToggleButton.LabelPosition.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarToggleButton.LabelPosition.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarToggleButton.TemplateSettings.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AppBarToggleButton.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Controls.ICommandBarElement
 	}
 }

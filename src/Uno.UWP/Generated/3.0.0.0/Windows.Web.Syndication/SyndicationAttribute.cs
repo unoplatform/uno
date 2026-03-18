@@ -66,16 +66,11 @@ namespace Windows.Web.Syndication
 		}
 #endif
 		// Forced skipping of method Windows.Web.Syndication.SyndicationAttribute.SyndicationAttribute(string, string, string)
-		// Forced skipping of method Windows.Web.Syndication.SyndicationAttribute.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Web.Syndication.SyndicationAttribute.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Web.Syndication.SyndicationAttribute.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Web.Syndication.SyndicationAttribute.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Web.Syndication.SyndicationAttribute.Name.get
 		// Forced skipping of method Windows.Web.Syndication.SyndicationAttribute.Name.set
 		// Forced skipping of method Windows.Web.Syndication.SyndicationAttribute.Namespace.get
 		// Forced skipping of method Windows.Web.Syndication.SyndicationAttribute.Namespace.set
 		// Forced skipping of method Windows.Web.Syndication.SyndicationAttribute.Value.get
 		// Forced skipping of method Windows.Web.Syndication.SyndicationAttribute.Value.set
-		// Forced skipping of method Windows.Web.Syndication.SyndicationAttribute.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

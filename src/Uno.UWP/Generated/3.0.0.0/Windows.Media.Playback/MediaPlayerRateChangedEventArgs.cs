@@ -9,11 +9,6 @@ namespace Windows.Media.Playback
 	public partial class MediaPlayerRateChangedEventArgs
 	{
 		// Skipping already declared property NewRate
-		// Forced skipping of method Windows.Media.Playback.MediaPlayerRateChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlayerRateChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlayerRateChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlayerRateChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlayerRateChangedEventArgs.NewRate.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlayerRateChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -109,8 +109,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.HeaderProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.HeaderTemplateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.IsHeaderInteractiveProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.ContentTemplate.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.ContentTemplate.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.Header.get
@@ -119,6 +117,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.HeaderTemplate.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.IsHeaderInteractive.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.IsHeaderInteractive.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.HubSection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

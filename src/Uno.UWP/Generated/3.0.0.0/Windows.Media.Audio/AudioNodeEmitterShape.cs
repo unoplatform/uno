@@ -47,12 +47,7 @@ namespace Windows.Media.Audio
 			throw new global::System.NotImplementedException("The member AudioNodeEmitterShape AudioNodeEmitterShape.CreateOmnidirectional() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioNodeEmitterShape%20AudioNodeEmitterShape.CreateOmnidirectional%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterShape.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterShape.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterShape.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterShape.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterShape.ConeProperties.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterShape.Kind.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterShape.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

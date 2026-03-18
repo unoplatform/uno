@@ -268,10 +268,6 @@ namespace Windows.Media.Capture
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.MediaCaptureInitializationSettings()
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.AlwaysPlaySystemShutterSound.get
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.AlwaysPlaySystemShutterSound.set
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.AudioDeviceId.get
@@ -308,6 +304,5 @@ namespace Windows.Media.Capture
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.VideoProfile.set
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.VideoSource.get
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.VideoSource.set
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -55,16 +55,11 @@ namespace Windows.Graphics.Printing
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageRangeOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageRangeOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageRangeOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageRangeOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintPageRangeOptions.AllowAllPages.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintPageRangeOptions.AllowAllPages.set
 		// Forced skipping of method Windows.Graphics.Printing.PrintPageRangeOptions.AllowCurrentPage.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintPageRangeOptions.AllowCurrentPage.set
 		// Forced skipping of method Windows.Graphics.Printing.PrintPageRangeOptions.AllowCustomSetOfPages.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintPageRangeOptions.AllowCustomSetOfPages.set
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageRangeOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

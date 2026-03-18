@@ -31,16 +31,11 @@ namespace Windows.Devices.Geolocation
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.Geocircle(Windows.Devices.Geolocation.BasicGeoposition, double, Windows.Devices.Geolocation.AltitudeReferenceSystem, uint)
-		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.AltitudeReferenceSystem.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.Center.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.GeoshapeType.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.Radius.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.SpatialReferenceId.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Geolocation.IGeoshape
 	}
 }

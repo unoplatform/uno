@@ -18,10 +18,5 @@ namespace Microsoft.UI.Xaml.Automation
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AnnotationPatternIdentifiers.AuthorProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AnnotationPatternIdentifiers.DateTimeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AnnotationPatternIdentifiers.TargetProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AnnotationPatternIdentifiers.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AnnotationPatternIdentifiers.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AnnotationPatternIdentifiers.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AnnotationPatternIdentifiers.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AnnotationPatternIdentifiers.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

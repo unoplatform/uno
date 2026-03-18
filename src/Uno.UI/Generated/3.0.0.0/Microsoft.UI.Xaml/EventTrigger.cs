@@ -13,11 +13,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property Actions
 		// Skipping already declared method Microsoft.UI.Xaml.EventTrigger.EventTrigger()
 		// Forced skipping of method Microsoft.UI.Xaml.EventTrigger.EventTrigger()
-		// Forced skipping of method Microsoft.UI.Xaml.EventTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.EventTrigger.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.EventTrigger.Actions.get
 		// Forced skipping of method Microsoft.UI.Xaml.EventTrigger.RoutedEvent.get
 		// Forced skipping of method Microsoft.UI.Xaml.EventTrigger.RoutedEvent.set
-		// Forced skipping of method Microsoft.UI.Xaml.EventTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

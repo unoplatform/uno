@@ -30,13 +30,8 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.GeovisitTrigger.GeovisitTrigger()
-		// Forced skipping of method Windows.ApplicationModel.Background.GeovisitTrigger.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Background.GeovisitTrigger.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Background.GeovisitTrigger.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Background.GeovisitTrigger.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Background.GeovisitTrigger.MonitoringScope.get
 		// Forced skipping of method Windows.ApplicationModel.Background.GeovisitTrigger.MonitoringScope.set
-		// Forced skipping of method Windows.ApplicationModel.Background.GeovisitTrigger.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger
 	}
 }

@@ -8,11 +8,6 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class DragOperationDeferral
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.DragOperationDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.DragOperationDeferral.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.DragOperationDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.DragOperationDeferral.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Microsoft.UI.Xaml.DragOperationDeferral.Complete()
-		// Forced skipping of method Microsoft.UI.Xaml.DragOperationDeferral.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

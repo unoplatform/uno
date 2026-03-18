@@ -43,13 +43,8 @@ namespace Windows.System.Profile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Profile.HardwareToken.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.Profile.HardwareToken.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.Profile.HardwareToken.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.Profile.HardwareToken.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.Profile.HardwareToken.Certificate.get
 		// Forced skipping of method Windows.System.Profile.HardwareToken.Id.get
 		// Forced skipping of method Windows.System.Profile.HardwareToken.Signature.get
-		// Forced skipping of method Windows.System.Profile.HardwareToken.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

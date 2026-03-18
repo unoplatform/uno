@@ -13,10 +13,6 @@ namespace Windows.UI.Core
 		{
 		}
 #endif
-		// Forced skipping of method Windows.UI.Core.CoreWindowPopupShowingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Core.CoreWindowPopupShowingEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Core.CoreWindowPopupShowingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Core.CoreWindowPopupShowingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetDesiredSize(global::Windows.Foundation.Size value)
@@ -24,6 +20,5 @@ namespace Windows.UI.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowPopupShowingEventArgs", "void CoreWindowPopupShowingEventArgs.SetDesiredSize(Size value)");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Core.CoreWindowPopupShowingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

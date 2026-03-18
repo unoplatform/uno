@@ -23,12 +23,9 @@ namespace Windows.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.InputActivationListener.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.InputActivationListener.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Input.InputActivationListener.InputActivationChanged.add
 		// Forced skipping of method Windows.UI.Input.InputActivationListener.InputActivationChanged.remove
 		// Forced skipping of method Windows.UI.Input.InputActivationListener.State.get
-		// Forced skipping of method Windows.UI.Input.InputActivationListener.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.InputActivationListener, global::Windows.UI.Input.InputActivationListenerActivationChangedEventArgs> InputActivationChanged

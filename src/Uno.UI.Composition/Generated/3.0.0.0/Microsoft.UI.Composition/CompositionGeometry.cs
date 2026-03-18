@@ -11,14 +11,11 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property TrimEnd
 		// Skipping already declared property TrimOffset
 		// Skipping already declared property TrimStart
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.TrimEnd.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.TrimEnd.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.TrimOffset.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.TrimOffset.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.TrimStart.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.TrimStart.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -12,12 +12,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared property ControlPoint2
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.KeySpline.KeySpline()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.KeySpline.KeySpline()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.KeySpline.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.KeySpline.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.KeySpline.ControlPoint1.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.KeySpline.ControlPoint1.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.KeySpline.ControlPoint2.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.KeySpline.ControlPoint2.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.KeySpline.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

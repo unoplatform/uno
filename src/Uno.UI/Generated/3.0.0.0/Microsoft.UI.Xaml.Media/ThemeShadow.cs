@@ -11,9 +11,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared property Receivers
 		// Skipping already declared method Microsoft.UI.Xaml.Media.ThemeShadow.ThemeShadow()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.ThemeShadow.ThemeShadow()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.ThemeShadow.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.ThemeShadow.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.ThemeShadow.Receivers.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.ThemeShadow.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

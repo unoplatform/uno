@@ -12,14 +12,9 @@ namespace Microsoft.UI.Input
 		// Skipping already declared property Point
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property RegionKind
-		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.IsPointInRegion.get
 		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.Point.get
 		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.PointerDeviceType.get
 		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.RegionKind.get
-		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -58,16 +58,11 @@ namespace Windows.UI.Input.Preview.Injection
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo.InjectedInputKeyboardInfo()
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo.KeyOptions.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo.KeyOptions.set
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo.ScanCode.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo.ScanCode.set
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo.VirtualKey.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo.VirtualKey.set
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputKeyboardInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

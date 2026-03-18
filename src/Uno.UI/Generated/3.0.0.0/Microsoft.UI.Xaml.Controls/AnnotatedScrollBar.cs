@@ -118,8 +118,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.LabelTemplateProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.LabelsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.SmallChangeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.DetailLabelRequested.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.DetailLabelRequested.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.Scrolling.add
@@ -133,7 +131,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.ScrollController.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.SmallChange.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.SmallChange.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBar.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.AnnotatedScrollBar, global::Microsoft.UI.Xaml.Controls.AnnotatedScrollBarDetailLabelRequestedEventArgs> DetailLabelRequested

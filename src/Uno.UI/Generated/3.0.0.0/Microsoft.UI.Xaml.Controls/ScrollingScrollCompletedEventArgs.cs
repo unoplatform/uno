@@ -9,11 +9,6 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class ScrollingScrollCompletedEventArgs
 	{
 		// Skipping already declared property CorrelationId
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs.CorrelationId.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

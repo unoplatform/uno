@@ -10,8 +10,5 @@ namespace Microsoft.UI.Xaml.Documents
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Documents.Underline.Underline()
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Underline.Underline()
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Underline.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Underline.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Underline.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

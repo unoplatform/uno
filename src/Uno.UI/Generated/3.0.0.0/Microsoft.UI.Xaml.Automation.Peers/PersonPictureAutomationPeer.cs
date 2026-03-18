@@ -10,8 +10,5 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer.PersonPictureAutomationPeer(Microsoft.UI.Xaml.Controls.PersonPicture)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer.PersonPictureAutomationPeer(Microsoft.UI.Xaml.Controls.PersonPicture)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

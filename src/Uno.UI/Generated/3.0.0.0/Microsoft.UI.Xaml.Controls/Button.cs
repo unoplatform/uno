@@ -13,10 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Button.Button()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.Button()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.FlyoutProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.Flyout.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.Flyout.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

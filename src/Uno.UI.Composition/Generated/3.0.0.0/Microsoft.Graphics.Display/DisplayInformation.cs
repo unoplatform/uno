@@ -47,10 +47,6 @@ namespace Microsoft.Graphics.Display
 			throw new global::System.NotImplementedException("The member DisplayInformation DisplayInformation.CreateForDisplayId(DisplayId displayId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayInformation%20DisplayInformation.CreateForDisplayId%28DisplayId%20displayId%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> GetColorProfileAsync()
@@ -89,7 +85,6 @@ namespace Microsoft.Graphics.Display
 #endif
 		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.DispatcherQueue.get
 		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.IsStereoEnabled.get
-		// Forced skipping of method Microsoft.Graphics.Display.DisplayInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Graphics.Display.DisplayInformation, object> AdvancedColorInfoChanged

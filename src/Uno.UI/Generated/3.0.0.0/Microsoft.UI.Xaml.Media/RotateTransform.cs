@@ -19,14 +19,11 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.AngleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.CenterXProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.CenterYProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.Angle.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.Angle.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.CenterX.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.CenterX.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.CenterY.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.CenterY.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.RotateTransform.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -50,13 +50,8 @@ namespace Windows.UI.Input.Core
 			throw new global::System.NotImplementedException("The member RadialControllerIndependentInputSource RadialControllerIndependentInputSource.CreateForView(CoreApplicationView view) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RadialControllerIndependentInputSource%20RadialControllerIndependentInputSource.CreateForView%28CoreApplicationView%20view%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.Controller.get
 		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.Dispatcher.get
 		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.DispatcherQueue.get
-		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

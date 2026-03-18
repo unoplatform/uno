@@ -24,10 +24,6 @@ namespace Windows.Security.Cryptography.DataProtection
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.DataProtection.DataProtectionProvider.DataProtectionProvider(string)
-		// Forced skipping of method Windows.Security.Cryptography.DataProtection.DataProtectionProvider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.Cryptography.DataProtection.DataProtectionProvider.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.Cryptography.DataProtection.DataProtectionProvider.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.Cryptography.DataProtection.DataProtectionProvider.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IBuffer> ProtectAsync(global::Windows.Storage.Streams.IBuffer data)
@@ -56,6 +52,5 @@ namespace Windows.Security.Cryptography.DataProtection
 			throw new global::System.NotImplementedException("The member IAsyncAction DataProtectionProvider.UnprotectStreamAsync(IInputStream src, IOutputStream dest) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20DataProtectionProvider.UnprotectStreamAsync%28IInputStream%20src%2C%20IOutputStream%20dest%29");
 		}
 #endif
-		// Forced skipping of method Windows.Security.Cryptography.DataProtection.DataProtectionProvider.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

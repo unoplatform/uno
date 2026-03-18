@@ -10,13 +10,8 @@ namespace Microsoft.UI.Input
 	{
 		// Skipping already declared property Request
 		// Skipping already declared property Result
-		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequestEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequestEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequestEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequestEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequestEventArgs.Request.get
 		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequestEventArgs.Result.get
 		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequestEventArgs.Result.set
-		// Forced skipping of method Microsoft.UI.Input.FocusNavigationRequestEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

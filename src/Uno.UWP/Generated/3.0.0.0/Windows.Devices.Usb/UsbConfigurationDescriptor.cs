@@ -67,14 +67,9 @@ namespace Windows.Devices.Usb
 			throw new global::System.NotImplementedException("The member UsbConfigurationDescriptor UsbConfigurationDescriptor.Parse(UsbDescriptor descriptor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UsbConfigurationDescriptor%20UsbConfigurationDescriptor.Parse%28UsbDescriptor%20descriptor%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Usb.UsbConfigurationDescriptor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Usb.UsbConfigurationDescriptor.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Usb.UsbConfigurationDescriptor.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Usb.UsbConfigurationDescriptor.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Usb.UsbConfigurationDescriptor.ConfigurationValue.get
 		// Forced skipping of method Windows.Devices.Usb.UsbConfigurationDescriptor.MaxPowerMilliamps.get
 		// Forced skipping of method Windows.Devices.Usb.UsbConfigurationDescriptor.RemoteWakeup.get
 		// Forced skipping of method Windows.Devices.Usb.UsbConfigurationDescriptor.SelfPowered.get
-		// Forced skipping of method Windows.Devices.Usb.UsbConfigurationDescriptor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

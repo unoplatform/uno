@@ -78,10 +78,6 @@ namespace Windows.Devices.Usb
 			throw new global::System.NotImplementedException("The member IAsyncOperation<UsbDevice> UsbDevice.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUsbDevice%3E%20UsbDevice.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Usb.UsbDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Usb.UsbDevice.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Usb.UsbDevice.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Usb.UsbDevice.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<uint> SendControlOutTransferAsync(global::Windows.Devices.Usb.UsbSetupPacket setupPacket, global::Windows.Storage.Streams.IBuffer buffer)
@@ -120,7 +116,6 @@ namespace Windows.Devices.Usb
 		// Forced skipping of method Windows.Devices.Usb.UsbDevice.Configuration.get
 		// Forced skipping of method Windows.Devices.Usb.UsbDevice.DefaultInterface.get
 		// Forced skipping of method Windows.Devices.Usb.UsbDevice.DeviceDescriptor.get
-		// Forced skipping of method Windows.Devices.Usb.UsbDevice.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

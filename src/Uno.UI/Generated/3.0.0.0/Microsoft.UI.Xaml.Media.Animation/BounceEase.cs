@@ -16,12 +16,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.BounceEase()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.BouncesProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.BouncinessProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.Bounces.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.Bounces.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.Bounciness.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.Bounciness.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.BounceEase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

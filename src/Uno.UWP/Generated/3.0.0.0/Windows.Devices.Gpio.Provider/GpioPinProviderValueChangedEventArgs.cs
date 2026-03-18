@@ -26,11 +26,6 @@ namespace Windows.Devices.Gpio.Provider
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Gpio.Provider.GpioPinProviderValueChangedEventArgs.GpioPinProviderValueChangedEventArgs(Windows.Devices.Gpio.Provider.ProviderGpioPinEdge)
-		// Forced skipping of method Windows.Devices.Gpio.Provider.GpioPinProviderValueChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Gpio.Provider.GpioPinProviderValueChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Gpio.Provider.GpioPinProviderValueChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Gpio.Provider.GpioPinProviderValueChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Gpio.Provider.GpioPinProviderValueChangedEventArgs.Edge.get
-		// Forced skipping of method Windows.Devices.Gpio.Provider.GpioPinProviderValueChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

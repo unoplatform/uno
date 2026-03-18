@@ -10,12 +10,7 @@ namespace Windows.ApplicationModel.DataTransfer
 	{
 		// Skipping already declared property AcceptedFormatId
 		// Skipping already declared property Operation
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.AcceptedFormatId.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.Operation.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.OperationCompletedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

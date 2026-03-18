@@ -97,10 +97,6 @@ namespace Windows.ApplicationModel.UserActivities
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.Attribution.get
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.Attribution.set
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.AttributionDisplayText.get
@@ -113,6 +109,5 @@ namespace Windows.ApplicationModel.UserActivities
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.Description.set
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.DisplayText.get
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.DisplayText.set
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityVisualElements.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

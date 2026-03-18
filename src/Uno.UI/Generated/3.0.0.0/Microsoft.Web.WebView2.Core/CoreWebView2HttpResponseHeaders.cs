@@ -8,17 +8,12 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 	public partial class CoreWebView2HttpResponseHeaders : global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>>, global::System.Collections.IEnumerable
 	{
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders.AppendHeader(string, string)
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders.Contains(string)
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders.GetHeader(string)
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders.GetHeaders(string)
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders.GetEnumerator()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2HttpResponseHeaders.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>>
 		// Processing: System.Collections.IEnumerable
 	}

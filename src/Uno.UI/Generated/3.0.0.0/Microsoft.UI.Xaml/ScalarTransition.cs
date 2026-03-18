@@ -30,12 +30,7 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.ScalarTransition.ScalarTransition()
-		// Forced skipping of method Microsoft.UI.Xaml.ScalarTransition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.ScalarTransition.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.ScalarTransition.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.ScalarTransition.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.ScalarTransition.Duration.get
 		// Forced skipping of method Microsoft.UI.Xaml.ScalarTransition.Duration.set
-		// Forced skipping of method Microsoft.UI.Xaml.ScalarTransition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

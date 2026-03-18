@@ -17,13 +17,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.MenuFlyoutSubItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.IconProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.TextProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.Icon.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.Icon.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.Items.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.Text.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.Text.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

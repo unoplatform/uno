@@ -38,10 +38,6 @@ namespace Windows.Media
 		}
 #endif
 		// Forced skipping of method Windows.Media.AudioBuffer.~AudioBuffer()
-		// Forced skipping of method Windows.Media.AudioBuffer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.AudioBuffer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.AudioBuffer.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.AudioBuffer.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IMemoryBufferReference CreateReference()
@@ -59,7 +55,6 @@ namespace Windows.Media
 		// Forced skipping of method Windows.Media.AudioBuffer.Capacity.get
 		// Forced skipping of method Windows.Media.AudioBuffer.Length.get
 		// Forced skipping of method Windows.Media.AudioBuffer.Length.set
-		// Forced skipping of method Windows.Media.AudioBuffer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Foundation.IMemoryBuffer
 		// Processing: System.IDisposable
 	}

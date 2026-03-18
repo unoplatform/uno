@@ -66,16 +66,11 @@ namespace Windows.ApplicationModel.Store
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.ProductPurchaseDisplayProperties(string)
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.Description.get
 		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.Description.set
 		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.Image.get
 		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.Image.set
 		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.Name.get
 		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.Name.set
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

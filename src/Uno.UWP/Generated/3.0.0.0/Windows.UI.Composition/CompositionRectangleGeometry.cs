@@ -41,12 +41,9 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionRectangleGeometry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.CompositionRectangleGeometry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionRectangleGeometry.Offset.get
 		// Forced skipping of method Windows.UI.Composition.CompositionRectangleGeometry.Offset.set
 		// Forced skipping of method Windows.UI.Composition.CompositionRectangleGeometry.Size.get
 		// Forced skipping of method Windows.UI.Composition.CompositionRectangleGeometry.Size.set
-		// Forced skipping of method Windows.UI.Composition.CompositionRectangleGeometry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -110,10 +110,6 @@ namespace Windows.UI.Core
 		}
 #endif
 		// Forced skipping of method Windows.UI.Core.CoreWindowFlyout.CoreWindowFlyout(Windows.Foundation.Point, string)
-		// Forced skipping of method Windows.UI.Core.CoreWindowFlyout.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Core.CoreWindowFlyout.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Core.CoreWindowFlyout.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Core.CoreWindowFlyout.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.UI.Popups.IUICommand> ShowAsync()
@@ -134,7 +130,6 @@ namespace Windows.UI.Core
 		// Forced skipping of method Windows.UI.Core.CoreWindowFlyout.MinSize.get
 		// Forced skipping of method Windows.UI.Core.CoreWindowFlyout.Title.get
 		// Forced skipping of method Windows.UI.Core.CoreWindowFlyout.Title.set
-		// Forced skipping of method Windows.UI.Core.CoreWindowFlyout.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Core.CoreWindow, global::Windows.UI.Core.CoreWindowPopupShowingEventArgs> Showing

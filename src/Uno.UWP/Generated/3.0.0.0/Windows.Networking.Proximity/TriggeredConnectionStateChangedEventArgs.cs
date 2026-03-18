@@ -43,13 +43,8 @@ namespace Windows.Networking.Proximity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Proximity.TriggeredConnectionStateChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Proximity.TriggeredConnectionStateChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Proximity.TriggeredConnectionStateChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Proximity.TriggeredConnectionStateChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Proximity.TriggeredConnectionStateChangedEventArgs.Id.get
 		// Forced skipping of method Windows.Networking.Proximity.TriggeredConnectionStateChangedEventArgs.Socket.get
 		// Forced skipping of method Windows.Networking.Proximity.TriggeredConnectionStateChangedEventArgs.State.get
-		// Forced skipping of method Windows.Networking.Proximity.TriggeredConnectionStateChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

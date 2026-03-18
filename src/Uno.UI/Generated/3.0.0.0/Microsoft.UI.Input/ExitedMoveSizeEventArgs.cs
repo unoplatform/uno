@@ -10,12 +10,7 @@ namespace Microsoft.UI.Input
 	{
 		// Skipping already declared property MoveSizeOperation
 		// Skipping already declared property PointerScreenPoint
-		// Forced skipping of method Microsoft.UI.Input.ExitedMoveSizeEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.ExitedMoveSizeEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.ExitedMoveSizeEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Input.ExitedMoveSizeEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Input.ExitedMoveSizeEventArgs.MoveSizeOperation.get
 		// Forced skipping of method Microsoft.UI.Input.ExitedMoveSizeEventArgs.PointerScreenPoint.get
-		// Forced skipping of method Microsoft.UI.Input.ExitedMoveSizeEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

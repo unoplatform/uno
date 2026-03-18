@@ -209,10 +209,6 @@ namespace Windows.ApplicationModel.Email
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxCapabilities.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxCapabilities.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxCapabilities.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxCapabilities.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxCapabilities.CanCreateFolder.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxCapabilities.CanCreateFolder.set
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxCapabilities.CanDeleteFolder.get
@@ -241,6 +237,5 @@ namespace Windows.ApplicationModel.Email
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxCapabilities.CanUpdateMeetingResponses.set
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxCapabilities.CanValidateCertificates.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxCapabilities.CanValidateCertificates.set
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxCapabilities.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

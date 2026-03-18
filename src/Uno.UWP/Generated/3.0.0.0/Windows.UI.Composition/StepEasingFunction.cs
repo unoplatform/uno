@@ -83,8 +83,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.StepEasingFunction.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.StepEasingFunction.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.StepEasingFunction.FinalStep.get
 		// Forced skipping of method Windows.UI.Composition.StepEasingFunction.FinalStep.set
 		// Forced skipping of method Windows.UI.Composition.StepEasingFunction.InitialStep.get
@@ -95,6 +93,5 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.StepEasingFunction.IsInitialStepSingleFrame.set
 		// Forced skipping of method Windows.UI.Composition.StepEasingFunction.StepCount.get
 		// Forced skipping of method Windows.UI.Composition.StepEasingFunction.StepCount.set
-		// Forced skipping of method Windows.UI.Composition.StepEasingFunction.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

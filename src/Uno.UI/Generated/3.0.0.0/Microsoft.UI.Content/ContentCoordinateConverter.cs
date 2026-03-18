@@ -15,10 +15,6 @@ namespace Microsoft.UI.Content
 			throw new global::System.NotImplementedException("The member ContentCoordinateConverter ContentCoordinateConverter.CreateForWindowId(WindowId windowId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentCoordinateConverter%20ContentCoordinateConverter.CreateForWindowId%28WindowId%20windowId%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.ContentCoordinateConverter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Content.ContentCoordinateConverter.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Content.ContentCoordinateConverter.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Content.ContentCoordinateConverter.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.PointInt32 ConvertLocalToScreen(global::Windows.Foundation.Point localPoint)
@@ -68,6 +64,5 @@ namespace Microsoft.UI.Content
 			throw new global::System.NotImplementedException("The member Rect ContentCoordinateConverter.ConvertScreenToLocal(RectInt32 screenRect) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20ContentCoordinateConverter.ConvertScreenToLocal%28RectInt32%20screenRect%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.ContentCoordinateConverter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

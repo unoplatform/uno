@@ -209,8 +209,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.TextLineBoundsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.TextWrappingProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.VerticalContentAlignmentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ContentPresenter.OnContentTemplateChanged(Microsoft.UI.Xaml.DataTemplate, Microsoft.UI.Xaml.DataTemplate)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ContentPresenter.OnContentTemplateSelectorChanged(Microsoft.UI.Xaml.Controls.DataTemplateSelector, Microsoft.UI.Xaml.Controls.DataTemplateSelector)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.Background.get
@@ -267,6 +265,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.TextWrapping.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.VerticalContentAlignment.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.VerticalContentAlignment.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContentPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -16,8 +16,5 @@ namespace Windows.UI.WindowManagement
 		}
 #endif
 		// Forced skipping of method Windows.UI.WindowManagement.CompactOverlayPresentationConfiguration.CompactOverlayPresentationConfiguration()
-		// Forced skipping of method Windows.UI.WindowManagement.CompactOverlayPresentationConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.WindowManagement.CompactOverlayPresentationConfiguration.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.WindowManagement.CompactOverlayPresentationConfiguration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

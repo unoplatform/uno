@@ -21,8 +21,6 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.RasterizePixelHeightProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.RasterizePixelWidthProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.UriSourceProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.SetSourceAsync(Windows.Storage.Streams.IRandomAccessStream)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.OpenFailed.add
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.OpenFailed.remove
@@ -34,7 +32,6 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.RasterizePixelWidth.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.UriSource.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.UriSource.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.OpenFailed
 		// Skipping already declared event Microsoft.UI.Xaml.Media.Imaging.SvgImageSource.Opened
 	}

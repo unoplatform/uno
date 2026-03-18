@@ -89,8 +89,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.LeftOfProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.PaddingProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.RightOfProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.BackgroundSizing.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.BackgroundSizing.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.BorderBrush.get
@@ -101,6 +99,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.CornerRadius.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.Padding.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.Padding.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RelativePanel.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

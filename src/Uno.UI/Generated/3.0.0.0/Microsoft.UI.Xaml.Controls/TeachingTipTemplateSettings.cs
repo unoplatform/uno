@@ -19,14 +19,11 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.IconElementProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.TopLeftHighlightMarginProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.TopRightHighlightMarginProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.IconElement.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.IconElement.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.TopLeftHighlightMargin.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.TopLeftHighlightMargin.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.TopRightHighlightMargin.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.TopRightHighlightMargin.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

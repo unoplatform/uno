@@ -83,8 +83,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.HorizontalAlignmentRatio.get
 		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.HorizontalAlignmentRatio.set
 		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.Offset.get
@@ -95,6 +93,5 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.Stretch.set
 		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.VerticalAlignmentRatio.get
 		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.VerticalAlignmentRatio.set
-		// Forced skipping of method Windows.UI.Composition.CompositionViewBox.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

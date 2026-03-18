@@ -14,10 +14,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property SnapPointsMode
 		// Skipping already declared property TargetHorizontalOffset
 		// Skipping already declared property TargetVerticalOffset
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.Cancel.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.CorrelationId.get
@@ -26,6 +22,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.SnapPointsMode.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.TargetHorizontalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.TargetVerticalOffset.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

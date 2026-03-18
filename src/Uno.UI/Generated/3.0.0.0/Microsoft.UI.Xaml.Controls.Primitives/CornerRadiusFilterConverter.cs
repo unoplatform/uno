@@ -16,15 +16,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusFilterConverter.CornerRadiusFilterConverter()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusFilterConverter.FilterProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusFilterConverter.ScaleProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusFilterConverter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusFilterConverter.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusFilterConverter.Convert(object, System.Type, object, string)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusFilterConverter.ConvertBack(object, System.Type, object, string)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusFilterConverter.Filter.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusFilterConverter.Filter.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusFilterConverter.Scale.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusFilterConverter.Scale.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusFilterConverter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Data.IValueConverter
 	}
 }

@@ -78,10 +78,6 @@ namespace Windows.ApplicationModel.DataTransfer.ShareTarget
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.QuickLink()
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.Id.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.Id.set
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.SupportedDataFormats.get
@@ -90,6 +86,5 @@ namespace Windows.ApplicationModel.DataTransfer.ShareTarget
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.Thumbnail.set
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.Title.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.Title.set
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

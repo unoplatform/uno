@@ -30,12 +30,7 @@ namespace Windows.Security.Isolation
 		}
 #endif
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentTelemetryParameters.IsolatedWindowsEnvironmentTelemetryParameters()
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentTelemetryParameters.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentTelemetryParameters.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentTelemetryParameters.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentTelemetryParameters.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentTelemetryParameters.CorrelationId.get
 		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentTelemetryParameters.CorrelationId.set
-		// Forced skipping of method Windows.Security.Isolation.IsolatedWindowsEnvironmentTelemetryParameters.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

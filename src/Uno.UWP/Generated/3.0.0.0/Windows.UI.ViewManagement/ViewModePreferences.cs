@@ -43,14 +43,9 @@ namespace Windows.UI.ViewManagement
 			throw new global::System.NotImplementedException("The member ViewModePreferences ViewModePreferences.CreateDefault(ApplicationViewMode mode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ViewModePreferences%20ViewModePreferences.CreateDefault%28ApplicationViewMode%20mode%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.ViewManagement.ViewModePreferences.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.ViewManagement.ViewModePreferences.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.ViewManagement.ViewModePreferences.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.ViewManagement.ViewModePreferences.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.ViewManagement.ViewModePreferences.CustomSize.get
 		// Forced skipping of method Windows.UI.ViewManagement.ViewModePreferences.CustomSize.set
 		// Forced skipping of method Windows.UI.ViewManagement.ViewModePreferences.ViewSizePreference.get
 		// Forced skipping of method Windows.UI.ViewManagement.ViewModePreferences.ViewSizePreference.set
-		// Forced skipping of method Windows.UI.ViewManagement.ViewModePreferences.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

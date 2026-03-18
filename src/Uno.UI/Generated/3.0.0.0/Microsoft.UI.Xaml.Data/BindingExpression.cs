@@ -10,11 +10,8 @@ namespace Microsoft.UI.Xaml.Data
 	{
 		// Skipping already declared property DataItem
 		// Skipping already declared property ParentBinding
-		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingExpression.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingExpression.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Data.BindingExpression.UpdateSource()
 		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingExpression.DataItem.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingExpression.ParentBinding.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.BindingExpression.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

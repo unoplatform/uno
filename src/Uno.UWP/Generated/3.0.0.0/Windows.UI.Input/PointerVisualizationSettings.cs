@@ -48,14 +48,9 @@ namespace Windows.UI.Input
 			throw new global::System.NotImplementedException("The member PointerVisualizationSettings PointerVisualizationSettings.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PointerVisualizationSettings%20PointerVisualizationSettings.GetForCurrentView%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.IsBarrelButtonFeedbackEnabled.get
 		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.IsBarrelButtonFeedbackEnabled.set
 		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.IsContactFeedbackEnabled.get
 		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.IsContactFeedbackEnabled.set
-		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -53,14 +53,9 @@ namespace Windows.Services.TargetedContent
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentObject.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentObject.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentObject.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentObject.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentObject.Collection.get
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentObject.Item.get
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentObject.ObjectKind.get
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentObject.Value.get
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentObject.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

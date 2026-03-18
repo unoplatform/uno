@@ -19,8 +19,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollBar.IndicatorModeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollBar.OrientationProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollBar.ViewportSizeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollBar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollBar.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollBar.Scroll.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollBar.Scroll.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollBar.IndicatorMode.get
@@ -29,7 +27,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollBar.Orientation.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollBar.ViewportSize.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollBar.ViewportSize.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollBar.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.ScrollBar.Scroll
 	}
 }

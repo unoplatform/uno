@@ -64,17 +64,12 @@ namespace Windows.UI.Notifications
 		}
 #endif
 		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.AdaptiveNotificationText()
-		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.Hints.get
 		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.Kind.get
 		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.Language.get
 		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.Language.set
 		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.Text.get
 		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.Text.set
-		// Forced skipping of method Windows.UI.Notifications.AdaptiveNotificationText.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.UI.Notifications.IAdaptiveNotificationContent
 	}
 }

@@ -72,10 +72,6 @@ namespace Windows.ApplicationModel.UserDataTasks
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.UserDataTaskRegenerationProperties()
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.Interval.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.Interval.set
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.Occurrences.get
@@ -84,6 +80,5 @@ namespace Windows.ApplicationModel.UserDataTasks
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.Unit.set
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.Until.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.Until.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

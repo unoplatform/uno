@@ -214,10 +214,6 @@ namespace Windows.ApplicationModel.UserDataTasks
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTask.UserDataTask()
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTask.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTask.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTask.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTask.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTask.CompletedDate.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTask.CompletedDate.set
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTask.Details.get
@@ -245,6 +241,5 @@ namespace Windows.ApplicationModel.UserDataTasks
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTask.StartDate.set
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTask.Subject.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTask.Subject.set
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTask.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

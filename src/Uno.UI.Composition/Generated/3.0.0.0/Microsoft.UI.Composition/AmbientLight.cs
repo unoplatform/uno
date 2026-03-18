@@ -41,12 +41,9 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.AmbientLight.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.AmbientLight.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.AmbientLight.Color.get
 		// Forced skipping of method Microsoft.UI.Composition.AmbientLight.Color.set
 		// Forced skipping of method Microsoft.UI.Composition.AmbientLight.Intensity.get
 		// Forced skipping of method Microsoft.UI.Composition.AmbientLight.Intensity.set
-		// Forced skipping of method Microsoft.UI.Composition.AmbientLight.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -60,15 +60,10 @@ namespace Windows.ApplicationModel.DataTransfer
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.ShareProvider(string, Windows.Storage.Streams.RandomAccessStreamReference, Windows.UI.Color, Windows.ApplicationModel.DataTransfer.ShareProviderHandler)
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.BackgroundColor.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.DisplayIcon.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.Tag.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.Tag.set
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.Title.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareProvider.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

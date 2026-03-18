@@ -8,10 +8,5 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 	public partial class SnapPointBase
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SnapPointBase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SnapPointBase.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SnapPointBase.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SnapPointBase.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SnapPointBase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -12,10 +12,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property QueryText
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.AutoSuggestBoxQuerySubmittedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.AutoSuggestBoxQuerySubmittedEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.ChosenSuggestion.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.QueryText.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

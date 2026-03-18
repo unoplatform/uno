@@ -48,12 +48,9 @@ namespace Windows.UI.Composition.Interactions
 			throw new global::System.NotImplementedException("The member InteractionTrackerInertiaRestingValue InteractionTrackerInertiaRestingValue.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InteractionTrackerInertiaRestingValue%20InteractionTrackerInertiaRestingValue.Create%28Compositor%20compositor%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue.Condition.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue.Condition.set
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue.RestingValue.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue.RestingValue.set
-		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

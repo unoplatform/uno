@@ -44,14 +44,9 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.ElementFactoryGetArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.Data.get
 		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.Data.set
 		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.Parent.get
 		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.Parent.set
-		// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

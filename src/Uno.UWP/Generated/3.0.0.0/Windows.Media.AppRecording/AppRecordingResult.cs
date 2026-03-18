@@ -53,14 +53,9 @@ namespace Windows.Media.AppRecording
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.AppRecording.AppRecordingResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.AppRecording.AppRecordingResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.AppRecording.AppRecordingResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.AppRecording.AppRecordingResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.AppRecording.AppRecordingResult.Duration.get
 		// Forced skipping of method Windows.Media.AppRecording.AppRecordingResult.ExtendedError.get
 		// Forced skipping of method Windows.Media.AppRecording.AppRecordingResult.IsFileTruncated.get
 		// Forced skipping of method Windows.Media.AppRecording.AppRecordingResult.Succeeded.get
-		// Forced skipping of method Windows.Media.AppRecording.AppRecordingResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

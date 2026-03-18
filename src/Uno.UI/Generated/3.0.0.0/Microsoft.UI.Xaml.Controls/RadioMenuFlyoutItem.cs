@@ -32,12 +32,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.AreCheckStatesEnabledProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.GroupNameProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.IsCheckedProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.GroupName.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.GroupName.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.IsChecked.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.IsChecked.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

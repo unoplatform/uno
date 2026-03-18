@@ -12,10 +12,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property VerticalOffset
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventArgs.DragStartedEventArgs(double, double)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventArgs.DragStartedEventArgs(double, double)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventArgs.HorizontalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventArgs.VerticalOffset.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragStartedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -164,10 +164,6 @@ namespace Windows.ApplicationModel.Email
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.EmailAttachment(string, Windows.Storage.Streams.IRandomAccessStreamReference, string)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.ContentId.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.ContentId.set
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.ContentLocation.get
@@ -186,6 +182,5 @@ namespace Windows.ApplicationModel.Email
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.IsInline.set
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.MimeType.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.MimeType.set
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

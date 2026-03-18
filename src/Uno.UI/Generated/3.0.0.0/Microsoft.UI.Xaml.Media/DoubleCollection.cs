@@ -22,10 +22,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.DoubleCollection.DoubleCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.DoubleCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.Count.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.this[int].get
@@ -40,7 +36,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared method Microsoft.UI.Xaml.Media.DoubleCollection.Remove(double)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.DoubleCollection.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.System.Collections.Generic.IList<double>.get_Item(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.System.Collections.Generic.IList<double>.set_Item(int, double)
 		// Processing: System.Collections.Generic.IList<double>

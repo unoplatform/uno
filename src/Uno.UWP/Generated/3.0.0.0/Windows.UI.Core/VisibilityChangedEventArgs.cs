@@ -10,14 +10,9 @@ namespace Windows.UI.Core
 	{
 		// Skipping already declared property Handled
 		// Skipping already declared property Visible
-		// Forced skipping of method Windows.UI.Core.VisibilityChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Core.VisibilityChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Core.VisibilityChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Core.VisibilityChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Core.VisibilityChangedEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Core.VisibilityChangedEventArgs.Handled.set
 		// Forced skipping of method Windows.UI.Core.VisibilityChangedEventArgs.Visible.get
-		// Forced skipping of method Windows.UI.Core.VisibilityChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.UI.Core.ICoreWindowEventArgs
 	}
 }

@@ -66,16 +66,11 @@ namespace Windows.Devices.Custom
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Custom.IOControlCode.IOControlCode(ushort, ushort, Windows.Devices.Custom.IOControlAccessMode, Windows.Devices.Custom.IOControlBufferingMethod)
-		// Forced skipping of method Windows.Devices.Custom.IOControlCode.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Custom.IOControlCode.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Custom.IOControlCode.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Custom.IOControlCode.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Custom.IOControlCode.AccessMode.get
 		// Forced skipping of method Windows.Devices.Custom.IOControlCode.BufferingMethod.get
 		// Forced skipping of method Windows.Devices.Custom.IOControlCode.ControlCode.get
 		// Forced skipping of method Windows.Devices.Custom.IOControlCode.DeviceType.get
 		// Forced skipping of method Windows.Devices.Custom.IOControlCode.Function.get
-		// Forced skipping of method Windows.Devices.Custom.IOControlCode.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Custom.IIOControlCode
 	}
 }

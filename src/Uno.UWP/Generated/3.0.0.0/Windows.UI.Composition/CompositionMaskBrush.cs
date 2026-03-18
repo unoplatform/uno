@@ -41,12 +41,9 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionMaskBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.CompositionMaskBrush.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionMaskBrush.Mask.get
 		// Forced skipping of method Windows.UI.Composition.CompositionMaskBrush.Mask.set
 		// Forced skipping of method Windows.UI.Composition.CompositionMaskBrush.Source.get
 		// Forced skipping of method Windows.UI.Composition.CompositionMaskBrush.Source.set
-		// Forced skipping of method Windows.UI.Composition.CompositionMaskBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

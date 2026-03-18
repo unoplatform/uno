@@ -19,14 +19,11 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.IsFullWindowProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.MediaPlayerProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.StretchProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.IsFullWindow.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.IsFullWindow.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.MediaPlayer.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.MediaPlayer.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.Stretch.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.Stretch.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaPlayerPresenter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

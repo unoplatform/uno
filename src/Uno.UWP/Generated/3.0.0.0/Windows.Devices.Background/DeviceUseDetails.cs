@@ -33,12 +33,7 @@ namespace Windows.Devices.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Background.DeviceUseDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Background.DeviceUseDetails.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Background.DeviceUseDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Background.DeviceUseDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Background.DeviceUseDetails.Arguments.get
 		// Forced skipping of method Windows.Devices.Background.DeviceUseDetails.DeviceId.get
-		// Forced skipping of method Windows.Devices.Background.DeviceUseDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

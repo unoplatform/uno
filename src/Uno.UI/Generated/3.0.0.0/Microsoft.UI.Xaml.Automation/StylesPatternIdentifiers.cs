@@ -22,10 +22,5 @@ namespace Microsoft.UI.Xaml.Automation
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers.ShapeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers.StyleIdProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers.StyleNameProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.StylesPatternIdentifiers.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

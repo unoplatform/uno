@@ -1002,10 +1002,5 @@ namespace Microsoft.UI.Xaml.Documents
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet8Property.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.StylisticSet9Property.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.VariantsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Typography.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

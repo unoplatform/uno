@@ -42,8 +42,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.CanGoForwardProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.DefaultBackgroundColorProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.SourceProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.WebView2.EnsureCoreWebView2Async()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.WebView2.ExecuteScriptAsync(string)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.WebView2.Reload()
@@ -90,7 +88,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.DefaultBackgroundColor.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.Source.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.Source.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.WebView2.CoreProcessFailed
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.WebView2.CoreWebView2Initialized
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.WebView2.NavigationCompleted

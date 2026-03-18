@@ -43,13 +43,8 @@ namespace Windows.Media.Import
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Import.PhotoImportSidecar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportSidecar.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportSidecar.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportSidecar.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportSidecar.Date.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportSidecar.Name.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportSidecar.SizeInBytes.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportSidecar.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

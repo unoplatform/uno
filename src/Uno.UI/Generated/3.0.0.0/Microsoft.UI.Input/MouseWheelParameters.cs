@@ -69,10 +69,6 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.CharTranslation.get
 		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.CharTranslation.set
 		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.DeltaRotationAngle.get
@@ -81,6 +77,5 @@ namespace Microsoft.UI.Input
 		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.DeltaScale.set
 		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.PageTranslation.get
 		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.PageTranslation.set
-		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

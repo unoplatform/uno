@@ -41,10 +41,6 @@ namespace Windows.Management.Update
 			throw new global::System.NotImplementedException("The member bool PreviewBuildsManager.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PreviewBuildsManager.IsSupported%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Management.Update.PreviewBuildsManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Management.Update.PreviewBuildsManager.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Management.Update.PreviewBuildsManager.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Management.Update.PreviewBuildsManager.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Management.Update.PreviewBuildsState GetCurrentState()
@@ -61,6 +57,5 @@ namespace Windows.Management.Update
 #endif
 		// Forced skipping of method Windows.Management.Update.PreviewBuildsManager.ArePreviewBuildsAllowed.get
 		// Forced skipping of method Windows.Management.Update.PreviewBuildsManager.ArePreviewBuildsAllowed.set
-		// Forced skipping of method Windows.Management.Update.PreviewBuildsManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

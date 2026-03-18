@@ -41,12 +41,9 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.SpringVector3NaturalMotionAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.SpringVector3NaturalMotionAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.SpringVector3NaturalMotionAnimation.DampingRatio.get
 		// Forced skipping of method Windows.UI.Composition.SpringVector3NaturalMotionAnimation.DampingRatio.set
 		// Forced skipping of method Windows.UI.Composition.SpringVector3NaturalMotionAnimation.Period.get
 		// Forced skipping of method Windows.UI.Composition.SpringVector3NaturalMotionAnimation.Period.set
-		// Forced skipping of method Windows.UI.Composition.SpringVector3NaturalMotionAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

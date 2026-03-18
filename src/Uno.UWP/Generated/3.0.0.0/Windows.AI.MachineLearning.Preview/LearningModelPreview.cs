@@ -51,10 +51,6 @@ namespace Windows.AI.MachineLearning.Preview
 			throw new global::System.NotImplementedException("The member IAsyncOperation<LearningModelPreview> LearningModelPreview.LoadModelFromStreamAsync(IRandomAccessStreamReference modelStream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CLearningModelPreview%3E%20LearningModelPreview.LoadModelFromStreamAsync%28IRandomAccessStreamReference%20modelStream%29");
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelPreview.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelPreview.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelPreview.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelPreview.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.AI.MachineLearning.Preview.LearningModelEvaluationResultPreview> EvaluateAsync(global::Windows.AI.MachineLearning.Preview.LearningModelBindingPreview binding, string correlationId)
@@ -72,6 +68,5 @@ namespace Windows.AI.MachineLearning.Preview
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelPreview.Description.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelPreview.InferencingOptions.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelPreview.InferencingOptions.set
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelPreview.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -55,16 +55,11 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.InclinometerDataThreshold.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.InclinometerDataThreshold.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.InclinometerDataThreshold.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Sensors.InclinometerDataThreshold.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.InclinometerDataThreshold.PitchInDegrees.get
 		// Forced skipping of method Windows.Devices.Sensors.InclinometerDataThreshold.PitchInDegrees.set
 		// Forced skipping of method Windows.Devices.Sensors.InclinometerDataThreshold.RollInDegrees.get
 		// Forced skipping of method Windows.Devices.Sensors.InclinometerDataThreshold.RollInDegrees.set
 		// Forced skipping of method Windows.Devices.Sensors.InclinometerDataThreshold.YawInDegrees.get
 		// Forced skipping of method Windows.Devices.Sensors.InclinometerDataThreshold.YawInDegrees.set
-		// Forced skipping of method Windows.Devices.Sensors.InclinometerDataThreshold.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

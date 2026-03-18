@@ -78,10 +78,6 @@ namespace Windows.Media.Audio
 		}
 #endif
 		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.EchoEffectDefinition(Windows.Media.Audio.AudioGraph)
-		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.ActivatableClassId.get
 		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.Delay.get
 		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.Delay.set
@@ -90,7 +86,6 @@ namespace Windows.Media.Audio
 		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.Properties.get
 		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.WetDryMix.get
 		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.WetDryMix.set
-		// Forced skipping of method Windows.Media.Audio.EchoEffectDefinition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Effects.IAudioEffectDefinition
 	}
 }

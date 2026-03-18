@@ -10,13 +10,8 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property Cancel
 		// Skipping already declared property Reason
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs.Cancel.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs.Reason.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.InfoBarClosingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

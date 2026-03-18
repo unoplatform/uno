@@ -78,10 +78,6 @@ namespace Windows.AI.MachineLearning
 			throw new global::System.NotImplementedException("The member TensorString TensorString.CreateFromShapeArrayAndDataArray(long[] shape, string[] data) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TensorString%20TensorString.CreateFromShapeArrayAndDataArray%28long%5B%5D%20shape%2C%20string%5B%5D%20data%29");
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.TensorString.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.TensorString.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.TensorString.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.AI.MachineLearning.TensorString.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<string> GetAsVectorView()
@@ -106,7 +102,6 @@ namespace Windows.AI.MachineLearning
 		// Forced skipping of method Windows.AI.MachineLearning.TensorString.Kind.get
 		// Forced skipping of method Windows.AI.MachineLearning.TensorString.Shape.get
 		// Forced skipping of method Windows.AI.MachineLearning.TensorString.TensorKind.get
-		// Forced skipping of method Windows.AI.MachineLearning.TensorString.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.AI.MachineLearning.ITensor
 		// Processing: Windows.AI.MachineLearning.ILearningModelFeatureValue
 		// Processing: Windows.Foundation.IMemoryBuffer

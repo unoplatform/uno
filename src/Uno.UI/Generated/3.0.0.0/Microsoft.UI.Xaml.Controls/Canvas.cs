@@ -22,8 +22,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.LeftProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.TopProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.ZIndexProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Canvas.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

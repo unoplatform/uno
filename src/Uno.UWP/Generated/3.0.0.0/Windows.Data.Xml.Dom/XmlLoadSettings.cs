@@ -86,10 +86,6 @@ namespace Windows.Data.Xml.Dom
 		}
 #endif
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.XmlLoadSettings()
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.ElementContentWhiteSpace.get
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.ElementContentWhiteSpace.set
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.MaxElementDepth.get
@@ -100,6 +96,5 @@ namespace Windows.Data.Xml.Dom
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.ResolveExternals.set
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.ValidateOnParse.get
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.ValidateOnParse.set
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlLoadSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

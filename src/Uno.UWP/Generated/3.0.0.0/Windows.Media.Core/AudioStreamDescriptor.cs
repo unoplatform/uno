@@ -106,10 +106,6 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.AudioStreamDescriptor(Windows.Media.MediaProperties.AudioEncodingProperties)
-		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Core.AudioStreamDescriptor Copy()
@@ -129,7 +125,6 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.Name.set
 		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.TrailingEncoderPadding.get
 		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.TrailingEncoderPadding.set
-		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Core.IMediaStreamDescriptor
 		// Processing: Windows.Media.Core.IMediaStreamDescriptor2
 	}

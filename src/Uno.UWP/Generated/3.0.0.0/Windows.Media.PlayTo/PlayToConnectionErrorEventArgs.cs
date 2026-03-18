@@ -33,12 +33,7 @@ namespace Windows.Media.PlayTo
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionErrorEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionErrorEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionErrorEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionErrorEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionErrorEventArgs.Code.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionErrorEventArgs.Message.get
-		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionErrorEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

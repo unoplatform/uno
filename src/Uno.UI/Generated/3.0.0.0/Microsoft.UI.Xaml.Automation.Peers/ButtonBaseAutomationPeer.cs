@@ -10,8 +10,5 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ButtonBaseAutomationPeer.ButtonBaseAutomationPeer(Microsoft.UI.Xaml.Controls.Primitives.ButtonBase)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonBaseAutomationPeer.ButtonBaseAutomationPeer(Microsoft.UI.Xaml.Controls.Primitives.ButtonBase)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonBaseAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonBaseAutomationPeer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ButtonBaseAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

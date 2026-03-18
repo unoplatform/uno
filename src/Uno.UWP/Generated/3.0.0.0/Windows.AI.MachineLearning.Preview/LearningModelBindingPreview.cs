@@ -56,10 +56,6 @@ namespace Windows.AI.MachineLearning.Preview
 		}
 #endif
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelBindingPreview.LearningModelBindingPreview(Windows.AI.MachineLearning.Preview.LearningModelPreview)
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelBindingPreview.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelBindingPreview.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelBindingPreview.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelBindingPreview.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Bind(string name, object value)
@@ -107,7 +103,6 @@ namespace Windows.AI.MachineLearning.Preview
 		}
 #endif
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelBindingPreview.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.LearningModelBindingPreview.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.Collections.Generic.IReadOnlyDictionary<string, object>
 		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, object>>
 		// Processing: System.Collections.IEnumerable

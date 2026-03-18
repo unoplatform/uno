@@ -23,11 +23,6 @@ namespace Windows.System
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.AppExecutionStateChangeResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.AppExecutionStateChangeResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.AppExecutionStateChangeResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.AppExecutionStateChangeResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.AppExecutionStateChangeResult.ExtendedError.get
-		// Forced skipping of method Windows.System.AppExecutionStateChangeResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

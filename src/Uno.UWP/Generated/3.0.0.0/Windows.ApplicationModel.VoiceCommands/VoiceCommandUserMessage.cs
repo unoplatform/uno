@@ -44,14 +44,9 @@ namespace Windows.ApplicationModel.VoiceCommands
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage.VoiceCommandUserMessage()
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage.DisplayMessage.get
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage.DisplayMessage.set
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage.SpokenMessage.get
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage.SpokenMessage.set
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -100,10 +100,6 @@ namespace Windows.Media.Core
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.SpeechCue.SpeechCue()
-		// Forced skipping of method Windows.Media.Core.SpeechCue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Core.SpeechCue.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Core.SpeechCue.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Core.SpeechCue.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Core.SpeechCue.Duration.get
 		// Forced skipping of method Windows.Media.Core.SpeechCue.Duration.set
 		// Forced skipping of method Windows.Media.Core.SpeechCue.EndPositionInInput.get
@@ -116,7 +112,6 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.SpeechCue.StartTime.set
 		// Forced skipping of method Windows.Media.Core.SpeechCue.Text.get
 		// Forced skipping of method Windows.Media.Core.SpeechCue.Text.set
-		// Forced skipping of method Windows.Media.Core.SpeechCue.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Core.IMediaCue
 	}
 }

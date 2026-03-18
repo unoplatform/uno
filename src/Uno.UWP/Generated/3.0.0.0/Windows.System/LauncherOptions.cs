@@ -180,10 +180,6 @@ namespace Windows.System
 		}
 #endif
 		// Forced skipping of method Windows.System.LauncherOptions.LauncherOptions()
-		// Forced skipping of method Windows.System.LauncherOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.LauncherOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.LauncherOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.LauncherOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.LauncherOptions.ContentType.get
 		// Forced skipping of method Windows.System.LauncherOptions.ContentType.set
 		// Forced skipping of method Windows.System.LauncherOptions.DesiredRemainingView.get
@@ -207,7 +203,6 @@ namespace Windows.System
 		// Forced skipping of method Windows.System.LauncherOptions.TreatAsUntrusted.get
 		// Forced skipping of method Windows.System.LauncherOptions.TreatAsUntrusted.set
 		// Forced skipping of method Windows.System.LauncherOptions.UI.get
-		// Forced skipping of method Windows.System.LauncherOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.System.ILauncherViewOptions
 	}
 }

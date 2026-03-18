@@ -67,16 +67,11 @@ namespace Windows.Web.UI.Interop
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.EventType.get
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.Handled.get
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.Handled.set
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.KeyStatus.get
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.RoutingStage.get
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.VirtualKey.get
-		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -85,10 +85,6 @@ namespace Windows.Media
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> CopyFromFileAsync(global::Windows.Media.MediaPlaybackType type, global::Windows.Storage.StorageFile source)
@@ -119,6 +115,5 @@ namespace Windows.Media
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.Type.get
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.Type.set
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.VideoProperties.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

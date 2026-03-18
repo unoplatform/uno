@@ -173,10 +173,6 @@ namespace Windows.Services.TargetedContent
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentValue.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentValue.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentValue.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentValue.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentValue.Action.get
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentValue.Actions.get
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentValue.Boolean.get
@@ -193,6 +189,5 @@ namespace Windows.Services.TargetedContent
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentValue.Uri.get
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentValue.Uris.get
 		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentValue.ValueKind.get
-		// Forced skipping of method Windows.Services.TargetedContent.TargetedContentValue.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

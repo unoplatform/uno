@@ -34,10 +34,6 @@ namespace Microsoft.UI.Input.DragDrop
 			throw new global::System.NotImplementedException("The member DragDropManager DragDropManager.GetForIsland(ContentIsland content) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DragDropManager%20DragDropManager.GetForIsland%28ContentIsland%20content%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragDropManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragDropManager.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragDropManager.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragDropManager.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragDropManager.TargetRequested.add
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragDropManager.TargetRequested.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -49,7 +45,6 @@ namespace Microsoft.UI.Input.DragDrop
 #endif
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragDropManager.AreConcurrentOperationsEnabled.get
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragDropManager.AreConcurrentOperationsEnabled.set
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragDropManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Input.DragDrop.DragDropManager, global::Microsoft.UI.Input.DragDrop.DropOperationTargetRequestedEventArgs> TargetRequested

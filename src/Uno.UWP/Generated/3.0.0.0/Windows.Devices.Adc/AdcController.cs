@@ -81,10 +81,6 @@ namespace Windows.Devices.Adc
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AdcController> AdcController.GetDefaultAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAdcController%3E%20AdcController.GetDefaultAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Adc.AdcController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Adc.AdcController.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Adc.AdcController.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Adc.AdcController.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsChannelModeSupported(global::Windows.Devices.Adc.AdcChannelMode channelMode)
@@ -105,6 +101,5 @@ namespace Windows.Devices.Adc
 		// Forced skipping of method Windows.Devices.Adc.AdcController.MaxValue.get
 		// Forced skipping of method Windows.Devices.Adc.AdcController.MinValue.get
 		// Forced skipping of method Windows.Devices.Adc.AdcController.ResolutionInBits.get
-		// Forced skipping of method Windows.Devices.Adc.AdcController.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -9,9 +9,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 	public partial class ScrollSnapPointBase : global::Microsoft.UI.Xaml.Controls.Primitives.SnapPointBase
 	{
 		// Skipping already declared property Alignment
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollSnapPointBase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollSnapPointBase.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollSnapPointBase.Alignment.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollSnapPointBase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

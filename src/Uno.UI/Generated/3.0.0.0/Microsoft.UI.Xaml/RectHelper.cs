@@ -22,10 +22,5 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared method Microsoft.UI.Xaml.RectHelper.Union(Windows.Foundation.Rect, Windows.Foundation.Point)
 		// Skipping already declared method Microsoft.UI.Xaml.RectHelper.Union(Windows.Foundation.Rect, Windows.Foundation.Rect)
 		// Forced skipping of method Microsoft.UI.Xaml.RectHelper.Empty.get
-		// Forced skipping of method Microsoft.UI.Xaml.RectHelper.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.RectHelper.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.RectHelper.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.RectHelper.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.RectHelper.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

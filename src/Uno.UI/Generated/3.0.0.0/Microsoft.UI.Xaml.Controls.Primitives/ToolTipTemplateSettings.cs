@@ -33,10 +33,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToolTipTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToolTipTemplateSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToolTipTemplateSettings.FromHorizontalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToolTipTemplateSettings.FromVerticalOffset.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToolTipTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

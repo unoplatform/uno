@@ -13,10 +13,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.SelectorItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.SelectorItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.IsSelectedProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.IsSelected.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.IsSelected.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

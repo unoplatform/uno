@@ -165,10 +165,6 @@ namespace Windows.UI.Input.Inking
 			throw new global::System.NotImplementedException("The member InkDrawingAttributes InkDrawingAttributes.CreateForPencil() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InkDrawingAttributes%20InkDrawingAttributes.CreateForPencil%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributes.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributes.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributes.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributes.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributes.Color.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributes.Color.set
 		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributes.DrawAsHighlighter.get
@@ -188,6 +184,5 @@ namespace Windows.UI.Input.Inking
 		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributes.PencilProperties.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributes.Size.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributes.Size.set
-		// Forced skipping of method Windows.UI.Input.Inking.InkDrawingAttributes.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -54,15 +54,10 @@ namespace Windows.Security.Cryptography.Certificates
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.CmsSignerInfo()
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.Certificate.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.Certificate.set
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.HashAlgorithmName.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.HashAlgorithmName.set
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.TimestampInfo.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

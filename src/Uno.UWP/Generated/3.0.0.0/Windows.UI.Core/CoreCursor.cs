@@ -12,12 +12,7 @@ namespace Windows.UI.Core
 		// Skipping already declared property Type
 		// Skipping already declared method Windows.UI.Core.CoreCursor.CoreCursor(Windows.UI.Core.CoreCursorType, uint)
 		// Forced skipping of method Windows.UI.Core.CoreCursor.CoreCursor(Windows.UI.Core.CoreCursorType, uint)
-		// Forced skipping of method Windows.UI.Core.CoreCursor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Core.CoreCursor.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Core.CoreCursor.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Core.CoreCursor.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Core.CoreCursor.Id.get
 		// Forced skipping of method Windows.UI.Core.CoreCursor.Type.get
-		// Forced skipping of method Windows.UI.Core.CoreCursor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

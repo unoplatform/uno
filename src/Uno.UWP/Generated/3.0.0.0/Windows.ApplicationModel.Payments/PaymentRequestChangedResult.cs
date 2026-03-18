@@ -66,16 +66,11 @@ namespace Windows.ApplicationModel.Payments
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.PaymentRequestChangedResult(bool, Windows.ApplicationModel.Payments.PaymentDetails)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.ChangeAcceptedByMerchant.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.ChangeAcceptedByMerchant.set
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.Message.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.Message.set
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.UpdatedPaymentDetails.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.UpdatedPaymentDetails.set
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

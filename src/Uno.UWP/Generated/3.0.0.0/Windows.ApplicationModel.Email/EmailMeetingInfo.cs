@@ -208,10 +208,6 @@ namespace Windows.ApplicationModel.Email
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMeetingInfo.EmailMeetingInfo()
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMeetingInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMeetingInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMeetingInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMeetingInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMeetingInfo.AllowNewTimeProposal.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMeetingInfo.AllowNewTimeProposal.set
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMeetingInfo.AppointmentOriginalStartTime.get
@@ -239,6 +235,5 @@ namespace Windows.ApplicationModel.Email
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMeetingInfo.RemoteChangeNumber.set
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMeetingInfo.StartTime.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMeetingInfo.StartTime.set
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMeetingInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

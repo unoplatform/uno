@@ -93,10 +93,6 @@ namespace Windows.Services.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StoreCollectionData.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.Store.StoreCollectionData.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.Store.StoreCollectionData.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.Store.StoreCollectionData.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Store.StoreCollectionData.AcquiredDate.get
 		// Forced skipping of method Windows.Services.Store.StoreCollectionData.CampaignId.get
 		// Forced skipping of method Windows.Services.Store.StoreCollectionData.DeveloperOfferId.get
@@ -105,6 +101,5 @@ namespace Windows.Services.Store
 		// Forced skipping of method Windows.Services.Store.StoreCollectionData.IsTrial.get
 		// Forced skipping of method Windows.Services.Store.StoreCollectionData.StartDate.get
 		// Forced skipping of method Windows.Services.Store.StoreCollectionData.TrialTimeRemaining.get
-		// Forced skipping of method Windows.Services.Store.StoreCollectionData.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

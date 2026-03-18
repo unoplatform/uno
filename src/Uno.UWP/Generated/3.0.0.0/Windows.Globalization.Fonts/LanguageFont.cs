@@ -63,15 +63,10 @@ namespace Windows.Globalization.Fonts
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Globalization.Fonts.LanguageFont.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Globalization.Fonts.LanguageFont.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Globalization.Fonts.LanguageFont.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Globalization.Fonts.LanguageFont.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Globalization.Fonts.LanguageFont.FontFamily.get
 		// Forced skipping of method Windows.Globalization.Fonts.LanguageFont.FontStretch.get
 		// Forced skipping of method Windows.Globalization.Fonts.LanguageFont.FontStyle.get
 		// Forced skipping of method Windows.Globalization.Fonts.LanguageFont.FontWeight.get
 		// Forced skipping of method Windows.Globalization.Fonts.LanguageFont.ScaleFactor.get
-		// Forced skipping of method Windows.Globalization.Fonts.LanguageFont.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

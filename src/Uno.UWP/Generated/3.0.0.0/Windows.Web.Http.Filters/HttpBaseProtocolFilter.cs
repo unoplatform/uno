@@ -203,10 +203,6 @@ namespace Windows.Web.Http.Filters
 			throw new global::System.NotImplementedException("The member HttpBaseProtocolFilter HttpBaseProtocolFilter.CreateForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpBaseProtocolFilter%20HttpBaseProtocolFilter.CreateForUser%28User%20user%29");
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ClearAuthenticationCache()
@@ -254,7 +250,6 @@ namespace Windows.Web.Http.Filters
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.UseProxy.get
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.UseProxy.set
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.User.get
-		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.Http.Filters.HttpBaseProtocolFilter, global::Windows.Web.Http.Filters.HttpServerCustomValidationRequestedEventArgs> ServerCustomValidationRequested

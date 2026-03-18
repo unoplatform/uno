@@ -83,10 +83,6 @@ namespace Windows.Networking.Sockets
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.KeepAlive.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.KeepAlive.set
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.NoDelay.get
@@ -97,6 +93,5 @@ namespace Windows.Networking.Sockets
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.OutboundUnicastHopLimit.set
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.QualityOfService.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.QualityOfService.set
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListenerControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

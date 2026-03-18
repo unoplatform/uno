@@ -78,12 +78,9 @@ namespace Microsoft.UI.Xaml.Automation
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.AutomationAnnotation(Microsoft.UI.Xaml.Automation.AnnotationType, Microsoft.UI.Xaml.UIElement)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.ElementProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.TypeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.Element.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.Element.set
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.Type.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.Type.set
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationAnnotation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

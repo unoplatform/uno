@@ -13,13 +13,8 @@ namespace Microsoft.UI.Xaml.Data
 		// Skipping already declared property Length
 		// Skipping already declared method Microsoft.UI.Xaml.Data.ItemIndexRange.ItemIndexRange(int, uint)
 		// Forced skipping of method Microsoft.UI.Xaml.Data.ItemIndexRange.ItemIndexRange(int, uint)
-		// Forced skipping of method Microsoft.UI.Xaml.Data.ItemIndexRange.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.ItemIndexRange.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.ItemIndexRange.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.ItemIndexRange.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.ItemIndexRange.FirstIndex.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.ItemIndexRange.LastIndex.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.ItemIndexRange.Length.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.ItemIndexRange.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

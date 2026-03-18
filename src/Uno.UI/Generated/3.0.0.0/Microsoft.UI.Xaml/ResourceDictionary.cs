@@ -18,8 +18,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property ThemeDictionaries
 		// Skipping already declared method Microsoft.UI.Xaml.ResourceDictionary.ResourceDictionary()
 		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.ResourceDictionary()
-		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.Keys.get
 		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.Values.get
 		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.Count.get
@@ -41,7 +39,6 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.Source.get
 		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.Source.set
 		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.ThemeDictionaries.get
-		// Forced skipping of method Microsoft.UI.Xaml.ResourceDictionary.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.Collections.Generic.IDictionary<object, object>
 		// Processing: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<object, object>>
 		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<object, object>>

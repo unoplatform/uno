@@ -15,16 +15,11 @@ namespace Windows.Devices.Midi
 		// Skipping already declared property Type
 		// Skipping already declared method Windows.Devices.Midi.MidiProgramChangeMessage.MidiProgramChangeMessage(byte, byte)
 		// Forced skipping of method Windows.Devices.Midi.MidiProgramChangeMessage.MidiProgramChangeMessage(byte, byte)
-		// Forced skipping of method Windows.Devices.Midi.MidiProgramChangeMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Midi.MidiProgramChangeMessage.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Midi.MidiProgramChangeMessage.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Midi.MidiProgramChangeMessage.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Midi.MidiProgramChangeMessage.Channel.get
 		// Forced skipping of method Windows.Devices.Midi.MidiProgramChangeMessage.Program.get
 		// Forced skipping of method Windows.Devices.Midi.MidiProgramChangeMessage.RawData.get
 		// Forced skipping of method Windows.Devices.Midi.MidiProgramChangeMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Midi.MidiProgramChangeMessage.Type.get
-		// Forced skipping of method Windows.Devices.Midi.MidiProgramChangeMessage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Midi.IMidiMessage
 	}
 }

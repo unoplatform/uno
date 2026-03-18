@@ -10,12 +10,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property AddedDates
 		// Skipping already declared property RemovedDates
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs.AddedDates.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs.RemovedDates.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

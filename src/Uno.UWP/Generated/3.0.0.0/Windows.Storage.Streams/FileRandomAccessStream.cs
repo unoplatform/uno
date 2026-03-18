@@ -68,10 +68,6 @@ namespace Windows.Storage.Streams
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageStreamTransaction> FileRandomAccessStream.OpenTransactedWriteForUserAsync(User user, string filePath, StorageOpenOptions openOptions, FileOpenDisposition openDisposition) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageStreamTransaction%3E%20FileRandomAccessStream.OpenTransactedWriteForUserAsync%28User%20user%2C%20string%20filePath%2C%20StorageOpenOptions%20openOptions%2C%20FileOpenDisposition%20openDisposition%29");
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.Storage.Streams.FileRandomAccessStream.GetInputStreamAt(ulong)
 		// Skipping already declared method Windows.Storage.Streams.FileRandomAccessStream.GetOutputStreamAt(ulong)
 		// Skipping already declared method Windows.Storage.Streams.FileRandomAccessStream.Seek(ulong)
@@ -85,7 +81,6 @@ namespace Windows.Storage.Streams
 		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.Position.get
 		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.Size.get
 		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.Size.set
-		// Forced skipping of method Windows.Storage.Streams.FileRandomAccessStream.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Storage.Streams.IRandomAccessStream
 		// Processing: System.IDisposable
 		// Processing: Windows.Storage.Streams.IInputStream

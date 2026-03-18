@@ -67,14 +67,9 @@ namespace Windows.Media.Audio
 			throw new global::System.NotImplementedException("The member AudioNodeEmitterDecayModel AudioNodeEmitterDecayModel.CreateCustom(double minGain, double maxGain) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioNodeEmitterDecayModel%20AudioNodeEmitterDecayModel.CreateCustom%28double%20minGain%2C%20double%20maxGain%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterDecayModel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterDecayModel.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterDecayModel.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterDecayModel.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterDecayModel.Kind.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterDecayModel.MaxGain.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterDecayModel.MinGain.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterDecayModel.NaturalProperties.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterDecayModel.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

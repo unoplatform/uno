@@ -72,10 +72,6 @@ namespace Windows.Devices.Bluetooth
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter.BluetoothSignalStrengthFilter()
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter.InRangeThresholdInDBm.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter.InRangeThresholdInDBm.set
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter.OutOfRangeThresholdInDBm.get
@@ -84,6 +80,5 @@ namespace Windows.Devices.Bluetooth
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter.OutOfRangeTimeout.set
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter.SamplingInterval.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter.SamplingInterval.set
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

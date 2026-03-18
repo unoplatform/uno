@@ -23,11 +23,6 @@ namespace Windows.Media.Protection
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Protection.RevocationAndRenewalInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Protection.RevocationAndRenewalInformation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Protection.RevocationAndRenewalInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Protection.RevocationAndRenewalInformation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Protection.RevocationAndRenewalInformation.Items.get
-		// Forced skipping of method Windows.Media.Protection.RevocationAndRenewalInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

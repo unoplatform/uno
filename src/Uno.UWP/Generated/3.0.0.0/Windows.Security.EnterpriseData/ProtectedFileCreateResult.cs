@@ -43,13 +43,8 @@ namespace Windows.Security.EnterpriseData
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedFileCreateResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedFileCreateResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedFileCreateResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedFileCreateResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedFileCreateResult.File.get
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedFileCreateResult.ProtectionInfo.get
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedFileCreateResult.Stream.get
-		// Forced skipping of method Windows.Security.EnterpriseData.ProtectedFileCreateResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

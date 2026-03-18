@@ -10,12 +10,7 @@ namespace Windows.Services.Store
 	{
 		// Skipping already declared property ExtendedError
 		// Skipping already declared property Product
-		// Forced skipping of method Windows.Services.Store.StoreProductResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.Store.StoreProductResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.Store.StoreProductResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.Store.StoreProductResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Store.StoreProductResult.ExtendedError.get
 		// Forced skipping of method Windows.Services.Store.StoreProductResult.Product.get
-		// Forced skipping of method Windows.Services.Store.StoreProductResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

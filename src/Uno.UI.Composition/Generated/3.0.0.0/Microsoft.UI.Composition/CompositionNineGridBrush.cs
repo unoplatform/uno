@@ -18,8 +18,6 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property Source
 		// Skipping already declared property TopInset
 		// Skipping already declared property TopInsetScale
-		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Composition.CompositionNineGridBrush.SetInsets(float)
 		// Skipping already declared method Microsoft.UI.Composition.CompositionNineGridBrush.SetInsets(float, float, float, float)
 		// Skipping already declared method Microsoft.UI.Composition.CompositionNineGridBrush.SetInsetScales(float)
@@ -44,6 +42,5 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.TopInset.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.TopInsetScale.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.TopInsetScale.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

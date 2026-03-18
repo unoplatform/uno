@@ -113,10 +113,6 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.HasPosition.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.HasSize.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.Height.get
@@ -127,6 +123,5 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.ShouldDisplayToolbar.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.Top.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.Width.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WindowFeatures.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

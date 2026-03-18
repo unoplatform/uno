@@ -16,10 +16,7 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared method Microsoft.UI.Xaml.Media.SolidColorBrush.SolidColorBrush(Windows.UI.Color)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.SolidColorBrush.SolidColorBrush(Windows.UI.Color)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.SolidColorBrush.ColorProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.SolidColorBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.SolidColorBrush.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.SolidColorBrush.Color.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.SolidColorBrush.Color.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.SolidColorBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

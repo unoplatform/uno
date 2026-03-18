@@ -162,10 +162,6 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.ActualSize.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.AutomationOption.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.ClientSize.get
@@ -185,6 +181,5 @@ namespace Microsoft.UI.Content
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.RasterizationScale.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.RequestedSize.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.ShouldApplyRasterizationScale.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

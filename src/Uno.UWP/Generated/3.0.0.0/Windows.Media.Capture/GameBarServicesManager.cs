@@ -20,13 +20,8 @@ namespace Windows.Media.Capture
 			throw new global::System.NotImplementedException("The member GameBarServicesManager GameBarServicesManager.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GameBarServicesManager%20GameBarServicesManager.GetDefault%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.GameBarServicesManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Capture.GameBarServicesManager.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Capture.GameBarServicesManager.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Capture.GameBarServicesManager.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Capture.GameBarServicesManager.GameBarServicesCreated.add
 		// Forced skipping of method Windows.Media.Capture.GameBarServicesManager.GameBarServicesCreated.remove
-		// Forced skipping of method Windows.Media.Capture.GameBarServicesManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Capture.GameBarServicesManager, global::Windows.Media.Capture.GameBarServicesManagerGameBarServicesCreatedEventArgs> GameBarServicesCreated

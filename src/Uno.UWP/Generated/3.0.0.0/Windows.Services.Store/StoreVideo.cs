@@ -73,16 +73,11 @@ namespace Windows.Services.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StoreVideo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.Store.StoreVideo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.Store.StoreVideo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.Store.StoreVideo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Store.StoreVideo.Caption.get
 		// Forced skipping of method Windows.Services.Store.StoreVideo.Height.get
 		// Forced skipping of method Windows.Services.Store.StoreVideo.PreviewImage.get
 		// Forced skipping of method Windows.Services.Store.StoreVideo.Uri.get
 		// Forced skipping of method Windows.Services.Store.StoreVideo.VideoPurposeTag.get
 		// Forced skipping of method Windows.Services.Store.StoreVideo.Width.get
-		// Forced skipping of method Windows.Services.Store.StoreVideo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

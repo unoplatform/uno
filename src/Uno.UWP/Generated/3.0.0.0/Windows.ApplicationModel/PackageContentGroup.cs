@@ -64,14 +64,9 @@ namespace Windows.ApplicationModel
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.PackageContentGroup.RequiredGroupName.get
-		// Forced skipping of method Windows.ApplicationModel.PackageContentGroup.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.PackageContentGroup.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.PackageContentGroup.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.PackageContentGroup.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.PackageContentGroup.IsRequired.get
 		// Forced skipping of method Windows.ApplicationModel.PackageContentGroup.Name.get
 		// Forced skipping of method Windows.ApplicationModel.PackageContentGroup.Package.get
 		// Forced skipping of method Windows.ApplicationModel.PackageContentGroup.State.get
-		// Forced skipping of method Windows.ApplicationModel.PackageContentGroup.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

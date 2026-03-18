@@ -33,12 +33,7 @@ namespace Windows.Devices.WiFiDirect.Services
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceProvisioningInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceProvisioningInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceProvisioningInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceProvisioningInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceProvisioningInfo.IsGroupFormationNeeded.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceProvisioningInfo.SelectedConfigurationMethod.get
-		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceProvisioningInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

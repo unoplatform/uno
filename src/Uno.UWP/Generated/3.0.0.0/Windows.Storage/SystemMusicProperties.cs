@@ -93,10 +93,6 @@ namespace Windows.Storage
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.SystemMusicProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.SystemMusicProperties.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.SystemMusicProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.SystemMusicProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.SystemMusicProperties.AlbumArtist.get
 		// Forced skipping of method Windows.Storage.SystemMusicProperties.AlbumTitle.get
 		// Forced skipping of method Windows.Storage.SystemMusicProperties.Artist.get
@@ -105,6 +101,5 @@ namespace Windows.Storage
 		// Forced skipping of method Windows.Storage.SystemMusicProperties.DisplayArtist.get
 		// Forced skipping of method Windows.Storage.SystemMusicProperties.Genre.get
 		// Forced skipping of method Windows.Storage.SystemMusicProperties.TrackNumber.get
-		// Forced skipping of method Windows.Storage.SystemMusicProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

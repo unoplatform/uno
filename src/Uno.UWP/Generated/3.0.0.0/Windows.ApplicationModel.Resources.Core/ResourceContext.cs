@@ -96,10 +96,6 @@ namespace Windows.ApplicationModel.Resources.Core
 			throw new global::System.NotImplementedException("The member ResourceContext ResourceContext.GetForUIContext(UIContext context) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResourceContext%20ResourceContext.GetForUIContext%28UIContext%20context%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContext.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContext.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContext.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContext.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Reset()
@@ -131,6 +127,5 @@ namespace Windows.ApplicationModel.Resources.Core
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContext.Languages.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContext.Languages.set
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContext.QualifierValues.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContext.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

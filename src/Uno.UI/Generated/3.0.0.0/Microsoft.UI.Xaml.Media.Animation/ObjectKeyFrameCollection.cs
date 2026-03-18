@@ -13,10 +13,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection.ObjectKeyFrameCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection.ObjectKeyFrameCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection.Count.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection.this[int].get
@@ -31,7 +27,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection.Remove(Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame>.get_Item(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrameCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame>.set_Item(int, Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame>

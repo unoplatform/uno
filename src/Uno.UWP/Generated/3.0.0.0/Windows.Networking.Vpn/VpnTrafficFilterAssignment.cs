@@ -54,15 +54,10 @@ namespace Windows.Networking.Vpn
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilterAssignment.VpnTrafficFilterAssignment()
-		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilterAssignment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilterAssignment.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilterAssignment.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilterAssignment.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilterAssignment.AllowInbound.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilterAssignment.AllowInbound.set
 		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilterAssignment.AllowOutbound.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilterAssignment.AllowOutbound.set
 		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilterAssignment.TrafficFilterList.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilterAssignment.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

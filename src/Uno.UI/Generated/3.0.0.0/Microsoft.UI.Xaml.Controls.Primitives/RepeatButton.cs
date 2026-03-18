@@ -16,12 +16,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.RepeatButton()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.DelayProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.IntervalProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.Delay.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.Delay.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.Interval.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.Interval.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.RepeatButton.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

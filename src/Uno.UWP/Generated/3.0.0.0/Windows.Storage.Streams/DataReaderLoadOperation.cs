@@ -57,10 +57,6 @@ namespace Windows.Storage.Streams
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint GetResults()
@@ -87,7 +83,6 @@ namespace Windows.Storage.Streams
 		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.ErrorCode.get
 		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.Id.get
 		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.Status.get
-		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Foundation.IAsyncOperation<uint>
 		// Processing: Windows.Foundation.IAsyncInfo
 	}

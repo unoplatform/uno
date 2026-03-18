@@ -63,15 +63,10 @@ namespace Windows.Gaming.XboxLive.Storage
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveContainerInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveContainerInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveContainerInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveContainerInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveContainerInfo.DisplayName.get
 		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveContainerInfo.LastModifiedTime.get
 		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveContainerInfo.Name.get
 		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveContainerInfo.NeedsSync.get
 		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveContainerInfo.TotalSize.get
-		// Forced skipping of method Windows.Gaming.XboxLive.Storage.GameSaveContainerInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

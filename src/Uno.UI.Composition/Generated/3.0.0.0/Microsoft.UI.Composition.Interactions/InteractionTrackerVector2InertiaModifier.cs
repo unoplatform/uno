@@ -8,8 +8,5 @@ namespace Microsoft.UI.Composition.Interactions
 #endif
 	public partial class InteractionTrackerVector2InertiaModifier : global::Microsoft.UI.Composition.CompositionObject
 	{
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaModifier.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaModifier.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaModifier.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

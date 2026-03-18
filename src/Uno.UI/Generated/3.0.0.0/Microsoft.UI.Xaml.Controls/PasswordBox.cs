@@ -131,8 +131,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.SelectionFlyoutProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.SelectionHighlightColorProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.TextReadingOrderProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.PasswordBox.SelectAll()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.PasswordBox.PasteFromClipboard()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.ContextMenuOpening.add
@@ -172,7 +170,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.SelectionHighlightColor.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.TextReadingOrder.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.TextReadingOrder.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public event global::Microsoft.UI.Xaml.Controls.ContextMenuOpeningEventHandler ContextMenuOpening

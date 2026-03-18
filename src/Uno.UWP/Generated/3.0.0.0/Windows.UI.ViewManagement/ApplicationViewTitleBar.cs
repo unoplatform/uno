@@ -20,10 +20,6 @@ namespace Windows.UI.ViewManagement
 		// Skipping already declared property ForegroundColor
 		// Skipping already declared property InactiveBackgroundColor
 		// Skipping already declared property InactiveForegroundColor
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTitleBar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTitleBar.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTitleBar.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTitleBar.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTitleBar.BackgroundColor.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTitleBar.BackgroundColor.set
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTitleBar.ButtonBackgroundColor.get
@@ -48,6 +44,5 @@ namespace Windows.UI.ViewManagement
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTitleBar.InactiveBackgroundColor.set
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTitleBar.InactiveForegroundColor.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTitleBar.InactiveForegroundColor.set
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTitleBar.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

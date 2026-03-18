@@ -8,10 +8,5 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class ToggleSplitButtonIsCheckedChangedEventArgs
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButtonIsCheckedChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButtonIsCheckedChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButtonIsCheckedChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButtonIsCheckedChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ToggleSplitButtonIsCheckedChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

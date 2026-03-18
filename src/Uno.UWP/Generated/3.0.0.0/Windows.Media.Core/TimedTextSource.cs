@@ -69,13 +69,8 @@ namespace Windows.Media.Core
 			throw new global::System.NotImplementedException("The member TimedTextSource TimedTextSource.CreateFromUriWithIndex(Uri uri, Uri indexUri, string defaultLanguage) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextSource%20TimedTextSource.CreateFromUriWithIndex%28Uri%20uri%2C%20Uri%20indexUri%2C%20string%20defaultLanguage%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.TimedTextSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Core.TimedTextSource.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Core.TimedTextSource.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Core.TimedTextSource.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Core.TimedTextSource.Resolved.add
 		// Forced skipping of method Windows.Media.Core.TimedTextSource.Resolved.remove
-		// Forced skipping of method Windows.Media.Core.TimedTextSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.TimedTextSource, global::Windows.Media.Core.TimedTextSourceResolveResultEventArgs> Resolved

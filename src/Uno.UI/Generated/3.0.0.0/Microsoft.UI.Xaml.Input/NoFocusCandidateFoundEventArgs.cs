@@ -11,12 +11,9 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared property Direction
 		// Skipping already declared property Handled
 		// Skipping already declared property InputDevice
-		// Forced skipping of method Microsoft.UI.Xaml.Input.NoFocusCandidateFoundEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.NoFocusCandidateFoundEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.NoFocusCandidateFoundEventArgs.Direction.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.NoFocusCandidateFoundEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.NoFocusCandidateFoundEventArgs.Handled.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.NoFocusCandidateFoundEventArgs.InputDevice.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.NoFocusCandidateFoundEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

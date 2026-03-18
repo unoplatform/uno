@@ -37,10 +37,6 @@ namespace Windows.UI.StartScreen
 			throw new global::System.NotImplementedException("The member StartScreenManager StartScreenManager.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StartScreenManager%20StartScreenManager.GetForUser%28User%20user%29");
 		}
 #endif
-		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool SupportsAppListEntry(global::Windows.ApplicationModel.Core.AppListEntry appListEntry)
@@ -77,6 +73,5 @@ namespace Windows.UI.StartScreen
 		}
 #endif
 		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.User.get
-		// Forced skipping of method Windows.UI.StartScreen.StartScreenManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

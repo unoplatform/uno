@@ -22,10 +22,5 @@ namespace Microsoft.UI.Xaml.Automation
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.VerticalScrollPercentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.VerticalViewSizeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.VerticallyScrollableProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

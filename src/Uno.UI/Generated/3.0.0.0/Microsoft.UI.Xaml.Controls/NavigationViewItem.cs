@@ -37,8 +37,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.MenuItemsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.MenuItemsSourceProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.SelectsOnInvokedProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.CompactPaneLength.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.HasUnrealizedChildren.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.HasUnrealizedChildren.set
@@ -55,6 +53,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.MenuItemsSource.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.SelectsOnInvoked.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.SelectsOnInvoked.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

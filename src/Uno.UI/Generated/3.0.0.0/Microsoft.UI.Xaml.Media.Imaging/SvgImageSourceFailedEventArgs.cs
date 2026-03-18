@@ -9,11 +9,6 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 	public partial class SvgImageSourceFailedEventArgs
 	{
 		// Skipping already declared property Status
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSourceFailedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSourceFailedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSourceFailedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSourceFailedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSourceFailedEventArgs.Status.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SvgImageSourceFailedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

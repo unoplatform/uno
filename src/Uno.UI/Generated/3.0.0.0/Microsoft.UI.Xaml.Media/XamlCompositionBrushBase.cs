@@ -14,14 +14,11 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.XamlCompositionBrushBase()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.XamlCompositionBrushBase()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.FallbackColorProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.OnConnected()
 		// Skipping already declared method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.OnDisconnected()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.CompositionBrush.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.CompositionBrush.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.FallbackColor.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.FallbackColor.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.XamlCompositionBrushBase.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

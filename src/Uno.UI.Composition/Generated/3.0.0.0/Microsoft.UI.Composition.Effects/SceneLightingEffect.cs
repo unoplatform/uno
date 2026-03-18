@@ -114,10 +114,6 @@ namespace Microsoft.UI.Composition.Effects
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.SceneLightingEffect()
-		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.AmbientAmount.get
 		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.AmbientAmount.set
 		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.DiffuseAmount.get
@@ -132,7 +128,6 @@ namespace Microsoft.UI.Composition.Effects
 		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.SpecularAmount.set
 		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.SpecularShine.get
 		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.SpecularShine.set
-		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Graphics.Effects.IGraphicsEffect
 		// Processing: Windows.Graphics.Effects.IGraphicsEffectSource
 	}

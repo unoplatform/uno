@@ -77,10 +77,6 @@ namespace Windows.Devices.Scanners
 			throw new global::System.NotImplementedException("The member string ImageScanner.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ImageScanner.GetDeviceSelector%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Scanners.ImageScanner.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Scanners.ImageScanner.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Scanners.ImageScanner.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Scanners.ImageScanner.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsScanSourceSupported(global::Windows.Devices.Scanners.ImageScannerScanSource value)
@@ -114,6 +110,5 @@ namespace Windows.Devices.Scanners
 		// Forced skipping of method Windows.Devices.Scanners.ImageScanner.DeviceId.get
 		// Forced skipping of method Windows.Devices.Scanners.ImageScanner.FeederConfiguration.get
 		// Forced skipping of method Windows.Devices.Scanners.ImageScanner.FlatbedConfiguration.get
-		// Forced skipping of method Windows.Devices.Scanners.ImageScanner.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -57,10 +57,6 @@ namespace Windows.Gaming.Input.ForceFeedback
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Gaming.Input.ForceFeedback.ForceFeedbackLoadEffectResult> LoadEffectAsync(global::Windows.Gaming.Input.ForceFeedback.IForceFeedbackEffect effect)
@@ -122,6 +118,5 @@ namespace Windows.Gaming.Input.ForceFeedback
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor.MasterGain.get
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor.MasterGain.set
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor.SupportedAxes.get
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -9,11 +9,6 @@ namespace Microsoft.UI.Input
 	public partial class NonClientRegionsChangedEventArgs
 	{
 		// Skipping already declared property ChangedRegions
-		// Forced skipping of method Microsoft.UI.Input.NonClientRegionsChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.NonClientRegionsChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.NonClientRegionsChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Input.NonClientRegionsChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Input.NonClientRegionsChangedEventArgs.ChangedRegions.get
-		// Forced skipping of method Microsoft.UI.Input.NonClientRegionsChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

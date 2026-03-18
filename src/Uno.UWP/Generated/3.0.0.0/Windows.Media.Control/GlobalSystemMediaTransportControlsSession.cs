@@ -23,10 +23,6 @@ namespace Windows.Media.Control
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSession.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSession.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSession.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSession.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties> TryGetMediaPropertiesAsync()
@@ -160,7 +156,6 @@ namespace Windows.Media.Control
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSession.TimelinePropertiesChanged.add
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSession.TimelinePropertiesChanged.remove
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSession.SourceAppUserModelId.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSession.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Control.GlobalSystemMediaTransportControlsSession, global::Windows.Media.Control.MediaPropertiesChangedEventArgs> MediaPropertiesChanged

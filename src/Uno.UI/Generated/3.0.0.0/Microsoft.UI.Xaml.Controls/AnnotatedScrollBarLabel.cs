@@ -36,12 +36,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel.AnnotatedScrollBarLabel(object, double)
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel.Content.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel.ScrollOffset.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -11,10 +11,6 @@ namespace Windows.Data.Xml.Dom
 		// Skipping already declared property Count
 		// Skipping already declared property this[]
 		// Skipping already declared property Length
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.Item(uint)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlNamedNodeMap.GetNamedItem(string)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlNamedNodeMap.SetNamedItem(Windows.Data.Xml.Dom.IXmlNode)
@@ -45,7 +41,6 @@ namespace Windows.Data.Xml.Dom
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlNamedNodeMap.GetEnumerator()
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.System.Collections.IEnumerable.GetEnumerator()
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.Length.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlNamedNodeMap.System.Collections.Generic.IReadOnlyList<Windows.Data.Xml.Dom.IXmlNode>.get_Item(int)
 		// Processing: System.Collections.Generic.IReadOnlyList<Windows.Data.Xml.Dom.IXmlNode>
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Data.Xml.Dom.IXmlNode>

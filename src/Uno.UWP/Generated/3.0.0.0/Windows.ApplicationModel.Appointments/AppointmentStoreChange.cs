@@ -43,13 +43,8 @@ namespace Windows.ApplicationModel.Appointments
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChange.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChange.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChange.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChange.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChange.Appointment.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChange.AppointmentCalendar.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChange.ChangeType.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChange.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -15,10 +15,6 @@ namespace Windows.UI.Input.Preview.Injection
 		// Skipping already declared property TimeOffsetInMilliseconds
 		// Skipping already declared method Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo.InjectedInputMouseInfo()
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo.InjectedInputMouseInfo()
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo.DeltaX.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo.DeltaX.set
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo.DeltaY.get
@@ -29,6 +25,5 @@ namespace Windows.UI.Input.Preview.Injection
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo.MouseOptions.set
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo.TimeOffsetInMilliseconds.get
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo.TimeOffsetInMilliseconds.set
-		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputMouseInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

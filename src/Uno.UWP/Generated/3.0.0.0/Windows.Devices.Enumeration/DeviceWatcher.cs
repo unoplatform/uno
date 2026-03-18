@@ -9,10 +9,6 @@ namespace Windows.Devices.Enumeration
 	public partial class DeviceWatcher
 	{
 		// Skipping already declared property Status
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.Devices.Enumeration.DeviceWatcher.Start()
 		// Skipping already declared method Windows.Devices.Enumeration.DeviceWatcher.Stop()
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.Added.add
@@ -33,7 +29,6 @@ namespace Windows.Devices.Enumeration
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.Status.get
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Windows.Devices.Enumeration.DeviceWatcher.Added
 		// Skipping already declared event Windows.Devices.Enumeration.DeviceWatcher.EnumerationCompleted
 		// Skipping already declared event Windows.Devices.Enumeration.DeviceWatcher.Removed

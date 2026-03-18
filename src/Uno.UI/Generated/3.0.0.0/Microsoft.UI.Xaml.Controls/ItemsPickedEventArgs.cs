@@ -36,10 +36,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs.ItemsPickedEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs.AddedItems.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs.RemovedItems.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

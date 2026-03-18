@@ -41,12 +41,9 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionLinearGradientBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.CompositionLinearGradientBrush.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionLinearGradientBrush.EndPoint.get
 		// Forced skipping of method Windows.UI.Composition.CompositionLinearGradientBrush.EndPoint.set
 		// Forced skipping of method Windows.UI.Composition.CompositionLinearGradientBrush.StartPoint.get
 		// Forced skipping of method Windows.UI.Composition.CompositionLinearGradientBrush.StartPoint.set
-		// Forced skipping of method Windows.UI.Composition.CompositionLinearGradientBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

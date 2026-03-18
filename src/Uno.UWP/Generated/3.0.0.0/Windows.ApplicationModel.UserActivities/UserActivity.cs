@@ -151,10 +151,6 @@ namespace Windows.ApplicationModel.UserActivities
 			throw new global::System.NotImplementedException("The member string UserActivity.ToJsonArray(IEnumerable<UserActivity> activities) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserActivity.ToJsonArray%28IEnumerable%3CUserActivity%3E%20activities%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivity.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivity.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivity.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivity.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SaveAsync()
@@ -191,6 +187,5 @@ namespace Windows.ApplicationModel.UserActivities
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivity.IsRoamable.set
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivity.State.get
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivity.VisualElements.get
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivity.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

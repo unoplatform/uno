@@ -14,14 +14,9 @@ namespace Windows.Devices.Bluetooth
 		// Skipping already declared property ServiceCapabilities
 		// Skipping already declared method Windows.Devices.Bluetooth.BluetoothClassOfDevice.FromRawValue(uint)
 		// Skipping already declared method Windows.Devices.Bluetooth.BluetoothClassOfDevice.FromParts(Windows.Devices.Bluetooth.BluetoothMajorClass, Windows.Devices.Bluetooth.BluetoothMinorClass, Windows.Devices.Bluetooth.BluetoothServiceCapabilities)
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothClassOfDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothClassOfDevice.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothClassOfDevice.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothClassOfDevice.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothClassOfDevice.MajorClass.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothClassOfDevice.MinorClass.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothClassOfDevice.RawValue.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothClassOfDevice.ServiceCapabilities.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothClassOfDevice.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

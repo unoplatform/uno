@@ -10,15 +10,10 @@ namespace Windows.UI.Core
 	{
 		// Skipping already declared property AppViewBackButtonVisibility
 		// Skipping already declared method Windows.UI.Core.SystemNavigationManager.GetForCurrentView()
-		// Forced skipping of method Windows.UI.Core.SystemNavigationManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Core.SystemNavigationManager.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Core.SystemNavigationManager.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Core.SystemNavigationManager.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Core.SystemNavigationManager.BackRequested.add
 		// Forced skipping of method Windows.UI.Core.SystemNavigationManager.BackRequested.remove
 		// Forced skipping of method Windows.UI.Core.SystemNavigationManager.AppViewBackButtonVisibility.get
 		// Forced skipping of method Windows.UI.Core.SystemNavigationManager.AppViewBackButtonVisibility.set
-		// Forced skipping of method Windows.UI.Core.SystemNavigationManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Windows.UI.Core.SystemNavigationManager.BackRequested
 	}
 }

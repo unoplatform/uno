@@ -15,11 +15,8 @@ namespace Microsoft.UI.Xaml.Navigation
 		// Skipping already declared method Microsoft.UI.Xaml.Navigation.PageStackEntry.PageStackEntry(System.Type, object, Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo)
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.PageStackEntry.PageStackEntry(System.Type, object, Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo)
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.PageStackEntry.SourcePageTypeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.PageStackEntry.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.PageStackEntry.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.PageStackEntry.NavigationTransitionInfo.get
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.PageStackEntry.Parameter.get
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.PageStackEntry.SourcePageType.get
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.PageStackEntry.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

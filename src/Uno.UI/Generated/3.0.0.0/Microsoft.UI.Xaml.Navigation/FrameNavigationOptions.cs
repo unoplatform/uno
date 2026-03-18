@@ -12,14 +12,9 @@ namespace Microsoft.UI.Xaml.Navigation
 		// Skipping already declared property TransitionInfoOverride
 		// Skipping already declared method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.FrameNavigationOptions()
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.FrameNavigationOptions()
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.IsNavigationStackEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.IsNavigationStackEnabled.set
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.TransitionInfoOverride.get
 		// Forced skipping of method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.TransitionInfoOverride.set
-		// Forced skipping of method Microsoft.UI.Xaml.Navigation.FrameNavigationOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

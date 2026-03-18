@@ -44,14 +44,9 @@ namespace Windows.ApplicationModel.Contacts
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.ContactConnectedServiceAccount()
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.Id.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.Id.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.ServiceName.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.ServiceName.set
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

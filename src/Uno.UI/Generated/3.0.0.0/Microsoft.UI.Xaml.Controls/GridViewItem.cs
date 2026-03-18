@@ -11,9 +11,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property TemplateSettings
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.GridViewItem.GridViewItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridViewItem.GridViewItem()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridViewItem.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridViewItem.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridViewItem.TemplateSettings.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.GridViewItem.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -64,10 +64,6 @@ namespace Windows.Media.DialProtocol
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> DialDevice.DeviceInfoSupportsDialAsync(DeviceInformation device) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20DialDevice.DeviceInfoSupportsDialAsync%28DeviceInformation%20device%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.DialProtocol.DialDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.DialProtocol.DialDevice.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.DialProtocol.DialDevice.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.DialProtocol.DialDevice.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.DialProtocol.DialApp GetDialApp(string appName)
@@ -78,6 +74,5 @@ namespace Windows.Media.DialProtocol
 		// Forced skipping of method Windows.Media.DialProtocol.DialDevice.FriendlyName.get
 		// Forced skipping of method Windows.Media.DialProtocol.DialDevice.Id.get
 		// Forced skipping of method Windows.Media.DialProtocol.DialDevice.Thumbnail.get
-		// Forced skipping of method Windows.Media.DialProtocol.DialDevice.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

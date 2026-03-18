@@ -37,13 +37,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs.Anchor.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs.Anchor.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs.AnchorCandidates.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnchorRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

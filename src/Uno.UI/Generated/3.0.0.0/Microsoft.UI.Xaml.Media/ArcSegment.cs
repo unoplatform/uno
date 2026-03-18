@@ -25,8 +25,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.ArcSegment.RotationAngleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.ArcSegment.SizeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.ArcSegment.SweepDirectionProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.ArcSegment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.ArcSegment.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.ArcSegment.IsLargeArc.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.ArcSegment.IsLargeArc.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.ArcSegment.Point.get
@@ -37,6 +35,5 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.ArcSegment.Size.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.ArcSegment.SweepDirection.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.ArcSegment.SweepDirection.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.ArcSegment.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

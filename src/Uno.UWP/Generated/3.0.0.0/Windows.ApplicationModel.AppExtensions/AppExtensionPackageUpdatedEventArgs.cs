@@ -43,13 +43,8 @@ namespace Windows.ApplicationModel.AppExtensions
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatedEventArgs.AppExtensionName.get
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatedEventArgs.Extensions.get
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatedEventArgs.Package.get
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageUpdatedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

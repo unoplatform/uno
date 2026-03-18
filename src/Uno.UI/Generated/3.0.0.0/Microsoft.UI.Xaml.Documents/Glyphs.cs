@@ -246,8 +246,6 @@ namespace Microsoft.UI.Xaml.Documents
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.OriginYProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.StyleSimulationsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.UnicodeStringProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.ColorFontPaletteIndex.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.ColorFontPaletteIndex.set
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.Fill.get
@@ -268,6 +266,5 @@ namespace Microsoft.UI.Xaml.Documents
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.StyleSimulations.set
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.UnicodeString.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.UnicodeString.set
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Glyphs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

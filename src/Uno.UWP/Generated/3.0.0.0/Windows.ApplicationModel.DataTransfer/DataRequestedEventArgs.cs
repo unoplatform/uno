@@ -9,11 +9,6 @@ namespace Windows.ApplicationModel.DataTransfer
 	public partial class DataRequestedEventArgs
 	{
 		// Skipping already declared property Request
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs.Request.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -143,10 +143,6 @@ namespace Windows.Media.Import
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult.DeletedItems.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult.HasSucceeded.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult.PhotosCount.get
@@ -160,6 +156,5 @@ namespace Windows.Media.Import
 		// Forced skipping of method Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult.TotalSizeInBytes.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult.VideosCount.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult.VideosSizeInBytes.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

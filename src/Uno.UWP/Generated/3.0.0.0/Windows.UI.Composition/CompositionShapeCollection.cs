@@ -47,8 +47,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionShapeCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.CompositionShapeCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionShapeCollection.Count.get
 		// Forced skipping of method Windows.UI.Composition.CompositionShapeCollection.IsReadOnly.get
 		// Forced skipping of method Windows.UI.Composition.CompositionShapeCollection.this[int].get
@@ -117,7 +115,6 @@ namespace Windows.UI.Composition
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.CompositionShapeCollection.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Windows.UI.Composition.CompositionShapeCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Windows.UI.Composition.CompositionShapeCollection.System.Collections.Generic.IList<Windows.UI.Composition.CompositionShape>.get_Item(int)
 		// Forced skipping of method Windows.UI.Composition.CompositionShapeCollection.System.Collections.Generic.IList<Windows.UI.Composition.CompositionShape>.set_Item(int, Windows.UI.Composition.CompositionShape)
 		// Processing: System.Collections.Generic.IList<Windows.UI.Composition.CompositionShape>

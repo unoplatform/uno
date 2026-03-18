@@ -70,10 +70,6 @@ namespace Windows.Media.MediaProperties
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.MediaPropertySet()
-		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.Keys.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.Values.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.Count.get
@@ -145,7 +141,6 @@ namespace Windows.Media.MediaProperties
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Windows.Media.MediaProperties.MediaPropertySet.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.Collections.Generic.IDictionary<System.Guid, object>
 		// Processing: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.Guid, object>>
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

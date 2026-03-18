@@ -30,11 +30,6 @@ namespace Microsoft.UI.Composition.Diagnostics
 			throw new global::System.NotImplementedException("The member CompositionDebugSettings CompositionDebugSettings.TryGetSettings(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionDebugSettings%20CompositionDebugSettings.TryGetSettings%28Compositor%20compositor%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Diagnostics.CompositionDebugSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.Diagnostics.CompositionDebugSettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.Diagnostics.CompositionDebugSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Composition.Diagnostics.CompositionDebugSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Composition.Diagnostics.CompositionDebugSettings.HeatMaps.get
-		// Forced skipping of method Microsoft.UI.Composition.Diagnostics.CompositionDebugSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

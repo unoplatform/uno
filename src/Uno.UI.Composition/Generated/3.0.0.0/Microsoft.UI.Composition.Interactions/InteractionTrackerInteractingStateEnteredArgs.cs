@@ -10,12 +10,7 @@ namespace Microsoft.UI.Composition.Interactions
 	{
 		// Skipping already declared property IsFromBinding
 		// Skipping already declared property RequestId
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs.IsFromBinding.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs.RequestId.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

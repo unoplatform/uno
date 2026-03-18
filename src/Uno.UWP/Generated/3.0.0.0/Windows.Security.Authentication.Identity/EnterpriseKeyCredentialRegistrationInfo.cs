@@ -63,15 +63,10 @@ namespace Windows.Security.Authentication.Identity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo.KeyId.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo.KeyName.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo.Subject.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo.TenantId.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo.TenantName.get
-		// Forced skipping of method Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

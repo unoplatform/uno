@@ -65,10 +65,6 @@ namespace Windows.Media.Casting
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.SupportedCastingSources.get
 		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.SupportsAudio.get
 		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.SupportsAudio.set
@@ -76,6 +72,5 @@ namespace Windows.Media.Casting
 		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.SupportsPictures.set
 		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.SupportsVideo.get
 		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.SupportsVideo.set
-		// Forced skipping of method Windows.Media.Casting.CastingDevicePickerFilter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

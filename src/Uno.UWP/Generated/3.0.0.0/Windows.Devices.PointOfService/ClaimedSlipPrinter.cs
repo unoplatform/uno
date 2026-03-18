@@ -233,10 +233,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedSlipPrinter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedSlipPrinter.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedSlipPrinter.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedSlipPrinter.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void OpenJaws()
@@ -311,7 +307,6 @@ namespace Windows.Devices.PointOfService
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedSlipPrinter.PrintSide.get
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedSlipPrinter.SidewaysMaxChars.get
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedSlipPrinter.SidewaysMaxLines.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedSlipPrinter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation
 	}
 }

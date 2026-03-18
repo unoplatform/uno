@@ -140,10 +140,6 @@ namespace Windows.Media.Playback
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.BufferingEnded.add
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.BufferingEnded.remove
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.BufferingProgressChanged.add
@@ -230,7 +226,6 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.SphericalVideoProjection.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.StereoscopicVideoPackingMode.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.StereoscopicVideoPackingMode.set
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackSession, object> BufferingEnded

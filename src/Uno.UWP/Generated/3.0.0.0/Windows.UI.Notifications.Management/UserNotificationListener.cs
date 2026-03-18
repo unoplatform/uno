@@ -24,10 +24,6 @@ namespace Windows.UI.Notifications.Management
 		}
 #endif
 		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.Current.get
-		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.UI.Notifications.Management.UserNotificationListenerAccessStatus> RequestAccessAsync()
@@ -72,7 +68,6 @@ namespace Windows.UI.Notifications.Management
 #endif
 		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.NotificationChanged.add
 		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.NotificationChanged.remove
-		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Notifications.Management.UserNotificationListener, global::Windows.UI.Notifications.UserNotificationChangedEventArgs> NotificationChanged

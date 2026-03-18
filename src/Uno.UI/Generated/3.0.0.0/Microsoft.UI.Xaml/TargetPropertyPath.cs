@@ -14,14 +14,9 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.TargetPropertyPath()
 		// Skipping already declared method Microsoft.UI.Xaml.TargetPropertyPath.TargetPropertyPath(Microsoft.UI.Xaml.DependencyProperty)
 		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.TargetPropertyPath(Microsoft.UI.Xaml.DependencyProperty)
-		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.Path.get
 		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.Path.set
 		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.Target.get
 		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.Target.set
-		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

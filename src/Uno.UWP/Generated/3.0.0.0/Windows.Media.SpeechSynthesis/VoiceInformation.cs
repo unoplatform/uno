@@ -63,15 +63,10 @@ namespace Windows.Media.SpeechSynthesis
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.SpeechSynthesis.VoiceInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.SpeechSynthesis.VoiceInformation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.SpeechSynthesis.VoiceInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.SpeechSynthesis.VoiceInformation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.SpeechSynthesis.VoiceInformation.Description.get
 		// Forced skipping of method Windows.Media.SpeechSynthesis.VoiceInformation.DisplayName.get
 		// Forced skipping of method Windows.Media.SpeechSynthesis.VoiceInformation.Gender.get
 		// Forced skipping of method Windows.Media.SpeechSynthesis.VoiceInformation.Id.get
 		// Forced skipping of method Windows.Media.SpeechSynthesis.VoiceInformation.Language.get
-		// Forced skipping of method Windows.Media.SpeechSynthesis.VoiceInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

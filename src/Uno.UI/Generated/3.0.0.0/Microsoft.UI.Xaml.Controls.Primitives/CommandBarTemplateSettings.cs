@@ -20,8 +20,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property OverflowContentMaxWidth
 		// Skipping already declared property OverflowContentMinWidth
 		// Skipping already declared property OverflowContentMinimalYTranslation
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.ContentHeight.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.EffectiveOverflowButtonVisibility.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.NegativeOverflowContentHeight.get
@@ -34,6 +32,5 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.OverflowContentMaxWidth.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.OverflowContentMinWidth.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.OverflowContentMinimalYTranslation.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -23,11 +23,6 @@ namespace Windows.UI.ApplicationSettings
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountInvokedArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountInvokedArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountInvokedArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountInvokedArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountInvokedArgs.Action.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountInvokedArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

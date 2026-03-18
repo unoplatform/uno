@@ -27,13 +27,8 @@ namespace Windows.Graphics.Printing3D
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> Print3DManager.ShowPrintUIAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20Print3DManager.ShowPrintUIAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DManager.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DManager.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DManager.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Print3DManager.TaskRequested.add
 		// Forced skipping of method Windows.Graphics.Printing3D.Print3DManager.TaskRequested.remove
-		// Forced skipping of method Windows.Graphics.Printing3D.Print3DManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Printing3D.Print3DManager, global::Windows.Graphics.Printing3D.Print3DTaskRequestedEventArgs> TaskRequested

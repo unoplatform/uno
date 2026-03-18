@@ -24,14 +24,11 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIcon.MirroredWhenRightToLeftProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIcon.SourceProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIcon.StateProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIcon.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIcon.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIcon.FallbackIconSource.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIcon.FallbackIconSource.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIcon.MirroredWhenRightToLeft.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIcon.MirroredWhenRightToLeft.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIcon.Source.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIcon.Source.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.AnimatedIcon.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

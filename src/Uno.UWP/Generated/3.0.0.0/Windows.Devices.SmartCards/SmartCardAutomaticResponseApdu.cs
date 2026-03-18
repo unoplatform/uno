@@ -128,10 +128,6 @@ namespace Windows.Devices.SmartCards
 		}
 #endif
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu.SmartCardAutomaticResponseApdu(Windows.Storage.Streams.IBuffer, Windows.Storage.Streams.IBuffer)
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu.AllowWhenCryptogramGeneratorNotPrepared.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu.AllowWhenCryptogramGeneratorNotPrepared.set
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu.AppletId.get
@@ -148,6 +144,5 @@ namespace Windows.Devices.SmartCards
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu.ResponseApdu.set
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu.ShouldMatchLength.get
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu.ShouldMatchLength.set
-		// Forced skipping of method Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

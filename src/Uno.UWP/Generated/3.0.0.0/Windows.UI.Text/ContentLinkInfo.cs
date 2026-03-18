@@ -86,10 +86,6 @@ namespace Windows.UI.Text
 		}
 #endif
 		// Forced skipping of method Windows.UI.Text.ContentLinkInfo.ContentLinkInfo()
-		// Forced skipping of method Windows.UI.Text.ContentLinkInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Text.ContentLinkInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Text.ContentLinkInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Text.ContentLinkInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Text.ContentLinkInfo.DisplayText.get
 		// Forced skipping of method Windows.UI.Text.ContentLinkInfo.DisplayText.set
 		// Forced skipping of method Windows.UI.Text.ContentLinkInfo.Id.get
@@ -100,6 +96,5 @@ namespace Windows.UI.Text
 		// Forced skipping of method Windows.UI.Text.ContentLinkInfo.SecondaryText.set
 		// Forced skipping of method Windows.UI.Text.ContentLinkInfo.Uri.get
 		// Forced skipping of method Windows.UI.Text.ContentLinkInfo.Uri.set
-		// Forced skipping of method Windows.UI.Text.ContentLinkInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

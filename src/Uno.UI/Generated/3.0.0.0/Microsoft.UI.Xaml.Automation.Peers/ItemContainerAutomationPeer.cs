@@ -12,15 +12,12 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property SelectionContainer
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ItemContainerAutomationPeer.ItemContainerAutomationPeer(Microsoft.UI.Xaml.Controls.ItemContainer)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemContainerAutomationPeer.ItemContainerAutomationPeer(Microsoft.UI.Xaml.Controls.ItemContainer)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemContainerAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemContainerAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ItemContainerAutomationPeer.AddToSelection()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ItemContainerAutomationPeer.RemoveFromSelection()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ItemContainerAutomationPeer.Select()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ItemContainerAutomationPeer.Invoke()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemContainerAutomationPeer.IsSelected.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemContainerAutomationPeer.SelectionContainer.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ItemContainerAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.ISelectionItemProvider
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IInvokeProvider
 	}

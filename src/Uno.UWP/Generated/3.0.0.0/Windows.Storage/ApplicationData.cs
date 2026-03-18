@@ -121,10 +121,6 @@ namespace Windows.Storage
 		}
 #endif
 		// Forced skipping of method Windows.Storage.ApplicationData.Current.get
-		// Forced skipping of method Windows.Storage.ApplicationData.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.ApplicationData.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.ApplicationData.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.ApplicationData.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetVersionAsync(uint desiredVersion, global::Windows.Storage.ApplicationDataSetVersionHandler handler)
@@ -178,7 +174,6 @@ namespace Windows.Storage
 		// Forced skipping of method Windows.Storage.ApplicationData.SharedLocalFolder.get
 		// Forced skipping of method Windows.Storage.ApplicationData.TemporaryFolder.get
 		// Forced skipping of method Windows.Storage.ApplicationData.Version.get
-		// Forced skipping of method Windows.Storage.ApplicationData.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if false || false || false || IS_UNIT_TESTS || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Storage.ApplicationData, object> DataChanged

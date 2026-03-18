@@ -33,10 +33,6 @@ namespace Windows.ApplicationModel.Resources.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView.Count.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView.this[int].get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -47,7 +43,6 @@ namespace Windows.ApplicationModel.Resources.Core
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView.System.Collections.Generic.IReadOnlyList<Windows.ApplicationModel.Resources.Core.ResourceQualifier>.get_Item(int)
 		// Processing: System.Collections.Generic.IReadOnlyList<Windows.ApplicationModel.Resources.Core.ResourceQualifier>
 		// Processing: System.Collections.Generic.IEnumerable<Windows.ApplicationModel.Resources.Core.ResourceQualifier>

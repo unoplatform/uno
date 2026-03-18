@@ -50,10 +50,6 @@ namespace Windows.Devices.Sms
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sms.SmsBinaryMessage.SmsBinaryMessage()
-		// Forced skipping of method Windows.Devices.Sms.SmsBinaryMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Sms.SmsBinaryMessage.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Sms.SmsBinaryMessage.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Sms.SmsBinaryMessage.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public byte[] GetData()
@@ -72,7 +68,6 @@ namespace Windows.Devices.Sms
 		// Forced skipping of method Windows.Devices.Sms.SmsBinaryMessage.Format.set
 		// Forced skipping of method Windows.Devices.Sms.SmsBinaryMessage.Id.get
 		// Forced skipping of method Windows.Devices.Sms.SmsBinaryMessage.MessageClass.get
-		// Forced skipping of method Windows.Devices.Sms.SmsBinaryMessage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Sms.ISmsBinaryMessage
 		// Processing: Windows.Devices.Sms.ISmsMessage
 	}

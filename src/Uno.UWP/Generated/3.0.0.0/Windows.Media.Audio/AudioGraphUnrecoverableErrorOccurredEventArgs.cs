@@ -23,11 +23,6 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioGraphUnrecoverableErrorOccurredEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Audio.AudioGraphUnrecoverableErrorOccurredEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Audio.AudioGraphUnrecoverableErrorOccurredEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Audio.AudioGraphUnrecoverableErrorOccurredEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Audio.AudioGraphUnrecoverableErrorOccurredEventArgs.Error.get
-		// Forced skipping of method Windows.Media.Audio.AudioGraphUnrecoverableErrorOccurredEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -30,11 +30,6 @@ namespace Windows.Devices.Input
 			throw new global::System.NotImplementedException("The member PenDevice PenDevice.GetFromPointerId(uint pointerId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PenDevice%20PenDevice.GetFromPointerId%28uint%20pointerId%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Input.PenDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Input.PenDevice.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Input.PenDevice.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Input.PenDevice.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Input.PenDevice.PenId.get
-		// Forced skipping of method Windows.Devices.Input.PenDevice.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

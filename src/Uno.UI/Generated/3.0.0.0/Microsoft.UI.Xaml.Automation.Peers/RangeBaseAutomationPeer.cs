@@ -16,8 +16,6 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property Value
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer.RangeBaseAutomationPeer(Microsoft.UI.Xaml.Controls.Primitives.RangeBase)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer.RangeBaseAutomationPeer(Microsoft.UI.Xaml.Controls.Primitives.RangeBase)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer.SetValue(double)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer.LargeChange.get
@@ -25,7 +23,6 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer.Minimum.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer.SmallChange.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer.Value.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IRangeValueProvider
 	}
 }

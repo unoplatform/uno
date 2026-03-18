@@ -11,11 +11,6 @@ namespace Windows.Devices.Input
 		// Skipping already declared property KeyboardPresent
 		// Skipping already declared method Windows.Devices.Input.KeyboardCapabilities.KeyboardCapabilities()
 		// Forced skipping of method Windows.Devices.Input.KeyboardCapabilities.KeyboardCapabilities()
-		// Forced skipping of method Windows.Devices.Input.KeyboardCapabilities.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Input.KeyboardCapabilities.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Input.KeyboardCapabilities.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Input.KeyboardCapabilities.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Input.KeyboardCapabilities.KeyboardPresent.get
-		// Forced skipping of method Windows.Devices.Input.KeyboardCapabilities.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

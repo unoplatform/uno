@@ -13,15 +13,12 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared method Microsoft.UI.Xaml.Media.ImageBrush.ImageBrush()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.ImageBrush.ImageBrush()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.ImageBrush.ImageSourceProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.ImageBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.ImageBrush.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.ImageBrush.ImageFailed.add
 		// Forced skipping of method Microsoft.UI.Xaml.Media.ImageBrush.ImageFailed.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Media.ImageBrush.ImageOpened.add
 		// Forced skipping of method Microsoft.UI.Xaml.Media.ImageBrush.ImageOpened.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Media.ImageBrush.ImageSource.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.ImageBrush.ImageSource.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.ImageBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Media.ImageBrush.ImageFailed
 		// Skipping already declared event Microsoft.UI.Xaml.Media.ImageBrush.ImageOpened
 	}

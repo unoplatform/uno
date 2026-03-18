@@ -36,12 +36,9 @@ namespace Microsoft.UI.Xaml.Shapes
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.Polyline()
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.FillRuleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.PointsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.FillRule.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.FillRule.set
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.Points.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.Points.set
-		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Polyline.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

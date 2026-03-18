@@ -73,16 +73,11 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.PerformanceCount.get
 		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.Properties.get
 		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.Quaternion.get
 		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.RotationMatrix.get
 		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.Timestamp.get
 		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.YawAccuracy.get
-		// Forced skipping of method Windows.Devices.Sensors.OrientationSensorReading.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

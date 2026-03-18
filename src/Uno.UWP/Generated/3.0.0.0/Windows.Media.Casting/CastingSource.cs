@@ -27,12 +27,7 @@ namespace Windows.Media.Casting
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Casting.CastingSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Casting.CastingSource.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Casting.CastingSource.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Casting.CastingSource.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Casting.CastingSource.PreferredSourceUri.get
 		// Forced skipping of method Windows.Media.Casting.CastingSource.PreferredSourceUri.set
-		// Forced skipping of method Windows.Media.Casting.CastingSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

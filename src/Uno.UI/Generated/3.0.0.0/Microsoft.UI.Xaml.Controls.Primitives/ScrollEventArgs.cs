@@ -12,10 +12,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property ScrollEventType
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ScrollEventArgs.ScrollEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollEventArgs.ScrollEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollEventArgs.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollEventArgs.NewValue.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollEventArgs.ScrollEventType.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -97,10 +97,6 @@ namespace Windows.ApplicationModel.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo.DisplayNameResource.get
 		// Forced skipping of method Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo.DisplayNameResource.set
 		// Forced skipping of method Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo.LogoResource.get
@@ -113,6 +109,5 @@ namespace Windows.ApplicationModel.Background
 		// Forced skipping of method Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo.MaxVideoWidth.set
 		// Forced skipping of method Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo.VideoKeyFrameInterval.get
 		// Forced skipping of method Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo.VideoKeyFrameInterval.set
-		// Forced skipping of method Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

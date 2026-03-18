@@ -16,8 +16,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared method Microsoft.UI.Xaml.VisualStateManager.SetCustomVisualStateManager(Microsoft.UI.Xaml.FrameworkElement, Microsoft.UI.Xaml.VisualStateManager)
 		// Skipping already declared method Microsoft.UI.Xaml.VisualStateManager.GoToState(Microsoft.UI.Xaml.Controls.Control, string, bool)
 		// Forced skipping of method Microsoft.UI.Xaml.VisualStateManager.CustomVisualStateManagerProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.VisualStateManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.VisualStateManager.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		protected void RaiseCurrentStateChanging(global::Microsoft.UI.Xaml.VisualStateGroup stateGroup, global::Microsoft.UI.Xaml.VisualState oldState, global::Microsoft.UI.Xaml.VisualState newState, global::Microsoft.UI.Xaml.Controls.Control control)
@@ -33,6 +31,5 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.VisualStateManager.GoToStateCore(Microsoft.UI.Xaml.Controls.Control, Microsoft.UI.Xaml.FrameworkElement, string, Microsoft.UI.Xaml.VisualStateGroup, Microsoft.UI.Xaml.VisualState, bool)
-		// Forced skipping of method Microsoft.UI.Xaml.VisualStateManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

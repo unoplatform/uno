@@ -39,10 +39,7 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.TitleBarTemplateSettings()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.IconElementProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.IconElement.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.IconElement.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

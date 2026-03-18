@@ -158,8 +158,6 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.AnchorPoint.get
 		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.AnchorPoint.set
 		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.CenterPoint.get
@@ -181,6 +179,5 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.Scale.set
 		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.TransformMatrix.get
 		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.TransformMatrix.set
-		// Forced skipping of method Windows.UI.Composition.CompositionGradientBrush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

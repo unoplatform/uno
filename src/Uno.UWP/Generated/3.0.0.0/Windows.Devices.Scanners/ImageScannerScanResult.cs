@@ -23,11 +23,6 @@ namespace Windows.Devices.Scanners
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Scanners.ImageScannerScanResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Scanners.ImageScannerScanResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Scanners.ImageScannerScanResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Scanners.ImageScannerScanResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Scanners.ImageScannerScanResult.ScannedFiles.get
-		// Forced skipping of method Windows.Devices.Scanners.ImageScannerScanResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

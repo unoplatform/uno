@@ -162,10 +162,6 @@ namespace Windows.ApplicationModel.Appointments
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentRecurrence.AppointmentRecurrence()
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentRecurrence.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentRecurrence.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentRecurrence.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentRecurrence.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentRecurrence.CalendarIdentifier.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentRecurrence.Day.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentRecurrence.Day.set
@@ -186,6 +182,5 @@ namespace Windows.ApplicationModel.Appointments
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentRecurrence.Until.set
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentRecurrence.WeekOfMonth.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentRecurrence.WeekOfMonth.set
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentRecurrence.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

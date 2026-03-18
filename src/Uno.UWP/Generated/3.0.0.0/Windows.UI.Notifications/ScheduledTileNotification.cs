@@ -78,10 +78,6 @@ namespace Windows.UI.Notifications
 		}
 #endif
 		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.ScheduledTileNotification(Windows.Data.Xml.Dom.XmlDocument, System.DateTimeOffset)
-		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.Content.get
 		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.DeliveryTime.get
 		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.ExpirationTime.get
@@ -90,6 +86,5 @@ namespace Windows.UI.Notifications
 		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.Id.set
 		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.Tag.get
 		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.Tag.set
-		// Forced skipping of method Windows.UI.Notifications.ScheduledTileNotification.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

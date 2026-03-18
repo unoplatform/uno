@@ -74,10 +74,6 @@ namespace Windows.Media.Editing
 		}
 #endif
 		// Forced skipping of method Windows.Media.Editing.MediaComposition.~MediaComposition()
-		// Forced skipping of method Windows.Media.Editing.MediaComposition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Editing.MediaComposition.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Editing.MediaComposition.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Editing.MediaComposition.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Editing.MediaComposition Clone()
@@ -160,6 +156,5 @@ namespace Windows.Media.Editing
 		// Forced skipping of method Windows.Media.Editing.MediaComposition.Duration.get
 		// Forced skipping of method Windows.Media.Editing.MediaComposition.OverlayLayers.get
 		// Forced skipping of method Windows.Media.Editing.MediaComposition.UserData.get
-		// Forced skipping of method Windows.Media.Editing.MediaComposition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

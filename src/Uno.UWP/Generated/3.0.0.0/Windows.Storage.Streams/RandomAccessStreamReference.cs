@@ -11,12 +11,7 @@ namespace Windows.Storage.Streams
 		// Skipping already declared method Windows.Storage.Streams.RandomAccessStreamReference.CreateFromFile(Windows.Storage.IStorageFile)
 		// Skipping already declared method Windows.Storage.Streams.RandomAccessStreamReference.CreateFromUri(System.Uri)
 		// Skipping already declared method Windows.Storage.Streams.RandomAccessStreamReference.CreateFromStream(Windows.Storage.Streams.IRandomAccessStream)
-		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamReference.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamReference.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamReference.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamReference.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.Storage.Streams.RandomAccessStreamReference.OpenReadAsync()
-		// Forced skipping of method Windows.Storage.Streams.RandomAccessStreamReference.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Storage.Streams.IRandomAccessStreamReference
 	}
 }

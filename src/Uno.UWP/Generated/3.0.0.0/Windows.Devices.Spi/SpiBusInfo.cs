@@ -53,14 +53,9 @@ namespace Windows.Devices.Spi
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Spi.SpiBusInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Spi.SpiBusInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Spi.SpiBusInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Spi.SpiBusInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Spi.SpiBusInfo.ChipSelectLineCount.get
 		// Forced skipping of method Windows.Devices.Spi.SpiBusInfo.MaxClockFrequency.get
 		// Forced skipping of method Windows.Devices.Spi.SpiBusInfo.MinClockFrequency.get
 		// Forced skipping of method Windows.Devices.Spi.SpiBusInfo.SupportedDataBitLengths.get
-		// Forced skipping of method Windows.Devices.Spi.SpiBusInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -12,11 +12,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared method Microsoft.UI.Xaml.DependencyProperty.Register(string, System.Type, System.Type, Microsoft.UI.Xaml.PropertyMetadata)
 		// Skipping already declared method Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(string, System.Type, System.Type, Microsoft.UI.Xaml.PropertyMetadata)
 		// Forced skipping of method Microsoft.UI.Xaml.DependencyProperty.UnsetValue.get
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyProperty.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyProperty.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyProperty.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyProperty.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Microsoft.UI.Xaml.DependencyProperty.GetMetadata(System.Type)
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyProperty.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

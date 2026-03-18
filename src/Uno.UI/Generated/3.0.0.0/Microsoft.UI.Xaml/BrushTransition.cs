@@ -11,12 +11,7 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property Duration
 		// Skipping already declared method Microsoft.UI.Xaml.BrushTransition.BrushTransition()
 		// Forced skipping of method Microsoft.UI.Xaml.BrushTransition.BrushTransition()
-		// Forced skipping of method Microsoft.UI.Xaml.BrushTransition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.BrushTransition.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.BrushTransition.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.BrushTransition.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.BrushTransition.Duration.get
 		// Forced skipping of method Microsoft.UI.Xaml.BrushTransition.Duration.set
-		// Forced skipping of method Microsoft.UI.Xaml.BrushTransition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

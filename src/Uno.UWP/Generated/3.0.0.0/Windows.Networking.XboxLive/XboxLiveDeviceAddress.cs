@@ -82,10 +82,6 @@ namespace Windows.Networking.XboxLive
 		}
 #endif
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveDeviceAddress.MaxSnapshotBytesSize.get
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveDeviceAddress.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveDeviceAddress.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveDeviceAddress.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveDeviceAddress.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string GetSnapshotAsBase64()
@@ -119,7 +115,6 @@ namespace Windows.Networking.XboxLive
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveDeviceAddress.IsLocal.get
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveDeviceAddress.IsValid.get
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveDeviceAddress.NetworkAccessKind.get
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveDeviceAddress.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.XboxLive.XboxLiveDeviceAddress, object> SnapshotChanged

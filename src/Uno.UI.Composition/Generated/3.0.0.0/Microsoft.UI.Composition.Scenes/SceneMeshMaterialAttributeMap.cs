@@ -67,8 +67,6 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.Keys.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.Values.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.Count.get
@@ -140,7 +138,6 @@ namespace Microsoft.UI.Composition.Scenes
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.Collections.Generic.IDictionary<string, Microsoft.UI.Composition.Scenes.SceneAttributeSemantic>
 		// Processing: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Microsoft.UI.Composition.Scenes.SceneAttributeSemantic>>
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

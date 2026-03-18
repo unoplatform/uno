@@ -10,10 +10,5 @@ namespace Microsoft.UI.Xaml.Automation
 	{
 		// Skipping already declared property DockPositionProperty
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.DockPatternIdentifiers.DockPositionProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.DockPatternIdentifiers.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.DockPatternIdentifiers.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.DockPatternIdentifiers.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.DockPatternIdentifiers.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.DockPatternIdentifiers.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -193,10 +193,6 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastGlobalSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastGlobalSettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastGlobalSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastGlobalSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastGlobalSettings.CameraOverlayLocation.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastGlobalSettings.CameraOverlayLocation.set
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastGlobalSettings.CameraOverlaySize.get
@@ -221,6 +217,5 @@ namespace Windows.Media.Capture
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastGlobalSettings.SelectedCameraId.set
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastGlobalSettings.SystemAudioGain.get
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastGlobalSettings.SystemAudioGain.set
-		// Forced skipping of method Windows.Media.Capture.AppBroadcastGlobalSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

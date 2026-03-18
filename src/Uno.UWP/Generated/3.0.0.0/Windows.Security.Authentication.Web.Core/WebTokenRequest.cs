@@ -114,10 +114,6 @@ namespace Windows.Security.Authentication.Web.Core
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.WebTokenRequest(Windows.Security.Credentials.WebAccountProvider, string)
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.AppProperties.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.ClientId.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.CorrelationId.get
@@ -126,6 +122,5 @@ namespace Windows.Security.Authentication.Web.Core
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.Properties.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.Scope.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.WebAccountProvider.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

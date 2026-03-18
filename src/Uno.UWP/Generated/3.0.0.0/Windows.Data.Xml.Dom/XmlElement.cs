@@ -24,10 +24,6 @@ namespace Windows.Data.Xml.Dom
 		// Skipping already declared property Prefix
 		// Skipping already declared property PreviousSibling
 		// Skipping already declared property TagName
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlElement.GetAttribute(string)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlElement.SetAttribute(string, string)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlElement.RemoveAttribute(string)
@@ -113,7 +109,6 @@ namespace Windows.Data.Xml.Dom
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.Prefix.set
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.PreviousSibling.get
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.TagName.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Data.Xml.Dom.IXmlNode
 		// Processing: Windows.Data.Xml.Dom.IXmlNodeSelector
 		// Processing: Windows.Data.Xml.Dom.IXmlNodeSerializer

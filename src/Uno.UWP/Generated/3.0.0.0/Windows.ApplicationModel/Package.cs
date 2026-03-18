@@ -137,10 +137,6 @@ namespace Windows.ApplicationModel
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Package.Current.get
-		// Forced skipping of method Windows.ApplicationModel.Package.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Package.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Package.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Package.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.ApplicationModel.Package.GetAppListEntriesAsync()
 		// Skipping already declared method Windows.ApplicationModel.Package.GetThumbnailToken()
 		// Skipping already declared method Windows.ApplicationModel.Package.Launch(string)
@@ -236,6 +232,5 @@ namespace Windows.ApplicationModel
 		// Forced skipping of method Windows.ApplicationModel.Package.Status.get
 		// Forced skipping of method Windows.ApplicationModel.Package.UserExternalLocation.get
 		// Forced skipping of method Windows.ApplicationModel.Package.UserExternalPath.get
-		// Forced skipping of method Windows.ApplicationModel.Package.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

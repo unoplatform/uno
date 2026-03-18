@@ -127,10 +127,6 @@ namespace Windows.Networking.Sockets
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Sockets.StreamWebSocketControl.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamWebSocketControl.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamWebSocketControl.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamWebSocketControl.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamWebSocketControl.ActualUnsolicitedPongInterval.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamWebSocketControl.ClientCertificate.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamWebSocketControl.ClientCertificate.set
@@ -146,7 +142,6 @@ namespace Windows.Networking.Sockets
 		// Forced skipping of method Windows.Networking.Sockets.StreamWebSocketControl.ServerCredential.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamWebSocketControl.ServerCredential.set
 		// Forced skipping of method Windows.Networking.Sockets.StreamWebSocketControl.SupportedProtocols.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamWebSocketControl.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Networking.Sockets.IWebSocketControl
 		// Processing: Windows.Networking.Sockets.IWebSocketControl2
 	}

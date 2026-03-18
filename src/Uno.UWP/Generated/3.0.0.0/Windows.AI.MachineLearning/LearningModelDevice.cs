@@ -43,12 +43,7 @@ namespace Windows.AI.MachineLearning
 			throw new global::System.NotImplementedException("The member LearningModelDevice LearningModelDevice.CreateFromDirect3D11Device(IDirect3DDevice device) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LearningModelDevice%20LearningModelDevice.CreateFromDirect3D11Device%28IDirect3DDevice%20device%29");
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelDevice.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelDevice.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelDevice.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.AI.MachineLearning.LearningModelDevice.AdapterId.get
 		// Forced skipping of method Windows.AI.MachineLearning.LearningModelDevice.Direct3D11Device.get
-		// Forced skipping of method Windows.AI.MachineLearning.LearningModelDevice.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

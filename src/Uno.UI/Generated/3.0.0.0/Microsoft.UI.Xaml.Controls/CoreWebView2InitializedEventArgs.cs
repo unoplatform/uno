@@ -9,11 +9,6 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class CoreWebView2InitializedEventArgs
 	{
 		// Skipping already declared property Exception
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CoreWebView2InitializedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CoreWebView2InitializedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CoreWebView2InitializedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CoreWebView2InitializedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CoreWebView2InitializedEventArgs.Exception.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CoreWebView2InitializedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

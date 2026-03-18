@@ -83,10 +83,6 @@ namespace Windows.AI.MachineLearning.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.ImageVariableDescriptorPreview.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.ImageVariableDescriptorPreview.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.ImageVariableDescriptorPreview.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.ImageVariableDescriptorPreview.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.ImageVariableDescriptorPreview.BitmapPixelFormat.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.ImageVariableDescriptorPreview.Description.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.ImageVariableDescriptorPreview.Height.get
@@ -94,7 +90,6 @@ namespace Windows.AI.MachineLearning.Preview
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.ImageVariableDescriptorPreview.ModelFeatureKind.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.ImageVariableDescriptorPreview.Name.get
 		// Forced skipping of method Windows.AI.MachineLearning.Preview.ImageVariableDescriptorPreview.Width.get
-		// Forced skipping of method Windows.AI.MachineLearning.Preview.ImageVariableDescriptorPreview.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.AI.MachineLearning.Preview.ILearningModelVariableDescriptorPreview
 	}
 }

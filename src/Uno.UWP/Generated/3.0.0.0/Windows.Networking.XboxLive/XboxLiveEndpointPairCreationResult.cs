@@ -53,14 +53,9 @@ namespace Windows.Networking.XboxLive
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairCreationResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairCreationResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairCreationResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairCreationResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairCreationResult.DeviceAddress.get
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairCreationResult.EndpointPair.get
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairCreationResult.IsExistingPathEvaluation.get
 		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairCreationResult.Status.get
-		// Forced skipping of method Windows.Networking.XboxLive.XboxLiveEndpointPairCreationResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

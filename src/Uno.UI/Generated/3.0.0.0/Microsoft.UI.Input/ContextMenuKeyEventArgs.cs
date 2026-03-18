@@ -27,12 +27,7 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.ContextMenuKeyEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.ContextMenuKeyEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.ContextMenuKeyEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Input.ContextMenuKeyEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Input.ContextMenuKeyEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Input.ContextMenuKeyEventArgs.Handled.set
-		// Forced skipping of method Microsoft.UI.Input.ContextMenuKeyEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

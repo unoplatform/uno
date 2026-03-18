@@ -33,10 +33,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.SlideNavigationTransitionInfo()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.SlideNavigationTransitionInfo()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.EffectProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.Effect.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.Effect.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

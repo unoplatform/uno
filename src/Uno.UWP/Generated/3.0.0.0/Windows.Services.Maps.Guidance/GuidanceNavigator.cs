@@ -73,10 +73,6 @@ namespace Windows.Services.Maps.Guidance
 		}
 #endif
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceNavigator.UseAppProvidedVoice.get
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceNavigator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceNavigator.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceNavigator.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceNavigator.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void StartNavigating(global::Windows.Services.Maps.Guidance.GuidanceRoute route)
@@ -169,7 +165,6 @@ namespace Windows.Services.Maps.Guidance
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceNavigator.AudioNotifications.set
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceNavigator.IsGuidanceAudioMuted.get
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceNavigator.IsGuidanceAudioMuted.set
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceNavigator.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Services.Maps.Guidance.GuidanceNavigator, object> DestinationReached

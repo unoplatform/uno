@@ -24,8 +24,5 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.VirtualSurfaceImageSource.VirtualSurfaceImageSource(int, int, bool)
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.VirtualSurfaceImageSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.VirtualSurfaceImageSource.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.VirtualSurfaceImageSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

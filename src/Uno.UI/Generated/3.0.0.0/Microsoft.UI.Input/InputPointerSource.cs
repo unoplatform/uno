@@ -17,8 +17,6 @@ namespace Microsoft.UI.Input
 			throw new global::System.NotImplementedException("The member InputPointerSource InputPointerSource.GetForIsland(ContentIsland island) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputPointerSource%20InputPointerSource.GetForIsland%28ContentIsland%20island%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.PointerCaptureLost.add
 		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.PointerCaptureLost.remove
 		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.PointerEntered.add
@@ -42,7 +40,6 @@ namespace Microsoft.UI.Input
 		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.Cursor.get
 		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.Cursor.set
 		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.DeviceKinds.get
-		// Forced skipping of method Microsoft.UI.Input.InputPointerSource.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Input.InputPointerSource.PointerCaptureLost
 		// Skipping already declared event Microsoft.UI.Input.InputPointerSource.PointerEntered
 		// Skipping already declared event Microsoft.UI.Input.InputPointerSource.PointerExited

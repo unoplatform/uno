@@ -30,11 +30,6 @@ namespace Windows.Graphics.Display
 			throw new global::System.NotImplementedException("The member ColorOverrideSettings ColorOverrideSettings.CreateFromDisplayColorOverrideScenario(DisplayColorOverrideScenario overrideScenario) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ColorOverrideSettings%20ColorOverrideSettings.CreateFromDisplayColorOverrideScenario%28DisplayColorOverrideScenario%20overrideScenario%29");
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Display.ColorOverrideSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Graphics.Display.ColorOverrideSettings.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Graphics.Display.ColorOverrideSettings.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Graphics.Display.ColorOverrideSettings.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Display.ColorOverrideSettings.DesiredDisplayColorOverrideScenario.get
-		// Forced skipping of method Windows.Graphics.Display.ColorOverrideSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

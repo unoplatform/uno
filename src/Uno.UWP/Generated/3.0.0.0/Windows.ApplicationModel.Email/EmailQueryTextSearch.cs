@@ -55,16 +55,11 @@ namespace Windows.ApplicationModel.Email
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.Fields.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.Fields.set
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.SearchScope.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.SearchScope.set
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.Text.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.Text.set
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryTextSearch.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

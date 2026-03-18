@@ -33,12 +33,7 @@ namespace Windows.Media.Effects
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Effects.ProcessAudioFrameContext.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Effects.ProcessAudioFrameContext.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Effects.ProcessAudioFrameContext.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Effects.ProcessAudioFrameContext.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Effects.ProcessAudioFrameContext.InputFrame.get
 		// Forced skipping of method Windows.Media.Effects.ProcessAudioFrameContext.OutputFrame.get
-		// Forced skipping of method Windows.Media.Effects.ProcessAudioFrameContext.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

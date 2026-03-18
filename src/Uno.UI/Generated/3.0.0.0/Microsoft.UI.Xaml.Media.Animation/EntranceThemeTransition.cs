@@ -19,14 +19,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EntranceThemeTransition.FromHorizontalOffsetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EntranceThemeTransition.FromVerticalOffsetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EntranceThemeTransition.IsStaggeringEnabledProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EntranceThemeTransition.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EntranceThemeTransition.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EntranceThemeTransition.FromHorizontalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EntranceThemeTransition.FromHorizontalOffset.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EntranceThemeTransition.FromVerticalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EntranceThemeTransition.FromVerticalOffset.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EntranceThemeTransition.IsStaggeringEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EntranceThemeTransition.IsStaggeringEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.EntranceThemeTransition.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

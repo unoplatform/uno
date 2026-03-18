@@ -33,12 +33,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult.Error.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult.Services.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -14,13 +14,8 @@ namespace Microsoft.UI.Xaml.Data
 		// Forced skipping of method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.CurrentChangingEventArgs()
 		// Skipping already declared method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.CurrentChangingEventArgs(bool)
 		// Forced skipping of method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.CurrentChangingEventArgs(bool)
-		// Forced skipping of method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.Cancel.set
 		// Forced skipping of method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.IsCancelable.get
-		// Forced skipping of method Microsoft.UI.Xaml.Data.CurrentChangingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

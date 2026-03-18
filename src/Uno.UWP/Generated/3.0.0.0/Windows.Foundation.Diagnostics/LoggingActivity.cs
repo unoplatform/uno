@@ -54,10 +54,6 @@ namespace Windows.Foundation.Diagnostics
 		}
 #endif
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingActivity.LoggingActivity(string, Windows.Foundation.Diagnostics.ILoggingChannel, Windows.Foundation.Diagnostics.LoggingLevel)
-		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingActivity.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingActivity.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingActivity.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingActivity.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
@@ -166,7 +162,6 @@ namespace Windows.Foundation.Diagnostics
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingActivity.Channel.get
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingActivity.Id.get
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingActivity.Name.get
-		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingActivity.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 		// Processing: Windows.Foundation.Diagnostics.ILoggingTarget
 	}

@@ -9,9 +9,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 	public partial class MenuFlyoutPresenterTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property FlyoutContentMinWidth
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutPresenterTemplateSettings.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutPresenterTemplateSettings.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutPresenterTemplateSettings.FlyoutContentMinWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.MenuFlyoutPresenterTemplateSettings.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

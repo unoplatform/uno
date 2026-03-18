@@ -66,16 +66,11 @@ namespace Windows.Devices
 		}
 #endif
 		// Forced skipping of method Windows.Devices.LowLevelDevicesAggregateProvider.LowLevelDevicesAggregateProvider(Windows.Devices.Adc.Provider.IAdcControllerProvider, Windows.Devices.Pwm.Provider.IPwmControllerProvider, Windows.Devices.Gpio.Provider.IGpioControllerProvider, Windows.Devices.I2c.Provider.II2cControllerProvider, Windows.Devices.Spi.Provider.ISpiControllerProvider)
-		// Forced skipping of method Windows.Devices.LowLevelDevicesAggregateProvider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.LowLevelDevicesAggregateProvider.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.LowLevelDevicesAggregateProvider.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.LowLevelDevicesAggregateProvider.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.LowLevelDevicesAggregateProvider.AdcControllerProvider.get
 		// Forced skipping of method Windows.Devices.LowLevelDevicesAggregateProvider.GpioControllerProvider.get
 		// Forced skipping of method Windows.Devices.LowLevelDevicesAggregateProvider.I2cControllerProvider.get
 		// Forced skipping of method Windows.Devices.LowLevelDevicesAggregateProvider.PwmControllerProvider.get
 		// Forced skipping of method Windows.Devices.LowLevelDevicesAggregateProvider.SpiControllerProvider.get
-		// Forced skipping of method Windows.Devices.LowLevelDevicesAggregateProvider.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.ILowLevelDevicesAggregateProvider
 	}
 }

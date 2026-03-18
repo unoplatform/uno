@@ -12,15 +12,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property CorrelationId
 		// Skipping already declared property EndPosition
 		// Skipping already declared property StartPosition
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs.Animation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs.Animation.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs.CorrelationId.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs.EndPosition.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs.StartPosition.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

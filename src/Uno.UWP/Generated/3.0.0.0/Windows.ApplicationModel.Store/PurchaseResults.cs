@@ -53,14 +53,9 @@ namespace Windows.ApplicationModel.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.OfferId.get
 		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.ReceiptXml.get
 		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.Status.get
 		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.TransactionId.get
-		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

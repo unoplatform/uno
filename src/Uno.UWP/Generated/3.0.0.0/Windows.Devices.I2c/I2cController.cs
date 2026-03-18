@@ -27,10 +27,6 @@ namespace Windows.Devices.I2c
 			throw new global::System.NotImplementedException("The member IAsyncOperation<I2cController> I2cController.GetDefaultAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CI2cController%3E%20I2cController.GetDefaultAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.I2c.I2cController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.I2c.I2cController.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.I2c.I2cController.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.I2c.I2cController.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.I2c.I2cDevice GetDevice(global::Windows.Devices.I2c.I2cConnectionSettings settings)
@@ -38,6 +34,5 @@ namespace Windows.Devices.I2c
 			throw new global::System.NotImplementedException("The member I2cDevice I2cController.GetDevice(I2cConnectionSettings settings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=I2cDevice%20I2cController.GetDevice%28I2cConnectionSettings%20settings%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.I2c.I2cController.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -152,10 +152,6 @@ namespace Windows.Graphics.Imaging
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.~SoftwareBitmap()
-		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Imaging.BitmapBuffer LockBuffer(global::Windows.Graphics.Imaging.BitmapBufferAccessMode mode)
@@ -207,7 +203,6 @@ namespace Windows.Graphics.Imaging
 		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.IsReadOnly.get
 		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.PixelHeight.get
 		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.PixelWidth.get
-		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

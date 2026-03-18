@@ -125,10 +125,6 @@ namespace Windows.UI.Notifications
 		}
 #endif
 		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.ScheduledToastNotification(Windows.Data.Xml.Dom.XmlDocument, System.DateTimeOffset, System.TimeSpan, uint)
-		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.Content.get
 		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.DeliveryTime.get
 		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.ExpirationTime.get
@@ -147,6 +143,5 @@ namespace Windows.UI.Notifications
 		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.SuppressPopup.set
 		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.Tag.get
 		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.Tag.set
-		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

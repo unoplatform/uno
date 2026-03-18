@@ -68,16 +68,11 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.AccelerometerReading.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.AccelerometerReading.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.AccelerometerReading.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Sensors.AccelerometerReading.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerReading.AccelerationX.get
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerReading.AccelerationY.get
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerReading.AccelerationZ.get
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerReading.PerformanceCount.get
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerReading.Properties.get
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerReading.Timestamp.get
-		// Forced skipping of method Windows.Devices.Sensors.AccelerometerReading.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

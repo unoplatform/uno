@@ -11,10 +11,6 @@ namespace Microsoft.UI.Xaml.Documents
 		// Skipping already declared property Count
 		// Skipping already declared property IsReadOnly
 		// Skipping already declared property this[]
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.Count.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.this[int].get
@@ -29,7 +25,6 @@ namespace Microsoft.UI.Xaml.Documents
 		// Skipping already declared method Microsoft.UI.Xaml.Documents.BlockCollection.Remove(Microsoft.UI.Xaml.Documents.Block)
 		// Skipping already declared method Microsoft.UI.Xaml.Documents.BlockCollection.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Documents.Block>.get_Item(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.BlockCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Documents.Block>.set_Item(int, Microsoft.UI.Xaml.Documents.Block)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Documents.Block>

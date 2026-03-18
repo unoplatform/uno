@@ -38,12 +38,7 @@ namespace Windows.System
 		}
 #endif
 		// Forced skipping of method Windows.System.AppUriHandlerHost.AppUriHandlerHost(string)
-		// Forced skipping of method Windows.System.AppUriHandlerHost.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.AppUriHandlerHost.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.AppUriHandlerHost.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.AppUriHandlerHost.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.AppUriHandlerHost.Name.get
 		// Forced skipping of method Windows.System.AppUriHandlerHost.Name.set
-		// Forced skipping of method Windows.System.AppUriHandlerHost.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

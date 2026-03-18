@@ -19,8 +19,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Brush.OpacityProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Brush.RelativeTransformProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Brush.TransformProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Brush.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Brush.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		protected virtual void PopulatePropertyInfoOverride(string propertyName, global::Microsoft.UI.Composition.AnimationPropertyInfo animationPropertyInfo)
@@ -41,7 +39,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Brush.RelativeTransform.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Brush.Transform.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Brush.Transform.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Brush.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Composition.IAnimationObject
 	}
 }

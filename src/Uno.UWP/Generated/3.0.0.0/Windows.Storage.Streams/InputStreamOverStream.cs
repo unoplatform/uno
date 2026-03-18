@@ -8,13 +8,8 @@ namespace Windows.Storage.Streams
 #endif
 	public partial class InputStreamOverStream : global::Windows.Storage.Streams.IInputStream, global::System.IDisposable
 	{
-		// Forced skipping of method Windows.Storage.Streams.InputStreamOverStream.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.Streams.InputStreamOverStream.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.Streams.InputStreamOverStream.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.Streams.InputStreamOverStream.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.Storage.Streams.InputStreamOverStream.ReadAsync(Windows.Storage.Streams.IBuffer, uint, Windows.Storage.Streams.InputStreamOptions)
 		// Skipping already declared method Windows.Storage.Streams.InputStreamOverStream.Dispose()
-		// Forced skipping of method Windows.Storage.Streams.InputStreamOverStream.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Storage.Streams.IInputStream
 		// Processing: System.IDisposable
 	}

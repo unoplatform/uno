@@ -13,8 +13,6 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property IsFinalStepSingleFrame
 		// Skipping already declared property IsInitialStepSingleFrame
 		// Skipping already declared property StepCount
-		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.FinalStep.get
 		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.FinalStep.set
 		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.InitialStep.get
@@ -25,6 +23,5 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.IsInitialStepSingleFrame.set
 		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.StepCount.get
 		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.StepCount.set
-		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

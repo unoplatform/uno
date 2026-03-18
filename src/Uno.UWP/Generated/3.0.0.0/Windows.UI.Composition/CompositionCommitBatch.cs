@@ -33,13 +33,10 @@ namespace Windows.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionCommitBatch.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.CompositionCommitBatch.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.CompositionCommitBatch.Completed.add
 		// Forced skipping of method Windows.UI.Composition.CompositionCommitBatch.Completed.remove
 		// Forced skipping of method Windows.UI.Composition.CompositionCommitBatch.IsActive.get
 		// Forced skipping of method Windows.UI.Composition.CompositionCommitBatch.IsEnded.get
-		// Forced skipping of method Windows.UI.Composition.CompositionCommitBatch.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<object, global::Windows.UI.Composition.CompositionBatchCompletedEventArgs> Completed

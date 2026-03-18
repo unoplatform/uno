@@ -50,10 +50,6 @@ namespace Windows.ApplicationModel.Resources.Core
 #endif
 		// Skipping already declared property Qualifiers
 		// Skipping already declared property ValueAsString
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> GetValueAsFileAsync()
@@ -75,6 +71,5 @@ namespace Windows.ApplicationModel.Resources.Core
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.Qualifiers.get
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.ValueAsString.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

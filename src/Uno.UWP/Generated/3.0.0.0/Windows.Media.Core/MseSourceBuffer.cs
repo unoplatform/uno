@@ -89,10 +89,6 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AppendBuffer(global::Windows.Storage.Streams.IBuffer buffer)
@@ -148,7 +144,6 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.Mode.set
 		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.TimestampOffset.get
 		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.TimestampOffset.set
-		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.MseSourceBuffer, object> Aborted

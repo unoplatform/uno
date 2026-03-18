@@ -34,12 +34,9 @@ namespace Microsoft.UI.Xaml.Documents
 		// Skipping already declared method Microsoft.UI.Xaml.Documents.Run.Run()
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.Run()
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.FlowDirectionProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.FlowDirection.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.FlowDirection.set
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.Text.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.Text.set
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

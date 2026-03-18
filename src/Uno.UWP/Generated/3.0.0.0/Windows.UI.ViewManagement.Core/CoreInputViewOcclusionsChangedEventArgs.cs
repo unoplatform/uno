@@ -37,13 +37,8 @@ namespace Windows.UI.ViewManagement.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusionsChangedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusionsChangedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusionsChangedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusionsChangedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusionsChangedEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusionsChangedEventArgs.Handled.set
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusionsChangedEventArgs.Occlusions.get
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewOcclusionsChangedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

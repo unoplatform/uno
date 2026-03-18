@@ -202,10 +202,6 @@ namespace Windows.Networking.BackgroundTransfer
 			throw new global::System.NotImplementedException("The member IAsyncOperation<UnconstrainedTransferRequestResult> BackgroundUploader.RequestUnconstrainedUploadsAsync(IEnumerable<UploadOperation> operations) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUnconstrainedTransferRequestResult%3E%20BackgroundUploader.RequestUnconstrainedUploadsAsync%28IEnumerable%3CUploadOperation%3E%20operations%29");
 		}
 #endif
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundUploader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundUploader.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundUploader.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundUploader.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.BackgroundTransfer.UploadOperation CreateUpload(global::System.Uri uri, global::Windows.Storage.IStorageFile sourceFile)
@@ -269,7 +265,6 @@ namespace Windows.Networking.BackgroundTransfer
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundUploader.SuccessToastNotification.set
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundUploader.TransferGroup.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundUploader.TransferGroup.set
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundUploader.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Networking.BackgroundTransfer.IBackgroundTransferBase
 	}
 }

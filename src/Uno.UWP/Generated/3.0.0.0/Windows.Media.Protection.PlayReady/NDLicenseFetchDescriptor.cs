@@ -50,15 +50,10 @@ namespace Windows.Media.Protection.PlayReady
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDLicenseFetchDescriptor.NDLicenseFetchDescriptor(Windows.Media.Protection.PlayReady.NDContentIDType, byte[], Windows.Media.Protection.PlayReady.INDCustomData)
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDLicenseFetchDescriptor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDLicenseFetchDescriptor.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDLicenseFetchDescriptor.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDLicenseFetchDescriptor.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDLicenseFetchDescriptor.ContentID.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDLicenseFetchDescriptor.ContentIDType.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDLicenseFetchDescriptor.LicenseFetchChallengeCustomData.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDLicenseFetchDescriptor.LicenseFetchChallengeCustomData.set
-		// Forced skipping of method Windows.Media.Protection.PlayReady.NDLicenseFetchDescriptor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Media.Protection.PlayReady.INDLicenseFetchDescriptor
 	}
 }

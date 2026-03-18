@@ -8,10 +8,7 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class ScalarKeyFrameAnimation : global::Microsoft.UI.Composition.KeyFrameAnimation
 	{
-		// Forced skipping of method Microsoft.UI.Composition.ScalarKeyFrameAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.ScalarKeyFrameAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Composition.ScalarKeyFrameAnimation.InsertKeyFrame(float, float)
 		// Skipping already declared method Microsoft.UI.Composition.ScalarKeyFrameAnimation.InsertKeyFrame(float, float, Microsoft.UI.Composition.CompositionEasingFunction)
-		// Forced skipping of method Microsoft.UI.Composition.ScalarKeyFrameAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

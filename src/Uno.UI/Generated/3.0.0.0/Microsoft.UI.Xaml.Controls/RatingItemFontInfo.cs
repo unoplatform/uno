@@ -28,8 +28,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.PointerOverGlyphProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.PointerOverPlaceholderGlyphProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.UnsetGlyphProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.DisabledGlyph.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.DisabledGlyph.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.Glyph.get
@@ -42,6 +40,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.PointerOverPlaceholderGlyph.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.UnsetGlyph.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.UnsetGlyph.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RatingItemFontInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

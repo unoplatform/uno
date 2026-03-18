@@ -16,12 +16,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame.ObjectKeyFrame()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame.KeyTimeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame.ValueProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame.KeyTime.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame.KeyTime.set
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame.Value.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame.Value.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ObjectKeyFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

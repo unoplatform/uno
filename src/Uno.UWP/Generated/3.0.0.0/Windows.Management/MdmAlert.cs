@@ -110,10 +110,6 @@ namespace Windows.Management
 		}
 #endif
 		// Forced skipping of method Windows.Management.MdmAlert.MdmAlert()
-		// Forced skipping of method Windows.Management.MdmAlert.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Management.MdmAlert.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Management.MdmAlert.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Management.MdmAlert.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Management.MdmAlert.Data.get
 		// Forced skipping of method Windows.Management.MdmAlert.Data.set
 		// Forced skipping of method Windows.Management.MdmAlert.Format.get
@@ -127,6 +123,5 @@ namespace Windows.Management
 		// Forced skipping of method Windows.Management.MdmAlert.Target.set
 		// Forced skipping of method Windows.Management.MdmAlert.Type.get
 		// Forced skipping of method Windows.Management.MdmAlert.Type.set
-		// Forced skipping of method Windows.Management.MdmAlert.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

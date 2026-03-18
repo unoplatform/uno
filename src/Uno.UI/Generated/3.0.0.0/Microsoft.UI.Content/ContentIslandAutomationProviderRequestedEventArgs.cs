@@ -10,14 +10,9 @@ namespace Microsoft.UI.Content
 	{
 		// Skipping already declared property AutomationProvider
 		// Skipping already declared property Handled
-		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.AutomationProvider.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.AutomationProvider.set
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.Handled.set
-		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

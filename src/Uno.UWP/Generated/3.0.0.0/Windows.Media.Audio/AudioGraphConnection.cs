@@ -37,13 +37,8 @@ namespace Windows.Media.Audio
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioGraphConnection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Audio.AudioGraphConnection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Audio.AudioGraphConnection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Audio.AudioGraphConnection.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Audio.AudioGraphConnection.Destination.get
 		// Forced skipping of method Windows.Media.Audio.AudioGraphConnection.Gain.get
 		// Forced skipping of method Windows.Media.Audio.AudioGraphConnection.Gain.set
-		// Forced skipping of method Windows.Media.Audio.AudioGraphConnection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -10,8 +10,5 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ListViewBaseHeaderItemAutomationPeer.ListViewBaseHeaderItemAutomationPeer(Microsoft.UI.Xaml.Controls.ListViewBaseHeaderItem)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewBaseHeaderItemAutomationPeer.ListViewBaseHeaderItemAutomationPeer(Microsoft.UI.Xaml.Controls.ListViewBaseHeaderItem)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewBaseHeaderItemAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewBaseHeaderItemAutomationPeer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ListViewBaseHeaderItemAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

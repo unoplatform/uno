@@ -8,12 +8,7 @@ namespace Windows.ApplicationModel
 #endif
 	public partial class SuspendingDeferral : global::Windows.ApplicationModel.ISuspendingDeferral
 	{
-		// Forced skipping of method Windows.ApplicationModel.SuspendingDeferral.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.SuspendingDeferral.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.SuspendingDeferral.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.SuspendingDeferral.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.ApplicationModel.SuspendingDeferral.Complete()
-		// Forced skipping of method Windows.ApplicationModel.SuspendingDeferral.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.ApplicationModel.ISuspendingDeferral
 	}
 }

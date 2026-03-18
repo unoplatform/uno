@@ -10,8 +10,5 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.MenuBarAutomationPeer.MenuBarAutomationPeer(Microsoft.UI.Xaml.Controls.MenuBar)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuBarAutomationPeer.MenuBarAutomationPeer(Microsoft.UI.Xaml.Controls.MenuBar)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuBarAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuBarAutomationPeer.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.MenuBarAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -99,10 +99,6 @@ namespace Windows.Devices.Lights.Effects
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayEffectPlaylist", "void LampArrayEffectPlaylist.PauseAll(IEnumerable<LampArrayEffectPlaylist> value)");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Append(global::Windows.Devices.Lights.Effects.ILampArrayEffect effect)
@@ -154,7 +150,6 @@ namespace Windows.Devices.Lights.Effects
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.Occurrences.set
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.RepetitionMode.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.RepetitionMode.set
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.System.Collections.Generic.IReadOnlyList<Windows.Devices.Lights.Effects.ILampArrayEffect>.get_Item(int)
 		// Processing: System.Collections.Generic.IReadOnlyList<Windows.Devices.Lights.Effects.ILampArrayEffect>
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Devices.Lights.Effects.ILampArrayEffect>

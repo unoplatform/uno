@@ -113,10 +113,6 @@ namespace Windows.ApplicationModel.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Store.ListingInformation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Store.ListingInformation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Store.ListingInformation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Store.ListingInformation.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Store.ListingInformation.AgeRating.get
 		// Forced skipping of method Windows.ApplicationModel.Store.ListingInformation.CurrencyCode.get
 		// Forced skipping of method Windows.ApplicationModel.Store.ListingInformation.CurrentMarket.get
@@ -127,6 +123,5 @@ namespace Windows.ApplicationModel.Store
 		// Forced skipping of method Windows.ApplicationModel.Store.ListingInformation.Name.get
 		// Forced skipping of method Windows.ApplicationModel.Store.ListingInformation.ProductListings.get
 		// Forced skipping of method Windows.ApplicationModel.Store.ListingInformation.SaleEndDate.get
-		// Forced skipping of method Windows.ApplicationModel.Store.ListingInformation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

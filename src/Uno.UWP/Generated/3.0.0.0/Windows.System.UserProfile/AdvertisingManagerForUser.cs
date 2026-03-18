@@ -33,12 +33,7 @@ namespace Windows.System.UserProfile
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.UserProfile.AdvertisingManagerForUser.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.UserProfile.AdvertisingManagerForUser.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.UserProfile.AdvertisingManagerForUser.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.UserProfile.AdvertisingManagerForUser.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.UserProfile.AdvertisingManagerForUser.AdvertisingId.get
 		// Forced skipping of method Windows.System.UserProfile.AdvertisingManagerForUser.User.get
-		// Forced skipping of method Windows.System.UserProfile.AdvertisingManagerForUser.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

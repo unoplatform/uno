@@ -30,14 +30,9 @@ namespace Windows.Devices.Sensors
 		}
 #endif
 		// Skipping already declared property Timestamp
-		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.IlluminanceInLux.get
 		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.PerformanceCount.get
 		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.Properties.get
 		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.Timestamp.get
-		// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

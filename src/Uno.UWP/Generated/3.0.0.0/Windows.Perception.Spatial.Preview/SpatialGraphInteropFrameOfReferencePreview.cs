@@ -43,13 +43,8 @@ namespace Windows.Perception.Spatial.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview.CoordinateSystem.get
 		// Forced skipping of method Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview.CoordinateSystemToNodeTransform.get
 		// Forced skipping of method Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview.NodeId.get
-		// Forced skipping of method Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

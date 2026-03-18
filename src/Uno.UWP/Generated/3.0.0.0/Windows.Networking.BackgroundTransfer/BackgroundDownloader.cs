@@ -202,10 +202,6 @@ namespace Windows.Networking.BackgroundTransfer
 			throw new global::System.NotImplementedException("The member IAsyncOperation<UnconstrainedTransferRequestResult> BackgroundDownloader.RequestUnconstrainedDownloadsAsync(IEnumerable<DownloadOperation> operations) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUnconstrainedTransferRequestResult%3E%20BackgroundDownloader.RequestUnconstrainedDownloadsAsync%28IEnumerable%3CDownloadOperation%3E%20operations%29");
 		}
 #endif
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloader.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloader.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloader.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloader.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.BackgroundTransfer.DownloadOperation CreateDownload(global::System.Uri uri, global::Windows.Storage.IStorageFile resultFile)
@@ -255,7 +251,6 @@ namespace Windows.Networking.BackgroundTransfer
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloader.SuccessToastNotification.set
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloader.TransferGroup.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloader.TransferGroup.set
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloader.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Networking.BackgroundTransfer.IBackgroundTransferBase
 	}
 }

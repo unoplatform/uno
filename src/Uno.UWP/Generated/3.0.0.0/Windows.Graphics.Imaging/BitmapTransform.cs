@@ -100,10 +100,6 @@ namespace Windows.Graphics.Imaging
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapTransform.BitmapTransform()
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapTransform.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapTransform.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapTransform.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapTransform.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapTransform.Bounds.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapTransform.Bounds.set
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapTransform.Flip.get
@@ -116,6 +112,5 @@ namespace Windows.Graphics.Imaging
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapTransform.ScaledHeight.set
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapTransform.ScaledWidth.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapTransform.ScaledWidth.set
-		// Forced skipping of method Windows.Graphics.Imaging.BitmapTransform.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

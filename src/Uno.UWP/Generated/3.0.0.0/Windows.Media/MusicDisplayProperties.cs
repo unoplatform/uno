@@ -107,10 +107,6 @@ namespace Windows.Media
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.MusicDisplayProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.MusicDisplayProperties.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.MusicDisplayProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.MusicDisplayProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.MusicDisplayProperties.AlbumArtist.get
 		// Forced skipping of method Windows.Media.MusicDisplayProperties.AlbumArtist.set
 		// Forced skipping of method Windows.Media.MusicDisplayProperties.AlbumTitle.get
@@ -124,6 +120,5 @@ namespace Windows.Media
 		// Forced skipping of method Windows.Media.MusicDisplayProperties.Title.set
 		// Forced skipping of method Windows.Media.MusicDisplayProperties.TrackNumber.get
 		// Forced skipping of method Windows.Media.MusicDisplayProperties.TrackNumber.set
-		// Forced skipping of method Windows.Media.MusicDisplayProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

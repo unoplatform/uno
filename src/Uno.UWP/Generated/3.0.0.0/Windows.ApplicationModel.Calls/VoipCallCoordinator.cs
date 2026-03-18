@@ -20,10 +20,6 @@ namespace Windows.ApplicationModel.Calls
 			throw new global::System.NotImplementedException("The member VoipCallCoordinator VoipCallCoordinator.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoipCallCoordinator%20VoipCallCoordinator.GetDefault%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.VoipCallCoordinator.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.VoipCallCoordinator.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.VoipCallCoordinator.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.VoipCallCoordinator.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.VoipPhoneCallResourceReservationStatus> ReserveCallResourcesAsync(string taskEntryPoint)
@@ -117,7 +113,6 @@ namespace Windows.ApplicationModel.Calls
 			throw new global::System.NotImplementedException("The member IAsyncOperation<VoipPhoneCallResourceReservationStatus> VoipCallCoordinator.ReserveCallResourcesAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CVoipPhoneCallResourceReservationStatus%3E%20VoipCallCoordinator.ReserveCallResourcesAsync%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Calls.VoipCallCoordinator.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Calls.VoipCallCoordinator, global::Windows.ApplicationModel.Calls.MuteChangeEventArgs> MuteStateChanged

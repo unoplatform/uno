@@ -30,10 +30,7 @@ namespace Windows.UI.WindowManagement
 		}
 #endif
 		// Forced skipping of method Windows.UI.WindowManagement.FullScreenPresentationConfiguration.FullScreenPresentationConfiguration()
-		// Forced skipping of method Windows.UI.WindowManagement.FullScreenPresentationConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.WindowManagement.FullScreenPresentationConfiguration.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.WindowManagement.FullScreenPresentationConfiguration.IsExclusive.get
 		// Forced skipping of method Windows.UI.WindowManagement.FullScreenPresentationConfiguration.IsExclusive.set
-		// Forced skipping of method Windows.UI.WindowManagement.FullScreenPresentationConfiguration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

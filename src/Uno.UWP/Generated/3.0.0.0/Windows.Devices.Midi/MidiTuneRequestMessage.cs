@@ -13,14 +13,9 @@ namespace Windows.Devices.Midi
 		// Skipping already declared property Type
 		// Skipping already declared method Windows.Devices.Midi.MidiTuneRequestMessage.MidiTuneRequestMessage()
 		// Forced skipping of method Windows.Devices.Midi.MidiTuneRequestMessage.MidiTuneRequestMessage()
-		// Forced skipping of method Windows.Devices.Midi.MidiTuneRequestMessage.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Midi.MidiTuneRequestMessage.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Midi.MidiTuneRequestMessage.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Midi.MidiTuneRequestMessage.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Midi.MidiTuneRequestMessage.RawData.get
 		// Forced skipping of method Windows.Devices.Midi.MidiTuneRequestMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Midi.MidiTuneRequestMessage.Type.get
-		// Forced skipping of method Windows.Devices.Midi.MidiTuneRequestMessage.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Devices.Midi.IMidiMessage
 	}
 }

@@ -29,8 +29,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.OverflowButtonVisibilityProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.PrimaryCommandsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.SecondaryCommandsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.DynamicOverflowItemsChanging.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.DynamicOverflowItemsChanging.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.CommandBarOverflowPresenterStyle.get
@@ -44,7 +42,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.OverflowButtonVisibility.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.PrimaryCommands.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.SecondaryCommands.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CommandBar.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.CommandBar.DynamicOverflowItemsChanging
 	}
 }

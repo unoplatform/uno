@@ -13,10 +13,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared property this[]
 		// Skipping already declared method Microsoft.UI.Xaml.Media.PointCollection.PointCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.PointCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.Count.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.this[int].get
@@ -31,7 +27,6 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared method Microsoft.UI.Xaml.Media.PointCollection.Remove(Windows.Foundation.Point)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.PointCollection.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.System.Collections.Generic.IList<Windows.Foundation.Point>.get_Item(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PointCollection.System.Collections.Generic.IList<Windows.Foundation.Point>.set_Item(int, Windows.Foundation.Point)
 		// Processing: System.Collections.Generic.IList<Windows.Foundation.Point>

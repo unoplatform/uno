@@ -52,14 +52,9 @@ namespace Windows.Services.Store
 		}
 #endif
 		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.StorePurchaseProperties(string)
-		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.ExtendedJsonData.get
 		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.ExtendedJsonData.set
 		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.Name.get
 		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.Name.set
-		// Forced skipping of method Windows.Services.Store.StorePurchaseProperties.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

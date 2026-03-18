@@ -72,10 +72,6 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.SystemBackdropConfiguration()
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.HighContrastBackgroundColor.get
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.HighContrastBackgroundColor.set
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.IsHighContrast.get
@@ -84,6 +80,5 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.IsInputActive.set
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.Theme.get
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.Theme.set
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

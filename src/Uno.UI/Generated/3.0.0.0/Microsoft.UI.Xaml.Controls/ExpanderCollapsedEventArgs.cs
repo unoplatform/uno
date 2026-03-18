@@ -8,10 +8,5 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class ExpanderCollapsedEventArgs
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ExpanderCollapsedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ExpanderCollapsedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ExpanderCollapsedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ExpanderCollapsedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ExpanderCollapsedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

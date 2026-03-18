@@ -103,10 +103,6 @@ namespace Windows.Web.Http.Diagnostics
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestResponseTimestamps.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestResponseTimestamps.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestResponseTimestamps.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestResponseTimestamps.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestResponseTimestamps.CacheCheckedTimestamp.get
 		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestResponseTimestamps.ConnectionCompletedTimestamp.get
 		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestResponseTimestamps.ConnectionInitiatedTimestamp.get
@@ -116,6 +112,5 @@ namespace Windows.Web.Http.Diagnostics
 		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestResponseTimestamps.ResponseCompletedTimestamp.get
 		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestResponseTimestamps.ResponseReceivedTimestamp.get
 		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestResponseTimestamps.SslNegotiatedTimestamp.get
-		// Forced skipping of method Windows.Web.Http.Diagnostics.HttpDiagnosticProviderRequestResponseTimestamps.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

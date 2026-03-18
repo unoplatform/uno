@@ -250,10 +250,6 @@ namespace Windows.Media
 			throw new global::System.NotImplementedException("The member SystemMediaTransportControls SystemMediaTransportControls.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemMediaTransportControls%20SystemMediaTransportControls.GetForCurrentView%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.SystemMediaTransportControls.ButtonPressed.add
 		// Forced skipping of method Windows.Media.SystemMediaTransportControls.ButtonPressed.remove
 		// Forced skipping of method Windows.Media.SystemMediaTransportControls.PropertyChanged.add
@@ -305,7 +301,6 @@ namespace Windows.Media
 		// Forced skipping of method Windows.Media.SystemMediaTransportControls.ShuffleEnabled.get
 		// Forced skipping of method Windows.Media.SystemMediaTransportControls.ShuffleEnabled.set
 		// Forced skipping of method Windows.Media.SystemMediaTransportControls.SoundLevel.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.SystemMediaTransportControls, global::Windows.Media.SystemMediaTransportControlsButtonPressedEventArgs> ButtonPressed

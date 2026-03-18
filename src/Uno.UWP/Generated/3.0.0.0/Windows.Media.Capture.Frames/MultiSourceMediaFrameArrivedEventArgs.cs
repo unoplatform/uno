@@ -13,10 +13,5 @@ namespace Windows.Media.Capture.Frames
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameArrivedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameArrivedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameArrivedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameArrivedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameArrivedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -36,12 +36,7 @@ namespace Microsoft.UI.Xaml.Printing
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Printing.PaginateEventArgs.PaginateEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Printing.PaginateEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Printing.PaginateEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Printing.PaginateEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Printing.PaginateEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.Printing.PaginateEventArgs.CurrentPreviewPageNumber.get
 		// Forced skipping of method Microsoft.UI.Xaml.Printing.PaginateEventArgs.PrintTaskOptions.get
-		// Forced skipping of method Microsoft.UI.Xaml.Printing.PaginateEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

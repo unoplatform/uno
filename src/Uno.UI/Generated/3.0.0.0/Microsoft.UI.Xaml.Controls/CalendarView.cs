@@ -675,8 +675,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarView.TodaySelectedInnerBorderBrushProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarView.VerticalDayItemAlignmentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarView.VerticalFirstOfMonthLabelAlignmentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarView.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.CalendarView.SetDisplayDate(System.DateTimeOffset)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.CalendarView.SetYearDecadeDisplayDimensions(int, int)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarView.CalendarViewDayItemChanging.add
@@ -831,7 +829,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarView.VerticalDayItemAlignment.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarView.VerticalFirstOfMonthLabelAlignment.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarView.VerticalFirstOfMonthLabelAlignment.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CalendarView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.CalendarView.CalendarViewDayItemChanging
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.CalendarView.SelectedDatesChanged
 	}

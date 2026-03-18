@@ -26,12 +26,7 @@ namespace Windows.System.RemoteSystems
 		}
 #endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemStatusTypeFilter.RemoteSystemStatusTypeFilter(Windows.System.RemoteSystems.RemoteSystemStatusType)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemStatusTypeFilter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemStatusTypeFilter.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemStatusTypeFilter.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemStatusTypeFilter.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemStatusTypeFilter.RemoteSystemStatusType.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemStatusTypeFilter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.System.RemoteSystems.IRemoteSystemFilter
 	}
 }

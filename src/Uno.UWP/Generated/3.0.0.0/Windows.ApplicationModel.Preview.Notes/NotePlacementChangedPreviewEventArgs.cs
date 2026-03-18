@@ -23,11 +23,6 @@ namespace Windows.ApplicationModel.Preview.Notes
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NotePlacementChangedPreviewEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NotePlacementChangedPreviewEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NotePlacementChangedPreviewEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NotePlacementChangedPreviewEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NotePlacementChangedPreviewEventArgs.ViewId.get
-		// Forced skipping of method Windows.ApplicationModel.Preview.Notes.NotePlacementChangedPreviewEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

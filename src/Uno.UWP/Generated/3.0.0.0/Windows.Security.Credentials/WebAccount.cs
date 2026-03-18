@@ -66,10 +66,6 @@ namespace Windows.Security.Credentials
 		}
 #endif
 		// Forced skipping of method Windows.Security.Credentials.WebAccount.WebAccount(Windows.Security.Credentials.WebAccountProvider, string, Windows.Security.Credentials.WebAccountState)
-		// Forced skipping of method Windows.Security.Credentials.WebAccount.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.Credentials.WebAccount.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.Credentials.WebAccount.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.Credentials.WebAccount.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> GetPictureAsync(global::Windows.Security.Credentials.WebAccountPictureSize desizedSize)
@@ -96,7 +92,6 @@ namespace Windows.Security.Credentials
 		// Forced skipping of method Windows.Security.Credentials.WebAccount.State.get
 		// Forced skipping of method Windows.Security.Credentials.WebAccount.UserName.get
 		// Forced skipping of method Windows.Security.Credentials.WebAccount.WebAccountProvider.get
-		// Forced skipping of method Windows.Security.Credentials.WebAccount.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Security.Credentials.IWebAccount
 	}
 }

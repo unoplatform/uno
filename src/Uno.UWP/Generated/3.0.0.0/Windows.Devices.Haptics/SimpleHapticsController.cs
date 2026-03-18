@@ -68,10 +68,6 @@ namespace Windows.Devices.Haptics
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsController.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsController.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsController.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsController.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void StopFeedback()
@@ -113,6 +109,5 @@ namespace Windows.Devices.Haptics
 		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsController.IsPlayDurationSupported.get
 		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsController.IsReplayPauseIntervalSupported.get
 		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsController.SupportedFeedback.get
-		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsController.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

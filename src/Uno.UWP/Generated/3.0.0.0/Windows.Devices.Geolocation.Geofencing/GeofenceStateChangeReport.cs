@@ -53,14 +53,9 @@ namespace Windows.Devices.Geolocation.Geofencing
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.Geofence.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.Geoposition.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.NewState.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.RemovalReason.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

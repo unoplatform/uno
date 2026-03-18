@@ -52,10 +52,5 @@ namespace Microsoft.UI.Xaml.Hosting
 			throw new global::System.NotImplementedException("The member CompositionPropertySet ElementCompositionPreview.GetPointerPositionPropertySet(UIElement targetElement) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionPropertySet%20ElementCompositionPreview.GetPointerPositionPropertySet%28UIElement%20targetElement%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -114,10 +114,6 @@ namespace Windows.ApplicationModel.Chat
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.ChatMessageAttachment(string, Windows.Storage.Streams.IRandomAccessStreamReference)
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.DataStreamReference.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.DataStreamReference.set
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.GroupId.get
@@ -132,6 +128,5 @@ namespace Windows.ApplicationModel.Chat
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.Thumbnail.set
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.TransferProgress.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.TransferProgress.set
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageAttachment.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

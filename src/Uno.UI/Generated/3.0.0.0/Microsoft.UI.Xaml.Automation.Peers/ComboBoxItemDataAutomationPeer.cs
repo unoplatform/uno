@@ -10,10 +10,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemDataAutomationPeer.ComboBoxItemDataAutomationPeer(object, Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemDataAutomationPeer.ComboBoxItemDataAutomationPeer(object, Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemDataAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemDataAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemDataAutomationPeer.ScrollIntoView()
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ComboBoxItemDataAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IScrollItemProvider
 	}
 }

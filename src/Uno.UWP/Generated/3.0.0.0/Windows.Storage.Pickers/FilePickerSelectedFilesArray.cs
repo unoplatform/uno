@@ -10,15 +10,10 @@ namespace Windows.Storage.Pickers
 	{
 		// Skipping already declared property Count
 		// Skipping already declared property this[]
-		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.Count.get
 		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.this[int].get
 		// Skipping already declared method Windows.Storage.Pickers.FilePickerSelectedFilesArray.GetEnumerator()
 		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.System.Collections.Generic.IReadOnlyList<Windows.Storage.StorageFile>.get_Item(int)
 		// Processing: System.Collections.Generic.IReadOnlyList<Windows.Storage.StorageFile>
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Storage.StorageFile>

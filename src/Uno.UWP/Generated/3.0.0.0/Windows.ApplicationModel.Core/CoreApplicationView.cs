@@ -52,10 +52,6 @@ namespace Windows.ApplicationModel.Core
 		}
 #endif
 		// Skipping already declared property TitleBar
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.Activated.add
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.Activated.remove
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.HostedViewClosing.add
@@ -68,7 +64,6 @@ namespace Windows.ApplicationModel.Core
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.IsMain.get
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.Properties.get
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.TitleBar.get
-		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplicationView.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Core.CoreApplicationView, global::Windows.ApplicationModel.Activation.IActivatedEventArgs> Activated

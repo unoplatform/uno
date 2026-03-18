@@ -33,12 +33,7 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.TimedTextSourceResolveResultEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Core.TimedTextSourceResolveResultEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Core.TimedTextSourceResolveResultEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Core.TimedTextSourceResolveResultEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Media.Core.TimedTextSourceResolveResultEventArgs.Error.get
 		// Forced skipping of method Windows.Media.Core.TimedTextSourceResolveResultEventArgs.Tracks.get
-		// Forced skipping of method Windows.Media.Core.TimedTextSourceResolveResultEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

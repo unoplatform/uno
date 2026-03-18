@@ -21,8 +21,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.BackgroundProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.ChildrenTransitionsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.IsItemsHostProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.Background.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.Background.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.BackgroundTransition.get
@@ -31,6 +29,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.ChildrenTransitions.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.ChildrenTransitions.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.IsItemsHost.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Panel.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

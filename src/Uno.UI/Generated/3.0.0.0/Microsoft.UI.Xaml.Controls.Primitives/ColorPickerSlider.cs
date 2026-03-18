@@ -13,10 +13,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider.ColorPickerSlider()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider.ColorPickerSlider()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider.ColorChannelProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider.ColorChannel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider.ColorChannel.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

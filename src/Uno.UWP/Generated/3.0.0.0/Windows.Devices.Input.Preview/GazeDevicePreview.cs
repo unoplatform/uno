@@ -53,10 +53,6 @@ namespace Windows.Devices.Input.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeDevicePreview.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeDevicePreview.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeDevicePreview.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeDevicePreview.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> RequestCalibrationAsync()
@@ -82,6 +78,5 @@ namespace Windows.Devices.Input.Preview
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeDevicePreview.CanTrackHead.get
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeDevicePreview.ConfigurationState.get
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeDevicePreview.Id.get
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeDevicePreview.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

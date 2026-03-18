@@ -93,10 +93,6 @@ namespace Windows.AI.MachineLearning
 			}
 		}
 #endif
-		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureDescriptor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureDescriptor.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureDescriptor.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureDescriptor.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureDescriptor.BitmapAlphaMode.get
 		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureDescriptor.BitmapPixelFormat.get
 		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureDescriptor.Description.get
@@ -105,7 +101,6 @@ namespace Windows.AI.MachineLearning
 		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureDescriptor.Kind.get
 		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureDescriptor.Name.get
 		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureDescriptor.Width.get
-		// Forced skipping of method Windows.AI.MachineLearning.ImageFeatureDescriptor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.AI.MachineLearning.ILearningModelFeatureDescriptor
 	}
 }

@@ -180,10 +180,6 @@ namespace Windows.UI.Input.Inking
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.InkPresenterProtractor(Windows.UI.Input.Inking.InkPresenter)
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.AccentColor.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.AccentColor.set
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.AreRaysVisible.get
@@ -207,7 +203,6 @@ namespace Windows.UI.Input.Inking
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.Radius.set
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.Transform.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.Transform.set
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.UI.Input.Inking.IInkPresenterStencil
 	}
 }

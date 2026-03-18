@@ -47,14 +47,9 @@ namespace Windows.Devices.Perception.Provider
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrame.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrame.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrame.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrame.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrame.FrameData.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrame.Properties.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrame.RelativeTime.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrame.RelativeTime.set
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFrame.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

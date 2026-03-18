@@ -86,10 +86,6 @@ namespace Windows.ApplicationModel.Wallet
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.WalletItemCustomProperty(string, string)
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.AutoDetectLinks.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.AutoDetectLinks.set
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.DetailViewPosition.get
@@ -100,6 +96,5 @@ namespace Windows.ApplicationModel.Wallet
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.SummaryViewPosition.set
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.Value.get
 		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.Value.set
-		// Forced skipping of method Windows.ApplicationModel.Wallet.WalletItemCustomProperty.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

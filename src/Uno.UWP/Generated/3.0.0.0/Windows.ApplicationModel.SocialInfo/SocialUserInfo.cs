@@ -69,10 +69,6 @@ namespace Windows.ApplicationModel.SocialInfo
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialUserInfo.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialUserInfo.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialUserInfo.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialUserInfo.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialUserInfo.DisplayName.get
 		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialUserInfo.DisplayName.set
 		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialUserInfo.RemoteId.get
@@ -81,6 +77,5 @@ namespace Windows.ApplicationModel.SocialInfo
 		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialUserInfo.TargetUri.set
 		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialUserInfo.UserName.get
 		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialUserInfo.UserName.set
-		// Forced skipping of method Windows.ApplicationModel.SocialInfo.SocialUserInfo.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -13,10 +13,5 @@ namespace Windows.Networking.PushNotifications
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannelsRevokedEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannelsRevokedEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannelsRevokedEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannelsRevokedEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
-		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannelsRevokedEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

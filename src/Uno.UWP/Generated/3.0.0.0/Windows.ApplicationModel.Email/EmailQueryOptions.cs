@@ -94,10 +94,6 @@ namespace Windows.ApplicationModel.Email
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.EmailQueryOptions(string, Windows.ApplicationModel.Email.EmailQuerySearchFields)
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.FolderIds.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.Kind.set
@@ -106,6 +102,5 @@ namespace Windows.ApplicationModel.Email
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.SortProperty.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.SortProperty.set
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.TextSearch.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailQueryOptions.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -80,10 +80,6 @@ namespace Windows.Media.Audio
 			throw new global::System.NotImplementedException("The member IAsyncOperation<CreateAudioGraphResult> AudioGraph.CreateAsync(AudioGraphSettings settings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCreateAudioGraphResult%3E%20AudioGraph.CreateAsync%28AudioGraphSettings%20settings%29");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioGraph.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Media.Audio.AudioGraph.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Media.Audio.AudioGraph.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Media.Audio.AudioGraph.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Audio.AudioFrameInputNode CreateFrameInputNode()
@@ -264,7 +260,6 @@ namespace Windows.Media.Audio
 		// Forced skipping of method Windows.Media.Audio.AudioGraph.PrimaryRenderDevice.get
 		// Forced skipping of method Windows.Media.Audio.AudioGraph.RenderDeviceAudioProcessing.get
 		// Forced skipping of method Windows.Media.Audio.AudioGraph.SamplesPerQuantum.get
-		// Forced skipping of method Windows.Media.Audio.AudioGraph.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Audio.AudioGraph, object> QuantumProcessed

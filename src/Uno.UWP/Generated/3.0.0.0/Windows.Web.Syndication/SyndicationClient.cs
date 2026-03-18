@@ -94,10 +94,6 @@ namespace Windows.Web.Syndication
 		}
 #endif
 		// Forced skipping of method Windows.Web.Syndication.SyndicationClient.SyndicationClient(Windows.Security.Credentials.PasswordCredential)
-		// Forced skipping of method Windows.Web.Syndication.SyndicationClient.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Web.Syndication.SyndicationClient.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Web.Syndication.SyndicationClient.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Web.Syndication.SyndicationClient.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetRequestHeader(string name, string value)
@@ -122,7 +118,6 @@ namespace Windows.Web.Syndication
 		// Forced skipping of method Windows.Web.Syndication.SyndicationClient.ServerCredential.set
 		// Forced skipping of method Windows.Web.Syndication.SyndicationClient.Timeout.get
 		// Forced skipping of method Windows.Web.Syndication.SyndicationClient.Timeout.set
-		// Forced skipping of method Windows.Web.Syndication.SyndicationClient.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Web.Syndication.ISyndicationClient
 	}
 }

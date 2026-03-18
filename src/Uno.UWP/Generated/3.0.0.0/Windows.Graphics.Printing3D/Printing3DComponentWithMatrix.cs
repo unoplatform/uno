@@ -44,14 +44,9 @@ namespace Windows.Graphics.Printing3D
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DComponentWithMatrix.Printing3DComponentWithMatrix()
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DComponentWithMatrix.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DComponentWithMatrix.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DComponentWithMatrix.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DComponentWithMatrix.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DComponentWithMatrix.Component.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DComponentWithMatrix.Component.set
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DComponentWithMatrix.Matrix.get
 		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DComponentWithMatrix.Matrix.set
-		// Forced skipping of method Windows.Graphics.Printing3D.Printing3DComponentWithMatrix.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

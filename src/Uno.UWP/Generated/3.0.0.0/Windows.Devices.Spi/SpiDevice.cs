@@ -61,10 +61,6 @@ namespace Windows.Devices.Spi
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SpiDevice> SpiDevice.FromIdAsync(string busId, SpiConnectionSettings settings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSpiDevice%3E%20SpiDevice.FromIdAsync%28string%20busId%2C%20SpiConnectionSettings%20settings%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Spi.SpiDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Spi.SpiDevice.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Spi.SpiDevice.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Spi.SpiDevice.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Write(byte[] buffer)
@@ -102,7 +98,6 @@ namespace Windows.Devices.Spi
 #endif
 		// Forced skipping of method Windows.Devices.Spi.SpiDevice.ConnectionSettings.get
 		// Forced skipping of method Windows.Devices.Spi.SpiDevice.DeviceId.get
-		// Forced skipping of method Windows.Devices.Spi.SpiDevice.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: System.IDisposable
 	}
 }

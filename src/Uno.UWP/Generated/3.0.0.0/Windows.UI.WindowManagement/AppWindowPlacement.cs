@@ -43,13 +43,8 @@ namespace Windows.UI.WindowManagement
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPlacement.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPlacement.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPlacement.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPlacement.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPlacement.DisplayRegion.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPlacement.Offset.get
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPlacement.Size.get
-		// Forced skipping of method Windows.UI.WindowManagement.AppWindowPlacement.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

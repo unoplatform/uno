@@ -15,10 +15,6 @@ namespace Windows.Storage.Streams
 		// Forced skipping of method Windows.Storage.Streams.DataWriter.DataWriter()
 		// Skipping already declared method Windows.Storage.Streams.DataWriter.DataWriter(Windows.Storage.Streams.IOutputStream)
 		// Forced skipping of method Windows.Storage.Streams.DataWriter.DataWriter(Windows.Storage.Streams.IOutputStream)
-		// Forced skipping of method Windows.Storage.Streams.DataWriter.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Storage.Streams.DataWriter.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Storage.Streams.DataWriter.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Storage.Streams.DataWriter.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Skipping already declared method Windows.Storage.Streams.DataWriter.WriteByte(byte)
 		// Skipping already declared method Windows.Storage.Streams.DataWriter.WriteBytes(byte[])
 		// Skipping already declared method Windows.Storage.Streams.DataWriter.WriteBuffer(Windows.Storage.Streams.IBuffer)
@@ -53,7 +49,6 @@ namespace Windows.Storage.Streams
 		// Forced skipping of method Windows.Storage.Streams.DataWriter.UnicodeEncoding.get
 		// Forced skipping of method Windows.Storage.Streams.DataWriter.UnicodeEncoding.set
 		// Forced skipping of method Windows.Storage.Streams.DataWriter.UnstoredBufferLength.get
-		// Forced skipping of method Windows.Storage.Streams.DataWriter.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Storage.Streams.IDataWriter
 		// Processing: System.IDisposable
 	}

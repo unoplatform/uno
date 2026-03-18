@@ -27,10 +27,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property IsSealed
 		// Skipping already declared method Microsoft.UI.Xaml.SetterBaseCollection.SetterBaseCollection()
 		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.SetterBaseCollection()
-		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.Count.get
 		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.IsReadOnly.get
 		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.this[int].get
@@ -82,7 +78,6 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared method Microsoft.UI.Xaml.SetterBaseCollection.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.System.Collections.IEnumerable.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.IsSealed.get
-		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.SetterBase>.get_Item(int)
 		// Forced skipping of method Microsoft.UI.Xaml.SetterBaseCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.SetterBase>.set_Item(int, Microsoft.UI.Xaml.SetterBase)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.SetterBase>

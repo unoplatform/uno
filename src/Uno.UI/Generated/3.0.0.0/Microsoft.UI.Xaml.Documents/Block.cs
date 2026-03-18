@@ -131,8 +131,6 @@ namespace Microsoft.UI.Xaml.Documents
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.LineStackingStrategyProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.MarginProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.TextAlignmentProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.HorizontalTextAlignment.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.HorizontalTextAlignment.set
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.LineHeight.get
@@ -143,6 +141,5 @@ namespace Microsoft.UI.Xaml.Documents
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.Margin.set
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.TextAlignment.get
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.TextAlignment.set
-		// Forced skipping of method Microsoft.UI.Xaml.Documents.Block.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

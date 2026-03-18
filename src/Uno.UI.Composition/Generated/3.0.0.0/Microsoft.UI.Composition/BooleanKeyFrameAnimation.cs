@@ -8,9 +8,6 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class BooleanKeyFrameAnimation : global::Microsoft.UI.Composition.KeyFrameAnimation
 	{
-		// Forced skipping of method Microsoft.UI.Composition.BooleanKeyFrameAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.BooleanKeyFrameAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Composition.BooleanKeyFrameAnimation.InsertKeyFrame(float, bool)
-		// Forced skipping of method Microsoft.UI.Composition.BooleanKeyFrameAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

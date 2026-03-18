@@ -16,8 +16,6 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property VerticallyScrollable
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.ScrollViewerAutomationPeer(Microsoft.UI.Xaml.Controls.ScrollViewer)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.ScrollViewerAutomationPeer(Microsoft.UI.Xaml.Controls.ScrollViewer)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.Scroll(Microsoft.UI.Xaml.Automation.ScrollAmount, Microsoft.UI.Xaml.Automation.ScrollAmount)
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.SetScrollPercent(double, double)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.HorizontalScrollPercent.get
@@ -26,7 +24,6 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.VerticalScrollPercent.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.VerticalViewSize.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.VerticallyScrollable.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ScrollViewerAutomationPeer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IScrollProvider
 	}
 }

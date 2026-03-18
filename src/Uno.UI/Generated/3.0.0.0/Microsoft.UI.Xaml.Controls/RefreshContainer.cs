@@ -16,8 +16,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.RefreshContainer()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.PullDirectionProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.VisualizerProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.WinRT.IWinRTObject.NativeObject.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.RefreshContainer.RequestRefresh()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.RefreshRequested.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.RefreshRequested.remove
@@ -25,7 +23,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.PullDirection.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.Visualizer.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.Visualizer.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshContainer.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.RefreshContainer.RefreshRequested
 	}
 }

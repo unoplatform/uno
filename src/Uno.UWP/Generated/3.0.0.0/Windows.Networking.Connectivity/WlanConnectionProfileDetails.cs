@@ -13,10 +13,6 @@ namespace Windows.Networking.Connectivity
 		{
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.WlanConnectionProfileDetails.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Networking.Connectivity.WlanConnectionProfileDetails.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Networking.Connectivity.WlanConnectionProfileDetails.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Networking.Connectivity.WlanConnectionProfileDetails.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string GetConnectedSsid()
@@ -24,6 +20,5 @@ namespace Windows.Networking.Connectivity
 			throw new global::System.NotImplementedException("The member string WlanConnectionProfileDetails.GetConnectedSsid() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WlanConnectionProfileDetails.GetConnectedSsid%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.WlanConnectionProfileDetails.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -43,13 +43,8 @@ namespace Windows.Devices.Sensors.Custom
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensorReading.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensorReading.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensorReading.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensorReading.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensorReading.PerformanceCount.get
 		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensorReading.Properties.get
 		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensorReading.Timestamp.get
-		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensorReading.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

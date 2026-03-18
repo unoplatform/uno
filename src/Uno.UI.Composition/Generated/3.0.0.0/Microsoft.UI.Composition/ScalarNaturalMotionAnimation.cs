@@ -50,14 +50,11 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.FinalValue.get
 		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.FinalValue.set
 		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.InitialValue.get
 		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.InitialValue.set
 		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.InitialVelocity.get
 		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.InitialVelocity.set
-		// Forced skipping of method Microsoft.UI.Composition.ScalarNaturalMotionAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

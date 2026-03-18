@@ -161,10 +161,6 @@ namespace Windows.Devices.Bluetooth
 			throw new global::System.NotImplementedException("The member string BluetoothDevice.GetDeviceSelectorFromClassOfDevice(BluetoothClassOfDevice classOfDevice) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20BluetoothDevice.GetDeviceSelectorFromClassOfDevice%28BluetoothClassOfDevice%20classOfDevice%29");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.ConnectionStatusChanged.add
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.ConnectionStatusChanged.remove
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.NameChanged.add
@@ -225,7 +221,6 @@ namespace Windows.Devices.Bluetooth
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.RfcommServices.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.SdpRecords.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.WasSecureConnectionUsedForPairing.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Bluetooth.BluetoothDevice, object> ConnectionStatusChanged

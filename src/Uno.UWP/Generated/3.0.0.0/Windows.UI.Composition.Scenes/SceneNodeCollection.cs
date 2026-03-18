@@ -47,8 +47,6 @@ namespace Windows.UI.Composition.Scenes
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNodeCollection.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNodeCollection.WinRT.IWinRTObject.NativeObject.get
 		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNodeCollection.Count.get
 		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNodeCollection.IsReadOnly.get
 		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNodeCollection.this[int].get
@@ -117,7 +115,6 @@ namespace Windows.UI.Composition.Scenes
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNodeCollection.System.Collections.IEnumerable.GetEnumerator()
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNodeCollection.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNodeCollection.System.Collections.Generic.IList<Windows.UI.Composition.Scenes.SceneNode>.get_Item(int)
 		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNodeCollection.System.Collections.Generic.IList<Windows.UI.Composition.Scenes.SceneNode>.set_Item(int, Windows.UI.Composition.Scenes.SceneNode)
 		// Processing: System.Collections.Generic.IList<Windows.UI.Composition.Scenes.SceneNode>

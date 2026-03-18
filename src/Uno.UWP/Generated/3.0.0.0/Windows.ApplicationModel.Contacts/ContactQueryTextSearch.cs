@@ -55,16 +55,11 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.Fields.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.Fields.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.SearchScope.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.SearchScope.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.Text.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.Text.set
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactQueryTextSearch.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

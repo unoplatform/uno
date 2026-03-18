@@ -15,10 +15,6 @@ namespace Windows.Foundation.Collections
 		// Skipping already declared property this[]
 		// Skipping already declared method Windows.Foundation.Collections.StringMap.StringMap()
 		// Forced skipping of method Windows.Foundation.Collections.StringMap.StringMap()
-		// Forced skipping of method Windows.Foundation.Collections.StringMap.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Foundation.Collections.StringMap.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Foundation.Collections.StringMap.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Foundation.Collections.StringMap.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Foundation.Collections.StringMap.Keys.get
 		// Forced skipping of method Windows.Foundation.Collections.StringMap.Values.get
 		// Forced skipping of method Windows.Foundation.Collections.StringMap.Count.get
@@ -38,7 +34,6 @@ namespace Windows.Foundation.Collections
 		// Forced skipping of method Windows.Foundation.Collections.StringMap.System.Collections.IEnumerable.GetEnumerator()
 		// Forced skipping of method Windows.Foundation.Collections.StringMap.MapChanged.add
 		// Forced skipping of method Windows.Foundation.Collections.StringMap.MapChanged.remove
-		// Forced skipping of method Windows.Foundation.Collections.StringMap.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Skipping already declared event Windows.Foundation.Collections.StringMap.MapChanged
 		// Processing: System.Collections.Generic.IDictionary<string, string>
 		// Processing: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>

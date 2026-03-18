@@ -54,10 +54,6 @@ namespace Windows.ApplicationModel.Search.Core
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionManager.SearchSuggestionManager()
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionManager.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionManager.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionManager.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionManager.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetLocalContentSuggestionSettings(global::Windows.ApplicationModel.Search.LocalContentSuggestionSettings settings)
@@ -116,7 +112,6 @@ namespace Windows.ApplicationModel.Search.Core
 		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionManager.SearchHistoryEnabled.get
 		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionManager.SearchHistoryEnabled.set
 		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionManager.Suggestions.get
-		// Forced skipping of method Windows.ApplicationModel.Search.Core.SearchSuggestionManager.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Search.Core.SearchSuggestionManager, global::Windows.ApplicationModel.Search.Core.RequestingFocusOnKeyboardInputEventArgs> RequestingFocusOnKeyboardInput

@@ -57,10 +57,6 @@ namespace Windows.Security.Authentication.OnlineId
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.SignOutUserOperation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.SignOutUserOperation.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.SignOutUserOperation.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.SignOutUserOperation.WinRT.IWinRTObject.AdditionalTypeData.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void GetResults()
@@ -87,7 +83,6 @@ namespace Windows.Security.Authentication.OnlineId
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.SignOutUserOperation.ErrorCode.get
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.SignOutUserOperation.Id.get
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.SignOutUserOperation.Status.get
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.SignOutUserOperation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 		// Processing: Windows.Foundation.IAsyncAction
 		// Processing: Windows.Foundation.IAsyncInfo
 	}

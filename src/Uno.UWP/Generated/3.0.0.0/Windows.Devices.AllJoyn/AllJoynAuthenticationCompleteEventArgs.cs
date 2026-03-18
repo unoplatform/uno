@@ -43,13 +43,8 @@ namespace Windows.Devices.AllJoyn
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs.AuthenticationMechanism.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs.PeerUniqueName.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs.Succeeded.get
-		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

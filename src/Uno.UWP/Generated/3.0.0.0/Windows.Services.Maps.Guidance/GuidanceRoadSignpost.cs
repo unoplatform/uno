@@ -63,15 +63,10 @@ namespace Windows.Services.Maps.Guidance
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoadSignpost.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoadSignpost.WinRT.IWinRTObject.NativeObject.get
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoadSignpost.WinRT.IWinRTObject.QueryInterfaceCache.get
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoadSignpost.WinRT.IWinRTObject.AdditionalTypeData.get
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoadSignpost.BackgroundColor.get
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoadSignpost.Exit.get
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoadSignpost.ExitDirections.get
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoadSignpost.ExitNumber.get
 		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoadSignpost.ForegroundColor.get
-		// Forced skipping of method Windows.Services.Maps.Guidance.GuidanceRoadSignpost.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }

@@ -29,8 +29,6 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property IterationCount
 		// Skipping already declared property KeyFrameCount
 		// Skipping already declared property StopBehavior
-		// Forced skipping of method Microsoft.UI.Composition.KeyFrameAnimation.WinRT.IWinRTObject.HasUnwrappableNativeObject.get
-		// Forced skipping of method Microsoft.UI.Composition.KeyFrameAnimation.WinRT.IWinRTObject.NativeObject.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void InsertExpressionKeyFrame(float normalizedProgressKey, string value)
@@ -60,6 +58,5 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.KeyFrameAnimation.KeyFrameCount.get
 		// Forced skipping of method Microsoft.UI.Composition.KeyFrameAnimation.StopBehavior.get
 		// Forced skipping of method Microsoft.UI.Composition.KeyFrameAnimation.StopBehavior.set
-		// Forced skipping of method Microsoft.UI.Composition.KeyFrameAnimation.System.Runtime.InteropServices.ICustomQueryInterface.GetInterface(ref System.Guid, out nint)
 	}
 }
